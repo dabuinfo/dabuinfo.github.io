@@ -1,2 +1,2 @@
-# dabu-info.github.io
+# dabuinfo.github.io
 Terminy wystawek w Niemczech
