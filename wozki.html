@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wózki - Milicz-Północ</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #121212; color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Ekran Logowania - Centrowanie */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #121212; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .login-box {
+            background: #1e1e1e; padding: 25px; border-radius: 16px;
+            border: 1px solid #333; width: 85%; max-width: 320px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 223, 196, 0.15);
+        }
+
+        /* Napisy zgodne z prośbą */
+        h2 { color: #00dfc4; margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.4rem; letter-spacing: 1px; }
+        .sub-title { color: #aaa; font-size: 0.85rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        input {
+            width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 8px;
+            border: 1px solid #444; background: #252525; color: #fff;
+            font-size: 16px; box-sizing: border-box; text-align: center; outline: none;
+        }
+        input:focus { border-color: #00dfc4; }
+
+        button {
+            width: 100%; padding: 14px; border: none; border-radius: 8px;
+            background: #00dfc4; color: #000; font-weight: bold; font-size: 16px;
+            cursor: pointer; transition: 0.2s;
+        }
+        button:active { opacity: 0.8; transform: scale(0.98); }
+
+        #msg { margin-top: 15px; color: #ff5252; font-size: 0.9rem; min-height: 20px; }
+
+        /* Kontener Aplikacji - Centrowanie zawartości na środku */
+        #app-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: #121212;
+            display: none; /* zmieniane przez JS */
+            justify-content: center; /* Centrowanie w poziomie */
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            max-width: 1100px; /* Limit szerokości dla efektu karty */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>GRAFIK WÓZKI</h2>
+            <div class="sub-title">MILICZ-PÓŁNOC</div>
+            
+            <input type="password" id="passInput" placeholder="Hasło..." onkeypress="if(event.key==='Enter') checkPass()">
+            <button id="btnLog" onclick="checkPass()">WEJDŹ</button>
+            <div id="msg"></div>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <iframe id="appFrame"></iframe>
+    </div>
+
+<script>
+    const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwKDwLJdGLsfGLJCJxaMo4w9Kvc9Z8H_GxK94_gGlhGrNe7TDtywiGN2_RJEoNontPYYw/exec"; 
+
+    function checkPass() {
+        const p = document.getElementById("passInput").value;
+        const btn = document.getElementById("btnLog");
+        const msg = document.getElementById("msg");
+
+        if(!p) return;
+
+        btn.disabled = true;
+        btn.innerText = "SPRAWDZAM...";
+        msg.innerText = "";
+
+        fetch(GOOGLE_APP_URL + "?mode=check&pass=" + encodeURIComponent(p))
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ok") {
+                document.getElementById("login-overlay").style.display = "none";
+                const app = document.getElementById("app-container");
+                app.style.display = "flex"; // Ustawiamy flex dla centrowania iframe
+                document.getElementById("appFrame").src = GOOGLE_APP_URL; 
+            } else {
+                throw new Error("Wrong password");
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerText = "WEJDŹ";
+            msg.innerText = "⛔ Błędne hasło!";
+        });
+    }
+</script>
+
+</body>
+</html>
