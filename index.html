@@ -15,15 +15,40 @@
             padding: 0;
             background-color: #121212;
         }
-        /* Pozwól pisać w polach formularza */
-        input, textarea {
+        input, textarea, select {
             -webkit-user-select: text !important;
             -moz-user-select: text !important;
             -ms-user-select: text !important;
             user-select: text !important;
         }
 
-        /* STYLIZACJA GŁÓWNA (Dark Mode) */
+        /* --- WYBIERAK JĘZYKA --- */
+        .lang-switcher {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #4ca1af;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .lang-select {
+            background: transparent;
+            color: #fff;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px;
+            outline: none;
+        }
+        .lang-select option {
+            background: #222;
+            color: #fff;
+        }
+
+        /* STYLIZACJA GŁÓWNA */
         .harmonogram-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: transparent;
@@ -34,7 +59,7 @@
             padding: 15px;
             line-height: 1.6;
             box-sizing: border-box;
-            font-size: 1.2em; /* Bazowa wielkość czcionki +20% */
+            font-size: 1.2em;
         }
 
         /* NAGŁÓWKI */
@@ -224,25 +249,42 @@
         /* --- STYLIZACJA DLA SMARTFONÓW --- */
         @media (max-width: 768px) {
             .harmonogram-wrapper { 
-                font-size: 1.35em; /* Jeszcze większa czcionka na mobilkach (+35%) */
+                font-size: 1.35em; 
                 padding: 10px;
             }
             .info-title { font-size: 1.6em; }
             .region-label { 
-                padding: 15px 5px; /* Bardzo łatwe do kliknięcia */
+                padding: 15px 5px;
                 font-size: 1.2em; 
             }
-            .region-label input { transform: scale(1.8); margin-right: 15px; } /* Duże checkboxy */
+            .region-label input { transform: scale(1.8); margin-right: 15px; }
             .client-input { padding: 20px; font-size: 1.1em; }
             .submit-btn { padding: 25px; font-size: 1.3em; margin-bottom: 20px; }
             .selection-tools { flex-direction: column; align-items: stretch; }
             .selection-tools a { text-align: center; padding: 15px; margin-bottom: 5px; font-weight: bold; }
             .strategy-card { flex: 1 1 100%; margin-bottom: 20px; }
-            .regions-scroll-box { max-height: 400px; } /* Więcej miejsca na przewijanie palcem */
+            .regions-scroll-box { max-height: 400px; }
         }
     </style>
 </head>
 <body>
+
+<div class="lang-switcher">
+    <select id="langSelector" class="lang-select">
+        <option value="pl">🇵🇱 PL (PLN)</option>
+        <option value="de">🇩🇪 DE (EUR)</option>
+        <option value="cs">🇨🇿 CS (EUR)</option>
+        <option value="sk">🇸🇰 SK (EUR)</option>
+        <option value="hu">🇭🇺 HU (EUR)</option>
+        <option value="ro">🇷🇴 RO (EUR)</option>
+        <option value="bg">🇧🇬 BG (EUR)</option>
+        <option value="tr">🇹🇷 TR (EUR)</option>
+        <option value="bs">🇧🇦 BS (EUR)</option>
+        <option value="uk">🇺🇦 UA (EUR)</option>
+        <option value="ru">🇷🇺 RU (EUR)</option>
+        <option value="lt">🇱🇹 LT (EUR)</option>
+    </select>
+</div>
 
 <figure style="display: block; margin: 20px auto; width: 100%; text-align: center;">
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhdu_iSxbdjyk_L-XnryqdyUAcKDEHqI0E7IgagdC_Tmn9SnbfVtJJKJK7PhYoN9gsqTEgx3AgujHcxsM-dbXi6F4VxjdFd2J7aYzi7b9BBybp9JjylVGy6TcJZIPw8ZF99d7UjPbVzf_C1LeDCeMGyGxhM0ktKHkOfqhSEXafLxlGqIGAh62HSFEi-4zw/s1024/zestawtygodniowy1.webp"
@@ -501,11 +543,52 @@
         var userLang = navigator.language || navigator.userLanguage; 
         userLang = userLang.substr(0, 2).toLowerCase();
         
-        // LISTA OBSŁUGIWANYCH JĘZYKÓW (12 JĘZYKÓW)
+        // --- LOGIKA JĘZYKÓW I GEOLOKALIZACJI ---
         const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt'];
-        if (!supported.includes(userLang)) userLang = 'de'; // Domyślny DE dla nieznanych
+        if (!supported.includes(userLang)) userLang = 'de';
 
-        // WSPÓLNE CENY DLA EUROPY (EUR)
+        const selector = document.getElementById('langSelector');
+        
+        // 1. Ustawienie wstępne z przeglądarki
+        selector.value = userLang;
+        updateLanguage(userLang);
+
+        // 2. Próba wykrycia kraju po IP (nadpisuje język przeglądarki)
+        fetch('https://get.geojs.io/v1/ip/country.json')
+            .then(response => response.json())
+            .then(data => {
+                const country = data.country; // Zwraca kod kraju np. 'DE', 'PL'
+                let detectedLang = null;
+
+                // Mapa kraj -> język
+                if (country === 'DE' || country === 'AT' || country === 'CH') detectedLang = 'de';
+                else if (country === 'PL') detectedLang = 'pl';
+                else if (country === 'CZ') detectedLang = 'cs';
+                else if (country === 'SK') detectedLang = 'sk';
+                else if (country === 'HU') detectedLang = 'hu';
+                else if (country === 'RO') detectedLang = 'ro';
+                else if (country === 'BG') detectedLang = 'bg';
+                else if (country === 'TR') detectedLang = 'tr';
+                else if (country === 'BA' || country === 'HR' || country === 'RS') detectedLang = 'bs';
+                else if (country === 'UA') detectedLang = 'uk';
+                else if (country === 'RU') detectedLang = 'ru';
+                else if (country === 'LT') detectedLang = 'lt';
+
+                if (detectedLang && supported.includes(detectedLang)) {
+                    // Jeśli wykryto kraj i jest obsługiwany, zmień język
+                    userLang = detectedLang;
+                    selector.value = userLang;
+                    updateLanguage(userLang);
+                }
+            })
+            .catch(err => console.log('IP geo failed, using browser lang'));
+
+        // 3. Obsługa ręcznej zmiany języka
+        selector.addEventListener('change', function() {
+            userLang = this.value;
+            updateLanguage(userLang);
+        });
+
         const pricesEUR = { 1: 20, 2: 30, 3: 40, groupSurcharge: 20, pro: 60, offline: 5, dhl: 5, map: 25 };
 
         const config = {
@@ -1243,75 +1326,95 @@
             }
         };
 
-        // Fallback dla reszty języków
-        if(!config[userLang]) {
-             config[userLang] = config['de'];
-        }
-
-        const t = config[userLang].texts;
-        const p = config[userLang].prices;
-        const c = config[userLang].currency;
-
         // --- DOPASOWANIE INTERFEJSU DO KRAJU ---
-        if (userLang === 'pl') {
-            if(document.getElementById('dhlBox')) document.getElementById('dhlBox').classList.remove('hidden');
-        } else {
-            if(document.getElementById('schrottBox')) document.getElementById('schrottBox').classList.remove('hidden');
+        function updateLayoutForCountry(lang) {
+            if (lang === 'pl') {
+                if(document.getElementById('dhlBox')) document.getElementById('dhlBox').classList.remove('hidden');
+                if(document.getElementById('schrottBox')) document.getElementById('schrottBox').classList.add('hidden');
+            } else {
+                if(document.getElementById('dhlBox')) document.getElementById('dhlBox').classList.add('hidden');
+                if(document.getElementById('schrottBox')) document.getElementById('schrottBox').classList.remove('hidden');
+            }
         }
 
-        // FUNKCJE POMOCNICZE
+        // --- GŁÓWNA FUNKCJA AKTUALIZACJI TREŚCI ---
+        function updateLanguage(lang) {
+            if (!config[lang]) lang = 'de'; // Fallback
+            
+            const t = config[lang].texts;
+            const p = config[lang].prices;
+            const cur = config[lang].currency;
+
+            // Zapisz ceny globalnie, żeby funkcja recalcTotal miała do nich dostęp
+            window.currentPrices = p;
+            window.currentCurrency = cur;
+            window.currentTexts = t;
+
+            updateLayoutForCountry(lang);
+
+            // Aktualizacja tekstów w DOM
+            setText('profDesc', t.profDesc);
+            setText('rulesTitle', t.rulesTitle);
+            setHtml('rulesText', t.rulesText);
+            setHtml('bonusInfo', t.bonus);
+            setText('mainTitle', t.mainTitle);
+            setHtml('infoDesc', t.infoDesc);
+            setHtml('liFullList', t.liFullList);
+            setHtml('liNav', t.liNav);
+            setHtml('liAccess', t.liAccess);
+            if(t.liAddresses) setHtml('liAddresses', t.liAddresses); 
+            if(t.liScroll) setHtml('liScroll', t.liScroll);
+            if(t.liDark) setHtml('liDark', t.liDark); 
+            setText('previewTitle', t.previewTitle);
+            setText('previewSub', t.previewSub);
+            setHtml('previewNote', t.previewNote);
+            setText('headerChoose', t.headerChoose);
+            setText('basicTitle', t.basicTitle);
+            setText('basicPrice', t.basicPrice);
+            setText('basicSubtitle', t.basicSubtitle);
+            setHtml('basicLi1', t.basicLi1);
+            setText('basicLi2', t.basicLi2);
+            setText('basicLi3', t.basicLi3);
+            setText('proTitle', t.proTitle);
+            setText('proPrice', t.proPrice);
+            setText('proSubtitle', t.proSubtitle);
+            setHtml('proLi1', t.proLi1);
+            setText('proLi2', t.proLi2);
+            setHtml('proLi3', t.proLi3);
+            setText('step1Header', t.step1Header);
+            setText('btnSelectAll', t.btnSelectAll);
+            setText('btnUnselectAll', t.btnUnselectAll);
+            setText('step2Header', t.step2Header);
+            setText('step3Header', t.step3Header);
+            setHtml('offlineLabel', t.offlineLabel);
+            setHtml('mapLabel', t.mapLabel);
+            setText('groupLabel', t.groupLabel);
+            if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
+            setAttr('klientTelefon', 'placeholder', t.placeholderPhone);
+            setAttr('klientEmail', 'placeholder', t.placeholderEmail);
+            setText('btnSubmit', t.btnSubmit);
+            setText('rodoLabel', t.rodoLabel);
+            setHtml('freeSampleText', t.freeSampleText);
+            setText('archiveLink', t.archiveLink);
+            setHtml('extraInfoText', t.extraInfoText);
+            setText('extraInfoBtn', t.extraInfoBtn);
+            if(document.getElementById('extraInfoBtn')) document.getElementById('extraInfoBtn').href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(t.extraInfoSubject || "Kontakt");
+            
+            // Aktualizacja stopki z ceną
+            if(t.summaryTotal) {
+                const currentVal = document.getElementById('summaryTotal').innerText;
+                document.getElementById('liveSummary').innerHTML = t.summaryTotal + ': <span id="summaryTotal">'+currentVal+'</span> <span id="summaryCurrency">' + cur + '</span>';
+            }
+
+            // Przelicz ceny po zmianie języka
+            updateDynamicOptions(); 
+        }
+
+        // FUNKCJE POMOCNICZE DOM
         function setHtml(id, text) { if(document.getElementById(id)) document.getElementById(id).innerHTML = text; }
         function setText(id, text) { if(document.getElementById(id)) document.getElementById(id).innerText = text; }
         function setAttr(id, attr, text) { if(document.getElementById(id)) document.getElementById(id).setAttribute(attr, text); }
 
-        // APLIKOWANIE TEKSTÓW Z CONFIGU
-        setText('profDesc', t.profDesc); // NOWE: Ustawianie opisu
-        setText('rulesTitle', t.rulesTitle);
-        setHtml('rulesText', t.rulesText);
-        setHtml('bonusInfo', t.bonus);
-        setText('mainTitle', t.mainTitle);
-        setHtml('infoDesc', t.infoDesc);
-        setHtml('liFullList', t.liFullList);
-        setHtml('liNav', t.liNav);
-        setHtml('liAccess', t.liAccess);
-        if(t.liAddresses) setHtml('liAddresses', t.liAddresses); 
-        if(t.liScroll) setHtml('liScroll', t.liScroll);
-        if(t.liDark) setHtml('liDark', t.liDark); 
-        setText('previewTitle', t.previewTitle);
-        setText('previewSub', t.previewSub);
-        setHtml('previewNote', t.previewNote);
-        setText('headerChoose', t.headerChoose);
-        setText('basicTitle', t.basicTitle);
-        setText('basicPrice', t.basicPrice);
-        setText('basicSubtitle', t.basicSubtitle);
-        setHtml('basicLi1', t.basicLi1);
-        setText('basicLi2', t.basicLi2);
-        setText('basicLi3', t.basicLi3);
-        setText('proTitle', t.proTitle);
-        setText('proPrice', t.proPrice);
-        setText('proSubtitle', t.proSubtitle);
-        setHtml('proLi1', t.proLi1);
-        setText('proLi2', t.proLi2);
-        setHtml('proLi3', t.proLi3);
-        setText('step1Header', t.step1Header);
-        setText('btnSelectAll', t.btnSelectAll);
-        setText('btnUnselectAll', t.btnUnselectAll);
-        setText('step2Header', t.step2Header);
-        setText('step3Header', t.step3Header);
-        setHtml('offlineLabel', t.offlineLabel);
-        setHtml('mapLabel', t.mapLabel);
-        setText('groupLabel', t.groupLabel);
-        if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
-        setAttr('klientTelefon', 'placeholder', t.placeholderPhone);
-        setAttr('klientEmail', 'placeholder', t.placeholderEmail);
-        setText('btnSubmit', t.btnSubmit);
-        setText('rodoLabel', t.rodoLabel);
-        setHtml('freeSampleText', t.freeSampleText);
-        setText('archiveLink', t.archiveLink);
-        setHtml('extraInfoText', t.extraInfoText);
-        setText('extraInfoBtn', t.extraInfoBtn);
-        if(document.getElementById('extraInfoBtn')) document.getElementById('extraInfoBtn').href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(t.extraInfoSubject || "Kontakt");
-        if(t.summaryTotal) document.getElementById('liveSummary').innerHTML = t.summaryTotal + ': <span id="summaryTotal">0</span> <span id="summaryCurrency">' + c + '</span>';
 
         // GENEROWANIE TYGODNI
         var weeksContainer = document.getElementById('weeksContainer');
@@ -1329,7 +1432,10 @@
             var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
             var label = document.createElement('label'); label.className = "region-label";
             var input = document.createElement('input'); input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
-            input.value = (typeof t.weekLabel !== 'undefined' ? t.weekLabel : "Tydzień") + " " + getWeekNumber(sW) + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
+            
+            // Tygodnie nie są tłumaczone dynamicznie w locie (wymagałoby przeładowania listy), 
+            // więc zostawiamy uniwersalny format numeru tygodnia.
+            input.value = "Week " + getWeekNumber(sW) + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
             if (i === 0) input.checked = true;
             label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
             weeksContainer.appendChild(label);
@@ -1337,6 +1443,9 @@
 
         // --- FUNKCJA SPRAWDZAJĄCA WIDOCZNOŚĆ I CENY ---
         function updateDynamicOptions() {
+            var p = window.currentPrices || config['pl'].prices; // Pobierz aktualne ceny
+            var c = window.currentCurrency || 'PLN';
+
             var totalRegions = document.querySelectorAll('.region-chk').length;
             var checkedRegions = document.querySelectorAll('.region-chk:checked').length;
             var isPro = (checkedRegions === totalRegions && totalRegions > 0);
@@ -1344,7 +1453,6 @@
 
             var offlinePriceSpan = document.getElementById('offlinePriceDynamic');
             var offlinePrice = p.offline;
-            var offlineCurrency = c;
 
             // Jeśli PRO lub GRUPA -> Offline w cenie
             if (isPro || isGroup) { 
@@ -1352,7 +1460,7 @@
                 offlinePriceSpan.innerText = "";
             } else {
                 offlinePriceSpan.style.display = 'inline';
-                offlinePriceSpan.innerText = "+ " + offlinePrice + " " + offlineCurrency;
+                offlinePriceSpan.innerText = "+ " + offlinePrice + " " + c;
             }
 
             // --- UKRYWANIE MAPY ORAZ GRUPY DLA PRO ---
@@ -1362,14 +1470,12 @@
             var groupCheckbox = document.getElementById('groupOption');
             
             if (isPro) {
-                // Jeśli jest PRO, ukryj mapę i grupę, oraz odznacz je
                 if(mapContainer) mapContainer.classList.add('hidden');
                 if(mapCheckbox) mapCheckbox.checked = false;
                 
                 if(groupContainer) groupContainer.classList.add('hidden');
                 if(groupCheckbox) groupCheckbox.checked = false;
             } else {
-                // Jeśli nie jest PRO, pokaż
                 if(mapContainer) mapContainer.classList.remove('hidden');
                 if(groupContainer) groupContainer.classList.remove('hidden');
             }
@@ -1379,6 +1485,8 @@
 
         // --- NOWA FUNKCJA LICZĄCA SUMĘ ---
         function recalcTotal() {
+            var p = window.currentPrices || config['pl'].prices;
+            
             var wR = document.querySelectorAll('.region-chk:checked');
             var wT = document.querySelectorAll('.week-chk:checked');
             var isO = document.getElementById('offlineOption').checked;
@@ -1391,43 +1499,30 @@
                  return;
             }
 
-            // Sprawdzenie czy to wersja PRO (wszystkie rejony)
             var totalRegions = document.querySelectorAll('.region-chk').length;
             var isPro = (wR.length === totalRegions && wR.length > 0);
             
             var baseWeeklyPrice = 0;
 
-            // --- 1. OBLICZANIE CENY BAZOWEJ ZA TYDZIEŃ ---
             if (isPro) {
                  baseWeeklyPrice = p.pro;
-                 // W PRO zazwyczaj grupa i offline są w cenie lub niedostępne jako dopłata
             } else {
-                 // Cena za liczbę rejonów (1, 2 lub 3)
                  baseWeeklyPrice = p[wR.length] || p[1] || 0;
-                 
-                 // Dopłata grupowa (liczba tygodni * dopłata) -> więc dodajemy do bazy tygodniowej
                  if (isGroup) {
                      baseWeeklyPrice += p.groupSurcharge;
                  }
             }
 
-            // Mnożymy stawkę tygodniową przez liczbę wybranych tygodni
             var suma = baseWeeklyPrice * wT.length;
             
-            // --- 2. DODATKI JEDNORAZOWE (DO CAŁEGO ZAMÓWIENIA) ---
-
-            // Mapa Online (Tylko w wersji Basic, jednorazowa opłata)
-            // Dodawana tylko raz, niezależnie od liczby tygodni
             if (!isPro && isMap) {
                 suma += p.map;
             }
 
-            // Offline (Płatny tylko w Basic Single)
             if (!isPro && !isGroup && isO) {
                 suma += p.offline; 
             }
             
-            // Wysyłka DHL/Paczkomat
             if (isD) {
                 suma += p.dhl;
             }
@@ -1445,7 +1540,7 @@
             updateDynamicOptions();
         });
 
-        // --- OBSŁUGA ZMIANY REJONÓW (LIMIT = 3, RÓWNIEŻ DLA GRUPY) ---
+        // --- OBSŁUGA ZMIANY REJONÓW ---
         document.querySelectorAll('.region-chk').forEach(function(box) {
             box.addEventListener('change', function() {
                 var checkedRegions = document.querySelectorAll('.region-chk:checked');
@@ -1454,36 +1549,32 @@
                 
                 updateDynamicOptions();
 
-                // LOGIKA BLOKADY:
                 if (checkedCount > 3 && checkedCount < totalCount) {
                     this.checked = false; 
                     updateDynamicOptions(); 
-                    var msg = (userLang === 'pl') 
-                        ? "Maksymalna ilość rejonów w wyborze ręcznym to 3 (również w pakiecie Grupowym).\n\nJeśli potrzebujesz dostępu do wszystkich rejonów, wybierz opcję [ Zaznacz wszystko ] (Wersja PRO)." 
-                        : "Max 3 regions in manual selection (including Group access).\n\nFor access to all regions, please use [ Select All ] (PRO Version).";
-                    alert("\u26A0 " + msg);
+                    // Prosty alert uniwersalny
+                    alert("\u26A0 Max 3 regions (Basic) / Alle (PRO).");
                 }
             });
         });
 
-        // OBSŁUGA POZOSTAŁYCH INPUTÓW DO PRZELICZANIA
+        // OBSŁUGA POZOSTAŁYCH INPUTÓW
         document.getElementById('groupOption').addEventListener('change', updateDynamicOptions);
         document.getElementById('offlineOption').addEventListener('change', recalcTotal);
         if(document.getElementById('dhlOption')) document.getElementById('dhlOption').addEventListener('change', recalcTotal);
         document.getElementById('mapOption').addEventListener('change', recalcTotal);
         
-        // Obsługa checkboxów tygodni
         document.addEventListener('change', function(e){
             if(e.target.classList.contains('week-chk')){
                 recalcTotal();
             }
         });
 
-        // Inicjalizacja ceny
-        recalcTotal();
-
         // --- WYSYŁKA ---
         document.getElementById('btnSubmit').addEventListener('click', function() {
+            const t = window.currentTexts || config['pl'].texts;
+            const c = window.currentCurrency || 'PLN';
+
             if (!document.getElementById('rodoConsent').checked) { 
                 alert(t.rodoError); 
                 return; 
@@ -1500,14 +1591,14 @@
             var tel = document.getElementById('klientTelefon').value;
             var finalSum = document.getElementById('summaryTotal').innerText;
 
-            if (!em || em.indexOf('@') === -1) { alert("\u274C E-mail!"); return; }
-            if (wR.length === 0 || wT.length === 0) { alert("\u26A0 " + (userLang === 'pl' ? "Wybierz rejony i tygodnie!" : "Select regions and weeks!")); return; }
+            if (!em || em.indexOf('@') === -1) { alert("E-mail!"); return; }
+            if (wR.length === 0 || wT.length === 0) { alert("Select regions/weeks!"); return; }
 
             var isPro = wR.length === document.querySelectorAll('.region-chk').length;
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             
             var typeLabel = isPro ? "PRO" : "BASIC";
-            if (isGroup) typeLabel += " (GROUP/GRUPA)";
+            if (isGroup) typeLabel += " (GROUP)";
             
             var body = t.emailGreeting + "\n\n" + t.emailOrderSet + " " + typeLabel + "\n";
             body += t.paymentNote + " " + nr + "\n";
@@ -1516,9 +1607,9 @@
             if (isGroup) {
                 body += "LICENCJA: GROUP\n";
             } else if (!isPro) {
-                body += "LICENCJA: SINGLE USER (\u26A0 No sharing)\n";
+                body += "LICENCJA: SINGLE USER\n";
             } else {
-                body += "LICENCJA: SINGLE USER PRO\n"; 
+                body += "LICENCJA: PRO USER\n"; 
             }
             
             if (isD) {
@@ -1526,10 +1617,8 @@
             }
             if (isS) body += "TYP: SCHROTT ONLY\n";
             
-            // Logika wyświetlania Mapy w mailu
             if (isMap && !isPro) {
-                 var mapStatus = "TAK";
-                 body += "MAPA ONLINE: " + mapStatus + "\n";
+                 body += "MAPA ONLINE: TAK\n";
             }
             
             body += "OFFLINE: " + (isO || isPro || isGroup ? "TAK" : "NIE") + "\n"; 
