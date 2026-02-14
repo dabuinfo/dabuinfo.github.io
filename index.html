@@ -6,298 +6,235 @@
     <title>Łowcy Wystawek - Panel Ekipy</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
-        /* --- NOWY STYL DLA OPISU FIRMY --- */
-        .about-text {
-            text-align: center;
-            color: #aaa; /* Lekko szary dla kontrastu */
-            font-size: 0.9em;
-            margin: -10px auto 30px auto; /* Lekki margines ujemny, by był bliżej zdjęcia */
-            max-width: 900px;
-            line-height: 1.5;
-            font-style: italic;
-            padding: 0 10px;
-        }
-        /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM --- */
-        body {
-            -webkit-user-select: none; /* Chrome/Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+ */
-            user-select: none; /* Standard */
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-        }
-        /* Pozwól pisać w polach formularza */
-        input, textarea, select {
-            -webkit-user-select: text !important;
-            -moz-user-select: text !important;
-            -ms-user-select: text !important;
-            user-select: text !important;
-        }
+    /* --- NOWY STYL DLA OPISU FIRMY --- */
+    .about-text {
+        text-align: center;
+        color: #aaa; /* Lekko szary dla kontrastu */
+        font-size: 0.9em;
+        margin: -10px auto 30px auto; /* Lekki margines ujemny, by był bliżej zdjęcia */
+        max-width: 900px;
+        line-height: 1.5;
+        font-style: italic;
+        padding: 0 10px;
+    }
+    /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM --- */
+    body {
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
+        user-select: none; /* Standard */
+    }
+    /* Pozwól pisać w polach formularza */
+    input, textarea {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+    }
 
-        /* STYLIZACJA GŁÓWNA (Dark Mode) */
-        .harmonogram-wrapper {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: transparent;
-            color: #e0e0e0;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 15px;
-            line-height: 1.6;
-            box-sizing: border-box;
-            font-size: 1.2em;
-        }
+    /* STYLIZACJA (Dark Mode) */
+    .harmonogram-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent;
+        color: #e0e0e0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        box-sizing: border-box;
+    }
 
-        /* NAGŁÓWKI */
-        .harmonogram-wrapper h2 {
-            color: #2ecc71;
-            border-bottom: 2px solid #27ae60;
-            padding-bottom: 5px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            text-transform: uppercase;
-            font-weight: 800;
-            line-height: 1.3;
-            text-align: center;
-        }
+    /* NAGŁÓWKI */
+    .harmonogram-wrapper h2 {
+        color: #2ecc71;
+        border-bottom: 2px solid #27ae60;
+        padding-bottom: 5px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        font-weight: 800;
+        line-height: 1.3;
+        text-align: center;
+    }
 
-        /* --- OPIS USŁUGI --- */
-        .info-box-wrapper {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #4ca1af;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .info-title {
-            color: #4ca1af;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 1px solid #4ca1af;
-            padding-bottom: 10px;
-            margin-top: 30px;
-        }
-        .info-text { font-size: 0.95em; margin-bottom: 15px; color: #ccc; text-align: center; }
-        
-        .benefit-list { list-style: none !important; padding: 0 !important; margin: 0; }
-        .benefit-list li { margin-bottom: 10px; padding-left: 25px !important; position: relative; font-size: 0.95em; line-height: 1.4; }
-        .benefit-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #4ca1af; font-weight: bold; font-size: 1.2em; }
+    /* --- OPIS USŁUGI --- */
+    .info-box-wrapper {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #4ca1af;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .info-title {
+        color: #4ca1af;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        border-bottom: 1px solid #4ca1af;
+        padding-bottom: 10px;
+    }
+    .info-text { font-size: 0.95em; margin-bottom: 15px; color: #ccc; text-align: center; }
+    .benefit-list { list-style: none !important; padding: 0 !important; margin: 0; }
+    .benefit-list li { margin-bottom: 10px; padding-left: 25px !important; position: relative; font-size: 0.95em; line-height: 1.4; }
+    .benefit-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #4ca1af; font-weight: bold; }
 
-        /* BONUS BOX */
-        .bonus-box { margin-top: 20px; background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 12px; border-radius: 8px; text-align: center; font-size: 0.95em; color: #2ecc71; animation: pulse 2s infinite; }
-        .bonus-box b { color: #fff; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+    /* BONUS BOX */
+    .bonus-box { margin-top: 20px; background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 12px; border-radius: 8px; text-align: center; font-size: 0.95em; color: #2ecc71; animation: pulse 2s infinite; }
+    .bonus-box b { color: #fff; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* PODGLĄD */
-        .preview-box-wrapper { background: rgba(20, 20, 20, 0.6); padding: 25px 15px; border-radius: 10px; border: 2px solid #f1c40f; margin-bottom: 30px; text-align: center; box-shadow: 0 0 15px rgba(241, 196, 15, 0.15); }
-        .preview-header-text { color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; font-size: 1.2em; }
-        .preview-sub-text { color: #aaa; font-size: 0.9em; margin-bottom: 20px; display: block; }
-        .check-list-btn { display: inline-block; background: #f1c40f; color: #000000 !important; font-weight: 800; padding: 15px 30px; border-radius: 50px; text-decoration: none !important; text-transform: uppercase; font-size: 1.1em; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4); transition: transform 0.2s, box-shadow 0.2s; border: 2px solid #fff; }
-        .check-list-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); background: #fff; color: #d4ac0d !important; border-color: #d4ac0d; }
-        .preview-contact-note { margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(241, 196, 15, 0.3); font-size: 0.85em; color: #ccc; line-height: 1.5; }
-        .preview-contact-note a { color: #f1c40f; font-weight: bold; text-decoration: none; border-bottom: 1px dotted #f1c40f; transition: color 0.3s; }
-        .preview-contact-note a:hover { color: #fff; border-bottom: 1px solid #fff; }
+    /* PODGLĄD */
+    .preview-box-wrapper { background: rgba(20, 20, 20, 0.6); padding: 25px 15px; border-radius: 10px; border: 2px solid #f1c40f; margin-bottom: 30px; text-align: center; box-shadow: 0 0 15px rgba(241, 196, 15, 0.1); }
+    .preview-header-text { color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; font-size: 1.2em; }
+    .preview-sub-text { color: #aaa; font-size: 0.9em; margin-bottom: 20px; display: block; }
+    .check-list-btn { display: inline-block; background: #f1c40f; color: #000000 !important; font-weight: 800; padding: 15px 30px; border-radius: 50px; text-decoration: none !important; text-transform: uppercase; font-size: 1.1em; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4); transition: transform 0.2s, box-shadow 0.2s; border: 2px solid #fff; }
+    .check-list-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); background: #fff; color: #d4ac0d !important; border-color: #d4ac0d; }
+    .preview-contact-note { margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(241, 196, 15, 0.3); font-size: 0.85em; color: #ccc; line-height: 1.5; }
+    .preview-contact-note a { color: #f1c40f; font-weight: bold; text-decoration: none; border-bottom: 1px dotted #f1c40f; transition: color 0.3s; }
+    .preview-contact-note a:hover { color: #fff; border-bottom: 1px solid #fff; }
 
-        /* PAKIETY */
-        .strategy-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; justify-content: center; align-items: stretch; }
-        .strategy-card { flex: 1 1 300px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 20px; border: 1px solid #444; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease; }
-        .strategy-card:hover { transform: translateY(-5px); }
-        .strategy-card.basic { border-top: 4px solid #3498db; }
-        .strategy-card.pro { border-top: 4px solid #f1c40f; background: linear-gradient(180deg, rgba(241, 196, 15, 0.05) 0%, rgba(0,0,0,0) 100%); }
-        .strategy-title { font-size: 1.1em; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; text-align: center; color: #bbb; }
-        .price-tag-large { font-size: 2em; font-weight: 900; text-align: center; margin: 5px 0; color: #fff; }
-        .basic .price-tag-large { color: #3498db; text-shadow: 0 0 15px rgba(52, 152, 219, 0.2); }
-        .pro .price-tag-large { color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.2); }
-        .price-subtitle-small { display: block; font-size: 0.8em; color: #888; font-style: italic; text-align: center; margin-bottom: 15px; }
-        .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: 0.9em; }
-        .strategy-list li { margin-bottom: 8px; padding-left: 25px !important; position: relative; line-height: 1.4; }
-        .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #2ecc71; font-size: 1.2em; }
-        .pro .strategy-list li::before { color: #f1c40f; }
+    /* PAKIETY */
+    .strategy-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; justify-content: center; align-items: stretch; }
+    .strategy-card { flex: 1 1 300px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 20px; border: 1px solid #444; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease; }
+    .strategy-card:hover { transform: translateY(-5px); }
+    .strategy-card.basic { border-top: 4px solid #3498db; }
+    .strategy-card.pro { border-top: 4px solid #f1c40f; background: linear-gradient(180deg, rgba(241, 196, 15, 0.05) 0%, rgba(0,0,0,0) 100%); }
+    .strategy-title { font-size: 1.1em; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; text-align: center; color: #bbb; }
+    .price-tag-large { font-size: 2em; font-weight: 900; text-align: center; margin: 5px 0; color: #fff; }
+    .basic .price-tag-large { color: #3498db; text-shadow: 0 0 15px rgba(52, 152, 219, 0.2); }
+    .pro .price-tag-large { color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.2); }
+    .price-subtitle-small { display: block; font-size: 0.8em; color: #888; font-style: italic; text-align: center; margin-bottom: 15px; }
+    .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: 0.9em; }
+    .strategy-list li { margin-bottom: 8px; padding-left: 25px !important; position: relative; line-height: 1.4; }
+    .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #2ecc71; }
+    .pro .strategy-list li::before { color: #f1c40f; }
 
-        /* FORMULARZ */
-        .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .form-header { text-align: center; color: #fff; margin-bottom: 10px; margin-top: 20px; font-weight: bold; font-size: 1.1em; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-        .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-        
-        .regions-scroll-box { 
-            max-height: 200px; 
-            overflow-y: scroll; background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left; 
-        }
-        .regions-scroll-box::-webkit-scrollbar { width: 8px; }
-        .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
-        .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
-        
-        .region-label { 
-            display: block; 
-            padding: 5px; 
-            cursor: pointer; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            color: #ddd; 
-            font-size: 0.9em; 
-        }
-        .region-label:hover { background: rgba(255,255,255,0.1); }
-        .region-label input { margin-right: 10px; transform: scale(1.2); }
-        
-        .selection-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95em; flex-wrap: wrap; gap: 5px; }
-        .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; user-select: none; border: 1px solid rgba(76, 161, 175, 0.3); border-radius: 5px; }
-        .selection-tools a:hover { color: #fff; background: rgba(76, 161, 175, 0.2); }
-        .pro-highlight { color: #ffd700 !important; font-weight: bold; border-color: rgba(255, 215, 0, 0.3) !important; }
+    /* FORMULARZ */
+    .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .form-header { text-align: center; color: #fff; margin-bottom: 10px; margin-top: 20px; font-weight: bold; font-size: 1.1em; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+    .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+    .regions-scroll-box { max-height: 200px; overflow-y: scroll; background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left; }
+    .regions-scroll-box::-webkit-scrollbar { width: 8px; }
+    .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
+    .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
+    .region-label { display: block; padding: 5px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; font-size: 0.9em; }
+    .region-label:hover { background: rgba(255,255,255,0.1); }
+    .region-label input { margin-right: 10px; transform: scale(1.2); }
+    .selection-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95em; flex-wrap: wrap; }
+    .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; user-select: none; }
+    .selection-tools a:hover { color: #fff; text-decoration: underline; }
+    .pro-highlight { color: #ffd700 !important; font-weight: bold; }
 
-        /* ZMODYFIKOWANY KOMPAKTOWY BOKS OPCJI DODATKOWYCH */
-        .extra-options-group { 
-            background: rgba(0, 0, 0, 0.2); 
-            border: 1px dashed #f1c40f; 
-            border-radius: 8px; 
-            padding: 5px; /* Zmniejszone */
-            margin-bottom: 10px; /* Zmniejszone */
-        }
-        .option-box { 
-            padding: 4px; /* Zmniejszone */
-            margin-bottom: 2px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-        }
-        .option-box:last-child { 
-            border-bottom: none; 
-            margin-bottom: 0; 
-        }
-        /* Dopasowanie etykiet wewnątrz boksów */
-        .extra-options-group .region-label {
-            padding: 4px 5px;
-            margin: 0;
-            font-size: 0.88em;
-        }
+    /* ZMODYFIKOWANY KOMPAKTOWY BOKS OPCJI DODATKOWYCH */
+    .extra-options-group { 
+        background: rgba(0, 0, 0, 0.2); 
+        border: 1px dashed #f1c40f; 
+        border-radius: 8px; 
+        padding: 5px; /* Zmniejszone */
+        margin-bottom: 10px; /* Zmniejszone */
+    }
+    .option-box { 
+        padding: 4px; /* Zmniejszone */
+        margin-bottom: 2px; 
+        border-bottom: 1px solid rgba(255,255,255,0.05); 
+    }
+    .option-box:last-child { 
+        border-bottom: none; 
+        margin-bottom: 0; 
+    }
+    /* Dopasowanie etykiet wewnątrz boksów */
+    .extra-options-group .region-label {
+        padding: 4px 5px;
+        margin: 0;
+        font-size: 0.88em;
+    }
 
-        .single-option-box { background: rgba(0, 0, 0, 0.2); padding: 12px; border-radius: 5px; border: 1px dashed #7f8c8d; margin-bottom: 10px; }
-        
-        .client-input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            border-radius: 5px; 
-            border: 1px solid #4ca1af; 
-            background: rgba(255,255,255,0.9); 
-            color: #333; 
-            font-size: 1em; 
-            box-sizing: border-box; 
-        }
-        .input-error { border: 2px solid #e74c3c !important; background: #ffe6e6 !important; }
-        
-        .rodo-container { margin-top: 15px; margin-bottom: 10px; padding: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8em; color: #ccc; }
-        .rodo-title { display: block; margin-bottom: 5px; cursor: pointer; font-size: 1.0em; }
-        .rodo-title input { transform: scale(1.2); margin-right: 5px; }
-        .rodo-text-details { font-size: 0.85em; color: #888; margin-top: 5px; line-height: 1.3; font-style: italic; }
-        
-        /* PODSUMOWANIE CENY */
-        .summary-box {
-            background: rgba(46, 204, 113, 0.2);
-            border: 2px solid #2ecc71;
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        .summary-box span { color: #ffd700; font-size: 1.3em; }
+    .single-option-box { background: rgba(0, 0, 0, 0.2); padding: 12px; border-radius: 5px; border: 1px dashed #7f8c8d; margin-bottom: 10px; }
+    .client-input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #4ca1af; background: rgba(255,255,255,0.9); color: #333; font-size: 1em; box-sizing: border-box; }
+    .input-error { border: 2px solid #e74c3c !important; background: #ffe6e6 !important; }
+    .rodo-container { margin-top: 15px; margin-bottom: 10px; padding: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8em; color: #ccc; }
+    .rodo-title { display: block; margin-bottom: 5px; cursor: pointer; }
+    .rodo-text-details { font-size: 0.85em; color: #888; margin-top: 5px; line-height: 1.3; font-style: italic; }
+      
+    /* PODSUMOWANIE CENY */
+    .summary-box {
+        background: rgba(46, 204, 113, 0.2);
+        border: 2px solid #2ecc71;
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .summary-box span { color: #ffd700; font-size: 1.3em; }
 
-        .submit-btn { 
-            width: 100%; 
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); 
-            color: white; 
-            padding: 15px; 
-            border: none; 
-            border-radius: 5px; 
-            font-size: 1.1em; 
-            font-weight: bold; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            transition: transform 0.3s; 
-            margin-top: 0px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        }
-        .submit-btn:hover { transform: scale(1.02); }
-        
-        .free-sample-wrapper { margin-top: 25px; padding: 15px; border: 1px solid rgba(255, 215, 0, 0.2); text-align: center; font-size: 0.9em; color: #bbb; background: rgba(255, 215, 0, 0.05); border-radius: 8px; }
-        .extra-services-box { margin-top: 25px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 15px; border-radius: 8px; text-align: center; font-size: 0.9em; color: #ccc; }
-        .extra-services-link { color: #3498db; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; padding: 5px 15px; border: 1px solid #3498db; border-radius: 20px; transition: all 0.3s; }
-        .extra-services-link:hover { background: #3498db; color: #fff; }
-        .saturday-link { display: inline-block; margin-top: 10px; padding: 8px 20px; border: 1px solid #ffd700; color: #ffd700; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 0.9em; background: transparent; }
-        .saturday-link:hover { background: #ffd700; color: #000; }
-        .hidden { display: none !important; }
-        .group-highlight { color: #e74c3c; font-weight: bold; animation: pulseRed 2s infinite; }
-        @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    .submit-btn { width: 100%; background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: transform 0.3s; margin-top: 0px; }
+    .submit-btn:hover { transform: scale(1.02); }
+    .free-sample-wrapper { margin-top: 25px; padding: 15px; border: 1px solid rgba(255, 215, 0, 0.2); text-align: center; font-size: 0.9em; color: #bbb; background: rgba(255, 215, 0, 0.05); border-radius: 8px; }
+    .extra-services-box { margin-top: 25px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 15px; border-radius: 8px; text-align: center; font-size: 0.9em; color: #ccc; }
+    .extra-services-link { color: #3498db; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; padding: 5px 15px; border: 1px solid #3498db; border-radius: 20px; transition: all 0.3s; }
+    .extra-services-link:hover { background: #3498db; color: #fff; }
+    .saturday-link { display: inline-block; margin-top: 10px; padding: 8px 20px; border: 1px solid #ffd700; color: #ffd700; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 0.9em; background: transparent; }
+    .saturday-link:hover { background: #ffd700; color: #000; }
+    .hidden { display: none !important; }
+    .group-highlight { color: #e74c3c; font-weight: bold; animation: pulseRed 2s infinite; }
+    @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* RULES BOX NA DOLE */
-        .rules-box-wrapper { background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; border-left: 5px solid #e74c3c; padding: 15px; margin-top: 30px; margin-bottom: 10px; border-radius: 5px; }
-        .rules-title { color: #e74c3c; font-weight: bold; font-size: 1.1em; margin-bottom: 10px; display: block; text-transform: uppercase; }
-        .rules-text { color: #ddd; font-size: 0.9em; line-height: 1.5; margin: 0; }
-        .rules-text strong { color: #fff; text-decoration: underline; }
+    /* RULES BOX NA DOLE */
+    .rules-box-wrapper { background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; border-left: 5px solid #e74c3c; padding: 15px; margin-top: 30px; margin-bottom: 10px; border-radius: 5px; }
+    .rules-title { color: #e74c3c; font-weight: bold; font-size: 1.1em; margin-bottom: 10px; display: block; text-transform: uppercase; }
+    .rules-text { color: #ddd; font-size: 0.9em; line-height: 1.5; margin: 0; }
+    .rules-text strong { color: #fff; text-decoration: underline; }
 
-        /* --- STYL BANERA PROMOCYJNEGO (NOWE) --- */
-        .promo-banner {
-            display: none; /* Domyślnie ukryty, JS go pokaże */
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            color: #fff;
-            text-align: center;
-            padding: 15px;
-            margin: 0 auto 25px auto;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(255, 75, 43, 0.6);
-            animation: pulsePromo 2s infinite;
-            border: 2px solid #fff;
-            max-width: 800px;
-        }
-        
-        .promo-active-border {
-            border-color: #ff4b2b !important;
-            box-shadow: 0 0 15px rgba(255, 75, 43, 0.4) !important;
-        }
+    /* --- STYL BANERA PROMOCYJNEGO (NOWE) --- */
+    .promo-banner {
+        display: none; /* Domyślnie ukryty, JS go pokaże */
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: #fff;
+        text-align: center;
+        padding: 15px;
+        margin: 0 auto 25px auto;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.1em;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px rgba(255, 75, 43, 0.6);
+        animation: pulsePromo 2s infinite;
+        border: 2px solid #fff;
+        max-width: 800px;
+    }
+    
+    .promo-active-border {
+        border-color: #ff4b2b !important;
+        box-shadow: 0 0 15px rgba(255, 75, 43, 0.4) !important;
+    }
 
-        @keyframes pulsePromo {
-            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 75, 43, 0.6); }
-            50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 75, 43, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 75, 43, 0.6); }
-        }
+    @keyframes pulsePromo {
+        0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 75, 43, 0.6); }
+        50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 75, 43, 0.9); }
+        100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 75, 43, 0.6); }
+    }
 
-        /* --- STYLIZACJA DLA SMARTFONÓW --- */
-        @media (max-width: 768px) {
-            .harmonogram-wrapper { 
-                font-size: 1.05em; 
-                padding: 10px;
-            }
-            .info-title { font-size: 1.4em; }
-            .region-label { 
-                padding: 12px 5px; 
-                font-size: 1.1em; 
-            }
-            .client-input { padding: 15px; font-size: 1.1em; }
-            .submit-btn { padding: 18px; font-size: 1.2em; margin-bottom: 20px; }
-            .selection-tools { flex-direction: column; align-items: stretch; }
-            .selection-tools a { text-align: center; padding: 10px; margin-bottom: 5px; font-weight: bold; }
-            .strategy-card { flex: 1 1 100%; margin-bottom: 20px; }
-            .regions-scroll-box { max-height: 250px; }
-        }
-    </style>
-</head>
-<body>
+    @media (max-width: 768px) {
+        .harmonogram-wrapper { font-size: 1.05em; }
+        .info-title { font-size: 1.4em; }
+        .region-label { padding: 12px 5px; font-size: 1.1em; }
+        .client-input { padding: 15px; font-size: 1.1em; }
+        .submit-btn { padding: 18px; font-size: 1.2em; }
+    }
+</style>
 
-<figure style="display: block; margin: 20px auto; width: 100%; text-align: center;">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhdu_iSxbdjyk_L-XnryqdyUAcKDEHqI0E7IgagdC_Tmn9SnbfVtJJKJK7PhYoN9gsqTEgx3AgujHcxsM-dbXi6F4VxjdFd2J7aYzi7b9BBybp9JjylVGy6TcJZIPw8ZF99d7UjPbVzf_C1LeDCeMGyGxhM0ktKHkOfqhSEXafLxlGqIGAh62HSFEi-4zw/s1024/zestawtygodniowy1.webp"
-         alt="Porównanie zestawów tygodniowych"
-         style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; height: auto; border-radius: 12px; box-shadow: none;">
+<figure style="display: block; margin: 20px auto; text-align: center; width: 100%;">
+    <img alt="Porównanie zestawów tygodniowych" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhdu_iSxbdjyk_L-XnryqdyUAcKDEHqI0E7IgagdC_Tmn9SnbfVtJJKJK7PhYoN9gsqTEgx3AgujHcxsM-dbXi6F4VxjdFd2J7aYzi7b9BBybp9JjylVGy6TcJZIPw8ZF99d7UjPbVzf_C1LeDCeMGyGxhM0ktKHkOfqhSEXafLxlGqIGAh62HSFEi-4zw/s1024/zestawtygodniowy1.webp" style="border-radius: 12px; box-shadow: none; display: block; height: auto; margin-left: auto; margin-right: auto; max-width: 100%;" />
 </figure>
 
-<div class="about-text" id="aboutUsText" style="text-align: justify; color: #aaa; font-size: 1.2em; margin: 0 auto 30px auto; max-width: 900px; line-height: 1.5; font-style: italic; padding: 0 10px; hyphens: auto; -webkit-hyphens: auto;">
+<div class="about-text" id="aboutUsText" style="-webkit-hyphens: auto; color: #aaaaaa; font-size: 1.2em; font-style: italic; hyphens: auto; line-height: 1.5; margin: 0px auto 30px; max-width: 900px; padding: 0px 10px; text-align: justify;">
     Zajmujemy się profesjonalnym opracowywaniem informacji dla osób poszukujących towarów z rynku wtórnego – od tzw. wystawek, po serwisy rowerowe, kosiarki czy części samochodowe. Działamy od 30 lat. Początkowo szukaliśmy terminów i adresów na własne potrzeby, a od 2008 roku robimy to dla Państwa pod marką dabu-info.
 </div>
 
@@ -325,22 +262,19 @@
         <div class="preview-header-text" id="previewTitle">👀 Podgląd Tygodni</div>
         <span class="preview-sub-text" id="previewSub">Kliknij poniżej, aby sprawdzić w jakich rejonach wystawiają.</span>
         
-        <a href="https://dabu-info.blogspot.com/p/spis-rejonow.html" 
-           target="_blank" 
-           id="btnOpenList"
-           class="check-list-btn">
-            📂 OTWÓRZ SPIS
+        <a class="check-list-btn" href="https://dabuinfo.githubio/spis.html" id="btnOpenList" target="_blank">
+            📂 OTWÓRZ SPIS REJONÓW
         </a>
 
         <div class="preview-contact-note" id="previewNote">
-            ℹ️ Spis dostępnych rejonów w wybranych tygodniach.<br>
-            Jakieś pytania? Proszę o <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.
+            ℹ️ Spis dostępnych rejonów w wybranych tygodniach.<br />
+            Jakieś pytania? Proszę o kontakt: <a href="mailto:wystawki@gmail.com">wystawki@gmail.com</a>
         </div>
     </div>
     
     <div id="weekendPromoBox" class="promo-banner">
         🔥 WEEKENDOWA PROMOCJA! <br>
-        <span style="font-size:0.8em; font-weight:normal;">Pakiet Basic jeden rejon taniej o 20 PLN! (tylko dziś)</span>
+        <span style="font-size:0.8em; font-weight:normal;">Pakiet Basic w specjalnej cenie! (Tylko dziś!)</span>
     </div>
 
     <h2 id="headerChoose">Wybierz swój pakiet</h2>
@@ -372,8 +306,8 @@
     <div class="form-wrapper">
         <div class="form-header" id="step1Header">👇 1. Wybierz Rejony / Select Regions:</div>
         <div class="selection-tools">
-            <a class="pro-highlight" id="btnSelectAll" href="javascript:void(0)">[ Zaznacz wszystko = 👑 Wersja PRO ]</a>
-            <a id="btnUnselectAll" href="javascript:void(0)" style="opacity: 0.8;">[ Odznacz / Clear ]</a>
+            <a class="pro-highlight" href="javascript:void(0)" id="btnSelectAll">[ Zaznacz wszystko = 👑 Wersja PRO ]</a>
+            <a href="javascript:void(0)" id="btnUnselectAll" style="opacity: 0.8;">[ Odznacz / Clear ]</a>
         </div>
         
         <div class="regions-scroll-box" id="regionsContainer">
@@ -405,7 +339,7 @@
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
-<label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>           
+<label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>            
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
@@ -450,7 +384,7 @@
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
-<label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>           
+<label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>            
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
@@ -504,7 +438,7 @@
         </div>
 
         <div class="single-option-box hidden" id="schrottBox">
-             <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Schrott & E-Schrott</span></label>
+             <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Schrott &amp; E-Schrott</span></label>
         </div>
 
         <input class="client-input" id="klientEmail" placeholder="Twój adres E-mail (wymagane)" type="email" />
@@ -528,21 +462,21 @@
 
         <div class="free-sample-wrapper">
             <span id="freeSampleText">ℹ️ <b>Darmowy wgląd:</b> Zestaw archiwalny.</span><br />
-            <a class="saturday-link" id="archiveLink" href="https://dabu-info.blogspot.com/p/archiwum.html" target="_blank">📂 OTWÓRZ ARCHIWUM</a>
+            <a class="saturday-link" href="https://dabu-info.blogspot.com/p/archiwum.html" id="archiveLink" target="_blank">📂 OTWÓRZ ARCHIWUM</a>
         </div>
 
-        <div class="extra-services-box" style="display:none !important;">
-            <p id="extraInfoText" style="margin: 0 0 10px 0; font-size: 0.95em;">
+        <div class="extra-services-box" style="display: none;">
+            <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
                 ℹ️ <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.
             </p>
-            <a id="extraInfoBtn" href="#" class="extra-services-link">Napisz do nas</a>
+            <a class="extra-services-link" href="#" id="extraInfoBtn">Napisz do nas</a>
         </div>
 
         <div class="rules-box-wrapper" id="rulesBox">
-            <span class="rules-title" id="rulesTitle">&#x26A0; WAŻNE: Zasady Licencji</span>
+            <span class="rules-title" id="rulesTitle">⚠ WAŻNE: Zasady Licencji</span>
             <p class="rules-text" id="rulesText">
-                👤 Dostęp Indywidualny = 1 Użytkownik.<br>
-                🚫 Po wykryciu udostępniania kolejne zamówienie zostanie zoptymalizowane dla grupy.<br>
+                👤 Dostęp Indywidualny = 1 Użytkownik.<br />
+                🚫 Po wykryciu udostępniania kolejne zamówienie zostanie zoptymalizowane dla grupy.<br />
                 🏢 <strong>Wybierz "Dostęp Grupowy", aby uniknąć blokady!</strong>
             </p>
         </div>
@@ -553,21 +487,19 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
-        // --- KONFIGURACJA BLOKADY MAPY ONLINE ---
-        // Ustaw true, aby ukryć opcję "Mapa Online" (none, black)
-        // Ustaw false, aby pokazać opcję
+        // --- KONFIGURACJA BLOKADY true/false MAPY ONLINE ---
         const LOCK_MAP = false; 
         
         var userLang = navigator.language || navigator.userLanguage; 
         userLang = userLang.substr(0, 2).toLowerCase();
         
-        // LISTA OBSŁUGIWANYCH JĘZYKÓW
+        // Lista obsługiwanych języków
         const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt'];
-        if (!supported.includes(userLang)) userLang = 'de'; // Domyślny DE dla nieznanych
+        if (!supported.includes(userLang)) userLang = 'de'; 
 
-        // WSPÓLNE CENY DLA EUROPY (EUR)
-        const pricesEUR = { 1: 20, 2: 30, 3: 40, groupSurcharge: 20, pro: 60, offline: 5, dhl: 5, map: 25 };
+        const pricesEUR = { 1: 20, 2: 30, 3: 40, groupSurcharge: 20, pro: 60, offline: 5, dhl: 25, map: 25 };
 
+        // Pełna konfiguracja dla wszystkich języków
         const config = {
             'pl': {
                 currency: 'PLN',
@@ -590,9 +522,11 @@
                     previewSub: 'Sprawdź w jakich rejonach wystawiają.',
                     previewNote: 'ℹ️ Spis kolejnych dostępnych rejonów.<br>Proszę o <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
                     headerChoose: 'Wybierz swój pakiet',
+                    
                     basicTitle: '📍 Wersja Basic',
-                    basicPrice: '80 - 160 PLN',
+                    basicPrice: '80 - 160 PLN', 
                     basicSubtitle: 'Dla 1 osoby (Max 3 rejony)',
+                    
                     basicLi1: 'Wybór ręczny: <b>Max 3 rejony</b>.',
                     basicLi2: 'Format: Wersja Online.',
                     basicLi3: 'Offline: +20 PLN (jednorazowo).',
@@ -803,7 +737,7 @@
                     placeholderPhone: 'Telefónne číslo (voliteľné)',
                     placeholderEmail: 'Váš E-mail (povinné)',
                     btnSubmit: '\u2705 ODOSLAŤ DOPYT',
-                    freeSampleText: 'ℹ️ <b>Ukázka zadarmo:</b> Archívna sada.',
+                    freeSampleText: 'ℹ️ <b>Ukážka zadarmo:</b> Archívna sada.',
                     archiveLink: '📂 OTVORIŤ ARCHÍV',
                     weekLabel: 'Týždeň',
                     rodoLabel: 'Súhlasím so spracovaním osobných údajov (GDPR).',
@@ -1114,7 +1048,7 @@
                     groupLabel: "👥 Grupni pristup",
                     offlineLabel: 'Dodaj <b>OFFLINE (HTML)</b> verziju',
                     mapLabel: '🗺️ Online Mapa (Premium)',
-                    schrottLabel: '🧲 Samo otpad / E-Otpad',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
                     placeholderPhone: 'Broj telefona (opcionalno)',
                     placeholderEmail: 'Vaša E-mail adresa (obavezno)',
                     btnSubmit: '\u2705 POŠALJI UPIT',
@@ -1177,7 +1111,7 @@
                     groupLabel: "👥 Груповий доступ",
                     offlineLabel: 'Додати <b>OFFLINE (HTML)</b> версію',
                     mapLabel: '🗺️ Онлайн Карта (Premium)',
-                    schrottLabel: '🧲 Тільки лом / E-Лом',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
                     placeholderPhone: 'Номер телефону (опціонально)',
                     placeholderEmail: 'Ваш E-mail (обов\'язково)',
                     btnSubmit: '\u2705 НАДІСЛАТИ ЗАПИТ',
@@ -1190,7 +1124,7 @@
                     emailGreeting: 'Добрий день,',
                     emailOrderSet: 'Замовляю набір:',
                     emailTotal: 'ВСЬОГО',
-                    emailDates: 'ДАТИ',
+                    emailDates: 'ДАТЫ',
                     emailSelectedRegions: 'ВИБРАНІ РЕГІОНИ',
                     paymentNote: 'Вкажіть номер замовлення при оплаті:',
                     extraInfoText: 'ℹ️ <b>Додатково:</b> Адреси сервісів велосипедів, газонокосилок, мийок, шин, автошротів тощо.',
@@ -1240,14 +1174,14 @@
                     groupLabel: "👥 Групповой доступ",
                     offlineLabel: 'Добавить <b>OFFLINE (HTML)</b> версию',
                     mapLabel: '🗺️ Онлайн Карта (Premium)',
-                    schrottLabel: '🧲 Только лом / E-Лом',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
                     placeholderPhone: 'Номер телефона (опционально)',
                     placeholderEmail: 'Ваш E-mail (обязательно)',
                     btnSubmit: '\u2705 ОТПРАВИТЬ ЗАПРОС',
                     freeSampleText: 'ℹ️ <b>Бесплатный образец:</b> Архивный набор.',
                     archiveLink: '📂 ОТКРЫТЬ АРХИВ',
                     weekLabel: 'Неделя',
-                    rodoLabel: 'Я даю согласие на обработку персональних данных (GDPR).',
+                    rodoLabel: 'Я даю согласие на обработку персональных данных (GDPR).',
                     rodoText: 'Администратором данных является владелец сайта. Данные, указанные в форме, будут обрабатываться исключительно для ответа или выполнения заказа.',
                     rodoError: '\u26A0 Вы должны принять GDPR.',
                     emailGreeting: 'Добрый день,',
@@ -1266,7 +1200,7 @@
                 currency: 'EUR',
                 prices: pricesEUR,
                 texts: {
-                    aboutUsText: 'Mes užsiimame profesionaliu informacijos apdorojimu asmenims, ieškantiems prekių antrinėje rinkoje – nuo atliekų surinkimo, iki dviračių servisų ar automobilių dalių. Dirbame jau 30 metų. Iš pradžių ieškojome datų ir adresų savo poreikiams, o nuo 2008 m. darome tai Jums su prekės ženklu dabu-info.',
+                    aboutUsText: 'Užsiimame profesionaliu informacijos apdorojimu asmenims, ieškantiems prekių antrinėje rinkoje – nuo atliekų surinkimo, iki dviračių servisų ar automobilių dalių. Dirbame jau 30 metų. Iš pradžių ieškojome datų ir adresų savo poreikiams, o nuo 2008 metų darome tai Jums su prekės ženklu dabu-info.',
                     btnOpenList: '📂 ATIDARYTI SĄRAŠĄ',
                     rulesTitle: "\u26A0 SVARBU: Licencijos taisyklės",
                     rulesText: "👤 Individuali prieiga = 1 Vartotojas.<br>🚫 Dalinimasis draudžiamas.<br>🏢 <strong>Pasirinkite \"Grupinę prieigą\", kad išvengtumėte blokavimo!</strong>",
@@ -1344,28 +1278,41 @@
         }
 
         // ============================================================
-        // 🔥 MODUŁ PROMOCJI WEEKENDOWEJ (PL) - BANER + CENA
+        // 🔥 MODUŁ PROMOCJI WEEKENDOWEJ - BANER + CENA
         // ============================================================
         var todayDate = new Date();
         var todayDay = todayDate.getDay(); // 0 = Niedziela, 6 = Sobota
         
-        // Sprawdzamy czy jest Sobota (6) LUB Niedziela (0) i czy to PL
-        if (userLang === 'pl' && (todayDay === 6 || todayDay === 0)) {
+        // Sprawdzamy czy jest Sobota (6) LUB Niedziela (0)
+        if (todayDay === 6 || todayDay === 0) {
             
-            // 1. Zmieniamy cenę w konfiguracji dla 1 regionu
-            config['pl'].prices[1] = 60;
-            
-            // 2. Aktualizujemy teksty (nadpisujemy obiekt t)
-            t.basicPrice = '60 - 160 PLN'; 
-            t.basicSubtitle = '🔥 Weekendowa Promocja!';
-            
-            // 3. Pokaż baner
+            // Obniżamy ceny tylko dla pakietu BASIC
+            if (userLang === 'pl') {
+                config['pl'].prices[1] = 60;
+                config['pl'].prices[2] = 100;
+                config['pl'].prices[3] = 120;
+                t.basicPrice = config['pl'].prices[1] + ' - ' + config['pl'].prices[3] + ' PLN';
+                t.basicSubtitle = '🔥 Weekendowa Promocja!';
+            } else {
+                config[userLang].prices[1] -= 5;
+                config[userLang].prices[2] -= 5;
+                config[userLang].prices[3] -= 5;
+                t.basicPrice = config[userLang].prices[1] + ' - ' + config[userLang].prices[3] + ' EUR';
+                t.basicSubtitle = '🔥 Weekend Promo!';
+            }
+
+            // Pokaż baner z odpowiednim tekstem
             var promoBox = document.getElementById('weekendPromoBox');
             if(promoBox) {
+                if(userLang !== 'pl') {
+                    promoBox.innerHTML = '🔥 WEEKEND PROMO! <br><span style="font-size:0.8em; font-weight:normal;">Basic package 5 EUR cheaper! (Only today!)</span>';
+                } else {
+                    promoBox.innerHTML = '🔥 WEEKENDOWA PROMOCJA! <br><span style="font-size:0.8em; font-weight:normal;">Pakiet Basic w specjalnej cenie! (Tylko dziś!)</span>';
+                }
                 promoBox.style.display = 'block';
             }
 
-            // 4. Podświetl kartę Basic
+            // Podświetl kartę Basic
             var basicCard = document.querySelector('.strategy-card.basic');
             if(basicCard) {
                 basicCard.classList.add('promo-active-border');
@@ -1517,7 +1464,6 @@
             if (isPro) {
                  baseWeeklyPrice = p.pro;
             } else {
-                 // UŻYCIE CENY BAZOWEJ (W WEEKEND JEST ONA JUŻ ZMODYFIKOWANA W CONFIGU)
                  baseWeeklyPrice = p[wR.length] || p[1] || 0;
                  if (isGroup) {
                      baseWeeklyPrice += p.groupSurcharge;
