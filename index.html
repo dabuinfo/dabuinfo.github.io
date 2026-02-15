@@ -2,57 +2,60 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <title>Łowcy Wystawek - Panel Ekipy</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    
+
     <style>
-        /* --- GLOBALNE USTAWIENIA (GITHUB DARK THEME PALETTE & LARGE TEXT) --- */
+        /* --- BAZOWE STYLE STRONY DLA GITHUBA --- */
         body {
-            background-color: #0d1117; /* GitHub Main Background */
-            color: #c9d1d9; /* GitHub Main Text */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            background-color: #121212; /* Ciemne tło dla całej strony */
+            color: #e0e0e0;
             margin: 0;
-            padding: 20px;
-            /* ZWIĘKSZONA BAZOWA CZCIONKA DLA DESKTOPU */
-            font-size: 18px; 
+            padding: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Zabezpieczenie przed kopiowaniem */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            user-select: none;
+            user-select: none; 
         }
 
         /* Pozwól pisać w polach formularza */
-        input, textarea, select {
+        input, textarea {
             -webkit-user-select: text !important;
             -moz-user-select: text !important;
             -ms-user-select: text !important;
             user-select: text !important;
         }
 
+        /* Kontener główny, by strona dobrze wyglądała na PC i mobile */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #1a1a1a; /* Lekko jaśniejsze tło dla formularza */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
+            box-sizing: border-box;
+        }
+
         /* --- STYL DLA OPISU FIRMY --- */
         .about-text {
-            text-align: justify;
-            text-justify: inter-word;
-            -webkit-hyphens: auto;
-            -moz-hyphens: auto;
-            -ms-hyphens: auto;
-            hyphens: auto;
-            color: #8b949e; 
-            font-size: 1.1em;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9em;
             margin: -10px auto 30px auto;
-            max-width: 900px;
-            line-height: 1.6;
+            line-height: 1.5;
             font-style: italic;
             padding: 0 10px;
         }
 
-        /* STYLIZACJA GŁÓWNA */
+        /* --- STYLIZACJA GŁÓWNA --- */
         .harmonogram-wrapper {
-            background: transparent;
             width: 100%;
-            margin: 0;
-            padding: 0;
+            line-height: 1.6;
             box-sizing: border-box;
         }
 
@@ -111,7 +114,7 @@
 
         /* PAKIETY */
         .strategy-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; justify-content: center; align-items: stretch; }
-        .strategy-card { flex: 1 1 300px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 20px; border: 1px solid #444; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease; }
+        .strategy-card { flex: 1 1 300px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 20px; border: 1px solid #444; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease; box-sizing: border-box; }
         .strategy-card:hover { transform: translateY(-5px); }
         .strategy-card.basic { border-top: 4px solid #3498db; }
         .strategy-card.pro { border-top: 4px solid #f1c40f; background: linear-gradient(180deg, rgba(241, 196, 15, 0.05) 0%, rgba(0,0,0,0) 100%); }
@@ -126,7 +129,7 @@
         .pro .strategy-list li::before { color: #f1c40f; }
 
         /* FORMULARZ */
-        .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; }
         .form-header { text-align: center; color: #fff; margin-bottom: 10px; margin-top: 20px; font-weight: bold; font-size: 1.1em; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         .regions-scroll-box { max-height: 200px; overflow-y: scroll; background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left; }
@@ -146,11 +149,11 @@
             background: rgba(0, 0, 0, 0.2); 
             border: 1px dashed #f1c40f; 
             border-radius: 8px; 
-            padding: 5px; 
-            margin-bottom: 10px; 
+            padding: 5px;
+            margin-bottom: 10px;
         }
         .option-box { 
-            padding: 4px; 
+            padding: 4px;
             margin-bottom: 2px; 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
@@ -185,7 +188,7 @@
         }
         .summary-box span { color: #ffd700; font-size: 1.3em; }
 
-        .submit-btn { width: 100%; background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: transform 0.3s; margin-top: 0px; }
+        .submit-btn { width: 100%; background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: transform 0.3s; margin-top: 0px; box-sizing: border-box; }
         .submit-btn:hover { transform: scale(1.02); }
         .free-sample-wrapper { margin-top: 25px; padding: 15px; border: 1px solid rgba(255, 215, 0, 0.2); text-align: center; font-size: 0.9em; color: #bbb; background: rgba(255, 215, 0, 0.05); border-radius: 8px; }
         .extra-services-box { margin-top: 25px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 15px; border-radius: 8px; text-align: center; font-size: 0.9em; color: #ccc; }
@@ -232,18 +235,24 @@
             100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 75, 43, 0.6); }
         }
 
+        /* RESPANSYWNOŚĆ SMARTFONY */
         @media (max-width: 768px) {
+            .main-container { padding: 10px; border-radius: 0; }
             .harmonogram-wrapper { font-size: 1.05em; }
             .info-title { font-size: 1.4em; }
             .region-label { padding: 12px 5px; font-size: 1.1em; }
             .client-input { padding: 15px; font-size: 1.1em; }
             .submit-btn { padding: 18px; font-size: 1.2em; }
+            .strategy-card { margin-bottom: 10px; }
+            figure img { border-radius: 8px; }
         }
     </style>
 </head>
 <body>
 
-    <figure style="display: block; margin: 20px auto; text-align: center; width: 100%;">
+<div class="main-container">
+
+    <figure style="display: block; margin: 0 auto 20px auto; text-align: center; width: 100%;">
         <img alt="Porównanie zestawów tygodniowych" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhdu_iSxbdjyk_L-XnryqdyUAcKDEHqI0E7IgagdC_Tmn9SnbfVtJJKJK7PhYoN9gsqTEgx3AgujHcxsM-dbXi6F4VxjdFd2J7aYzi7b9BBybp9JjylVGy6TcJZIPw8ZF99d7UjPbVzf_C1LeDCeMGyGxhM0ktKHkOfqhSEXafLxlGqIGAh62HSFEi-4zw/s1024/zestawtygodniowy1.webp" style="border-radius: 12px; box-shadow: none; display: block; height: auto; margin-left: auto; margin-right: auto; max-width: 100%;" />
     </figure>
 
@@ -496,1122 +505,1122 @@
 
         </div>
     </div>
+</div> <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // --- KONFIGURACJA BLOKADY true/false MAPY ONLINE ---
+        const LOCK_MAP = false; 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            // --- KONFIGURACJA BLOKADY true/false MAPY ONLINE ---
-            const LOCK_MAP = false; 
+        // ============================================================
+        // --- KONFIGURACJA DNI PROMOCJI ---
+        // 0 = Niedziela, 1 = Poniedziałek, 2 = Wtorek, 3 = Środa, 4 = Czwartek, 5 = Piątek, 6 = Sobota
+        const PROMO_DAYS = [5, 6, 0]; 
+        // ============================================================
+        
+        var userLang = navigator.language || navigator.userLanguage; 
+        userLang = userLang.substr(0, 2).toLowerCase();
+        
+        // Lista obsługiwanych języków
+        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt'];
+        if (!supported.includes(userLang)) userLang = 'de'; 
 
-            // ============================================================
-            // --- KONFIGURACJA DNI PROMOCJI ---
-            // 0 = Niedziela, 1 = Poniedziałek, 2 = Wtorek, 3 = Środa, 4 = Czwartek, 5 = Piątek, 6 = Sobota
-            // Możesz wstawić w nawias jeden konkretny dzień, np. [5], lub kilka: [5, 6, 0]
-            const PROMO_DAYS = [6]; 
-            // ============================================================
-            
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.substr(0, 2).toLowerCase();
-            
-            // Lista obsługiwanych języków
-            const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt'];
-            if (!supported.includes(userLang)) userLang = 'de'; 
+        const pricesEUR = { 1: 20, 2: 30, 3: 40, groupSurcharge: 20, pro: 60, offline: 5, dhl: 25, map: 25 };
 
-            const pricesEUR = { 1: 20, 2: 30, 3: 40, groupSurcharge: 20, pro: 60, offline: 5, dhl: 25, map: 25 };
-
-            // Pełna konfiguracja dla wszystkich języków
-            const config = {
-                'pl': {
-                    currency: 'PLN',
-                    prices: { 1: 80, 2: 140, 3: 160, groupSurcharge: 40, pro: 240, offline: 20, dhl: 25, map: 100 },
-                    texts: {
-                        btnOpenList: '📂 OTWÓRZ SPIS REJONÓW',
-                        rulesTitle: "\u26A0 WAŻNE: Zasady Licencji",
-                        rulesText: "👤 Dostęp Indywidualny = 1 Użytkownik.<br>🚫 Po wykryciu udostępniania kolejne zamówienie zostanie zoptymalizowane dla grupy.<br>🏢 <strong>Wybierz \"Dostęp Grupowy\", aby uniknąć blokady!</strong>",
-                        bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!",
-                        aboutUsText: 'Zajmujemy się profesjonalnym opracowywaniem informacji dla osób poszukujących towarów z rynku wtórnego – od tzw. wystawek, po serwisy rowerowe, kosiarki czy części samochodowe. Działamy od 30 lat. Początkowo szukaliśmy terminów i adresów na własne potrzeby, a od 2008 roku robimy to dla Państwa pod marką dabu-info.',  
-                        mainTitle: '📱 Twój wirtualny autopilot',
-                        infoDesc: '<b>Zestaw Tygodniowy</b> to najszybsze źródło danych o wystawkach w Niemczech.',
-                        liFullList: '<strong>Pełna lista:</strong> Wszystkie lub wybrane dostępne rejony.',
-                        liNav: '<strong>Nawigacja:</strong> Klikalne linki do Google Maps.',
-                        liAccess: '<strong>Dostęp:</strong> Wersja Online + opcjonalny plik Offline (HTML).',
-                        liAddresses: '<strong>Dokładne adresy:</strong> Pełne dane (Ulica, Miasto, Częstotliwość).',
-                        liScroll: '<strong>Smart Start:</strong> Automatyczne przewijanie.',
-                        liDark: '<strong>Dark Mode:</strong> Oszczędza Twoją baterię o 30%.', 
-                        previewTitle: '👀 Podgląd Terminów',
-                        previewSub: 'Sprawdź w jakich rejonach wystawiają.',
-                        previewNote: 'ℹ️ Spis kolejnych dostępnych rejonów.<br>Proszę o <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
-                        headerChoose: 'Wybierz swój pakiet',
-                        
-                        basicTitle: '📍 Wersja Basic',
-                        basicPrice: '80 - 160 PLN', 
-                        basicSubtitle: 'Dla 1 osoby (Max 3 rejony)',
-                        
-                        basicLi1: 'Wybór ręczny: <b>Max 3 rejony</b>.',
-                        basicLi2: 'Format: Wersja Online.',
-                        basicLi3: 'Offline: +20 PLN (jednorazowo).',
-                        proTitle: '👑 Wersja PRO',
-                        proPrice: '240 PLN',
-                        proSubtitle: '(Wszystkie Rejony)',
-                        proLi1: '<b>Wszystkie rejony</b> z listy (90+).',
-                        proLi2: 'Brak limitów użytkowników.',
-                        proLi3: 'Wersja Offline: <b>W cenie (0 PLN)</b>.',
-                        step1Header: '👇 1. Wybierz Rejony:',
-                        btnSelectAll: '[ Zaznacz wszystko = 👑 Wersja PRO ]',
-                        btnUnselectAll: '[ Odznacz wszystkie ]',
-                        step2Header: '📅 2. Wybierz Tygodnie:',
-                        step3Header: '💾 3. Opcje dodatkowe:',
-                        groupLabel: "👥 Dostęp Grupowy",
-                        offlineLabel: 'Dodaj wersję <b>OFFLINE (HTML)</b>',
-                        mapLabel: '🗺️ Mapa Online (Wersja Premium)',
-                        schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)',
-                        placeholderPhone: 'Numer telefonu (opcjonalnie)',
-                        placeholderEmail: 'Twój adres E-mail (wymagane)',
-                        btnSubmit: '\u2705 WYŚLIJ ZAPYTANIE', 
-                        freeSampleText: 'ℹ️ <b>Darmowy wgląd:</b> Zestaw archiwalny.',
-                        archiveLink: '📂 OTWÓRZ ARCHIWUM',
-                        weekLabel: 'Tydzień',
-                        rodoLabel: 'Wyrażam zgodę na przetwarzanie danych osobowych (RODO).',
-                        rodoText: 'Administratorem danych jest właściciel serwisu. Dane podane w formularzu będą przetwarzane wyłącznie w celu udzielenia odpowiedzi lub realizacji zamówienia.',
-                        rodoError: '\u26A0 Musisz zaakceptować zgodę RODO.',
-                        emailGreeting: 'Dzień dobry,',
-                        emailOrderSet: 'Zamawiam zestaw:',
-                        emailTotal: 'SUMA',
-                        emailDates: 'DATY',
-                        emailSelectedRegions: 'WYBRANE REJONY',
-                        paymentNote: 'Numer zamówienia podaj tytułem wpłaty:',
-                        extraInfoText: 'ℹ️ <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.',
-                        extraInfoBtn: 'Napisz do nas',
-                        extraInfoSubject: 'Proszę o kontakt w sprawie adresów przygotowanych na interaktywnej mapie',
-                        summaryTotal: 'RAZEM'
-                    }
-                },
-                'de': {
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                      aboutUsText: 'Wir beschäftigen uns mit der professionellen Aufbereitung von Informationen für Personen, die Waren auf dem Sekundärmarkt suchen – von Sperrmüll bis hin zu Fahrradwerkstätten, Rasenmähern oder Autoteilen. Wir sind seit 30 Jahren tätig. Anfangs suchten wir Termine und Adressen für den Eigenbedarf, und seit 2008 tun wir dies für Sie unter der Marke dabu-info.',  
-                      btnOpenList: '📂 VERZEICHNIS ÖFFNEN',
-                        rulesTitle: "\u26A0 WICHTIG: Lizenz & Audit",
-                        rulesText: "👤 Einzelzugriff = 1 Benutzer.<br>🚫 Entdeckung der Weitergabe = 💸 <b>Nachzahlung bei der nächsten Bestellung</b>.<br>🏢 <strong>Wählen Sie sofort den Gruppenzugriff!</strong>",
-                        bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!",
-                        mainTitle: '📱 Dein virtueller Lotse',
-                        infoDesc: '<b>Wochenset</b> ist die schnellste Datenquelle für Sperrmüll.',
-                        liFullList: '<strong>Komplette Liste:</strong> Alle oder ausgewählte Regionen.',
-                        liNav: 'Navigation zu Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Genaue Adressen.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Dark Mode.',
-                        previewTitle: 'Vorschau der Wochen',
-                        previewSub: 'Klicken Sie hier.',
-                        previewNote: 'Fragen? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
-                        headerChoose: 'Wähle dein Paket',
-                        basicTitle: '📍 Version Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Ausgewählte 1-3 Regionen',
-                        basicLi1: 'Max. 3 Regionen.',
-                        basicLi2: 'Online-Version.',
-                        basicLi3: 'Offline: +5 EUR (einmalig).',
-                        proTitle: '👑 Version PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Alle Regionen)',
-                        proLi1: 'Alle Regionen.',
-                        proLi2: 'Online + Offline.',
-                        proLi3: 'Offline: Inklusive.',
-                        step1Header: '👇 1. Regionen auswählen:',
-                        btnSelectAll: '[ Alle auswählen = PRO ]',
-                        btnUnselectAll: '[ Auswahl aufheben ]',
-                        step2Header: '📅 2. Wochen auswählen:',
-                        step3Header: '💾 3. Offline & Extra:',
-                        groupLabel: "👥 Gruppenzugriff",
-                        offlineLabel: '<b>OFFLINE (HTML)</b> hinzufügen',
-                        mapLabel: '🗺️ Online Karte (Premium Version)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefonnummer',
-                        placeholderEmail: 'E-Mail-Adresse',
-                        btnSubmit: 'ANFRAGE SENDEN',
-                        freeSampleText: 'Kostenlose Vorschau.',
-                        archiveLink: 'ARCHIV ÖFFNEN',
-                        weekLabel: 'Woche',
-                        rodoLabel: 'Ich stimme der Datenverarbeitung zu (DSGVO).',
-                        rodoText: 'Der Datenverantwortliche ist der Eigentümer der Website. Die im Formular angegebenen Daten werden ausschließlich zur Beantwortung oder zur Auftragsabwicklung verarbeitet.',
-                        rodoError: '\u26A0 Sie müssen die DSGVO akzeptieren.',
-                        emailGreeting: 'Guten Tag,',
-                        emailOrderSet: 'Ich bestelle:',
-                        emailTotal: 'SUMME',
-                        emailDates: 'TERMINE',
-                        emailSelectedRegions: 'REGIONEN',
-                        paymentNote: 'Bitte geben Sie die Bestellnummer als Verwendungszweck an:',
-                        extraInfoText: 'ℹ️ <b>Zusätzlich:</b> Adressen von Fahrrad-, Rasenmäher-, Reifenwerkstätten usw.',
-                        extraInfoBtn: 'Schreib uns',
-                        extraInfoSubject: 'Kontakt wegen Adressen auf der interaktiven Karte',
-                        summaryTotal: 'GESAMT'
-                    }
-                },
-                'cs': { // CZECH
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Zabýváme se profesionálním zpracováním informací pro osoby hledající zboží na sekundárním trhu – od sběru (Sperrmüll), přes servisy jízdních kol, sekačky až po autodíly. Působíme již 30 let. Zpočátku jsme hledali termíny a adresy pro vlastní potřebu a od roku 2008 to děláme pro vás pod značkou dabu-info.',
-                        btnOpenList: '📂 OTEVŘÍT SEZNAM',
-                        rulesTitle: "\u26A0 DŮLEŽITÉ: Pravidla licence",
-                        rulesText: "👤 Individuální přístup = 1 uživatel.<br>🚫 Sdílení je zakázáno.<br>🏢 <strong>Vyberte \"Skupinový přístup\", abyste se vyhnuli blokaci!</strong>",
-                        bonus: "🎁 <b>Bonus:</b> Po objednání obdržíte <b>Průvodce sběrem</b>!",
-                        mainTitle: '📱 Váš virtuální pilot',
-                        infoDesc: '<b>Týdenní sada</b> je nejrychlejší zdroj dat o sběru v Německu.',
-                        liFullList: '<strong>Kompletní seznam:</strong> Všechny nebo vybrané regiony.',
-                        liNav: 'Navigace Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Přesné adresy.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Tmavý režim.',
-                        previewTitle: 'Náhled termínů',
-                        previewSub: 'Klikněte pro kontrolu regionů.',
-                        previewNote: 'ℹ️ Seznam dostupných regionů.<br>Otázky? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
-                        headerChoose: 'Vyberte si balíček',
-                        basicTitle: '📍 Verze Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Vybrané 1-3 regiony',
-                        basicLi1: 'Ruční výběr: <b>Max 3 regiony</b>.',
-                        basicLi2: 'Formát: Online verze.',
-                        basicLi3: 'Offline: +5 EUR (jednorázově).',
-                        proTitle: '👑 Verze PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Všechny regiony)',
-                        proLi1: '<b>Všechny regiony</b> ze seznamu.',
-                        proLi2: 'Žádné limity uživatelů.',
-                        proLi3: 'Offline verze: <b>V ceně (0 EUR)</b>.',
-                        step1Header: '👇 1. Vyberte regiony:',
-                        btnSelectAll: '[ Vybrat vše = 👑 Verze PRO ]',
-                        btnUnselectAll: '[ Zrušit výběr ]',
-                        step2Header: '📅 2. Vyberte týdny:',
-                        step3Header: '💾 3. Další možnosti:',
-                        groupLabel: "👥 Skupinový přístup",
-                        offlineLabel: 'Přidat verzi <b>OFFLINE (HTML)</b>',
-                        mapLabel: '🗺️ Online Mapa (Premium Verze)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefonní číslo (volitelné)',
-                        placeholderEmail: 'Váš E-mail (povinné)',
-                        btnSubmit: '\u2705 ODESLAT POPTÁVKU',
-                        freeSampleText: 'ℹ️ <b>Ukázka zdarma:</b> Archivní sada.',
-                        archiveLink: '📂 OTEVŘÍT ARCHIV',
-                        weekLabel: 'Týden',
-                        rodoLabel: 'Souhlasím se zpracováním osobních údajů (GDPR).',
-                        rodoText: 'Správcem údajů je vlastník webu. Údaje uvedené ve formuláři budou zpracovávány výhradně za účelem odpovědi nebo vyřízení objednávky.',
-                        rodoError: '\u26A0 Musíte přijmout GDPR.',
-                        emailGreeting: 'Dobrý den,',
-                        emailOrderSet: 'Objednávám sadu:',
-                        emailTotal: 'CELKEM',
-                        emailDates: 'TERMÍNY',
-                        emailSelectedRegions: 'VYBRANÉ REGIONY',
-                        paymentNote: 'Jako účel platby uveďte číslo objednávky:',
-                        extraInfoText: 'ℹ️ <b>Navíc:</b> Adresy servisů kol, sekaček, myček, pneu, autovrakovišť atd.',
-                        extraInfoBtn: 'Napište nám',
-                        extraInfoSubject: 'Kontakt ohledně interaktivní mapy',
-                        summaryTotal: 'CELKEM'
-                    }
-                },
-                'sk': { // SLOVAK
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Zaoberáme sa profesionálnym spracovaním informácií pre osoby hľadajúce tovar na sekundárnom trhu – od zberu (Sperrmüll), cez servisy bicyklov, kosačky až po autodiely. Pôsobíme už 30 rokov. Spočiatku sme hľadali termíny a adresy pre vlastnú potrebu a od roku 2008 to robíme pre vás pod značkou dabu-info.',
-                        btnOpenList: '📂 OTVORIŤ ZOZNAM',
-                        rulesTitle: "\u26A0 DÔLEŽITÉ: Pravidlá licencie",
-                        rulesText: "👤 Individuálny prístup = 1 používateľ.<br>🚫 Zdieľanie je zakázané.<br>🏢 <strong>Vyberte \"Skupinový prístup\", aby ste sa vyhli blokácii!</strong>",
-                        bonus: "🎁 <b>Bonus:</b> Po objednaní dostanete <b>Sprievodcu zberom</b>!",
-                        mainTitle: '📱 Váš virtuálny pilot',
-                        infoDesc: '<b>Týždenná sada</b> je najrýchlejší zdroj dát o zbere v Nemecku.',
-                        liFullList: '<strong>Kompletný zoznam:</strong> Všetky alebo vybrané regióny.',
-                        liNav: 'Navigácia Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Presné adresy.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Tmavý režim.',
-                        previewTitle: 'Náhľad termínov',
-                        previewSub: 'Kliknite pre kontrolu regiónov.',
-                        previewNote: 'ℹ️ Zoznam dostupných regiónov.<br>Otázky? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
-                        headerChoose: 'Vyberte si balík',
-                        basicTitle: '📍 Verzia Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Vybrané 1-3 regióny',
-                        basicLi1: 'Ručný výber: <b>Max 3 regióny</b>.',
-                        basicLi2: 'Formát: Online verzia.',
-                        basicLi3: 'Offline: +5 EUR (jednorazovo).',
-                        proTitle: '👑 Verzia PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Všetky regióny)',
-                        proLi1: '<b>Všetky regióny</b> zo zoznamu.',
-                        proLi2: 'Žiadne limity používateľov.',
-                        proLi3: 'Offline verzia: <b>V cene (0 EUR)</b>.',
-                        step1Header: '👇 1. Vyberte regióny:',
-                        btnSelectAll: '[ Vybrať všetko = 👑 Verzia PRO ]',
-                        btnUnselectAll: '[ Zrušiť výber ]',
-                        step2Header: '📅 2. Vyberte týždne:',
-                        step3Header: '💾 3. Ďalšie možnosti:',
-                        groupLabel: "👥 Skupinový prístup",
-                        offlineLabel: 'Pridať verziu <b>OFFLINE (HTML)</b>',
-                        mapLabel: '🗺️ Online Mapa (Premium Verzia)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefónne číslo (voliteľné)',
-                        placeholderEmail: 'Váš E-mail (povinné)',
-                        btnSubmit: '\u2705 ODOSLAŤ DOPYT',
-                        freeSampleText: 'ℹ️ <b>Ukážka zadarmo:</b> Archívna sada.',
-                        archiveLink: '📂 OTVORIŤ ARCHÍV',
-                        weekLabel: 'Týždeň',
-                        rodoLabel: 'Súhlasím so spracovaním osobných údajov (GDPR).',
-                        rodoText: 'Prevádzkovateľom údajov je vlastník webu. Údaje uvedené vo formulári budú spracúvané výlučne na účely odpovede alebo vybavenia objednávky.',
-                        rodoError: '\u26A0 Musíte prijať GDPR.',
-                        emailGreeting: 'Dobrý deň,',
-                        emailOrderSet: 'Objednávám sadu:',
-                        emailTotal: 'SPOLU',
-                        emailDates: 'TERMÍNY',
-                        emailSelectedRegions: 'VYBRANÉ REGIÓNY',
-                        paymentNote: 'Ako účel platby uveďte číslo objednávky:',
-                        extraInfoText: 'ℹ️ <b>Navyše:</b> Adresy servisov bicyklov, kosačiek, umývačiek, pneu, autovrakovísk atd.',
-                        extraInfoBtn: 'Napíšte nám',
-                        extraInfoSubject: 'Kontakt ohľadom interaktívnej mapy',
-                        summaryTotal: 'SPOLU'
-                    }
-                },
-                'hu': { // HUNGARIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Professzionális információfeldolgozással foglalkozunk a másodlagos piacon árut keresők számára – a lomtalanítástól kezdve a kerékpárszervizeken és fűnyírókon át az autóalkatrészekig. 30 éve működünk. Kezdetben saját célra kerestünk időpontokat és címeket, 2008 óta pedig az Önök számára tesszük ezt a dabu-info márkanév alatt.',
-                        btnOpenList: '📂 JEGYZÉK MEGNYITÁSA',
-                        rulesTitle: "\u26A0 FONTOS: Licencszabályok",
-                        rulesText: "👤 Egyéni hozzáférés = 1 felhasználó.<br>🚫 A megosztás tilos.<br>🏢 <strong>Válassza a \"Csoportos hozzáférést\" a blokkolás elkerülése érdekében!</strong>",
-                        bonus: "🎁 <b>Bónusz:</b> Rendelés után megkapja a <b>Lomtalanítási útmutatót</b>!",
-                        mainTitle: '📱 Virtuális pilóta',
-                        infoDesc: '<b>Heti készlet</b> a leggyorsabb adatforrás a németországi lomtalanításokról.',
-                        liFullList: '<strong>Teljes lista:</strong> Összes vagy kiválasztott régió.',
-                        liNav: 'Google Maps navigáció.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Pontos címek.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Sötét mód.',
-                        previewTitle: 'Időpontok előnézete',
-                        previewSub: 'Kattintson a régiók ellenőrzéséhez.',
-                        previewNote: 'ℹ️ Elérhető régiók listája.<br>Kérdése van? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KAPCSOLAT</a>.',
-                        headerChoose: 'Válasszon csomagot',
-                        basicTitle: '📍 Basic Verzió',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Választott 1-3 régió',
-                        basicLi1: 'Kézi választás: <b>Max 3 régió</b>.',
-                        basicLi2: 'Formátum: Online verzió.',
-                        basicLi3: 'Offline: +5 EUR (egyszeri).',
-                        proTitle: '👑 PRO Verzió',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Összes Régió)',
-                        proLi1: '<b>Az összes régió</b> a listáról.',
-                        proLi2: 'Nincs felhasználói korlát.',
-                        proLi3: 'Offline verzió: <b>Az árban (0 EUR)</b>.',
-                        step1Header: '👇 1. Válasszon régiókat:',
-                        btnSelectAll: '[ Összes kijelölése = 👑 PRO ]',
-                        btnUnselectAll: '[ Kijelölés törlése ]',
-                        step2Header: '📅 2. Válasszon heteket:',
-                        step3Header: '💾 3. További opciók:',
-                        groupLabel: "👥 Csoportos hozzáférés",
-                        offlineLabel: '<b>OFFLINE (HTML)</b> verzió hozzáadása',
-                        mapLabel: '🗺️ Online Térkép (Premium Verzió)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefonszám (opcionális)',
-                        placeholderEmail: 'E-mail cím (kötelező)',
-                        btnSubmit: '\u2705 AJÁNLATKÉRÉS KÜLDÉSE',
-                        freeSampleText: 'ℹ️ <b>Ingyenes minta:</b> Archív készlet.',
-                        archiveLink: '📂 ARCHÍVUM MEGNYITÁSA',
-                        weekLabel: 'Hét',
-                        rodoLabel: 'Hozzájárulok az adatkezeléshez (GDPR).',
-                        rodoText: 'Az adatkezelő a weboldal tulajdonosa. Az űrlapon megadott adatokat kizárólag a válaszadás vagy a megrendelés teljesítése céljából kezeljük.',
-                        rodoError: '\u26A0 El kell fogadnia a GDPR-t.',
-                        emailGreeting: 'Jó napot,',
-                        emailOrderSet: 'Rendelni szeretnék:',
-                        emailTotal: 'ÖSSZESEN',
-                        emailDates: 'DÁTUMOK',
-                        emailSelectedRegions: 'KIVÁLASZTOTT RÉGIÓK',
-                        paymentNote: 'A megrendelés számát tüntesse fel a közleményben:',
-                        extraInfoText: 'ℹ️ <b>Továbbá:</b> Kerékpár-, fűnyíró-, autómosó szervizek, autóbontók címei stb.',
-                        extraInfoBtn: 'Írjon nekünk',
-                        extraInfoSubject: 'Kapcsolatfelvétel az interaktív térképpel kapcsolatban',
-                        summaryTotal: 'ÖSSZESEN'
-                    }
-                },
-                'ro': { // ROMANIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Ne ocupăm cu prelucrarea profesională a informațiilor pentru persoanele care caută bunuri pe piața secundară – de la colectări (Sperrmüll), la service-uri de biciclete, mașini de tuns iarba sau piese auto. Activăm de 30 de ani. Inițial căutam date și adrese pentru uz propriu, iar din 2008 facem acest lucru pentru dumneavoastră sub marca dabu-info.',
-                        btnOpenList: '📂 DESCHIDEȚI REGISTRUL',
-                        rulesTitle: "\u26A0 IMPORTANT: Reguli de Licență",
-                        rulesText: "👤 Acces Individual = 1 Utilizator.<br>🚫 Partajarea este interzisă.<br>🏢 <strong>Alege \"Acces Grup\" pentru a evita blocarea!</strong>",
-                        bonus: "🎁 <b>Bonus:</b> După comandă primești <b>Ghidul Colectorului</b>!",
-                        mainTitle: '📱 Pilotul tău virtual',
-                        infoDesc: '<b>Setul Săptămânal</b> este cea mai rapidă sursă de date despre colectări în Germania.',
-                        liFullList: '<strong>Listă completă:</strong> Toate sau regiunile selectate.',
-                        liNav: 'Navigație Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Adrese exacte.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Mod întunecat.',
-                        previewTitle: 'Previzualizare Date',
-                        previewSub: 'Verifică regiunile disponibile.',
-                        previewNote: 'ℹ️ Lista regiunilor.<br>Întrebări? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">CONTACT</a>.',
-                        headerChoose: 'Alege pachetul',
-                        basicTitle: '📍 Versiunea Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: '1-3 regiuni selectate',
-                        basicLi1: 'Selecție manuală: <b>Max 3 regiuni</b>.',
-                        basicLi2: 'Format: Versiune Online.',
-                        basicLi3: 'Offline: +5 EUR (o singură dată).',
-                        proTitle: '👑 Versiunea PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Toate Regiunile)',
-                        proLi1: '<b>Toate regiunile</b> din listă.',
-                        proLi2: 'Fără limită de utilizatori.',
-                        proLi3: 'Versiune Offline: <b>Inclusă (0 EUR)</b>.',
-                        step1Header: '👇 1. Selectează Regiuni:',
-                        btnSelectAll: '[ Selectează tot = 👑 PRO ]',
-                        btnUnselectAll: '[ Deselectează tot ]',
-                        step2Header: '📅 2. Selectează Săptămâni:',
-                        step3Header: '💾 3. Opțiuni suplimentare:',
-                        groupLabel: "👥 Acces Grup",
-                        offlineLabel: 'Adaugă versiunea <b>OFFLINE (HTML)</b>',
-                        mapLabel: '🗺️ Hartă Online (Premium)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Număr de telefon (opțional)',
-                        placeholderEmail: 'Adresa ta de E-mail (obligatoriu)',
-                        btnSubmit: '\u2705 TRIMITE CEREREA',
-                        freeSampleText: 'ℹ️ <b>Mostră gratuită:</b> Set arhivă.',
-                        archiveLink: '📂 DESCHIDE ARHIVA',
-                        weekLabel: 'Săptămâna',
-                        rodoLabel: 'Sunt de acord cu prelucrarea datelor personale (GDPR).',
-                        rodoText: 'Operatorul datelor este proprietarul site-ului. Datele furnizate în formular vor fi prelucrate exclusiv în scopul răspunsului sau realizării comenzii.',
-                        rodoError: '\u26A0 Trebuie să accepți GDPR.',
-                        emailGreeting: 'Bună ziua,',
-                        emailOrderSet: 'Comand setul:',
-                        emailTotal: 'TOTAL',
-                        emailDates: 'DATE',
-                        emailSelectedRegions: 'REGIUNI SELECTATE',
-                        paymentNote: 'Menționați numărul comenzii la plată:',
-                        extraInfoText: 'ℹ️ <b>Suplimentar:</b> Adrese service biciclete, mașini de tuns iarba, spălătorii, anvelope, dezmembrări auto etc.',
-                        extraInfoBtn: 'Scrie-ne',
-                        extraInfoSubject: 'Contact privind harta interactivă',
-                        summaryTotal: 'TOTAL'
-                    }
-                },
-                'bg': { // BULGARIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Занимаваме се с професионална обработка на информация за хора, търсещи стоки на вторичния пазар – от сметосъбиране, през сервизи за велосипеди, косачки до авточасти. Работим от 30 години. Първоначално търсихме дати и адреси за собствени нужди, а от 2008 г. го правим за Вас под марката dabu-info.',
-                        btnOpenList: '📂 ОТВОРИ СПИСЪКА',
-                        rulesTitle: "\u26A0 ВАЖНО: Правила за лиценз",
-                        rulesText: "👤 Индивидуален достъп = 1 Потребител.<br>🚫 Споделянето е забранено.<br>🏢 <strong>Изберете \"Групов достъп\", за да избегнете блокиране!</strong>",
-                        bonus: "🎁 <b>Бонус:</b> След поръчка получавате <b>Ръководство за събиране</b>!",
-                        mainTitle: '📱 Вашият виртуален пилот',
-                        infoDesc: '<b>Седмичният комплект</b> е най-бързият източник на данни за сметосъбиране в Германия.',
-                        liFullList: '<strong>Пълен списък:</strong> Всички или избрани региони.',
-                        liNav: 'Навигация Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Точни адреси.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Тъмен режим.',
-                        previewTitle: 'Преглед на датите',
-                        previewSub: 'Проверете регионите.',
-                        previewNote: 'ℹ️ Списък с региони.<br>Въпроси? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
-                        headerChoose: 'Изберете пакет',
-                        basicTitle: '📍 Версия Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Избрани 1-3 региона',
-                        basicLi1: 'Ръчен избор: <b>Макс 3 региона</b>.',
-                        basicLi2: 'Формат: Онлайн версия.',
-                        basicLi3: 'Offline: +5 EUR (еднократно).',
-                        proTitle: '👑 Версия PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Всички региони)',
-                        proLi1: '<b>Всички региони</b> от списъка.',
-                        proLi2: 'Без лимит на потребители.',
-                        proLi3: 'Офлайн версия: <b>В цената (0 EUR)</b>.',
-                        step1Header: '👇 1. Изберете региони:',
-                        btnSelectAll: '[ Избери всички = 👑 PRO ]',
-                        btnUnselectAll: '[ Изчисти избора ]',
-                        step2Header: '📅 2. Изберете седмици:',
-                        step3Header: '💾 3. Допълнителни опции:',
-                        groupLabel: "👥 Групов достъп",
-                        offlineLabel: 'Добави <b>OFFLINE (HTML)</b> версия',
-                        mapLabel: '🗺️ Онлайн карта (Premium версия)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Телефонен номер (по избор)',
-                        placeholderEmail: 'Вашият имейл (задължително)',
-                        btnSubmit: '\u2705 ИЗПРАТИ ЗАПИТВАНЕ',
-                        freeSampleText: 'ℹ️ <b>Безплатна мостра:</b> Архивен комплект.',
-                        archiveLink: '📂 ОТВОРИ АРХИВ',
-                        weekLabel: 'Седмица',
-                        rodoLabel: 'Съгласен съм с обработката на лични данни (GDPR).',
-                        rodoText: 'Администратор на данните е собственикът на сайта. Данните, предоставени във формуляра, ще бъдат обработвани само за отговор или изпълнение на поръчката.',
-                        rodoError: '\u26A0 Трябва да приемете GDPR.',
-                        emailGreeting: 'Здравейте,',
-                        emailOrderSet: 'Поръчвам комплект:',
-                        emailTotal: 'ОБЩО',
-                        emailDates: 'ДАТИ',
-                        emailSelectedRegions: 'ИЗБРАНИ РЕГИОНИ',
-                        paymentNote: 'Моля, посочете номера на поръчката при плащане:',
-                        extraInfoText: 'ℹ️ <b>Допълнително:</b> Адреси на сервизи за велосипеди, косачки, автомивки, гуми, автоморга и др.',
-                        extraInfoBtn: 'Пишете ни',
-                        extraInfoSubject: 'Контакт относно интерактивната карта',
-                        summaryTotal: 'ОБЩО'
-                    }
-                },
-                'tr': { // TURKISH
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'İkinci el piyasasında mal arayanlar için profesyonel bilgi işleme ile uğraşıyoruz – atık toplamadan, bisiklet servislerine ve araba parçalarına kadar. 30 yıldır faaliyet gösteriyoruz. Başlangıçta tarihleri kendi ihtiyaçlarımız için arıyorduk, 2008\'den beri ise bunu dabu-info markası altında sizin için yapıyoruz.',
-                        btnOpenList: '📂 LİSTEYİ AÇ',
-                        rulesTitle: "\u26A0 ÖNEMLİ: Lisans Kuralları",
-                        rulesText: "👤 Bireysel Erişim = 1 Kullanıcı.<br>🚫 Paylaşım yasaktır.<br>🏢 <strong>Engellenmemek için \"Grup Erişimi\"ni seçin!</strong>",
-                        bonus: "🎁 <b>Bonus:</b> Siparişten sonra <b>Toplama Rehberi</b> alacaksınız!",
-                        mainTitle: '📱 Sanal Pilotunuz',
-                        infoDesc: '<b>Haftalık Set</b>, Almanya\'daki atık toplama verileri için en hızlı kaynaktır.',
-                        liFullList: '<strong>Tam Liste:</strong> Tüm veya seçilen bölgeler.',
-                        liNav: 'Google Maps Navigasyonu.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Tam Adresler.',
-                        liScroll: 'Akıllı Başlangıç.',
-                        liDark: 'Karanlık Mod.',
-                        previewTitle: 'Tarih Önizlemesi',
-                        previewSub: 'Bölgeleri kontrol edin.',
-                        previewNote: 'ℹ️ Bölge listesi.<br>Sorularınız mı var? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">İLETİŞİM</a>.',
-                        headerChoose: 'Paketinizi Seçin',
-                        basicTitle: '📍 Basic Sürüm',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Seçilen 1-3 Bölge',
-                        basicLi1: 'Manuel seçim: <b>Maks 3 bölge</b>.',
-                        basicLi2: 'Format: Online Sürüm.',
-                        basicLi3: 'Offline: +5 EUR (tek seferlik).',
-                        proTitle: '👑 PRO Sürüm',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Tüm Bölgeler)',
-                        proLi1: 'Listedeki <b>tüm bölgeler</b>.',
-                        proLi2: 'Kullanıcı sınırı yok.',
-                        proLi3: 'Offline Sürüm: <b>Fiyata dahil (0 EUR)</b>.',
-                        step1Header: '👇 1. Bölgeleri Seçin:',
-                        btnSelectAll: '[ Tümünü Seç = 👑 PRO ]',
-                        btnUnselectAll: '[ Seçimi Temizle ]',
-                        step2Header: '📅 2. Haftaları Seçin:',
-                        step3Header: '💾 3. Ekstra Seçenekler:',
-                        groupLabel: "👥 Grup Erişimi",
-                        offlineLabel: '<b>OFFLINE (HTML)</b> sürümü ekle',
-                        mapLabel: '🗺️ Online Harita (Premium Sürüm)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefon Numarası (isteğe bağlı)',
-                        placeholderEmail: 'E-posta Adresiniz (gerekli)',
-                        btnSubmit: '\u2705 SORGULAMA GÖNDER',
-                        freeSampleText: 'ℹ️ <b>Ücretsiz Örnek:</b> Arşiv seti.',
-                        archiveLink: '📂 ARŞİVİ AÇ',
-                        weekLabel: 'Hafta',
-                        rodoLabel: 'Kişisel verilerin işlenmesini kabul ediyorum (KVKK).',
-                        rodoText: 'Veri sorumlusu site sahibidir. Formda verilen veriler sadece cevap verme veya siparişi gerçekleştirme amacıyla işlenecektir.',
-                        rodoError: '\u26A0 KVKK/GDPR onayını kabul etmelisiniz.',
-                        emailGreeting: 'Merhaba,',
-                        emailOrderSet: 'Sipariş ediyorum:',
-                        emailTotal: 'TOPLAM',
-                        emailDates: 'TARİHLER',
-                        emailSelectedRegions: 'SEÇİLEN BÖLGELER',
-                        paymentNote: 'Lütfen ödeme açıklamasında sipariş numarasını belirtin:',
-                        extraInfoText: 'ℹ️ <b>Ekstra:</b> Bisiklet, çim biçme makinesi, oto yıkama, lastik, hurdalık servis adresleri vb.',
-                        extraInfoBtn: 'Bize Yazın',
-                        extraInfoSubject: 'İnteraktif harita hakkında iletişim',
-                        summaryTotal: 'TOPLAM'
-                    }
-                },
-                'bs': { // BOSNIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Bavimo se profesionalnom obradom informacija za osobe koje traže robu na sekundarnom tržištu – od odvoza otpada, preko servisa bicikala, kosilica do autodijelova. Poslujemo već 30 godina. U početku smo tražili termine i adrese za vlastite potrebe, a od 2008. godine to radimo za vas pod brendom dabu-info.',
-                        btnOpenList: '📂 OTVORI SPISAK',
-                        rulesTitle: "\u26A0 VAŽNO: Pravila Licence",
-                        rulesText: "👤 Individualni pristup = 1 Korisnik.<br>🚫 Dijeljenje je zabranjeno.<br>🏢 <strong>Odaberite \"Grupni pristup\" da izbjegnete blokadu!</strong>",
-                        bonus: "🎁 <b>Bonus:</b> Nakon narudžbe dobijate <b>Vodič za sakupljanje</b>!",
-                        mainTitle: '📱 Vaš virtuelni pilot',
-                        infoDesc: '<b>Sedmični set</b> je najbrži izvor podataka o odvozu otpada u Njemačkoj.',
-                        liFullList: '<strong>Kompletna lista:</strong> Svi ili odabrani regioni.',
-                        liNav: 'Google Maps navigacija.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Tačne adrese.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Tamni mod.',
-                        previewTitle: 'Pregled termina',
-                        previewSub: 'Provjerite regione.',
-                        previewNote: 'ℹ️ Lista regiona.<br>Pitanja? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
-                        headerChoose: 'Izaberite paket',
-                        basicTitle: '📍 Verzija Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Odabrana 1-3 regiona',
-                        basicLi1: 'Ručni izbor: <b>Max 3 regiona</b>.',
-                        basicLi2: 'Format: Online verzija.',
-                        basicLi3: 'Offline: +5 EUR (jednokratno).',
-                        proTitle: '👑 Verzija PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Svi Regioni)',
-                        proLi1: '<b>Svi regioni</b> sa liste.',
-                        proLi2: 'Bez limita korisnika.',
-                        proLi3: 'Offline verzija: <b>U cijeni (0 EUR)</b>.',
-                        step1Header: '👇 1. Izaberite regione:',
-                        btnSelectAll: '[ Izaberi sve = 👑 PRO ]',
-                        btnUnselectAll: '[ Poništi izbor ]',
-                        step2Header: '📅 2. Izaberite sedmice:',
-                        step3Header: '💾 3. Dodatne opcije:',
-                        groupLabel: "👥 Grupni pristup",
-                        offlineLabel: 'Dodaj <b>OFFLINE (HTML)</b> verziju',
-                        mapLabel: '🗺️ Online Mapa (Premium)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Broj telefona (opcionalno)',
-                        placeholderEmail: 'Vaša E-mail adresa (obavezno)',
-                        btnSubmit: '\u2705 POŠALJI UPIT',
-                        freeSampleText: 'ℹ️ <b>Besplatan uzorak:</b> Arhivski set.',
-                        archiveLink: '📂 OTVORI ARHIVU',
-                        weekLabel: 'Sedmica',
-                        rodoLabel: 'Pristajem na obradu ličnih podataka (GDPR).',
-                        rodoText: 'Administrator podataka je vlasnik stranice. Podaci navedeni u obrascu obrađivat će se isključivo u svrhu odgovora ili realizacije narudžbe.',
-                        rodoError: '\u26A0 Morate prihvatiti GDPR.',
-                        emailGreeting: 'Dobar dan,',
-                        emailOrderSet: 'Naručujem set:',
-                        emailTotal: 'UKUPNO',
-                        emailDates: 'DATUMI',
-                        emailSelectedRegions: 'ODABRANI REGIONI',
-                        paymentNote: 'Navedite broj narudžbe prilikom uplate:',
-                        extraInfoText: 'ℹ️ <b>Dodatno:</b> Adrese servisa bicikala, kosilica, autopraonica, guma, auto-otpada itd.',
-                        extraInfoBtn: 'Pišite nam',
-                        extraInfoSubject: 'Kontakt u vezi interaktivne mape',
-                        summaryTotal: 'UKUPNO'
-                    }
-                },
-                'uk': { // UKRAINIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Ми займаємося професійною обробкою інформації для людей, які шукають товари на вторинному ринку – від збору (Sperrmüll), до сервісів велосипедів чи автозапчастин. Ми працюємо вже 30 років. Спочатку ми шукали адреси для власних потреб, а з 2008 року робимo це для Вас під брендом dabu-info.',
-                        btnOpenList: '📂 ВІДКРИТИ СПИСОК',
-                        rulesTitle: "\u26A0 ВАЖЛИВО: Правила ліцензії",
-                        rulesText: "👤 Індивідуальний доступ = 1 користувач.<br>🚫 Передача доступу заборонена.<br>🏢 <strong>Оберіть \"Груповий доступ\", щоб уникнути блокування!</strong>",
-                        bonus: "🎁 <b>Бонус:</b> Після замовлення отримаєте <b>Гід по збору</b>!",
-                        mainTitle: '📱 Твій віртуальний пілот',
-                        infoDesc: '<b>Тижневий набір</b> - це найшвидше джерело даних про виставки в Німеччині.',
-                        liFullList: '<strong>Повний список:</strong> Всі або вибрані регіони.',
-                        liNav: 'Навігація Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Точні адреси.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Темний режим.',
-                        previewTitle: 'Попередній перегляд',
-                        previewSub: 'Перевірте регіони.',
-                        previewNote: 'ℹ️ Список регіонів.<br>Питання? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
-                        headerChoose: 'Оберіть пакет',
-                        basicTitle: '📍 Версія Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Вибрані 1-3 регіони',
-                        basicLi1: 'Ручний вибір: <b>Макс 3 регіони</b>.',
-                        basicLi2: 'Формат: Онлайн версія.',
-                        basicLi3: 'Offline: +5 EUR (разово).',
-                        proTitle: '👑 Версія PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Всі Регіони)',
-                        proLi1: '<b>Всі регіони</b> зі списку.',
-                        proLi2: 'Без ліміту користувачів.',
-                        proLi3: 'Версія Offline: <b>В ціні (0 EUR)</b>.',
-                        step1Header: '👇 1. Оберіть регіони:',
-                        btnSelectAll: '[ Обрати все = 👑 PRO ]',
-                        btnUnselectAll: '[ Скасувати вибір ]',
-                        step2Header: '📅 2. Оберіть тижні:',
-                        step3Header: 'Додаткові опції:',
-                        groupLabel: "👥 Груповий доступ",
-                        offlineLabel: 'Додати <b>OFFLINE (HTML)</b> версію',
-                        mapLabel: '🗺️ Онлайн Карта (Premium)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Номер телефону (опціонально)',
-                        placeholderEmail: 'Ваш E-mail (обов\'язково)',
-                        btnSubmit: '\u2705 НАДІСЛАТИ ЗАПИТ',
-                        freeSampleText: 'ℹ️ <b>Безкоштовний зразок:</b> Архівний набір.',
-                        archiveLink: '📂 ВІДКРИТИ АРХИВ',
-                        weekLabel: 'Тиждень',
-                        rodoLabel: 'Я даю згоду на обробку персональних даних (GDPR).',
-                        rodoText: 'Адміністратором даних є власник сайту. Дані, вказані у формі, будуть оброблятися виключно з метою надання відповіді або виконання замовлення.',
-                        rodoError: '\u26A0 Ви повинні прийняти GDPR.',
-                        emailGreeting: 'Добрий день,',
-                        emailOrderSet: 'Замовляю набір:',
-                        emailTotal: 'ВСЬОГО',
-                        emailDates: 'ДАТЫ',
-                        emailSelectedRegions: 'ВИБРАНІ РЕГІОНИ',
-                        paymentNote: 'Вкажіть номер замовлення при оплаті:',
-                        extraInfoText: 'ℹ️ <b>Додатково:</b> Адреси сервісів велосипедів, газонокосилок, мийок, шин, автошротів тощо.',
-                        extraInfoBtn: 'Напишіть нам',
-                        extraInfoSubject: 'Контакт щодо інтерактивної карти',
-                        summaryTotal: 'ВСЬОГО'
-                    }
-                },
-                'ru': { // RUSSIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Мы занимаемся профессиональной обработкой информации для людей, ищущих товары на вторичном рынке – от сбора (Sperrmüll), до сервисов велосипедов или автозапчастей. Мы работаем уже 30 лет. Изначально мы искали адреси для собственных нужд, а с 2008 года делаем это для Вас под брендом dabu-info.',
-                        btnOpenList: '📂 ОТКРЫТЬ СПИСОК',
-                        rulesTitle: "\u26A0 ВАЖНО: Правила лицензии",
-                        rulesText: "👤 Индивидуальный доступ = 1 пользователь.<br>🚫 Передача доступа запрещена.<br>🏢 <strong>Выберите \"Групповой доступ\", чтобы избежать блокировки!</strong>",
-                        bonus: "🎁 <b>Бонус:</b> После заказа вы получите <b>Гид по сбору</b>!",
-                        mainTitle: '📱 Ваш виртуальный пилот',
-                        infoDesc: '<b>Еженедельный набор</b> - это самый быстрый источник данных о выставках в Германии.',
-                        liFullList: '<strong>Полный список:</strong> Все или выбранные регионы.',
-                        liNav: 'Навигация Google Maps.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Точные адреса.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Темний режим.',
-                        previewTitle: 'Предварительный просмотр',
-                        previewSub: 'Проверьте регионы.',
-                        previewNote: 'ℹ️ Список регионов.<br>Вопросы? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
-                        headerChoose: 'Выберите пакет',
-                        basicTitle: '📍 Версия Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Выбранные 1-3 региона',
-                        basicLi1: 'Ручной выбор: <b>Макс 3 региона</b>.',
-                        basicLi2: 'Формат: Онлайн версия.',
-                        basicLi3: 'Offline: +5 EUR (разово).',
-                        proTitle: '👑 Версия PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Все Регионы)',
-                        proLi1: '<b>Все регионы</b> из списка.',
-                        proLi2: 'Без лимита пользователей.',
-                        proLi3: 'Версия Offline: <b>В цене (0 EUR)</b>.',
-                        step1Header: '👇 1. Выберите регионы:',
-                        btnSelectAll: '[ Выбрать все = 👑 PRO ]',
-                        btnUnselectAll: '[ Отменить выбор ]',
-                        step2Header: '📅 2. Выберите недели:',
-                        step3Header: '💾 3. Дополнительные опции:',
-                        groupLabel: "👥 Групповой доступ",
-                        offlineLabel: 'Добавить <b>OFFLINE (HTML)</b> версию',
-                        mapLabel: '🗺️ Онлайн Карта (Premium)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Номер телефона (опционально)',
-                        placeholderEmail: 'Ваш E-mail (обязательно)',
-                        btnSubmit: '\u2705 ОТПРАВИТЬ ЗАПРОС',
-                        freeSampleText: 'ℹ️ <b>Бесплатный образец:</b> Архивный набор.',
-                        archiveLink: '📂 ОТКРЫТЬ АРХИВ',
-                        weekLabel: 'Неделя',
-                        rodoLabel: 'Я даю согласие на обработку персональных данных (GDPR).',
-                        rodoText: 'Администратором данных является владелец сайта. Данные, указанные в форме, будут обрабатываться исключительно для ответа или выполнения заказа.',
-                        rodoError: '\u26A0 Вы должны принять GDPR.',
-                        emailGreeting: 'Добрый день,',
-                        emailOrderSet: 'Заказываю набор:',
-                        emailTotal: 'ИТОГО',
-                        emailDates: 'ДАТЫ',
-                        emailSelectedRegions: 'ВЫБРАННЫЕ РЕГИОНЫ',
-                        paymentNote: 'Укажите номер заказа при оплате:',
-                        extraInfoText: 'ℹ️ <b>Дополнительно:</b> Адреса сервисов велосипедов, газонокосилок, моек, шин, автошротов и т.д.',
-                        extraInfoBtn: 'Напишите нам',
-                        extraInfoSubject: 'Контакт по поводу интерактивной карты',
-                        summaryTotal: 'ИТОГО'
-                    }
-                },
-                'lt': { // LITHUANIAN
-                    currency: 'EUR',
-                    prices: pricesEUR,
-                    texts: {
-                        aboutUsText: 'Užsiimame profesionaliu informacijos apdorojimu asmenims, ieškantiems prekių antrinėje rinkoje – nuo atliekų surinkimo, iki dviračių servisų ar automobilių dalių. Dirbame jau 30 metų. Iš pradžių ieškojome datų ir adresų savo poreikiams, o nuo 2008 metų darome tai Jums su prekės ženklu dabu-info.',
-                        btnOpenList: '📂 ATIDARYTI SĄRAŠĄ',
-                        rulesTitle: "\u26A0 SVARBU: Licencijos taisyklės",
-                        rulesText: "👤 Individuali prieiga = 1 Vartotojas.<br>🚫 Dalinimasis draudžiamas.<br>🏢 <strong>Pasirinkite \"Grupinę prieigą\", kad išvengtumėte blokavimo!</strong>",
-                        bonus: "🎁 <b>Bonusas:</b> Po užsakymo gausite <b>Rinkėjo gidą</b>!",
-                        mainTitle: '📱 Jūsų virtualus pilotas',
-                        infoDesc: '<b>Savaitinis rinkinys</b> yra greičiausias duomenų šaltinis apie atliekų surinkimą Vokietijoje.',
-                        liFullList: '<strong>Pilnas sąrašas:</strong> Visi arba pasirinkti regionai.',
-                        liNav: 'Google Maps navigacija.',
-                        liAccess: 'Online + Offline.',
-                        liAddresses: 'Tikslūs adresai.',
-                        liScroll: 'Smart Start.',
-                        liDark: 'Tamsus režimas.',
-                        previewTitle: 'Datų peržiūra',
-                        previewSub: 'Patikrinkite regionus.',
-                        previewNote: 'ℹ️ Regionų sąrašas.<br>Turite klausimų? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKTAS</a>.',
-                        headerChoose: 'Pasirinkite paketą',
-                        basicTitle: '📍 Versija Basic',
-                        basicPrice: '20 - 40 EUR',
-                        basicSubtitle: 'Pasirinkti 1-3 regionai',
-                        basicLi1: 'Rankinis pasirinkimas: <b>Maks 3 regionai</b>.',
-                        basicLi2: 'Formatas: Online versija.',
-                        basicLi3: 'Offline: +5 EUR (vienkartinis).',
-                        proTitle: '👑 Versija PRO',
-                        proPrice: '60 EUR',
-                        proSubtitle: '(Visi Regionai)',
-                        proLi1: '<b>Visi regionai</b> iš sąrašo.',
-                        proLi2: 'Nėra vartotojų limito.',
-                        proLi3: 'Offline versija: <b>Įskaičiuota (0 EUR)</b>.',
-                        step1Header: '👇 1. Pasirinkite regionus:',
-                        btnSelectAll: '[ Pasirinkti viską = 👑 PRO ]',
-                        btnUnselectAll: '[ Atšaukti pasirinkimą ]',
-                        step2Header: '📅 2. Pasirinkite savaites:',
-                        step3Header: '💾 3. Papildomos parinktys:',
-                        groupLabel: "👥 Grupinė prieiga",
-                        offlineLabel: 'Pridėti <b>OFFLINE (HTML)</b> versiją',
-                        mapLabel: '🗺️ Online Žemėlapis (Premium)',
-                        schrottLabel: '🧲 Schrott & E-Schrott',
-                        placeholderPhone: 'Telefono numeris (neprivaloma)',
-                        placeholderEmail: 'Jūsų el. paštas (privaloma)',
-                        btnSubmit: '\u2705 SIŲSTI UŽKLAUSĄ',
-                        freeSampleText: 'ℹ️ <b>Nemokamas pavyzdys:</b> Archyvinis rinkinys.',
-                        archiveLink: '📂 ATIDARYTI ARCHYVĄ',
-                        weekLabel: 'Savaitė',
-                        rodoLabel: 'Sutinku su asmens duomenų tvarkymu (BDAR).',
-                        rodoText: 'Duomenų valdytojas yra svetainės savininkas. Formoje pateikti duomenys bus tvarkomi tik atsakymo pateikimo arba užsakymo vykdymo tikslais.',
-                        rodoError: '\u26A0 Turite sutikti su BDAR.',
-                        emailGreeting: 'Laba diena,',
-                        emailOrderSet: 'Užsakau rinkinį:',
-                        emailTotal: 'VISO',
-                        emailDates: 'DATOS',
-                        emailSelectedRegions: 'PASIRINKTI REGIONAI',
-                        paymentNote: 'Mokėjimo paskirtyje nurodykite užsakymo numerį:',
-                        extraInfoText: 'ℹ️ <b>Papildomai:</b> Dviračių, žoliapjovių, plovyklų, padangų servisų, automobilių sąvartynų adresai ir kt.',
-                        extraInfoBtn: 'Parašykite mums',
-                        extraInfoSubject: 'Kontaktas dėl interaktyvaus žemėlapio',
-                        summaryTotal: 'VISO'
-                    }
+        // Pełna konfiguracja dla wszystkich języków
+        const config = {
+            'pl': {
+                currency: 'PLN',
+                prices: { 1: 80, 2: 140, 3: 160, groupSurcharge: 40, pro: 240, offline: 20, dhl: 25, map: 100 },
+                texts: {
+                    btnOpenList: '📂 OTWÓRZ SPIS REJONÓW',
+                    rulesTitle: "\u26A0 WAŻNE: Zasady Licencji",
+                    rulesText: "👤 Dostęp Indywidualny = 1 Użytkownik.<br>🚫 Po wykryciu udostępniania kolejne zamówienie zostanie zoptymalizowane dla grupy.<br>🏢 <strong>Wybierz \"Dostęp Grupowy\", aby uniknąć blokady!</strong>",
+                    bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!",
+                    aboutUsText: 'Zajmujemy się profesjonalnym opracowywaniem informacji dla osób poszukujących towarów z rynku wtórnego – od tzw. wystawek, po serwisy rowerowe, kosiarki czy części samochodowe. Działamy od 30 lat. Początkowo szukaliśmy terminów i adresów na własne potrzeby, a od 2008 roku robimy to dla Państwa pod marką dabu-info.',  
+                    mainTitle: '📱 Twój wirtualny autopilot',
+                    infoDesc: '<b>Zestaw Tygodniowy</b> to najszybsze źródło danych o wystawkach w Niemczech.',
+                    liFullList: '<strong>Pełna lista:</strong> Wszystkie lub wybrane dostępne rejony.',
+                    liNav: '<strong>Nawigacja:</strong> Klikalne linki do Google Maps.',
+                    liAccess: '<strong>Dostęp:</strong> Wersja Online + opcjonalny plik Offline (HTML).',
+                    liAddresses: '<strong>Dokładne adresy:</strong> Pełne dane (Ulica, Miasto, Częstotliwość).',
+                    liScroll: '<strong>Smart Start:</strong> Automatyczne przewijanie.',
+                    liDark: '<strong>Dark Mode:</strong> Oszczędza Twoją baterię o 30%.', 
+                    previewTitle: '👀 Podgląd Terminów',
+                    previewSub: 'Sprawdź w jakich rejonach wystawiają.',
+                    previewNote: 'ℹ️ Spis kolejnych dostępnych rejonów.<br>Proszę o <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
+                    headerChoose: 'Wybierz swój pakiet',
+                    
+                    basicTitle: '📍 Wersja Basic',
+                    basicPrice: '80 - 160 PLN', 
+                    basicSubtitle: 'Dla 1 osoby (Max 3 rejony)',
+                    
+                    basicLi1: 'Wybór ręczny: <b>Max 3 rejony</b>.',
+                    basicLi2: 'Format: Wersja Online.',
+                    basicLi3: 'Offline: +20 PLN (jednorazowo).',
+                    proTitle: '👑 Wersja PRO',
+                    proPrice: '240 PLN',
+                    proSubtitle: '(Wszystkie Rejony)',
+                    proLi1: '<b>Wszystkie rejony</b> z listy (90+).',
+                    proLi2: 'Brak limitów użytkowników.',
+                    proLi3: 'Wersja Offline: <b>W cenie (0 PLN)</b>.',
+                    step1Header: '👇 1. Wybierz Rejony:',
+                    btnSelectAll: '[ Zaznacz wszystko = 👑 Wersja PRO ]',
+                    btnUnselectAll: '[ Odznacz wszystkie ]',
+                    step2Header: '📅 2. Wybierz Tygodnie:',
+                    step3Header: '💾 3. Opcje dodatkowe:',
+                    groupLabel: "👥 Dostęp Grupowy",
+                    offlineLabel: 'Dodaj wersję <b>OFFLINE (HTML)</b>',
+                    mapLabel: '🗺️ Mapa Online (Wersja Premium)',
+                    schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)',
+                    placeholderPhone: 'Numer telefonu (opcjonalnie)',
+                    placeholderEmail: 'Twój adres E-mail (wymagane)',
+                    btnSubmit: '\u2705 WYŚLIJ ZAPYTANIE', 
+                    freeSampleText: 'ℹ️ <b>Darmowy wgląd:</b> Zestaw archiwalny.',
+                    archiveLink: '📂 OTWÓRZ ARCHIWUM',
+                    weekLabel: 'Tydzień',
+                    rodoLabel: 'Wyrażam zgodę na przetwarzanie danych osobowych (RODO).',
+                    rodoText: 'Administratorem danych jest właściciel serwisu. Dane podane w formularzu będą przetwarzane wyłącznie w celu udzielenia odpowiedzi lub realizacji zamówienia.',
+                    rodoError: '\u26A0 Musisz zaakceptować zgodę RODO.',
+                    emailGreeting: 'Dzień dobry,',
+                    emailOrderSet: 'Zamawiam zestaw:',
+                    emailTotal: 'SUMA',
+                    emailDates: 'DATY',
+                    emailSelectedRegions: 'WYBRANE REJONY',
+                    paymentNote: 'Numer zamówienia podaj tytułem wpłaty:',
+                    extraInfoText: 'ℹ️ <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.',
+                    extraInfoBtn: 'Napisz do nas',
+                    extraInfoSubject: 'Proszę o kontakt w sprawie adresów przygotowanych na interaktywnej mapie',
+                    summaryTotal: 'RAZEM'
                 }
-            };
-
-            // Fallback dla reszty języków
-            if(!config[userLang]) {
-                 config[userLang] = config['de'];
+            },
+            'de': {
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                  aboutUsText: 'Wir beschäftigen uns mit der professionellen Aufbereitung von Informationen für Personen, die Waren auf dem Sekundärmarkt suchen – von Sperrmüll bis hin zu Fahrradwerkstätten, Rasenmähern oder Autoteilen. Wir sind seit 30 Jahren tätig. Anfangs suchten wir Termine und Adressen für den Eigenbedarf, und seit 2008 tun wir dies für Sie unter der Marke dabu-info.',  
+                  btnOpenList: '📂 VERZEICHNIS ÖFFNEN',
+                    rulesTitle: "\u26A0 WICHTIG: Lizenz & Audit",
+                    rulesText: "👤 Einzelzugriff = 1 Benutzer.<br>🚫 Entdeckung der Weitergabe = 💸 <b>Nachzahlung bei der nächsten Bestellung</b>.<br>🏢 <strong>Wählen Sie sofort den Gruppenzugriff!</strong>",
+                    bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!",
+                    mainTitle: '📱 Dein virtueller Lotse',
+                    infoDesc: '<b>Wochenset</b> ist die schnellste Datenquelle für Sperrmüll.',
+                    liFullList: '<strong>Komplette Liste:</strong> Alle oder ausgewählte Regionen.',
+                    liNav: 'Navigation zu Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Genaue Adressen.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Dark Mode.',
+                    previewTitle: 'Vorschau der Wochen',
+                    previewSub: 'Klicken Sie hier.',
+                    previewNote: 'Fragen? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
+                    headerChoose: 'Wähle dein Paket',
+                    basicTitle: '📍 Version Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Ausgewählte 1-3 Regionen',
+                    basicLi1: 'Max. 3 Regionen.',
+                    basicLi2: 'Online-Version.',
+                    basicLi3: 'Offline: +5 EUR (einmalig).',
+                    proTitle: '👑 Version PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Alle Regionen)',
+                    proLi1: 'Alle Regionen.',
+                    proLi2: 'Online + Offline.',
+                    proLi3: 'Offline: Inklusive.',
+                    step1Header: '👇 1. Regionen auswählen:',
+                    btnSelectAll: '[ Alle auswählen = PRO ]',
+                    btnUnselectAll: '[ Auswahl aufheben ]',
+                    step2Header: '📅 2. Wochen auswählen:',
+                    step3Header: '💾 3. Offline & Extra:',
+                    groupLabel: "👥 Gruppenzugriff",
+                    offlineLabel: '<b>OFFLINE (HTML)</b> hinzufügen',
+                    mapLabel: '🗺️ Online Karte (Premium Version)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefonnummer',
+                    placeholderEmail: 'E-Mail-Adresse',
+                    btnSubmit: 'ANFRAGE SENDEN',
+                    freeSampleText: 'Kostenlose Vorschau.',
+                    archiveLink: 'ARCHIV ÖFFNEN',
+                    weekLabel: 'Woche',
+                    rodoLabel: 'Ich stimme der Datenverarbeitung zu (DSGVO).',
+                    rodoText: 'Der Datenverantwortliche ist der Eigentümer der Website. Die im Formular angegebenen Daten werden ausschließlich zur Beantwortung oder zur Auftragsabwicklung verarbeitet.',
+                    rodoError: '\u26A0 Sie müssen die DSGVO akzeptieren.',
+                    emailGreeting: 'Guten Tag,',
+                    emailOrderSet: 'Ich bestelle:',
+                    emailTotal: 'SUMME',
+                    emailDates: 'TERMINE',
+                    emailSelectedRegions: 'REGIONEN',
+                    paymentNote: 'Bitte geben Sie die Bestellnummer als Verwendungszweck an:',
+                    extraInfoText: 'ℹ️ <b>Zusätzlich:</b> Adressen von Fahrrad-, Rasenmäher-, Reifenwerkstätten usw.',
+                    extraInfoBtn: 'Schreib uns',
+                    extraInfoSubject: 'Kontakt wegen Adressen auf der interaktiven Karte',
+                    summaryTotal: 'GESAMT'
+                }
+            },
+            'cs': { // CZECH
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Zabýváme se profesionálním zpracováním informací pro osoby hledající zboží na sekundárním trhu – od sběru (Sperrmüll), přes servisy jízdních kol, sekačky až po autodíly. Působíme již 30 let. Zpočátku jsme hledali termíny a adresy pro vlastní potřebu a od roku 2008 to děláme pro vás pod značkou dabu-info.',
+                    btnOpenList: '📂 OTEVŘÍT SEZNAM',
+                    rulesTitle: "\u26A0 DŮLEŽITÉ: Pravidla licence",
+                    rulesText: "👤 Individuální přístup = 1 uživatel.<br>🚫 Sdílení je zakázáno.<br>🏢 <strong>Vyberte \"Skupinový přístup\", abyste se vyhnuli blokaci!</strong>",
+                    bonus: "🎁 <b>Bonus:</b> Po objednání obdržíte <b>Průvodce sběrem</b>!",
+                    mainTitle: '📱 Váš virtuální pilot',
+                    infoDesc: '<b>Týdenní sada</b> je nejrychlejší zdroj dat o sběru v Německu.',
+                    liFullList: '<strong>Kompletní seznam:</strong> Všechny nebo vybrané regiony.',
+                    liNav: 'Navigace Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Přesné adresy.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Tmavý režim.',
+                    previewTitle: 'Náhled termínů',
+                    previewSub: 'Klikněte pro kontrolu regionů.',
+                    previewNote: 'ℹ️ Seznam dostupných regionů.<br>Otázky? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
+                    headerChoose: 'Vyberte si balíček',
+                    basicTitle: '📍 Verze Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Vybrané 1-3 regiony',
+                    basicLi1: 'Ruční výběr: <b>Max 3 regiony</b>.',
+                    basicLi2: 'Formát: Online verze.',
+                    basicLi3: 'Offline: +5 EUR (jednorázově).',
+                    proTitle: '👑 Verze PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Všechny regiony)',
+                    proLi1: '<b>Všechny regiony</b> ze seznamu.',
+                    proLi2: 'Žádné limity uživatelů.',
+                    proLi3: 'Offline verze: <b>V ceně (0 EUR)</b>.',
+                    step1Header: '👇 1. Vyberte regiony:',
+                    btnSelectAll: '[ Vybrat vše = 👑 Verze PRO ]',
+                    btnUnselectAll: '[ Zrušit výběr ]',
+                    step2Header: '📅 2. Vyberte týdny:',
+                    step3Header: '💾 3. Další možnosti:',
+                    groupLabel: "👥 Skupinový přístup",
+                    offlineLabel: 'Přidat verzi <b>OFFLINE (HTML)</b>',
+                    mapLabel: '🗺️ Online Mapa (Premium Verze)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefonní číslo (volitelné)',
+                    placeholderEmail: 'Váš E-mail (povinné)',
+                    btnSubmit: '\u2705 ODESLAT POPTÁVKU',
+                    freeSampleText: 'ℹ️ <b>Ukázka zdarma:</b> Archivní sada.',
+                    archiveLink: '📂 OTEVŘÍT ARCHIV',
+                    weekLabel: 'Týden',
+                    rodoLabel: 'Souhlasím se zpracováním osobních údajů (GDPR).',
+                    rodoText: 'Správcem údajů je vlastník webu. Údaje uvedené ve formuláři budou zpracovávány výhradně za účelem odpovědi nebo vyřízení objednávky.',
+                    rodoError: '\u26A0 Musíte přijmout GDPR.',
+                    emailGreeting: 'Dobrý den,',
+                    emailOrderSet: 'Objednávám sadu:',
+                    emailTotal: 'CELKEM',
+                    emailDates: 'TERMÍNY',
+                    emailSelectedRegions: 'VYBRANÉ REGIONY',
+                    paymentNote: 'Jako účel platby uveďte číslo objednávky:',
+                    extraInfoText: 'ℹ️ <b>Navíc:</b> Adresy servisů kol, sekaček, myček, pneu, autovrakovišť atd.',
+                    extraInfoBtn: 'Napište nám',
+                    extraInfoSubject: 'Kontakt ohledně interaktivní mapy',
+                    summaryTotal: 'CELKEM'
+                }
+            },
+            'sk': { // SLOVAK
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Zaoberáme sa profesionálnym spracovaním informácií pre osoby hľadajúce tovar na sekundárnom trhu – od zberu (Sperrmüll), cez servisy bicyklov, kosačky až po autodiely. Pôsobíme už 30 rokov. Spočiatku sme hľadali termíny a adresy pre vlastnú potrebu a od roku 2008 to robíme pre vás pod značkou dabu-info.',
+                    btnOpenList: '📂 OTVORIŤ ZOZNAM',
+                    rulesTitle: "\u26A0 DÔLEŽITÉ: Pravidlá licencie",
+                    rulesText: "👤 Individuálny prístup = 1 používateľ.<br>🚫 Zdieľanie je zakázané.<br>🏢 <strong>Vyberte \"Skupinový prístup\", aby ste sa vyhli blokácii!</strong>",
+                    bonus: "🎁 <b>Bonus:</b> Po objednaní dostanete <b>Sprievodcu zberom</b>!",
+                    mainTitle: '📱 Váš virtuálny pilot',
+                    infoDesc: '<b>Týždenná sada</b> je najrýchlejší zdroj dát o zbere v Nemecku.',
+                    liFullList: '<strong>Kompletný zoznam:</strong> Všetky alebo vybrané regióny.',
+                    liNav: 'Navigácia Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Presné adresy.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Tmavý režim.',
+                    previewTitle: 'Náhľad termínov',
+                    previewSub: 'Kliknite pre kontrolu regiónov.',
+                    previewNote: 'ℹ️ Zoznam dostupných regiónov.<br>Otázky? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
+                    headerChoose: 'Vyberte si balík',
+                    basicTitle: '📍 Verzia Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Vybrané 1-3 regióny',
+                    basicLi1: 'Ručný výber: <b>Max 3 regióny</b>.',
+                    basicLi2: 'Formát: Online verzia.',
+                    basicLi3: 'Offline: +5 EUR (jednorazovo).',
+                    proTitle: '👑 Verzia PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Všetky regióny)',
+                    proLi1: '<b>Všetky regióny</b> zo zoznamu.',
+                    proLi2: 'Žiadne limity používateľov.',
+                    proLi3: 'Offline verzia: <b>V cene (0 EUR)</b>.',
+                    step1Header: '👇 1. Vyberte regióny:',
+                    btnSelectAll: '[ Vybrať všetko = 👑 Verzia PRO ]',
+                    btnUnselectAll: '[ Zrušiť výber ]',
+                    step2Header: '📅 2. Vyberte týždne:',
+                    step3Header: '💾 3. Ďalšie možnosti:',
+                    groupLabel: "👥 Skupinový prístup",
+                    offlineLabel: 'Pridať verziu <b>OFFLINE (HTML)</b>',
+                    mapLabel: '🗺️ Online Mapa (Premium Verzia)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefónne číslo (voliteľné)',
+                    placeholderEmail: 'Váš E-mail (povinné)',
+                    btnSubmit: '\u2705 ODOSLAŤ DOPYT',
+                    freeSampleText: 'ℹ️ <b>Ukážka zadarmo:</b> Archívna sada.',
+                    archiveLink: '📂 OTVORIŤ ARCHÍV',
+                    weekLabel: 'Týždeň',
+                    rodoLabel: 'Súhlasím so spracovaním osobných údajov (GDPR).',
+                    rodoText: 'Prevádzkovateľom údajov je vlastník webu. Údaje uvedené vo formulári budú spracúvané výlučne na účely odpovede alebo vybavenia objednávky.',
+                    rodoError: '\u26A0 Musíte prijať GDPR.',
+                    emailGreeting: 'Dobrý deň,',
+                    emailOrderSet: 'Objednávám sadu:',
+                    emailTotal: 'SPOLU',
+                    emailDates: 'TERMÍNY',
+                    emailSelectedRegions: 'VYBRANÉ REGIÓNY',
+                    paymentNote: 'Ako účel platby uveďte číslo objednávky:',
+                    extraInfoText: 'ℹ️ <b>Navyše:</b> Adresy servisov bicyklov, kosačiek, umývačiek, pneu, autovrakovísk atd.',
+                    extraInfoBtn: 'Napíšte nám',
+                    extraInfoSubject: 'Kontakt ohľadom interaktívnej mapy',
+                    summaryTotal: 'SPOLU'
+                }
+            },
+            'hu': { // HUNGARIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Professzionális információfeldolgozással foglalkozunk a másodlagos piacon árut keresők számára – a lomtalanítástól kezdve a kerékpárszervizeken és fűnyírókon át az autóalkatrészekig. 30 éve működünk. Kezdetben saját célra kerestünk időpontokat és címeket, 2008 óta pedig az Önök számára tesszük ezt a dabu-info márkanév alatt.',
+                    btnOpenList: '📂 JEGYZÉK MEGNYITÁSA',
+                    rulesTitle: "\u26A0 FONTOS: Licencszabályok",
+                    rulesText: "👤 Egyéni hozzáférés = 1 felhasználó.<br>🚫 A megosztás tilos.<br>🏢 <strong>Válassza a \"Csoportos hozzáférést\" a blokkolás elkerülése érdekében!</strong>",
+                    bonus: "🎁 <b>Bónusz:</b> Rendelés után megkapja a <b>Lomtalanítási útmutatót</b>!",
+                    mainTitle: '📱 Virtuális pilóta',
+                    infoDesc: '<b>Heti készlet</b> a leggyorsabb adatforrás a németországi lomtalanításokról.',
+                    liFullList: '<strong>Teljes lista:</strong> Összes vagy kiválasztott régió.',
+                    liNav: 'Google Maps navigáció.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Pontos címek.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Sötét mód.',
+                    previewTitle: 'Időpontok előnézete',
+                    previewSub: 'Kattintson a régiók ellenőrzéséhez.',
+                    previewNote: 'ℹ️ Elérhető régiók listája.<br>Kérdése van? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KAPCSOLAT</a>.',
+                    headerChoose: 'Válasszon csomagot',
+                    basicTitle: '📍 Basic Verzió',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Választott 1-3 régió',
+                    basicLi1: 'Kézi választás: <b>Max 3 régió</b>.',
+                    basicLi2: 'Formátum: Online verzió.',
+                    basicLi3: 'Offline: +5 EUR (egyszeri).',
+                    proTitle: '👑 PRO Verzió',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Összes Régió)',
+                    proLi1: '<b>Az összes régió</b> a listáról.',
+                    proLi2: 'Nincs felhasználói korlát.',
+                    proLi3: 'Offline verzió: <b>Az árban (0 EUR)</b>.',
+                    step1Header: '👇 1. Válasszon régiókat:',
+                    btnSelectAll: '[ Összes kijelölése = 👑 PRO ]',
+                    btnUnselectAll: '[ Kijelölés törlése ]',
+                    step2Header: '📅 2. Válasszon heteket:',
+                    step3Header: '💾 3. További opciók:',
+                    groupLabel: "👥 Csoportos hozzáférés",
+                    offlineLabel: '<b>OFFLINE (HTML)</b> verzió hozzáadása',
+                    mapLabel: '🗺️ Online Térkép (Premium Verzió)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefonszám (opcionális)',
+                    placeholderEmail: 'E-mail cím (kötelező)',
+                    btnSubmit: '\u2705 AJÁNLATKÉRÉS KÜLDÉSE',
+                    freeSampleText: 'ℹ️ <b>Ingyenes minta:</b> Archív készlet.',
+                    archiveLink: '📂 ARCHÍVUM MEGNYITÁSA',
+                    weekLabel: 'Hét',
+                    rodoLabel: 'Hozzájárulok az adatkezeléshez (GDPR).',
+                    rodoText: 'Az adatkezelő a weboldal tulajdonosa. Az űrlapon megadott adatokat kizárólag a válaszadás vagy a megrendelés teljesítése céljából kezeljük.',
+                    rodoError: '\u26A0 El kell fogadnia a GDPR-t.',
+                    emailGreeting: 'Jó napot,',
+                    emailOrderSet: 'Rendelni szeretnék:',
+                    emailTotal: 'ÖSSZESEN',
+                    emailDates: 'DÁTUMOK',
+                    emailSelectedRegions: 'KIVÁLASZTOTT RÉGIÓK',
+                    paymentNote: 'A megrendelés számát tüntesse fel a közleményben:',
+                    extraInfoText: 'ℹ️ <b>Továbbá:</b> Kerékpár-, fűnyíró-, autómosó szervizek, autóbontók címei stb.',
+                    extraInfoBtn: 'Írjon nekünk',
+                    extraInfoSubject: 'Kapcsolatfelvétel az interaktív térképpel kapcsolatban',
+                    summaryTotal: 'ÖSSZESEN'
+                }
+            },
+            'ro': { // ROMANIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Ne ocupăm cu prelucrarea profesională a informațiilor pentru persoanele care caută bunuri pe piața secundară – din colectări (Sperrmüll), la service-uri de biciclete, mașini de tuns iarba sau piese auto. Activăm de 30 de ani. Inițial căutam date și adrese pentru uz propriu, iar din 2008 facem acest lucru pentru dumneavoastră sub marca dabu-info.',
+                    btnOpenList: '📂 DESCHIDEȚI REGISTRUL',
+                    rulesTitle: "\u26A0 IMPORTANT: Reguli de Licență",
+                    rulesText: "👤 Acces Individual = 1 Utilizator.<br>🚫 Partajarea este interzisă.<br>🏢 <strong>Alege \"Acces Grup\" pentru a evita blocarea!</strong>",
+                    bonus: "🎁 <b>Bonus:</b> După comandă primești <b>Ghidul Colectorului</b>!",
+                    mainTitle: '📱 Pilotul tău virtual',
+                    infoDesc: '<b>Setul Săptămânal</b> este cea mai rapidă sursă de date despre colectări în Germania.',
+                    liFullList: '<strong>Listă completă:</strong> Toate sau regiunile selectate.',
+                    liNav: 'Navigație Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Adrese exacte.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Mod întunecat.',
+                    previewTitle: 'Previzualizare Date',
+                    previewSub: 'Verifică regiunile disponibile.',
+                    previewNote: 'ℹ️ Lista regiunilor.<br>Întrebări? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">CONTACT</a>.',
+                    headerChoose: 'Alege pachetul',
+                    basicTitle: '📍 Versiunea Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: '1-3 regiuni selectate',
+                    basicLi1: 'Selecție manuală: <b>Max 3 regiuni</b>.',
+                    basicLi2: 'Format: Versiune Online.',
+                    basicLi3: 'Offline: +5 EUR (o singură dată).',
+                    proTitle: '👑 Versiunea PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Toate Regiunile)',
+                    proLi1: '<b>Toate regiunile</b> din listă.',
+                    proLi2: 'Fără limită de utilizatori.',
+                    proLi3: 'Versiune Offline: <b>Inclusă (0 EUR)</b>.',
+                    step1Header: '👇 1. Selectează Regiuni:',
+                    btnSelectAll: '[ Selectează tot = 👑 PRO ]',
+                    btnUnselectAll: '[ Deselectează tot ]',
+                    step2Header: '📅 2. Selectează Săptămâni:',
+                    step3Header: '💾 3. Opțiuni suplimentare:',
+                    groupLabel: "👥 Acces Grup",
+                    offlineLabel: 'Adaugă versiunea <b>OFFLINE (HTML)</b>',
+                    mapLabel: '🗺️ Hartă Online (Premium)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Număr de telefon (opțional)',
+                    placeholderEmail: 'Adresa ta de E-mail (obligatoriu)',
+                    btnSubmit: '\u2705 TRIMITE CEREREA',
+                    freeSampleText: 'ℹ️ <b>Mostră gratuită:</b> Set arhivă.',
+                    archiveLink: '📂 DESCHIDE ARHIVA',
+                    weekLabel: 'Săptămâna',
+                    rodoLabel: 'Sunt de acord cu prelucrarea datelor personale (GDPR).',
+                    rodoText: 'Operatorul datelor este proprietarul site-ului. Datele furnizate în formular vor fi prelucrate exclusiv în scopul răspunsului sau realizării comenzii.',
+                    rodoError: '\u26A0 Trebuie să accepți GDPR.',
+                    emailGreeting: 'Bună ziua,',
+                    emailOrderSet: 'Comand setul:',
+                    emailTotal: 'TOTAL',
+                    emailDates: 'DATE',
+                    emailSelectedRegions: 'REGIUNI SELECTATE',
+                    paymentNote: 'Menționați numărul comenzii la plată:',
+                    extraInfoText: 'ℹ️ <b>Suplimentar:</b> Adrese service biciclete, mașini de tuns iarba, spălătorii, anvelope, dezmembrări auto etc.',
+                    extraInfoBtn: 'Scrie-ne',
+                    extraInfoSubject: 'Contact privind harta interactivă',
+                    summaryTotal: 'TOTAL'
+                }
+            },
+            'bg': { // BULGARIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Занимаваме се с професионална обработка на информация за хора, търсещи стоки на вторичния пазар – от сметосъбиране, през сервизи за велосипеди, косачки до авточасти. Работим от 30 години. Първоначално търсихме дати и адреси за собствени нужди, а от 2008 г. го правим за Вас под марката dabu-info.',
+                    btnOpenList: '📂 ОТВОРИ СПИСЪКА',
+                    rulesTitle: "\u26A0 ВАЖНО: Правила за лиценз",
+                    rulesText: "👤 Индивидуален достъп = 1 Потребител.<br>🚫 Споделянето е забранено.<br>🏢 <strong>Изберете \"Групов достъп\", за да избегнете блокиране!</strong>",
+                    bonus: "🎁 <b>Бонус:</b> След поръчка получавате <b>Ръководство за събиране</b>!",
+                    mainTitle: '📱 Вашият виртуален пилот',
+                    infoDesc: '<b>Седмичният комплект</b> е най-бързият източник на данни за сметосъбиране в Германия.',
+                    liFullList: '<strong>Пълен списък:</strong> Всички или избрани региони.',
+                    liNav: 'Навигация Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Точни адреси.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Тъмен режим.',
+                    previewTitle: 'Преглед на датите',
+                    previewSub: 'Проверете регионите.',
+                    previewNote: 'ℹ️ Списък с региони.<br>Въпроси? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
+                    headerChoose: 'Изберете пакет',
+                    basicTitle: '📍 Версия Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Избрани 1-3 региона',
+                    basicLi1: 'Ръчен избор: <b>Макс 3 региона</b>.',
+                    basicLi2: 'Формат: Онлайн версия.',
+                    basicLi3: 'Offline: +5 EUR (еднократно).',
+                    proTitle: '👑 Версия PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Всички региони)',
+                    proLi1: '<b>Всички региони</b> от списъка.',
+                    proLi2: 'Без лимит на потребители.',
+                    proLi3: 'Офлайн версия: <b>В цената (0 EUR)</b>.',
+                    step1Header: '👇 1. Изберете региони:',
+                    btnSelectAll: '[ Избери всички = 👑 PRO ]',
+                    btnUnselectAll: '[ Изчисти избора ]',
+                    step2Header: '📅 2. Изберете седмици:',
+                    step3Header: '💾 3. Допълнителни опции:',
+                    groupLabel: "👥 Групов достъп",
+                    offlineLabel: 'Добави <b>OFFLINE (HTML)</b> версия',
+                    mapLabel: '🗺️ Онлайн карта (Premium версия)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Телефонен номер (по избор)',
+                    placeholderEmail: 'Вашият имейл (задължително)',
+                    btnSubmit: '\u2705 ИЗПРАТИ ЗАПИТВАНЕ',
+                    freeSampleText: 'ℹ️ <b>Безплатна мостра:</b> Архивен комплект.',
+                    archiveLink: '📂 ОТВОРИ АРХИВ',
+                    weekLabel: 'Седмица',
+                    rodoLabel: 'Съгласен съм с обработката на лични данни (GDPR).',
+                    rodoText: 'Администратор на данните е собственикът на сайта. Данните, предоставени във формуляра, ще бъдат обработвани само за отговор или изпълнение на поръчката.',
+                    rodoError: '\u26A0 Трябва да приемете GDPR.',
+                    emailGreeting: 'Здравейте,',
+                    emailOrderSet: 'Поръчвам комплект:',
+                    emailTotal: 'ОБЩО',
+                    emailDates: 'ДАТИ',
+                    emailSelectedRegions: 'ИЗБРАНИ РЕГИОНИ',
+                    paymentNote: 'Моля, посочете номера на поръчката при плащане:',
+                    extraInfoText: 'ℹ️ <b>Допълнително:</b> Адреси на сервизи за велосипеди, косачки, автомивки, гуми, автоморга и др.',
+                    extraInfoBtn: 'Пишете ни',
+                    extraInfoSubject: 'Контакт относно интерактивната карта',
+                    summaryTotal: 'ОБЩО'
+                }
+            },
+            'tr': { // TURKISH
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'İkinci el piyasasında mal arayanlar için profesyonel bilgi işleme ile uğraşıyoruz – atık toplamadan, bisiklet servislerine ve araba parçalarına kadar. 30 yıldır faaliyet gösteriyoruz. Başlangıçta tarihleri kendi ihtiyaçlarımız için arıyorduk, 2008\'den beri ise bunu dabu-info markası altında sizin için yapıyoruz.',
+                    btnOpenList: '📂 LİSTEYİ AÇ',
+                    rulesTitle: "\u26A0 ÖNEMLİ: Lisans Kuralları",
+                    rulesText: "👤 Bireysel Erişim = 1 Kullanıcı.<br>🚫 Paylaşım yasaktır.<br>🏢 <strong>Engellenmemek için \"Grup Erişimi\"ni seçin!</strong>",
+                    bonus: "🎁 <b>Bonus:</b> Siparişten sonra <b>Toplama Rehberi</b> alacaksınız!",
+                    mainTitle: '📱 Sanal Pilotunuz',
+                    infoDesc: '<b>Haftalık Set</b>, Almanya\'daki atık toplama verileri için en hızlı kaynaktır.',
+                    liFullList: '<strong>Tam Liste:</strong> Tüm veya seçilen bölgeler.',
+                    liNav: 'Google Maps Navigasyonu.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Tam Adresler.',
+                    liScroll: 'Akıllı Başlangıç.',
+                    liDark: 'Karanlık Mod.',
+                    previewTitle: 'Tarih Önizlemesi',
+                    previewSub: 'Bölgeleri kontrol edin.',
+                    previewNote: 'ℹ️ Bölge listesi.<br>Sorularınız mı var? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">İLETİŞİM</a>.',
+                    headerChoose: 'Paketinizi Seçin',
+                    basicTitle: '📍 Basic Sürüm',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Seçilen 1-3 Bölge',
+                    basicLi1: 'Manuel seçim: <b>Maks 3 bölge</b>.',
+                    basicLi2: 'Format: Online Sürüm.',
+                    basicLi3: 'Offline: +5 EUR (tek seferlik).',
+                    proTitle: '👑 PRO Sürüm',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Tüm Bölgeler)',
+                    proLi1: 'Listedeki <b>tüm bölgeler</b>.',
+                    proLi2: 'Kullanıcı sınırı yok.',
+                    proLi3: 'Offline Sürüm: <b>Fiyata dahil (0 EUR)</b>.',
+                    step1Header: '👇 1. Bölgeleri Seçin:',
+                    btnSelectAll: '[ Tümünü Seç = 👑 PRO ]',
+                    btnUnselectAll: '[ Seçimi Temizle ]',
+                    step2Header: '📅 2. Haftaları Seçin:',
+                    step3Header: '💾 3. Ekstra Seçenekler:',
+                    groupLabel: "👥 Grup Erişimi",
+                    offlineLabel: '<b>OFFLINE (HTML)</b> sürümü ekle',
+                    mapLabel: '🗺️ Online Harita (Premium Sürüm)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefon Numarası (isteğe bağlı)',
+                    placeholderEmail: 'E-posta Adresiniz (gerekli)',
+                    btnSubmit: '\u2705 SORGULAMA GÖNDER',
+                    freeSampleText: 'ℹ️ <b>Ücretsiz Örnek:</b> Arşiv seti.',
+                    archiveLink: '📂 ARŞİVİ AÇ',
+                    weekLabel: 'Hafta',
+                    rodoLabel: 'Kişisel verilerin işlenmesini kabul ediyorum (KVKK).',
+                    rodoText: 'Veri sorumlusu site sahibidir. Formda verilen veriler sadece cevap verme veya siparişi gerçekleştirme amacıyla işlenecektir.',
+                    rodoError: '\u26A0 KVKK/GDPR onayını kabul etmelisiniz.',
+                    emailGreeting: 'Merhaba,',
+                    emailOrderSet: 'Sipariş ediyorum:',
+                    emailTotal: 'TOPLAM',
+                    emailDates: 'TARİHLER',
+                    emailSelectedRegions: 'SEÇİLEN BÖLGELER',
+                    paymentNote: 'Lütfen ödeme açıklamasında sipariş numarasını belirtin:',
+                    extraInfoText: 'ℹ️ <b>Ekstra:</b> Bisiklet, çim biçme makinesi, oto yıkama, lastik, hurdalık servis adresleri vb.',
+                    extraInfoBtn: 'Bize Yazın',
+                    extraInfoSubject: 'İnteraktif harita hakkında iletişim',
+                    summaryTotal: 'TOPLAM'
+                }
+            },
+            'bs': { // BOSNIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Bavimo se profesionalnom obradom informacija za osobe koje traže robu na sekundarnom tržištu – od odvoza otpada, preko servisa bicikala, kosilica do autodijelova. Poslujemo već 30 godina. U početku smo tražili termine i adrese za vlastite potrebe, a od 2008. godine to radimo za vas pod brendom dabu-info.',
+                    btnOpenList: '📂 OTVORI SPISAK',
+                    rulesTitle: "\u26A0 VAŽNO: Pravila Licence",
+                    rulesText: "👤 Individualni pristup = 1 Korisnik.<br>🚫 Dijeljenje je zabranjeno.<br>🏢 <strong>Odaberite \"Grupni pristup\" da izbjegnete blokadu!</strong>",
+                    bonus: "🎁 <b>Bonus:</b> Nakon narudžbe dobijate <b>Vodič za sakupljanje</b>!",
+                    mainTitle: '📱 Vaš virtuelni pilot',
+                    infoDesc: '<b>Sedmični set</b> je najbrži izvor podataka o odvozu otpada u Njemačkoj.',
+                    liFullList: '<strong>Kompletna lista:</strong> Svi ili odabrani regioni.',
+                    liNav: 'Google Maps navigacija.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Tačne adrese.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Tamni mod.',
+                    previewTitle: 'Pregled termina',
+                    previewSub: 'Provjerite regione.',
+                    previewNote: 'ℹ️ Lista regiona.<br>Pitanja? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKT</a>.',
+                    headerChoose: 'Izaberite paket',
+                    basicTitle: '📍 Verzija Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Odabrana 1-3 regiona',
+                    basicLi1: 'Ručni izbor: <b>Max 3 regiona</b>.',
+                    basicLi2: 'Format: Online verzija.',
+                    basicLi3: 'Offline: +5 EUR (jednokratno).',
+                    proTitle: '👑 Verzija PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Svi Regioni)',
+                    proLi1: '<b>Svi regioni</b> sa liste.',
+                    proLi2: 'Bez limita korisnika.',
+                    proLi3: 'Offline verzija: <b>U cijeni (0 EUR)</b>.',
+                    step1Header: '👇 1. Izaberite regione:',
+                    btnSelectAll: '[ Izaberi sve = 👑 PRO ]',
+                    btnUnselectAll: '[ Poništi izbor ]',
+                    step2Header: '📅 2. Izaberite sedmice:',
+                    step3Header: '💾 3. Dodatne opcije:',
+                    groupLabel: "👥 Grupni pristup",
+                    offlineLabel: 'Dodaj <b>OFFLINE (HTML)</b> verziju',
+                    mapLabel: '🗺️ Online Mapa (Premium)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Broj telefona (opcionalno)',
+                    placeholderEmail: 'Vaša E-mail adresa (obavezno)',
+                    btnSubmit: '\u2705 POŠALJI UPIT',
+                    freeSampleText: 'ℹ️ <b>Besplatan uzorak:</b> Arhivski set.',
+                    archiveLink: '📂 OTVORI ARHIVU',
+                    weekLabel: 'Sedmica',
+                    rodoLabel: 'Pristajem na obradu ličnih podataka (GDPR).',
+                    rodoText: 'Administrator podataka je vlasnik stranice. Podaci navedeni u obrascu obrađivat će se isključivo u svrhu odgovora ili realizacije narudžbe.',
+                    rodoError: '\u26A0 Morate prihvatiti GDPR.',
+                    emailGreeting: 'Dobar dan,',
+                    emailOrderSet: 'Naručujem set:',
+                    emailTotal: 'UKUPNO',
+                    emailDates: 'DATUMI',
+                    emailSelectedRegions: 'ODABRANI REGIONI',
+                    paymentNote: 'Navedite broj narudžbe prilikom uplate:',
+                    extraInfoText: 'ℹ️ <b>Dodatno:</b> Adrese servisa bicikala, kosilica, autopraonica, guma, auto-otpada itd.',
+                    extraInfoBtn: 'Pišite nam',
+                    extraInfoSubject: 'Kontakt u vezi interaktivne mape',
+                    summaryTotal: 'UKUPNO'
+                }
+            },
+            'uk': { // UKRAINIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Ми займаємося професійною обробкою інформації для людей, які шукають товари на вторинному ринку – від збору (Sperrmüll), до сервісів велосипедів чи автозапчастин. Ми працюємо вже 30 років. Спочатку ми шукали адреси для власних потреб, а з 2008 року робимo це для Вас під брендом dabu-info.',
+                    btnOpenList: '📂 ВІДКРИТИ СПИСОК',
+                    rulesTitle: "\u26A0 ВАЖЛИВО: Правила ліцензії",
+                    rulesText: "👤 Індивідуальний доступ = 1 користувач.<br>🚫 Передача доступу заборонена.<br>🏢 <strong>Оберіть \"Груповий доступ\", щоб уникнути блокування!</strong>",
+                    bonus: "🎁 <b>Бонус:</b> Після замовлення отримаєте <b>Гід по збору</b>!",
+                    mainTitle: '📱 Твій віртуальний пілот',
+                    infoDesc: '<b>Тижневий набір</b> - це найшвидше джерело даних про виставки в Німеччині.',
+                    liFullList: '<strong>Повний список:</strong> Всі або вибрані регіони.',
+                    liNav: 'Навігація Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Точні адреси.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Темний режим.',
+                    previewTitle: 'Попередній перегляд',
+                    previewSub: 'Перевірте регіони.',
+                    previewNote: 'ℹ️ Список регіонів.<br>Питання? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
+                    headerChoose: 'Оберіть пакет',
+                    basicTitle: '📍 Версія Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Вибрані 1-3 регіони',
+                    basicLi1: 'Ручний вибір: <b>Макс 3 регіони</b>.',
+                    basicLi2: 'Формат: Онлайн версія.',
+                    basicLi3: 'Offline: +5 EUR (разово).',
+                    proTitle: '👑 Версія PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Всі Регіони)',
+                    proLi1: '<b>Всі регіони</b> зі списку.',
+                    proLi2: 'Без ліміту користувачів.',
+                    proLi3: 'Версія Offline: <b>В ціні (0 EUR)</b>.',
+                    step1Header: '👇 1. Оберіть регіони:',
+                    btnSelectAll: '[ Обрати все = 👑 PRO ]',
+                    btnUnselectAll: '[ Скасувати вибір ]',
+                    step2Header: '📅 2. Оберіть тижні:',
+                    step3Header: '💾 3. Додаткові опції:',
+                    groupLabel: "👥 Груповий доступ",
+                    offlineLabel: 'Додати <b>OFFLINE (HTML)</b> версію',
+                    mapLabel: '🗺️ Онлайн Карта (Premium)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Номер телефону (опціонально)',
+                    placeholderEmail: 'Ваш E-mail (обов\'язково)',
+                    btnSubmit: '\u2705 НАДІСЛАТИ ЗАПИТ',
+                    freeSampleText: 'ℹ️ <b>Безкоштовний зразок:</b> Архівний набір.',
+                    archiveLink: '📂 ВІДКРИТИ АРХИВ',
+                    weekLabel: 'Тиждень',
+                    rodoLabel: 'Я даю згоду на обробку персональних даних (GDPR).',
+                    rodoText: 'Адміністратором даних є власник сайту. Дані, вказані у формі, будуть оброблятися виключно з метою надання відповіді або виконання замовлення.',
+                    rodoError: '\u26A0 Ви повинні прийняти GDPR.',
+                    emailGreeting: 'Добрий день,',
+                    emailOrderSet: 'Замовляю набір:',
+                    emailTotal: 'ВСЬОГО',
+                    emailDates: 'ДАТЫ',
+                    emailSelectedRegions: 'ВИБРАНІ РЕГІОНИ',
+                    paymentNote: 'Вкажіть номер замовлення при оплаті:',
+                    extraInfoText: 'ℹ️ <b>Додатково:</b> Адреси сервісів велосипедів, газонокосилок, мийок, шин, автошротів тощо.',
+                    extraInfoBtn: 'Напишіть нам',
+                    extraInfoSubject: 'Контакт щодо інтерактивної карти',
+                    summaryTotal: 'ВСЬОГО'
+                }
+            },
+            'ru': { // RUSSIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Мы занимаемся профессиональной обработкой информации для людей, ищущих товары на вторичном рынке – от сбора (Sperrmüll), до сервисов велосипедов или автозапчастей. Мы работаем уже 30 лет. Изначально мы искали адреси для собственных нужд, а с 2008 года делаем это для Вас под брендом dabu-info.',
+                    btnOpenList: '📂 ОТКРЫТЬ СПИСОК',
+                    rulesTitle: "\u26A0 ВАЖНО: Правила лицензии",
+                    rulesText: "👤 Индивидуальный доступ = 1 пользователь.<br>🚫 Передача доступа запрещена.<br>🏢 <strong>Выберите \"Групповой доступ\", чтобы избежать блокировки!</strong>",
+                    bonus: "🎁 <b>Бонус:</b> После заказа вы получите <b>Гид по сбору</b>!",
+                    mainTitle: '📱 Ваш виртуальный пилот',
+                    infoDesc: '<b>Еженедельный набор</b> - это самый быстрый источник данных о выставках в Германии.',
+                    liFullList: '<strong>Полный список:</strong> Все или выбранные регионы.',
+                    liNav: 'Навигация Google Maps.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Точные адреса.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Темний режим.',
+                    previewTitle: 'Предварительный просмотр',
+                    previewSub: 'Проверьте регионы.',
+                    previewNote: 'ℹ️ Список регионов.<br>Вопросы? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">КОНТАКТ</a>.',
+                    headerChoose: 'Выберите пакет',
+                    basicTitle: '📍 Версия Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Выбранные 1-3 региона',
+                    basicLi1: 'Ручной выбор: <b>Макс 3 региона</b>.',
+                    basicLi2: 'Формат: Онлайн версия.',
+                    basicLi3: 'Offline: +5 EUR (разово).',
+                    proTitle: '👑 Версия PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Все Регионы)',
+                    proLi1: '<b>Все регионы</b> из списка.',
+                    proLi2: 'Без лимита пользователей.',
+                    proLi3: 'Версия Offline: <b>В цене (0 EUR)</b>.',
+                    step1Header: '👇 1. Выберите регионы:',
+                    btnSelectAll: '[ Выбрать все = 👑 PRO ]',
+                    btnUnselectAll: '[ Отменить выбор ]',
+                    step2Header: '📅 2. Выберите недели:',
+                    step3Header: '💾 3. Дополнительные опции:',
+                    groupLabel: "👥 Групповой доступ",
+                    offlineLabel: 'Добавить <b>OFFLINE (HTML)</b> версию',
+                    mapLabel: '🗺️ Онлайн Карта (Premium)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Номер телефона (опционально)',
+                    placeholderEmail: 'Ваш E-mail (обязательно)',
+                    btnSubmit: '\u2705 ОТПРАВИТЬ ЗАПРОС',
+                    freeSampleText: 'ℹ️ <b>Бесплатный образец:</b> Архивный набор.',
+                    archiveLink: '📂 ОТКРЫТЬ АРХИВ',
+                    weekLabel: 'Неделя',
+                    rodoLabel: 'Я даю согласие на обработку персональных данных (GDPR).',
+                    rodoText: 'Администратором данных является владелец сайта. Данные, указанные в форме, будут обрабатываться исключительно для ответа или выполнения заказа.',
+                    rodoError: '\u26A0 Вы должны принять GDPR.',
+                    emailGreeting: 'Добрый день,',
+                    emailOrderSet: 'Заказываю набор:',
+                    emailTotal: 'ИТОГО',
+                    emailDates: 'ДАТЫ',
+                    emailSelectedRegions: 'ВЫБРАННЫЕ РЕГИОНЫ',
+                    paymentNote: 'Укажите номер заказа при оплате:',
+                    extraInfoText: 'ℹ️ <b>Дополнительно:</b> Адреса сервисов велосипедов, газонокосилок, моек, шин, автошротов и т.д.',
+                    extraInfoBtn: 'Напишите нам',
+                    extraInfoSubject: 'Контакт по поводу интерактивной карты',
+                    summaryTotal: 'ИТОГО'
+                }
+            },
+            'lt': { // LITHUANIAN
+                currency: 'EUR',
+                prices: pricesEUR,
+                texts: {
+                    aboutUsText: 'Užsiimame profesionaliu informacijos apdorojimu asmenims, ieškantiems prekių antrinėje rinkoje – nuo atliekų surinkimo, iki dviračių servisų ar automobilių dalių. Dirbame jau 30 metų. Iš pradžių ieškojome datų ir adresų savo poreikiams, o nuo 2008 metų darome tai Jums su prekės ženklu dabu-info.',
+                    btnOpenList: '📂 ATIDARYTI SĄRAŠĄ',
+                    rulesTitle: "\u26A0 SVARBU: Licencijos taisyklės",
+                    rulesText: "👤 Individuali prieiga = 1 Vartotojas.<br>🚫 Dalinimasis draudžiamas.<br>🏢 <strong>Pasirinkite \"Grupinę prieigą\", kad išvengtumėte blokavimo!</strong>",
+                    bonus: "🎁 <b>Bonusas:</b> Po užsakymo gausite <b>Rinkėjo gidą</b>!",
+                    mainTitle: '📱 Jūsų virtualus pilotas',
+                    infoDesc: '<b>Savaitinis rinkinys</b> yra greičiausias duomenų šaltinis apie atliekų surinkimą Vokietijoje.',
+                    liFullList: '<strong>Pilnas sąrašas:</strong> Visi arba pasirinkti regionai.',
+                    liNav: 'Google Maps navigacija.',
+                    liAccess: 'Online + Offline.',
+                    liAddresses: 'Tikslūs adresai.',
+                    liScroll: 'Smart Start.',
+                    liDark: 'Tamsus režimas.',
+                    previewTitle: 'Datų peržiūra',
+                    previewSub: 'Patikrinkite regionus.',
+                    previewNote: 'ℹ️ Regionų sąrašas.<br>Turite klausimų? <a href="https://dabu-info.blogspot.com/p/kontakt.html" target="_blank">KONTAKTAS</a>.',
+                    headerChoose: 'Pasirinkite paketą',
+                    basicTitle: '📍 Versija Basic',
+                    basicPrice: '20 - 40 EUR',
+                    basicSubtitle: 'Pasirinkti 1-3 regionai',
+                    basicLi1: 'Rankinis pasirinkimas: <b>Maks 3 regionai</b>.',
+                    basicLi2: 'Formatas: Online versija.',
+                    basicLi3: 'Offline: +5 EUR (vienkartinis).',
+                    proTitle: '👑 Versija PRO',
+                    proPrice: '60 EUR',
+                    proSubtitle: '(Visi Regionai)',
+                    proLi1: '<b>Visi regionai</b> iš sąrašo.',
+                    proLi2: 'Nėra vartotojų limito.',
+                    proLi3: 'Offline versija: <b>Įskaičiuota (0 EUR)</b>.',
+                    step1Header: '👇 1. Pasirinkite regionus:',
+                    btnSelectAll: '[ Pasirinkti viską = 👑 PRO ]',
+                    btnUnselectAll: '[ Atšaukti pasirinkimą ]',
+                    step2Header: '📅 2. Pasirinkite savaites:',
+                    step3Header: '💾 3. Papildomos parinktys:',
+                    groupLabel: "👥 Grupinė prieiga",
+                    offlineLabel: 'Pridėti <b>OFFLINE (HTML)</b> versiją',
+                    mapLabel: '🗺️ Online Žemėlapis (Premium)',
+                    schrottLabel: '🧲 Schrott & E-Schrott',
+                    placeholderPhone: 'Telefono numeris (neprivaloma)',
+                    placeholderEmail: 'Jūsų el. paštas (privaloma)',
+                    btnSubmit: '\u2705 SIŲSTI UŽKLAUSĄ',
+                    freeSampleText: 'ℹ️ <b>Nemokamas pavyzdys:</b> Archyvinis rinkinys.',
+                    archiveLink: '📂 ATIDARYTI ARCHYVĄ',
+                    weekLabel: 'Savaitė',
+                    rodoLabel: 'Sutinku su asmens duomenų tvarkymu (BDAR).',
+                    rodoText: 'Duomenų valdytojas yra svetainės savininkas. Formoje pateikti duomenys bus tvarkomi tik atsakymo pateikimo arba užsakymo vykdymo tikslais.',
+                    rodoError: '\u26A0 Turite sutikti su BDAR.',
+                    emailGreeting: 'Laba diena,',
+                    emailOrderSet: 'Užsakau rinkinį:',
+                    emailTotal: 'VISO',
+                    emailDates: 'DATOS',
+                    emailSelectedRegions: 'PASIRINKTI REGIONAI',
+                    paymentNote: 'Mokėjimo paskirtyje nurodykite užsakymo numerį:',
+                    extraInfoText: 'ℹ️ <b>Papildomai:</b> Dviračių, žoliapjovių, plovyklų, padangų servisų, automobilių sąvartynų adresai ir kt.',
+                    extraInfoBtn: 'Parašykite mums',
+                    extraInfoSubject: 'Kontaktas dėl interaktyvaus žemėlapio',
+                    summaryTotal: 'VISO'
+                }
             }
+        };
 
-            const t = config[userLang].texts;
-            const p = config[userLang].prices;
-            const c = config[userLang].currency;
+        // Fallback dla reszty języków
+        if(!config[userLang]) {
+             config[userLang] = config['de'];
+        }
 
-            // --- DOPASOWANIE INTERFEJSU DO KRAJU ---
+        const t = config[userLang].texts;
+        const p = config[userLang].prices;
+        const c = config[userLang].currency;
+
+        // --- DOPASOWANIE INTERFEJSU DO KRAJU ---
+        if (userLang === 'pl') {
+            if(document.getElementById('dhlBox')) document.getElementById('dhlBox').classList.remove('hidden');
+        } else {
+            if(document.getElementById('schrottBox')) document.getElementById('schrottBox').classList.remove('hidden');
+        }
+
+        // ============================================================
+        // 🔥 MODUŁ PROMOCJI - BANER + CENA
+        // ============================================================
+        var todayDate = new Date();
+        var todayDay = todayDate.getDay(); 
+        
+        if (PROMO_DAYS.includes(todayDay)) {
+            
+            // Obniżamy ceny tylko dla pakietu BASIC
             if (userLang === 'pl') {
-                if(document.getElementById('dhlBox')) document.getElementById('dhlBox').classList.remove('hidden');
+                // Stała cena 80 PLN za zamówienie do 3 rejonów
+                config['pl'].prices[1] = 80; 
+                config['pl'].prices[2] = 80; 
+                config['pl'].prices[3] = 80; 
+                t.basicPrice = '80 PLN'; // Jedna cena zamiast widełek
+                t.basicSubtitle = '🔥 Promocja (1 do 3 rejonów w tej samej cenie!)';
             } else {
-                if(document.getElementById('schrottBox')) document.getElementById('schrottBox').classList.remove('hidden');
+                config[userLang].prices[1] -= 5;
+                config[userLang].prices[2] -= 5;
+                config[userLang].prices[3] -= 5;
+                t.basicPrice = config[userLang].prices[1] + ' - ' + config[userLang].prices[3] + ' EUR';
+                t.basicSubtitle = '🔥 Promo!';
             }
 
-            // ============================================================
-            // 🔥 MODUŁ PROMOCJI - BANER + CENA
-            // ============================================================
-            var todayDate = new Date();
-            var todayDay = todayDate.getDay(); 
-            
-            if (PROMO_DAYS.includes(todayDay)) {
-                
-                // Obniżamy ceny tylko dla pakietu BASIC
-                if (userLang === 'pl') {
-                    config['pl'].prices[1] -= 20; // 80 - 20 = 60
-                    config['pl'].prices[2] -= 20; // 140 - 20 = 120
-                    config['pl'].prices[3] -= 20; // 160 - 20 = 140
-                    t.basicPrice = config['pl'].prices[1] + ' - ' + config['pl'].prices[3] + ' PLN';
-                    t.basicSubtitle = '🔥 Promocja!';
+            // Pokaż baner z odpowiednim tekstem
+            var promoBox = document.getElementById('promoBox');
+            if(promoBox) {
+                if(userLang !== 'pl') {
+                    promoBox.innerHTML = '🔥 PROMO! <br><span style="font-size:0.8em; font-weight:normal;">Basic package 5 EUR cheaper! (Only today!)</span>';
                 } else {
-                    config[userLang].prices[1] -= 5;
-                    config[userLang].prices[2] -= 5;
-                    config[userLang].prices[3] -= 5;
-                    t.basicPrice = config[userLang].prices[1] + ' - ' + config[userLang].prices[3] + ' EUR';
-                    t.basicSubtitle = '🔥 Promo!';
+                    promoBox.innerHTML = '🔥 PROMOCJA! <br><span style="font-size:0.8em; font-weight:normal;">Pakiet Basic (do 3 rejonów) za jedyne 80 PLN! (Tylko dziś!)</span>';
                 }
-
-                // Pokaż baner z odpowiednim tekstem
-                var promoBox = document.getElementById('promoBox');
-                if(promoBox) {
-                    if(userLang !== 'pl') {
-                        promoBox.innerHTML = '🔥 PROMO! <br><span style="font-size:0.8em; font-weight:normal;">Basic package 5 EUR cheaper! (Only today!)</span>';
-                    } else {
-                        promoBox.innerHTML = '🔥 PROMOCJA! <br><span style="font-size:0.8em; font-weight:normal;">Pakiet Basic w specjalnej cenie! (Tylko dziś!)</span>';
-                    }
-                    promoBox.style.display = 'block';
-                }
-
-                // Podświetl kartę Basic
-                var basicCard = document.querySelector('.strategy-card.basic');
-                if(basicCard) {
-                    basicCard.classList.add('promo-active-border');
-                }
-            }
-            // ============================================================
-
-            // FUNKCJE POMOCNICZE
-            function setHtml(id, text) { if(document.getElementById(id)) document.getElementById(id).innerHTML = text; }
-            function setText(id, text) { if(document.getElementById(id)) document.getElementById(id).innerText = text; }
-            function setAttr(id, attr, text) { if(document.getElementById(id)) document.getElementById(id).setAttribute(attr, text); }
-
-            // APLIKOWANIE TEKSTÓW Z CONFIGU
-            setHtml('aboutUsText', t.aboutUsText);
-            setHtml('btnOpenList', t.btnOpenList);
-            setText('rulesTitle', t.rulesTitle);
-            setHtml('rulesText', t.rulesText);
-            setHtml('bonusInfo', t.bonus);
-            setText('mainTitle', t.mainTitle);
-            setHtml('infoDesc', t.infoDesc);
-            setHtml('liFullList', t.liFullList);
-            setHtml('liNav', t.liNav);
-            setHtml('liAccess', t.liAccess);
-            if(t.liAddresses) setHtml('liAddresses', t.liAddresses); 
-            if(t.liScroll) setHtml('liScroll', t.liScroll);
-            if(t.liDark) setHtml('liDark', t.liDark); 
-            setText('previewTitle', t.previewTitle);
-            setText('previewSub', t.previewSub);
-            setHtml('previewNote', t.previewNote);
-            setText('headerChoose', t.headerChoose);
-            setText('basicTitle', t.basicTitle);
-            setText('basicPrice', t.basicPrice);
-            setText('basicSubtitle', t.basicSubtitle);
-            setHtml('basicLi1', t.basicLi1);
-            setText('basicLi2', t.basicLi2);
-            setText('basicLi3', t.basicLi3);
-            setText('proTitle', t.proTitle);
-            setText('proPrice', t.proPrice);
-            setText('proSubtitle', t.proSubtitle);
-            setHtml('proLi1', t.proLi1);
-            setText('proLi2', t.proLi2);
-            setHtml('proLi3', t.proLi3);
-            setText('step1Header', t.step1Header);
-            setText('btnSelectAll', t.btnSelectAll);
-            setText('btnUnselectAll', t.btnUnselectAll);
-            setText('step2Header', t.step2Header);
-            setText('step3Header', t.step3Header);
-            setHtml('offlineLabel', t.offlineLabel);
-            setHtml('mapLabel', t.mapLabel);
-            setText('groupLabel', t.groupLabel);
-            if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
-            setAttr('klientTelefon', 'placeholder', t.placeholderPhone);
-            setAttr('klientEmail', 'placeholder', t.placeholderEmail);
-            setText('btnSubmit', t.btnSubmit);
-            setText('rodoLabel', t.rodoLabel);
-            setText('rodoText', t.rodoText); 
-            setHtml('freeSampleText', t.freeSampleText);
-            setText('archiveLink', t.archiveLink);
-            setHtml('extraInfoText', t.extraInfoText);
-            setText('extraInfoBtn', t.extraInfoBtn);
-            if(document.getElementById('extraInfoBtn')) document.getElementById('extraInfoBtn').href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(t.extraInfoSubject || "Kontakt");
-            if(t.summaryTotal) document.getElementById('liveSummary').innerHTML = t.summaryTotal + ': <span id="summaryTotal">0</span> <span id="summaryCurrency">' + c + '</span>';
-
-            // GENEROWANIE TYGODNI
-            var weeksContainer = document.getElementById('weeksContainer');
-            if (weeksContainer) {
-                var today = new Date();
-                var day = today.getDay(); 
-                var diff = today.getDate() - day + (day == 0 ? -6 : 1);
-                if (day === 5 || day === 6 || day === 0) diff += 7;
-
-                var startPoint = new Date(today.getFullYear(), today.getMonth(), diff);
-                var startYear = startPoint.getFullYear(); 
-
-                for (var i = 0; i < 8; i++) {
-                    var sW = new Date(startPoint); sW.setDate(startPoint.getDate() + (i * 7));
-                    if (sW.getFullYear() > startYear) break;
-                    var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
-                    var label = document.createElement('label'); label.className = "region-label";
-                    var input = document.createElement('input'); input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
-                    input.value = (typeof t.weekLabel !== 'undefined' ? t.weekLabel : "Tydzień") + " " + getWeekNumber(sW) + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
-                    if (i === 0) input.checked = true;
-                    label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
-                    weeksContainer.appendChild(label);
-                }
+                promoBox.style.display = 'block';
             }
 
-            // --- FUNKCJA SPRAWDZAJĄCA WIDOCZNOŚĆ I CENY ---
-            function updateDynamicOptions() {
-                var totalRegions = document.querySelectorAll('.region-chk').length;
-                var checkedRegions = document.querySelectorAll('.region-chk:checked').length;
-                var isPro = (checkedRegions === totalRegions && totalRegions > 0);
-                var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
+            // Podświetl kartę Basic
+            var basicCard = document.querySelector('.strategy-card.basic');
+            if(basicCard) {
+                basicCard.classList.add('promo-active-border');
+            }
+        }
+        // ============================================================
 
-                var offlinePriceSpan = document.getElementById('offlinePriceDynamic');
-                var offlinePrice = p.offline;
-                var offlineCurrency = c;
+        // FUNKCJE POMOCNICZE
+        function setHtml(id, text) { if(document.getElementById(id)) document.getElementById(id).innerHTML = text; }
+        function setText(id, text) { if(document.getElementById(id)) document.getElementById(id).innerText = text; }
+        function setAttr(id, attr, text) { if(document.getElementById(id)) document.getElementById(id).setAttribute(attr, text); }
 
-                if (offlinePriceSpan) {
-                    if (isPro || isGroup) { 
-                        offlinePriceSpan.style.display = 'none';
-                        offlinePriceSpan.innerText = "";
-                    } else {
-                        offlinePriceSpan.style.display = 'inline';
-                        offlinePriceSpan.innerText = "+ " + offlinePrice + " " + offlineCurrency;
-                    }
+        // APLIKOWANIE TEKSTÓW Z CONFIGU
+        setHtml('aboutUsText', t.aboutUsText);
+        setHtml('btnOpenList', t.btnOpenList);
+        setText('rulesTitle', t.rulesTitle);
+        setHtml('rulesText', t.rulesText);
+        setHtml('bonusInfo', t.bonus);
+        setText('mainTitle', t.mainTitle);
+        setHtml('infoDesc', t.infoDesc);
+        setHtml('liFullList', t.liFullList);
+        setHtml('liNav', t.liNav);
+        setHtml('liAccess', t.liAccess);
+        if(t.liAddresses) setHtml('liAddresses', t.liAddresses); 
+        if(t.liScroll) setHtml('liScroll', t.liScroll);
+        if(t.liDark) setHtml('liDark', t.liDark); 
+        setText('previewTitle', t.previewTitle);
+        setText('previewSub', t.previewSub);
+        setHtml('previewNote', t.previewNote);
+        setText('headerChoose', t.headerChoose);
+        setText('basicTitle', t.basicTitle);
+        setText('basicPrice', t.basicPrice);
+        setText('basicSubtitle', t.basicSubtitle);
+        setHtml('basicLi1', t.basicLi1);
+        setText('basicLi2', t.basicLi2);
+        setText('basicLi3', t.basicLi3);
+        setText('proTitle', t.proTitle);
+        setText('proPrice', t.proPrice);
+        setText('proSubtitle', t.proSubtitle);
+        setHtml('proLi1', t.proLi1);
+        setText('proLi2', t.proLi2);
+        setHtml('proLi3', t.proLi3);
+        setText('step1Header', t.step1Header);
+        setText('btnSelectAll', t.btnSelectAll);
+        setText('btnUnselectAll', t.btnUnselectAll);
+        setText('step2Header', t.step2Header);
+        setText('step3Header', t.step3Header);
+        setHtml('offlineLabel', t.offlineLabel);
+        setHtml('mapLabel', t.mapLabel);
+        setText('groupLabel', t.groupLabel);
+        if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
+        setAttr('klientTelefon', 'placeholder', t.placeholderPhone);
+        setAttr('klientEmail', 'placeholder', t.placeholderEmail);
+        setText('btnSubmit', t.btnSubmit);
+        setText('rodoLabel', t.rodoLabel);
+        setText('rodoText', t.rodoText); 
+        setHtml('freeSampleText', t.freeSampleText);
+        setText('archiveLink', t.archiveLink);
+        setHtml('extraInfoText', t.extraInfoText);
+        setText('extraInfoBtn', t.extraInfoBtn);
+        if(document.getElementById('extraInfoBtn')) document.getElementById('extraInfoBtn').href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(t.extraInfoSubject || "Kontakt");
+        if(t.summaryTotal) document.getElementById('liveSummary').innerHTML = t.summaryTotal + ': <span id="summaryTotal">0</span> <span id="summaryCurrency">' + c + '</span>';
+
+        // GENEROWANIE TYGODNI
+        var weeksContainer = document.getElementById('weeksContainer');
+        if (weeksContainer) {
+            var today = new Date();
+            var day = today.getDay(); 
+            var diff = today.getDate() - day + (day == 0 ? -6 : 1);
+            if (day === 5 || day === 6 || day === 0) diff += 7;
+
+            var startPoint = new Date(today.getFullYear(), today.getMonth(), diff);
+            var startYear = startPoint.getFullYear(); 
+
+            for (var i = 0; i < 8; i++) {
+                var sW = new Date(startPoint); sW.setDate(startPoint.getDate() + (i * 7));
+                if (sW.getFullYear() > startYear) break;
+                var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
+                var label = document.createElement('label'); label.className = "region-label";
+                var input = document.createElement('input'); input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
+                input.value = (typeof t.weekLabel !== 'undefined' ? t.weekLabel : "Tydzień") + " " + getWeekNumber(sW) + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
+                if (i === 0) input.checked = true;
+                label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
+                weeksContainer.appendChild(label);
+            }
+        }
+
+        // --- FUNKCJA SPRAWDZAJĄCA WIDOCZNOŚĆ I CENY ---
+        function updateDynamicOptions() {
+            var totalRegions = document.querySelectorAll('.region-chk').length;
+            var checkedRegions = document.querySelectorAll('.region-chk:checked').length;
+            var isPro = (checkedRegions === totalRegions && totalRegions > 0);
+            var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
+
+            var offlinePriceSpan = document.getElementById('offlinePriceDynamic');
+            var offlinePrice = p.offline;
+            var offlineCurrency = c;
+
+            if (offlinePriceSpan) {
+                if (isPro || isGroup) { 
+                    offlinePriceSpan.style.display = 'none';
+                    offlinePriceSpan.innerText = "";
+                } else {
+                    offlinePriceSpan.style.display = 'inline';
+                    offlinePriceSpan.innerText = "+ " + offlinePrice + " " + offlineCurrency;
                 }
+            }
 
-                var mapContainer = document.getElementById('mapBoxContainer');
-                var mapCheckbox = document.getElementById('mapOption');
-                var groupContainer = document.getElementById('groupOptionContainer');
-                var groupCheckbox = document.getElementById('groupOption');
-                
-                if (isPro) {
+            var mapContainer = document.getElementById('mapBoxContainer');
+            var mapCheckbox = document.getElementById('mapOption');
+            var groupContainer = document.getElementById('groupOptionContainer');
+            var groupCheckbox = document.getElementById('groupOption');
+            
+            if (isPro) {
+                if(mapContainer) mapContainer.classList.add('hidden');
+                if(mapCheckbox) mapCheckbox.checked = false;
+                if(groupContainer) groupContainer.classList.add('hidden');
+                if(groupCheckbox) groupCheckbox.checked = false;
+            } else {
+                if(groupContainer) groupContainer.classList.remove('hidden');
+                if (LOCK_MAP) {
                     if(mapContainer) mapContainer.classList.add('hidden');
                     if(mapCheckbox) mapCheckbox.checked = false;
-                    if(groupContainer) groupContainer.classList.add('hidden');
-                    if(groupCheckbox) groupCheckbox.checked = false;
                 } else {
-                    if(groupContainer) groupContainer.classList.remove('hidden');
-                    if (LOCK_MAP) {
-                        if(mapContainer) mapContainer.classList.add('hidden');
-                        if(mapCheckbox) mapCheckbox.checked = false;
-                    } else {
-                        if(mapContainer) mapContainer.classList.remove('hidden');
-                    }
+                    if(mapContainer) mapContainer.classList.remove('hidden');
                 }
-                recalcTotal();
             }
-
-            // --- ZABEZPIECZONA FUNKCJA LICZĄCA SUMĘ ---
-            function recalcTotal() {
-                var wR = document.querySelectorAll('.region-chk:checked');
-                var wT = document.querySelectorAll('.week-chk:checked');
-                var isO = document.getElementById('offlineOption') ? document.getElementById('offlineOption').checked : false;
-                var isD = document.getElementById('dhlOption') ? document.getElementById('dhlOption').checked : false;
-                var isMap = document.getElementById('mapOption') ? document.getElementById('mapOption').checked : false; 
-                var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
-
-                if (wT.length === 0) {
-                     if(document.getElementById('summaryTotal')) document.getElementById('summaryTotal').innerText = "0";
-                     return;
-                }
-
-                var totalRegions = document.querySelectorAll('.region-chk').length;
-                var isPro = (wR.length === totalRegions && wR.length > 0);
-                var baseWeeklyPrice = 0;
-
-                if (isPro) {
-                     baseWeeklyPrice = p.pro;
-                } else {
-                     baseWeeklyPrice = p[wR.length] || p[1] || 0;
-                     if (isGroup) {
-                         baseWeeklyPrice += p.groupSurcharge;
-                     }
-                }
-
-                var suma = baseWeeklyPrice * wT.length;
-                if (!isPro && isMap) suma += p.map;
-                if (!isPro && !isGroup && isO) suma += p.offline; 
-                if (isD) suma += p.dhl;
-                
-                if (document.getElementById('summaryTotal')) document.getElementById('summaryTotal').innerText = suma;
-            }
-
-            var btnSelectAll = document.getElementById('btnSelectAll');
-            if(btnSelectAll) btnSelectAll.addEventListener('click', function() {
-                document.querySelectorAll('.region-chk').forEach(function(box) { box.checked = true; });
-                updateDynamicOptions();
-            });
-            
-            var btnUnselectAll = document.getElementById('btnUnselectAll');
-            if(btnUnselectAll) btnUnselectAll.addEventListener('click', function() {
-                document.querySelectorAll('.region-chk').forEach(function(box) { box.checked = false; });
-                updateDynamicOptions();
-            });
-
-            document.querySelectorAll('.region-chk').forEach(function(box) {
-                box.addEventListener('change', function() {
-                    var checkedRegions = document.querySelectorAll('.region-chk:checked');
-                    var checkedCount = checkedRegions.length;
-                    var totalCount = document.querySelectorAll('.region-chk').length;
-                    
-                    updateDynamicOptions();
-                    if (checkedCount > 3 && checkedCount < totalCount) {
-                        this.checked = false; 
-                        updateDynamicOptions(); 
-                        var msg = (userLang === 'pl') 
-                            ? "Maksymalna ilość rejonów w wyborze ręcznym to 3 (również w pakiecie Grupowym).\n\nJeśli potrzebujesz dostępu do wszystkich rejonów, wybierz opcję [ Zaznacz wszystko ] (Wersja PRO)." 
-                            : "Max 3 regions in manual selection (including Group access).\n\nFor access to all regions, please use [ Select All ] (PRO Version).";
-                        alert("\u26A0 " + msg);
-                    }
-                });
-            });
-
-            var optGroup = document.getElementById('groupOption');
-            if(optGroup) optGroup.addEventListener('change', updateDynamicOptions);
-            var optOffline = document.getElementById('offlineOption');
-            if(optOffline) optOffline.addEventListener('change', recalcTotal);
-            var optDhl = document.getElementById('dhlOption');
-            if(optDhl) optDhl.addEventListener('change', recalcTotal);
-            var optMap = document.getElementById('mapOption');
-            if(optMap) optMap.addEventListener('change', recalcTotal);
-            
-            document.addEventListener('change', function(e){
-                if(e.target.classList.contains('week-chk')){
-                    recalcTotal();
-                }
-            });
-
-            updateDynamicOptions();
             recalcTotal();
+        }
 
-            var btnSubmit = document.getElementById('btnSubmit');
-            if(btnSubmit) btnSubmit.addEventListener('click', function() {
-                var rodo = document.getElementById('rodoConsent');
-                if (!rodo || !rodo.checked) { 
-                    alert(t.rodoError); 
-                    return; 
+        // --- ZABEZPIECZONA FUNKCJA LICZĄCA SUMĘ ---
+        function recalcTotal() {
+            var wR = document.querySelectorAll('.region-chk:checked');
+            var wT = document.querySelectorAll('.week-chk:checked');
+            var isO = document.getElementById('offlineOption') ? document.getElementById('offlineOption').checked : false;
+            var isD = document.getElementById('dhlOption') ? document.getElementById('dhlOption').checked : false;
+            var isMap = document.getElementById('mapOption') ? document.getElementById('mapOption').checked : false; 
+            var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
+
+            if (wT.length === 0) {
+                 if(document.getElementById('summaryTotal')) document.getElementById('summaryTotal').innerText = "0";
+                 return;
+            }
+
+            var totalRegions = document.querySelectorAll('.region-chk').length;
+            var isPro = (wR.length === totalRegions && wR.length > 0);
+            var baseWeeklyPrice = 0;
+
+            if (isPro) {
+                 baseWeeklyPrice = p.pro;
+            } else {
+                 baseWeeklyPrice = p[wR.length] || p[1] || 0;
+                 if (isGroup) {
+                     baseWeeklyPrice += p.groupSurcharge;
+                 }
+            }
+
+            var suma = baseWeeklyPrice * wT.length;
+            if (!isPro && isMap) suma += p.map;
+            if (!isPro && !isGroup && isO) suma += p.offline; 
+            if (isD) suma += p.dhl;
+            
+            if (document.getElementById('summaryTotal')) document.getElementById('summaryTotal').innerText = suma;
+        }
+
+        var btnSelectAll = document.getElementById('btnSelectAll');
+        if(btnSelectAll) btnSelectAll.addEventListener('click', function() {
+            document.querySelectorAll('.region-chk').forEach(function(box) { box.checked = true; });
+            updateDynamicOptions();
+        });
+        
+        var btnUnselectAll = document.getElementById('btnUnselectAll');
+        if(btnUnselectAll) btnUnselectAll.addEventListener('click', function() {
+            document.querySelectorAll('.region-chk').forEach(function(box) { box.checked = false; });
+            updateDynamicOptions();
+        });
+
+        document.querySelectorAll('.region-chk').forEach(function(box) {
+            box.addEventListener('change', function() {
+                var checkedRegions = document.querySelectorAll('.region-chk:checked');
+                var checkedCount = checkedRegions.length;
+                var totalCount = document.querySelectorAll('.region-chk').length;
+                
+                updateDynamicOptions();
+                if (checkedCount > 3 && checkedCount < totalCount) {
+                    this.checked = false; 
+                    updateDynamicOptions(); 
+                    var msg = (userLang === 'pl') 
+                        ? "Maksymalna ilość rejonów w wyborze ręcznym to 3 (również w pakiecie Grupowym).\n\nJeśli potrzebujesz dostępu do wszystkich rejonów, wybierz opcję [ Zaznacz wszystko ] (Wersja PRO)." 
+                        : "Max 3 regions in manual selection (including Group access).\n\nFor access to all regions, please use [ Select All ] (PRO Version).";
+                    alert("\u26A0 " + msg);
                 }
-                
-                var wR = document.querySelectorAll('.region-chk:checked');
-                var wT = document.querySelectorAll('.week-chk:checked');
-                var isO = document.getElementById('offlineOption') ? document.getElementById('offlineOption').checked : false;
-                var isD = document.getElementById('dhlOption') ? document.getElementById('dhlOption').checked : false;
-                var isS = document.getElementById('schrottOption') ? document.getElementById('schrottOption').checked : false;
-                var isMap = document.getElementById('mapOption') ? document.getElementById('mapOption').checked : false; 
-                var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
-                var emEl = document.getElementById('klientEmail');
-                var telEl = document.getElementById('klientTelefon');
-                var em = emEl ? emEl.value : '';
-                var tel = telEl ? telEl.value : '';
-                var sumEl = document.getElementById('summaryTotal');
-                var finalSum = sumEl ? sumEl.innerText : '0';
-
-                if (!em || em.indexOf('@') === -1) { alert("\u274C E-mail!"); return; }
-                if (wR.length === 0 || wT.length === 0) { alert("\u26A0 " + (userLang === 'pl' ? "Wybierz rejony i tygodnie!" : "Select regions and weeks!")); return; }
-
-                var isPro = wR.length === document.querySelectorAll('.region-chk').length;
-                var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-                var typeLabel = isPro ? "PRO" : "BASIC";
-                if (isGroup) typeLabel += " (GROUP/GRUPA)";
-                
-                var body = t.emailGreeting + "\n\n" + t.emailOrderSet + " " + typeLabel + "\n";
-                body += t.paymentNote + " " + nr + "\n";
-                body += "SUMA: " + finalSum + " " + c + "\n";
-                
-                if (isGroup) {
-                    body += "LICENCJA: GROUP\n";
-                } else if (!isPro) {
-                    body += "LICENCJA: SINGLE USER (\u26A0 No sharing)\n";
-                } else {
-                    body += "LICENCJA: SINGLE USER PRO\n"; 
-                }
-                
-                if (isD) {
-                    body += "WYSYŁKA DRUKOWANA: TAK\nTELEFON: " + tel + "\nADRES: ____________________\n";
-                }
-                if (isS) body += "TYP: SCHROTT ONLY\n";
-                if (isMap && !isPro) { body += "MAPA ONLINE: TAK\n"; }
-                body += "OFFLINE: " + (isO || isPro || isGroup ? "TAK" : "NIE") + "\n"; 
-                if (!isD && tel) body += "TELEFON: " + tel + "\n";
-                body += "\n" + t.emailDates + ":\n";
-                wT.forEach(function(w) { body += "- " + w.value + "\n"; });
-                if (!isPro) { body += "\n" + t.emailSelectedRegions + ":\n"; wR.forEach(function(b) { body += "- " + b.value + "\n"; }); }
-
-                const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
-                var subject = "[#" + nr + "] ORDER/ZAMOWIENIE";
-                subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m]);
-
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
             });
         });
 
-        function getWeekNumber(d) {
-            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-        }
-    </script>
+        var optGroup = document.getElementById('groupOption');
+        if(optGroup) optGroup.addEventListener('change', updateDynamicOptions);
+        var optOffline = document.getElementById('offlineOption');
+        if(optOffline) optOffline.addEventListener('change', recalcTotal);
+        var optDhl = document.getElementById('dhlOption');
+        if(optDhl) optDhl.addEventListener('change', recalcTotal);
+        var optMap = document.getElementById('mapOption');
+        if(optMap) optMap.addEventListener('change', recalcTotal);
+        
+        document.addEventListener('change', function(e){
+            if(e.target.classList.contains('week-chk')){
+                recalcTotal();
+            }
+        });
+
+        updateDynamicOptions();
+        recalcTotal();
+
+        var btnSubmit = document.getElementById('btnSubmit');
+        if(btnSubmit) btnSubmit.addEventListener('click', function() {
+            var rodo = document.getElementById('rodoConsent');
+            if (!rodo || !rodo.checked) { 
+                alert(t.rodoError); 
+                return; 
+            }
+            
+            var wR = document.querySelectorAll('.region-chk:checked');
+            var wT = document.querySelectorAll('.week-chk:checked');
+            var isO = document.getElementById('offlineOption') ? document.getElementById('offlineOption').checked : false;
+            var isD = document.getElementById('dhlOption') ? document.getElementById('dhlOption').checked : false;
+            var isS = document.getElementById('schrottOption') ? document.getElementById('schrottOption').checked : false;
+            var isMap = document.getElementById('mapOption') ? document.getElementById('mapOption').checked : false; 
+            var isGroup = document.getElementById('groupOption') ? document.getElementById('groupOption').checked : false;
+            var emEl = document.getElementById('klientEmail');
+            var telEl = document.getElementById('klientTelefon');
+            var em = emEl ? emEl.value : '';
+            var tel = telEl ? telEl.value : '';
+            var sumEl = document.getElementById('summaryTotal');
+            var finalSum = sumEl ? sumEl.innerText : '0';
+
+            if (!em || em.indexOf('@') === -1) { alert("\u274C E-mail!"); return; }
+            if (wR.length === 0 || wT.length === 0) { alert("\u26A0 " + (userLang === 'pl' ? "Wybierz rejony i tygodnie!" : "Select regions and weeks!")); return; }
+
+            var isPro = wR.length === document.querySelectorAll('.region-chk').length;
+            var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
+            var typeLabel = isPro ? "PRO" : "BASIC";
+            if (isGroup) typeLabel += " (GROUP/GRUPA)";
+            
+            var body = t.emailGreeting + "\n\n" + t.emailOrderSet + " " + typeLabel + "\n";
+            body += t.paymentNote + " " + nr + "\n";
+            body += "SUMA: " + finalSum + " " + c + "\n";
+            
+            if (isGroup) {
+                body += "LICENCJA: GROUP\n";
+            } else if (!isPro) {
+                body += "LICENCJA: SINGLE USER (\u26A0 No sharing)\n";
+            } else {
+                body += "LICENCJA: SINGLE USER PRO\n"; 
+            }
+            
+            if (isD) {
+                body += "WYSYŁKA DRUKOWANA: TAK\nTELEFON: " + tel + "\nADRES: ____________________\n";
+            }
+            if (isS) body += "TYP: SCHROTT ONLY\n";
+            if (isMap && !isPro) { body += "MAPA ONLINE: TAK\n"; }
+            body += "OFFLINE: " + (isO || isPro || isGroup ? "TAK" : "NIE") + "\n"; 
+            if (!isD && tel) body += "TELEFON: " + tel + "\n";
+            body += "\n" + t.emailDates + ":\n";
+            wT.forEach(function(w) { body += "- " + w.value + "\n"; });
+            if (!isPro) { body += "\n" + t.emailSelectedRegions + ":\n"; wR.forEach(function(b) { body += "- " + b.value + "\n"; }); }
+
+            const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
+            var subject = "[#" + nr + "] ORDER/ZAMOWIENIE";
+            subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m]);
+
+            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        });
+    });
+
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+</script>
+
 </body>
 </html>
