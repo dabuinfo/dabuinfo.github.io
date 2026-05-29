@@ -772,6 +772,39 @@
         regionSelect.addEventListener('change', updateRegionButton);
         customRegionInput.addEventListener('input', updateRegionButton);
     });
+        
+        // Blokada prawego przycisku myszy
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Blokada skrótów klawiszowych
+        document.addEventListener('keydown', function(e) {
+            // Blokada F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+            }
+            // Blokada Ctrl + Shift + I (Narzędzia deweloperskie)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+                e.preventDefault();
+            }
+            // Blokada Ctrl + Shift + J (Konsola)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+                e.preventDefault();
+            }
+            // Blokada Ctrl + Shift + C (Inspektor elementów)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
+                e.preventDefault();
+            }
+            // Blokada Ctrl + U (Pokaż źródło strony)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+                e.preventDefault();
+            }
+            // Blokada Ctrl + S (Zapisz stronę)
+            if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
