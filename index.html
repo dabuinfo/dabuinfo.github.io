@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dabu-info - Ewa Buczkowska</title>
+    <title>dabu-info - Harmonogramy Wystawek w Niemczech</title>
     <style>
         /* ========================================= */
-        /* STYL STRONY OFERTOWEJ (DARK MODE)         */
+        /* STYL WIZYTÓWKI (DARK MODE)                */
         /* ========================================= */
         html, body {
             background-color: #0a0a0a !important;
@@ -19,7 +19,7 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center; /* Wyśrodkowanie w pionie i poziomie */
             padding: 20px 15px;
             box-sizing: border-box;
         }
@@ -29,12 +29,14 @@
             background-color: #121212;
             color: #e0e0e0;
             width: 100%;
-            max-width: 900px;
-            padding: 25px;
+            max-width: 800px;
+            padding: 35px 25px;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid #333;
             line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         /* ========================================= */
@@ -45,226 +47,82 @@
             max-width: 500px;
             height: auto;
             display: block;
-            margin: 0 auto 25px auto;
+            margin: 0 auto 30px auto;
             border-radius: 8px;
         }
 
         .offer-header {
             color: #2ecc71;
-            font-size: 1.8em;
+            font-size: 2em;
             font-weight: 800;
-            text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .offer-subheader {
-            text-align: center;
             color: #aaa;
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin-bottom: 30px;
             border-bottom: 1px solid #333;
-            padding-bottom: 20px;
+            padding-bottom: 25px;
         }
 
-        .section-title {
-            color: #3498db;
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-top: 35px;
-            margin-bottom: 20px;
-            border-left: 5px solid #3498db;
-            padding-left: 10px;
-        }
-
-        /* KARTY ZAMÓWIEŃ */
-        .choices-grid {
-            display: flex;
-            flex-direction: column; 
-            align-items: center;    
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .choice-card {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            position: relative;
-        }
-
-        .choice-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-primary:hover { border-color: #2ecc71; }
-        .card-secondary:hover { border-color: #3498db; }
-        .card-tertiary:hover { border-color: #f39c12; }
-
-        .price-tag {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 1;
-            letter-spacing: 0.5px;
-            transition: all 0.3s;
-        }
-        
-        .card-primary .price-tag { background: #2ecc71; color: #000; }
-        .card-secondary .price-tag { background: #3498db; color: #fff; }
-        .card-tertiary .price-tag { background: #f39c12; color: #000; }
-
-        .choice-icon {
-            font-size: 3em;
-            text-align: center;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .choice-card h3 {
-            color: #fff;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.4em;
-            text-align: center;
-        }
-
-        .choice-features {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 25px 0;
-            color: #bbb;
-            flex-grow: 1;
-        }
-
-        .choice-features li {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .check-icon { font-weight: bold; }
-        .card-primary .check-icon { color: #2ecc71; }
-        .card-secondary .check-icon { color: #3498db; }
-        .card-tertiary .check-icon { color: #f39c12; }
-
-        /* PRZYCISKI */
-        .cta-btn-primary, .cta-btn-secondary, .cta-btn-tertiary, .cta-btn-outline {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 15px 20px;
+        .description {
             font-size: 1.1em;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.3s, transform 0.2s;
-            box-sizing: border-box;
+            color: #ddd;
+            margin-bottom: 35px;
+            text-align: left;
         }
 
-        .cta-btn-primary { background-color: #2ecc71; color: #000 !important; box-shadow: 0 4px 15px rgba(46,204,113,0.3); }
-        .cta-btn-primary:hover { background-color: #27ae60; transform: scale(1.02); }
-
-        .cta-btn-secondary { background-color: #3498db; color: #fff !important; box-shadow: 0 4px 15px rgba(52,152,219,0.3); border: none; }
-        .cta-btn-secondary:hover { background-color: #2980b9; transform: scale(1.02); }
-
-        .cta-btn-tertiary { background-color: #f39c12; color: #000 !important; box-shadow: 0 4px 15px rgba(243,156,18,0.3); }
-        .cta-btn-tertiary:hover { background-color: #e67e22; transform: scale(1.02); }
-
-        .cta-btn-outline { background-color: transparent; color: #aaa !important; border: 2px solid #555; max-width: 350px; margin: 0 auto; }
-        .cta-btn-outline:hover { border-color: #e0e0e0; color: #fff !important; transform: scale(1.03); }
-
-        .btn-disabled {
-            pointer-events: none;
-            opacity: 0.5;
-            filter: grayscale(80%);
-            background-color: #555 !important;
-            color: #aaa !important;
-            box-shadow: none !important;
-        }
-
-        /* POLA FORMULARZA SMS */
-        #regionSelect, #customRegionInput {
-            width: 100%;
-            padding: 12px;
-            background: #222;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 5px;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-        
-        #regionSelect {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 12px auto;
-            cursor: pointer;
-        }
-
-        #regionSelect:focus, #customRegionInput:focus {
-            outline: none;
-            border-color: #3498db !important;
-        }
-
-        /* MNIEJSZE KARTY INFORMACYJNE */
-        .service-card {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
+        .assistant-box {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px dashed #3498db;
+            border-left: 5px solid #3498db;
             padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: left;
         }
 
-        .service-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.15);
-            border-color: #2ecc71;
-        }
-
-        .service-card h3 {
-            color: #f1c40f;
+        .assistant-box h3 {
+            color: #3498db;
             margin-top: 0;
             margin-bottom: 10px;
-            font-size: 1.2em;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .highlight { color: #ffffff; font-weight: bold; }
-        
-        .rule-box {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px dashed #e74c3c;
-            border-left: 5px solid #e74c3c;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 30px 0;
+        /* PRZYCISKI */
+        .cta-btn-primary {
+            display: inline-block;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: #000 !important;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(46,204,113,0.3);
+            margin-bottom: 20px;
         }
-        
-        .rule-box h3 { color: #e74c3c; margin-top: 0; }
+
+        .cta-btn-primary:hover {
+            transform: scale(1.03);
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            box-shadow: 0 8px 20px rgba(46,204,113,0.5);
+        }
+
+        .footer-info {
+            font-size: 0.85em;
+            color: #777;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -274,537 +132,30 @@
         <!-- LOGO / BANER GŁÓWNY -->
         <img src="dabu-infologo.png" alt="Dabu-Info Terminy Wystawek 2026" class="main-banner">
 
-        <div class="offer-header" id="t_intro_title">Czym się zajmujemy?</div>
-        <div class="offer-subheader" id="t_intro_sub">Poznaj ofertę dabu-info – Twojego nawigatora po niemieckich wystawkach!</div>
+        <div class="offer-header">Twój Nawigator po Wystawkach</div>
+        <div class="offer-subheader">Precyzyjne harmonogramy Sperrmüll w Niemczech na rok 2026</div>
 
-        <p id="t_intro_desc">Celem serwisu dabu-info jest dostarczanie precyzyjnych harmonogramów oraz lokalizacji wystawek odpadów wielkogabarytowych (Sperrmüll) na terenie całych Niemiec. Opierając się na 30-letnim doświadczeniu, pomagamy kierowcom i ekipom zoptymalizować trasy, oszczędzić paliwo i zapomnieć o tzw. "pustych przelotach". Nasza baza na rok 2026 obejmuje już ponad 100 starannie wyselekcjonowanych niemieckich rejonów!</p>
+        <div class="description">
+            <p>Celem serwisu <strong>dabu-info</strong> jest dostarczanie najdokładniejszych harmonogramów oraz lokalizacji wystawek odpadów wielkogabarytowych na terenie całych Niemiec. Opierając się na moim 30-letnim doświadczeniu, pomagam zoptymalizować trasy, oszczędzić paliwo i wyeliminować "puste przeloty".</p>
+            <p>W naszej bazie na 2026 rok znajduje się już ponad <strong>100 starannie wyselekcjonowanych niemieckich rejonów</strong>!</p>
+        </div>
 
-        <div class="section-title" id="t_section1_title">Wybierz sposób zamówienia</div>
+        <div class="assistant-box">
+            <h3>🤖 Wirtualny Asystent dabu-info</h3>
+            <p style="margin: 0; color: #ccc;">Nie wiesz, w jaki rejon warto wyruszyć w tym tygodniu? Przejdź na naszego bloga i skorzystaj z pomocy Asystenta! Pomoże Ci on dobrać idealny kierunek wyjazdu, uwzględniając Twoje preferencje (np. zbiórki bogate w elektronikę lub złom) oraz aktualnie dostępne harmonogramy.</p>
+        </div>
 
-        <!-- SEKCJA PROMOCJI -->
-        <div id="promo-section" style="display: none; background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px dashed #2ecc71; margin-bottom: 30px; text-align: center;">
-            <p id="t_promo_title" style="color: #2ecc71; font-weight: bold; margin-top: 0; font-size: 1.1em;">Jesteś naszym stałym klientem?</p>
-            <input type="email" id="clientEmail" placeholder="Wpisz swój adres e-mail" style="padding: 10px; width: 100%; max-width: 300px; background: #222; color: #fff; border: 1px solid #555; border-radius: 5px; outline: none; text-align: center; margin-bottom: 10px;">
+        <a href="https://dabu-info.blogspot.com/" class="cta-btn-primary">
+            PRZEJDŹ NA BLOGA I ZŁÓŻ ZAMÓWIENIE
+        </a>
+
+        <div class="footer-info">
+            <strong>🏠 Odbiór osobisty (Milicz):</strong> Pamiętaj, że zawsze oferujemy możliwość odbioru osobistego ustaleń w Miliczu (od środy do soboty w godz. 17:00–20:00) po wcześniejszym kontakcie.<br>
             <br>
-            <button id="applyPromo" style="padding: 10px 20px; background: #2ecc71; color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background 0.3s; text-transform: uppercase;">
-                <span id="t_promo_btn">Sprawdź Zniżkę</span>
-            </button>
-            <p id="promoStatus" style="font-size: 0.9em; margin-bottom: 0; margin-top: 10px;"></p>
-        </div>
-
-        <!-- KARTY WYBORU OPŁATY -->
-        <div class="choices-grid">
-            
-            <div class="choice-card card-primary">
-                <div class="price-tag" id="price_box1">Wycena</div>
-                <div>
-                    <span class="choice-icon">💻</span>
-                    <h3 id="t_card1_title">Zestawy Tygodniowe (E-mail)</h3>
-                    <ul class="choice-features">
-                        <li><span class="check-icon">✓</span> <span id="t_card1_f1">Pełna możliwość konfiguracji: wiele rejonów na tydzień lub wiele tygodni na wybrany rejon.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card1_f2">Najbardziej rozbudowany formularz zamówienia z indywidualną wyceną.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card1_f3">Pełny wybór formatów: PDF do druku, PDF na telefon, zdjęcie (JPG).</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card1_f4">Dodatkowe opcje (np. tylko Złom/E-Złom, darmowy poradnik).</span></li>
-                    </ul>
-                </div>
-                <a href="https://dabu-info.blogspot.com/p/zestaw-tygodniowy.html" class="cta-btn-primary" id="t_btn_standard">
-                    ZAMÓW TERMINY E-MAIL<br>
-                    <span style="font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;">Pełna konfiguracja</span>
-                </a>
-            </div>
-
-            <div class="choice-card card-secondary">
-                <div class="price-tag" id="price_box3">100 PLN</div>
-                <div>
-                    <span class="choice-icon">📬</span>
-                    <h3 id="t_card3_title">Zestawienia Tygodniowe (SMS)</h3>
-                    <ul class="choice-features">
-                        <li><span class="check-icon">✓</span> <span id="t_card3_f1">Szybkie zamówienie przez SMS dla jednego, wybranego rejonu.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card3_f2">Filtruj rejony po nazwie lub Landzie.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card3_f3">Bezpośredni link do zamówienia SMS dla wybranej okolicy na blogu.</span></li>
-                    </ul>
-                    
-                    <div style="margin-top:20px; margin-bottom: 20px; text-align:left;">
-                        <label for="regionSelect" style="display:block; color:#aaa; font-size:0.9em; margin-bottom:5px;" id="t_region_label">Wybierz rejon:</label>
-                        
-                        <select id="regionSelect">
-                            </select>
-
-                        <input type="text" id="customRegionInput" style="display:none; margin-top:10px;" placeholder="Wpisz nazwę rejonu...">
-                    </div>
-                </div>
-                <a href="#" class="cta-btn-secondary btn-disabled" id="t_btn_region" target="_blank">
-                    PRZEJDŹ DO REJONU<br>
-                    <span style="font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;" id="t_btn_region_sub">Wybierz z listy powyżej</span>
-                </a>
-            </div>
-
-            <div class="choice-card card-tertiary">
-                <div class="price-tag" id="price_box2">240 PLN</div>
-                <div>
-                    <span class="choice-icon">📱</span>
-                    <h3 id="t_card2_title">Zestaw Mobilny Premium (SMS)</h3>
-                    <ul class="choice-features">
-                        <li><span class="check-icon">✓</span> <span id="t_card2_f1">Błyskawiczne zamówienie prosto z telefonu przez wiadomość SMS.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card2_f2">Dostęp do dynamicznego panelu Generatora PDF dla terytorium całych Niemiec.</span></li>
-                        <li><span class="check-icon">✓</span> <span id="t_card2_f3">Otrzymujesz wersję na smartfona (Dark Mode) z aktywnymi linkami.</span></li>
-                    </ul>
-                </div>
-                <a href="https://dabu-info.blogspot.com/p/generator-pdf.html" class="cta-btn-tertiary" id="t_btn_sms">
-                    ZAMÓW PRZEZ SMS<br>
-                    <span style="font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;">Zestaw Mobilny Premium</span>
-                </a>
-            </div>
-
-        </div>
-
-        <div style="background: linear-gradient(135deg, #0b2b1f 0%, #0a1a12 100%); border: 2px solid #2ecc71; border-radius: 20px; padding: 30px 25px; margin: 45px 0; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            
-            <div style="font-size: 2.8em; margin-bottom: 10px;">🎁</div>
-            
-            <h3 id="t_sample_title" style="color: #2ecc71; margin: 0 0 8px 0; font-size: 1.8em; font-weight: 800; letter-spacing: 0.5px;">
-                BEZPŁATNA PRÓBKA NASZEJ USŁUGI
-            </h3>
-            
-            <p id="t_sample_sub1" style="color: #ddd; font-size: 1.05em; margin-bottom: 8px;">
-                <strong>📅 Tydzień 22 (Niedersachsen)</strong><br>
-                🧲 Z włączonym <strong>filtrem dla złomiarzy</strong>
-            </p>
-            
-            <p id="t_sample_desc" style="color: #aaa; font-size: 0.85em; max-width: 500px; margin: 15px auto 20px auto;">
-                Sprawdź jakość i dokładność naszych harmonogramów zanim zdecydujesz się na pełną wersję. 
-                Pobierz przykład i zobacz, jak optymalizujemy trasy po niemieckich wystawkach!
-            </p>
-            
-            <a id="t_sample_btn" href="https://drive.google.com/file/d/1fqnd1EO5dTwepoq1ngiU5AuYvm5QrxHR/view?usp=sharing" 
-               target="_blank" 
-               style="display: inline-block; background: linear-gradient(90deg, #2ecc71, #27ae60); color: #000; padding: 14px 35px; border-radius: 60px; text-decoration: none; font-weight: bold; font-size: 1.2em; margin: 10px 0 15px 0; transition: all 0.3s; box-shadow: 0 5px 15px rgba(46,204,113,0.4);"
-               onmouseover="this.style.transform='scale(1.03)'; this.style.background='linear-gradient(90deg, #27ae60, #2ecc71)';"
-               onmouseout="this.style.transform='scale(1)'; this.style.background='linear-gradient(90deg, #2ecc71, #27ae60)';">
-                📥 POBIERZ DARMOWĄ PRÓBKĘ (PDF)
-            </a>
-            
-            <p id="t_sample_note" style="font-size: 0.7em; color: #777; margin-top: 20px;">
-                ✅ Pełna wersja zawiera wszystkie dostępne regiony oraz aktualizacje na bieżący tydzień.<br>
-                📧 Po wypróbowaniu próbki – zamów pełny dostęp przez e-mail lub SMS.
-            </p>
-            
-            <div id="t_sample_legend" style="border-top: 1px solid #2ecc7133; margin-top: 20px; padding-top: 15px; font-size: 0.75em; color: #2ecc71;">
-                🧲 – precyzyjne filtrowanie dla złomiarzy
-            </div>
-        </div>
-  
-        <div class="section-title" id="t_section2_title">Dodatkowe informacje i opcje</div>
-
-        <div class="service-card">
-            <h3 id="t_info1_title">🤝 Profesjonalny Pakiet Serwisowy (dla Importerów)</h3>
-            <p id="t_info1_desc">Idealne rozwiązanie, jeśli chcesz brać towar bezpośrednio u źródła. Odbieraj hurtowo <span class="highlight">rowery, kosiarki, myjki ciśnieniowe i części samochodowe</span> prosto od niemieckich dilerów. Zapewniamy gotowe szablony e-mail oraz legalność odbioru (dokument Abholbescheinigung honorowany przez BAG). Wycena pakietu jest indywidualna.</p>
-        </div>
-
-        <div class="service-card">
-            <h3 id="t_info2_title">📍 Rejony Specjalne (na życzenie)</h3>
-            <p id="t_info2_desc">Wybrane gminy o statusie specjalnym znajdziesz bezpośrednio w naszym formularzu. Po ich zaznaczeniu realizujemy usługę pozyskania najbliższego możliwego terminu wywozu. Realizujemy zamówienia wyłącznie na rejony dostępne na naszej liście obejmującej ponad 100 pozycji na 2026 rok!</p>
-        </div>
-
-        <div class="service-card">
-            <h3 id="t_info3_title">🏠 Odbiór osobisty (Milicz)</h3>
-            <p id="t_info3_desc">Dbamy o bezpieczeństwo danych i wygodę naszych klientów. Oferujemy możliwość odbioru osobistego ustaleń w Miliczu. Zapraszamy w godzinach 17:00–20:00 w dniach od środy do soboty. Prosimy o wcześniejsze umówienie wizyty e-mailowo lub telefonicznie.</p>
-        </div>
-
-        <div class="rule-box">
-            <h3 id="t_rule_title">🚨 Złota zasada logistyki: Reguła godziny 18:00</h3>
-            <p id="t_rule_desc1">Daty w zestawieniach to oficjalne terminy wywozu przez śmieciarki, które pracują rano.</p>
-            <p id="t_rule_desc2">Zgodnie z przepisami, przedmioty wystawia się przed posesję dzień wcześniej, po 18:00.</p>
-            <p id="t_rule_desc3"><strong>Wniosek?</strong> Zaplanuj obecność w rejonie wieczorem w dniu poprzedzającym datę z naszej listy.</p>
-        </div>
-
-        <div style="margin-top: 40px;">
-            <a id="t_contact_btn" href="https://dabu-info.blogspot.com/p/kontakt.html" class="cta-btn-outline">SKONTAKTUJ SIĘ Z NAMI</a>
+            © 2026 dabu-info
         </div>
 
     </div>
 
-    <script>
-    const regionsData = [
-        {name: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-altenkirchen-2026-terminy.html"},
-        {name: "Altmarkkreis-Salzwedel", land: "Sachsen-Anhalt", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html"},
-        {name: "Alzey-Worms", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-alzey-worms-2026-terminy.html"},
-        {name: "Amberg", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-amberg-2026-harmonogram-i.html"},
-        {name: "Bad Homburg", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-homburg-2026-terminy.html"},
-        {name: "Bad-Kreuznach", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-kreuznach-2026-terminy-i.html"},
-        {name: "Bamberg", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bamberg-2026-terminy-wystawek.html"},
-        {name: "Barnim", land: "Brandenburg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-barnim-2026-terminy-wystawek.html"},
-        {name: "Bayreuth", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bayreuth-2026-terminy-wystawek.html"},
-        {name: "Bedburg", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-powiat-bedburg-2026-terminy-i.html"},
-        {name: "Bernkastel-Wittlich", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/bernkastel-wittlich-2026-terminy.html"},
-        {name: "Biebergemünd", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-biebergemund-2026-terminy.html"},
-        {name: "Bonn", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bonn-2026-terminy-wystawek.html"},
-        {name: "Braunschweig", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-braunschweig-2026-terminy.html"},
-        {name: "Breckerfeld", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-breckerfeld-2026.html"},
-        {name: "Brühl", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-bruhl-2026-terminy-wystawek.html"},
-        {name: "Burgenland", land: "Sachsen-Anhalt", url: "https://dabu-info.blogspot.com/2026/02/burgenlandkreis-2026-terminy-wystawek.html"},
-        {name: "Calw", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/zbiorka-metalu-calw-2026-terminy-i.html"},
-        {name: "Diepholz", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-diepholz-2026-terminy-wystawek.html"},
-        {name: "Dülmen", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-dulmen-2026-terminy-wystawek.html"},
-        {name: "Düsseldorf", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-dusseldorf-2026-terminy.html"},
-        {name: "Eifelkreis Bitburg-Prüm", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/bitburg-prum-2026-terminy-i-specyfika.html"},
-        {name: "Ennepetal", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-ennepetal-2026-terminy.html"},
-        {name: "Eppstein", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-eppstein-2026-terminy-wystawek.html"},
-        {name: "Erftstadt", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-erftstadt-2026-terminy.html"},
-        {name: "Eschwege", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-eschwege-2026-terminy-wystawek.html"},
-        {name: "Euskirchen", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-euskirchen-2026-terminy.html"},
-        {name: "Flörsbachtal", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-florsbachtal-2026-terminy.html"},
-        {name: "Flörsheim am Main", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-florsheim-am-main-2026.html"},
-        {name: "Frankfurt", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-frankfurt-am-main-2026.html"},
-        {name: "Freudenstadt", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-freudenstadt-2026-harmonogram.html"},
-        {name: "Fulda", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-fulda-2026-terminy-wystawek.html"},
-        {name: "Fürth", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-furth-2026-terminy-wystawek.html"},
-        {name: "Gangelt", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-gangelt-2026-terminy.html"},
-        {name: "Geilenkirchen", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/05/sperrmull-geilenkirchen-2026-terminy.html"},
-        {name: "Gelnhausen", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-gelnhausen-2026-terminy.html"},
-        {name: "Giessen", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html"},
-        {name: "Gifhorn", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-gifhorn-2026-terminy-wystawek.html"},
-        {name: "Glashütten", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/05/sperrmull-glashutten-terminy-wystawek.html"},
-        {name: "Göttingen", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-gottingen-2026-terminy.html"},
-        {name: "Gräfelfing", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-grafelfing-2026-terminy.html"},
-        {name: "Gross-Gerau", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/gro-gerau-2026-sperrmull-e-schrott.html"},
-        {name: "Gründau", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-grundau-2026-terminy-wystawek.html"},
-        {name: "Hannover", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-hannover-2026-terminy-wystawek.html"},
-        {name: "Harburg", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-harburg-2026.html"},
-        {name: "Hattersheim am Main", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/hattersheim-am-main-2026-terminy.html"},
-        {name: "Heidekreis", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-heidekreis-2026-terminy.html"},
-        {name: "Heidelberg", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-heidelberg-2026-terminy.html"},
-        {name: "Heilbronn", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-heilbronn-2026-terminy.html"},
-        {name: "Hersfeld-Rotenburg", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-hersfeld-rotenburg-2026.html"},
-        {name: "Hofheim am Taunus", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-hofheim-am-taunus-2026-terminy.html"},
-        {name: "Holzminden", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-holzminden-2026-terminy.html"},
-        {name: "Hürth", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-hurth-2026-terminy-wystawek.html"},
-        {name: "Jülich", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/05/sperrmull-julich-2026-terminy-wystawek.html"},
-        {name: "Kamp-Lintfort", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-kamp-lintfort-2026-terminy.html"},
-        {name: "Karlsruhe Kreis", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-karlsruhe-2026.html"},
-        {name: "Karlsruhe Stadt", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-karlsruhe-stadt-2026-terminy.html"},
-        {name: "Kelkheim (Taunus)", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-kelkheim-taunus-2026-terminy.html"},
-        {name: "Kirchheim", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-kirchheim-2026-terminy.html"},
-        {name: "Königstein (Taunus)", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-konigstein-taunus-2026.html"},
-        {name: "Konstanz", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-konstanz-2026-terminy-wystawek.html"},
-        {name: "Kulmbach", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html"},
-        {name: "Leverkusen", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-leverkusen-2026-terminy.html"},
-        {name: "Liederbach", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-liederbach-2026-terminy.html"},
-        {name: "Limburg-Weilburg", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-limburg-weilburg-2026-terminy.html"},
-        {name: "Lubeka", land: "Schleswig-Holstein", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-lubecke-2026-terminy.html"},
-        {name: "Lüneburg", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html"},
-        {name: "Mayen-Koblenz", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-mayen-koblenz-2026-terminy.html"},
-        {name: "Monachium", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-monachium-munchen-2026-terminy.html"},
-        {name: "Münster", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-munster-2026-terminy-i.html"},
-        {name: "Neu-Anspach", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-neu-anspach-2026-terminy.html"},
-        {name: "Neustadt a.d. Waldnaab", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-neustadt-der-waldnaab-2026.html"},
-        {name: "Nidderau", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-nidderau-2026-terminy-wystawek.html"},
-        {name: "Nordsachsen", land: "Sachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-nordsachsen-2026-harmonogram.html"},
-        {name: "Oberberg", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-oberbergischer-kreis-2026.html"},
-        {name: "Oberursel (Taunus)", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-oberursel-taunus-2026.html"},
-        {name: "Olpe", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-olpe-2026-terminy-wystawek.html"},
-        {name: "Ortenau", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-ortenaukreis-2026-terminy.html"},
-        {name: "Osnabrück", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-osnabruck-2026-terminy.html"},
-        {name: "Pulheim", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-pulheim-2026-terminy-wystawek.html"},
-        {name: "Regensburg", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-regensburg-2026-terminy-i.html"},
-        {name: "Rendsburg-Eckernförde", land: "Schleswig-Holstein", url: "https://dabu-info.blogspot.com/2026/02/rendsburg-eckernforde-2026-terminy.html"},
-        {name: "Rhein-Neckar-Kreis", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-neckar-kreis-2026.html"},
-        {name: "Rhein-Sieg", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-sieg-kreis-2026.html"},
-        {name: "Rheingau-Taunus", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/rheingau-taunus-kreis-2026-terminy-i.html"},
-        {name: "Rheinisch-Bergischer", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-rheinisch-bergischer-kreis.html"},
-        {name: "Schlüchtern", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/schluchtern-2026-terminy-wystawek.html"},
-        {name: "Schwedt/Oder", land: "Brandenburg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-schwedtoder-2026-harmonogram.html"},
-        {name: "Sinntal", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-sinntal-2026-terminy-wystawek.html"},
-        {name: "Solingen", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-solingen-2026-terminy-wystawek.html"},
-        {name: "Spree-Neiße", land: "Brandenburg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-spree-neie-2026-terminy.html"},
-        {name: "Sprockhövel", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-sprockhovel-2026-terminy.html"},
-        {name: "Stade", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-stade-2026-terminy-i-specyfika.html"},
-        {name: "Straubing-Bogen", land: "Bayern", url: "https://dabu-info.blogspot.com/2026/02/straubing-bogen-2026-terminy-wystawek.html"},
-        {name: "Tönisvorst", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-tonisvorst-2026-terminy.html"},
-        {name: "Trier-Saarburg", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-trier-saarburg-2026.html"},
-        {name: "Tuttlingen", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-tuttlingen-2026-terminy.html"},
-        {name: "Usingen", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-usingen-2026-terminy-wystawek.html"},
-        {name: "Vulkaneifel", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-vulkaneifel-2026-terminy-i.html"},
-        {name: "Walldorf-Mörfelden", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-walldorf-morfelden-2026.html"},
-        {name: "Wehrheim", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-wehrheim-2026-terminy-wystawek.html"},
-        {name: "Werra-Meissner", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/werra-meiner-2026-e-schrott-agd.html"},
-        {name: "Wesseling", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-wesseling-2026-terminy-wystawek.html"},
-        {name: "Westerwald", land: "Rheinland-Pfalz", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-westerwaldkreis-2026-terminy.html"},
-        {name: "Wiesbaden-Naurod", land: "Hessen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-wiesbaden-naurod-2026-terminy.html"},
-        {name: "Wolfsburg", land: "Niedersachsen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-wolfsburg-2026-terminy.html"},
-        {name: "Wülfrath", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/05/sperrmull-wulfrath-2026-terminy-wystawek.html"},
-        {name: "Wuppertal", land: "Nordrhein-Westfalen", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-wuppertal-2026-terminy.html"},
-        {name: "Zollernalb", land: "Baden-Württemberg", url: "https://dabu-info.blogspot.com/2026/02/sperrmull-zollernalb-2026-tylko-agd.html"}
-    ];
-    const phoneNumber = "+48600812820"; 
-
-    const translationsChoices = {
-        pl: {
-            t_intro_title: "Czym się zajmujemy?",
-            t_intro_sub: "Poznaj ofertę dabu-info – Twojego nawigatora po niemieckich wystawkach!",
-            t_intro_desc: "Celem serwisu dabu-info jest dostarczanie precyzyjnych harmonogramów oraz lokalizacji wystawek odpadów wielkogabarytowych (Sperrmüll) na terenie całych Niemiec. Opierając się na 30-letnim doświadczeniu, pomagamy kierowcom i ekipom zoptymalizować trasy, oszczędzić paliwo i zapomnieć o tzw. \"pustych przelotach\". Nasza baza na rok 2026 obejmuje już ponad 100 starannie wyselekcjonowanych niemieckich rejonów!",
-            t_section1_title: "Wybierz sposób zamówienia",
-            t_promo_title: "Jesteś naszym stałym klientem?",
-            t_promo_placeholder: "Wpisz swój adres e-mail",
-            t_promo_btn: "Sprawdź Zniżkę",
-
-            t_card1_title: "Zestawy Tygodniowe (E-mail)",
-            t_card1_f1: "Pełna możliwość konfiguracji: wiele rejonów na tydzień lub wiele tygodni na wybrany rejon.",
-            t_card1_f2: "Najbardziej rozbudowany formularz zamówienia z indywidualną wyceną na e-mail.",
-            t_card1_f3: "Pełny wybór formatów: PDF do druku, PDF na telefon, zdjęcie (JPG).",
-            t_card1_f4: "Dodatkowe opcje (np. tylko Złom/E-Złom, darmowy poradnik).",
-            t_btn_standard: "ZAMÓW TERMINY E-MAIL<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>Pełna konfiguracja</span>",
-            
-            t_card2_title: "Zestaw Mobilny Premium (SMS)",
-            t_card2_f1: "Błyskawiczne zamówienie prosto z telefonu przez wiadomość SMS.",
-            t_card2_f2: "Dostęp do dynamicznego panelu Generatora PDF dla terytorium całych Niemiec.",
-            t_card2_f3: "Otrzymujesz wersję na smartfona (Dark Mode) z aktywnymi linkami.",
-            t_card2_f4: "Możliwość łatwego wydruku (PDF) lub zapisu jako zdjęcie (JPEG).",
-            t_btn_sms: "ZAMÓW PRZEZ SMS<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>Zestaw Mobilny Premium</span>",
-
-            t_card3_title: "Zestawienia Tygodniowe (SMS)",
-            t_card3_f1: "Szybkie zamówienie przez SMS dla jednego, wybranego rejonu.",
-            t_card3_f2: "Filtruj rejony po nazwie lub Landzie.",
-            t_card3_f3: "Bezpośredni link do zamówienia SMS dla wybranej okolicy na blogu.",
-            t_region_label: "Wybierz rejon z bazy:",
-            
-            t_opt_default: "Wybierz rejon z listy...",
-            t_opt_other: "[+] Inny rejon (Zapytaj przez SMS)",
-            t_custom_ph: "Wpisz nazwę szukanego rejonu...",
-
-            t_btn_region_main: "PRZEJDŹ DO REJONU",
-            t_btn_region_sub_empty: "Wybierz z listy powyżej",
-            t_btn_ask_main: "ZAPYTAJ PRZEZ SMS",
-            t_btn_ask_sub: "Brak w bazie. Wyślij zapytanie SMS",
-            t_msg_prefix: "Zapytanie ze strony (Zestawienia SMS) o brakujący rejon: ",
-
-            price_box1: "Wycena",
-            price_box2: "240 PLN",
-            price_box3: "100 PLN",
-
-            t_sample_title: "BEZPŁATNA PRÓBKA NASZEJ USŁUGI",
-            t_sample_sub1: "<strong>📅 Tydzień 22 (Niedersachsen)</strong><br>🧲 Z włączonym <strong>filtrem dla złomiarzy</strong>",
-            t_sample_desc: "Sprawdź jakość i dokładność naszych harmonogramów zanim zdecydujesz się na pełną wersję. Pobierz przykład i zobacz, jak optymalizujemy trasy po niemieckich wystawkach!",
-            t_sample_btn: "📥 POBIERZ DARMOWĄ PRÓBKĘ (PDF)",
-            t_sample_note: "✅ Pełna wersja zawiera wszystkie dostępne regiony oraz aktualizacje na bieżący tydzień.<br>📧 Po wypróbowaniu próbki – zamów pełny dostęp przez e-mail lub SMS.",
-            t_sample_legend: "🧲 – precyzyjne filtrowanie dla złomiarzy",
-
-            t_section2_title: "Dodatkowe informacje i opcje",
-            t_info1_title: "🤝 Profesjonalny Pakiet Serwisowy (dla Importerów)",
-            t_info1_desc: "Idealne rozwiązanie, jeśli chcesz brać towar bezpośrednio u źródła. Odbieraj hurtowo <span class=\"highlight\">rowery, kosiarki, myjki ciśnieniowe i części samochodowe</span> prosto od niemieckich dilerów. Zapewniamy gotowe szablony e-mail oraz legalność odbioru (dokument Abholbescheinigung honorowany przez BAG). Wycena pakietu jest indywidualna.",
-            t_info2_title: "📍 Rejony Specjalne (na życzenie)",
-            t_info2_desc: "Wybrane gminy o statusie specjalnym znajdziesz bezpośrednio w naszym formularzu. Po ich zaznaczeniu realizujemy usługę pozyskania najbliższego możliwego terminu wywozu. Realizujemy zamówienia wyłącznie na rejony dostępne na naszej liście obejmującej ponad 100 pozycji na 2026 rok!",
-            t_info3_title: "🏠 Odbiór osobisty (Milicz)",
-            t_info3_desc: "Dbamy o bezpieczeństwo danych i wygodę naszych klientów. Oferujemy możliwość odbioru osobistego ustaleń w Miliczu. Zapraszamy w godzinach 17:00–20:00 w dniach od środy do soboty. Prosimy o wcześniejsze umówienie wizyty e-mailowo lub telefonicznie.",
-            
-            t_rule_title: "🚨 Złota zasada logistyki: Reguła godziny 18:00",
-            t_rule_desc1: "Daty w zestawieniach to oficjalne terminy wywozu przez śmieciarki, które pracują rano.",
-            t_rule_desc2: "Zgodnie z przepisami, przedmioty wystawia się przed posesję dzień wcześniej, po 18:00.",
-            t_rule_desc3: "<strong>Wniosek?</strong> Zaplanuj obecność w rejonie wieczorem w dniu poprzedzającym datę z naszej listy.",
-            
-            t_contact_btn: "SKONTAKTUJ SIĘ Z NAMI"
-        }
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var userLang = navigator.language || navigator.userLanguage;
-        userLang = userLang.substr(0, 2).toLowerCase();
-        
-        if (!translationsChoices[userLang]) userLang = 'pl';
-        var tc = translationsChoices[userLang];
-        
-        const choiceElements = [
-            't_intro_title', 't_intro_sub', 't_intro_desc', 't_section1_title', 't_promo_title', 't_promo_btn',
-            't_card1_title', 't_card1_f1', 't_card1_f2', 't_card1_f3', 't_card1_f4', 't_btn_standard',
-            't_card2_title', 't_card2_f1', 't_card2_f2', 't_card2_f3', 't_card2_f4', 't_btn_sms',
-            't_card3_title', 't_card3_f1', 't_card3_f2', 't_card3_f3', 't_region_label',
-            'price_box1', 'price_box2', 'price_box3',
-            't_sample_title', 't_sample_sub1', 't_sample_desc', 't_sample_btn', 't_sample_note', 't_sample_legend',
-            't_section2_title', 't_info1_title', 't_info1_desc', 't_info2_title', 't_info2_desc', 't_info3_title', 't_info3_desc',
-            't_rule_title', 't_rule_desc1', 't_rule_desc2', 't_rule_desc3', 't_contact_btn'
-        ];
-        
-        choiceElements.forEach(id => {
-            if (tc[id] && document.getElementById(id)) {
-                document.getElementById(id).innerHTML = tc[id];
-            }
-        });
-
-        const clientEmailInput = document.getElementById('clientEmail');
-        if (clientEmailInput) {
-            clientEmailInput.placeholder = tc['t_promo_placeholder'];
-        }
-
-        // =========================================
-        // PROMOCJA (Weryfikacja pod kątem dynamicznych zmian)
-        // =========================================
-        if (userLang === 'pl') {
-            const promoSection = document.getElementById('promo-section');
-            if (promoSection) promoSection.style.display = 'block';
-
-            const applyPromoBtn = document.getElementById('applyPromo');
-            if (applyPromoBtn) {
-                applyPromoBtn.addEventListener('click', function() {
-                    const emailInput = document.getElementById('clientEmail').value.trim();
-                    const statusInfo = document.getElementById('promoStatus');
-                    
-                    if (!emailInput.includes('@') || !emailInput.includes('.')) {
-                        statusInfo.style.color = "#e74c3c";
-                        statusInfo.innerHTML = "✗ Wprowadź poprawny adres e-mail.";
-                        return;
-                    }
-
-                    statusInfo.style.color = "#aaa";
-                    statusInfo.innerHTML = "Weryfikacja adresu e-mail...";
-                    
-                    const gsAppUrl = "https://script.google.com/macros/s/AKfycbz3Hj1JtmQI8-OCE3B_7zfDWMePfaNhYuuitjs1Ji7TkDLja7KzkVDuoKmGfZT8b3Z5lA/exec"; 
-
-                    const fetchUrl = `${gsAppUrl}?action=check_promo&email=${encodeURIComponent(emailInput)}`;
-
-                    fetch(fetchUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            if(data.valid) {
-                                // Sprawdzenie i nadpisanie stałych cen (100 PLN i 240 PLN) w przypadku promocji ze skryptu
-                                if(data.priceRejon < 100) {
-                                    document.getElementById('price_box3').innerHTML = `<s style='color: #e74c3c; font-size: 0.8em;'>100 PLN</s> ${data.priceRejon} PLN`;
-                                } else {
-                                    document.getElementById('price_box3').innerHTML = `${data.priceRejon} PLN`;
-                                }
-                                
-                                if(data.pricePRO < 240) {
-                                    document.getElementById('price_box2').innerHTML = `<s style='color: #e74c3c; font-size: 0.8em;'>240 PLN</s> ${data.pricePRO} PLN`;
-                                } else {
-                                    document.getElementById('price_box2').innerHTML = `${data.pricePRO} PLN`;
-                                }
-                                
-                                statusInfo.style.color = "#2ecc71";
-                                statusInfo.innerHTML = "✓ E-mail zweryfikowany! Ceny stałego klienta aktywne.";
-                                applyPromoBtn.style.display = 'none';
-                                document.getElementById('clientEmail').disabled = true;
-                                document.getElementById('clientEmail').style.borderColor = "#2ecc71";
-                            } else {
-                                statusInfo.style.color = "#e74c3c";
-                                statusInfo.innerHTML = "✗ " + data.message;
-                            }
-                        })
-                        .catch(error => {
-                            statusInfo.style.color = "#e74c3c";
-                            statusInfo.innerHTML = "✗ Błąd połączenia z serwerem. Spróbuj ponownie za chwilę.";
-                            console.error("GS Fetch Error:", error);
-                        });
-                });
-            }
-        }
-
-        const customRegionInput = document.getElementById('customRegionInput');
-        if (customRegionInput) {
-            customRegionInput.placeholder = tc['t_custom_ph'];
-        }
-
-        const btnRegion = document.getElementById('t_btn_region');
-        if(btnRegion) {
-            btnRegion.innerHTML = `${tc['t_btn_region_main']}<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>${tc['t_btn_region_sub_empty']}</span>`;
-        }
-
-        const regionSelect = document.getElementById('regionSelect');
-
-        let defaultOpt = document.createElement('option');
-        defaultOpt.value = "";
-        defaultOpt.textContent = tc['t_opt_default'];
-        regionSelect.appendChild(defaultOpt);
-
-        regionsData.forEach(r => {
-            let opt = document.createElement('option');
-            opt.value = `${r.name} (${r.land})`;
-            opt.textContent = `${r.name} (${r.land})`;
-            regionSelect.appendChild(opt);
-        });
-
-        let otherOpt = document.createElement('option');
-        otherOpt.value = "custom";
-        otherOpt.textContent = tc['t_opt_other'];
-        regionSelect.appendChild(otherOpt);
-
-        function updateRegionButton() {
-            const val = regionSelect.value;
-
-            if (val === "") {
-                customRegionInput.style.display = "none";
-                btnRegion.classList.add('btn-disabled');
-                btnRegion.href = "#";
-                btnRegion.style.backgroundColor = "";
-                btnRegion.innerHTML = `${tc['t_btn_region_main']}<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>${tc['t_btn_region_sub_empty']}</span>`;
-                return;
-            }
-
-            if (val === "custom") {
-                customRegionInput.style.display = "block";
-                const customVal = customRegionInput.value.trim();
-                
-                if(customVal === "") {
-                    btnRegion.classList.add('btn-disabled');
-                    btnRegion.href = "#";
-                    btnRegion.style.backgroundColor = "";
-                    btnRegion.innerHTML = `${tc['t_btn_ask_main']}<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>Wpisz nazwę wyżej</span>`;
-                } else {
-                    btnRegion.classList.remove('btn-disabled');
-                    const smsBody = encodeURIComponent(tc['t_msg_prefix'] + customVal);
-                    btnRegion.href = `sms:${phoneNumber}?body=${smsBody}`;
-                    btnRegion.style.backgroundColor = "#f39c12"; 
-                    btnRegion.innerHTML = `${tc['t_btn_ask_main']}<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>${tc['t_btn_ask_sub']}</span>`;
-                }
-                return;
-            }
-
-            customRegionInput.style.display = "none";
-            const found = regionsData.find(r => `${r.name} (${r.land})` === val);
-            
-            if (found) {
-                btnRegion.classList.remove('btn-disabled');
-                btnRegion.href = found.url;
-                btnRegion.style.backgroundColor = "#2ecc71"; 
-                let subText = `Wybrano: ${found.name}`;
-                btnRegion.innerHTML = `${tc['t_btn_region_main']}<br><span style='font-size: 0.65em; font-weight: normal; text-transform: none; display: block; margin-top: 5px;'>${subText}</span>`;
-            }
-        }
-
-        regionSelect.addEventListener('change', updateRegionButton);
-        customRegionInput.addEventListener('input', updateRegionButton);
-    });
-        
-        // Blokada prawego przycisku myszy
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Blokada skrótów klawiszowych
-        document.addEventListener('keydown', function(e) {
-            // Blokada F12
-            if (e.key === 'F12' || e.keyCode === 123) {
-                e.preventDefault();
-            }
-            // Blokada Ctrl + Shift + I (Narzędzia deweloperskie)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
-                e.preventDefault();
-            }
-            // Blokada Ctrl + Shift + J (Konsola)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
-                e.preventDefault();
-            }
-            // Blokada Ctrl + Shift + C (Inspektor elementów)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
-                e.preventDefault();
-            }
-            // Blokada Ctrl + U (Pokaż źródło strony)
-            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
-                e.preventDefault();
-            }
-            // Blokada Ctrl + S (Zapisz stronę)
-            if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
-                e.preventDefault();
-            }
-        });
-    </script>
 </body>
 </html>
