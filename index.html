@@ -395,11 +395,13 @@
     <!-- SKRYPT ASYSTENTA CZATU -->
     <script>
     (function() {
+        // 1. CZYSZCZENIE: Usuwa poprzednie instancje okna i przycisku
         const oldChat = document.getElementById('chat-main-window');
         const oldBtn = document.getElementById('chat-toggle-btn');
         if (oldChat) oldChat.remove();
         if (oldBtn) oldBtn.remove();
 
+        // 2. TWORZENIE DOM: Dynamicznie generujemy strukturę HTML
         const wrapper = document.createElement('div');
         wrapper.innerHTML = `
             <button class="chat-button" id="chat-toggle-btn" title="Otwórz asystenta">
@@ -421,6 +423,7 @@
         `;
         document.body.appendChild(wrapper);
 
+        // 3. POBIERANIE ELEMENTÓW
         const chatMainWindow = document.getElementById('chat-main-window');
         const toggleBtn = document.getElementById('chat-toggle-btn');
         const messagesArea = document.getElementById('chat-messages-area');
@@ -428,8 +431,10 @@
         const sendBtn = document.getElementById('chat-send-btn');
         const headerTitle = document.getElementById('chat-header-title');
 
+        // ⚠️ WAŻNE: Twój link do skryptu Google
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
+        // 4. SŁOWNIK JĘZYKÓW
         const slownik = {
             pl: { powitanie: "Cześć! Wpisz nazwę miejscowości, aby sprawdzić dostępne terminy w tygodniu.", placeholder: "Wpisz nazwę miejscowości...", wyslij: "Wyślij", ladowanie: "🤔 Szukam dostępnych terminów...", blad: "❌ Błąd połączenia z serwerem." },
             de: { powitanie: "Hallo! Geben Sie den Namen der Stadt ein, um verfügbare Termine für die Woche zu prüfen.", placeholder: "Stadt eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche nach Terminen...", blad: "❌ Verbindungsfehler." },
@@ -441,7 +446,7 @@
             bg: { powitanie: "Здравейте! Въведете името на града, за да проверите наличните дати за седмицата.", placeholder: "Въведете град...", wyslij: "Изпрати", ladowanie: "🤔 Търсене на дати...", blad: "❌ Грешка при свързване." },
             tr: { powitanie: "Merhaba! Haftalık uygun tarihleri kontrol etmek için şehir adını girin.", placeholder: "Şehir adını girin...", wyslij: "Gönder", ladowanie: "🤔 Tarihler aranıyor...", blad: "❌ Bağlantı hatası." },
             bs: { powitanie: "Zdravo! Unesite naziv grada da provjerite dostupne termine u sedmici.", placeholder: "Unesite naziv grada...", wyslij: "Pošalji", ladowanie: "🤔 Tražim termine...", blad: "❌ Greška u povezivanju." },
-            uk: { powitanie: "Привіт! Введіть nazwę міста, щоб перевірити доступні дати на тиждень.", placeholder: "Введіть місто...", wyslij: "Надіслати", ladowanie: "🤔 Пошук дат...", blad: "❌ Помилка з'єднання." },
+            uk: { powitanie: "Привіт! Введіть назву міста, щоб перевірити доступні дати на тиждень.", placeholder: "Введіть місто...", wyslij: "Надіслати", ladowanie: "🤔 Пошук дат...", blad: "❌ Помилка з'єднання." },
             ru: { powitanie: "Привет! Введите название города, чтобы проверить доступные даты на неделю.", placeholder: "Введите город...", wyslij: "Отправить", ladowanie: "🤔 Поиск дат...", blad: "❌ Ошибка подключения." },
             lt: { powitanie: "Sveiki! Įveskite miesto pavadinimą, kad patikrintumėte laisvas datas šią savaitę.", placeholder: "Įveskite miestą...", wyslij: "Siųsti", ladowanie: "🤔 Ieškoma datų...", blad: "❌ Ryšio klaida." },
             lv: { powitanie: "Sveiki! Ievadiet pilsētas nosaukumu, lai pārbaudītu pieejamos datumus šonedēļ.", placeholder: "Ievadiet pilsētu...", wyslij: "Sūtīt", ladowanie: "🤔 Meklē datumus...", blad: "❌ Savienojuma kļūda." },
@@ -453,6 +458,7 @@
         let currentLang = slownik[browserLang] ? browserLang : 'pl'; 
         let t = slownik[currentLang];
 
+        // 5. INICJALIZACJA INTERFEJSU
         headerTitle.innerHTML = `
             <div style="display: flex; align-items: center; gap: 8px;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -470,6 +476,7 @@
         sendBtn.innerText = t.wyslij;
         messagesArea.innerHTML = `<div class="chat-bubble-received">${t.powitanie}</div>`;
 
+        // 6. OBSŁUGA ZDARZEŃ (Kliknięcia)
         document.getElementById('close-chat-btn').onclick = function() {
             chatMainWindow.style.display = 'none';
         };
@@ -477,6 +484,7 @@
         toggleBtn.onclick = function() {
             if (chatMainWindow.style.display === 'none' || chatMainWindow.style.display === '') {
                 chatMainWindow.style.display = 'flex';
+                
                 if (window.innerWidth > 768) {
                     userInput.focus();
                 }
@@ -492,12 +500,29 @@
             }
         });
 
+        // 💡 ZMIENNA: Pamięć Asystenta dla formularza kontaktowego
+        let ostatnieWyszukiwanie = "";
+
+        // Wysłanie wiadomości do Google Apps Script
         sendBtn.onclick = async function() {
             const text = userInput.value.trim();
             if (!text) return;
 
             appendMessage(text, 'sent');
             userInput.value = '';
+
+            // 💡 LOGIKA ZAPAMIĘTYWANIA REJONU W TLE
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+            let zapytanieDoWyslania = text;
+
+            if (emailRegex.test(text) && ostatnieWyszukiwanie !== "") {
+                // Jeśli to mail, doklejamy ostatnio szukane miasto i kasujemy pamięć
+                zapytanieDoWyslania = text + " (Rejon: " + ostatnieWyszukiwanie + ")";
+                ostatnieWyszukiwanie = ""; // Reset pamięci po wysłaniu maila
+            } else if (!emailRegex.test(text)) {
+                // Jeśli to zapytanie (np. "Berlin"), zapamiętujemy je
+                ostatnieWyszukiwanie = text;
+            }
 
             const loadingId = 'loading-' + Date.now();
             appendMessage(t.ladowanie, 'received', loadingId);
@@ -508,7 +533,7 @@
                     headers: {'Content-Type': 'text/plain;charset=utf-8'},
                     body: JSON.stringify({
                         akcja: 'szukaj_terminow', 
-                        zapytanie: text, 
+                        zapytanie: zapytanieDoWyslania, // 💡 Wysyłamy zmodyfikowany tekst do Google
                         jezyk: currentLang
                     })
                 });
@@ -543,6 +568,7 @@
             messagesArea.scrollTop = messagesArea.scrollHeight;
         }
 
+        // 7. ZABEZPIECZENIA
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123) e.preventDefault();
