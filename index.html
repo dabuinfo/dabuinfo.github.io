@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dabu-info - Harmonogramy Wystawek w Niemczech</title>
+    <title>dabu-info - Terminy Wystawek 2026 | Plany i Rozpiski Sperrmüll w Niemczech</title>
+    <meta name="description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów wielkogabarytowych (Sperrmüll) w Niemczech na rok 2026. Sprawdź harmonogramy dla ponad 100 rejonów w Europie.">
+    <meta name="keywords" content="terminy wystawek, rozpiski, plany, harmonogramy 2026, gabaryty Niemcy, Sperrmüll Termine, Sperrmüllkalender, bulk waste collection Germany, termíny svozu, krupni otpad, lomtalanítás idopontok">
+    
     <style>
         /* ========================================= */
         /* STYL WIZYTÓWKI (DARK MODE)                */
@@ -116,6 +119,32 @@
             box-shadow: 0 8px 20px rgba(46,204,113,0.5);
         }
 
+        /* MULTILANGUAGE SEO SECTION */
+        .seo-tags-container {
+            margin-top: 30px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #262626;
+            text-align: left;
+        }
+        .seo-tags-container h4 {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .seo-tags {
+            font-size: 0.8em;
+            color: #555;
+            line-height: 1.8;
+        }
+        .seo-tags span {
+            margin-right: 8px;
+            display: inline-block;
+        }
+
         .footer-info {
             font-size: 0.85em;
             color: #777;
@@ -123,31 +152,204 @@
             padding-top: 20px;
             margin-top: 30px;
         }
+
+        /* ========================================= */
+        /* STYL ASYSTENTA CZATU                      */
+        /* ========================================= */
+        :root {
+            --theme-color: #4CAF50; 
+        }
+
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background-color: var(--theme-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+
+        #chat-main-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            max-width: 90vw;
+            height: 500px; 
+            max-height: 75vh;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .chat-header {
+            background: var(--theme-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-bubble-sent {
+            background: var(--theme-color);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 15px 15px 2px 15px;
+            max-width: 85%;
+            align-self: flex-end;
+            text-align: left;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .chat-bubble-received {
+            background: #e0e0e0;
+            color: black;
+            padding: 10px 14px;
+            border-radius: 15px 15px 15px 2px;
+            max-width: 85%;
+            align-self: flex-start;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .chat-bubble-received strong {
+            color: var(--theme-color);
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+            align-items: stretch;
+        }
+
+        #chat-user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 14px;
+            min-width: 0;
+            outline: none;
+        }
+        
+        #chat-user-input:focus {
+            border-color: var(--theme-color);
+        }
+
+        .chat-send-button {
+            margin-left: 10px;
+            padding: 0 15px;
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =========================================
+           ELASTYCZNY CZAT DLA SMARTFONÓW (KLAWIATURA)
+           ========================================= */
+        @media (max-width: 768px) {
+            #chat-main-window {
+                top: auto !important;
+                bottom: 15px !important;
+                left: 15px !important;
+                right: 15px !important;
+                width: auto !important;
+                max-width: none !important;
+                height: auto !important;
+                max-height: 80dvh !important; 
+                border-radius: 10px !important;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="offer-wrapper">
 
-        <!-- LOGO / BANER GŁÓWNY -->
         <img src="dabu-infologo.png" alt="Dabu-Info Terminy Wystawek 2026" class="main-banner">
 
-        <div class="offer-header">Twój Nawigator po Wystawkach</div>
-        <div class="offer-subheader">Precyzyjne harmonogramy Sperrmüll w Niemczech na rok 2026</div>
+        <h1 class="offer-header">Twój Nawigator po Wystawkach</h1>
+        <div class="offer-subheader">Precyzyjne plany, rozpiski i terminy wystawek Sperrmüll w Niemczech na rok 2026</div>
 
         <div class="description">
-            <p>Celem serwisu <strong>dabu-info</strong> jest dostarczanie najdokładniejszych harmonogramów oraz lokalizacji wystawek odpadów wielkogabarytowych na terenie całych Niemiec. Opierając się na moim 30-letnim doświadczeniu, pomagam zoptymalizować trasy, oszczędzić paliwo i wyeliminować "puste przeloty".</p>
-            <p>W naszej bazie na 2026 rok znajduje się już ponad <strong>100 starannie wyselekcjonowanych niemieckich rejonów</strong>!</p>
+            <p>Celem serwisu <strong>dabu-info</strong> jest dostarczanie najdokładniejszych i stale aktualizowanych <strong>planów, rozpisek oraz terminów wystawek</strong> odpadów wielkogabarytowych na terenie całych Niemiec. Opierając się na moim 30-letnim doświadczeniu, pomagam zoptymalizować trasy, oszczędzić paliwo i wyeliminować "puste przeloty".</p>
+            <p>W naszej bazie na 2026 rok znajduje się już ponad <strong>100 starannie wyselekcjonowanych niemieckich rejonów</strong>! Nasze rozpiski i szczegółowe plany wywozu pozwolą Ci zawsze dotrzeć na miejsce w optymalnym momencie.</p>
         </div>
 
         <div class="assistant-box">
             <h3>🤖 Wirtualny Asystent dabu-info</h3>
-            <p style="margin: 0; color: #ccc;">Nie wiesz, w jaki rejon warto wyruszyć w tym tygodniu? Przejdź na naszego bloga i skorzystaj z pomocy Asystenta! Pomoże Ci on dobrać idealny kierunek wyjazdu, uwzględniając Twoje preferencje (np. zbiórki bogate w elektronikę lub złom) oraz aktualnie dostępne harmonogramy.</p>
+            <p style="margin: 0; color: #ccc;">Nie wiesz, w jaki rejon warto wyruszyć w tym tygodniu? Przejdź na naszego bloga i skorzystaj z pomocy Asystenta! Pomoże Ci on dobrać idealny kierunek wyjazdu, uwzględniając Twoje preferencje (np. zbiórki bogate w elektronikę lub złom), aktualne terminy wystawek oraz europejskie harmonogramy wywozu gabarytów.</p>
         </div>
 
         <a href="https://dabu-info.blogspot.com/" class="cta-btn-primary">
             PRZEJDŹ NA BLOGA I ZŁÓŻ ZAMÓWIENIE
         </a>
+
+        <div class="seo-tags-container">
+            <h4>Obszar wyszukiwania / International Search Index:</h4>
+            <div class="seo-tags">
+                <span><strong>PL:</strong> terminy wystawek, rozpiski, plany wywozu gabarytów Niemcy.</span>
+                <span><strong>DE:</strong> Sperrmüll Termine 2026, Sperrmüllkalender, Abfallkalender Deutschland Pläne.</span>
+                <span><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates, collection plans.</span>
+                <span><strong>CS:</strong> Termíny svozu velkoobjemového odpadu, harmonogramy odpadů Německo.</span>
+                <span><strong>SK:</strong> Termíny zvozu veľkoobjemového odpadu, rozpisky Sperrmüll.</span>
+                <span><strong>HU:</strong> Lomtalanítás időpontok Németországban, heti tervek.</span>
+                <span><strong>RO:</strong> Calendar deșeuri voluminoase Germania, programări ridicare.</span>
+                <span><strong>BG:</strong> График за събиране на отпадъци, едрогабаритни дати Германия.</span>
+                <span><strong>TR:</strong> Kaba atık toplama tarihleri, Almanya hurda programları.</span>
+                <span><strong>BS/HR:</strong> Termini odvoza krupnog otpada, rasporedi gabarita Njemačka.</span>
+                <span><strong>UK/RU:</strong> График вывоза крупногабаритного мусора Германия, даты и планы.</span>
+                <span><strong>LT/LV:</strong> Stambiagabaritinių atliekų surinkimo grafikai, izvešanas datumi.</span>
+                <span><strong>SL:</strong> Kosovni odpadki urniki, termini odvoza Nemčija.</span>
+            </div>
+        </div>
 
         <div class="footer-info">
             <strong>🏠 Odbiór osobisty (Milicz):</strong> Pamiętaj, że zawsze oferujemy możliwość odbioru osobistego ustaleń w Miliczu (od środy do soboty w godz. 17:00–20:00) po wcześniejszym kontakcie.<br>
@@ -157,5 +359,177 @@
 
     </div>
 
+    <script>
+    (function() {
+        // 1. CZYSZCZENIE: Usuwa poprzednie instancje okna i przycisku
+        const oldChat = document.getElementById('chat-main-window');
+        const oldBtn = document.getElementById('chat-toggle-btn');
+        if (oldChat) oldChat.remove();
+        if (oldBtn) oldBtn.remove();
+
+        // 2. TWORZENIE DOM: Dynamicznie generujemy strukturę HTML
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <button class="chat-button" id="chat-toggle-btn" title="Otwórz asystenta">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+            <div id="chat-main-window" style="display:none;">
+                <div class="chat-header" id="chat-header-title"></div>
+                <div id="chat-messages-area"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-user-input" placeholder="..." />
+                    <button class="chat-send-button" id="chat-send-btn">Wyślij</button>
+                </div>
+                <div style="text-align: center; color: #b0b0b0; font-family: sans-serif; padding: 10px 0 15px 0; background: white; font-size: 12px; letter-spacing: 1px; opacity: 0.6;">
+                    © <script>document.write(new Date().getFullYear())<\/script> dabu-info
+                </div>
+            </div>
+        `;
+        document.body.appendChild(wrapper);
+
+        // 3. POBIERANIE ELEMENTÓW
+        const chatMainWindow = document.getElementById('chat-main-window');
+        const toggleBtn = document.getElementById('chat-toggle-btn');
+        const messagesArea = document.getElementById('chat-messages-area');
+        const userInput = document.getElementById('chat-user-input');
+        const sendBtn = document.getElementById('chat-send-btn');
+        const headerTitle = document.getElementById('chat-header-title');
+
+        // ⚠️ WAŻNE: Twój link do skryptu Google
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
+
+        // 4. SŁOWNIK JĘZYKÓW
+        const slownik = {
+            pl: { powitanie: "Cześć! Wpisz nazwę miejscowości, aby sprawdzić dostępne terminy w tygodniu.", placeholder: "Wpisz nazwę miejscowości...", wyslij: "Wyślij", ladowanie: "🤔 Szukam dostępnych terminów...", blad: "❌ Błąd połączenia z serwerem." },
+            de: { powitanie: "Hallo! Geben Sie den Namen der Stadt ein, um verfügbare Termine für die Woche zu prüfen.", placeholder: "Stadt eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche nach Terminen...", blad: "❌ Verbindungsfehler." },
+            en: { powitanie: "Hi! Enter the city name to check available dates for the week.", placeholder: "Enter city name...", wyslij: "Send", ladowanie: "🤔 Searching for dates...", blad: "❌ Connection error." },
+            cs: { powitanie: "Ahoj! Zadejte název města pro kontrolu dostupných termínů v týdnu.", placeholder: "Zadejte název města...", wyslij: "Odeslat", ladowanie: "🤔 Hledám termíny...", blad: "❌ Chyba připojení." },
+            sk: { powitanie: "Ahoj! Zadajte názov mesta pre kontrolu dostupných termínov v týždni.", placeholder: "Zadajte názov mesta...", wyslij: "Odoslať", ladowanie: "🤔 Hľadám termíny...", blad: "❌ Chyba pripojenia." },
+            hu: { powitanie: "Szia! Írja be a település nevét a heti elérhető időpontok ellenőrzéséhez.", placeholder: "Település neve...", wyslij: "Küldés", ladowanie: "🤔 Időpontok keresése...", blad: "❌ Csatlakozási hiba." },
+            ro: { powitanie: "Bună! Introduceți orașul pentru a verifica datele disponibile din această săptămână.", placeholder: "Introduceți orașul...", wyslij: "Trimite", ladowanie: "🤔 Se caută datele...", blad: "❌ Eroare de conexiune." },
+            bg: { powitanie: "Здравейте! Въведете името на града, за да проверите наличните дати за седмицата.", placeholder: "Въведете град...", wyslij: "Изпрати", ladowanie: "🤔 Търсене на дати...", blad: "❌ Грешка при свързване." },
+            tr: { powitanie: "Merhaba! Haftalık uygun tarihleri kontrol etmek için şehir adını girin.", placeholder: "Şehir adını girin...", wyslij: "Gönder", ladowanie: "🤔 Tarihler aranıyor...", blad: "❌ Bağlantı hatası." },
+            bs: { powitanie: "Zdravo! Unesite naziv grada da provjerite dostupne termine u sedmici.", placeholder: "Unesite naziv grada...", wyslij: "Pošalji", ladowanie: "🤔 Tražim termine...", blad: "❌ Greška u povezivanju." },
+            uk: { powitanie: "Привіт! Введіть nazwę міста, щоб перевірити dostępni дати на тиждень.", placeholder: "Введіть місто...", wyslij: "Надіслати", ladowanie: "🤔 Пошук дат...", blad: "❌ Помилка з'єднання." },
+            ru: { powitanie: "Привет! Введите название города, чтобы проверить доступные даты на неделю.", placeholder: "Введите город...", wyslij: "Отправить", ladowanie: "🤔 Поиск дат...", blad: "❌ Ошибка подключения." },
+            lt: { powitanie: "Sveiki! Įveskite miesto pavadinimą, kad patikrintumėte laisvas datas šią savaitę.", placeholder: "Įveskite miestą...", wyslij: "Siųsti", ladowanie: "🤔 Ieškoma datų...", blad: "❌ Ryšio klaida." },
+            lv: { powitanie: "Sveiki! Ievadiet pilsētas nosaukumu, lai pārbaudītu pieejamos datumus šonedēļ.", placeholder: "Ievadiet pilsētu...", wyslij: "Sūtīt", ladowanie: "🤔 Meklē datumus...", blad: "❌ Savienojuma kļūda." },
+            hr: { powitanie: "Bok! Unesite naziv grada kako biste provjerili dostupne termine u tjednu.", placeholder: "Unesite naziv grada...", wyslij: "Pošalji", ladowanie: "🤔 Tražim termine...", blad: "❌ Greška u povezivanju." },
+            sl: { powitanie: "Živijo! Vnesite ime mesta, da preverite razpoložljive termine v tednu.", placeholder: "Vnesite mesto...", wyslij: "Pošlji", ladowanie: "🤔 Iščem termine...", blad: "❌ Napaka v povezavi." }
+        };
+
+        let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+        let currentLang = slownik[browserLang] ? browserLang : 'pl'; 
+        let t = slownik[currentLang];
+
+        // 5. INICJALIZACJA INTERFEJSU
+        headerTitle.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span style="font-family:Arial Black; font-size:16px;">DABU-INFO ASYSTENT</span>
+            </div>
+            <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 5px;">❌</span>
+        `;
+
+        userInput.placeholder = t.placeholder;
+        sendBtn.innerText = t.wyslij;
+        messagesArea.innerHTML = `<div class="chat-bubble-received">${t.powitanie}</div>`;
+
+        // 6. OBSŁUGA ZDARZEŃ (Kliknięcia)
+        document.getElementById('close-chat-btn').onclick = function() {
+            chatMainWindow.style.display = 'none';
+        };
+
+        toggleBtn.onclick = function() {
+            if (chatMainWindow.style.display === 'none' || chatMainWindow.style.display === '') {
+                chatMainWindow.style.display = 'flex';
+                
+                // Magia UX: Kursor wskakuje automatycznie TYLKO na komputerach
+                if (window.innerWidth > 768) {
+                    userInput.focus();
+                }
+            } else {
+                chatMainWindow.style.display = 'none';
+            }
+        };
+
+        // Obsługa Entera
+        userInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Zapobiega domyślnemu odświeżaniu formularza
+                sendBtn.click();
+            }
+        });
+
+        // Wysłanie wiadomości do Google Apps Script
+        sendBtn.onclick = async function() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Wyświetla oryginalną wiadomość w oknie czatu użytkownika
+            appendMessage(text, 'sent');
+            userInput.value = '';
+
+            const loadingId = 'loading-' + Date.now();
+            appendMessage(t.ladowanie, 'received', loadingId);
+
+            try {
+                const resp = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+                    body: JSON.stringify({
+                        akcja: 'szukaj_terminow', 
+                        zapytanie: text, // Czysty tekst leci prosto do Google
+                        jezyk: currentLang
+                    })
+                });
+                const data = await resp.json();
+                
+                const el = document.getElementById(loadingId);
+                if(el) el.remove();
+                
+                if (data && data.odpowiedz) {
+                    appendMessage(data.odpowiedz, 'received');
+                } else {
+                    appendMessage(t.blad, 'received');
+                }
+
+            } catch(e) {
+                const el = document.getElementById(loadingId);
+                if(el) el.remove();
+                appendMessage(t.blad, 'received');
+                console.error('Błąd:', e);
+            }
+        };
+
+        function appendMessage(text, type, id = null) {
+            const bubble = document.createElement('div');
+            bubble.className = type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-received';
+            if(id) bubble.id = id;
+            
+            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
+            
+            messagesArea.appendChild(bubble);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        // 7. ZABEZPIECZENIA
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123) e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) e.preventDefault();
+            if (e.ctrlKey && e.keyCode === 85) e.preventDefault();
+        });
+
+    })();
+    </script>
 </body>
 </html>
