@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO OPTIMALIZATION -->
     <title>dabu-info - Terminy Wystawek 2026 | Plany i Rozpiski Sperrmüll w Niemczech</title>
     <meta name="description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów wielkogabarytowych (Sperrmüll) w Niemczech na rok 2026. Sprawdź harmonogramy dla ponad 100 rejonów w Europie.">
     <meta name="keywords" content="terminy wystawek, rozpiski, plany, harmonogramy 2026, gabaryty Niemcy, Sperrmüll Termine, Sperrmüllkalender, bulk waste collection Germany, termíny svozu, krupni otpad, lomtalanítás idopontok">
@@ -188,11 +187,9 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            display: flex;
-            gap: 8px;
             z-index: 10000;
             background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
             border: 1px solid #444;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -203,14 +200,14 @@
             color: #fff;
             border: 1px solid #555;
             border-radius: 4px;
-            padding: 8px 12px;
+            padding: 8px 15px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .zoom-btn:hover {
@@ -375,23 +372,20 @@
                 padding: 6px;
             }
             .zoom-btn {
-                padding: 6px 10px;
-                font-size: 14px;
+                padding: 6px 12px;
+                font-size: 13px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- PANEL STEROWANIA LUPĄ -->
     <div class="zoom-controls">
-        <button class="zoom-btn" onclick="zmienZoom(-0.25)" title="Pomniejsz">🔍 -</button>
-        <button class="zoom-btn" onclick="zmienZoom(0.25)" title="Powiększ">🔍 +</button>
+        <button class="zoom-btn" onclick="przelaczZoom()" title="Powiększ tekst">🔍 Powiększ</button>
     </div>
 
     <div class="offer-wrapper">
 
-        <!-- LOGO / BANER GŁÓWNY -->
         <img src="dabu-infologo.png" alt="Dabu-Info Terminy Wystawek 2026" class="main-banner">
 
         <h1 class="offer-header">Twój Nawigator po Wystawkach</h1>
@@ -419,7 +413,6 @@
             PRZEJDŹ NA BLOGA I ZŁÓŻ ZAMÓWIENIE
         </a>
 
-        <!-- EUROPEAN MULTILANGUAGE SEO SECTION (Wyszukiwanie w PL i Europie) -->
         <div class="seo-tags-container">
             <h4>Obszar wyszukiwania / International Search Index:</h4>
             <div class="seo-tags">
@@ -451,30 +444,20 @@
 
     </div>
 
-    <!-- SKRYPT OBSŁUGI LUPY -->
     <script>
-        let aktualnyZoom = 1;
-        function zmienZoom(krok) {
-            // Twarda blokada: jeśli powiększenie to 3 lub więcej i klikasz "+", ignoruj
-            if (aktualnyZoom >= 3 && krok > 0) return;
-            
-            // Twarda blokada: jeśli powiększenie to 1 lub mniej i klikasz "-", ignoruj
-            if (aktualnyZoom <= 1 && krok < 0) return;
-
-            aktualnyZoom += krok;
-            
-            // Zaokrąglenie zapobiegające błędom ułamkowym w przeglądarkach
-            aktualnyZoom = Math.round(aktualnyZoom * 100) / 100;
-            
-            // Ubezpieczenie
-            if (aktualnyZoom < 1) aktualnyZoom = 1;
-            if (aktualnyZoom > 3) aktualnyZoom = 3;
-            
-            document.body.style.zoom = aktualnyZoom;
+        let poziomZoom = 1;
+        function przelaczZoom() {
+            if (poziomZoom === 1) {
+                poziomZoom = 1.5; // Pierwsze kliknięcie -> Powiększenie średnie
+            } else if (poziomZoom === 1.5) {
+                poziomZoom = 2;   // Drugie kliknięcie -> Powiększenie duże
+            } else {
+                poziomZoom = 1;   // Trzecie kliknięcie -> Powrót do oryginału
+            }
+            document.body.style.zoom = poziomZoom;
         }
     </script>
 
-    <!-- SKRYPT ASYSTENTA CZATU -->
     <script>
     (function() {
         const oldChat = document.getElementById('chat-main-window');
