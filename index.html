@@ -58,7 +58,7 @@
 
         .offer-header {
             color: #2ecc71;
-            font-size: 2.6em; /* POWIĘKSZONY NAGŁÓWEK */
+            font-size: 2.6em;
             font-weight: 800;
             margin-bottom: 15px;
             text-transform: uppercase;
@@ -67,14 +67,14 @@
 
         .offer-subheader {
             color: #aaa;
-            font-size: 1.4em; /* POWIĘKSZONY PODTYTUŁ */
+            font-size: 1.4em;
             margin-bottom: 30px;
             border-bottom: 1px solid #333;
             padding-bottom: 25px;
         }
 
         .description {
-            font-size: 1.25em; /* POWIĘKSZONY OPIS */
+            font-size: 1.25em;
             color: #ddd;
             margin-bottom: 35px;
             text-align: left;
@@ -109,7 +109,7 @@
             margin-top: 15px;
             padding-left: 20px;
             color: #ccc;
-            font-size: 1.15em; /* POWIĘKSZONA INSTRUKCJA */
+            font-size: 1.15em;
             text-align: left;
         }
 
@@ -138,7 +138,7 @@
             background: linear-gradient(90deg, #2ecc71, #27ae60);
             color: #000 !important;
             padding: 20px 45px;
-            font-size: 1.3em; /* POWIĘKSZONY PRZYCISK */
+            font-size: 1.3em;
             font-weight: bold;
             text-transform: uppercase;
             border-radius: 50px;
@@ -181,7 +181,7 @@
         }
 
         .footer-info {
-            font-size: 1em; /* POWIĘKSZONA STOPKA */
+            font-size: 1em;
             color: #777;
             border-top: 1px solid #222;
             padding-top: 25px;
@@ -190,29 +190,41 @@
         }
 
         /* ========================================= */
-        /* EFEKT MYSZKI - GWIAZDKI                   */
+        /* ZARZĄDZANIE POWIĘKSZENIEM (LUPA)          */
         /* ========================================= */
-        .cursor-star {
+        .zoom-controls {
             position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none; /* Nie blokuje klikania */
-            z-index: 9999;
-            color: #ffd700;
-            text-shadow: 0 0 8px #ffaa00, 0 0 12px #ffaa00;
-            font-size: 24px;
-            animation: fallFade 1s linear forwards;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        @keyframes fallFade {
-            0% {
-                transform: translateY(0) scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(60px) scale(0.3) rotate(180deg);
-                opacity: 0;
-            }
+        .zoom-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .zoom-btn:hover {
+            background: #2ecc71;
+            color: #000;
+            border-color: #2ecc71;
         }
 
         /* ========================================= */
@@ -262,7 +274,7 @@
             z-index: 1000;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-size: 16px; /* POWIĘKSZONY TEKST W CZACIE */
+            font-size: 16px;
             line-height: 1.5;
         }
 
@@ -365,10 +377,25 @@
                 max-height: 80dvh !important; 
                 border-radius: 10px !important;
             }
+            .zoom-controls {
+                top: 10px;
+                right: 10px;
+                padding: 6px;
+            }
+            .zoom-btn {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- PANEL STEROWANIA LUPĄ -->
+    <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zmienZoom(-0.25)" title="Pomniejsz">🔍 -</button>
+        <button class="zoom-btn" onclick="zmienZoom(0.25)" title="Powiększ">🔍 +</button>
+    </div>
 
     <div class="offer-wrapper">
 
@@ -432,30 +459,15 @@
 
     </div>
 
-    <!-- SKRYPT EFEKTU GWIAZDEK -->
+    <!-- SKRYPT OBSŁUGI LUPY -->
     <script>
-        document.addEventListener('mousemove', function(e) {
-            // Generujemy gwiazdkę przy ruchu myszką (z pewnym ograniczeniem żeby nie przeciążyć przeglądarki)
-            if (Math.random() > 0.4) return;
-
-            const star = document.createElement('div');
-            star.className = 'cursor-star';
-            star.innerText = '★'; // Wygląd gwiazdki
-            
-            // Losowe przesunięcie gwiazdki względem kursora
-            const offsetX = (Math.random() - 0.5) * 30;
-            const offsetY = (Math.random() - 0.5) * 30;
-
-            star.style.left = (e.clientX + offsetX) + 'px';
-            star.style.top = (e.clientY + offsetY) + 'px';
-
-            document.body.appendChild(star);
-
-            // Usunięcie gwiazdki z DOM po zakończeniu animacji (1 sekunda)
-            setTimeout(() => {
-                star.remove();
-            }, 1000);
-        });
+        let aktualnyZoom = 1;
+        function zmienZoom(krok) {
+            aktualnyZoom += krok;
+            if (aktualnyZoom < 1) aktualnyZoom = 1;    // Minimalny zoom 1x
+            if (aktualnyZoom > 3) aktualnyZoom = 3;    // Maksymalny zoom 3x
+            document.body.style.zoom = aktualnyZoom;
+        }
     </script>
 
     <!-- SKRYPT ASYSTENTA CZATU -->
