@@ -455,9 +455,21 @@
     <script>
         let aktualnyZoom = 1;
         function zmienZoom(krok) {
+            // Twarda blokada: jeśli powiększenie to 3 lub więcej i klikasz "+", ignoruj
+            if (aktualnyZoom >= 3 && krok > 0) return;
+            
+            // Twarda blokada: jeśli powiększenie to 1 lub mniej i klikasz "-", ignoruj
+            if (aktualnyZoom <= 1 && krok < 0) return;
+
             aktualnyZoom += krok;
-            if (aktualnyZoom < 1) aktualnyZoom = 1;    // Minimalny zoom 1x
-            if (aktualnyZoom > 2) aktualnyZoom = 2;    // Maksymalny zoom 2x
+            
+            // Zaokrąglenie zapobiegające błędom ułamkowym w przeglądarkach
+            aktualnyZoom = Math.round(aktualnyZoom * 100) / 100;
+            
+            // Ubezpieczenie
+            if (aktualnyZoom < 1) aktualnyZoom = 1;
+            if (aktualnyZoom > 3) aktualnyZoom = 3;
+            
             document.body.style.zoom = aktualnyZoom;
         }
     </script>
