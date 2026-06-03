@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-YQTCG26T1B');
-</script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -795,6 +785,7 @@
             <!-- KONTENER NA WYNIKI Z KALENDARZA -->
             <div id="calendar-results">
                 <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
+                <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
                 <div id="cal-res-content"></div>
             </div>
 
@@ -1093,7 +1084,7 @@
     //]]>
     </script>
 
-    <!-- ASYSTENT CZATU & KLIKNIĘCIA W KALENDARZ (PARSER ZEBRA) -->
+    <!-- ASYSTENT CZATU & KLIKNIĘCIA W KALENDARZ (PARSER ZEBRA Z OPISEM) -->
     <script>
     //<![CDATA[
     (function() {
@@ -1106,6 +1097,7 @@
         const resultsBox = document.getElementById('calendar-results');
         const resultsContent = document.getElementById('cal-res-content');
         const resultsTitle = document.getElementById('cal-res-title');
+        const resultsDesc = document.getElementById('cal-res-desc');
 
         if(calendarGrid) {
             calendarGrid.addEventListener('click', async function(e) {
@@ -1119,16 +1111,43 @@
                     const tomorrow = new Date(clickedDate);
                     tomorrow.setDate(tomorrow.getDate() + 1);
 
+                    const clicked_dd = String(clickedDate.getDate()).padStart(2, '0');
+                    const clicked_mm = String(clickedDate.getMonth() + 1).padStart(2, '0');
+                    const clicked_yyyy = clickedDate.getFullYear();
+                    const clickedDateFormatted = `${clicked_dd}.${clicked_mm}.${clicked_yyyy}`;
+
                     const dd = String(tomorrow.getDate()).padStart(2, '0');
                     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
                     const yyyy = tomorrow.getFullYear();
                     const targetDateFormatted = `${yyyy}-${mm}-${dd}`; 
 
                     let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+                    if (!['pl', 'de', 'en'].includes(browserLang)) {
+                        browserLang = 'de';
+                    }
 
-                    // Pokaż UI ładowania
+                    const calDictObj = {
+                        pl: {
+                            title: `📅 Wystawka: ${clickedDateFormatted} ➔ Zbiórka rano: ${dd}.${mm}.${yyyy}`,
+                            desc: `Wybrałeś wystawki, które będą wystawiane <strong>tego dnia wieczorem</strong>. Według przepisów są wystawiane przeważnie po 18:00 i zbierane <strong>następnego dnia rano</strong> przez firmę sprzątającą.<br><span style="color:#2ecc71; font-weight:bold; display:block; margin-top:8px;">Wniosek: Bądź na miejscu wieczorem ${clickedDateFormatted}, a w zestawieniu szukaj daty ${dd}.${mm}.${yyyy}.</span>`
+                        },
+                        de: {
+                            title: `📅 Bereitstellung: ${clickedDateFormatted} ➔ Abholung: ${dd}.${mm}.${yyyy}`,
+                            desc: `Sie haben Termine gewählt, die <strong>an diesem Abend</strong> herausgestellt werden. Laut Vorschriften geschieht dies meist nach 18:00 Uhr, die Abholung durch die Entsorgungsfirma erfolgt <strong>am nächsten Morgen</strong>.<br><span style="color:#2ecc71; font-weight:bold; display:block; margin-top:8px;">Fazit: Seien Sie am Abend des ${clickedDateFormatted} vor Ort. In der Liste steht der Termin unter dem Datum ${dd}.${mm}.${yyyy}.</span>`
+                        },
+                        en: {
+                            title: `📅 Put out: ${clickedDateFormatted} ➔ Collection: ${dd}.${mm}.${yyyy}`,
+                            desc: `You selected dates when bulky waste is put out <strong>this evening</strong>. According to regulations, it is usually put out after 6:00 PM and collected <strong>the next morning</strong> by the disposal company.<br><span style="color:#2ecc71; font-weight:bold; display:block; margin-top:8px;">Conclusion: Be there on the evening of ${clickedDateFormatted}, and look for the date ${dd}.${mm}.${yyyy} in the schedule.</span>`
+                        }
+                    };
+
+                    // Pokaż UI ładowania i zaktualizuj tytuł z opisem
                     resultsBox.style.display = 'block';
-                    resultsTitle.innerHTML = `📅 Zbierane jutro rano (${dd}.${mm}.${yyyy})`;
+                    resultsTitle.innerHTML = calDictObj[browserLang].title;
+                    if(resultsDesc) {
+                        resultsDesc.innerHTML = calDictObj[browserLang].desc;
+                        resultsDesc.style.display = 'block';
+                    }
                     resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Szukam dostępnych rejonów w bazie...</div>`;
                     
                     // Aktualizacja wizualna komórek kalendarza
@@ -1450,7 +1469,7 @@
         
         let linksAdded = 0;
         let currentYear = today.getFullYear(); 
-        for (let w = currentWeek; w <= 53 && linksAdded < 2; w++) {
+        for (let w = currentWeek; w <= 53 && linksAdded < 4; w++) {
             if (driveLinks[w]) {
                 const card = document.createElement('div');
                 card.className = "week-card";
