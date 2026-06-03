@@ -773,9 +773,9 @@
                 t_btn_order: "ZŁÓŻ ZAMÓWIENIE",
                 t_btn_panel: "ZALOGUJ DO PANELU",
                 t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz<br>📧 ewa@dabu-info.com<br><br><strong>Odbiór osobisty (Milicz):</strong> Pamiętaj, że zawsze oferujemy możliwość odbioru osobistego ustaleń w Miliczu (od środy do soboty w godz. 17:00–20:00) po wcześniejszym kontakcie.<br><br>© 2026 dabu-info",
-                "cal-info-h3": "ℹ️ Informacje o zasięgu świąt",
+                "cal-info-h3": "ℹ️ Informacje o zasięgu najbliższych świąt",
                 "cal-info-p1": "<strong>Święta Narodowe (National)</strong> są ustawowo dniami wolnymi od pracy w <strong>całych Niemczech</strong> (obowiązują we wszystkich 16 krajach związkowych).",
-                "cal-info-p2": "<strong>Święta Regionalne (Regional)</strong> obowiązują tylko w określonych landach. Poniżej znajduje się zestawienie pokazujące, gdzie poszczególne święta regionalne z 2026 roku <strong>NIE SĄ</strong> dniami wolnymi od pracy:",
+                "cal-info-p2": "<strong>Święta Regionalne (Regional)</strong> obowiązują tylko w określonych landach. Sprawdź, gdzie najbliższe święto regionalne w 2026 roku <strong>NIE JEST</strong> dniem wolnym od pracy:",
                 "cal-info-l1": "<strong>Trzech Króli (06.01):</strong> Normalny dzień roboczy w większości kraju (z wyjątkiem Badenii-Wirtembergii, Bawarii i Saksonii-Anhalt).",
                 "cal-info-l2": "<strong>Dzień Kobiet (08.03):</strong> Normalny dzień roboczy w całych Niemczech, z wyjątkiem Berlina oraz Meklemburgii-Pomorza Przedniego.",
                 "cal-info-l3": "<strong>Boże Ciało (04.06):</strong> Brak dnia wolnego w północnych i wschodnich landach (m.in. Berlin, Brandenburgia, Brema, Hamburg, Dolna Saksonia, Szlezwik-Holsztyn).",
@@ -792,9 +792,9 @@
                 t_btn_order: "BESTELLUNG AUFGEBEN",
                 t_btn_panel: "ZUM KUNDENPANEL EINLOGGEN",
                 t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Polen)<br>📧 ewa@dabu-info.com<br><br><strong>Persönliche Abholung (Milicz):</strong> Nach vorheriger Absprache bieten wir die Möglichkeit der persönlichen Abholung in Milicz (Mi-Sa, 17:00-20:00).<br><br>© 2026 dabu-info",
-                "cal-info-h3": "ℹ️ Informationen zu Feiertagen",
+                "cal-info-h3": "ℹ️ Informationen zu anstehenden Feiertagen",
                 "cal-info-p1": "<strong>Nationale Feiertage (National)</strong> sind in <strong>ganz Deutschland</strong> (in allen 16 Bundesländern) gesetzliche Ruhetage.",
-                "cal-info-p2": "<strong>Regionale Feiertage (Regional)</strong> gelten nur in bestimmten Bundesländern. Hier ist eine Übersicht, wo diese regionalen Feiertage im Jahr 2026 <strong>KEINE</strong> Ruhetage sind:",
+                "cal-info-p2": "<strong>Regionale Feiertage (Regional)</strong> gelten nur in bestimmten Bundesländern. Prüfen Sie, wo der nächste regionale Feiertag im Jahr 2026 <strong>KEIN</strong> Ruhetag ist:",
                 "cal-info-l1": "<strong>Heilige Drei Könige (06.01):</strong> Normaler Arbeitstag im Großteil des Landes (außer Baden-Württemberg, Bayern und Sachsen-Anhalt).",
                 "cal-info-l2": "<strong>Frauentag (08.03):</strong> Normaler Arbeitstag in ganz Deutschland, außer in Berlin und Mecklenburg-Vorpommern.",
                 "cal-info-l3": "<strong>Fronleichnam (04.06):</strong> Kein Feiertag im Norden und Osten (z.B. Berlin, Brandenburg, Bremen, Hamburg, Niedersachsen, Schleswig-Holstein).",
@@ -811,9 +811,9 @@
                 t_btn_order: "PLACE AN ORDER",
                 t_btn_panel: "LOGIN TO PANEL",
                 t_footer_contact: "<strong>🏠 Contact:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Poland)<br>📧 ewa@dabu-info.com<br><br><strong>Personal pickup (Milicz):</strong> We offer personal pickup in Milicz (Wed-Sat, 17:00-20:00) after prior contact.<br><br>© 2026 dabu-info",
-                "cal-info-h3": "ℹ️ Holiday Coverage Information",
+                "cal-info-h3": "ℹ️ Upcoming Holiday Coverage",
                 "cal-info-p1": "<strong>National Holidays</strong> are legally non-working days <strong>throughout Germany</strong> (applying to all 16 federal states).",
-                "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states. Below is a list showing where specific regional holidays in 2026 <strong>ARE NOT</strong> non-working days:",
+                "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states. Check where the closest regional holiday in 2026 <strong>IS NOT</strong> a non-working day:",
                 "cal-info-l1": "<strong>Epiphany (06.01):</strong> Normal working day in most of the country (except Baden-Württemberg, Bavaria, and Saxony-Anhalt).",
                 "cal-info-l2": "<strong>Women's Day (08.03):</strong> Normal working day throughout Germany, except for Berlin and Mecklenburg-Vorpommern.",
                 "cal-info-l3": "<strong>Corpus Christi (04.06):</strong> No day off in northern and eastern states (e.g., Berlin, Brandenburg, Bremen, Hamburg, Lower Saxony, Schleswig-Holstein).",
@@ -975,12 +975,40 @@
                 grid.appendChild(table);
             }
 
-            // DYNAMICZNE WSTAWIANIE OPISU ŚWIĄT
+            // DYNAMICZNE WSTAWIANIE OPISU ŚWIĄT (TYLKO NAJBLIŻSZE REGIONALNE)
             const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper && typeof trData !== 'undefined') {
                 const tc = trData[lang] || trData['de'];
                 let existingInfo = document.querySelector('.calendar-info');
                 if (existingInfo) existingInfo.remove();
+
+                // Mapa świąt regionalnych (w tym Boże Ciało - 4 czerwiec 2026)
+                const regionalHolidaysInfo = [
+                    { m: 0, d: 6, key: "cal-info-l1" },
+                    { m: 2, d: 8, key: "cal-info-l2" },
+                    { m: 5, d: 4, key: "cal-info-l3" },
+                    { m: 7, d: 15, key: "cal-info-l4" },
+                    { m: 9, d: 31, key: "cal-info-l5" },
+                    { m: 10, d: 1, key: "cal-info-l6" },
+                    { m: 10, d: 18, key: "cal-info-l7" }
+                ];
+
+                let closestKey = null;
+                let minDiff = Infinity;
+                const calYear = 2026;
+
+                for (let rh of regionalHolidaysInfo) {
+                    // Ustawiamy datę święta na koniec dnia, by sprawdzało się poprawnie nawet w dniu danego święta
+                    let hDate = new Date(calYear, rh.m, rh.d, 23, 59, 59);
+                    let diff = hDate - now;
+                    if (diff >= 0 && diff < minDiff) {
+                        minDiff = diff;
+                        closestKey = rh.key;
+                    }
+                }
+
+                // Gdyby sprawdzanie miało miejsce po wszystkich świętach w roku, pokażemy ostatnie.
+                if (!closestKey) closestKey = "cal-info-l7";
 
                 const calInfoHTML = `
                     <div class="calendar-info">
@@ -988,13 +1016,7 @@
                         <p id="cal-info-p1">${tc["cal-info-p1"]}</p>
                         <p id="cal-info-p2">${tc["cal-info-p2"]}</p>
                         <ul>
-                            <li id="cal-info-l1">${tc["cal-info-l1"]}</li>
-                            <li id="cal-info-l2">${tc["cal-info-l2"]}</li>
-                            <li id="cal-info-l3">${tc["cal-info-l3"]}</li>
-                            <li id="cal-info-l4">${tc["cal-info-l4"]}</li>
-                            <li id="cal-info-l5">${tc["cal-info-l5"]}</li>
-                            <li id="cal-info-l6">${tc["cal-info-l6"]}</li>
-                            <li id="cal-info-l7">${tc["cal-info-l7"]}</li>
+                            <li id="${closestKey}">${tc[closestKey]}</li>
                         </ul>
                     </div>
                 `;
