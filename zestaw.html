@@ -801,16 +801,26 @@
                 let exactPrice = null;
                 let priceText = valuta === "EUR" ? "ab 25 €" : "od 100 PLN";
                 
+                let premiumPrice = valuta === "EUR" ? 60 : 240;
+                let singlePrice = valuta === "EUR" ? 25 : 100;
+                let singleDiscount = valuta === "EUR" ? 5 : 20;
+
                 if (wT_count > 0 || (isSpecialMode && wR_count > 0) || (isPremiumMode && wT_count > 0)) {
                     let basePriceForOneWeek = 0;
-                    let discountPerWeek = valuta === "EUR" ? 5 : 20;
+                    let discountPerWeek = singleDiscount;
 
                     if (isPremiumMode) {
-                        basePriceForOneWeek = valuta === "EUR" ? 60 : 240;
+                        basePriceForOneWeek = premiumPrice;
                     } else {
                         let rCount = Math.max(1, wR_count);
-                        basePriceForOneWeek = rCount * (valuta === "EUR" ? 25 : 100);
-                        discountPerWeek = rCount * discountPerWeek; 
+                        basePriceForOneWeek = rCount * singlePrice;
+                        discountPerWeek = rCount * singleDiscount; 
+                        
+                        // LIMIT DO CENY PREMIUM (np. powyżej 240 PLN system "zycina" cenę max za dany tydzień do 240 PLN)
+                        if (basePriceForOneWeek > premiumPrice) {
+                            basePriceForOneWeek = premiumPrice;
+                            discountPerWeek = singleDiscount; // Gdy uderzamy w sufit premium, rabat znowu jest płaski
+                        }
                     }
 
                     let isPrintedShipping = document.getElementById('dhlOption') && document.getElementById('dhlOption').checked;
@@ -825,7 +835,11 @@
                     priceText = exactPrice;
                 } else if (!isPremiumMode && wR_count > 0) {
                     let rCount = wR_count;
-                    exactPrice = (rCount * (valuta === "EUR" ? 25 : 100)) + " " + valuta;
+                    let calculatedBase = rCount * singlePrice;
+                    if (calculatedBase > premiumPrice) {
+                        calculatedBase = premiumPrice;
+                    }
+                    exactPrice = calculatedBase + " " + valuta;
                     priceText = exactPrice;
                 } else if (isPremiumMode) {
                     priceText = valuta === "EUR" ? "60 €" : "240 PLN";
