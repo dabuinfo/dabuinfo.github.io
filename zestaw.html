@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DABU-INFO - Skonfiguruj swój pakiet</title>
     <style>
-        /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM --- */
+        /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM I BAZOWE TŁO --- */
         body {
             background-color: #121212;
             color: #e0e0e0;
@@ -23,7 +23,7 @@
             user-select: text !important;
         }
 
-        /* STYLIZACJA (Dark Mode) */
+        /* STYLIZACJA KONTENERA (Dark Mode) */
         .harmonogram-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: transparent;
@@ -92,14 +92,14 @@
 
         /* FORMULARZ */
         .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px;
-            border-radius: 10px; margin-top: 20px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; }
+            border-radius: 10px; margin-top: 20px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; max-width: 800px; margin-left: auto; margin-right: auto; }
         .form-header { text-align: center; color: #fff; margin-bottom: 10px; margin-top: 20px; font-weight: bold; font-size: 1.1em;
             border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
         .regions-scroll-box { position: relative; min-height: 150px; max-height: 250px; overflow-y: scroll;
-            background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left;
-            transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; }
+            background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
+            transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
         .regions-scroll-box::-webkit-scrollbar { width: 8px; }
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
@@ -118,7 +118,7 @@
         .region-label input[type="checkbox"], .region-label input[type="radio"] { margin-right: 10px;
             transform: scale(1.2); }
         
-        .selection-tools { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px; font-size: 0.95em; }
+        .selection-tools { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px; font-size: 0.95em; max-width: 800px; margin-left: auto; margin-right: auto; }
         .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; user-select: none; }
         .selection-tools a:hover { color: #fff; text-decoration: underline; }
 
@@ -161,53 +161,53 @@
 <body>
 
     <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
-      <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#1e3c72" />
-          <stop offset="100%" stop-color="#2a5298" />
-        </linearGradient>
-        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
-        </filter>
-      </defs>
-      <rect width="800" height="400" rx="15" fill="url(#bg)" />
-      <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
-      <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
-      
-      <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
-      <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
-      <g transform="translate(150, 180)">
-        <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
-        <circle cx="0" cy="-5" r="8" fill="#fff" />
-      </g>
-      <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">CENNIK</text>
-      <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" id="svgPriceSub">od 100 PLN</text>
-      
-      <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
-      
-      <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
-      <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WIĘCEJ OPCJI</text>
-      <g transform="translate(430, 180)">
-        <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
-        <circle cx="0" cy="-5" r="8" fill="#fff" />
-        <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
-        <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
-      </g>
-      <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNA</text>
-      <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">oferta</text>
-      
-      <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
-      
-      <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
-      <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
-      <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
-      <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
-      <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
-      
-      <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
-      <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
-    </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
+          <defs>
+            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3c72" />
+              <stop offset="100%" stop-color="#2a5298" />
+            </linearGradient>
+            <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
+            </filter>
+          </defs>
+          <rect width="800" height="400" rx="15" fill="url(#bg)" />
+          <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
+          <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
+          
+          <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
+          <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
+          <g transform="translate(150, 180)">
+            <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
+            <circle cx="0" cy="-5" r="8" fill="#fff" />
+          </g>
+          <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">CENNIK</text>
+          <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" id="svgPriceSub">od 100 PLN</text>
+          
+          <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
+          
+          <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
+          <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WIĘCEJ OPCJI</text>
+          <g transform="translate(430, 180)">
+            <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
+            <circle cx="0" cy="-5" r="8" fill="#fff" />
+            <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
+            <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
+          </g>
+          <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNA</text>
+          <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">oferta</text>
+          
+          <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
+          
+          <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
+          <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
+          <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
+          <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
+          <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
+          
+          <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
+          <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
+        </svg>
     </div>
 
     <div class="harmonogram-wrapper">
@@ -529,7 +529,7 @@
 
             <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
 
-            <button class="submit-btn" id="btnSubmit" type="button">🛒 PRZEŚLIJ DO DARMOWEJ WYCENY</button>
+            <button class="submit-btn" id="btnSubmit" type="button">🛒 WYBIERZ OPCJE, ABY ZAMÓWIĆ</button>
 
             <div class="extra-services-box" style="display: none;">
                 <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
@@ -540,769 +540,770 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
+ 
+        const GLOBAL_SPECIAL_REGIONS = [
+            'bad orb', 'bad soden-salmünster', 'bad-munstereifel', 'biebergemünd', 'blankenheim',
+            'dahlem', 'flörsbachtal', 'freigericht', 'friedrichsdorf', 'gelnhausen', 'glashütten',
+            'grävenwiesbach', 'hasselroth', 'hattersheim am main', 'hellenthal', 'jossgrund',
+            'kall', 'kronberg', 'kronberg im taunus', 'linsengericht', 'mechernich', 'neu-anspach',
+            'nidderau', 'rodenbach', 'ronneburg', 'schleiden', 'schlüchtern', 'schmitten',
+            'schmitten im taunus', 'schwalbach', 'sinntal', 'steinbach', 'usingen', 'wehrheim',
+            'weilerswist', 'weilrod', 'zülpich'
+        ];
+        const landMap = {
+            "Normalne": [
+                "Altmarkkreis-Salzwedel", "Bonn", "Dülmen", "Eppstein", "Eschwege", "Flörsbachtal", 
+                "Freudenstadt", "Fulda", "Gifhorn", "Gräfelfing", "Gründau", "Hofheim am Taunus", 
+                "Holzminden", "Karlsruhe Stadt", "Kelkheim (Taunus)", "Kirchheim", "Königstein (Taunus)", 
+                "Konstanz", "Neustadt a.d. Waldnaab", "Ortenau", "Rendsburg-Eckernförde", "Schlüchtern", 
+                "Schwedt/Oder", "Sinntal", "Walldorf-Mörfelden", "Werra-Meissner", "Westerwald", "Wuppertal"
+            ],
+            "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Werra-Meissner", "Wehrheim", "Weilrod"],
+            "NRW": ["Bad-Munstereifel", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Euskirchen", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Lübecke", "Mechernich", "Münster", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wuppertal", "Zülpich"],
+            "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kulmbach", "Monachium", "Neustadt a.d. Waldnaab", "Regensburg", "Straubing-Bogen"],
+            "Baden": ["Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Stadt", "Karlsruhe Kreis", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"],
+            "Niedersachsen": ["Braunschweig", "Diepholz", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Osnabrück", "Stade", "Wolfsburg"],
+            "Rheinland": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
+            "Brandenburg": ["Barnim", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
+            "Sachsen": ["Nordsachsen"],
+            "Sachsen Anhalt": ["Burgenland"]
+        };
+
+        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA0em0tNC01bC00LTRWNGg4djMuNWwtNCA0eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
+        const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
+        const iconRobot = '<svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><path d="M4 17h16c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-1c0-1.1.9-2 2-2z" fill="#7f8c8d"/><circle cx="6" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="10" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="14" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="18" cy="19.5" r="1" fill="#bdc3c7"/><rect x="5" y="10" width="14" height="8" rx="1.5" fill="#f1c40f"/><rect x="7" y="12" width="10" height="4" rx="0.5" fill="#e67e22"/><path d="M11 7h2v3h-2z" fill="#95a5a6"/><rect x="4.5" y="3" width="6.5" height="4.5" rx="1" fill="#bdc3c7"/><rect x="13" y="3" width="6.5" height="4.5" rx="1" fill="#bdc3c7"/><circle cx="7.5" cy="5.2" r="1.5" fill="#2c3e50"/><circle cx="16.5" cy="5.2" r="1.5" fill="#2c3e50"/></svg>';
+
+        var userLang = navigator.language || navigator.userLanguage; 
+        userLang = userLang.substr(0, 2).toLowerCase();
      
-            const GLOBAL_SPECIAL_REGIONS = [
-                'bad orb', 'bad soden-salmünster', 'bad-munstereifel', 'biebergemünd', 'blankenheim',
-                'dahlem', 'flörsbachtal', 'freigericht', 'friedrichsdorf', 'gelnhausen', 'glashütten',
-                'grävenwiesbach', 'hasselroth', 'hattersheim am main', 'hellenthal', 'jossgrund',
-                'kall', 'kronberg', 'kronberg im taunus', 'linsengericht', 'mechernich', 'neu-anspach',
-                'nidderau', 'rodenbach', 'ronneburg', 'schleiden', 'schlüchtern', 'schmitten',
-                'schmitten im taunus', 'schwalbach', 'sinntal', 'steinbach', 'usingen', 'wehrheim',
-                'weilerswist', 'weilrod', 'zülpich'
-            ];
-            const landMap = {
-                "Normalne": [
-                    "Altmarkkreis-Salzwedel", "Bonn", "Dülmen", "Eppstein", "Eschwege", "Flörsbachtal", 
-                    "Freudenstadt", "Fulda", "Gifhorn", "Gräfelfing", "Gründau", "Hofheim am Taunus", 
-                    "Holzminden", "Karlsruhe Stadt", "Kelkheim (Taunus)", "Kirchheim", "Königstein (Taunus)", 
-                    "Konstanz", "Neustadt a.d. Waldnaab", "Ortenau", "Rendsburg-Eckernförde", "Schlüchtern", 
-                    "Schwedt/Oder", "Sinntal", "Walldorf-Mörfelden", "Werra-Meissner", "Westerwald", "Wuppertal"
-                ],
-                "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Werra-Meissner", "Wehrheim", "Weilrod"],
-                "NRW": ["Bad-Munstereifel", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Euskirchen", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Lübecke", "Mechernich", "Münster", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wuppertal", "Zülpich"],
-                "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kulmbach", "Monachium", "Neustadt a.d. Waldnaab", "Regensburg", "Straubing-Bogen"],
-                "Baden": ["Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Stadt", "Karlsruhe Kreis", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"],
-                "Niedersachsen": ["Braunschweig", "Diepholz", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Osnabrück", "Stade", "Wolfsburg"],
-                "Rheinland": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
-                "Brandenburg": ["Barnim", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
-                "Sachsen": ["Nordsachsen"],
-                "Sachsen Anhalt": ["Burgenland"]
-            };
+        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
+        if (!supported.includes(userLang)) userLang = 'de';
+        
+        const config = {
+            'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 ZAMAWIAM: ', priceInd: "Wycena indywidualna", configLi4: '<b>Zestaw Premium:</b> Wybierz z Landów "Całe Niemcy", aby zaplanować trasy samodzielnie!', landAll: iconRobot + ' Całe Niemcy', landNormal: 'Normalne', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Szczegóły wyceny poniżej', configLi1: '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN', configLi2: '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)', configLi3: '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Wybierz formę płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 WYBIERZ OPCJE, ABY ZAMÓWIĆ', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam zamówienie na zestaw:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Tytułem: Nr zamówienia', emailWarning: 'Skontaktujemy się w celu potwierdzenia zamówienia.' } },
+            'de': { currency: "EUR", texts: { btnOrderExact: '🛒 BESTELLEN: ', priceInd: "Individueller Preis", configLi4: '<b>Premium-Set:</b> Wählen Sie "Ganz Deutschland", um Ihre Routen selbst zu planen!', landAll: iconRobot + ' Ganz Deutschland', landNormal: 'Normal', loaderTitle: 'Daten werden synchronisiert', loaderDesc: 'Verbindung zum Server wird hergestellt...<br><br>Lade neueste Konfigurationen und Termine.', loadingData: "⏳ Verfügbare Optionen werden geladen...", bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!", infoDesc: '<b>Wählen Sie das Format, das zu Ihrem Arbeitsstil passt – beide haben ihre Vorteile:</b>', headerChoose: 'Konfigurieren Sie Ihr Paket', configTitle: '🛠️ Ihr eigenes Set', configSubtitle: 'Konfigurieren Sie unten Ihren Bedarf', configLi1: '<b>1 Region für 1 Woche:</b> 25 \u20AC.', configLi2: '<b>Jede weitere Woche:</b> 5 \u20AC Rabatt!', configLi3: '<b>Gedruckt & versendet:</b> Rabatt entfällt.', formatPdfTitle: iconPdf + ' PDF-Version (Dokument):', formatPdfLi1: '<strong>Zum Drucken:</strong> Ideal für Papierliebhaber.', formatPdfLi2: '<strong>Offline:</strong> Einmal laden, ohne Internet nutzen.', formatPdfLi3: '<strong>Aktive Navigation:</strong> Maps-Links funktionieren auf dem Handy!', formatJpgTitle: '🖼️ JPG-Version (Bilder):', formatJpgLi1: '<strong>Galerie:</strong> Einfache Anzeige direkt auf dem Telefon.', formatJpgLi2: '<strong>Schnelles Teilen:</strong> Senden Sie es sofort an Freunde.', formatJpgRadio: '🖼️ JPG-Version (Bilderpaket für Telefon/Tablet)', formatOnlineTitle: '🌐 Online-Version:', formatOnlineLi1: '<strong>Bequemlichkeit:</strong> Login über das Kundenpanel.', formatOnlineLi2: '<strong>Aktualisierungen:</strong> Termine werden live synchronisiert.', formatOnlineRadio: '🌐 Online-Version (Zugang über das interaktive Kundenpanel)', searchDesc: 'Wissen Sie nicht, wo eine Region liegt? Überprüfen Sie den Standort auf der Karte:', searchBtn: '🔍 REGIONEN-SUCHE', step1Header: '👇 1. Regionen auswählen:', step2Header: '📅 2. Wochen auswählen:', previewTitle: '👀 Kostenlose Terminübersicht:', previewDefault: '-- Wählen Sie eine Woche zur Vorschau --', btnUnselectAll: '[ Auswahl aufheben ]', step3Header: '📄 3. Format wählen:', formatPdfPrintRadio: iconPdf + ' PDF-Version zum Drucken (heller Hintergrund, spart Tinte)', formatPdfSmartRadio: iconPdf + ' PDF-Version fürs Smartphone (Dark Mode, aktive Google Maps Links)', step4Header: '💾 4. Extra:', step5Header: '💳 5. Zahlungsmethode wählen:', payIban: '🏦 IBAN / Banküberweisung', payPaypal: '🅿️ PayPal', payOther: '❓ Andere', guideLabel: '🎁 Ich möchte den kostenlosen Sperrmüll-Leitfaden', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Versand DHL/DPD (Gedrucktes Dokument)', btnSubmit: '🛒 OPTIONEN WÄHLEN UM ZU BESTELLEN', weekLabel: 'Woche', specialDateText: 'Vorbereitung des nächsten Termins für', emailGreeting: 'Guten Tag,', emailOrderSet: 'Ich bestelle folgendes Set:', emailDates: 'TERMINE', emailSelectedRegions: 'REGIONEN', paymentNote: 'Bestellnummer:', emailWarning: 'Wir werden uns melden, um die Bestellung zu bestätigen.' } },
+            'en': { currency: "EUR", texts: { btnOrderExact: '🛒 ORDER: ', priceInd: "Individual Pricing", configLi4: '<b>Premium Set:</b> Choose "All Germany" to plan your routes yourself!', landAll: iconRobot + ' All Germany', landNormal: 'Normal', loaderTitle: 'Data Synchronization', loaderDesc: 'Connecting to server...<br><br>Downloading the latest configurations and dates.', loadingData: "⏳ Loading available options...", bonus: "🎁 <b>Free:</b> Guide included!", infoDesc: '<b>Choose the format that fits your workflow – both have unique advantages:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Your Custom Set', configSubtitle: 'Select your requirements below', configLi1: '<b>1 region for 1 week:</b> 25 \u20AC.', configLi2: '<b>Each additional week:</b> 5 \u20AC discount!', configLi3: '<b>Printed & shipped:</b> removes multi-week discount.', formatPdfTitle: iconPdf + ' PDF Version (document):', formatPdfLi1: '<strong>Printable:</strong> Ideal if you prefer paper.', formatPdfLi2: '<strong>Offline:</strong> Download once, use without internet.', formatPdfLi3: '<strong>Active navigation:</strong> Map links still work on mobile!', formatJpgTitle: '🖼️ JPG Version (images):', formatJpgLi1: '<strong>Gallery:</strong> Easy viewing directly on your phone.', formatJpgLi2: '<strong>Quick sharing:</strong> Instantly send to friends.', formatJpgRadio: '🖼️ JPG Version (image pack ready for phone/tablet)', formatOnlineTitle: '🌐 Online Version:', formatOnlineLi1: '<strong>Convenience:</strong> Login via the interactive Client Panel.', formatOnlineLi2: '<strong>Live Updates:</strong> Dates are synced directly with our database.', formatOnlineRadio: '🌐 Online Version (Access via interactive Client Panel)', searchDesc: 'Not sure where a region is located? Check its location on the map:', searchBtn: '🔍 REGION SEARCH', step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', previewTitle: '👀 Free date preview:', previewDefault: '-- Select a week to preview --', btnUnselectAll: '[ Clear selection ]', step3Header: '📄 3. Select format:', formatPdfPrintRadio: iconPdf + ' PDF Version for printing (light background, saves ink)', formatPdfSmartRadio: iconPdf + ' PDF Version for smartphone (Dark Mode, active Google Maps links)', step4Header: '💾 4. Extra options:', step5Header: '💳 5. Select payment method:', payIban: '🏦 IBAN / Bank Transfer', payPaypal: '🅿️ PayPal', payOther: '❓ Other', guideLabel: '🎁 Free Guide', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Physical Delivery', btnSubmit: '🛒 SELECT OPTIONS TO ORDER', weekLabel: 'Week', specialDateText: 'Preparing nearest date for', emailGreeting: 'Hello,', emailOrderSet: 'I am ordering the following set:', emailDates: 'DATES', emailSelectedRegions: 'SELECTED REGIONS', paymentNote: 'Order No:', emailWarning: 'We will contact you to confirm the order.' } },
+            'cs': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAT: ', priceInd: "Individuální cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Německo" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Německo', landNormal: 'Normální', loaderTitle: 'Synchronizace Dat', loaderDesc: 'Připojování k serveru...<br><br>Stahování nejnovějších konfigurací a termínů.', loadingData: "⏳ Načítání dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednání obdržíte průvodce!", infoDesc: '<b>Vyberte si formát, který vyhovuje vašemu stylu práce:</b>', headerChoose: 'Konfigurovat balíček', configTitle: '🛠️ Váš vlastní set', configSubtitle: 'Nakonfigurujte si potřeby níže', configLi1: 'Objednáte jen to, co potřebujete.', configLi2: 'Cenu určujeme individuálně.', configLi3: 'Můžete si objednat více regionů na vybraný týden nebo více týdnů pro jeden region.', formatPdfTitle: iconPdf + ' Verze PDF (dokument):', formatPdfLi1: '<strong>K tisku:</strong> Ideální pro práci s papírem.', formatPdfLi2: '<strong>Offline:</strong> Stáhněte a používejte bez internetu.', formatPdfLi3: '<strong>Aktivní navigace:</strong> Odkazy na mapy na telefonu stále fungují!', formatJpgTitle: '🖼️ Verze JPG (obrázky):', formatJpgLi1: '<strong>Galerie:</strong> Snadné prohlížení přímo v telefonu.', formatJpgLi2: '<strong>Rýchle sdílení:</strong> Okamžité odeslání přátelům.', formatJpgRadio: '🖼️ Verze JPG (balíček obrázků pro telefon/tablet)', formatOnlineTitle: '🌐 Verze Online:', formatOnlineLi1: '<strong>Pohodlí:</strong> Přihlášení přes Panel zákazníka.', formatOnlineLi2: '<strong>Aktualizace:</strong> Termíny jsou synchronizovány.', formatOnlineRadio: '🌐 Verze Online (Přístup přes Klientský panel)', searchDesc: 'Nevíte, kde leží daný region? Zkontrolujte jeho polohu na mapě:', searchBtn: '🔍 HLEDÁNÍ REGIONŮ', step1Header: '👇 1. Vyberte regiony:', step2Header: '📅 2. Vyberte týdny:', previewTitle: '👀 Bezplatný náhled termínov:', previewDefault: '-- Vyberte týden k náhledu --', btnUnselectAll: '[ Zrušit výběr ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verze PDF k tisku (světlé pozadí, úspora inkoustu)', formatPdfSmartRadio: iconPdf + ' Verze PDF pro smartphone (Dark Mode, aktivní odkazy na Google Maps)', step4Header: '💾 4. Další možnosti:', step5Header: '💳 5. Zvolte způsob platby:', payIban: '🏦 IBAN / Bankovní převod', payPaypal: '🅿️ PayPal', payOther: '❓ Jiné', guideLabel: '🎁 Chci zdarma průvodce', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslání poštou', btnSubmit: '🛒 VYBERTE MOŽNOSTI PRO OBJEDNÁNÍ', weekLabel: 'Týden', specialDateText: 'Příprava nejbližšího termínu pro', emailGreeting: 'Dobrý den,', emailOrderSet: 'Objednávám následující sadu:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIONY', paymentNote: 'Číslo objednávky:', emailWarning: 'Budeme vás kontaktovat pro potvrzení objednávky.' } },
+            'sk': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAŤ: ', priceInd: "Individuálna cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Nemecko" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Nemecko', landNormal: 'Normálne', loaderTitle: 'Synchronizácia Dát', loaderDesc: 'Pripájanie k serveru...<br><br>Sťahovanie najnovších konfigurácií a termínov.', loadingData: "⏳ Načítanie dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednaní obdržíte sprievodcu!", infoDesc: '<b>Vyberte si formát, ktorý vyhovuje vášmu štýlu práce:</b>', headerChoose: 'Konfigurovať balíček', configTitle: '🛠️ Váš vlastný set', configSubtitle: 'Nakonfigurujte si potreby nižšie', configLi1: 'Objednáte len to, čo potrebujete.', configLi2: 'Cenu určujeme individuálne.', configLi3: 'Môžete si objednať viacero regiónov na vybraný týždeň alebo viacero týždňov pre jeden región.', formatPdfTitle: iconPdf + ' Verzia PDF (dokument):', formatPdfLi1: '<strong>Na tlač:</strong> Ideálne pre prácu s papierom.', formatPdfLi2: '<strong>Offline:</strong> Stiahnite si raz a používajte bez internetu.', formatPdfLi3: '<strong>Aktívna navigácia:</strong> Odkazy na mapy stále fungujú!', formatJpgTitle: '🖼️ Verzia JPG (obrázky):', formatJpgLi1: '<strong>Galéria:</strong> Jednoduché prezeranie priamo v telefóne.', formatJpgLi2: '<strong>Rýchle zdieľanie:</strong> Okamžité odoslanie priateľom.', formatJpgRadio: '🖼️ Verzia JPG (balíček obrázkov pre telefón/tablet)', formatOnlineTitle: '🌐 Verzia Online:', formatOnlineLi1: '<strong>Pohodlie:</strong> Prihlásenie cez Zákaznícky panel.', formatOnlineLi2: '<strong>Aktualizácie:</strong> Termíny sú synchronizované.', formatOnlineRadio: '🌐 Verzia Online (Prístup cez Klientsky panel)', searchDesc: 'Neviete, kde leží daný región? Skontrolujte jeho polohu na mape:', searchBtn: '🔍 HĽADANIE REGIÓNOV', step1Header: '👇 1. Vyberte regióny:', step2Header: '📅 2. Vyberte týždne:', previewTitle: '👀 Bezplatný náhľad termínov:', previewDefault: '-- Vyberte týždeň na náhľad --', btnUnselectAll: '[ Zrušiť výber ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verzia PDF na tlač (svetlé pozadie, úspora atramentu)', formatPdfSmartRadio: iconPdf + ' Verzia PDF pre smartfón (Dark Mode, aktívne odkazy na Google Maps)', step4Header: '💾 4. Ďalšie možnosti:', step5Header: '💳 5. Zvoľte spôsob platby:', payIban: '🏦 IBAN / Bankový prevod', payPaypal: '🅿️ PayPal', payOther: '❓ Iné', guideLabel: '🎁 Chcem sprievodcu', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslanie poštou', btnSubmit: '🛒 VYBERTE MOŽNOSTI PRE OBJEDNANIE', weekLabel: 'Týždeň', specialDateText: 'Príprava najbližšieho termínu pre', emailGreeting: 'Dobrý den,', emailOrderSet: 'Objednávam nasledujúcu sadu:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIÓNY', paymentNote: 'Číslo objednávky:', emailWarning: 'Budeme vás kontaktovať pre potvrdenie objednávky.' } }
+        };
 
-            const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA0em0tNC01bC00LTRWNGg4djMuNWwtNCA0eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
-            const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
-            const iconRobot = '<svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><path d="M4 17h16c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-1c0-1.1.9-2 2-2z" fill="#7f8c8d"/><circle cx="6" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="10" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="14" cy="19.5" r="1" fill="#bdc3c7"/><circle cx="18" cy="19.5" r="1" fill="#bdc3c7"/><rect x="5" y="10" width="14" height="8" rx="1.5" fill="#f1c40f"/><rect x="7" y="12" width="10" height="4" rx="0.5" fill="#e67e22"/><path d="M11 7h2v3h-2z" fill="#95a5a6"/><rect x="4.5" y="3" width="6.5" height="4.5" rx="1" fill="#bdc3c7"/><rect x="13" y="3" width="6.5" height="4.5" rx="1" fill="#bdc3c7"/><circle cx="7.5" cy="5.2" r="1.5" fill="#2c3e50"/><circle cx="16.5" cy="5.2" r="1.5" fill="#2c3e50"/></svg>';
+        if (!config[userLang]) userLang = 'de';
+        const currentConfig = config[userLang] || config['en'];
+        const t = currentConfig.texts;
+        const valuta = currentConfig.currency;
 
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.substr(0, 2).toLowerCase();
-         
-            const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
-            if (!supported.includes(userLang)) userLang = 'de';
-            
-            const config = {
-                'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 ZAMAWIAM: ', priceInd: "Wycena indywidualna", configLi4: '<b>Zestaw Premium:</b> Wybierz z Landów "Całe Niemcy", aby zaplanować trasy samodzielnie!', landAll: iconRobot + ' Całe Niemcy', landNormal: 'Normalne', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Szczegóły wyceny poniżej', configLi1: '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN', configLi2: '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)', configLi3: '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Wybierz formę płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 PRZEŚLIJ DO DARMOWEJ WYCENY', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Proszę o wycenę zestawu:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Tytułem: Nr zamówienia', emailWarning: 'Odpowiemy na tę wiadomość, podając wycenę.' } },
-                'de': { currency: "EUR", texts: { btnOrderExact: '🛒 BESTELLEN: ', priceInd: "Individueller Preis", configLi4: '<b>Premium-Set:</b> Wählen Sie "Ganz Deutschland", um Ihre Routen selbst zu planen!', landAll: iconRobot + ' Ganz Deutschland', landNormal: 'Normal', loaderTitle: 'Daten werden synchronisiert', loaderDesc: 'Verbindung zum Server wird hergestellt...<br><br>Lade neueste Konfigurationen und Termine.', loadingData: "⏳ Verfügbare Optionen werden geladen...", bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!", infoDesc: '<b>Wählen Sie das Format, das zu Ihrem Arbeitsstil passt – beide haben ihre Vorteile:</b>', headerChoose: 'Konfigurieren Sie Ihr Paket', configTitle: '🛠️ Ihr eigenes Set', configSubtitle: 'Konfigurieren Sie unten Ihren Bedarf', configLi1: '<b>1 Region für 1 Woche:</b> 25 €.', configLi2: '<b>Jede weitere Woche:</b> 5 € Rabatt!', configLi3: '<b>Gedruckt & versendet:</b> Rabatt entfällt.', formatPdfTitle: iconPdf + ' PDF-Version (Dokument):', formatPdfLi1: '<strong>Zum Drucken:</strong> Ideal für Papierliebhaber.', formatPdfLi2: '<strong>Offline:</strong> Einmal laden, ohne Internet nutzen.', formatPdfLi3: '<strong>Aktive Navigation:</strong> Maps-Links funktionieren auf dem Handy!', formatJpgTitle: '🖼️ JPG-Version (Bilder):', formatJpgLi1: '<strong>Galerie:</strong> Einfache Anzeige direkt auf dem Telefon.', formatJpgLi2: '<strong>Schnelles Teilen:</strong> Senden Sie es sofort an Freunde.', formatJpgRadio: '🖼️ JPG-Version (Bilderpaket für Telefon/Tablet)', formatOnlineTitle: '🌐 Online-Version:', formatOnlineLi1: '<strong>Bequemlichkeit:</strong> Login über das Kundenpanel.', formatOnlineLi2: '<strong>Aktualisierungen:</strong> Termine werden live synchronisiert.', formatOnlineRadio: '🌐 Online-Version (Zugang über das interaktive Kundenpanel)', searchDesc: 'Wissen Sie nicht, wo eine Region liegt? Überprüfen Sie den Standort auf der Karte:', searchBtn: '🔍 REGIONEN-SUCHE', step1Header: '👇 1. Regionen auswählen:', step2Header: '📅 2. Wochen auswählen:', previewTitle: '👀 Kostenlose Terminübersicht:', previewDefault: '-- Wählen Sie eine Woche zur Vorschau --', btnUnselectAll: '[ Auswahl aufheben ]', step3Header: '📄 3. Format wählen:', formatPdfPrintRadio: iconPdf + ' PDF-Version zum Drucken (heller Hintergrund, spart Tinte)', formatPdfSmartRadio: iconPdf + ' PDF-Version fürs Smartphone (Dark Mode, aktive Google Maps Links)', step4Header: '💾 4. Extra:', step5Header: '💳 5. Zahlungsmethode wählen:', payIban: '🏦 IBAN / Banküberweisung', payPaypal: '🅿️ PayPal', payOther: '❓ Andere', guideLabel: '🎁 Ich möchte den kostenlosen Sperrmüll-Leitfaden', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Versand DHL/DPD (Gedrucktes Dokument)', btnSubmit: '🛒 KOSTENFREIES ANGEBOT ANFORDERN', weekLabel: 'Woche', specialDateText: 'Vorbereitung des nächsten Termins für', emailGreeting: 'Guten Tag,', emailOrderSet: 'Ich bitte um ein Angebot für:', emailDates: 'TERMINE', emailSelectedRegions: 'REGIONEN', paymentNote: 'Bestellnummer:', emailWarning: 'Wir antworten auf diese Nachricht mit einem Angebot.' } },
-                'en': { currency: "EUR", texts: { btnOrderExact: '🛒 ORDER: ', priceInd: "Individual Pricing", configLi4: '<b>Premium Set:</b> Choose "All Germany" to plan your routes yourself!', landAll: iconRobot + ' All Germany', landNormal: 'Normal', loaderTitle: 'Data Synchronization', loaderDesc: 'Connecting to server...<br><br>Downloading the latest configurations and dates.', loadingData: "⏳ Loading available options...", bonus: "🎁 <b>Free:</b> Guide included!", infoDesc: '<b>Choose the format that fits your workflow – both have unique advantages:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Your Custom Set', configSubtitle: 'Select your requirements below', configLi1: '<b>1 region for 1 week:</b> 25 €.', configLi2: '<b>Each additional week:</b> 5 € discount!', configLi3: '<b>Printed & shipped:</b> removes multi-week discount.', formatPdfTitle: iconPdf + ' PDF Version (document):', formatPdfLi1: '<strong>Printable:</strong> Ideal if you prefer paper.', formatPdfLi2: '<strong>Offline:</strong> Download once, use without internet.', formatPdfLi3: '<strong>Active navigation:</strong> Map links still work on mobile!', formatJpgTitle: '🖼️ JPG Version (images):', formatJpgLi1: '<strong>Gallery:</strong> Easy viewing directly on your phone.', formatJpgLi2: '<strong>Quick sharing:</strong> Instantly send to friends.', formatJpgRadio: '🖼️ JPG Version (image pack ready for phone/tablet)', formatOnlineTitle: '🌐 Online Version:', formatOnlineLi1: '<strong>Convenience:</strong> Login via the interactive Client Panel.', formatOnlineLi2: '<strong>Live Updates:</strong> Dates are synced directly with our database.', formatOnlineRadio: '🌐 Online Version (Access via interactive Client Panel)', searchDesc: 'Not sure where a region is located? Check its location on the map:', searchBtn: '🔍 REGION SEARCH', step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', previewTitle: '👀 Free date preview:', previewDefault: '-- Select a week to preview --', btnUnselectAll: '[ Clear selection ]', step3Header: '📄 3. Select format:', formatPdfPrintRadio: iconPdf + ' PDF Version for printing (light background, saves ink)', formatPdfSmartRadio: iconPdf + ' PDF Version for smartphone (Dark Mode, active Google Maps links)', step4Header: '💾 4. Extra options:', step5Header: '💳 5. Select payment method:', payIban: '🏦 IBAN / Bank Transfer', payPaypal: '🅿️ PayPal', payOther: '❓ Other', guideLabel: '🎁 Free Guide', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Physical Delivery', btnSubmit: '🛒 REQUEST FREE QUOTE', weekLabel: 'Week', specialDateText: 'Preparing nearest date for', emailGreeting: 'Hello,', emailOrderSet: 'Please provide a quote for:', emailDates: 'DATES', emailSelectedRegions: 'SELECTED REGIONS', paymentNote: 'Order No:', emailWarning: 'We will reply with a pricing quote.' } },
-                'cs': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAT: ', priceInd: "Individuální cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Německo" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Německo', landNormal: 'Normální', loaderTitle: 'Synchronizace Dat', loaderDesc: 'Připojování k serveru...<br><br>Stahování nejnovějších konfigurací a termínů.', loadingData: "⏳ Načítání dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednání obdržíte průvodce!", infoDesc: '<b>Vyberte si formát, který vyhovuje vašemu stylu práce:</b>', headerChoose: 'Konfigurovat balíček', configTitle: '🛠️ Váš vlastní set', configSubtitle: 'Nakonfigurujte si potřeby níže', configLi1: 'Objednáte jen to, co potřebujete.', configLi2: 'Cenu určujeme individuálně.', configLi3: 'Můžete si objednat více regionů na vybraný týden nebo více týdnů pro jeden region.', formatPdfTitle: iconPdf + ' Verze PDF (dokument):', formatPdfLi1: '<strong>K tisku:</strong> Ideální pro práci s papírem.', formatPdfLi2: '<strong>Offline:</strong> Stáhněte a používejte bez internetu.', formatPdfLi3: '<strong>Aktivní navigace:</strong> Odkazy na mapy na telefonu stále fungují!', formatJpgTitle: '🖼️ Verze JPG (obrázky):', formatJpgLi1: '<strong>Galerie:</strong> Snadné prohlížení přímo v telefonu.', formatJpgLi2: '<strong>Rýchle sdílení:</strong> Okamžité odeslání přátelům.', formatJpgRadio: '🖼️ Verze JPG (balíček obrázků pro telefon/tablet)', formatOnlineTitle: '🌐 Verze Online:', formatOnlineLi1: '<strong>Pohodlí:</strong> Přihlášení přes Panel zákazníka.', formatOnlineLi2: '<strong>Aktualizace:</strong> Termíny jsou synchronizovány.', formatOnlineRadio: '🌐 Verze Online (Přístup přes Klientský panel)', searchDesc: 'Nevíte, kde leží daný region? Zkontrolujte jeho polohu na mapě:', searchBtn: '🔍 HLEDÁNÍ REGIONŮ', step1Header: '👇 1. Vyberte regiony:', step2Header: '📅 2. Vyberte týdny:', previewTitle: '👀 Bezplatný náhled termínů:', previewDefault: '-- Vyberte týden k náhledu --', btnUnselectAll: '[ Zrušit výběr ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verze PDF k tisku (světlé pozadí, úspora inkoustu)', formatPdfSmartRadio: iconPdf + ' Verze PDF pro smartphone (Dark Mode, aktivní odkazy na Google Maps)', step4Header: '💾 4. Další možnosti:', step5Header: '💳 5. Zvolte způsob platby:', payIban: '🏦 IBAN / Bankovní převod', payPaypal: '🅿️ PayPal', payOther: '❓ Jiné', guideLabel: '🎁 Chci zdarma průvodce', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslání poštou', btnSubmit: '🛒 VYŽÁDAT CENOVÚ NABÍDKU', weekLabel: 'Týden', specialDateText: 'Příprava nejbližšího termínu pro', emailGreeting: 'Dobrý den,', emailOrderSet: 'Prosím o nacenění sady:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIONY', paymentNote: 'Číslo objednávky:', emailWarning: 'Odpovíme s nabídkou.' } },
-                'sk': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAŤ: ', priceInd: "Individuálna cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Nemecko" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Nemecko', landNormal: 'Normálne', loaderTitle: 'Synchronizácia Dát', loaderDesc: 'Pripájanie k serveru...<br><br>Sťahovanie najnovších konfigurácií a termínov.', loadingData: "⏳ Načítanie dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednaní obdržíte sprievodcu!", infoDesc: '<b>Vyberte si formát, ktorý vyhovuje vášmu štýlu práce:</b>', headerChoose: 'Konfigurovať balíček', configTitle: '🛠️ Váš vlastný set', configSubtitle: 'Nakonfigurujte si potreby nižšie', configLi1: 'Objednáte len to, čo potrebujete.', configLi2: 'Cenu určujeme individuálne.', configLi3: 'Môžete si objednať viacero regiónov na vybraný týždeň alebo viacero týždňov pre jeden región.', formatPdfTitle: iconPdf + ' Verzia PDF (dokument):', formatPdfLi1: '<strong>Na tlač:</strong> Ideálne pre prácu s papierom.', formatPdfLi2: '<strong>Offline:</strong> Stiahnite si raz a používajte bez internetu.', formatPdfLi3: '<strong>Aktívna navigácia:</strong> Odkazy na mapy stále fungujú!', formatJpgTitle: '🖼️ Verzia JPG (obrázky):', formatJpgLi1: '<strong>Galéria:</strong> Jednoduché prezeranie priamo v telefóne.', formatJpgLi2: '<strong>Rýchle zdieľanie:</strong> Okamžité odoslanie priateľom.', formatJpgRadio: '🖼️ Verzia JPG (balíček obrázkov pre telefón/tablet)', formatOnlineTitle: '🌐 Verzia Online:', formatOnlineLi1: '<strong>Pohodlie:</strong> Prihlásenie cez Zákaznícky panel.', formatOnlineLi2: '<strong>Aktualizácie:</strong> Termíny sú synchronizované.', formatOnlineRadio: '🌐 Verzia Online (Prístup cez Klientsky panel)', searchDesc: 'Neviete, kde leží daný región? Skontrolujte jeho polohu na mape:', searchBtn: '🔍 HĽADANIE REGIÓNOV', step1Header: '👇 1. Vyberte regióny:', step2Header: '📅 2. Vyberte týždne:', previewTitle: '👀 Bezplatný náhľad termínov:', previewDefault: '-- Vyberte týždeň na náhľad --', btnUnselectAll: '[ Zrušiť výber ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verzia PDF na tlač (svetlé pozadie, úspora atramentu)', formatPdfSmartRadio: iconPdf + ' Verzia PDF pre smartfón (Dark Mode, aktívne odkazy na Google Maps)', step4Header: '💾 4. Ďalšie možnosti:', step5Header: '💳 5. Zvoľte spôsob platby:', payIban: '🏦 IBAN / Bankový prevod', payPaypal: '🅿️ PayPal', payOther: '❓ Iné', guideLabel: '🎁 Chcem sprievodcu', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslanie poštou', btnSubmit: '🛒 VYŽIADAŤ CENOVÚ PONUKU', weekLabel: 'Týždeň', specialDateText: 'Príprava najbližšieho termínu pre', emailGreeting: 'Dobrý den,', emailOrderSet: 'Prosím o nacenenie sady:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIÓNY', paymentNote: 'Číslo objednávky:', emailWarning: 'Odpovieme s ponukou.' } }
-            };
+        if (userLang !== 'pl') {
+            if(document.getElementById('dhlBox')) document.getElementById('dhlBox').style.display = 'none';
+            if(document.getElementById('blikContainer')) document.getElementById('blikContainer').style.display = 'none';
+        }
 
-            if (!config[userLang]) userLang = 'de';
-            const currentConfig = config[userLang] || config['en'];
-            const t = currentConfig.texts;
-            const valuta = currentConfig.currency;
+        function setHtml(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerHTML = text; }
+        function setText(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerText = text; }
 
-            if (userLang !== 'pl') {
-                if(document.getElementById('dhlBox')) document.getElementById('dhlBox').style.display = 'none';
-                if(document.getElementById('blikContainer')) document.getElementById('blikContainer').style.display = 'none';
-            }
+        // --- EKRAN ŁADOWANIA ---
+        setHtml('loaderTitle', t.loaderTitle);
+        setHtml('mainLoaderText', t.loaderDesc);
+        if(t.loadingData && document.getElementById('loadingDataText')) document.getElementById('loadingDataText').innerHTML = t.loadingData;
+        
+        // --- POZOSTAŁE TEKSTY ---
+        setHtml('bonusInfo', t.bonus);
+        setHtml('infoDesc', t.infoDesc);
+        
+        setText('headerChoose', t.headerChoose);
+        setHtml('configTitle', t.configTitle);
+        setText('configSubtitle', t.configSubtitle);
+        setHtml('configLi1', t.configLi1);
+        setHtml('configLi2', t.configLi2);
+        setHtml('configLi3', t.configLi3);
+        if(t.configLi4) setHtml('configLi4', t.configLi4);
+        
+        setHtml('formatPdfTitle', t.formatPdfTitle);
+        setHtml('formatPdfLi1', t.formatPdfLi1);
+        setHtml('formatPdfLi2', t.formatPdfLi2);
+        setHtml('formatPdfLi3', t.formatPdfLi3);
+        
+        if(t.formatJpgTitle) setHtml('formatJpgTitle', t.formatJpgTitle);
+        if(t.formatJpgLi1) setHtml('formatJpgLi1', t.formatJpgLi1);
+        if(t.formatJpgLi2) setHtml('formatJpgLi2', t.formatJpgLi2);
 
-            function setHtml(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerHTML = text; }
-            function setText(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerText = text; }
+        // WERSJA ONLINE
+        if(t.formatOnlineTitle) setHtml('formatOnlineTitle', t.formatOnlineTitle);
+        if(t.formatOnlineLi1) setHtml('formatOnlineLi1', t.formatOnlineLi1);
+        if(t.formatOnlineLi2) setHtml('formatOnlineLi2', t.formatOnlineLi2);
+        if(t.formatOnlineRadio) setHtml('formatOnlineRadio', t.formatOnlineRadio);
 
-            // --- EKRAN ŁADOWANIA ---
-            setHtml('loaderTitle', t.loaderTitle);
-            setHtml('mainLoaderText', t.loaderDesc);
-            if(t.loadingData && document.getElementById('loadingDataText')) document.getElementById('loadingDataText').innerHTML = t.loadingData;
-            
-            // --- POZOSTAŁE TEKSTY ---
-            setHtml('bonusInfo', t.bonus);
-            setHtml('infoDesc', t.infoDesc);
-            
-            setText('headerChoose', t.headerChoose);
-            setHtml('configTitle', t.configTitle);
-            setText('configSubtitle', t.configSubtitle);
-            setHtml('configLi1', t.configLi1);
-            setHtml('configLi2', t.configLi2);
-            setHtml('configLi3', t.configLi3);
-            if(t.configLi4) setHtml('configLi4', t.configLi4);
-            
-            setHtml('formatPdfTitle', t.formatPdfTitle);
-            setHtml('formatPdfLi1', t.formatPdfLi1);
-            setHtml('formatPdfLi2', t.formatPdfLi2);
-            setHtml('formatPdfLi3', t.formatPdfLi3);
-            
-            if(t.formatJpgTitle) setHtml('formatJpgTitle', t.formatJpgTitle);
-            if(t.formatJpgLi1) setHtml('formatJpgLi1', t.formatJpgLi1);
-            if(t.formatJpgLi2) setHtml('formatJpgLi2', t.formatJpgLi2);
+        setText('step1Header', t.step1Header);
+        setText('step2Header', t.step2Header);
+        
+        // --- WYSZUKIWARKA I PREMIUM ---
+        if(t.landAll) setHtml('btnLandAll', t.landAll);
+        setText('btnLandNormal', t.landNormal || 'Normalne');
+        setHtml('searchEngineDesc', t.searchDesc);
+        setHtml('searchEngineLink', t.searchBtn);
+        
+        setHtml('freePreviewTitle', t.previewTitle);
+        setText('btnUnselectAll', t.btnUnselectAll);
+        
+        setText('step3Header', t.step3Header);
+        if(t.formatPdfPrintRadio) setHtml('formatPdfPrintRadio', t.formatPdfPrintRadio);
+        if(t.formatPdfSmartRadio) setHtml('formatPdfSmartRadio', t.formatPdfSmartRadio);
+        if(t.formatJpgRadio) setHtml('formatJpgRadio', t.formatJpgRadio);
+        
+        setText('step4Header', t.step4Header);
+        setText('step5Header', t.step5Header);
+        
+        setHtml('payIban', t.payIban);
+        setHtml('payPaypal', t.payPaypal);
+        if(t.payBlik) setHtml('payBlik', t.payBlik);
+        setHtml('payOther', t.payOther);
+        
+        if(t.guideLabel) setHtml('guideLabel', t.guideLabel);
+        if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
+        if(t.dhlLabel) setHtml('dhlLabel', t.dhlLabel);
+        setText('btnSubmit', t.btnSubmit);
 
-            // WERSJA ONLINE
-            if(t.formatOnlineTitle) setHtml('formatOnlineTitle', t.formatOnlineTitle);
-            if(t.formatOnlineLi1) setHtml('formatOnlineLi1', t.formatOnlineLi1);
-            if(t.formatOnlineLi2) setHtml('formatOnlineLi2', t.formatOnlineLi2);
-            if(t.formatOnlineRadio) setHtml('formatOnlineRadio', t.formatOnlineRadio);
-
-            setText('step1Header', t.step1Header);
-            setText('step2Header', t.step2Header);
+        var weeksContainer = document.getElementById('weeksContainer');
+        if (weeksContainer) {
+            weeksContainer.innerHTML = '';
+            var today = new Date();
+            var day = today.getDay(); 
+            var hour = today.getHours();
+            var diff = today.getDate() - day + (day == 0 ? -6 : 1);
+            if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
+            var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
+            var startYear = startPoint.getFullYear();
             
-            // --- WYSZUKIWARKA I PREMIUM ---
-            if(t.landAll) setHtml('btnLandAll', t.landAll);
-            setText('btnLandNormal', t.landNormal || 'Normalne');
-            setHtml('searchEngineDesc', t.searchDesc);
-            setHtml('searchEngineLink', t.searchBtn);
-            
-            setHtml('freePreviewTitle', t.previewTitle);
-            setText('btnUnselectAll', t.btnUnselectAll);
-            
-            setText('step3Header', t.step3Header);
-            if(t.formatPdfPrintRadio) setHtml('formatPdfPrintRadio', t.formatPdfPrintRadio);
-            if(t.formatPdfSmartRadio) setHtml('formatPdfSmartRadio', t.formatPdfSmartRadio);
-            if(t.formatJpgRadio) setHtml('formatJpgRadio', t.formatJpgRadio);
-            
-            setText('step4Header', t.step4Header);
-            setText('step5Header', t.step5Header);
-            
-            setHtml('payIban', t.payIban);
-            setHtml('payPaypal', t.payPaypal);
-            if(t.payBlik) setHtml('payBlik', t.payBlik);
-            setHtml('payOther', t.payOther);
-            
-            if(t.guideLabel) setHtml('guideLabel', t.guideLabel);
-            if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
-            if(t.dhlLabel) setHtml('dhlLabel', t.dhlLabel);
-            setText('btnSubmit', t.btnSubmit);
-
-            var weeksContainer = document.getElementById('weeksContainer');
-            if (weeksContainer) {
-                weeksContainer.innerHTML = '';
-                var today = new Date();
-                var day = today.getDay(); 
-                var hour = today.getHours();
-                var diff = today.getDate() - day + (day == 0 ? -6 : 1);
-                if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
-                var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
-                var startYear = startPoint.getFullYear();
+            for (var i = 0; i < 53; i++) {
+                var sW = new Date(startPoint);
+                sW.setDate(startPoint.getDate() + (i * 7));
+                if (sW.getFullYear() > startYear) break; 
                 
-                for (var i = 0; i < 53; i++) {
-                    var sW = new Date(startPoint);
-                    sW.setDate(startPoint.getDate() + (i * 7));
-                    if (sW.getFullYear() > startYear) break; 
-                    
-                    var weekNum = getWeekNumber(sW);
-                    if (weekNum > 53) continue;
-                    var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
-                    
-                    var label = document.createElement('label'); label.className = "region-label";
-                    var input = document.createElement('input');
-                    input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
-                    input.setAttribute('data-week', weekNum);
-                    var labelText = (t.weekLabel || "Tydzień") + " " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
-                    input.value = labelText;
-                    label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
-                    weeksContainer.appendChild(label);
-                }
-                fetchAvailableRegions();
+                var weekNum = getWeekNumber(sW);
+                if (weekNum > 53) continue;
+                var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
+                
+                var label = document.createElement('label'); label.className = "region-label";
+                var input = document.createElement('input');
+                input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
+                input.setAttribute('data-week', weekNum);
+                var labelText = (t.weekLabel || "Tydzień") + " " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
+                input.value = labelText;
+                label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
+                weeksContainer.appendChild(label);
             }
+            fetchAvailableRegions();
+        }
 
-            let availabilityMatrixAll = {}; 
-            let availabilityMatrixScrap = {};
-            let availabilityMatrix = {};
-            let isPremiumMode = false;
-            
-            function fetchAvailableRegions() {
-                var d = new Date();
-                var month = String(d.getMonth() + 1).padStart(2, '0');
-                var day = String(d.getDate()).padStart(2, '0');
-                var dzisiaj = d.getFullYear() + month + day;
-                var dynamicznyToken = "Dabu" + dzisiaj;
+        let availabilityMatrixAll = {}; 
+        let availabilityMatrixScrap = {};
+        let availabilityMatrix = {};
+        let isPremiumMode = false;
+        
+        function fetchAvailableRegions() {
+            var d = new Date();
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var dzisiaj = d.getFullYear() + month + day;
+            var dynamicznyToken = "Dabu" + dzisiaj;
 
-                fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === "OK" && data.data) {
-                            availabilityMatrixAll = data.data;
-                            if (data.dataScrap) availabilityMatrixScrap = data.dataScrap;
+            fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "OK" && data.data) {
+                        availabilityMatrixAll = data.data;
+                        if (data.dataScrap) availabilityMatrixScrap = data.dataScrap;
+                
+                        var now = new Date();
+                        var currentDay = now.getDay();
+                        var currentHour = now.getHours();
+                        var currentWeek = getWeekNumber(now).toString();
+       
+                        if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
+                            delete availabilityMatrixAll[currentWeek];
+                            delete availabilityMatrixScrap[currentWeek];
+                        }
+                        
+                        let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
+                        availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
+                        
+                        updateMutualFiltering();
+                        populateFreePreviewDropdown(availabilityMatrixAll); 
+                    } else if (data.status === "ODMOWA_DOSTEPU") {
+                        console.error("Błąd: ", data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error("Błąd fetch:", err);
+                })
+                .finally(() => {
+                    let loaderOverlay = document.getElementById('regionsLoading');
+                    if(loaderOverlay) { 
+                        loaderOverlay.style.opacity = '0';
+                        setTimeout(() => { loaderOverlay.style.display = 'none'; }, 300); 
+                    }
                     
-                            var now = new Date();
-                            var currentDay = now.getDay();
-                            var currentHour = now.getHours();
-                            var currentWeek = getWeekNumber(now).toString();
-           
-                            if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
-                                delete availabilityMatrixAll[currentWeek];
-                                delete availabilityMatrixScrap[currentWeek];
+                    let inlineLoader = document.getElementById('inlineLoader');
+                    let formContent = document.getElementById('formContent');
+                    
+                    if(inlineLoader) { 
+                        inlineLoader.style.opacity = '0';
+                        setTimeout(() => { 
+                            inlineLoader.style.display = 'none'; 
+                            if(formContent) {
+                                formContent.style.display = 'block';
+                                void formContent.offsetWidth;
+                                formContent.style.opacity = '1';
+                                updatePriceDisplay();
                             }
-                            
-                            let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
-                            availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
-                            
-                            updateMutualFiltering();
-                            populateFreePreviewDropdown(availabilityMatrixAll); 
-                        } else if (data.status === "ODMOWA_DOSTEPU") {
-                            console.error("Błąd: ", data.message);
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Błąd fetch:", err);
-                    })
-                    .finally(() => {
-                        let loaderOverlay = document.getElementById('regionsLoading');
-                        if(loaderOverlay) { 
-                            loaderOverlay.style.opacity = '0';
-                            setTimeout(() => { loaderOverlay.style.display = 'none'; }, 300); 
-                        }
-                        
-                        let inlineLoader = document.getElementById('inlineLoader');
-                        let formContent = document.getElementById('formContent');
-                        
-                        if(inlineLoader) { 
-                            inlineLoader.style.opacity = '0';
-                            setTimeout(() => { 
-                                inlineLoader.style.display = 'none'; 
-                                if(formContent) {
-                                    formContent.style.display = 'block';
-                                    void formContent.offsetWidth;
-                                    formContent.style.opacity = '1';
-                                    updatePriceDisplay();
-                                }
-                            }, 300);
-                        }
-                    });
-            }
-
-            // --- ZARZĄDZANIE WIDOCZNOŚCIĄ PACZKOMATÓW ---
-            document.querySelectorAll('input[name="format"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    var dhlBox = document.getElementById('dhlBox');
-                    if(this.value === "PDF (Do druku)") {
-                        if (userLang === 'pl') {
-                            dhlBox.style.display = 'block';
-                        }
-                    } else {
-                        dhlBox.style.display = 'none';
-                        var dhlOpt = document.getElementById('dhlOption');
-                        if(dhlOpt) dhlOpt.checked = false;
-                        var paczInput = document.getElementById('paczkomatInput');
-                        if(paczInput) paczInput.style.display = 'none';
-                        updatePriceDisplay();
+                        }, 300);
                     }
                 });
-            });
+        }
 
-            var dhlOpt = document.getElementById('dhlOption');
-            if (dhlOpt) {
-                dhlOpt.addEventListener('change', function() {
+        // --- ZARZĄDZANIE WIDOCZNOŚCIĄ PACZKOMATÓW ---
+        document.querySelectorAll('input[name="format"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                var dhlBox = document.getElementById('dhlBox');
+                if(this.value === "PDF (Do druku)") {
+                    if (userLang === 'pl') {
+                        dhlBox.style.display = 'block';
+                    }
+                } else {
+                    dhlBox.style.display = 'none';
+                    var dhlOpt = document.getElementById('dhlOption');
+                    if(dhlOpt) dhlOpt.checked = false;
                     var paczInput = document.getElementById('paczkomatInput');
-                    if(paczInput) paczInput.style.display = this.checked ? 'block' : 'none';
+                    if(paczInput) paczInput.style.display = 'none';
                     updatePriceDisplay();
+                }
+            });
+        });
+
+        var dhlOpt = document.getElementById('dhlOption');
+        if (dhlOpt) {
+            dhlOpt.addEventListener('change', function() {
+                var paczInput = document.getElementById('paczkomatInput');
+                if(paczInput) paczInput.style.display = this.checked ? 'block' : 'none';
+                updatePriceDisplay();
+            });
+        }
+
+        // --- NOWA FUNKCJA OBLICZAJĄCA CENĘ Z UWZGLĘDNIENIEM RABATÓW ---
+        function updatePriceDisplay() {
+            let wT_count = document.querySelectorAll('.week-chk:checked').length;
+            let wR_count = document.querySelectorAll('.region-chk:checked').length;
+            let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
+            
+            let exactPrice = null;
+            let priceText = valuta === "EUR" ? "ab 25 \u20AC" : "od 100 PLN";
+            
+            let premiumPrice = valuta === "EUR" ? 60 : 240;
+            let singlePrice = valuta === "EUR" ? 25 : 100;
+            let singleDiscount = valuta === "EUR" ? 5 : 20;
+            let currencySymbol = valuta === "EUR" ? "\u20AC" : "PLN";
+
+            if (wT_count > 0 || (isSpecialMode && wR_count > 0) || (isPremiumMode && wT_count > 0)) {
+                let basePriceForOneWeek = 0;
+                let discountPerWeek = singleDiscount;
+
+                if (isPremiumMode) {
+                    basePriceForOneWeek = premiumPrice;
+                } else {
+                    let rCount = Math.max(1, wR_count);
+                    basePriceForOneWeek = rCount * singlePrice;
+                    discountPerWeek = rCount * singleDiscount; 
+                    
+                    // LIMIT DO CENY PREMIUM (np. powyżej 240 PLN system "zycina" cenę max za dany tydzień do 240 PLN)
+                    if (basePriceForOneWeek > premiumPrice) {
+                        basePriceForOneWeek = premiumPrice;
+                        discountPerWeek = singleDiscount; // Gdy uderzamy w sufit premium, rabat znowu jest płaski
+                    }
+                }
+
+                let isPrintedShipping = document.getElementById('dhlOption') && document.getElementById('dhlOption').checked;
+                if (isPrintedShipping) {
+                    discountPerWeek = 0; // "wybór opcji druku ma wyłączać rabat wielotygodniowy"
+                }
+
+                let calculatedWeeks = Math.max(1, wT_count); 
+                let total = basePriceForOneWeek + (calculatedWeeks - 1) * (basePriceForOneWeek - discountPerWeek);
+
+                exactPrice = total + " " + currencySymbol;
+                priceText = exactPrice;
+            } else if (!isPremiumMode && wR_count > 0) {
+                let rCount = wR_count;
+                let calculatedBase = rCount * singlePrice;
+                if (calculatedBase > premiumPrice) {
+                    calculatedBase = premiumPrice;
+                }
+                exactPrice = calculatedBase + " " + currencySymbol;
+                priceText = exactPrice;
+            } else if (isPremiumMode) {
+                priceText = valuta === "EUR" ? "60 \u20AC" : "240 PLN";
+            }
+            
+            if(document.getElementById('configPrice')) document.getElementById('configPrice').innerHTML = priceText;
+            if(document.getElementById('svgPriceSub')) document.getElementById('svgPriceSub').textContent = priceText;
+            
+            let btn = document.getElementById('btnSubmit');
+            if (btn) {
+                if (exactPrice && (wT_count > 0 || isSpecialMode)) {
+                    btn.innerHTML = (t.btnOrderExact || "🛒 ZAMAWIAM: ") + exactPrice;
+                } else {
+                    btn.innerHTML = t.btnSubmit || "🛒 WYBIERZ OPCJE, ABY ZAMÓWIĆ";
+                }
+            }
+
+            if(document.getElementById('configLi1')) document.getElementById('configLi1').innerHTML = t.configLi1 || '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN';
+            if(document.getElementById('configLi2')) document.getElementById('configLi2').innerHTML = t.configLi2 || '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)';
+            if(document.getElementById('configLi3')) document.getElementById('configLi3').innerHTML = t.configLi3 || '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).';
+        }
+
+        function updateMutualFiltering() {
+            if(Object.keys(availabilityMatrix).length === 0) return;
+            var dzisiaj = new Date();
+            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
+            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
+            if (chkObecny && chkObecny.parentElement) {
+                if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
+                    chkObecny.parentElement.style.display = 'none';
+                    chkObecny.checked = false; 
+                } else {
+                    chkObecny.parentElement.style.display = 'block';
+                }
+            }
+
+            let allAvailableRegionsInDb = new Set();
+            for(let w in availabilityMatrix) {
+                availabilityMatrix[w].forEach(rObj => {
+                    let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
+                    if(nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase());
                 });
             }
 
-            // --- NOWA FUNKCJA OBLICZAJĄCA CENĘ Z UWZGLĘDNIENIEM RABATÓW ---
-            function updatePriceDisplay() {
-                let wT_count = document.querySelectorAll('.week-chk:checked').length;
-                let wR_count = document.querySelectorAll('.region-chk:checked').length;
-                let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
-                
-                let exactPrice = null;
-                let priceText = valuta === "EUR" ? "ab 25 €" : "od 100 PLN";
-                
-                let premiumPrice = valuta === "EUR" ? 60 : 240;
-                let singlePrice = valuta === "EUR" ? 25 : 100;
-                let singleDiscount = valuta === "EUR" ? 5 : 20;
+            let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
+            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            
+            let hasSpecial = selectedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r));
+            let hasRegular = selectedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
 
-                if (wT_count > 0 || (isSpecialMode && wR_count > 0) || (isPremiumMode && wT_count > 0)) {
-                    let basePriceForOneWeek = 0;
-                    let discountPerWeek = singleDiscount;
-
-                    if (isPremiumMode) {
-                        basePriceForOneWeek = premiumPrice;
-                    } else {
-                        let rCount = Math.max(1, wR_count);
-                        basePriceForOneWeek = rCount * singlePrice;
-                        discountPerWeek = rCount * singleDiscount; 
-                        
-                        // LIMIT DO CENY PREMIUM (np. powyżej 240 PLN system "zycina" cenę max za dany tydzień do 240 PLN)
-                        if (basePriceForOneWeek > premiumPrice) {
-                            basePriceForOneWeek = premiumPrice;
-                            discountPerWeek = singleDiscount; // Gdy uderzamy w sufit premium, rabat znowu jest płaski
+            let limitToSingleRegion = selectedWeeks.length > 1;
+            let limitToSingleWeek = selectedRegions.length > 1;
+            document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
+                let chk = label.querySelector('.region-chk');
+                if(!chk) return;
+                let rName = chk.value.trim().toLowerCase();
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
+                let isAvailable = true;
+    
+                if (!isSpecial && !allAvailableRegionsInDb.has(rName)) {
+                    isAvailable = false; 
+                } else if (hasSpecial && !isSpecial) {
+                    isAvailable = false; 
+                } else if (hasRegular && isSpecial) {
+                    isAvailable = false; 
+                } else if (limitToSingleRegion && !chk.checked) {
+                    isAvailable = false; 
+                } else if (!isSpecial && selectedWeeks.length > 0) {
+                    for(let i = 0; i < selectedWeeks.length; i++) {
+                        let w = selectedWeeks[i];
+                        if(!availabilityMatrix[w] ||
+                            !availabilityMatrix[w].some(item => {
+                                let n = typeof item === 'string' ? item : item.nazwa;
+                                return n.toLowerCase() === rName;
+                            })) {
+    
+                            isAvailable = false;
+                            break;
                         }
                     }
-
-                    let isPrintedShipping = document.getElementById('dhlOption') && document.getElementById('dhlOption').checked;
-                    if (isPrintedShipping) {
-                        discountPerWeek = 0; // "wybór opcji druku ma wyłączać rabat wielotygodniowy"
-                    }
-
-                    let calculatedWeeks = Math.max(1, wT_count); 
-                    let total = basePriceForOneWeek + (calculatedWeeks - 1) * (basePriceForOneWeek - discountPerWeek);
-
-                    exactPrice = total + " " + valuta;
-                    priceText = exactPrice;
-                } else if (!isPremiumMode && wR_count > 0) {
-                    let rCount = wR_count;
-                    let calculatedBase = rCount * singlePrice;
-                    if (calculatedBase > premiumPrice) {
-                        calculatedBase = premiumPrice;
-                    }
-                    exactPrice = calculatedBase + " " + valuta;
-                    priceText = exactPrice;
-                } else if (isPremiumMode) {
-                    priceText = valuta === "EUR" ? "60 €" : "240 PLN";
-                }
-                
-                if(document.getElementById('configPrice')) document.getElementById('configPrice').innerText = priceText;
-                if(document.getElementById('svgPriceSub')) document.getElementById('svgPriceSub').innerText = priceText;
-                
-                let btn = document.getElementById('btnSubmit');
-                if (btn) {
-                    if (exactPrice && (wT_count > 0 || isSpecialMode)) {
-                        btn.innerText = (t.btnOrderExact || "🛒 ZAMAWIAM: ") + exactPrice;
-                    } else {
-                        btn.innerText = t.btnSubmit || "🛒 PRZEŚLIJ DO DARMOWEJ WYCENY";
-                    }
                 }
 
-                if(document.getElementById('configLi1')) document.getElementById('configLi1').innerHTML = t.configLi1 || '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN';
-                if(document.getElementById('configLi2')) document.getElementById('configLi2').innerHTML = t.configLi2 || '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)';
-                if(document.getElementById('configLi3')) document.getElementById('configLi3').innerHTML = t.configLi3 || '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).';
-            }
+                label.style.opacity = isAvailable ? '1' : '0.3';
+                chk.disabled = !isAvailable;
+                if(!isAvailable && chk.checked) chk.checked = false;
+            });
+            
+            selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            limitToSingleWeek = selectedRegions.length > 1;
+            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
+                let chk = label.querySelector('.week-chk');
+                if(!chk) return;
+                let wNum = chk.getAttribute('data-week');
+                let isAvailable = true;
 
-            function updateMutualFiltering() {
-                if(Object.keys(availabilityMatrix).length === 0) return;
-                var dzisiaj = new Date();
-                var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-                var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-                if (chkObecny && chkObecny.parentElement) {
-                    if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-                        chkObecny.parentElement.style.display = 'none';
-                        chkObecny.checked = false; 
-                    } else {
-                        chkObecny.parentElement.style.display = 'block';
-                    }
-                }
-
-                let allAvailableRegionsInDb = new Set();
-                for(let w in availabilityMatrix) {
-                    availabilityMatrix[w].forEach(rObj => {
-                        let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                        if(nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase());
-                    });
-                }
-
-                let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
-                let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-                let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
-                let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-                
-                let hasSpecial = selectedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r));
-                let hasRegular = selectedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
-
-                let limitToSingleRegion = selectedWeeks.length > 1;
-                let limitToSingleWeek = selectedRegions.length > 1;
-                document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
-                    let chk = label.querySelector('.region-chk');
-                    if(!chk) return;
-                    let rName = chk.value.trim().toLowerCase();
-                    let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
-                    let isAvailable = true;
-        
-                    if (!isSpecial && !allAvailableRegionsInDb.has(rName)) {
-                        isAvailable = false; 
-                    } else if (hasSpecial && !isSpecial) {
-                        isAvailable = false; 
-                    } else if (hasRegular && isSpecial) {
-                        isAvailable = false; 
-                    } else if (limitToSingleRegion && !chk.checked) {
-                        isAvailable = false; 
-                    } else if (!isSpecial && selectedWeeks.length > 0) {
-                        for(let i = 0; i < selectedWeeks.length; i++) {
-                            let w = selectedWeeks[i];
-                            if(!availabilityMatrix[w] ||
-                                !availabilityMatrix[w].some(item => {
-                                    let n = typeof item === 'string' ? item : item.nazwa;
-                                    return n.toLowerCase() === rName;
-                                })) {
-        
-                                isAvailable = false;
+                if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
+                    isAvailable = false; 
+                } else if (selectedRegions.length > 0 && !hasSpecial) {
+                    let hasAtLeastOneRegion = false;
+                    for(let i = 0; i < selectedRegions.length; i++) {
+                        let r = selectedRegions[i];
+                        if (!GLOBAL_SPECIAL_REGIONS.includes(r)) { 
+                            if(availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
+                                let n = typeof item === 'string' ? item : item.nazwa;
+                                return n.toLowerCase() === r;
+                            })) {
+                                hasAtLeastOneRegion = true;
                                 break;
                             }
                         }
                     }
-
-                    label.style.opacity = isAvailable ? '1' : '0.3';
-                    chk.disabled = !isAvailable;
-                    if(!isAvailable && chk.checked) chk.checked = false;
-                });
-                
-                selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-                selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-                limitToSingleWeek = selectedRegions.length > 1;
-                document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
-                    let chk = label.querySelector('.week-chk');
-                    if(!chk) return;
-                    let wNum = chk.getAttribute('data-week');
-                    let isAvailable = true;
-
-                    if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
-                        isAvailable = false; 
-                    } else if (selectedRegions.length > 0 && !hasSpecial) {
-                        let hasAtLeastOneRegion = false;
-                        for(let i = 0; i < selectedRegions.length; i++) {
-                            let r = selectedRegions[i];
-                            if (!GLOBAL_SPECIAL_REGIONS.includes(r)) { 
-                                if(availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
-                                    let n = typeof item === 'string' ? item : item.nazwa;
-                                    return n.toLowerCase() === r;
-                                })) {
-                                    hasAtLeastOneRegion = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!hasAtLeastOneRegion) {
-                            isAvailable = false;
-                        }
+                    if (!hasAtLeastOneRegion) {
+                        isAvailable = false;
                     }
-
-                    label.style.opacity = isAvailable ? '1' : '0.3';
-                    chk.disabled = !isAvailable;
-                    if(!isAvailable && chk.checked) chk.checked = false;
-                });
-
-                updateDynamicOptions();
-                updatePriceDisplay();
-            }
-
-            function updateDynamicOptions() {
-                var checkedNodes = document.querySelectorAll('.region-chk:checked');
-                var specialDateContainer = document.getElementById('specialDateContainer');
-                var localWeeksContainer = document.getElementById('weeksContainer');
-                
-                var selectedSpecialNames = Array.from(checkedNodes)
-                    .filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase()))
-                    .map(chk => chk.value)
-                    .join(', ');
-                if (selectedSpecialNames.length > 0) {
-                    if(localWeeksContainer) localWeeksContainer.style.display = 'none';
-                    if(specialDateContainer) {
-                        specialDateContainer.style.display = 'block';
-                        document.getElementById('specialDateText').innerHTML = iconHourglass + ' ' + (t.specialDateText || "Przygotowanie najbliższego terminu") + ':<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
-                    }
-                } else {
-                    if(localWeeksContainer) localWeeksContainer.style.display = 'block';
-                    if(specialDateContainer) specialDateContainer.style.display = 'none';
-                }
-            }
-
-            function setPremiumMode(active) {
-                isPremiumMode = active;
-                var regionBox = document.getElementById('regionsContainer');
-                var searchBox = document.getElementById('searchEngineLink').parentNode;
-                
-                var btnPremium = document.getElementById('btnLandAll');
-                if(btnPremium) {
-                    if(active) btnPremium.classList.add('active');
-                    else btnPremium.classList.remove('active');
                 }
 
-                var formatSmart = document.querySelector('input[name="format"][value="PDF (Smartfon - Dark Mode)"]');
-                var formatJpg = document.querySelector('input[name="format"][value="JPG"]');
-                var formatOnline = document.querySelector('input[name="format"][value="Wersja Online (Panel Klienta)"]');
-                var formatPrint = document.querySelector('input[name="format"][value="PDF (Do druku)"]');
-                
-                if (active) {
-                    document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
-                    regionBox.style.opacity = '0.3';
-                    regionBox.style.pointerEvents = 'none';
-                    searchBox.style.opacity = '0.3';
-
-                    // Złom oraz wysyłka już nie są blokowane!
-
-                    if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'none';
-                    if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'none';
-                    
-                    var selectedFormat = document.querySelector('input[name="format"]:checked');
-                    if(selectedFormat && (selectedFormat.value === "PDF (Smartfon - Dark Mode)" || selectedFormat.value === "JPG")) {
-                        if(formatOnline) formatOnline.checked = true;
-                        else if(formatPrint) formatPrint.checked = true;
-                    }
-                    
-                } else {
-                    regionBox.style.opacity = '1';
-                    regionBox.style.pointerEvents = 'auto';
-                    searchBox.style.opacity = '1';
-                        
-                    if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'block';
-                    if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'block';
-                }
-                updateMutualFiltering();
-            }
-
-            document.getElementById('btnUnselectAll').addEventListener('click', function() {
-                setPremiumMode(false);
-                document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
-                updateMutualFiltering();
+                label.style.opacity = isAvailable ? '1' : '0.3';
+                chk.disabled = !isAvailable;
+                if(!isAvailable && chk.checked) chk.checked = false;
             });
 
-            document.querySelectorAll('.land-btn').forEach(btn => {
-                if(btn.id === 'btnLandAll') {
-                    btn.addEventListener('click', function() {
-                        setPremiumMode(true);
-                    });
-                    return;
-                }
-                
-                btn.addEventListener('click', function() {
-                    setPremiumMode(false);
-                    
-                    const landName = this.getAttribute('data-land');
-                    const regionsToSelect = landMap[landName] || [];
-                    
-                    document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false);
-                    
-                    document.querySelectorAll('.region-chk').forEach(chk => {
-                        const regionValue = chk.value.trim().toLowerCase();
-                        const isSpecial = GLOBAL_SPECIAL_REGIONS.includes(regionValue);
-                        
-                        if (!isSpecial && regionsToSelect.map(r => r.toLowerCase()).includes(regionValue)) {
-                            chk.checked = true;
-                        }
-                    });
-                    updateMutualFiltering();
-                });
-            });
-
-            document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
-                if(el) el.addEventListener('change', () => {
-                    if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
-                    if(el.classList.contains('region-chk') && el.checked) {
-                        setPremiumMode(false);
-                    }
-                    updateMutualFiltering();
-                });
-            });
-
-            document.getElementById('btnSubmit').addEventListener('click', function() {
-                var wR = document.querySelectorAll('.region-chk:checked');
-                var wT = document.querySelectorAll('.week-chk:checked');
-                var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
-                
-                if (isPremiumMode && wT.length === 0) {
-                    let alertMsg = valuta === "EUR" ? "⚠️ Für das Set 'Ganz Deutschland' muss mindestens eine Woche ausgewählt werden!" : "⚠️ Dla zestawu 'Całe Niemcy' wymagany jest wybór przynajmniej jednego tygodnia!";
-                    alert(alertMsg);
-                    return;
-                }
-                
-                if ((wR.length === 0 && !isPremiumMode) || (!isSpecialMode && wT.length === 0)) { 
-                    let alertMsg = valuta === "EUR" ? "⚠️ Bitte wählen Sie Regionen (oder das Ganz Deutschland Paket) und Wochen aus!" : "⚠️ Wybierz rejony (lub Zestaw Całe Niemcy) oraz tygodnie!";
-                    alert(alertMsg); 
-                    return; 
-                }
-                        
-                var selectedFormat = document.querySelector('input[name="format"]:checked');
-
-                var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-                var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + (t.emailOrderSet || "Proszę o wycenę zestawu:");
-                if (isPremiumMode) {
-                    body += valuta === "EUR" ? " 🌟 PREMIUM SET (GANZ DEUTSCHLAND - Alle verfügbaren Regionen)\n" : " 🌟 ZESTAW CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
-                } else {
-                    body += valuta === "EUR" ? " EIGENE KONFIGURATION (" + wR.length + " Regionen)\n" : " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
-                }
-                
-                body += (t.paymentNote || "Tytułem: Nr zamówienia") + " " + nr + "\n";
-                
-                // Pobranie ostatecznej ceny z wyświetlanego diva
-                body += "SUMA: " + document.getElementById('configPrice').innerText + "\n";
-                
-                if(selectedFormat) {
-                    body += "WYBRANY FORMAT: " + selectedFormat.value + "\n";
-                }
-
-                var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
-                if(selectedPaymentMethod) {
-                    body += "WYBRANA FORMA PŁATNOŚCI: " + selectedPaymentMethod.value + "\n";
-                }
-
-                var telEl = document.getElementById('klientTelefon');
-                var tel = telEl ? telEl.value : '';
-
-                if (document.getElementById('dhlOption')?.checked) {
-                    var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
-                    body += "WYSYŁKA DRUKOWANA (PACZKOMAT): TAK\nKOD PACZKOMATU: " + paczkomat + "\n";
-                }
-                
-                if (document.getElementById('schrottOption')?.checked) body += "FILTR: SCHROTT\n";
-                if (document.getElementById('guideOption')?.checked) body += "PORADNIK WYSTAWKOWICZA: TAK\n";
-                if (!document.getElementById('dhlOption')?.checked && tel) body += "TELEFON: " + tel + "\n";
-                body += "\n\n" + (t.emailDates || "DATY") + ":\n";
-                if (isSpecialMode) {
-                    var specNames = Array.from(wR).filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase())).map(chk => chk.value).join(', ');
-                    body += "- " + (t.specialDateText || "Przygotowanie terminu").replace('⏳ ', '') + " " + specNames + "\n";
-                } else { 
-                    wT.forEach(w => body += "- " + w.value + "\n");
-                }
-                
-                body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
-                if (isPremiumMode) {
-                    body += valuta === "EUR" ? "- 🌟 PREMIUM-SET (Ganz Deutschland)\n" : "- 🌟 CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
-                } else {
-                    wR.forEach(b => body += "- " + b.value + "\n");
-                }
-                
-                body += "\n\n--------------------------------------------------------\n" + (t.emailWarning || "Odpowiemy na tę wiadomość, podając wycenę.") + "\n";
-                const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
-                var subject = "[#" + nr + "] ORDER/ZAPYTANIE O WYCENĘ";
-                subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m] || m);
-                
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-            });
-
-            function populateFreePreviewDropdown(matrix) {
-                let select = document.getElementById('freePreviewWeek');
-                let section = document.getElementById('freePreviewSection');
-                if (!select || !section) return;
-                
-                select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
-                let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
-                if(weeks.length > 0) {
-                    section.style.display = 'block';
-                    weeks.forEach(w => {
-                        let opt = document.createElement('option');
-                        opt.value = w;
-                        
-                        let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
-                        if (existingCheckbox && existingCheckbox.value) {
-                            opt.textContent = existingCheckbox.value; 
-                        } else {
-                            opt.textContent = (t.weekLabel || "Tydzień") + " " + w;
-                        }
-                        select.appendChild(opt);
-                    });
-                } else {
-                    section.style.display = 'none';
-                }
-            }
-
-            if (document.getElementById('freePreviewWeek')) {
-                document.getElementById('freePreviewWeek').addEventListener('change', function() {
-                    var w = this.value;
-                    var tableContainer = document.getElementById('freePreviewContainer');
-                    var table = document.getElementById('freePreviewTable');
-                    
-                    if(!w || !availabilityMatrixAll[w]) {
-                        tableContainer.style.display = 'none';
-                        return;
-                    }
-
-                    var dataCopy = [...availabilityMatrixAll[w]];
-                    dataCopy.sort((a, b) => {
-                        let nameA = typeof a === 'string' ? a : a.nazwa;
-                        let nameB = typeof b === 'string' ? b : b.nazwa;
-                        return nameA.localeCompare(nameB, 'pl');
-                    });
-                    let titleEl = document.getElementById('fpTitleText');
-                    let legendEl = document.getElementById('fpLegendText');
-                    if (titleEl) titleEl.innerText = "📍 " + (t.pdfReg || "Rejon") + " / 📅 " + (t.pdfDat || "Dni wywozu");
-                    if (legendEl) legendEl.innerText = "" + (t.pdfLegend || "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz");
-                    var html = ''; 
-
-                    const EXCLUDED_PREVIEW_REGIONS = [
-                        'usingen', 'wehrheim', 'gräfelfing', 'kirchheim', 
-                        'neu-anspach', 'glashütte', 'glashütten', 'gründau', 
-                        'walldorf-mörfelden', 'königstein (taunus)', 'eppstein'
-                    ];
-                    dataCopy.forEach(item => {
-                        let n = typeof item === 'string' ? item : item.nazwa;
-
-                        if (n && EXCLUDED_PREVIEW_REGIONS.includes(n.toLowerCase().trim())) {
-                            return; 
-                        }
-                       
-                        let dStr = typeof item === 'string' ? "-" : (item.daty || "-");
-                        let rStr = typeof item === 'string' ? "" : (item.rodzaj || "");
-                        let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
-
-                        let uniqueDays = "-";
-        
-                        if (dStr !== "-") {
-                            let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                            let rodzajeArr = rStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                      
-                            let daysWithTags = [];
-                            for(let i = 0; i < datyArr.length; i++) {
-                                let d = datyArr[i];
-                                let r = (rodzajeArr[i] || "").toLowerCase();
-                                
-                                let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if(match) {
-                                    let dObj = new Date(match[1], match[2]-1, match[3]);
-                                    let dIdx = dObj.getDay();
-                                    
-                                    let dayName = "";
-                                    if (t.d && Array.isArray(t.d)) {
-                                        if(dIdx >= 1 && dIdx <= 6) {
-                                            dayName = t.d[dIdx - 1];
-                                        } else if (dIdx === 0) {
-                                            dayName = userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND');
-                                        }
-                                    } else {
-                                        let d_pon = t.d_pon || "PON"; let d_wt = t.d_wt || "WT";
-                                        let d_sr = t.d_sr || "SR"; let d_czw = t.d_czw || "CZW";
-                                        let d_pt = t.d_pt || "PT"; let d_sob = t.d_sob || "SOB";
-                                        let d_nd = t.d_nd || (userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND'));
-                                        let dayNames = [d_nd, d_pon, d_wt, d_sr, d_czw, d_pt, d_sob];
-                                        dayName = dayNames[dIdx];
-                                    }
-                                    
-                                    let tags = new Set();
-                                    if (/sperr|meble|gabaryt|rest/i.test(r)) tags.add("S");
-                                    if (/elektro|kühl|agd|schrank/i.test(r)) tags.add("E");
-                                    if (/schrott|złom|metal|eisen/i.test(r)) tags.add("M");
-                                    if (/holz|drewno/i.test(r)) tags.add("H");
-                                    
-                                    if (tags.size === 0) tags.add("S");
-                                    let tagStr = "[" + Array.from(tags).join("/") + "]";
-                                    daysWithTags.push(`${dayName} ${tagStr}`);
-                                }
-                            }
-                            if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
-                        }
-                        
-                        let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
-                        html += `
-                        <tr>
-                            <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
-                                ${infoHtml}
-                                <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
-                                    <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
-                                </div>
-                            </td>
-                        </tr>`;
-                    });
-                    
-                    if (html === '') {
-                        let noRegMsg = valuta === "EUR" ? "Keine sichtbaren Regionen für diese Woche." : "Brak widocznych rejonów dla tego tygodnia.";
-                        html = `<tr><td style="padding: 12px; text-align: center; color: #e74c3c;">${noRegMsg}</td></tr>`;
-                    }
-                    
-                    table.innerHTML = html;
-                    tableContainer.style.display = 'block';
-                });
-            }
-        }); 
-
-        function getWeekNumber(d) { 
-            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); 
-            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            updateDynamicOptions();
+            updatePriceDisplay();
         }
-      
-        // --- BLOKADA INSPEKTORA KODU I SKRÓTÓW KLAWISZOWYCH ---
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
+
+        function updateDynamicOptions() {
+            var checkedNodes = document.querySelectorAll('.region-chk:checked');
+            var specialDateContainer = document.getElementById('specialDateContainer');
+            var localWeeksContainer = document.getElementById('weeksContainer');
+            
+            var selectedSpecialNames = Array.from(checkedNodes)
+                .filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase()))
+                .map(chk => chk.value)
+                .join(', ');
+            if (selectedSpecialNames.length > 0) {
+                if(localWeeksContainer) localWeeksContainer.style.display = 'none';
+                if(specialDateContainer) {
+                    specialDateContainer.style.display = 'block';
+                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' ' + (t.specialDateText || "Przygotowanie najbliższego terminu") + ':<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
+                }
+            } else {
+                if(localWeeksContainer) localWeeksContainer.style.display = 'block';
+                if(specialDateContainer) specialDateContainer.style.display = 'none';
+            }
+        }
+
+        function setPremiumMode(active) {
+            isPremiumMode = active;
+            var regionBox = document.getElementById('regionsContainer');
+            var searchBox = document.getElementById('searchEngineLink').parentNode;
+            
+            var btnPremium = document.getElementById('btnLandAll');
+            if(btnPremium) {
+                if(active) btnPremium.classList.add('active');
+                else btnPremium.classList.remove('active');
+            }
+
+            var formatSmart = document.querySelector('input[name="format"][value="PDF (Smartfon - Dark Mode)"]');
+            var formatJpg = document.querySelector('input[name="format"][value="JPG"]');
+            var formatOnline = document.querySelector('input[name="format"][value="Wersja Online (Panel Klienta)"]');
+            var formatPrint = document.querySelector('input[name="format"][value="PDF (Do druku)"]');
+            
+            if (active) {
+                document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
+                regionBox.style.opacity = '0.3';
+                regionBox.style.pointerEvents = 'none';
+                searchBox.style.opacity = '0.3';
+
+                // Złom oraz wysyłka już nie są blokowane!
+
+                if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'none';
+                if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'none';
+                
+                var selectedFormat = document.querySelector('input[name="format"]:checked');
+                if(selectedFormat && (selectedFormat.value === "PDF (Smartfon - Dark Mode)" || selectedFormat.value === "JPG")) {
+                    if(formatOnline) formatOnline.checked = true;
+                    else if(formatPrint) formatPrint.checked = true;
+                }
+                
+            } else {
+                regionBox.style.opacity = '1';
+                regionBox.style.pointerEvents = 'auto';
+                searchBox.style.opacity = '1';
+                    
+                if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'block';
+                if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'block';
+            }
+            updateMutualFiltering();
+        }
+
+        document.getElementById('btnUnselectAll').addEventListener('click', function() {
+            setPremiumMode(false);
+            document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
+            updateMutualFiltering();
         });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
-            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
+
+        document.querySelectorAll('.land-btn').forEach(btn => {
+            if(btn.id === 'btnLandAll') {
+                btn.addEventListener('click', function() {
+                    setPremiumMode(true);
+                });
+                return;
+            }
+            
+            btn.addEventListener('click', function() {
+                setPremiumMode(false);
+                
+                const landName = this.getAttribute('data-land');
+                const regionsToSelect = landMap[landName] || [];
+                
+                document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false);
+                
+                document.querySelectorAll('.region-chk').forEach(chk => {
+                    const regionValue = chk.value.trim().toLowerCase();
+                    const isSpecial = GLOBAL_SPECIAL_REGIONS.includes(regionValue);
+                    
+                    if (!isSpecial && regionsToSelect.map(r => r.toLowerCase()).includes(regionValue)) {
+                        chk.checked = true;
+                    }
+                });
+                updateMutualFiltering();
+            });
         });
-    </script>
+
+        document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
+            if(el) el.addEventListener('change', () => {
+                if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
+                if(el.classList.contains('region-chk') && el.checked) {
+                    setPremiumMode(false);
+                }
+                updateMutualFiltering();
+            });
+        });
+
+        document.getElementById('btnSubmit').addEventListener('click', function() {
+            var wR = document.querySelectorAll('.region-chk:checked');
+            var wT = document.querySelectorAll('.week-chk:checked');
+            var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
+            
+            if (isPremiumMode && wT.length === 0) {
+                let alertMsg = valuta === "EUR" ? "[ ACHTUNG ] Für das Set 'Ganz Deutschland' muss mindestens eine Woche ausgewählt werden!" : "[ UWAGA ] Dla zestawu 'Całe Niemcy' wymagany jest wybór przynajmniej jednego tygodnia!";
+                alert(alertMsg);
+                return;
+            }
+            
+            if ((wR.length === 0 && !isPremiumMode) || (!isSpecialMode && wT.length === 0)) { 
+                let alertMsg = valuta === "EUR" ? "[ ACHTUNG ] Bitte wählen Sie Regionen (oder das Ganz Deutschland Paket) und Wochen aus!" : "[ UWAGA ] Wybierz rejony (lub Zestaw Całe Niemcy) oraz tygodnie!";
+                alert(alertMsg); 
+                return; 
+            }
+                    
+            var selectedFormat = document.querySelector('input[name="format"]:checked');
+
+            var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
+            var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + (t.emailOrderSet || "Przesyłam zamówienie na zestaw:");
+            if (isPremiumMode) {
+                body += valuta === "EUR" ? " *** PREMIUM SET (GANZ DEUTSCHLAND - Alle verfügbaren Regionen)\n" : " *** ZESTAW CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
+            } else {
+                body += valuta === "EUR" ? " EIGENE KONFIGURATION (" + wR.length + " Regionen)\n" : " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
+            }
+            
+            body += (t.paymentNote || "Tytułem: Nr zamówienia") + " " + nr + "\n";
+            
+            // Pobranie ostatecznej ceny z wyświetlanego diva
+            body += "SUMA: " + document.getElementById('configPrice').innerText + "\n";
+            
+            if(selectedFormat) {
+                body += "WYBRANY FORMAT: " + selectedFormat.value + "\n";
+            }
+
+            var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
+            if(selectedPaymentMethod) {
+                body += "WYBRANA FORMA PŁATNOŚCI: " + selectedPaymentMethod.value + "\n";
+            }
+
+            var telEl = document.getElementById('klientTelefon');
+            var tel = telEl ? telEl.value : '';
+
+            if (document.getElementById('dhlOption')?.checked) {
+                var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
+                body += "WYSYŁKA DRUKOWANA (PACZKOMAT): TAK\nKOD PACZKOMATU: " + paczkomat + "\n";
+            }
+            
+            if (document.getElementById('schrottOption')?.checked) body += "FILTR: SCHROTT\n";
+            if (document.getElementById('guideOption')?.checked) body += "PORADNIK WYSTAWKOWICZA: TAK\n";
+            if (!document.getElementById('dhlOption')?.checked && tel) body += "TELEFON: " + tel + "\n";
+            body += "\n\n" + (t.emailDates || "DATY") + ":\n";
+            if (isSpecialMode) {
+                var specNames = Array.from(wR).filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase())).map(chk => chk.value).join(', ');
+                body += "- " + (t.specialDateText || "Przygotowanie terminu").replace('⏳ ', '') + " " + specNames + "\n";
+            } else { 
+                wT.forEach(w => body += "- " + w.value + "\n");
+            }
+            
+            body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
+            if (isPremiumMode) {
+                body += valuta === "EUR" ? "- *** PREMIUM-SET (Ganz Deutschland)\n" : "- *** CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
+            } else {
+                wR.forEach(b => body += "- " + b.value + "\n");
+            }
+            
+            body += "\n\n--------------------------------------------------------\n" + (t.emailWarning || "Skontaktujemy się w celu potwierdzenia zamówienia.") + "\n";
+            const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
+            var subject = "[#" + nr + "] ZAMÓWIENIE";
+            subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m] || m);
+            
+            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        });
+
+        function populateFreePreviewDropdown(matrix) {
+            let select = document.getElementById('freePreviewWeek');
+            let section = document.getElementById('freePreviewSection');
+            if (!select || !section) return;
+            
+            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+            let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
+            if(weeks.length > 0) {
+                section.style.display = 'block';
+                weeks.forEach(w => {
+                    let opt = document.createElement('option');
+                    opt.value = w;
+                    
+                    let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
+                    if (existingCheckbox && existingCheckbox.value) {
+                        opt.textContent = existingCheckbox.value; 
+                    } else {
+                        opt.textContent = (t.weekLabel || "Tydzień") + " " + w;
+                    }
+                    select.appendChild(opt);
+                });
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        if (document.getElementById('freePreviewWeek')) {
+            document.getElementById('freePreviewWeek').addEventListener('change', function() {
+                var w = this.value;
+                var tableContainer = document.getElementById('freePreviewContainer');
+                var table = document.getElementById('freePreviewTable');
+                
+                if(!w || !availabilityMatrixAll[w]) {
+                    tableContainer.style.display = 'none';
+                    return;
+                }
+
+                var dataCopy = [...availabilityMatrixAll[w]];
+                dataCopy.sort((a, b) => {
+                    let nameA = typeof a === 'string' ? a : a.nazwa;
+                    let nameB = typeof b === 'string' ? b : b.nazwa;
+                    return nameA.localeCompare(nameB, 'pl');
+                });
+                let titleEl = document.getElementById('fpTitleText');
+                let legendEl = document.getElementById('fpLegendText');
+                if (titleEl) titleEl.innerText = "📍 " + (t.pdfReg || "Rejon") + " / 📅 " + (t.pdfDat || "Dni wywozu");
+                if (legendEl) legendEl.innerText = "" + (t.pdfLegend || "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz");
+                var html = ''; 
+
+                const EXCLUDED_PREVIEW_REGIONS = [
+                    'usingen', 'wehrheim', 'gräfelfing', 'kirchheim', 
+                    'neu-anspach', 'glashütte', 'glashütten', 'gründau', 
+                    'walldorf-mörfelden', 'königstein (taunus)', 'eppstein'
+                ];
+                dataCopy.forEach(item => {
+                    let n = typeof item === 'string' ? item : item.nazwa;
+
+                    if (n && EXCLUDED_PREVIEW_REGIONS.includes(n.toLowerCase().trim())) {
+                        return; 
+                    }
+                   
+                    let dStr = typeof item === 'string' ? "-" : (item.daty || "-");
+                    let rStr = typeof item === 'string' ? "" : (item.rodzaj || "");
+                    let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
+
+                    let uniqueDays = "-";
+    
+                    if (dStr !== "-") {
+                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                        let rodzajeArr = rStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                  
+                        let daysWithTags = [];
+                        for(let i = 0; i < datyArr.length; i++) {
+                            let d = datyArr[i];
+                            let r = (rodzajeArr[i] || "").toLowerCase();
+                            
+                            let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                            if(match) {
+                                let dObj = new Date(match[1], match[2]-1, match[3]);
+                                let dIdx = dObj.getDay();
+                                
+                                let dayName = "";
+                                if (t.d && Array.isArray(t.d)) {
+                                    if(dIdx >= 1 && dIdx <= 6) {
+                                        dayName = t.d[dIdx - 1];
+                                    } else if (dIdx === 0) {
+                                        dayName = userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND');
+                                    }
+                                } else {
+                                    let d_pon = t.d_pon || "PON"; let d_wt = t.d_wt || "WT";
+                                    let d_sr = t.d_sr || "SR"; let d_czw = t.d_czw || "CZW";
+                                    let d_pt = t.d_pt || "PT"; let d_sob = t.d_sob || "SOB";
+                                    let d_nd = t.d_nd || (userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND'));
+                                    let dayNames = [d_nd, d_pon, d_wt, d_sr, d_czw, d_pt, d_sob];
+                                    dayName = dayNames[dIdx];
+                                }
+                                
+                                let tags = new Set();
+                                if (/sperr|meble|gabaryt|rest/i.test(r)) tags.add("S");
+                                if (/elektro|kühl|agd|schrank/i.test(r)) tags.add("E");
+                                if (/schrott|złom|metal|eisen/i.test(r)) tags.add("M");
+                                if (/holz|drewno/i.test(r)) tags.add("H");
+                                
+                                if (tags.size === 0) tags.add("S");
+                                let tagStr = "[" + Array.from(tags).join("/") + "]";
+                                daysWithTags.push(`${dayName} ${tagStr}`);
+                            }
+                        }
+                        if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
+                    }
+                    
+                    let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
+                    html += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
+                            ${infoHtml}
+                            <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
+                                <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+                
+                if (html === '') {
+                    let noRegMsg = valuta === "EUR" ? "Keine sichtbaren Regionen für diese Woche." : "Brak widocznych rejonów dla tego tygodnia.";
+                    html = `<tr><td style="padding: 12px; text-align: center; color: #e74c3c;">${noRegMsg}</td></tr>`;
+                }
+                
+                table.innerHTML = html;
+                tableContainer.style.display = 'block';
+            });
+        }
+    }); 
+
+    function getWeekNumber(d) { 
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); 
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+  
+    // --- BLOKADA INSPEKTORA KODU I SKRÓTÓW KLAWISZOWYCH ---
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
+    });
+</script>
 </body>
 </html>
