@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Klienta</title>
     <style>
-        /* BAZOWE STYLE - DARK MODE (z Twojego projektu) */
+        /* BAZOWE STYLE - DARK MODE */
         body {
             font-family: sans-serif;
             background: #121212;
@@ -51,7 +51,7 @@
         .error { color: #ff6b6b; }
         .success { color: #2ecc71; }
 
-        /* STYLE KART I WIDOKU DANYCH (z Twojego projektu) */
+        /* STYLE KART I WIDOKU DANYCH */
         .header-flex { display: flex; align-items: center; margin-bottom: 5px; }
         .main-icon { font-size: 45px; margin-right: 15px; }
         .main-title { color: #2ecc71; font-size: 28px; font-weight: bold; margin: 0; line-height: 1.2; }
@@ -109,7 +109,7 @@
 </head>
 <body>
 
-    <div id="loginSection" class="login-container">
+    <div id="loginSection" class="login-container hidden">
         <div style="text-align: center; margin-bottom: 25px;">
             <h1 id="ui-title" style="color: #2ecc71; margin: 0; text-transform: uppercase;">Panel Klienta</h1>
         </div>
@@ -136,7 +136,6 @@
     <a href='javascript:void(0)' onclick='window.scrollTo({top:0,behavior:"smooth"})' id='floating-back'>⬆️</a>
 
 <script>
-    // Zablokowanie prawego kliku (z Twojego skryptu)
     document.addEventListener('contextmenu', e => e.preventDefault());
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwdt7Ro7dKaB9ZIFFbi6KjEi7dd3vNG5bXAp0MZcAka0JH-SI6wx2w-pGSrlmteixL12A/exec"; // <--- WKLEJ URL APP SCRIPT
@@ -148,12 +147,11 @@
     if (!supported.includes(userLang)) userLang = 'de';
 
     const dict = {
-        'pl': { days: ['NIEDZ.', 'PON.', 'WT.', 'ŚR.', 'CZW.', 'PT.', 'SOB.'], title: "Panel Klienta", email: "Twój e-mail", reqPin: "Wyślij PIN", pin: "Kod PIN", login: "Zaloguj", logout: "Wyloguj", loading: "Przetwarzanie...", sent: "PIN wysłany na e-mail!", errorReq: "Błąd połączenia.", welcome: "Zestaw Tygodniowy", allReg: "📍 POKAŻ WSZYSTKIE REJONY", openMap: "📍 OTWÓRZ MAPĘ", selectReg: "Wybierz swój rejon:" },
-        'de': { days: ['SO.', 'MO.', 'DI.', 'MI.', 'DO.', 'FR.', 'SA.'], title: "Kundenpanel", email: "Deine E-Mail", reqPin: "PIN anfordern", pin: "PIN-Code", login: "Anmelden", logout: "Abmelden", loading: "Wird bearbeitet...", sent: "PIN gesendet!", errorReq: "Verbindungsfehler.", welcome: "Wochenübersicht", allReg: "📍 ALLE BEREICHE ANZEIGEN", openMap: "📍 KARTE ÖFFNEN", selectReg: "Wähle deinen Bereich:" },
-        'en': { days: ['SUN.', 'MON.', 'TUE.', 'WED.', 'THU.', 'FRI.', 'SAT.'], title: "Client Panel", email: "Your E-mail", reqPin: "Request PIN", pin: "PIN Code", login: "Login", logout: "Logout", loading: "Processing...", sent: "PIN sent!", errorReq: "Connection error.", welcome: "Weekly Schedule", allReg: "📍 SHOW ALL REGIONS", openMap: "📍 OPEN MAP", selectReg: "Select your region:" }
+        'pl': { days: ['NIEDZ.', 'PON.', 'WT.', 'ŚR.', 'CZW.', 'PT.', 'SOB.'], title: "Panel Klienta", email: "Twój e-mail", reqPin: "Wyślij PIN", pin: "Kod PIN", login: "Zaloguj", logout: "Wyloguj", loading: "Przetwarzanie...", sent: "PIN wysłany na e-mail!", errorReq: "Błąd połączenia.", welcome: "Zestaw Tygodniowy", allReg: "📍 POKAŻ WSZYSTKIE REJONY", openMap: "📍 OTWÓRZ MAPĘ", selectReg: "Wybierz swój rejon:", cacheNote: "*Widok wczytany z pamięci urządzenia." },
+        'de': { days: ['SO.', 'MO.', 'DI.', 'MI.', 'DO.', 'FR.', 'SA.'], title: "Kundenpanel", email: "Deine E-Mail", reqPin: "PIN anfordern", pin: "PIN-Code", login: "Anmelden", logout: "Abmelden", loading: "Wird bearbeitet...", sent: "PIN gesendet!", errorReq: "Verbindungsfehler.", welcome: "Wochenübersicht", allReg: "📍 ALLE BEREICHE ANZEIGEN", openMap: "📍 KARTE ÖFFNEN", selectReg: "Wähle deinen Bereich:", cacheNote: "*Ansicht aus dem Gerätespeicher geladen." },
+        'en': { days: ['SUN.', 'MON.', 'TUE.', 'WED.', 'THU.', 'FRI.', 'SAT.'], title: "Client Panel", email: "Your E-mail", reqPin: "Request PIN", pin: "PIN Code", login: "Login", logout: "Logout", loading: "Processing...", sent: "PIN sent!", errorReq: "Connection error.", welcome: "Weekly Schedule", allReg: "📍 SHOW ALL REGIONS", openMap: "📍 OPEN MAP", selectReg: "Select your region:", cacheNote: "*View loaded from device memory." }
     };
     
-    // Fallback dla brakujących języków na angielski, a jeśli jest, bierzemy zdefiniowany
     const t = dict[userLang] || dict['en'];
 
     document.getElementById('ui-title').innerText = t.title;
@@ -163,16 +161,36 @@
     document.getElementById('btnVerifyPin').innerText = t.login;
     document.getElementById('btnLogout').innerText = t.logout;
 
-    // Funkcje do obsługi interfejsu kart (Twoje skrypty)
+    // SPRAWDZANIE PAMIĘCI PODRĘCZNEJ PRZY STARCIE (CACHE)
+    document.addEventListener('DOMContentLoaded', () => {
+        const cachedData = localStorage.getItem('dabu_saved_data');
+        const cachedEmail = localStorage.getItem('dabu_saved_email');
+        
+        if (cachedData && cachedEmail) {
+            currentEmail = cachedEmail;
+            try {
+                const parsedData = JSON.parse(cachedData);
+                document.getElementById('dataSection').classList.remove('hidden');
+                budujInterfejsAplikacji(parsedData, true); // true = dodaj info o cache
+            } catch (e) {
+                localStorage.removeItem('dabu_saved_data');
+                document.getElementById('loginSection').classList.remove('hidden');
+            }
+        } else {
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+    });
+
+    // Funkcje do obsługi interfejsu kart
     function znajdzIPrzewin(id) {
         var d = new Date();
-        d.setDate(d.getDate() + 1); // Szuka jutrzejszej daty
+        d.setDate(d.getDate() + 1); 
         var tom = d.toISOString().slice(0, 10);
         var sel = (id && id !== 'all') ? '#' + id + ' .app-card' : '.app-card';
         var cards = document.querySelectorAll(sel);
         
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].offsetParent === null) continue; // Pomiń ukryte
+            if (cards[i].offsetParent === null) continue;
             if (cards[i].getAttribute('data-d') >= tom) {
                 cards[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 cards[i].style.border = '1px solid #2ecc71';
@@ -254,15 +272,19 @@
             const result = await res.json();
 
             if (result.success) {
+                // ZAPIS DANYCH W PAMIĘCI PODRĘCZNEJ PO ZALOGOWANIU
+                localStorage.setItem('dabu_saved_data', JSON.stringify(result.multiData));
+                localStorage.setItem('dabu_saved_email', currentEmail);
+
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dataSection').classList.remove('hidden');
-                budujInterfejsAplikacji(result.multiData);
+                budujInterfejsAplikacji(result.multiData, false);
             } else { showMsg(result.error, true); btn.disabled = false; btn.innerText = t.login; }
         } catch (e) { showMsg(t.errorReq, true); btn.disabled = false; btn.innerText = t.login; }
     }
 
-    // BUDOWANIE WIDOKU KART Z TWOJEGO SZABLONU
-    function budujInterfejsAplikacji(multiData) {
+    // BUDOWANIE WIDOKU KART
+    function budujInterfejsAplikacji(multiData, isCached = false) {
         const container = document.getElementById('rejonList');
         
         let allDates = [];
@@ -275,6 +297,10 @@
         let minDate = allDates[0];
         let maxDate = allDates[allDates.length - 1];
 
+        // Wyświetlenie informacji o trybie offline/cache
+        let noteText = isCached ? t.cacheNote : "*Widok synchronizowany z centralą";
+        let noteColor = isCached ? "#f39c12" : "#777";
+
         // 1. GŁÓWKA
         let html = `
         <div class='header-flex'>
@@ -285,7 +311,7 @@
             </div>
         </div>
         <div class='date-range'>${minDate} do ${maxDate}</div>
-        <div class='note-text'>*Widok synchronizowany na żywo z centralą</div>
+        <div class='note-text' style='color: ${noteColor}'>${noteText}</div>
         
         <div class='wywoz-select-container'>
             <div style='margin-bottom:15px; font-weight:bold; color:#eee;'>${t.selectReg}</div>
@@ -310,7 +336,6 @@
                 html += `<div class='rejon-info'>${data.info}</div>`;
             }
 
-            // Miejscowości zlecenia
             data.items.forEach(item => {
                 let d = new Date(item.date);
                 let dayName = t.days[d.getDay()];
@@ -338,13 +363,17 @@
         html += `</div>`;
         container.innerHTML = html;
 
-        // Uruchomienie wyszukiwania i skrolowania po wyrenderowaniu DOM
         setTimeout(() => znajdzIPrzewin('all'), 300);
     }
 
     async function logout() {
         const btn = document.getElementById('btnLogout');
         btn.disabled = true; btn.innerText = t.loading;
+        
+        // WYCZYSZCZENIE PAMIĘCI PODRĘCZNEJ
+        localStorage.removeItem('dabu_saved_data');
+        localStorage.removeItem('dabu_saved_email');
+
         try {
             const formData = new URLSearchParams();
             formData.append("action", "logout"); formData.append("email", currentEmail);
