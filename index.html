@@ -28,7 +28,7 @@
 
     <style>
         /* ========================================= */
-        /* STYL GŁÓWNY I MENU NAWIGACYJNEGO          */
+        /* STYL GŁÓWNY WIZYTÓWKI (DARK MODE)         */
         /* ========================================= */
         html, body {
             background-color: #0a0a0a !important;
@@ -36,68 +36,18 @@
             padding: 0 !important;
             width: 100%;
             min-height: 100vh;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Zmienione dla menu */
-            padding: 100px 15px 40px 15px; /* Duży padding z góry na menu */
-            box-sizing: border-box;
-        }
-
-        /* GÓRNE MENU (TOP NAV) */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(18, 18, 18, 0.95);
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 15px 20px;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            padding: 20px 15px;
             box-sizing: border-box;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .nav-links a {
-            color: #ddd;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #2ecc71;
-            background: rgba(46, 204, 113, 0.1);
-        }
-
-        .nav-links a.active {
-            color: #000;
-            background: #2ecc71;
-        }
-
-        /* ========================================= */
-        /* STYL WIZYTÓWKI (DARK MODE)                */
-        /* ========================================= */
         .offer-wrapper {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #121212;
             color: #e0e0e0;
             width: 100%;
@@ -111,6 +61,9 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
+        /* ========================================= */
+        /* STYL BANERA GŁÓWNEGO                      */
+        /* ========================================= */
         .main-banner {
             width: 100%;
             max-width: 500px;
@@ -163,6 +116,7 @@
             gap: 10px;
         }
 
+        /* INSTRUKCJA ASYSTENTA */
         .assistant-instructions {
             margin-top: 15px;
             padding-left: 20px;
@@ -171,11 +125,22 @@
             text-align: left;
         }
 
-        .assistant-instructions li { margin-bottom: 8px; }
-        .assistant-instructions span.highlight { color: #2ecc71; font-weight: bold; }
+        .assistant-instructions li {
+            margin-bottom: 8px;
+        }
+
+        .assistant-instructions span.highlight {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
         .assistant-instructions span.keyword {
-            background: #222; padding: 2px 6px; border-radius: 4px;
-            border: 1px solid #444; color: #fff; font-family: monospace;
+            background: #222;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            color: #fff;
+            font-family: monospace;
         }
 
         /* ========================================= */
@@ -229,22 +194,44 @@
 
         /* MULTILANGUAGE SEO SECTION */
         .seo-tags-container {
-            margin-top: 30px; padding: 15px; background: #1a1a1a;
-            border-radius: 8px; border: 1px solid #262626; text-align: left;
+            margin-top: 30px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #262626;
+            text-align: left;
         }
-        .seo-tags-container h4 { color: #666; font-size: 0.9em; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }
-        .seo-tags { font-size: 0.8em; color: #555; line-height: 1.8; }
-        .seo-tags span { margin-right: 8px; display: inline-block; }
+        .seo-tags-container h4 {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .seo-tags {
+            font-size: 0.8em;
+            color: #555;
+            line-height: 1.8;
+        }
+        .seo-tags span {
+            margin-right: 8px;
+            display: inline-block;
+        }
 
         .footer-info {
-            font-size: 0.85em; color: #777; border-top: 1px solid #222;
-            padding-top: 20px; margin-top: 30px; text-align: center;
+            font-size: 0.85em;
+            color: #777;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+            margin-top: 30px;
         }
 
-        /* ZARZĄDZANIE POWIĘKSZENIEM (LUPA) */
+        /* ========================================= */
+        /* ZARZĄDZANIE POWIĘKSZENIEM (LUPA)          */
+        /* ========================================= */
         .zoom-controls {
             position: fixed;
-            top: 90px; /* Obniżone ze względu na menu */
+            top: 20px;
             right: 20px;
             z-index: 10000;
             background: rgba(0, 0, 0, 0.8);
@@ -255,60 +242,183 @@
         }
 
         .zoom-btn {
-            background: #222; color: #fff; border: 1px solid #555;
-            border-radius: 4px; padding: 8px 15px; cursor: pointer;
-            font-size: 15px; font-weight: bold; transition: 0.2s;
-            display: flex; align-items: center; gap: 8px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .zoom-btn:hover { background: #2ecc71; color: #000; border-color: #2ecc71; }
 
-        /* STYL ASYSTENTA CZATU */
-        :root { --theme-color: #4CAF50; }
-        .chat-button {
-            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
-            border-radius: 30px; background-color: var(--theme-color); color: white;
-            border: none; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .zoom-btn:hover {
+            background: #2ecc71;
+            color: #000;
+            border-color: #2ecc71;
         }
-        .chat-button:hover { transform: scale(1.1); box-shadow: 0 6px 14px rgba(0,0,0,0.3); }
+
+        /* ========================================= */
+        /* STYL ASYSTENTA CZATU                      */
+        /* ========================================= */
+        :root {
+            --theme-color: #4CAF50; 
+        }
+
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background-color: var(--theme-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
 
         #chat-main-window {
-            position: fixed; bottom: 90px; right: 20px; width: 350px; max-width: 90vw;
-            height: 500px; max-height: 75vh; background: white; border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: none; flex-direction: column;
-            z-index: 1000; overflow: hidden; font-size: 14px; line-height: 1.4; color: #000;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            max-width: 90vw;
+            height: 500px; 
+            max-height: 75vh;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
         }
-        .chat-header { background: var(--theme-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        #chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #f5f5f5; display: flex; flex-direction: column; gap: 8px; }
-        .chat-bubble-sent { background: var(--theme-color); color: white; padding: 10px 14px; border-radius: 15px 15px 2px 15px; max-width: 85%; align-self: flex-end; text-align: left; word-wrap: break-word; }
-        .chat-bubble-received { background: #e0e0e0; color: black; padding: 10px 14px; border-radius: 15px 15px 15px 2px; max-width: 85%; align-self: flex-start; word-wrap: break-word; }
-        .chat-bubble-received strong { color: var(--theme-color); }
-        .chat-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; background: white; align-items: stretch; }
-        #chat-user-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white; color: black; font-size: 14px; min-width: 0; outline: none; }
-        #chat-user-input:focus { border-color: var(--theme-color); }
-        .chat-send-button { margin-left: 10px; padding: 0 15px; background: var(--theme-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; white-space: nowrap; display: flex; align-items: center; justify-content: center; }
+
+        .chat-header {
+            background: var(--theme-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-bubble-sent {
+            background: var(--theme-color);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 15px 15px 2px 15px;
+            max-width: 85%;
+            align-self: flex-end;
+            text-align: left;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .chat-bubble-received {
+            background: #e0e0e0;
+            color: black;
+            padding: 10px 14px;
+            border-radius: 15px 15px 15px 2px;
+            max-width: 85%;
+            align-self: flex-start;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .chat-bubble-received strong {
+            color: var(--theme-color);
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+            align-items: stretch;
+        }
+
+        #chat-user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 14px;
+            min-width: 0;
+            outline: none;
+        }
+        
+        #chat-user-input:focus {
+            border-color: var(--theme-color);
+        }
+
+        .chat-send-button {
+            margin-left: 10px;
+            padding: 0 15px;
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         @media (max-width: 768px) {
             #chat-main-window {
-                top: auto !important; bottom: 15px !important; left: 15px !important; right: 15px !important;
-                width: auto !important; max-width: none !important; height: auto !important; max-height: 80dvh !important; 
+                top: auto !important;
+                bottom: 15px !important;
+                left: 15px !important;
+                right: 15px !important;
+                width: auto !important;
+                max-width: none !important;
+                height: auto !important;
+                max-height: 80dvh !important; 
                 border-radius: 10px !important;
             }
-            .zoom-controls { display: none !important; }
-            .nav-links a { font-size: 13px; padding: 6px 10px; }
+            .zoom-controls {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- GÓRNE MENU NAWIGACYJNE -->
-    <nav class="top-nav">
-        <div class="nav-links">
-            <a href="index.html" class="active">Strona Główna</a>
-            <a href="https://dabu-info.blogspot.com/p/zestaw-tygodniowy.html">Cennik i Zamówienia</a>
-            <a href="panel.html">📍 Panel Klienta (Online)</a>
-        </div>
-    </nav>
 
     <!-- PANEL STEROWANIA LUPĄ -->
     <div class="zoom-controls">
@@ -343,7 +453,7 @@
 
         <!-- PRZYCISKI AKCJI (CTA) -->
         <div class="btn-container">
-            <a href="https://dabu-info.blogspot.com/" class="cta-btn-primary">
+            <a href="zestaw.html" class="cta-btn-primary">
                 ZŁÓŻ ZAMÓWIENIE
             </a>
             <a href="panel.html" class="cta-btn-secondary">
