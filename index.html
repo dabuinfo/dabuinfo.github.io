@@ -378,13 +378,79 @@
         .calendar-legend { margin-top: 30px; padding: 15px; background: #252525; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px; justify-content: center; }
         .legend-box { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
         .current-month-indicator { border: 2px solid #007bff; }
+        .clickable-day:hover { background-color: #444 !important; outline: 1px solid #007bff; }
+
+        /* ========================================= */
+        /* WYNIKI KALENDARZA - ZEBRA (KAFELKI)       */
+        /* ========================================= */
+        #calendar-results {
+            display: none; 
+            margin-top: 25px; 
+            background: #151515; 
+            border-radius: 10px; 
+            border: 1px solid #333;
+            text-align: left;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        #cal-res-title {
+            background: #1a1a1a;
+            color: #007bff; 
+            margin: 0; 
+            font-size: 16px; 
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #cal-res-content {
+            display: flex;
+            flex-direction: column;
+        }
+        .zebra-row {
+            background-color: #222;
+            padding: 15px 20px;
+            color: #ddd;
+            font-size: 15px;
+            line-height: 1.5;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .zebra-row:nth-child(even) {
+            background-color: #1a1a1a; /* Efekt Zebry - ciemniejszy */
+        }
+        .zebra-row:hover {
+            background-color: #2a2a2a;
+            border-left-color: #2ecc71; /* Zielony akcent po najechaniu */
+        }
+        .zebra-row strong {
+            color: #fff;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+        .zebra-row a {
+            color: #2ecc71;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .zebra-row a:hover {
+            color: #27ae60;
+            text-decoration: underline;
+        }
+        .tile-link-icon {
+            display: inline-block;
+            margin-top: 8px; /* Odstęp od tekstu wyżej (np. Odpadu) */
+        }
+
+        /* INNE INFO KALENDARZA */
         .calendar-info { margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px; border-left: 4px solid #007bff; font-size: 13px; line-height: 1.6; text-align: left; }
         .calendar-info h3 { margin-top: 0; color: #fff; font-size: 16px; margin-bottom: 15px; }
         .calendar-info p { margin: 5px 0 10px; }
         .calendar-info ul { margin: 0; padding-left: 20px; }
         .calendar-info li { margin-bottom: 8px; color: #d0d0d0; }
         .calendar-info strong { color: #fff; }
-        .clickable-day:hover { background-color: #444 !important; outline: 1px solid #007bff; }
 
         /* MULTILANGUAGE SEO SECTION */
         .seo-tags-container {
@@ -711,9 +777,9 @@
                 <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Current</span></div>
             </div>
 
-            <div id="calendar-results" style="display: none; margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px; border-left: 4px solid #007bff; text-align: left;">
-                <h3 style="color: #007bff; margin-top: 0; font-size: 16px; margin-bottom: 10px;" id="cal-res-title">Wyniki wyszukiwania</h3>
-                <div id="cal-res-content" style="color: #e0e0e0; font-size: 14px; line-height: 1.6;"></div>
+            <div id="calendar-results">
+                <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
+                <div id="cal-res-content"></div>
             </div>
 
             <div class="calendar-info">
@@ -746,7 +812,7 @@
                 <span><strong>BG:</strong> График за събиране на отпадъци, едрогабаритни дати Германия.</span>
                 <span><strong>TR:</strong> Kaba atık toplama tarihleri, Almanya hurda programları.</span>
                 <span><strong>BS/HR:</strong> Termini odvoza krupnog otpada, rasporedi gabarita Njemačka.</span>
-                <span><strong>UK/RU:</strong> График вывоза крупногабаритного мусора Германия, даты и plans.</span>
+                <span><strong>UK/RU:</strong> График вывоза крупногабаритного мусора Германия, даты и plany.</span>
                 <span><strong>LT/LV:</strong> Stambiagabaritinių atliekų surinkimo grafikai, izvešanas datumi.</span>
                 <span><strong>SL:</strong> Kosovni odpadki urniki, termini odvoza Nemčija.</span>
             </div>
@@ -809,6 +875,7 @@
                 t_btn_order: "BESTELLUNG AUFGEBEN",
                 t_btn_panel: "ZUM KUNDENPANEL EINLOGGEN",
                 t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Polen)<br>📧 ewa@dabu-info.com<br><br><strong>Persönliche Abholung (Milicz):</strong> Nach vorheriger Absprache bieten wir die Möglichkeit der persönlichen Abholung in Milicz (Mi-Sa, 17:00-20:00).<br><br>© 2026 dabu-info",
+
                 "cal-info-h3": "ℹ️ Informationen zu Feiertagen",
                 "cal-info-p1": "<strong>Nationale Feiertage (National)</strong> sind in <strong>ganz Deutschland</strong> (in allen 16 Bundesländern) gesetzliche Ruhetage.",
                 "cal-info-p2": "<strong>Regionale Feiertage (Regional)</strong> gelten nur in bestimmten Bundesländern. Hier ist eine Übersicht, wo diese regionalen Feiertage im Jahr 2026 <strong>KEINE</strong> Ruhetage sind:",
@@ -835,6 +902,7 @@
                 t_btn_order: "PLACE AN ORDER",
                 t_btn_panel: "LOGIN TO PANEL",
                 t_footer_contact: "<strong>🏠 Contact:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Poland)<br>📧 ewa@dabu-info.com<br><br><strong>Personal pickup (Milicz):</strong> We offer personal pickup in Milicz (Wed-Sat, 17:00-20:00) after prior contact.<br><br>© 2026 dabu-info",
+
                 "cal-info-h3": "ℹ️ Holiday Coverage Information",
                 "cal-info-p1": "<strong>National Holidays</strong> are legally non-working days <strong>throughout Germany</strong> (applying to all 16 federal states).",
                 "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states. Below is a list showing where specific regional holidays in 2026 <strong>ARE NOT</strong> non-working days:",
@@ -846,7 +914,6 @@
                 "cal-info-l6": "<strong>All Saints' Day (01.11):</strong> Working day in the north and east (e.g., Berlin, Hamburg, Saxony, Thuringia). Day off falls mainly in southern and western states.",
                 "cal-info-l7": "<strong>Day of Repentance (18.11):</strong> Normal working day in 15 out of 16 federal states (only residents of Saxony have the day off)."
             }
-            // (Więcej języków skróconych dla optymalizacji kodu, zachowujemy te same mechanizmy co wcześniej)
         };
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -983,7 +1050,6 @@
                     
                     let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
                     
-                    // DODANO data-date I KLASĘ clickable-day DLA INTERAKCJI Z ASYSTENTEM
                     let mStr = String(m + 1).padStart(2, '0');
                     let dStr = String(d).padStart(2, '0');
                     body += `<td class="${hClass} ${isToday} clickable-day" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}" style="cursor: pointer; transition: background 0.2s;">${d}</td>`;
@@ -1046,7 +1112,7 @@
                     // Pokaż UI ładowania
                     resultsBox.style.display = 'block';
                     resultsTitle.innerHTML = `📅 Zbierane jutro rano (${dd}.${mm}.${yyyy})`;
-                    resultsContent.innerHTML = `<span style="color:#aaa;">⏳ Szukam dostępnych rejonów w bazie...</span>`;
+                    resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Szukam dostępnych rejonów w bazie...</div>`;
                     
                     // Aktualizacja wizualna komórek kalendarza
                     document.querySelectorAll('.clickable-day').forEach(td => td.style.outline = 'none');
@@ -1066,14 +1132,35 @@
                         const data = await resp.json();
                         
                         if (data && data.odpowiedz) {
-                            resultsContent.innerHTML = data.odpowiedz;
+                            let rawText = data.odpowiedz;
+                            // 1. Zamiana markdown **bold** na znaczniki HTML
+                            let parsedText = rawText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            
+                            // 2. Jeśli odpowiedź to lista rejonów (zawiera pinezkę)
+                            if (parsedText.includes('📍')) {
+                                // Rozbijamy na osobne elementy po podwójnym breaku
+                                let items = parsedText.split(/<br\s*\/?>\s*<br\s*\/?>|\n\n/i);
+                                
+                                let htmlZebra = items.filter(i => i.trim() !== '').map(item => {
+                                    // Znajdujemy i stylizujemy link (palec) żeby znajdował się niżej jako osobny "przycisk"
+                                    let formattedItem = item.trim().replace(/👉/g, '<span class="tile-link-icon">👉</span>');
+                                    formattedItem = formattedItem.replace('<span class="tile-link-icon">', '<br><span class="tile-link-icon">');
+                                    
+                                    return `<div class="zebra-row">${formattedItem}</div>`;
+                                }).join('');
+                                
+                                resultsContent.innerHTML = htmlZebra;
+                            } else {
+                                // Zwykły komunikat z bazy (np. brak wyników)
+                                resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
+                            }
                         } else {
-                            resultsContent.innerHTML = `<span style="color:#ff5555;">❌ Brak zaplanowanych zbiórek na ten dzień.</span>`;
+                            resultsContent.innerHTML = `<div style="padding: 20px; color:#ff5555;">❌ Brak zaplanowanych zbiórek na ten dzień.</div>`;
                         }
 
                     } catch(err) {
                         console.error('Błąd kalendarza:', err);
-                        resultsContent.innerHTML = `<span style="color:#ff5555;">❌ Błąd połączenia z serwerem.</span>`;
+                        resultsContent.innerHTML = `<div style="padding: 20px; color:#ff5555;">❌ Błąd połączenia z serwerem.</div>`;
                     }
                 }
             });
@@ -1345,7 +1432,7 @@
         
         let linksAdded = 0;
         let currentYear = today.getFullYear(); 
-        for (let w = currentWeek; w <= 53 && linksAdded < 2; w++) {
+        for (let w = currentWeek; w <= 53 && linksAdded < 4; w++) {
             if (driveLinks[w]) {
                 const card = document.createElement('div');
                 card.className = "week-card";
