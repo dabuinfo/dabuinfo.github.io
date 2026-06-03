@@ -99,16 +99,7 @@
         
         .regions-scroll-box { position: relative; min-height: 150px; max-height: 250px; overflow-y: scroll;
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left;
-            transition: opacity 0.3s ease; box-sizing: border-box; }
-        
-        /* Zmiana na węższy widok na desktopie */
-        @media (min-width: 769px) {
-            #regionsContainer {
-                max-width: 550px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
+            transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; }
 
         .regions-scroll-box::-webkit-scrollbar { width: 8px; }
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
@@ -988,11 +979,6 @@
                 isPremiumMode = active;
                 var regionBox = document.getElementById('regionsContainer');
                 var searchBox = document.getElementById('searchEngineLink').parentNode;
-                var dhlOpt = document.getElementById('dhlOption');
-                var dhlBox = document.getElementById('dhlBox');
-                var paczInput = document.getElementById('paczkomatInput');
-                var schrottOpt = document.getElementById('schrottOption');
-                var schrottBox = document.getElementById('schrottBox');
                 
                 var btnPremium = document.getElementById('btnLandAll');
                 if(btnPremium) {
@@ -1011,16 +997,8 @@
                     regionBox.style.pointerEvents = 'none';
                     searchBox.style.opacity = '0.3';
 
-                    if (dhlOpt) { 
-                        dhlOpt.checked = false;
-                        dhlOpt.disabled = true; 
-                        if (dhlBox) dhlBox.style.opacity = '0.4'; 
-                        if (paczInput) paczInput.style.display = 'none';
-                    }
-                    if (schrottOpt) { schrottOpt.checked = false;
-                        schrottOpt.disabled = true; if (schrottBox) schrottBox.style.opacity = '0.4'; availabilityMatrix = availabilityMatrixAll;
-                    }
-                    
+                    // Złom oraz wysyłka już nie są blokowane!
+
                     if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'none';
                     if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'none';
                     
@@ -1034,11 +1012,6 @@
                     regionBox.style.opacity = '1';
                     regionBox.style.pointerEvents = 'auto';
                     searchBox.style.opacity = '1';
-                    
-                    if (dhlOpt) { dhlOpt.disabled = false; if (dhlBox) dhlBox.style.opacity = '1';
-                    }
-                    if (schrottOpt) { schrottOpt.disabled = false;
-                        if (schrottBox) schrottBox.style.opacity = '1'; }
                         
                     if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'block';
                     if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'block';
