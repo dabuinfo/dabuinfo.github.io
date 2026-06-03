@@ -116,7 +116,6 @@
             gap: 10px;
         }
 
-        /* INSTRUKCJA ASYSTENTA */
         .assistant-instructions {
             margin-top: 15px;
             padding-left: 20px;
@@ -193,7 +192,7 @@
         }
 
         /* ========================================= */
-        /* NOWA SEKCJA: SPIS REJONÓW I PROMO BOX     */
+        /* SEKCJA: SPIS REJONÓW ORAZ INFO BOX        */
         /* ========================================= */
         .dabu-app-wrapper {
             color: #e0e0e0;
@@ -206,60 +205,7 @@
             box-sizing: border-box;
         }
 
-        .promo-box {
-            background-color: #1a1a1a; 
-            border: 1px solid #333; 
-            border-left: 8px solid #2ecc71; 
-            padding: 30px; 
-            border-radius: 8px; 
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .promo-head {
-            color: #2ecc71 !important; 
-            margin: 0; 
-            font-size: 24px; 
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .promo-desc {
-            color: #e0e0e0 !important; 
-            margin: 0; 
-            font-size: 18px; 
-            line-height: 1.6;
-            text-align: justify; 
-        }
-
-        .promo-btn {
-            display: inline-block;
-            align-self: flex-start;
-            background: none !important; 
-            background-color: transparent !important;
-            color: #2ecc71 !important;                
-            text-decoration: none !important; 
-            font-weight: 700 !important;              
-            padding: 15px 30px; 
-            border-radius: 6px; 
-            font-size: 20px; 
-            transition: all 0.3s ease;
-            border: 2px solid #ffffff !important;    
-            cursor: pointer;
-        }
-        
-        .promo-btn:hover {
-            background-color: #2ecc71 !important;    
-            color: #000000 !important;                
-            border: 2px solid #2ecc71 !important;        
-            transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
-        }
-
+        /* WYKAZ TYGODNI */
         .weeks-container {
             font-family: 'Space Mono', 'Courier New', Courier, monospace !important;
             padding: 15px 0;
@@ -340,6 +286,58 @@
             font-size: 20px; 
             white-space: nowrap;
             margin-top: 10px;
+        }
+
+        /* INFO BOX Z LEGENDĄ (Zamiast Promo Box) */
+        .info-box {
+            background-color: #1a1a1a; 
+            border: 1px solid #333; 
+            border-left: 8px solid #3498db; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin-top: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+        }
+        
+        .info-head {
+            color: #3498db !important; 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-desc {
+            color: #e0e0e0 !important; 
+            margin: 0; 
+            font-size: 16px; 
+            line-height: 1.6;
+        }
+
+        .legend-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+            color: #ccc;
+            font-size: 16px;
+        }
+        .legend-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .legend-list li::before {
+            content: '▪';
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
         }
 
         /* ========================================= */
@@ -575,17 +573,19 @@
                 max-height: 80dvh !important; 
                 border-radius: 10px !important;
             }
-            .promo-box { padding: 15px; margin-bottom: 15px; }
-            .promo-head { font-size: 18px; }
-            .promo-desc { display: none; } 
-            .promo-btn { width: 100%; text-align: center; padding: 12px; font-size: 16px; }
 
+            /* Responsive Info Box & Tygodnie */
             div#main-heading.dabu-main-heading { font-size: 22px !important; }
             div#main-heading.dabu-main-heading::first-letter { font-size: 22px !important; }
             .week-title { font-size: 20px; }
             .week-title-date { font-size: 15px; }
             .week-badge, .week-stats, .week-btn { font-size: 16px; }
             .week-card { padding: 15px; gap: 10px; }
+            
+            .info-box { padding: 15px; }
+            .info-head { font-size: 18px; }
+            .info-desc { font-size: 14px; }
+            .legend-list li { font-size: 14px; }
         }
 
         /* POWIĘKSZANIE DLA DESKTOPÓW (min-width: 769px) */
@@ -666,26 +666,30 @@
             </a>
         </div>
 
-        <!-- NOWA SEKCJA: SPIS REJONÓW I PROMO BOX -->
+        <!-- SEKCJA: SPIS REJONÓW ORAZ INFO BOX -->
         <div class="dabu-app-wrapper">
             
-            <!-- 1. SEKCJA PROMOCYJNA -->
-            <div class="promo-box">
-                <h3 id="promo-box-head" class="promo-head">💡 Nie masz jeszcze pełnego dostępu? Wybierz opcję dla siebie!</h3>
-                <p id="promo-box-desc" class="promo-desc">
-                    Zastanawiasz się, który wariant naszej oferty najlepiej odpowiada Twoim potrzebom? Przygotowaliśmy elastyczne rozwiązania dopasowane do różnych trybów współpracy. Przy <strong>zamówieniach długofalowych (na miesiąc lub dłużej) oferujemy atrakcyjne rabaty, które naliczamy już od pierwszego zamówienia!</strong> Jeżeli interesują Cię zamówienia okazjonalne, wszystkie standardowe ceny znajdziesz szczegółowo rozpisane w naszym oficjalnym cenniku. Sprawdź szczegóły i podejmij najlepszą decyzję dla swojego zespołu.
-                </p>
-                <a id="promo-box-btn" href="https://dabu-info.blogspot.com/p/o-nas-oferta.html" target="_blank" class="promo-btn">
-                    👉 Zobacz pełną ofertę i wybierz plan
-                </a>
-            </div>
-
-            <!-- 2. HARMONOGRAM (SPIS REJONÓW) -->
+            <!-- 1. HARMONOGRAM (SPIS REJONÓW) -->
             <div class="weeks-container">
                 <div class="dabu-main-heading" id="main-heading">Spis rejonów - Aktywne Tygodnie</div>
                 <div class="week-list" id="dynamic-weeks">
                     <!-- Tutaj ładują się tygodnie -->
                 </div>
+            </div>
+
+            <!-- 2. INFO BOX Z LEGENDĄ -->
+            <div class="info-box">
+                <h3 id="info-box-head" class="info-head">💡 Sprawdzanie rejonów i Legenda Skrótów</h3>
+                <p id="info-box-desc" class="info-desc">
+                    Wybierz tydzień z powyższej listy, aby otworzyć szczegółowy wykaz rejonów. Możesz również sprawdzić dostępność konkretnego miasta w naszym <strong>Asystencie</strong> (zielona ikona) wpisując jego nazwę.
+                </p>
+                <strong id="info-legend-title" style="color:#fff; margin-top:10px; display:block;">📌 Legenda skrótów (Spisy i Asystent):</strong>
+                <ul class="legend-list">
+                    <li id="leg-sm"><strong>SM / S</strong> – Sperrmüll (Gabaryty)</li>
+                    <li id="leg-el"><strong>E / EL</strong> – Elektronik (Elektronika)</li>
+                    <li id="leg-met"><strong>M / MET</strong> – Metall (Złom / Metal)</li>
+                    <li id="leg-holz"><strong>H / HOLZ</strong> – Altholz (Drewno)</li>
+                </ul>
             </div>
             
         </div>
@@ -1421,104 +1425,168 @@
     //]]>
     </script>
 
-    <!-- NOWY SKRYPT: SPIS REJONÓW -->
+    <!-- SKRYPT: SPIS REJONÓW ORAZ INFO BOX (Z LEGENDĄ) -->
     <script>
     //<![CDATA[
     (function() {
         let userLang = (navigator.language || navigator.userLanguage).split('-')[0];
         const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
         if (!supported.includes(userLang)) { userLang = 'de'; }
+        
         const translations = {
             'pl': { 
                 heading: "Spis rejonów - Aktywne Tygodnie", current: "Bieżący tydzień", upcoming: "Nadchodzący", week: "Tydzień", connecting: "Trwa łączenie z bazą...", seeList: "Zobacz wykaz na Tydzień", regionsInDb: "rejonów w bazie", waiting: "STATUS: Oczekiwanie na dane...", clickToCheck: "STATUS: Kliknij, aby sprawdzić wykaz", noData: "BRAK_AKTYWNYCH_DANYCH_NA_TEN_ROK",
-                promoHead: "💡 Nie masz jeszcze pełnego dostępu? Wybierz opcję dla siebie!",
-                promoDesc: "Zastanawiasz się, który wariant naszej oferty najlepiej odpowiada Twoim potrzebom? Przygotowaliśmy elastyczne rozwiązania dopasowane do różnych trybów współpracy. Przy <strong>zamówieniach długofalowych (na miesiąc lub dłużej) oferujemy atrakcyjne rabaty, które naliczamy już od pierwszego zamówienia!</strong> Jeżeli interesują Cię zamówienia okazjonalne, wszystkie standardowe ceny znajdziesz szczegółowo rozpisane w naszym oficjalnym cenniku. Sprawdź szczegóły i podejmij najlepszą decyzję dla swojego zespołu.",
-                promoBtn: "👉 Zobacz pełną ofertę i wybierz plan"
+                infoHead: "💡 Sprawdzanie rejonów i Legenda Skrótów",
+                infoDesc: "Wybierz tydzień z powyższej listy, aby otworzyć szczegółowy wykaz rejonów. Możesz również sprawdzić dostępność konkretnego miasta w naszym <strong>Asystencie</strong> (zielona ikona) wpisując jego nazwę.",
+                infoLegendTitle: "📌 Legenda skrótów (Spisy i Asystent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Gabaryty / Meble)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika / AGD)",
+                legendMET: "<strong>M / MET</strong> – Metall (Złom / Metal)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Drewno)"
             },
             'de': { 
                 heading: "Regionenliste - Aktive  Wochen", current: "Aktuelle Woche", upcoming: "Kommende", week: "Woche", connecting: "Verbindung zur Datenbank wird hergestellt...", seeList: "Siehe Liste für Woche", regionsInDb: "Regionen in der Datenbank", waiting: "STATUS: Warten auf Daten...", clickToCheck: "STATUS: Klicken, um die Liste zu prüfen", noData: "KEINE_AKTIVEN_DATEN_FÜR_DIESES_JAHR",
-                promoHead: "💡 Noch keinen vollen Zugriff? Wählen Sie Ihre Option!",
-                promoDesc: "Sie fragen sich, welche Variante unseres Angebots am besten zu Ihren Bedürfnissen passt? Wir haben flexible Lösungen für verschiedene Kooperationsarten vorbereitet. Bei <strong>Langzeitbestellungen (für einen Monat oder länger) bieten wir attraktive Rabatte, die bereits ab der ersten Bestellung gelten!</strong> Wenn Sie an gelegentlichen Bestellungen interessiert sind, finden Sie alle Standardpreise in unserer offiziellen Preisliste. Überprüfen Sie die Details und treffen Sie die beste Entscheidung für Ihr Team.",
-                promoBtn: "👉 Komplettes Angebot ansehen und Plan wählen"
+                infoHead: "💡 Regionen prüfen & Abkürzungslegende",
+                infoDesc: "Wählen Sie eine Woche aus der Liste, um den detaillierten Zeitplan zu öffnen. Sie können auch eine Stadt im <strong>Assistenten</strong> (grünes Symbol) prüfen.",
+                infoLegendTitle: "📌 Abkürzungslegende (Listen & Assistent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektrogeräte)",
+                legendMET: "<strong>M / MET</strong> – Metall (Schrott)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz"
             },
             'en': { 
                 heading: "Regions list - Active  Weeks", current: "Current week", upcoming: "Upcoming", week: "Week", connecting: "Connecting to database...", seeList: "See list for Week", regionsInDb: "regions in database", waiting: "STATUS: Waiting for data...", clickToCheck: "STATUS: Click to check the list", noData: "NO_ACTIVE_DATA_FOR_THIS_YEAR",
-                promoHead: "💡 Don't have full access yet? Choose your option!",
-                promoDesc: "Wondering which variant of our offer best suits your needs? We have prepared flexible solutions tailored to various modes of cooperation. For <strong>long-term orders (for a month or longer), we offer attractive discounts applied from your very first order!</strong> If you are interested in occasional orders, all standard prices can be found in our official price list. Check the details and make the best decision for your team.",
-                promoBtn: "👉 See the full offer and choose a plan"
+                infoHead: "💡 Checking regions & Abbreviations Legend",
+                infoDesc: "Select a week from the list above to open the detailed schedule. You can also check a specific city in our <strong>Assistant</strong> (green icon) by typing its name.",
+                infoLegendTitle: "📌 Abbreviations Legend (Schedules & Assistant):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Bulky waste / Furniture)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Electronics / Appliances)",
+                legendMET: "<strong>M / MET</strong> – Metall (Scrap metal)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Wood)"
             },
             'cs': { 
                 heading: "Seznam regionů - Aktivní  týdny", current: "Aktuální týden", upcoming: "Nadcházející", week: "Týden", connecting: "Připojování k databázi...", seeList: "Zobrazit seznam pro týden", regionsInDb: "regionů v databázi", waiting: "STATUS: Čekání na data...", clickToCheck: "STATUS: Klikněte pro kontrolu seznamu", noData: "ŽÁDNÁ_AKTIVNÍ_DATA_PRO_TENTO_ROK",
-                promoHead: "💡 Zastím nemáte plný přístup? Vyberte si svou možnost!",
-                promoDesc: "Přemýšlíte, která varianta naší nabídky nejlépe vyhovuje vašim potřebám? Připravili jsme flexibilní řešení šitá na míru různým způsobům spolupráce. U <strong>dlouhodobých objednávek (na měsíc a déle) nabízíme atraktivní slevy již od první objednávky!</strong> Pokud máte zájem o jednorázové objednávky, všechny standardní ceny najdete v našem oficiálním cenníku. Zkontrolujte podrobnosti a udělejte nejlepší rozhodnutí pro váš tým.",
-                promoBtn: "👉 Zobrazit kompletní nabídku a vybrat plán"
+                infoHead: "💡 Kontrola regionů a Legenda zkratek",
+                infoDesc: "Vyberte týden ze seznamu výše a otevřete podrobný rozvrh. Dostupnost města můžete zkontrolovat také v našem <strong>Asistentovi</strong> (zelená ikona).",
+                infoLegendTitle: "📌 Legenda zkratek (Rozvrhy a Asistent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Objemný odpad)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
+                legendMET: "<strong>M / MET</strong> – Metall (Kov / Šrot)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Dřevo)"
             },
             'sk': { 
                 heading: "Zoznam regiónov - Aktívne týždne", current: "Aktuálny týždeň", upcoming: "Nadchádzajúci", week: "Týždeň", connecting: "Pripájanie k databáze...", seeList: "Zobraziť zoznam pre týždeň", regionsInDb: "regiónov v databáze", waiting: "STATUS: Čakanie na dáta...", clickToCheck: "STATUS: Kliknite pre kontrolu zoznamu", noData: "ŽIADNE_AKTÍVNE_DÁTA_PRE_TENTO_ROK",
-                promoHead: "💡 Zatiaľ nemáte plný prístup? Vyberte si svoju možnosť!",
-                promoDesc: "Premýšľate, ktorý variant našej ponuky najlepšie vyhovuje vašim potrebám? Pripravili sme flexibilné riešenia šité na mieru rôznym spôsobom spolupráce. Pri <strong>dlhodobých objednávkach (na mesiac a dlhšie) ponúkame atraktívne zľavy už od prvej objednávky!</strong> Ak máte záujem o jednorazové objednávky, všetky štandardné ceny nájdete v našom oficiálnom cenníku. Skontrolujte podrobnosti a urobte najlepšie rozhodnutie pre váš tím.",
-                promoBtn: "👉 Zobraziť kompletnú ponuku a vybrať plán"
+                infoHead: "💡 Kontrola regiónov a Legenda skratiek",
+                infoDesc: "Vyberte týždeň zo zoznamu vyššie a otvorte podrobný rozvrh. Dostupnosť mesta môžete skontrolovať aj v našom <strong>Asistentovi</strong> (zelená ikona).",
+                infoLegendTitle: "📌 Legenda skratiek (Rozvrhy a Asistent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Objemný odpad)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
+                legendMET: "<strong>M / MET</strong> – Metall (Kov / Šrot)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Drevo)"
             },
             'hu': { 
                 heading: "Régiók listája - Aktív hetek", current: "Jelenlegi hét", upcoming: "Következő", week: "Hét", connecting: "Csatlakozás az adatbázishoz...", seeList: "Lásd a listát a(z) hétre", regionsInDb: "régió az adatbázisban", waiting: "STÁTUSZ: Várakozás az adatokra...", clickToCheck: "STÁTUSZ: Kattintson a lista ellenőrzéséhez", noData: "NINCS_AKTÍV_ADAT_ERRE_AZ_ÉVRE",
-                promoHead: "💡 Még nincs teljes hozzáférése? Válasszon opciót!",
-                promoDesc: "Gondolkodik, melyik ajánlatunk felel meg leginkább igényeinek? Rugalmas megoldásokat készítettünk a különböző együttműködési formákhoz. <strong>Hosszú távú megrendelések (egy hónap vagy annál hosszabb idő) esetén vonzó kedvezményeket kínálunk már az első rendeléstől kezdve!</strong> Ha alkalmi megrendelések érdeklik, az összes normál árat megtalálja hivatalos árlistánkban. Ellenőrizze a részleteket, és hozza meg a legjobb döntést csapata számára.",
-                promoBtn: "👉 Tekintse meg a teljes ajánlatot és válasszon tervet"
+                infoHead: "💡 Régiók ellenőrzése és Jelmagyarázat",
+                infoDesc: "Válasszon egy hetet a listából a részletes ütemterv megnyitásához. Várost az <strong>Asszisztensben</strong> (zöld ikon) is kereshet.",
+                infoLegendTitle: "📌 Rövidítések jelmagyarázata (Listák és Asszisztens):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Lomtalanítás)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
+                legendMET: "<strong>M / MET</strong> – Metall (Fém / Hulladékvas)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Fa)"
             },
             'ro': { 
                 heading: "Lista regiunilor - Săptămâni active", current: "Săptămâna curentă", upcoming: "Următoare", week: "Săptămâna", connecting: "Se conectează la baza de date...", seeList: "Vezi lista pentru Săptămâna", regionsInDb: "regiuni în baza de date", waiting: "STARE: Se așteaptă datele...", clickToCheck: "STARE: Faceți clic pentru a verifica lista", noData: "FĂRĂ_DATE_ACTIVE_PENTRU_ACEST_AN",
-                promoHead: "💡 Încă nu aveți acces complet? Alegeți o opțiune!",
-                promoDesc: "Vă întrebați ce variantă a ofertei noastre se potrivește cel mai bine nevoilor dumneavoastră? Am pregătit soluții flexibile adaptate la diverse moduri de cooperare. Pentru <strong>comenzile pe termen lung (pentru o lună sau mai mult), oferim reduceri atractive aplicate chiar de la prima comandă!</strong> Dacă sunteți interesat de comenzi ocazionale, toate prețurile standard pot fi găsite în lista noastră oficială de prețuri. Verificați detaliile și luați cea mai bună decizie pentru echipa dumneavoastră.",
-                promoBtn: "👉 Vezi oferta completă și alege un plan"
+                infoHead: "💡 Verificarea regiunilor și Legenda",
+                infoDesc: "Selectați o săptămână din lista de mai sus pentru a deschide programul. De asemenea, puteți verifica un oraș în <strong>Asistentul</strong> nostru (pictograma verde).",
+                infoLegendTitle: "📌 Legenda abrevierilor (Programe și Asistent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Deșeuri voluminoase)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Electronice)",
+                legendMET: "<strong>M / MET</strong> – Metall (Fier vechi)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Lemn)"
             },
             'bg': { 
                 heading: "Списък на регионите - Активни седмици", current: "Текуща седмица", upcoming: "Предстояща", week: "Седмица", connecting: "Свързване с базата данни...", seeList: "Вижте списъка за седмица", regionsInDb: "региони в базата данни", waiting: "СТАТУС: Изчакване на данни...", clickToCheck: "СТАТУС: Кликнете, за да проверите", noData: "НЯМА_АКТИВНИ_ДАННИ_ЗА_ТАЗИ_ГОДИНА",
-                promoHead: "💡 Все още нямате пълен достъп? Изберете своята опция!",
-                promoDesc: "Чудите се кой вариант на нашата оферта отговаря най-добре на вашите нужди? Подготвили сме гъвкави решения, съобразени с различни режими на сътрудничество. За <strong>дългосрочни поръчки (за месец или повече) предлагаме атрактивни отстъпки, прилагани още от първата ви поръчка!</strong> Ако се интересувате от инцидентни поръчки, всички стандартни цени можете да намерите в официалната ни ценова листа. Проверете подробностите и вземете най-доброто решение за вашия екип.",
-                promoBtn: "👉 Вижте пълната оферта и изберете план"
+                infoHead: "💡 Проверка на региони и Легенда",
+                infoDesc: "Изберете седмица от списъка по-горе. Можете също да проверите конкретен град в нашия <strong>Асистент</strong> (зелена икона).",
+                infoLegendTitle: "📌 Легенда на съкращенията (Графици и Асистент):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Едрогабаритни)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Електроника)",
+                legendMET: "<strong>M / MET</strong> – Metall (Скрап / Метал)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Дървесина)"
             },
             'tr': { 
                 heading: "Bölgeler listesi - Aktif Haftalar", current: "Mevcut hafta", upcoming: "Yaklaşan", week: "Hafta", connecting: "Veritabanına bağlanılıyor...", seeList: "Hafta için listeye bakın", regionsInDb: "veritabanındaki bölgeler", waiting: "DURUM: Veri bekleniyor...", clickToCheck: "DURUM: Listeyi kontrol etmek için tıklayın", noData: "BU_YIL_İÇİN_AKTİF_VERİ_YOK",
-                promoHead: "💡 Henüz tam erişiminiz yok mu? Seçeneğinizi belirleyin!",
-                promoDesc: "Hangi teklifimizin ihtiyaçlarınıza en uygun olduğunu mu merak ediyorsunuz? Farklı işbirliği modellerine uygun esnek çözümler hazırladık. <strong>Uzun vadeli siparişlerinizde (bir ay veya daha uzun süreli), daha ilk siparişinizden itibaren cazip indirimler sunuyoruz!</strong> Ara sıra sipariş vermek isterseniz, tüm standart fiyatlarımızı resmi fiyat listemizde bulabilirsiniz. Detayları inceleyin ve ekibiniz için en iyi kararı verin.",
-                promoBtn: "👉 Tüm teklifi görün ve bir plan seçin"
+                infoHead: "💡 Bölgeleri kontrol etme ve Gösterge",
+                infoDesc: "Ayrıntılı programı açmak için listeden bir hafta seçin. Ayrıca şehrinizi <strong>Asistan</strong> (yeşil simge) üzerinden de kontrol edebilirsiniz.",
+                infoLegendTitle: "📌 Kısaltmalar Göstergesi (Programlar ve Asistan):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Hacimli atık)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronik)",
+                legendMET: "<strong>M / MET</strong> – Metall (Hurda Metal)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Ahşap)"
             },
             'bs': { 
                 heading: "Spisak regija - Aktivne sedmice", current: "Trenutna sedmica", upcoming: "Nadolazeća", week: "Sedmica", connecting: "Povezivanje s bazom podataka...", seeList: "Pogledaj spisak za sedmicu", regionsInDb: "regija u bazi", waiting: "STATUS: Čekanje podataka...", clickToCheck: "STATUS: Kliknite da provjerite spisak", noData: "NEMA_AKTIVNIH_PODATAKA_ZA_OVU_GODINU",
-                promoHead: "💡 Još nemate puni pristup? Odaberite svoju opciju!",
-                promoDesc: "Pitate se koja varijanta naše ponude najbolje odgovara vašim potrebama? Pripremili smo fleksibilna rješenja prilagođena različitim vrstama saradnje. Za <strong>dugoročne narudžbe (na mjesec dana ili duže) nudimo atraktivne popuste koji važe već od prve narudžbe!</strong> Ako ste zainteresovani za povremene narudžbe, sve standardne cijene možete pronaći u našem zvaničnom cjenovniku. Provjerite detalje i donesite najbolju odluku za svoj tim.",
-                promoBtn: "👉 Pogledajte cijelu ponudu i odaberite plan"
+                infoHead: "💡 Provjera regija i Legenda skraćenica",
+                infoDesc: "Odaberite sedmicu sa gornjeg spiska. Također možete provjeriti dostupnost grada u našem <strong>Asistentu</strong> (zelena ikona).",
+                infoLegendTitle: "📌 Legenda skraćenica (Spiskovi i Asistent):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Krupni otpad)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
+                legendMET: "<strong>M / MET</strong> – Metall (Metal / Otpad)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Drvo)"
             },
             'uk': { 
                 heading: "Список регіонів - Активні тижні", current: "Поточний тиждень", upcoming: "Майбутній", week: "Тиждень", connecting: "Підключення до бази даних...", seeList: "Переглянути список для тижня", regionsInDb: "регіонів у базі", waiting: "СТАТУС: Очікування даних...", clickToCheck: "СТАТУС: Натисніть, щоб перевірити список", noData: "НЕМАЄ_АКТИВНИХ_ДАНИХ_НА_ЦЕЙ_РІК",
-                promoHead: "💡 Ще не маєте повного доступу? Оберіть свій варіант!",
-                promoDesc: "Цікавитесь, який варіант нашої пропозиції найкраще відповідає вашим потребам? Ми підготували гнучкі рішення, адаптовані до різних форматів співпраці. Для <strong>довгострокових замовлень (на місяць і більше) ми пропонуємо привабливі знижки вже з першого замовлення!</strong> Якщо вас цікавлять разові замовлення, усі стандартні ціни вказані в нашому офіційному прайс-листі. Ознайомтеся з деталями та прийміть найкраще рішення для вашої команди.",
-                promoBtn: "👉 Переглянути повну пропозицію та обрати план"
+                infoHead: "💡 Перевірка регіонів та Легенда",
+                infoDesc: "Виберіть тиждень зі списку вище. Ви також можете перевірити місто в нашому <strong>Асистенті</strong> (зелена іконка).",
+                infoLegendTitle: "📌 Легенда скорочень (Списки та Асистент):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Великогабаритні)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Електроніка)",
+                legendMET: "<strong>M / MET</strong> – Metall (Металобрухт)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Деревина)"
             },
             'ru': { 
                 heading: "Список регионов - Активные недели", current: "Текущая неделя", upcoming: "Предстоящая", week: "Неделя", connecting: "Подключение к базе данных...", seeList: "Смотреть список для недели", regionsInDb: "регионов в базе", waiting: "СТАТУС: Ожидание данных...", clickToCheck: "СТАТУС: Нажмите, чтобы проверить список", noData: "НЕТ_АКТИВНЫХ_ДАННЫХ_НА_ЭТОТ_ГОД",
-                promoHead: "💡 Еще нет полного доступа? Выберите свой вариант!",
-                promoDesc: "Интересуетесь, какой вариант нашего предложения лучше всего соответствует вашим потребностям? Мы подготовили гибкие решения, адаптированные к различным форматам сотрудничества. Для <strong>долгосрочных заказов (на месяц и более) мы предлагаем привлекательные скидки уже с первого заказа!</strong> Если вас интересуют разовые заказы, все стандартные цены указаны в нашем официальном прайс-листе. Ознакомьтесь с деталями и примите лучшее решение для вашей команды.",
-                promoBtn: "👉 Посмотреть полное предложение и выбрать план"
+                infoHead: "💡 Проверка регионов и Легенда",
+                infoDesc: "Выберите неделю из списка выше. Вы также можете проверить доступность города в нашем <strong>Ассистенте</strong> (зеленая иконка).",
+                infoLegendTitle: "📌 Легенда сокращений (Списки и Ассистент):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Крупногабаритные)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Электроника)",
+                legendMET: "<strong>M / MET</strong> – Metall (Металлолом)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Древесина)"
             },
             'lt': { 
                 heading: "Regionų sąrašas - Aktyvios savaitės", current: "Dabartinė savaitė", upcoming: "Būsima", week: "Savaitė", connecting: "Jungiamasi prie duomenų bazės...", seeList: "Žiūrėti savaitės sąrašą", regionsInDb: "regionų bazėje", waiting: "BŪSENA: Laukiama duomenų...", clickToCheck: "BŪSENA: Spustelėkite, kad patikrintumėte", noData: "NĖRA_AKTYVIŲ_DUOMENŲ_ŠIEMS_METAMS",
-                promoHead: "💡 Dar neturite visos prieigos? Pasirinkite savo variantą!",
-                promoDesc: "Svarstote, kuris mūsų pasiūlymo variantas geriausiai atitinka jūsų poreikius? Parengėme lanksčius sprendimus, pritaikytus įvairiems bendradarbiavimo būdams. <strong>Ilgalaikiams užsakymams (mėnesiui ar ilgiau) taikome patrauklias nuolaidas jau nuo pirmojo užsakymo!</strong> Jei jus domina vienkartiniai užsakymai, visas standartines kainas rasite mūsų oficialiame kainoraštyje. Patikrinkite išsamią informaciją ir priimkite geriausią sprendimą savo komandai.",
-                promoBtn: "👉 Žiūrėti visą pasiūlymą ir pasirinkti planą"
+                infoHead: "💡 Regionų tikrinimas ir Santrumpų legenda",
+                infoDesc: "Pasirinkite savaitę iš aukščiau esančio sąrašo. Taip pat galite patikrinti miestą mūsų <strong>Asistente</strong> (žalia piktograma).",
+                infoLegendTitle: "📌 Santrumpų legenda (Sąrašai ir Asistentas):",
+                legendSM: "<strong>SM / S</strong> – Sperrmüll (Stambiagabaritės)",
+                legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
+                legendMET: "<strong>M / MET</strong> – Metall (Metalo laužas)",
+                legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Mediena)"
             }
         };
+        
         const t = translations[userLang];
         
+        // Tłumaczenia nagłówka
         const mainHeading = document.getElementById('main-heading');
         if (mainHeading) { mainHeading.innerText = t.heading; }
         
-        const promoHead = document.getElementById('promo-box-head');
-        if (promoHead && t.promoHead) { promoHead.innerHTML = t.promoHead; }
-        const promoDesc = document.getElementById('promo-box-desc');
-        if (promoDesc && t.promoDesc) { promoDesc.innerHTML = t.promoDesc; }
-        const promoBtn = document.getElementById('promo-box-btn');
-        if (promoBtn && t.promoBtn) { promoBtn.innerHTML = t.promoBtn; }
+        // Tłumaczenia sekcji INFO
+        const infoHead = document.getElementById('info-box-head');
+        if (infoHead && t.infoHead) { infoHead.innerHTML = t.infoHead; }
+        const infoDesc = document.getElementById('info-box-desc');
+        if (infoDesc && t.infoDesc) { infoDesc.innerHTML = t.infoDesc; }
+        const infoLegendTitle = document.getElementById('info-legend-title');
+        if (infoLegendTitle && t.infoLegendTitle) { infoLegendTitle.innerHTML = t.infoLegendTitle; }
+        const legSM = document.getElementById('leg-sm');
+        if (legSM && t.legendSM) { legSM.innerHTML = t.legendSM; }
+        const legEL = document.getElementById('leg-el');
+        if (legEL && t.legendEL) { legEL.innerHTML = t.legendEL; }
+        const legMET = document.getElementById('leg-met');
+        if (legMET && t.legendMET) { legMET.innerHTML = t.legendMET; }
+        const legHOLZ = document.getElementById('leg-holz');
+        if (legHOLZ && t.legendHOLZ) { legHOLZ.innerHTML = t.legendHOLZ; }
 
         function getISOWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -1545,11 +1613,13 @@
             else if (y1 === y2) { return `${d1} ${m1} - ${d2} ${m2} ${y2}`; } 
             else { return `${d1} ${m1} ${y1} - ${d2} ${m2} ${y2}`; }
         }
+        
         const today = new Date();
         let currentWeek = getISOWeek(today);
         let dayOfWeek = today.getDay(); 
         if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) { currentWeek++; }
         if (currentWeek < 22) currentWeek = 22;
+        
         const driveLinks = {
             22: "https://drive.google.com/file/d/1Lp4QEho0D7WjeIoFrpZNSDGqN9k2hi6w/view?usp=drive_link", 
             23: "https://drive.google.com/file/d/18tI56QnKTVVY6UyQno0hPWfora26Ff_1/view?usp=drive_link", 
@@ -1561,6 +1631,7 @@
             46: "https://drive.google.com/file/d/1hfUNR4AL_w_QvjCpMoy9G7bVVrLALGj5/view?usp=sharing", 47: "https://drive.google.com/file/d/1aBjdmlkt7-zY7OWZ_lvHstxgac-G6xTQ/view?usp=sharing", 48: "https://drive.google.com/file/d/1aNBocGrkFqcvVBUSg6ANBYEqorlWNhfU/view?usp=sharing", 49: "https://drive.google.com/file/d/1ekoL9-8Qd032Ei56JrC1K-Fa14YBtkGI/view?usp=sharing", 50: "https://drive.google.com/file/d/1MYrJBx9pmGI66uQ5ZJt14sHWsjxPRMyq/view?usp=sharing", 51: "https://drive.google.com/file/d/1J0xmKEi1Vv0KD3rkyIZz1Zr3Df8vo-rS/view?usp=sharing", 52: "https://drive.google.com/file/d/1vFf3R6EoQh4teSMLHVItwBnOetk8CQYN/view?usp=sharing", 53: "https://drive.google.com/file/d/1Wao8aeQakdmBg29XjhO_A4ZJHWTHj4pD/view?usp=sharing"
         };
         const scriptUrl = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
+        
         async function fetchRegionsCount(weekNumber, elementId) {
             const url = scriptUrl + '?action=count_regions&sheet=Spis%20W' + weekNumber;
             const el = document.getElementById(elementId);
@@ -1575,8 +1646,10 @@
                 el.innerHTML = t.clickToCheck;
             }
         }
+        
         const container = document.getElementById('dynamic-weeks');
         if(!container) return;
+        
         let linksAdded = 0;
         let currentYear = today.getFullYear(); 
         for (let w = currentWeek; w <= 53 && linksAdded < 4; w++) {
