@@ -7,7 +7,7 @@
     <style>
         /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM --- */
         body {
-            background-color: #121212; /* Dodane ciemne tło bazowe */
+            background-color: #121212;
             color: #e0e0e0;
             margin: 0;
             padding: 0;
@@ -100,6 +100,16 @@
         .regions-scroll-box { position: relative; min-height: 150px; max-height: 250px; overflow-y: scroll;
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; }
+        
+        /* Zmiana na węższy widok na desktopie */
+        @media (min-width: 769px) {
+            #regionsContainer {
+                max-width: 550px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
         .regions-scroll-box::-webkit-scrollbar { width: 8px; }
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
@@ -220,8 +230,8 @@
                 
                 <ul class="strategy-list" style="margin-bottom: 20px;">
                     <li id="configLi1"><b>1 wybrany rejon na 1 tydzień:</b> 100 PLN</li>
-                    <li id="configLi2"><b>Wszystkie rejony (Całe Niemcy) na 1 tydzień:</b> 240 PLN</li>
-                    <li id="configLi3"><b>Więcej rejonów lub tygodni:</b> Wycena indywidualna (zamawiasz tylko to, czego potrzebujesz!).</li>
+                    <li id="configLi2"><b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)</li>
+                    <li id="configLi3"><b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).</li>
                 </ul>
 
                 <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
@@ -399,7 +409,7 @@
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
-      <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckenförde" /> Rendsburg-Eckenförde</label>
+      <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
       <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
@@ -502,7 +512,8 @@
                     <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel">🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b></span></label>
                 </div>
                  <div class="option-box" id="dhlBox">
-                     <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka DHL/Paczkomat (Dokument Drukowany)</span></label>
+                     <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)</span></label>
+                     <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
                 </div>
                 <div class="option-box" id="schrottBox">
                      <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
@@ -557,7 +568,7 @@
                     "Altmarkkreis-Salzwedel", "Bonn", "Dülmen", "Eppstein", "Eschwege", "Flörsbachtal", 
                     "Freudenstadt", "Fulda", "Gifhorn", "Gräfelfing", "Gründau", "Hofheim am Taunus", 
                     "Holzminden", "Karlsruhe Stadt", "Kelkheim (Taunus)", "Kirchheim", "Königstein (Taunus)", 
-                    "Konstanz", "Neustadt a.d. Waldnaab", "Ortenau", "Rendsburg-Eckenförde", "Schlüchtern", 
+                    "Konstanz", "Neustadt a.d. Waldnaab", "Ortenau", "Rendsburg-Eckernförde", "Schlüchtern", 
                     "Schwedt/Oder", "Sinntal", "Walldorf-Mörfelden", "Werra-Meissner", "Westerwald", "Wuppertal"
                 ],
                 "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Werra-Meissner", "Wehrheim", "Weilrod"],
@@ -582,9 +593,9 @@
             if (!supported.includes(userLang)) userLang = 'de';
             
             const config = {
-                'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 ZAMAWIAM: ', priceInd: "Wycena indywidualna", configLi4: '<b>Zestaw Premium:</b> Wybierz z Landów "Całe Niemcy", aby zaplanować trasy samodzielnie!', landAll: iconRobot + ' Całe Niemcy', landNormal: 'Normalne', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Szczegóły wyceny poniżej', configLi1: '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN', configLi2: '<b>Wszystkie rejony (Całe Niemcy) na 1 tydzień:</b> 240 PLN', configLi3: '<b>Więcej rejonów lub tygodni:</b> Wycena indywidualna (zamawiasz tylko to, czego potrzebujesz!).', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Wybierz formę płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka DHL/Paczkomat (Dokument Drukowany)', btnSubmit: '🛒 PRZEŚLIJ DO DARMOWEJ WYCENY', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Proszę o wycenę zestawu:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Tytułem: Nr zamówienia', emailWarning: 'Odpowiemy na tę wiadomość, podając wycenę.' } },
-                'de': { currency: "EUR", texts: { btnOrderExact: '🛒 BESTELLEN: ', priceInd: "Individueller Preis", configLi4: '<b>Premium-Set:</b> Wählen Sie "Ganz Deutschland", um Ihre Routen selbst zu planen!', landAll: iconRobot + ' Ganz Deutschland', landNormal: 'Normal', loaderTitle: 'Daten werden synchronisiert', loaderDesc: 'Verbindung zum Server wird hergestellt...<br><br>Lade neueste Konfigurationen und Termine.', loadingData: "⏳ Verfügbare Optionen werden geladen...", bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!", infoDesc: '<b>Wählen Sie das Format, das zu Ihrem Arbeitsstil passt – beide haben ihre Vorteile:</b>', headerChoose: 'Konfigurieren Sie Ihr Paket', configTitle: '🛠️ Ihr eigenes Set', configSubtitle: 'Konfigurieren Sie unten Ihren Bedarf', configLi1: '<b>1 Region für 1 Woche:</b> 25 €.', configLi2: '<b>Ganz Deutschland für 1 Woche:</b> 60 €.', configLi3: '<b>Mehrere Regionen/Wochen:</b> Individueller Preis (Sie bestellen nur, was Sie brauchen!).', formatPdfTitle: iconPdf + ' PDF-Version (Dokument):', formatPdfLi1: '<strong>Zum Drucken:</strong> Ideal für Papierliebhaber.', formatPdfLi2: '<strong>Offline:</strong> Einmal laden, ohne Internet nutzen.', formatPdfLi3: '<strong>Aktive Navigation:</strong> Maps-Links funktionieren auf dem Handy!', formatJpgTitle: '🖼️ JPG-Version (Bilder):', formatJpgLi1: '<strong>Galerie:</strong> Einfache Anzeige direkt auf dem Telefon.', formatJpgLi2: '<strong>Schnelles Teilen:</strong> Senden Sie es sofort an Freunde.', formatJpgRadio: '🖼️ JPG-Version (Bilderpaket für Telefon/Tablet)', formatOnlineTitle: '🌐 Online-Version:', formatOnlineLi1: '<strong>Bequemlichkeit:</strong> Login über das Kundenpanel.', formatOnlineLi2: '<strong>Aktualisierungen:</strong> Termine werden live synchronisiert.', formatOnlineRadio: '🌐 Online-Version (Zugang über das interaktive Kundenpanel)', searchDesc: 'Wissen Sie nicht, wo eine Region liegt? Überprüfen Sie den Standort auf der Karte:', searchBtn: '🔍 REGIONEN-SUCHE', step1Header: '👇 1. Regionen auswählen:', step2Header: '📅 2. Wochen auswählen:', previewTitle: '👀 Kostenlose Terminübersicht:', previewDefault: '-- Wählen Sie eine Woche zur Vorschau --', btnUnselectAll: '[ Auswahl aufheben ]', step3Header: '📄 3. Format wählen:', formatPdfPrintRadio: iconPdf + ' PDF-Version zum Drucken (heller Hintergrund, spart Tinte)', formatPdfSmartRadio: iconPdf + ' PDF-Version fürs Smartphone (Dark Mode, aktive Google Maps Links)', step4Header: '💾 4. Extra:', step5Header: '💳 5. Zahlungsmethode wählen:', payIban: '🏦 IBAN / Banküberweisung', payPaypal: '🅿️ PayPal', payOther: '❓ Andere', guideLabel: '🎁 Ich möchte den kostenlosen Sperrmüll-Leitfaden', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Versand DHL/DPD (Gedrucktes Dokument)', btnSubmit: '🛒 KOSTENFREIES ANGEBOT ANFORDERN', weekLabel: 'Woche', specialDateText: 'Vorbereitung des nächsten Termins für', emailGreeting: 'Guten Tag,', emailOrderSet: 'Ich bitte um ein Angebot für:', emailDates: 'TERMINE', emailSelectedRegions: 'REGIONEN', paymentNote: 'Bestellnummer:', emailWarning: 'Wir antworten auf diese Nachricht mit einem Angebot.' } },
-                'en': { currency: "EUR", texts: { btnOrderExact: '🛒 ORDER: ', priceInd: "Individual Pricing", configLi4: '<b>Premium Set:</b> Choose "All Germany" to plan your routes yourself!', landAll: iconRobot + ' All Germany', landNormal: 'Normal', loaderTitle: 'Data Synchronization', loaderDesc: 'Connecting to server...<br><br>Downloading the latest configurations and dates.', loadingData: "⏳ Loading available options...", bonus: "🎁 <b>Free:</b> Guide included!", infoDesc: '<b>Choose the format that fits your workflow – both have unique advantages:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Your Custom Set', configSubtitle: 'Select your requirements below', configLi1: '<b>1 region for 1 week:</b> 25 €.', configLi2: '<b>All Germany for 1 week:</b> 60 €.', configLi3: '<b>More regions or weeks:</b> Individual Pricing.', formatPdfTitle: iconPdf + ' PDF Version (document):', formatPdfLi1: '<strong>Printable:</strong> Ideal if you prefer paper.', formatPdfLi2: '<strong>Offline:</strong> Download once, use without internet.', formatPdfLi3: '<strong>Active navigation:</strong> Map links still work on mobile!', formatJpgTitle: '🖼️ JPG Version (images):', formatJpgLi1: '<strong>Gallery:</strong> Easy viewing directly on your phone.', formatJpgLi2: '<strong>Quick sharing:</strong> Instantly send to friends.', formatJpgRadio: '🖼️ JPG Version (image pack ready for phone/tablet)', formatOnlineTitle: '🌐 Online Version:', formatOnlineLi1: '<strong>Convenience:</strong> Login via the interactive Client Panel.', formatOnlineLi2: '<strong>Live Updates:</strong> Dates are synced directly with our database.', formatOnlineRadio: '🌐 Online Version (Access via interactive Client Panel)', searchDesc: 'Not sure where a region is located? Check its location on the map:', searchBtn: '🔍 REGION SEARCH', step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', previewTitle: '👀 Free date preview:', previewDefault: '-- Select a week to preview --', btnUnselectAll: '[ Clear selection ]', step3Header: '📄 3. Select format:', formatPdfPrintRadio: iconPdf + ' PDF Version for printing (light background, saves ink)', formatPdfSmartRadio: iconPdf + ' PDF Version for smartphone (Dark Mode, active Google Maps links)', step4Header: '💾 4. Extra options:', step5Header: '💳 5. Select payment method:', payIban: '🏦 IBAN / Bank Transfer', payPaypal: '🅿️ PayPal', payOther: '❓ Other', guideLabel: '🎁 Free Guide', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Physical Delivery', btnSubmit: '🛒 REQUEST FREE QUOTE', weekLabel: 'Week', specialDateText: 'Preparing nearest date for', emailGreeting: 'Hello,', emailOrderSet: 'Please provide a quote for:', emailDates: 'DATES', emailSelectedRegions: 'SELECTED REGIONS', paymentNote: 'Order No:', emailWarning: 'We will reply with a pricing quote.' } },
+                'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 ZAMAWIAM: ', priceInd: "Wycena indywidualna", configLi4: '<b>Zestaw Premium:</b> Wybierz z Landów "Całe Niemcy", aby zaplanować trasy samodzielnie!', landAll: iconRobot + ' Całe Niemcy', landNormal: 'Normalne', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Szczegóły wyceny poniżej', configLi1: '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN', configLi2: '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)', configLi3: '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Wybierz formę płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 PRZEŚLIJ DO DARMOWEJ WYCENY', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Proszę o wycenę zestawu:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Tytułem: Nr zamówienia', emailWarning: 'Odpowiemy na tę wiadomość, podając wycenę.' } },
+                'de': { currency: "EUR", texts: { btnOrderExact: '🛒 BESTELLEN: ', priceInd: "Individueller Preis", configLi4: '<b>Premium-Set:</b> Wählen Sie "Ganz Deutschland", um Ihre Routen selbst zu planen!', landAll: iconRobot + ' Ganz Deutschland', landNormal: 'Normal', loaderTitle: 'Daten werden synchronisiert', loaderDesc: 'Verbindung zum Server wird hergestellt...<br><br>Lade neueste Konfigurationen und Termine.', loadingData: "⏳ Verfügbare Optionen werden geladen...", bonus: "🎁 <b>Gratis:</b> Nach der Bestellung erhalten Sie den <b>Sperrmüll-Leitfaden</b>!", infoDesc: '<b>Wählen Sie das Format, das zu Ihrem Arbeitsstil passt – beide haben ihre Vorteile:</b>', headerChoose: 'Konfigurieren Sie Ihr Paket', configTitle: '🛠️ Ihr eigenes Set', configSubtitle: 'Konfigurieren Sie unten Ihren Bedarf', configLi1: '<b>1 Region für 1 Woche:</b> 25 €.', configLi2: '<b>Jede weitere Woche:</b> 5 € Rabatt!', configLi3: '<b>Gedruckt & versendet:</b> Rabatt entfällt.', formatPdfTitle: iconPdf + ' PDF-Version (Dokument):', formatPdfLi1: '<strong>Zum Drucken:</strong> Ideal für Papierliebhaber.', formatPdfLi2: '<strong>Offline:</strong> Einmal laden, ohne Internet nutzen.', formatPdfLi3: '<strong>Aktive Navigation:</strong> Maps-Links funktionieren auf dem Handy!', formatJpgTitle: '🖼️ JPG-Version (Bilder):', formatJpgLi1: '<strong>Galerie:</strong> Einfache Anzeige direkt auf dem Telefon.', formatJpgLi2: '<strong>Schnelles Teilen:</strong> Senden Sie es sofort an Freunde.', formatJpgRadio: '🖼️ JPG-Version (Bilderpaket für Telefon/Tablet)', formatOnlineTitle: '🌐 Online-Version:', formatOnlineLi1: '<strong>Bequemlichkeit:</strong> Login über das Kundenpanel.', formatOnlineLi2: '<strong>Aktualisierungen:</strong> Termine werden live synchronisiert.', formatOnlineRadio: '🌐 Online-Version (Zugang über das interaktive Kundenpanel)', searchDesc: 'Wissen Sie nicht, wo eine Region liegt? Überprüfen Sie den Standort auf der Karte:', searchBtn: '🔍 REGIONEN-SUCHE', step1Header: '👇 1. Regionen auswählen:', step2Header: '📅 2. Wochen auswählen:', previewTitle: '👀 Kostenlose Terminübersicht:', previewDefault: '-- Wählen Sie eine Woche zur Vorschau --', btnUnselectAll: '[ Auswahl aufheben ]', step3Header: '📄 3. Format wählen:', formatPdfPrintRadio: iconPdf + ' PDF-Version zum Drucken (heller Hintergrund, spart Tinte)', formatPdfSmartRadio: iconPdf + ' PDF-Version fürs Smartphone (Dark Mode, aktive Google Maps Links)', step4Header: '💾 4. Extra:', step5Header: '💳 5. Zahlungsmethode wählen:', payIban: '🏦 IBAN / Banküberweisung', payPaypal: '🅿️ PayPal', payOther: '❓ Andere', guideLabel: '🎁 Ich möchte den kostenlosen Sperrmüll-Leitfaden', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Versand DHL/DPD (Gedrucktes Dokument)', btnSubmit: '🛒 KOSTENFREIES ANGEBOT ANFORDERN', weekLabel: 'Woche', specialDateText: 'Vorbereitung des nächsten Termins für', emailGreeting: 'Guten Tag,', emailOrderSet: 'Ich bitte um ein Angebot für:', emailDates: 'TERMINE', emailSelectedRegions: 'REGIONEN', paymentNote: 'Bestellnummer:', emailWarning: 'Wir antworten auf diese Nachricht mit einem Angebot.' } },
+                'en': { currency: "EUR", texts: { btnOrderExact: '🛒 ORDER: ', priceInd: "Individual Pricing", configLi4: '<b>Premium Set:</b> Choose "All Germany" to plan your routes yourself!', landAll: iconRobot + ' All Germany', landNormal: 'Normal', loaderTitle: 'Data Synchronization', loaderDesc: 'Connecting to server...<br><br>Downloading the latest configurations and dates.', loadingData: "⏳ Loading available options...", bonus: "🎁 <b>Free:</b> Guide included!", infoDesc: '<b>Choose the format that fits your workflow – both have unique advantages:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Your Custom Set', configSubtitle: 'Select your requirements below', configLi1: '<b>1 region for 1 week:</b> 25 €.', configLi2: '<b>Each additional week:</b> 5 € discount!', configLi3: '<b>Printed & shipped:</b> removes multi-week discount.', formatPdfTitle: iconPdf + ' PDF Version (document):', formatPdfLi1: '<strong>Printable:</strong> Ideal if you prefer paper.', formatPdfLi2: '<strong>Offline:</strong> Download once, use without internet.', formatPdfLi3: '<strong>Active navigation:</strong> Map links still work on mobile!', formatJpgTitle: '🖼️ JPG Version (images):', formatJpgLi1: '<strong>Gallery:</strong> Easy viewing directly on your phone.', formatJpgLi2: '<strong>Quick sharing:</strong> Instantly send to friends.', formatJpgRadio: '🖼️ JPG Version (image pack ready for phone/tablet)', formatOnlineTitle: '🌐 Online Version:', formatOnlineLi1: '<strong>Convenience:</strong> Login via the interactive Client Panel.', formatOnlineLi2: '<strong>Live Updates:</strong> Dates are synced directly with our database.', formatOnlineRadio: '🌐 Online Version (Access via interactive Client Panel)', searchDesc: 'Not sure where a region is located? Check its location on the map:', searchBtn: '🔍 REGION SEARCH', step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', previewTitle: '👀 Free date preview:', previewDefault: '-- Select a week to preview --', btnUnselectAll: '[ Clear selection ]', step3Header: '📄 3. Select format:', formatPdfPrintRadio: iconPdf + ' PDF Version for printing (light background, saves ink)', formatPdfSmartRadio: iconPdf + ' PDF Version for smartphone (Dark Mode, active Google Maps links)', step4Header: '💾 4. Extra options:', step5Header: '💳 5. Select payment method:', payIban: '🏦 IBAN / Bank Transfer', payPaypal: '🅿️ PayPal', payOther: '❓ Other', guideLabel: '🎁 Free Guide', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Physical Delivery', btnSubmit: '🛒 REQUEST FREE QUOTE', weekLabel: 'Week', specialDateText: 'Preparing nearest date for', emailGreeting: 'Hello,', emailOrderSet: 'Please provide a quote for:', emailDates: 'DATES', emailSelectedRegions: 'SELECTED REGIONS', paymentNote: 'Order No:', emailWarning: 'We will reply with a pricing quote.' } },
                 'cs': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAT: ', priceInd: "Individuální cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Německo" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Německo', landNormal: 'Normální', loaderTitle: 'Synchronizace Dat', loaderDesc: 'Připojování k serveru...<br><br>Stahování nejnovějších konfigurací a termínů.', loadingData: "⏳ Načítání dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednání obdržíte průvodce!", infoDesc: '<b>Vyberte si formát, který vyhovuje vašemu stylu práce:</b>', headerChoose: 'Konfigurovat balíček', configTitle: '🛠️ Váš vlastní set', configSubtitle: 'Nakonfigurujte si potřeby níže', configLi1: 'Objednáte jen to, co potřebujete.', configLi2: 'Cenu určujeme individuálně.', configLi3: 'Můžete si objednat více regionů na vybraný týden nebo více týdnů pro jeden region.', formatPdfTitle: iconPdf + ' Verze PDF (dokument):', formatPdfLi1: '<strong>K tisku:</strong> Ideální pro práci s papírem.', formatPdfLi2: '<strong>Offline:</strong> Stáhněte a používejte bez internetu.', formatPdfLi3: '<strong>Aktivní navigace:</strong> Odkazy na mapy na telefonu stále fungují!', formatJpgTitle: '🖼️ Verze JPG (obrázky):', formatJpgLi1: '<strong>Galerie:</strong> Snadné prohlížení přímo v telefonu.', formatJpgLi2: '<strong>Rýchle sdílení:</strong> Okamžité odeslání přátelům.', formatJpgRadio: '🖼️ Verze JPG (balíček obrázků pro telefon/tablet)', formatOnlineTitle: '🌐 Verze Online:', formatOnlineLi1: '<strong>Pohodlí:</strong> Přihlášení přes Panel zákazníka.', formatOnlineLi2: '<strong>Aktualizace:</strong> Termíny jsou synchronizovány.', formatOnlineRadio: '🌐 Verze Online (Přístup přes Klientský panel)', searchDesc: 'Nevíte, kde leží daný region? Zkontrolujte jeho polohu na mapě:', searchBtn: '🔍 HLEDÁNÍ REGIONŮ', step1Header: '👇 1. Vyberte regiony:', step2Header: '📅 2. Vyberte týdny:', previewTitle: '👀 Bezplatný náhled termínů:', previewDefault: '-- Vyberte týden k náhledu --', btnUnselectAll: '[ Zrušit výběr ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verze PDF k tisku (světlé pozadí, úspora inkoustu)', formatPdfSmartRadio: iconPdf + ' Verze PDF pro smartphone (Dark Mode, aktivní odkazy na Google Maps)', step4Header: '💾 4. Další možnosti:', step5Header: '💳 5. Zvolte způsob platby:', payIban: '🏦 IBAN / Bankovní převod', payPaypal: '🅿️ PayPal', payOther: '❓ Jiné', guideLabel: '🎁 Chci zdarma průvodce', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslání poštou', btnSubmit: '🛒 VYŽÁDAT CENOVÚ NABÍDKU', weekLabel: 'Týden', specialDateText: 'Příprava nejbližšího termínu pro', emailGreeting: 'Dobrý den,', emailOrderSet: 'Prosím o nacenění sady:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIONY', paymentNote: 'Číslo objednávky:', emailWarning: 'Odpovíme s nabídkou.' } },
                 'sk': { currency: "EUR", texts: { btnOrderExact: '🛒 OBJEDNAŤ: ', priceInd: "Individuálna cena", configLi4: '<b>Premium Set:</b> Vyberte si "Celé Nemecko" a plánujte si trasy sami!', landAll: iconRobot + ' Celé Nemecko', landNormal: 'Normálne', loaderTitle: 'Synchronizácia Dát', loaderDesc: 'Pripájanie k serveru...<br><br>Sťahovanie najnovších konfigurácií a termínov.', loadingData: "⏳ Načítanie dostupných možností...", bonus: "🎁 <b>Bonus:</b> Po objednaní obdržíte sprievodcu!", infoDesc: '<b>Vyberte si formát, ktorý vyhovuje vášmu štýlu práce:</b>', headerChoose: 'Konfigurovať balíček', configTitle: '🛠️ Váš vlastný set', configSubtitle: 'Nakonfigurujte si potreby nižšie', configLi1: 'Objednáte len to, čo potrebujete.', configLi2: 'Cenu určujeme individuálne.', configLi3: 'Môžete si objednať viacero regiónov na vybraný týždeň alebo viacero týždňov pre jeden región.', formatPdfTitle: iconPdf + ' Verzia PDF (dokument):', formatPdfLi1: '<strong>Na tlač:</strong> Ideálne pre prácu s papierom.', formatPdfLi2: '<strong>Offline:</strong> Stiahnite si raz a používajte bez internetu.', formatPdfLi3: '<strong>Aktívna navigácia:</strong> Odkazy na mapy stále fungujú!', formatJpgTitle: '🖼️ Verzia JPG (obrázky):', formatJpgLi1: '<strong>Galéria:</strong> Jednoduché prezeranie priamo v telefóne.', formatJpgLi2: '<strong>Rýchle zdieľanie:</strong> Okamžité odoslanie priateľom.', formatJpgRadio: '🖼️ Verzia JPG (balíček obrázkov pre telefón/tablet)', formatOnlineTitle: '🌐 Verzia Online:', formatOnlineLi1: '<strong>Pohodlie:</strong> Prihlásenie cez Zákaznícky panel.', formatOnlineLi2: '<strong>Aktualizácie:</strong> Termíny sú synchronizované.', formatOnlineRadio: '🌐 Verzia Online (Prístup cez Klientsky panel)', searchDesc: 'Neviete, kde leží daný región? Skontrolujte jeho polohu na mape:', searchBtn: '🔍 HĽADANIE REGIÓNOV', step1Header: '👇 1. Vyberte regióny:', step2Header: '📅 2. Vyberte týždne:', previewTitle: '👀 Bezplatný náhľad termínov:', previewDefault: '-- Vyberte týždeň na náhľad --', btnUnselectAll: '[ Zrušiť výber ]', step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Verzia PDF na tlač (svetlé pozadie, úspora atramentu)', formatPdfSmartRadio: iconPdf + ' Verzia PDF pre smartfón (Dark Mode, aktívne odkazy na Google Maps)', step4Header: '💾 4. Ďalšie možnosti:', step5Header: '💳 5. Zvoľte spôsob platby:', payIban: '🏦 IBAN / Bankový prevod', payPaypal: '🅿️ PayPal', payOther: '❓ Iné', guideLabel: '🎁 Chcem sprievodcu', schrottLabel: '🧲 Schrott & E-Schrott', dhlLabel: '📦 Zaslanie poštou', btnSubmit: '🛒 VYŽIADAŤ CENOVÚ PONUKU', weekLabel: 'Týždeň', specialDateText: 'Príprava najbližšieho termínu pre', emailGreeting: 'Dobrý den,', emailOrderSet: 'Prosím o nacenenie sady:', emailDates: 'TERMÍNY', emailSelectedRegions: 'VYBRANÉ REGIÓNY', paymentNote: 'Číslo objednávky:', emailWarning: 'Odpovieme s ponukou.' } }
             };
@@ -762,23 +773,71 @@
                     });
             }
 
-            // --- FUNKCJA ZARZĄDZAJĄCA WYŚWIETLANIEM CENY ORAZ PRZYCISKIEM ---
+            // --- ZARZĄDZANIE WIDOCZNOŚCIĄ PACZKOMATÓW ---
+            document.querySelectorAll('input[name="format"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    var dhlBox = document.getElementById('dhlBox');
+                    if(this.value === "PDF (Do druku)") {
+                        if (userLang === 'pl') {
+                            dhlBox.style.display = 'block';
+                        }
+                    } else {
+                        dhlBox.style.display = 'none';
+                        var dhlOpt = document.getElementById('dhlOption');
+                        if(dhlOpt) dhlOpt.checked = false;
+                        var paczInput = document.getElementById('paczkomatInput');
+                        if(paczInput) paczInput.style.display = 'none';
+                        updatePriceDisplay();
+                    }
+                });
+            });
+
+            var dhlOpt = document.getElementById('dhlOption');
+            if (dhlOpt) {
+                dhlOpt.addEventListener('change', function() {
+                    var paczInput = document.getElementById('paczkomatInput');
+                    if(paczInput) paczInput.style.display = this.checked ? 'block' : 'none';
+                    updatePriceDisplay();
+                });
+            }
+
+            // --- NOWA FUNKCJA OBLICZAJĄCA CENĘ Z UWZGLĘDNIENIEM RABATÓW ---
             function updatePriceDisplay() {
                 let wT_count = document.querySelectorAll('.week-chk:checked').length;
                 let wR_count = document.querySelectorAll('.region-chk:checked').length;
                 let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
                 
-                let priceText = valuta === "EUR" ? "ab 25 €" : "od 100 PLN";
                 let exactPrice = null;
+                let priceText = valuta === "EUR" ? "ab 25 €" : "od 100 PLN";
                 
-                if (wT_count > 1 || (!isPremiumMode && wR_count > 1)) {
-                    priceText = t.priceInd || "Wycena indywidualna";
-                } else if (isPremiumMode && wT_count === 1) {
+                if (wT_count > 0 || (isSpecialMode && wR_count > 0) || (isPremiumMode && wT_count > 0)) {
+                    let basePriceForOneWeek = 0;
+                    let discountPerWeek = valuta === "EUR" ? 5 : 20;
+
+                    if (isPremiumMode) {
+                        basePriceForOneWeek = valuta === "EUR" ? 60 : 240;
+                    } else {
+                        let rCount = Math.max(1, wR_count);
+                        basePriceForOneWeek = rCount * (valuta === "EUR" ? 25 : 100);
+                        discountPerWeek = rCount * discountPerWeek; 
+                    }
+
+                    let isPrintedShipping = document.getElementById('dhlOption') && document.getElementById('dhlOption').checked;
+                    if (isPrintedShipping) {
+                        discountPerWeek = 0; // "wybór opcji druku ma wyłączać rabat wielotygodniowy"
+                    }
+
+                    let calculatedWeeks = Math.max(1, wT_count); 
+                    let total = basePriceForOneWeek + (calculatedWeeks - 1) * (basePriceForOneWeek - discountPerWeek);
+
+                    exactPrice = total + " " + valuta;
+                    priceText = exactPrice;
+                } else if (!isPremiumMode && wR_count > 0) {
+                    let rCount = wR_count;
+                    exactPrice = (rCount * (valuta === "EUR" ? 25 : 100)) + " " + valuta;
+                    priceText = exactPrice;
+                } else if (isPremiumMode) {
                     priceText = valuta === "EUR" ? "60 €" : "240 PLN";
-                    exactPrice = priceText;
-                } else if (!isPremiumMode && wR_count === 1 && (wT_count === 1 || isSpecialMode)) {
-                    priceText = valuta === "EUR" ? "25 €" : "100 PLN";
-                    exactPrice = priceText;
                 }
                 
                 if(document.getElementById('configPrice')) document.getElementById('configPrice').innerText = priceText;
@@ -786,12 +845,16 @@
                 
                 let btn = document.getElementById('btnSubmit');
                 if (btn) {
-                    if (exactPrice) {
+                    if (exactPrice && (wT_count > 0 || isSpecialMode)) {
                         btn.innerText = (t.btnOrderExact || "🛒 ZAMAWIAM: ") + exactPrice;
                     } else {
                         btn.innerText = t.btnSubmit || "🛒 PRZEŚLIJ DO DARMOWEJ WYCENY";
                     }
                 }
+
+                if(document.getElementById('configLi1')) document.getElementById('configLi1').innerHTML = t.configLi1 || '<b>1 wybrany rejon na 1 tydzień:</b> 100 PLN';
+                if(document.getElementById('configLi2')) document.getElementById('configLi2').innerHTML = t.configLi2 || '<b>Każdy kolejny tydzień:</b> 20 PLN rabatu! (tydzień za 80 PLN)';
+                if(document.getElementById('configLi3')) document.getElementById('configLi3').innerHTML = t.configLi3 || '<b>Wysyłka drukowana:</b> brak rabatu (wysyłka w cenie).';
             }
 
             function updateMutualFiltering() {
@@ -927,6 +990,7 @@
                 var searchBox = document.getElementById('searchEngineLink').parentNode;
                 var dhlOpt = document.getElementById('dhlOption');
                 var dhlBox = document.getElementById('dhlBox');
+                var paczInput = document.getElementById('paczkomatInput');
                 var schrottOpt = document.getElementById('schrottOption');
                 var schrottBox = document.getElementById('schrottBox');
                 
@@ -947,8 +1011,12 @@
                     regionBox.style.pointerEvents = 'none';
                     searchBox.style.opacity = '0.3';
 
-                    if (dhlOpt) { dhlOpt.checked = false;
-                        dhlOpt.disabled = true; if (dhlBox) dhlBox.style.opacity = '0.4'; }
+                    if (dhlOpt) { 
+                        dhlOpt.checked = false;
+                        dhlOpt.disabled = true; 
+                        if (dhlBox) dhlBox.style.opacity = '0.4'; 
+                        if (paczInput) paczInput.style.display = 'none';
+                    }
                     if (schrottOpt) { schrottOpt.checked = false;
                         schrottOpt.disabled = true; if (schrottBox) schrottBox.style.opacity = '0.4'; availabilityMatrix = availabilityMatrixAll;
                     }
@@ -1012,7 +1080,7 @@
                 });
             });
 
-            document.querySelectorAll('.region-chk, .week-chk, #dhlOption, #schrottOption').forEach(el => {
+            document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
                 if(el) el.addEventListener('change', () => {
                     if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
                     if(el.classList.contains('region-chk') && el.checked) {
@@ -1066,7 +1134,11 @@
                 var telEl = document.getElementById('klientTelefon');
                 var tel = telEl ? telEl.value : '';
 
-                if (document.getElementById('dhlOption')?.checked) body += "WYSYŁKA DRUKOWANA: TAK\nTELEFON: " + tel + "\nADRES: ____________________\n";
+                if (document.getElementById('dhlOption')?.checked) {
+                    var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
+                    body += "WYSYŁKA DRUKOWANA (PACZKOMAT): TAK\nKOD PACZKOMATU: " + paczkomat + "\n";
+                }
+                
                 if (document.getElementById('schrottOption')?.checked) body += "FILTR: SCHROTT\n";
                 if (document.getElementById('guideOption')?.checked) body += "PORADNIK WYSTAWKOWICZA: TAK\n";
                 if (!document.getElementById('dhlOption')?.checked && tel) body += "TELEFON: " + tel + "\n";
