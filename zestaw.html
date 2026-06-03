@@ -77,6 +77,7 @@
             text-shadow: 0 0 15px rgba(46, 204, 113, 0.2); }
         .price-subtitle-small { display: block; font-size: 0.9em; color: #ccc;
             font-style: italic; text-align: center; margin-bottom: 20px; }
+
         .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: 0.95em; }
         .strategy-list li { margin-bottom: 8px; padding-left: 25px !important; position: relative; line-height: 1.4; }
         .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #2ecc71; }
@@ -155,6 +156,17 @@
             .submit-btn { padding: 18px; font-size: 1.2em; }
             .format-columns { width: 100%; } 
             .strategy-card { padding: 15px; } 
+        }
+
+        /* RWD DLA DUŻYCH EKRANÓW (Powiększenie tekstu) */
+        @media (min-width: 1024px) {
+            .harmonogram-wrapper { font-size: 1.15em; }
+            .strategy-title { font-size: 1.5em; }
+            .price-tag-large { font-size: 2.2em; }
+            .submit-btn { font-size: 1.3em; padding: 20px; letter-spacing: 1px; }
+            .region-label { font-size: 1.05em; padding: 8px 5px; }
+            .form-header { font-size: 1.3em; margin-bottom: 15px; margin-top: 25px; }
+            .client-input { font-size: 1.1em; padding: 15px; }
         }
     </style>
 </head>
@@ -799,7 +811,7 @@
             });
         }
 
-        // --- FUNKCJA OBLICZAJĄCA CENĘ Z POKAZYWANIEM CHECKBOXA NEGOCJACJI ---
+        // --- FUNKCJA OBLICZAJĄCA CENĘ Z POKAZYWANIEM CHECKBOXA NEGOCJACJI (od 5 tygodni) ---
         function updatePriceDisplay() {
             let wT_count = document.querySelectorAll('.week-chk:checked').length;
             let wR_count = document.querySelectorAll('.region-chk:checked').length;
@@ -815,14 +827,14 @@
 
             let calculatedWeeks = Math.max(1, wT_count);
 
-            // LOGIKA DLA CHECKBOXA NEGOCJACJI
+            // LOGIKA DLA CHECKBOXA NEGOCJACJI (5 tygodni lub więcej)
             let negBox = document.getElementById('negotiateBox');
+            let negOpt = document.getElementById('negotiateOption');
             if (negBox) {
-                if (calculatedWeeks > 1 && !isPremiumMode) {
+                if (calculatedWeeks >= 5 && !isPremiumMode) {
                     negBox.style.display = 'block';
                 } else {
                     negBox.style.display = 'none';
-                    let negOpt = document.getElementById('negotiateOption');
                     if(negOpt) negOpt.checked = false;
                 }
             }
@@ -871,7 +883,14 @@
             let btn = document.getElementById('btnSubmit');
             if (btn) {
                 if (exactPrice && (wT_count > 0 || isSpecialMode)) {
-                    btn.innerHTML = (t.btnOrderExact || "🛒 ZAMAWIAM: ") + exactPrice;
+                    let btnText = (t.btnOrderExact || "🛒 ZAMAWIAM: ") + exactPrice;
+                    
+                    // Zmiana tekstu w przycisku tylko jeśli checkbox jest faktycznie zaznaczony
+                    if (negOpt && negOpt.checked) {
+                        btnText += (valuta === "EUR" ? " (Verhandelbar)" : " (Do negocjacji)");
+                    }
+                    
+                    btn.innerHTML = btnText;
                 } else {
                     btn.innerHTML = t.btnSubmit || "🛒 WYBIERZ OPCJE, ABY ZAMÓWIĆ";
                 }
@@ -1094,6 +1113,11 @@
                 updateMutualFiltering();
             });
         });
+
+        // Event listener specjalnie dla nowej opcji negocjacji
+        if (document.getElementById('negotiateOption')) {
+            document.getElementById('negotiateOption').addEventListener('change', updatePriceDisplay);
+        }
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
             var wR = document.querySelectorAll('.region-chk:checked');
