@@ -382,6 +382,19 @@
         } catch (e) {}
         location.reload();
     }
+    // AUTOMATYCZNE PRZEWIJANIE PO POWROCIE DO APLIKACJI
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            // Sprawdzamy, czy jesteśmy zalogowani (sekcja danych jest widoczna)
+            if (!document.getElementById('dataSection').classList.contains('hidden')) {
+                // Pobieramy aktualnie wybrany rejon (lub 'all')
+                let wybranyRejon = document.getElementById('sel') ? document.getElementById('sel').value : 'all';
+                
+                // Opóźnienie na wypadek, gdyby przeglądarka potrzebowała chwili na wybudzenie
+                setTimeout(() => znajdzIPrzewin(wybranyRejon), 200);
+            }
+        }
+    });
 </script>
 </body>
 </html>
