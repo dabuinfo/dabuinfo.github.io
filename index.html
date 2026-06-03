@@ -23,6 +23,7 @@
     <link rel="apple-touch-icon" href="favicon.png">
 
     <style>
+        /*<![CDATA[*/
         /* ========================================= */
         /* STYL GŁÓWNY WIZYTÓWKI (DARK MODE)         */
         /* ========================================= */
@@ -47,7 +48,7 @@
             background-color: #121212;
             color: #e0e0e0;
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
             padding: 35px 25px;
             box-sizing: border-box;
             border-radius: 12px;
@@ -233,10 +234,6 @@
         .calendar-info ul { margin: 0; padding-left: 20px; }
         .calendar-info li { margin-bottom: 8px; color: #d0d0d0; }
         .calendar-info strong { color: #fff; }
-        @media (max-width: 480px) {
-            #calendar-grid { grid-template-columns: 1fr; }
-            .calendar-header h2 { font-size: 20px; }
-        }
 
         /* MULTILANGUAGE SEO SECTION */
         .seo-tags-container {
@@ -272,8 +269,6 @@
             margin-top: 30px;
             text-align: left;
         }
-
-
 
         /* ========================================= */
         /* STYL ASYSTENTA CZATU                      */
@@ -413,7 +408,10 @@
             justify-content: center;
         }
 
+        /* MEDIA QUERIES */
         @media (max-width: 768px) {
+            #calendar-grid { grid-template-columns: 1fr; }
+            .calendar-header h2 { font-size: 20px; }
             #chat-main-window {
                 top: auto !important;
                 bottom: 15px !important;
@@ -425,17 +423,51 @@
                 max-height: 80dvh !important; 
                 border-radius: 10px !important;
             }
-            .zoom-controls {
-                display: none !important;
+        }
+
+        /* POWIĘKSZANIE DLA DESKTOPÓW (min-width: 769px) */
+        @media (min-width: 769px) {
+            .offer-wrapper {
+                padding: 50px 45px;
+            }
+            .offer-header {
+                font-size: 2.8em;
+            }
+            .offer-subheader {
+                font-size: 1.5em;
+            }
+            .description {
+                font-size: 1.25em;
+            }
+            .assistant-box p, .assistant-instructions {
+                font-size: 1.15em;
+            }
+            .main-banner {
+                max-width: 650px;
+            }
+            .cta-btn-primary, .cta-btn-secondary {
+                font-size: 1.25em;
+                padding: 20px 40px;
+                max-width: 400px;
+            }
+            #calendar-wrapper {
+                padding: 30px;
+            }
+            .calendar-header h2 { font-size: 28px; }
+            .month-table th { font-size: 14px; }
+            .month-table td { height: 35px; font-size: 14px; }
+            .week-header, .week-number { font-size: 12px !important; }
+            .calendar-info, .seo-tags-container, .footer-info {
+                font-size: 1.1em;
+            }
+            .calendar-legend {
+                font-size: 14px;
             }
         }
+        /*]]>*/
     </style>
 </head>
 <body>
-
-    <div class="zoom-controls">
-        <button class="zoom-btn" onclick="przelaczZoom()" title="Powiększ tekst">🔍 Powiększ</button>
-    </div>
 
     <div class="offer-wrapper">
 
@@ -540,6 +572,7 @@
     </div>
 
     <script>
+        //<![CDATA[
         const trData = {
             pl: {
                 t_header: "Twój Nawigator po Wystawkach",
@@ -557,7 +590,6 @@
                 t_btn_panel: "ZALOGUJ DO PANELU",
                 t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz<br>📧 ewa@dabu-info.com<br><br><strong>Odbiór osobisty (Milicz):</strong> Pamiętaj, że zawsze oferujemy możliwość odbioru osobistego ustaleń w Miliczu (od środy do soboty w godz. 17:00–20:00) po wcześniejszym kontakcie.<br><br>© 2026 dabu-info",
                 
-                // KALENDARZ PL
                 "cal-info-h3": "ℹ️ Informacje o zasięgu świąt",
                 "cal-info-p1": "<strong>Święta Narodowe (National)</strong> są ustawowo dniami wolnymi od pracy w <strong>całych Niemczech</strong> (obowiązują we wszystkich 16 krajach związkowych).",
                 "cal-info-p2": "<strong>Święta Regionalne (Regional)</strong> obowiązują tylko w określonych landach. Poniżej znajduje się zestawienie pokazujące, gdzie poszczególne święta regionalne z 2026 roku <strong>NIE SĄ</strong> dniami wolnymi od pracy:",
@@ -585,7 +617,6 @@
                 t_btn_panel: "ZUM KUNDENPANEL EINLOGGEN",
                 t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Polen)<br>📧 ewa@dabu-info.com<br><br><strong>Persönliche Abholung (Milicz):</strong> Nach vorheriger Absprache bieten wir die Möglichkeit der persönlichen Abholung in Milicz (Mi-Sa, 17:00-20:00).<br><br>© 2026 dabu-info",
 
-                // KALENDARZ DE
                 "cal-info-h3": "ℹ️ Informationen zu Feiertagen",
                 "cal-info-p1": "<strong>Nationale Feiertage (National)</strong> sind in <strong>ganz Deutschland</strong> (in allen 16 Bundesländern) gesetzliche Ruhetage.",
                 "cal-info-p2": "<strong>Regionale Feiertage (Regional)</strong> gelten nur in bestimmten Bundesländern. Hier ist eine Übersicht, wo diese regionalen Feiertage im Jahr 2026 <strong>KEINE</strong> Ruhetage sind:",
@@ -613,7 +644,6 @@
                 t_btn_panel: "LOGIN TO PANEL",
                 t_footer_contact: "<strong>🏠 Contact:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Poland)<br>📧 ewa@dabu-info.com<br><br><strong>Personal pickup (Milicz):</strong> We offer personal pickup in Milicz (Wed-Sat, 17:00-20:00) after prior contact.<br><br>© 2026 dabu-info",
 
-                // KALENDARZ EN
                 "cal-info-h3": "ℹ️ Holiday Coverage Information",
                 "cal-info-p1": "<strong>National Holidays</strong> are legally non-working days <strong>throughout Germany</strong> (applying to all 16 federal states).",
                 "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states. Below is a list showing where specific regional holidays in 2026 <strong>ARE NOT</strong> non-working days:",
@@ -633,580 +663,4 @@
                 t_ast_title: "🤖 Assistant Virtuel dabu-info",
                 t_ast_sub: "Vous ne savez pas dans quelle région aller cette semaine ? Ouvrez le chat de l'Assistant dans le coin inférieur droit (icône verte).",
                 t_ast_how: "Comment rechercher correctement ?",
-                t_ast_l1: "<span class=\"highlight\">Recherche par régions et villes :</span> Entrez un nom, par ex. <span class=\"keyword\">Rendsburg-Eckernförde</span>, <span class=\"keyword\">Erftstadt</span> ou <span class=\"keyword\">Bonn</span>.",
-                t_ast_l2: "<span class=\"highlight\">Recherche à proximité :</span> Ajoutez \"près de\" ou \"autour de\" avant le nom de la ville, par ex. <span class=\"keyword\">autour de Bonn</span>.",
-                t_ast_l3: "<span class=\"highlight\">Recherche par type de déchets :</span> Entrez ce qui vous intéresse, par ex. <span class=\"keyword\">électronique</span>, <span class=\"keyword\">Sperrmüll</span> ou <span class=\"keyword\">ferraille</span>.",
-                t_ast_l4: "<span class=\"highlight\">Vérifiez les prix :</span> Tapez le mot <span class=\"keyword\">prix</span> ou demandez par ex. <span class=\"keyword\">combien coûte Bonn</span>.",
-                t_btn_order: "PASSER UNE COMMANDE",
-                t_btn_panel: "SE CONNECTER AU PANNEAU",
-                t_footer_contact: "<strong>🏠 Contact :</strong><br>Ewa Buczkowska<br>56-300 Milicz (Pologne)<br>📧 ewa@dabu-info.com<br><br><strong>Retrait sur place (Milicz) :</strong> Nous offrons la possibilité d'un retrait sur place à Milicz (Mer-Sam, 17:00-20:00) après contact préalable.<br><br>© 2026 dabu-info",
-                
-                // KALENDARZ FR
-                "cal-info-h3": "ℹ️ Informations sur les Jours Fériés",
-                "cal-info-p1": "<strong>Jours Fériés Nationaux</strong> sont des jours de repos légaux <strong>dans toute l'Allemagne</strong> (s'appliquant aux 16 États fédéraux).",
-                "cal-info-p2": "<strong>Jours Fériés Régionaux</strong> ne s'appliquent qu'à certains États. Voici une liste indiquant où des jours fériés régionaux spécifiques en 2026 <strong>NE SONT PAS</strong> des jours chômés :",
-                "cal-info-l1": "<strong>Épiphanie (06.01) :</strong> Jour ouvrable normal dans la majeure partie du pays (sauf Bade-Wurtemberg, Bavière et Saxe-Anhalt).",
-                "cal-info-l2": "<strong>Journée de la Femme (08.03) :</strong> Jour ouvrable normal dans toute l'Allemagne, sauf à Berlin et Mecklembourg-Poméranie-Occidentale.",
-                "cal-info-l3": "<strong>Fête-Dieu (04.06) :</strong> Pas de jour de congé dans les États du nord et de l'est (par ex., Berlin, Brandebourg, Brême, Hambourg, Basse-Saxe, Schleswig-Holstein).",
-                "cal-info-l4": "<strong>Assomption (15.08) :</strong> Jour ouvrable dans presque toute l'Allemagne (le jour de congé s'applique uniquement en Sarre et dans les communes catholiques de Bavière).",
-                "cal-info-l5": "<strong>Fête de la Réformation (31.10) :</strong> Pas de congé dans l'ouest et le sud (par ex., Bavière, Bade-Wurtemberg, Hesse, Rhénanie du Nord-Westphalie). Célébrée principalement au nord et à l'est.",
-                "cal-info-l6": "<strong>Toussaint (01.11) :</strong> Jour ouvrable au nord et à l'est (par ex., Berlin, Hambourg, Saxe, Thuringe). Le jour de congé tombe principalement dans les États du sud et de l'ouest.",
-                "cal-info-l7": "<strong>Jour de la Pénitence (18.11) :</strong> Jour ouvrable normal dans 15 des 16 États (seuls les résidents de Saxe ont congé)."
-            },
-            cs: {
-                t_header: "Váš Navigátor pro Svoz Odpadu",
-                t_subheader: "Přesné plány, harmonogramy a termíny svozu objemného odpadu (Sperrmüll) v Německu na rok 2026",
-                t_desc1: "Cílem <strong>dabu-info</strong> je poskytovat nejpřesnější a neustále aktualizované <strong>plány a termíny</strong> svozu velkoobjemového odpadu po celém Německu. Na základě 30 let zkušeností pomáhám optimalizovat trasy, šetřit palivo a eliminovat prázdné jízdy.",
-                t_desc2: "Naše databáze pro rok 2026 již obsahuje více než <strong>100 pečlivě vybraných německých regionů</strong>! Naše harmonogramy vám zajistí, že dorazíte vždy v optimální čas.",
-                t_ast_title: "🤖 Virtuální Asistent dabu-info",
-                t_ast_sub: "Nevíte, do kterého regionu se tento týden vydat? Otevřete chat s Asistentem v pravém dolním rohu (zelená ikona).",
-                t_ast_how: "Jak správně vyhledávat?",
-                t_ast_l1: "<span class=\"highlight\">Hledání podle regionů a měst:</span> Zadejte název, např. <span class=\"keyword\">Rendsburg-Eckernförde</span>, <span class=\"keyword\">Erftstadt</span> nebo <span class=\"keyword\">Bonn</span>.",
-                t_ast_l2: "<span class=\"highlight\">Hledání v okolí:</span> Přidejte \"blízko\", \"vedle\" nebo \"okolí\" před název, např. <span class=\"keyword\">okolí Bonn</span>.",
-                t_ast_l3: "<span class=\"highlight\">Hledání podle typu odpadu:</span> Zadejte, co vás zajímá, např. <span class=\"keyword\">elektronika</span>, <span class=\"keyword\">Sperrmüll</span> nebo <span class=\"keyword\">šrot</span>.",
-                t_ast_l4: "<span class=\"highlight\">Ceník:</span> Zadejte slovo <span class=\"keyword\">ceník</span> nebo se zeptejte např. <span class=\"keyword\">kolik stojí Bonn</span>.",
-                t_btn_order: "OBJEDNAT",
-                t_btn_panel: "PŘIHLÁSIT DO PANELU",
-                t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Polsko)<br>📧 ewa@dabu-info.com<br><br><strong>Osobní odběr (Milicz):</strong> Po předchozí domluvě nabízíme možnost osobního odběru v Miliczi (St-So, 17:00-20:00).<br><br>© 2026 dabu-info",
-                
-                // KALENDARZ CS
-                "cal-info-h3": "ℹ️ Informace o státních svátcích",
-                "cal-info-p1": "<strong>Národní svátky (National)</strong> jsou zákonem stanovené dny pracovního klidu v <strong>celém Německu</strong> (platí ve všech 16 spolkových zemích).",
-                "cal-info-p2": "<strong>Regionální svátky (Regional)</strong> platí pouze v určitých spolkových zemích. Níže je seznam ukazující, kde konkrétní regionální svátky v roce 2026 <strong>NEJSOU</strong> dny pracovního klidu:",
-                "cal-info-l1": "<strong>Tři králové (06.01):</strong> Běžný pracovní den ve většině země (kromě Bádenska-Württemberska, Bavorska a Saska-Anhaltska).",
-                "cal-info-l2": "<strong>Den žen (08.03):</strong> Běžný pracovní den v celém Německu, s výjimkou Berlína a Meklenburska-Předního Pomořanska.",
-                "cal-info-l3": "<strong>Boží tělo (04.06):</strong> Není volno v severních a východních zemích (např. Berlín, Braniborsko, Brémy, Hamburk, Dolní Sasko, Šlesvicko-Holštýnsko).",
-                "cal-info-l4": "<strong>Nanebevzetí (15.08):</strong> Pracovní den v téměř celém Německu (volno platí pouze v Sársku a v katolických obcích Bavorska).",
-                "cal-info-l5": "<strong>Den reformace (31.10):</strong> Není volno na západě a jihu země (např. Bavorsko, Bádensko-Württembersko, Hesensko, Severní Porýní-Vestfálsko). Slaví se hlavně na severu a východě.",
-                "cal-info-l6": "<strong>Svátek Všech svatých (01.11):</strong> Pracovní den na severu a východě země (např. Berlín, Hamburk, Sasko, Durynsko). Volno připadá hlavně v jižních a západních zemích.",
-                "cal-info-l7": "<strong>Den pokání a modliteb (18.11):</strong> Běžný pracovní den v 15 ze 16 spolkových zemí (volno z této příležitosti mají pouze obyvatelé Saska)."
-            },
-            sk: {
-                t_header: "Váš Navigátor pre Zvoz Odpadu",
-                t_subheader: "Presné plány, harmonogramy a termíny zvozu objemného odpadu (Sperrmüll) v Nemecku na rok 2026",
-                t_desc1: "Cieľom <strong>dabu-info</strong> je poskytovať najpresnejšie a neustále aktualizované <strong>plány a termíny</strong> zvozu veľkoobjemového odpadu po celom Nemecku. Na základe 30 rokov skúseností pomáham optimalizovať trasy, šetriť palivo a eliminovať prázdne jazdy.",
-                t_desc2: "Naša databáza pre rok 2026 už obsahuje viac ako <strong>100 starostlivo vybraných nemeckých regiónov</strong>! Naše harmonogramy vám zabezpečia, že dorazíte vždy v optimálny čas.",
-                t_ast_title: "🤖 Virtuálny Asistent dabu-info",
-                t_ast_sub: "Neviete, do ktorého regiónu sa tento týždeň vydať? Otvorte chat s Asistentom v pravom dolnom rohu (zelená ikona).",
-                t_ast_how: "Ako správne vyhľadávať?",
-                t_ast_l1: "<span class=\"highlight\">Hľadanie podľa regiónov a miest:</span> Zadajte názov, napr. <span class=\"keyword\">Rendsburg-Eckernförde</span>, <span class=\"keyword\">Erftstadt</span> alebo <span class=\"keyword\">Bonn</span>.",
-                t_ast_l2: "<span class=\"highlight\">Hľadanie v okolí:</span> Pridajte \"blízko\", \"vedľa\" alebo \"okolie\" pred názov, napr. <span class=\"keyword\">okolie Bonn</span>.",
-                t_ast_l3: "<span class=\"highlight\">Hľadanie podľa typu odpadu:</span> Zadajte, čo vás zaujíma, napr. <span class=\"keyword\">elektronika</span>, <span class=\"keyword\">Sperrmüll</span> alebo <span class=\"keyword\">šrot</span>.",
-                t_ast_l4: "<span class=\"highlight\">Cenník:</span> Zadajte slovo <span class=\"keyword\">cenník</span> alebo sa opýtajte napr. <span class=\"keyword\">koľko stojí Bonn</span>.",
-                t_btn_order: "OBJEDNAŤ",
-                t_btn_panel: "PRIHLÁSIŤ DO PANELU",
-                t_footer_contact: "<strong>🏠 Kontakt:</strong><br>Ewa Buczkowska<br>56-300 Milicz (Poľsko)<br>📧 ewa@dabu-info.com<br><br><strong>Osobný odber (Milicz):</strong> Po predchádzajúcej dohode ponúkame možnosť osobného odberu v meste Milicz (St-So, 17:00-20:00).<br><br>© 2026 dabu-info",
-                
-                // KALENDARZ SK
-                "cal-info-h3": "ℹ️ Informácie o sviatkoch",
-                "cal-info-p1": "<strong>Národné sviatky (National)</strong> sú zákonom stanovené dni pracovného pokoja v <strong>celom Nemecku</strong> (platia vo všetkých 16 spolkových krajinách).",
-                "cal-info-p2": "<strong>Regionálne sviatky (Regional)</strong> platia len v určitých spolkových krajinách. Nižšie je zoznam ukazujúci, kde konkrétne regionálne sviatky v roku 2026 <strong>NIE SÚ</strong> dňami pracovného pokoja:",
-                "cal-info-l1": "<strong>Traja králi (06.01):</strong> Bežný pracovný deň vo väčšine krajiny (okrem Bádensko-Württemberska, Bavorska a Saska-Anhaltska).",
-                "cal-info-l2": "<strong>Deň žien (08.03):</strong> Bežný pracovný deň v celom Nemecku, s výnimkou Berlína a Meklenburska-Predného Pomoranska.",
-                "cal-info-l3": "<strong>Božie telo (04.06):</strong> Nie je voľno v severných a východných krajinách (napr. Berlín, Brandenbursko, Brémy, Hamburg, Dolné Sasko, Šlezvicko-Holštajnsko).",
-                "cal-info-l4": "<strong>Nanebovzatie (15.08):</strong> Pracovný deň v takmer celom Nemecku (voľno platí len v Sársku a v katolíckych obciach Bavorska).",
-                "cal-info-l5": "<strong>Deň reformácie (31.10):</strong> Nie je voľno na západe a juhu krajiny (napr. Bavorsko, Bádensko-Württembersko, Hesensko, Severné Porýnie-Vestfálsko). Oslavuje sa hlavne na severe a východe.",
-                "cal-info-l6": "<strong>Sviatok Všetkých svätých (01.11):</strong> Pracovný deň na severe a východe krajiny (napr. Berlín, Hamburg, Sasko, Durínsko). Voľno pripadá hlavne v južných a západných krajinách.",
-                "cal-info-l7": "<strong>Deň pokánia a modlitieb (18.11):</strong> Bežný pracovný deň v 15 zo 16 spolkových krajín (voľno z tejto príležitosti majú len obyvatelia Saska)."
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var userLangRaw = navigator.language || navigator.userLanguage;
-            var userLang = userLangRaw.substring(0, 2).toLowerCase();
-            
-            // PEŁNA LISTA WSPARTYCH JĘZYKÓW
-            const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en', 'fr'];
-            
-            // BEZPIECZNIK 1: Jeśli języka z przeglądarki nie ma na głównej liście -> wymuś język niemiecki ('de')
-            if (!supported.includes(userLang)) {
-                userLang = 'de';
-            }
-            
-            // BEZPIECZNIK 2: Jeśli jesteś z listy supported, ale twój język nie jest (jeszcze) w pełni
-            // przetłumaczony wizualnie w sekcji `trData` -> bezpiecznie wracamy do 'de' dla sekcji HTML
-            if (!trData[userLang]) {
-                userLang = 'de'; 
-            }
-            
-            // Aplikowanie tłumaczeń dla wszystkich poza domyślnym polskim
-            if (userLang !== 'pl') {
-                var tc = trData[userLang];
-                var keys = Object.keys(tc);
-                keys.forEach(function(k) {
-                    var el = document.getElementById(k);
-                    if(el) {
-                        el.innerHTML = tc[k];
-                    }
-                });
-            }
-        });
-    </script>
-
-    <script>
-    //<![CDATA[
-    (function() {
-
-        const translations = {
-            'pl': {
-                header: "Niemcy 2026", hint: "Najedź na datę, aby zobaczyć nazwę święta",
-                nat: "Narodowe", reg: "Regionalne", curr: "Bieżący miesiąc", wk: "Ty",
-                months: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
-                days: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"],
-                holidays: {
-                    "0-1": "Nowy Rok", "0-6": "Trzech Króli", "2-8": "Dzień Kobiet", "3-3": "Wielki Piątek", "3-6": "Poniedziałek Wielkanocny",
-                    "4-1": "Święto Pracy", "4-14": "Wniebowstąpienie", "4-25": "Zielone Świątki", "5-4": "Boże Ciało", "7-15": "Wniebowzięcie NMP",
-                    "9-3": "Dzień Jedności", "9-31": "Święto Reformacji", "10-1": "Wszystkich Świętych", "10-18": "Dzień Pokuty", "11-25": "1. Dzień Świąt", "11-26": "2. Dzień Świąt"
-                }
-            },
-            'de': {
-                header: "Deutschland 2026", hint: "Fahre über das Datum für Feiertagsnamen",
-                nat: "National", reg: "Regional", curr: "Aktueller Monat", wk: "KW",
-                months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-                days: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-                holidays: {
-                    "0-1": "Neujahr", "0-6": "Heilige Drei Könige", "2-8": "Frauentag", "3-3": "Karfreitag", "3-6": "Ostermontag",
-                    "4-1": "Tag der Arbeit", "4-14": "Christi Himmelfahrt", "4-25": "Pfingstmontag", "5-4": "Fronleichnam", "7-15": "Mariä Himmelfahrt",
-                    "9-3": "Tag der Deutschen Einheit", "9-31": "Reformationstag", "10-1": "Allerheiligen", "10-18": "Buß- und Bettag", "11-25": "1. Weihnachtstag", "11-26": "2. Weihnachtstag"
-                }
-            },
-            'en': {
-                header: "Germany 2026", hint: "Hover over the date for holiday name",
-                nat: "National", reg: "Regional", curr: "Current month", wk: "Wk",
-                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-                holidays: {
-                    "0-1": "New Year's Day", "0-6": "Epiphany", "2-8": "Women's Day", "3-3": "Good Friday", "3-6": "Easter Monday",
-                    "4-1": "Labor Day", "4-14": "Ascension Day", "4-25": "Whit Monday", "5-4": "Corpus Christi", "7-15": "Assumption Day",
-                    "9-3": "German Unity Day", "9-31": "Reformation Day", "10-1": "All Saints' Day", "10-18": "Repentance Day", "11-25": "Christmas Day", "11-26": "Boxing Day"
-                }
-            },
-            'fr': {
-                header: "Allemagne 2026", hint: "Survolez la date pour le nom du jour férié",
-                nat: "National", reg: "Régional", curr: "Mois en cours", wk: "Sm",
-                months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-                days: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
-                holidays: {
-                    "0-1": "Jour de l'An", "0-6": "Épiphanie", "2-8": "Journée de la Femme", "3-3": "Vendredi Saint", "3-6": "Lundi de Pâques",
-                    "4-1": "Fête du Travail", "4-14": "Ascension", "4-25": "Lundi de Pentecôte", "5-4": "Fête-Dieu", "7-15": "Assomption",
-                    "9-3": "Jour de l'Unité", "9-31": "Fête de la Réformation", "10-1": "Toussaint", "10-18": "Jour de la Pénitence", "11-25": "Noël", "11-26": "Lendemain de Noël"
-                }
-            },
-            'cs': {
-                header: "Německo 2026", hint: "Najeďte na datum pro název svátku",
-                nat: "Národní", reg: "Regionální", curr: "Aktuální měsíc", wk: "Tý",
-                months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
-                days: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"],
-                holidays: {
-                    "0-1": "Nový rok", "0-6": "Tři králové", "2-8": "Mez. den žen", "3-3": "Velký pátek", "3-6": "Velikonoční pondělí",
-                    "4-1": "Svátek práce", "4-14": "Nanebevstoupení", "4-25": "Letnice", "5-4": "Boží tělo", "7-15": "Nanebevzetí P. Marie",
-                    "9-3": "Den sjednocení", "9-31": "Den reformace", "10-1": "Všech svatých", "10-18": "Den pokání", "11-25": "1. svátek vánoční", "11-26": "2. svátek vánoční"
-                }
-            },
-            'sk': {
-                header: "Nemecko 2026", hint: "Ukážte na dátum pre názov sviatku",
-                nat: "Národné", reg: "Regionálne", curr: "Aktuálny mesiac", wk: "Tý",
-                months: ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"],
-                days: ["Po", "Ut", "St", "Št", "Pi", "So", "Ne"],
-                holidays: {
-                    "0-1": "Nový rok", "0-6": "Traja králi", "2-8": "Deň žien", "3-3": "Veľký piatok", "3-6": "Veľkonočný pondelok",
-                    "4-1": "Sviatok práce", "4-14": "Nanebovstúpenie", "4-25": "Turíce", "5-4": "Božie telo", "7-15": "Nanebovzatie P. Márie",
-                    "9-3": "Deň zjednotenia", "9-31": "Deň reformácie", "10-1": "Všetkých svätých", "10-18": "Deň pokánia", "11-25": "1. sviatok vianočný", "11-26": "2. sviatok vianočný"
-                }
-            },
-            'hu': {
-                header: "Németország 2026", hint: "Vigye az egeret a dátumra",
-                nat: "Országos", reg: "Regionális", curr: "Jelenlegi hónap", wk: "Hé",
-                months: ["Január", "Februar", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"],
-                days: ["Hé", "Ke", "Sz", "Cs", "Pé", "Sz", "Va"],
-                holidays: {
-                    "0-1": "Újév", "0-6": "Háromkirályok", "2-8": "Nőnap", "3-3": "Nagypéntek", "3-6": "Húsvéthétfő",
-                    "4-1": "Munka ünnepe", "4-14": "Mennybemenetel", "4-25": "Pünkösdhétfő", "5-4": "Úrnapja", "7-15": "Nagyboldogasszony",
-                    "9-3": "Egység napja", "9-31": "Reformáció napja", "10-1": "Mindenszentek", "10-18": "Vezeklés napja", "11-25": "Karácsony 1.", "11-26": "Karácsony 2."
-                }
-            },
-            'ro': {
-                header: "Germania 2026", hint: "Hover pentru numele sărbătorii",
-                nat: "Naționale", reg: "Regionale", curr: "Luna curentă", wk: "Să",
-                months: ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"],
-                days: ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"],
-                holidays: {
-                    "0-1": "Anul Nou", "0-6": "Trei Crai", "2-8": "Ziua Femeii", "3-3": "Vinerea Mare", "3-6": "Lunea Mare",
-                    "4-1": "Ziua Muncii", "4-14": "Înălțarea", "4-25": "Rusalii", "5-4": "Corpus Christi", "7-15": "Adormirea Maicii D.",
-                    "9-3": "Ziua Unității", "9-31": "Ziua Reformei", "10-1": "Toți Sfinții", "10-18": "Ziua Pocăinței", "11-25": "Crăciun 1", "11-26": "Crăciun 2"
-                }
-            },
-            'bg': {
-                header: "Германия 2026", hint: "Задръжте върху датата",
-                nat: "Национални", reg: "Регионални", curr: "Текущ мес.", wk: "Сд",
-                months: ["Януари", "Февруари", "Март", "Апрел", "Май", "Юни", "Юли", "Август", "Септември", "Октомври", "Ноември", "Декември"],
-                days: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
-                holidays: {
-                    "0-1": "Нова година", "0-6": "Трима крале", "2-8": "Ден на жената", "3-3": "Разпети петък", "3-6": "Великден",
-                    "4-1": "Ден на труда", "4-14": "Възнесение", "4-25": "Петдесетница", "5-4": "Тяло Христово", "7-15": "Голяма Богородица",
-                    "9-3": "Ден на единството", "9-31": "Ден на Реформацияta", "10-1": "Вси светии", "10-18": "Ден на покаянието", "11-25": "Колеda 1", "11-26": "Коледа 2"
-                }
-            },
-            'tr': {
-                header: "Almanya 2026", hint: "Tatil adı için tarihin üzerine gelin",
-                nat: "Ulusal", reg: "Bölgesel", curr: "Mevcut ay", wk: "Hf",
-                months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
-                days: ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pa"],
-                holidays: {
-                    "0-1": "Yılbaşı", "0-6": "Üç Kral", "2-8": "Kadınlar Günü", "3-3": "Kutsal Cuma", "3-6": "Paskalya Pzt",
-                    "4-1": "İşçi Bayramı", "4-14": "İsa'nın Göğe Yükselişi", "4-25": "Hamsin Yortusu", "5-4": "Katolik Yortusu", "7-15": "Meryem Ana",
-                    "9-3": "Birlik Günü", "9-31": "Reform Günü", "10-1": "Azizler Günü", "10-18": "Tövbe Günü", "11-25": "Noel 1", "11-26": "Noel 2"
-                }
-            },
-            'bs': {
-                header: "Njemačka 2026", hint: "Pređite preko datuma za naziv",
-                nat: "Državni", reg: "Regionalni", curr: "Trenutni mjesec", wk: "Se",
-                months: ["Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"],
-                days: ["Po", "Ut", "Sr", "Če", "Pe", "Su", "Ne"],
-                holidays: {
-                    "0-1": "Nova godina", "0-6": "Tri kralja", "2-8": "Dan žena", "3-3": "Veliki petak", "3-6": "Uskrsni ponedjeljak",
-                    "4-1": "Praznik rada", "4-14": "Spasovo", "4-25": "Duhovi", "5-4": "Tijelovo", "7-15": "Velika Gospa",
-                    "9-3": "Dan jedinstva", "9-31": "Dan reformacije", "10-1": "Svi sveti", "10-18": "Dan pokajanja", "11-25": "Božić 1", "11-26": "Božić 2"
-                }
-            },
-            'uk': {
-                header: "Німеччина 2026", hint: "Наведіть на дату для назви",
-                nat: "Національні", reg: "Регіональні", curr: "Поточний місяць", wk: "Тж",
-                months: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
-                days: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
-                holidays: {
-                    "0-1": "Новий рік", "0-6": "Три королі", "2-8": "Жіночий dzień", "3-3": "Страсна п'ятниця", "3-6": "Великдень",
-                    "4-1": "День праці", "4-14": "Вознесіння", "4-25": "Трійця", "5-4": "Тіло Христове", "7-15": "Успіння",
-                    "9-3": "День єдності", "9-31": "День Реформації", "10-1": "Усіх świętych", "10-18": "День покаяння", "11-25": "Різдво 1", "11-26": "Різдvo 2"
-                }
-            },
-            'ru': {
-                header: "Германия 2026", hint: "Наведите на дату для названия",
-                nat: "Национальные", reg: "Региональные", curr: "Текущий месяц", wk: "Нд",
-                months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-                days: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
-                holidays: {
-                    "0-1": "Новый год", "0-6": "Три короля", "2-8": "Женский день", "3-3": "Страстная пятница", "3-6": "Пасха",
-                    "4-1": "День труда", "4-14": "Вознесение", "4-25": "Троица", "5-4": "Тело Христово", "7-15": "Успение",
-                    "9-3": "День единства", "9-31": "День Реформации", "10-1": "Всех святых", "10-18": "День покаяния", "11-25": "Рождество 1", "11-26": "Рождество 2"
-                }
-            },
-            'lt': {
-                header: "Vokietija 2026", hint: "Užveskite pelę ant datos",
-                nat: "Nacionalinės", reg: "Regioninės", curr: "Dabartinis mėn.", wk: "Sa",
-                months: ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"],
-                days: ["Pr", "An", "Tr", "Ke", "Pe", "Še", "Se"],
-                holidays: {
-                    "0-1": "Naujieji metai", "0-6": "Trys Karaliai", "2-8": "Moters diena", "3-3": "Didysis penktadienis", "3-6": "Velykų pirmadienis",
-                    "4-1": "Darbo diena", "4-14": "Šeštinės", "4-25": "Sekminės", "5-4": "Devintinės", "7-15": "Žolinė",
-                    "9-3": "Vienybės diena", "9-31": "Reformacijos diena", "10-1": "Visų šventųjų", "10-18": "Atgailos diena", "11-25": "Kalėdos 1", "11-26": "Kalėdos 2"
-                }
-            }
-        };
-
-        const holidayTypes = {
-            "0-1": "national", "0-6": "regional", "2-8": "regional", "3-3": "national", "3-6": "national",
-            "4-1": "national", "4-14": "national", "4-25": "national", "5-4": "regional", "7-15": "regional",
-            "9-3": "national", "9-31": "regional", "10-1": "regional", "10-18": "regional", "11-25": "national", "11-26": "national"
-        };
-
-        function detectLanguage() {
-            let lang = navigator.language || navigator.userLanguage;
-            if (!lang) return 'pl';
-            lang = lang.substring(0, 2).toLowerCase();
-            if (['hr', 'sr', 'me'].includes(lang)) lang = 'bs';
-            const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en', 'fr'];
-            return supported.includes(lang) ? lang : 'de';
-        }
-
-        function getISOWeekNumber(date) {
-            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-            const dayNum = d.getUTCDay() || 7;
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-        }
-
-        function generateCalendar() {
-            let lang = detectLanguage();
-            if(!translations[lang]) lang = 'de'; 
-            
-            const t = translations[lang];
-            
-            document.getElementById('cal-title').innerText = t.header;
-            document.getElementById('cal-hint').innerText = t.hint;
-            document.getElementById('leg-nat').innerText = t.nat;
-            document.getElementById('leg-reg').innerText = t.reg;
-            document.getElementById('leg-curr').innerText = t.curr;
-
-            const year = 2026;
-            const now = new Date();
-            
-            let currentMonthIdx = 0;
-            if (now.getFullYear() === year) {
-                currentMonthIdx = now.getMonth();
-            } else if (now.getFullYear() > year) {
-                currentMonthIdx = 11;
-            }
-
-            const grid = document.getElementById('calendar-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            let startMonth = currentMonthIdx;
-            let endMonth = currentMonthIdx;
-
-            // Sprawdzamy czy to ostatnie 7 dni bieżącego miesiąca (w 2026 r.)
-            if (now.getFullYear() === year) {
-                let daysInCurrentMonth = new Date(year, currentMonthIdx + 1, 0).getDate();
-                if (daysInCurrentMonth - now.getDate() <= 6 && currentMonthIdx < 11) {
-                    endMonth = currentMonthIdx + 1;
-                }
-            }
-
-            for (let m = startMonth; m <= endMonth; m++) {
-                let table = document.createElement('table');
-                table.className = 'month-table' + (m === currentMonthIdx ? ' current-month' : '');
-                
-                let header = `<thead>
-                    <tr><th colspan="8" class="month-title">${t.months[m]}</th></tr>
-                    <tr><th class="week-header">${t.wk}</th>${t.days.map(d => `<th>${d}</th>`).join('')}</tr>
-                </thead>`;
-                
-                let firstDay = new Date(year, m, 1).getDay();
-                let daysInMonth = new Date(year, m + 1, 0).getDate();
-                let startingDay = firstDay === 0 ? 6 : firstDay - 1; 
-                
-                let body = '<tbody><tr>';
-                let firstDateForWeek = new Date(year, m, 1);
-                body += `<td class="week-number">${getISOWeekNumber(firstDateForWeek)}</td>`;
-                
-                let dayCount = 0;
-                for (let i = 0; i < startingDay; i++) {
-                    body += '<td style="background:transparent;"></td>';
-                    dayCount++;
-                }
-                
-                for (let d = 1; d <= daysInMonth; d++) {
-                    if (dayCount % 7 === 0 && dayCount !== 0) {
-                        body += '</tr><tr>';
-                        let currentDayForWeek = new Date(year, m, d);
-                        body += `<td class="week-number">${getISOWeekNumber(currentDayForWeek)}</td>`;
-                    }
-                    
-                    let key = `${m}-${d}`;
-                    let isHoliday = holidayTypes[key];
-                    let hName = isHoliday ? (t.holidays[key] || "") : "";
-                    
-                    let hClass = "";
-                    if (isHoliday === "national") hClass = "holiday-national has-holiday";
-                    else if (isHoliday === "regional") hClass = "holiday-regional has-holiday";
-                    
-                    let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
-                    body += `<td class="${hClass} ${isToday}" data-holiday="${hName}">${d}</td>`;
-                    dayCount++;
-                }
-                
-                while (dayCount % 7 !== 0) {
-                    body += '<td style="background:transparent;"></td>';
-                    dayCount++;
-                }
-
-                body += '</tr></tbody>';
-                table.innerHTML = header + body;
-                grid.appendChild(table);
-            }
-        }
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', generateCalendar);
-        } else {
-            generateCalendar();
-        }
-
-    })();
-    //]]>
-    </script>
-
-    <script>
-    (function() {
-        const oldChat = document.getElementById('chat-main-window');
-        const oldBtn = document.getElementById('chat-toggle-btn');
-        if (oldChat) oldChat.remove();
-        if (oldBtn) oldBtn.remove();
-
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = `
-            <button class="chat-button" id="chat-toggle-btn" title="Otwórz asystenta">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-            </button>
-            <div id="chat-main-window" style="display:none;">
-                <div class="chat-header" id="chat-header-title"></div>
-                <div id="chat-messages-area"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-user-input" placeholder="..." />
-                    <button class="chat-send-button" id="chat-send-btn">Wyślij</button>
-                </div>
-                <div style="text-align: center; color: #b0b0b0; font-family: sans-serif; padding: 10px 0 15px 0; background: white; font-size: 12px; letter-spacing: 1px; opacity: 0.6;">
-                    © <script>document.write(new Date().getFullYear())<\/script> dabu-info
-                </div>
-            </div>
-        `;
-        document.body.appendChild(wrapper);
-
-        const chatMainWindow = document.getElementById('chat-main-window');
-        const toggleBtn = document.getElementById('chat-toggle-btn');
-        const messagesArea = document.getElementById('chat-messages-area');
-        const userInput = document.getElementById('chat-user-input');
-        const sendBtn = document.getElementById('chat-send-btn');
-        const headerTitle = document.getElementById('chat-header-title');
-
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
-
-        const slownik = {
-            pl: { powitanie: "Cześć! Wpisz nazwę miejscowości, aby sprawdzić dostępne terminy w tygodniu.", placeholder: "Wpisz nazwę miejscowości...", wyslij: "Wyślij", ladowanie: "🤔 Szukam dostępnych terminów...", blad: "❌ Błąd połączenia z serwerem." },
-            de: { powitanie: "Hallo! Geben Sie den Namen der Stadt ein, um verfügbare Termine für die Woche zu prüfen.", placeholder: "Stadt eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche nach Terminen...", blad: "❌ Verbindungsfehler." },
-            en: { powitanie: "Hi! Enter the city name to check available dates for the week.", placeholder: "Enter city name...", wyslij: "Send", ladowanie: "🤔 Searching for dates...", blad: "❌ Connection error." },
-            fr: { powitanie: "Salut ! Entrez le nom de la ville pour vérifier les dates disponibles cette semaine.", placeholder: "Entrez le nom de la ville...", wyslij: "Envoyer", ladowanie: "🤔 Recherche de dates en cours...", blad: "❌ Erreur de connexion." },
-            cs: { powitanie: "Ahoj! Zadejte název města pro kontrolu dostupných termínů v týdnu.", placeholder: "Zadejte název města...", wyslij: "Odeslat", ladowanie: "🤔 Hledám termíny...", blad: "❌ Chyba připojení." },
-            sk: { powitanie: "Ahoj! Zadajte názov mesta pre kontrolu dostupných termínov v týždni.", placeholder: "Zadajte názov mesta...", wyslij: "Odoslať", ladowanie: "🤔 Hľadám termíny...", blad: "❌ Chyba pripojenia." },
-            hu: { powitanie: "Szia! Írja be a település nevét a heti elérhető időpontok ellenőrzéséhez.", placeholder: "Település neve...", wyslij: "Küldés", ladowanie: "🤔 Időpontok keresése...", blad: "❌ Csatlakozási hiba." },
-            ro: { powitanie: "Bună! Introduceți orașul pentru a verifica datele disponibile din această săptămână.", placeholder: "Introduceți orașul...", wyslij: "Trimite", ladowanie: "🤔 Se caută datele...", blad: "❌ Eroare de conexiune." },
-            bg: { powitanie: "Здравейте! Въведете името на града, за да проверите наличните дати за седмицата.", placeholder: "Въведете град...", wyslij: "Изпрати", ladowanie: "🤔 Търсене на дати...", blad: "❌ Грешка при свързване." },
-            tr: { powitanie: "Merhaba! Haftalık uygun tarihleri kontrol etmek için şehir adını girin.", placeholder: "Şehir adını girin...", wyslij: "Gönder", ladowanie: "🤔 Tarihler aranıyor...", blad: "❌ Bağlantı hatası." },
-            bs: { powitanie: "Zdravo! Unesite naziv grada da provjerite dostupne termine u sedmici.", placeholder: "Unesite naziv grada...", wyslij: "Pošalji", ladowanie: "🤔 Tražim termine...", blad: "❌ Greška u povezivanju." },
-            uk: { powitanie: "Привіт! Введіть назву міста, щоб перевірити доступні дати на тиждень.", placeholder: "Введіть місто...", wyslij: "Надіслати", ladowanie: "🤔 Пошук дат...", blad: "❌ Помилка з'єднання." },
-            ru: { powitanie: "Привет! Введите название города, чтобы проверить доступные даты на неделю.", placeholder: "Введите город...", wyslij: "Отправить", ladowanie: "🤔 Поиск дат...", blad: "❌ Ошибка подключения." },
-            lt: { powitanie: "Sveiki! Įveskite miesto pavadinimą, kad patikrintumėte laisvas datas šią savaitę.", placeholder: "Įveskite miestą...", wyslij: "Siųsti", ladowanie: "🤔 Ieškoma datų...", blad: "❌ Ryšio klaida." }
-        };
-
-        let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-        
-        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en', 'fr'];
-        
-        if (!supported.includes(browserLang)) {
-            browserLang = 'de';
-        }
-        
-        let currentLang = slownik[browserLang] ? browserLang : 'de'; 
-        let t = slownik[currentLang];
-
-        headerTitle.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span style="font-family:Arial Black; font-size:16px;">DABU-INFO ASYSTENT</span>
-            </div>
-            <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 5px;">❌</span>
-        `;
-
-        userInput.placeholder = t.placeholder;
-        sendBtn.innerText = t.wyslij;
-        messagesArea.innerHTML = `<div class="chat-bubble-received">${t.powitanie}</div>`;
-
-        document.getElementById('close-chat-btn').onclick = function() {
-            chatMainWindow.style.display = 'none';
-        };
-
-        toggleBtn.onclick = function() {
-            if (chatMainWindow.style.display === 'none' || chatMainWindow.style.display === '') {
-                chatMainWindow.style.display = 'flex';
-                
-                if (window.innerWidth > 768) {
-                    userInput.focus();
-                }
-            } else {
-                chatMainWindow.style.display = 'none';
-            }
-        };
-
-        userInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); 
-                sendBtn.click();
-            }
-        });
-
-        let ostatnieWyszukiwanie = "";
-
-        sendBtn.onclick = async function() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            appendMessage(text, 'sent');
-            userInput.value = '';
-
-            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-            let zapytanieDoWyslania = text;
-
-            if (emailRegex.test(text) && ostatnieWyszukiwanie !== "") {
-                zapytanieDoWyslania = text + " (Rejon: " + ostatnieWyszukiwanie + ")";
-                ostatnieWyszukiwanie = ""; 
-            } else if (!emailRegex.test(text)) {
-                ostatnieWyszukiwanie = text;
-            }
-
-            const loadingId = 'loading-' + Date.now();
-            appendMessage(t.ladowanie, 'received', loadingId);
-
-            try {
-                const resp = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify({
-                        akcja: 'szukaj_terminow', 
-                        zapytanie: zapytanieDoWyslania,
-                        jezyk: currentLang
-                    })
-                });
-                const data = await resp.json();
-                
-                const el = document.getElementById(loadingId);
-                if(el) el.remove();
-                
-                if (data && data.odpowiedz) {
-                    appendMessage(data.odpowiedz, 'received');
-                } else {
-                    appendMessage(t.blad, 'received');
-                }
-
-            } catch(e) {
-                const el = document.getElementById(loadingId);
-                if(el) el.remove();
-                appendMessage(t.blad, 'received');
-                console.error('Błąd:', e);
-            }
-        };
-
-        function appendMessage(text, type, id = null) {
-            const bubble = document.createElement('div');
-            bubble.className = type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-received';
-            if(id) bubble.id = id;
-            
-            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
-            
-            messagesArea.appendChild(bubble);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 123) e.preventDefault();
-            if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) e.preventDefault();
-            if (e.ctrlKey && e.keyCode === 85) e.preventDefault();
-        });
-
-    })();
-    </script>
-</body>
-</html>
+                t_ast_l1: "<span class=\"highlight\">Recherche par régions et villes :</span> Ent
