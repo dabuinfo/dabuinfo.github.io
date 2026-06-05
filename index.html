@@ -832,6 +832,37 @@
             });
         }
     })();
+    //<![CDATA[
+    (function() {
+        // Blokada prawego przycisku myszy
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Blokada skrótów klawiszowych
+        document.addEventListener('keydown', function(e) {
+            // F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + I / J / C
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + U (Podgląd źródła)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+            // Mac: Cmd + Option + I
+            if (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    })();
     //]]>
     </script>
 </body>
