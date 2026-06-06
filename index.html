@@ -530,6 +530,22 @@
         const cartWidget = document.getElementById('order-cart-widget');
         const cartContainer = document.getElementById('cart-items-container');
         const cartCounter = document.getElementById('cart-counter');
+        const btnSms = document.getElementById('btn-submit-sms'); // Przycisk SMS
+
+        // Tworzymy kontener na komunikat PRO, jeśli jeszcze go nie ma
+        let promoMsg = document.getElementById('cart-promo-msg');
+        if (!promoMsg) {
+            promoMsg = document.createElement('div');
+            promoMsg.id = 'cart-promo-msg';
+            promoMsg.style.marginBottom = '10px';
+            promoMsg.style.fontSize = '13px';
+            promoMsg.style.color = '#f1c40f'; // Złoty kolor dla oferty PRO
+            promoMsg.style.lineHeight = '1.4';
+            
+            // Wrzucamy komunikat do stopki koszyka przed przyciskami
+            const footer = document.querySelector('.cart-footer');
+            footer.insertBefore(promoMsg, footer.children[1]); 
+        }
 
         if (orderCart.length > 0) {
             cartWidget.style.display = 'flex';
@@ -540,10 +556,23 @@
                     <button class="cart-item-remove" onclick="removeFromCart(${index})">✕</button>
                 </div>
             `).join('');
+
+            // --- LOGIKA WERSJI PRO I BLOKADY SMS ---
+            if (orderCart.length > 3) {
+                promoMsg.innerHTML = '⭐ Przy tej ilości polecamy:<br><strong>ZESTAW TYGODNIOWY PRO!</strong><br><span style="font-size:11px; color:#ccc; font-weight:normal;">(Powyżej 3 rejonów wycena i zamówienie tylko przez E-MAIL)</span>';
+                promoMsg.style.display = 'block';
+                btnSms.style.display = 'none'; // Ukrywamy przycisk SMS
+            } else {
+                promoMsg.style.display = 'none';
+                btnSms.style.display = ''; // Przywracamy przycisk SMS dla 1-3 rejonów
+            }
+
         } else {
             cartWidget.style.display = 'none';
             cartCounter.innerText = '0';
             cartContainer.innerHTML = `<div style="text-align:center; color:#666; padding:10px;">Koszyk jest pusty. Zaznacz rejony w kalendarzu.</div>`;
+            if (promoMsg) promoMsg.style.display = 'none';
+            btnSms.style.display = '';
         }
     }
 
@@ -620,6 +649,13 @@
     // WYSYŁKA DO DARIUSZA (SMS)
     document.getElementById('btn-submit-sms').addEventListener('click', function() {
         if (orderCart.length === 0) return;
+        
+        // Zabezpieczenie przed wysyłką >3 rejonów przez SMS
+        if (orderCart.length > 3) {
+            alert("Powyżej 3 rejonów zamówienie możliwe jest tylko przez E-MAIL (Zestaw Tygodniowy PRO).");
+            return;
+        }
+        
         let orderNum = generateOrderNumber();
         let smsBody = getCartMessage(orderNum);
         let phone = "+48600812820"; 
