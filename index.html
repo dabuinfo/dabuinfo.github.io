@@ -759,6 +759,18 @@
         function generateCalendar() {
             let lang = detectLanguage();
             const t = translations[lang];
+
+            // --- NOWA FUNKCJA POMOCNICZA ---
+            function isWeekOld(dateInWeek) {
+                let d = new Date(dateInWeek);
+                let day = d.getDay(); // 0=Nd, 1=Pn ... 6=So
+                let diffToFriday = day === 0 ? -2 : 5 - day; 
+                let friday = new Date(d);
+                friday.setDate(d.getDate() + diffToFriday);
+                friday.setHours(23, 59, 59, 999);
+                return new Date() > friday;
+            }
+            // -------------------------------
             
             document.getElementById('cal-title').innerText = t.header;
             document.getElementById('leg-nat').innerText = t.nat;
@@ -773,7 +785,6 @@
             if (!grid) return;
             grid.innerHTML = '';
 
-            // TUTA JEST ZACHOWANA TWOJA LOGIKA: 1 MIESIĄC, KOLEJNY NA 6 DNI PRZED KOŃCEM
             let startMonth = currentMonthIdx;
             let endMonth = currentMonthIdx;
 
@@ -800,9 +811,10 @@
                 let body = '<tbody><tr>';
                 let firstDateForWeek = new Date(year, m, 1);
                 
-                // Dodajemy klasę i atrybut umożliwiający zamówienie CAŁEGO TYGODNIA
                 let wNum = getISOWeekNumber(firstDateForWeek);
-                body += `<td class="week-number" data-week="${wNum}" title="Zamów Tydzień / Order Week ${wNum}">${wNum}</td>`;
+                let pastClass1 = isWeekOld(firstDateForWeek) ? " past-date" : "";
+                let actionAttr1 = isWeekOld(firstDateForWeek) ? "" : `data-week="${wNum}" title="Zamów Tydzień / Order Week ${wNum}"`;
+                body += `<td class="week-number${pastClass1}" ${actionAttr1}>${wNum}</td>`;
                 
                 let dayCount = 0;
                 for (let i = 0; i < startingDay; i++) {
@@ -815,7 +827,9 @@
                         body += '</tr><tr>';
                         let currentDayForWeek = new Date(year, m, d);
                         let wNumRow = getISOWeekNumber(currentDayForWeek);
-                        body += `<td class="week-number" data-week="${wNumRow}" title="Zamów Tydzień / Order Week ${wNumRow}">${wNumRow}</td>`;
+                        let pastClassRow = isWeekOld(currentDayForWeek) ? " past-date" : "";
+                        let actionAttrRow = isWeekOld(currentDayForWeek) ? "" : `data-week="${wNumRow}" title="Zamów Tydzień / Order Week ${wNumRow}"`;
+                        body += `<td class="week-number${pastClassRow}" ${actionAttrRow}>${wNumRow}</td>`;
                     }
                     
                     let key = `${m}-${d}`;
@@ -830,6 +844,7 @@
                     
                     let cellDate = new Date(year, m, d);
                     let todayMidnight = new Date();
+                    todayMidnight.setDate(todayMidnight.getDate() - 1); // Wczorajszy dzień pozostaje klikalny
                     todayMidnight.setHours(0, 0, 0, 0);
                     let isPast = cellDate < todayMidnight;
                     let dayClass = isPast ? 'past-date' : 'clickable-day';
@@ -881,6 +896,7 @@
                 // A) Jeśli kliknięto w numer Tygodnia
                 if (e.target.classList.contains('week-number')) {
                     const weekNum = e.target.getAttribute('data-week');
+                    if (!weekNum) return; // Zabezpieczenie przed kliknięciem w wyszarzony tydzień
                     
                     let userLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
                     const weekTranslations = {
@@ -1332,7 +1348,7 @@
                 infoLegendTitle: "📌 Santrumpų legenda:",
                 legendSM: "<strong>SM / S</strong> – Sperrmüll (Stambiosios atliekos)",
                 legendEL: "<strong>E / EL</strong> – Elektronik (Elektronika)",
-                legendMET: "<strong>M / MET</strong> – Metall (Metalo laužas)",
+                legendMET: "<strong>M / MET</strong> – Metalo laužas",
                 legendHOLZ: "<strong>H / HOLZ</strong> – Altholz (Mediena)"
             },
             'lv': { 
@@ -1396,7 +1412,10 @@
         const today = new Date();
         let currentWeek = getISOWeek(today);
         let dayOfWeek = today.getDay(); 
-        if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) { currentWeek++; }
+        
+        // ZAKOMENTOWANO - Wyłączenie uciekania tygodni w weekend na Spisie Rejonów:
+        // if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) { currentWeek++; }
+        
         if (currentWeek < 22) currentWeek = 22;
         
         const driveLinks = {
