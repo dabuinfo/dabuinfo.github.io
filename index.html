@@ -1026,59 +1026,29 @@
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/<br\s*\/?>\s*<br\s*\/?>|\n\n/i);
                                 
+                                // Dodajemy żółty pasek informacyjny zamiast przycisków do zaznaczania
                                 let htmlZebra = `
-                                    <div style="padding: 10px 20px; background: #1a1a1a; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
-                                        <span style="color:#aaa; font-size:13px;">Zaznacz opcje:</span>
-                                        <button type="button" id="btn-select-all" style="background:#333; color:#2ecc71; border:1px solid #2ecc71; padding:5px 10px; border-radius:4px; cursor:pointer;">Zaznacz wszystkie</button>
+                                    <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #f1c40f;">
+                                        <span style="color:#f1c40f; font-size:14px; font-weight:bold;">⚠️ Podgląd informacyjny</span><br>
+                                        <span style="color:#aaa; font-size:13px;">Zamówienia realizowane są wyłącznie dla całych tygodni.<br>Aby zamówić, <strong>kliknij numer tygodnia</strong> w lewej kolumnie kalendarza.</span>
                                     </div>
-                                    <form id="region-selection-form">
                                 `;
                                 
                                 htmlZebra += items.filter(i => i.trim() !== '').map(item => {
-                                    // Odcinanie śmieci dla SMS - czyste miasto
-                                    let cleanValue = item.replace(/<[^>]*>?/gm, '').trim(); 
-                                    let cityNameOnly = cleanValue.replace(/\s+-.*$/, '').replace(/\s*👉.*$/, '').trim();
-
                                     let formattedItem = item.trim().replace(/👉/g, '<span class="tile-link-icon">👉</span>');
                                     formattedItem = formattedItem.replace('<span class="tile-link-icon">', '<br><span class="tile-link-icon">');
                                     
+                                    // Usuwamy tag <form>, <label> oraz <input type="checkbox">. Zostawiamy czysty tekst.
                                     return `
-                                    <label class="zebra-row" style="cursor:pointer; display:flex; align-items:flex-start; gap:15px;">
-                                        <input type="checkbox" class="region-cb" value="[${dd}.${mm}.${yyyy}] ${cityNameOnly}" style="margin-top:5px; transform:scale(1.3); accent-color:#2ecc71;">
+                                    <div class="zebra-row" style="display:flex; align-items:flex-start; gap:15px; cursor:default;">
                                         <div style="flex:1;">${formattedItem}</div>
-                                    </label>`;
+                                    </div>`;
                                 }).join('');
-                                
-                                htmlZebra += `
-                                    <div style="padding: 20px; background: #151515; text-align: center; display: flex; justify-content: center; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                                        <button type="button" id="btn-add-selected" class="cta-btn-primary" style="margin: 0; width: auto; min-width: 200px; border: none; padding: 12px 24px; border-radius: 8px; line-height: 1.4; display: block;">
-                                            DODAJ ZAZNACZONE<br><span style="font-size: 12px; font-weight: normal;">(ADD SELECTED)</span>
-                                        </button>
-                                    </div>
-                                    </form>
-                                `;
                                 
                                 resultsContent.innerHTML = htmlZebra;
 
-                                let allSelected = false;
-                                document.getElementById('btn-select-all').addEventListener('click', function() {
-                                    allSelected = !allSelected;
-                                    document.querySelectorAll('.region-cb').forEach(cb => cb.checked = allSelected);
-                                    this.innerText = allSelected ? "Odznacz wszystkie" : "Zaznacz wszystkie";
-                                });
-
-                                document.getElementById('btn-add-selected').addEventListener('click', function() {
-                                    let checkedBoxes = document.querySelectorAll('.region-cb:checked');
-                                    if (checkedBoxes.length === 0) {
-                                        alert("Zaznacz przynajmniej jeden rejon z listy!");
-                                        return;
-                                    }
-                                    checkedBoxes.forEach(cb => {
-                                        addToCart(cb.value);
-                                        cb.checked = false;
-                                    });
-                                    resultsBox.style.display = 'none';
-                                });
+                                // Uwaga: Usunąłem tutaj funkcje obsługujące przyciski "Zaznacz wszystkie" i "Dodaj zaznaczone",
+                                // ponieważ tych przycisków już nie ma i generowałyby błędy w przeglądarce.
 
                             } else {
                                 resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
