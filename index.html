@@ -177,6 +177,7 @@
         .legend-box { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
         .current-month-indicator { border: 2px solid #007bff; }
         .clickable-day:hover { background-color: #444 !important; outline: 1px solid #007bff; }
+        .past-date { opacity: 0.3 !important; color: #555 !important; background-color: #1a1a1a !important; pointer-events: none !important; }
 
         /* WYNIKI KALENDARZA - ZEBRA (KAFELKI) */
         #calendar-results { display: none; margin-top: 25px; background: #151515; border-radius: 10px; border: 1px solid #333; text-align: left; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
@@ -481,7 +482,7 @@
                 t_header: "Ваш навигатор по крупногабаритному мусору",
                 t_subheader: "Точные планы, расписания и даты вывоза крупногабаритного мусора (Sperrmüll) в Германии на 2026 год",
                 t_desc1: "Цель <strong>dabu-info</strong> - предоставить самые точные и постоянно обновляемые <strong>планы и даты</strong> сбора крупногабаритного мусора по всей Германии. Основываясь на 30-летнем опыте, я помогаю оптимизировать маршруты, экономить топливо и избегать пустых поездок.",
-                t_desc2: "Наша база данных на 2026 год уже включает более <strong>100 тщательно отобранных немецких регионов</strong>! Наши расписания гарантируют, что вы всегда прибудете в нужное место в оптимальное время.",
+                t_desc2: "Наша база данных на 2026 год уже включает более <strong>100 тщательно отобранных немецких регионов</strong>! Наши расписания гарантируют, что вы всегда прибудете в нужное место в оптима время.",
                 t_desc_order: "<strong>📝 Как заказать расписание?</strong><br>Прокрутите вниз до календаря. Нажмите на день или всю неделю (левая колонка). Отметьте города, которые хотите посетить, и затем нажмите отправить в корзине внизу!",
                 t_footer_contact: "<strong>🏠 Контакты и Заказы:</strong><br>👤 Дариуш (Заказы и Поддержка)<br>📧 dariusz@dabu-info.com | 📞 +48 600 812 820<br><br><strong>💼 Выполнение и Платежи:</strong><br>👤 Эва Бучковска (Менеджер)<br>📍 56-300 Милич (Польша)<br>💳 Платежи: BLIK, PayPal<br>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323<br><br>© 2026 dabu-info"
             },
@@ -827,9 +828,15 @@
                     
                     let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
                     
+                    let cellDate = new Date(year, m, d);
+                    let todayMidnight = new Date();
+                    todayMidnight.setHours(0, 0, 0, 0);
+                    let isPast = cellDate < todayMidnight;
+                    let dayClass = isPast ? 'past-date' : 'clickable-day';
+                    
                     let mStr = String(m + 1).padStart(2, '0');
                     let dStr = String(d).padStart(2, '0');
-                    body += `<td class="${hClass} ${isToday} clickable-day" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}" style="cursor: pointer; transition: background 0.2s;">${d}</td>`;
+                    body += `<td class="${hClass} ${isToday} ${dayClass}" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}" style="cursor: ${isPast ? 'default' : 'pointer'}; transition: background 0.2s;">${d}</td>`;
                     dayCount++;
                 }
                 
