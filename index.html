@@ -1159,25 +1159,56 @@
             appendMessage(text, 'sent');
             userInput.value = '';
 
-            // --- NOWA LOGIKA: INTELIGENTNY ASYSTENT (KONTAKT) ---
+            // --- NOWA LOGIKA: INTELIGENTNY ASYSTENT (KONTAKT I SERWISY) ---
             const textLower = text.toLowerCase();
+            
+            // 1. Słowa kluczowe dla "Bazy Serwisów"
+            const serviceKeywords = ['serwis', 'serwisy', 'serwisów', 'baza', 'rower', 'kosiark', 'części', 'asortyment', 'myjki', 'budowlane'];
+            const isServiceRequest = serviceKeywords.some(keyword => textLower.includes(keyword));
+
+            // 2. Słowa kluczowe dla "Kontaktu"
             const contactKeywords = ['kontakt', 'telefon', 'mail', 'kto', 'dariusz', 'ewa', 'szef', 'szefowa', 'zamówienia', 'pomoc', 'email', 'e-mail', 'numer', 'z kim'];
             const isContactRequest = contactKeywords.some(keyword => textLower.includes(keyword));
 
-            if (isContactRequest) {
+            if (isServiceRequest) {
+                const serviceMsg = `
+                    <div style="font-size: 13px; line-height: 1.5;">
+                        <strong style="color: #2ecc71; font-size: 14px;">🛠️ Baza Serwisów (Pozyskiwanie asortymentu)</strong><br><br>
+                        <span style="color: #f1c40f;">⚠️ <strong>Ważne: Darmowe wystawki a odpłatne serwisy</strong></span><br>
+                        To alternatywa biznesowa do <strong>odpłatnego zakupu</strong> towaru prosto z autoryzowanych punktów naprawczych i salonów, przygotowywana na zamówienie (dowolny region i kraj).<br><br>
+                        <strong>📦 Dostępne kategorie m.in.:</strong><br>
+                        • Rowery (E-bike, MTB, szosowe)<br>
+                        • Urządzenia ogrodowe (Kosiarki, traktorki)<br>
+                        • Myjki ciśnieniowe i sprzęt czyszczący<br>
+                        • Maszyny budowlane (Agregaty, zagęszczarki)<br>
+                        • Części samochodowe i podzespoły<br><br>
+                        <strong>💰 Cennik (za 1 punkt):</strong><br>
+                        • <strong>Startowy</strong> (do 50 szt.): 10 zł<br>
+                        • <strong>Standard</strong> (51 - 150 szt.): 8 zł<br>
+                        • <strong>Pro</strong> (pow. 150 szt.): 5 zł<br><br>
+                        🎁 <strong>Pakiet 1:</strong> Szablon zapytania GRATIS (pow. 100 pkt).<br>
+                        🚚 <strong>Pakiet 2:</strong> Dokumenty przewozowe GRATIS (zamówienia pow. 4500 zł).<br><br>
+                        <strong>📞 Kontakt w sprawie serwisów:</strong><br>
+                        👤 Dariusz: dariusz@dabu-info.com | +48 600 812 820<br>
+                        👩‍💼 Ewa (Szefowa): ewa@dabu-info.com
+                    </div>
+                `;
+                simulateAssistantReply(serviceMsg);
+                return;
+            } else if (isContactRequest) {
                 const contactMsg = `<strong>Dostępne formy kontaktu:</strong><br><br>👤 <strong>Dariusz</strong> (Zamówienia i realizacja):<br>📧 dariusz@dabu-info.com<br>📞 +48 600 812 820<br><br>👩‍💼 <strong>Ewa</strong> (Szefowa - zarządzanie):<br>📧 ewa@dabu-info.com`;
-                
+                simulateAssistantReply(contactMsg);
+                return;
+            }
+
+            function simulateAssistantReply(msg) {
                 const loadingId = 'loading-' + Date.now();
                 appendMessage(t.ladowanie, 'received', loadingId);
-                
-                // Opóźnienie by zasymulować "pisanie" i sprawić by wyglądało to naturalnie
                 setTimeout(() => {
                     const el = document.getElementById(loadingId);
                     if(el) el.remove();
-                    appendMessage(contactMsg, 'received');
+                    appendMessage(msg, 'received');
                 }, 600);
-                
-                return; // Zakończ tutaj, by zapytanie nie poleciało do Twojego Apps Script
             }
             // --- KONIEC NOWEJ LOGIKI ---
 
