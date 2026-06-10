@@ -1048,9 +1048,6 @@
                                 
                                 resultsContent.innerHTML = htmlZebra;
 
-                                // Uwaga: Usunąłem tutaj funkcje obsługujące przyciski "Zaznacz wszystkie" i "Dodaj zaznaczone",
-                                // ponieważ tych przycisków już nie ma i generowałyby błędy w przeglądarce.
-
                             } else {
                                 resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
                             }
@@ -1161,6 +1158,28 @@
 
             appendMessage(text, 'sent');
             userInput.value = '';
+
+            // --- NOWA LOGIKA: INTELIGENTNY ASYSTENT (KONTAKT) ---
+            const textLower = text.toLowerCase();
+            const contactKeywords = ['kontakt', 'telefon', 'mail', 'kto', 'dariusz', 'ewa', 'szef', 'szefowa', 'zamówienia', 'pomoc', 'email', 'e-mail', 'numer', 'z kim'];
+            const isContactRequest = contactKeywords.some(keyword => textLower.includes(keyword));
+
+            if (isContactRequest) {
+                const contactMsg = `<strong>Dostępne formy kontaktu:</strong><br><br>👤 <strong>Dariusz</strong> (Zamówienia i realizacja):<br>📧 dariusz@dabu-info.com<br>📞 +48 600 812 820<br><br>👩‍💼 <strong>Ewa</strong> (Szefowa - zarządzanie):<br>📧 ewa@dabu-info.com`;
+                
+                const loadingId = 'loading-' + Date.now();
+                appendMessage(t.ladowanie, 'received', loadingId);
+                
+                // Opóźnienie by zasymulować "pisanie" i sprawić by wyglądało to naturalnie
+                setTimeout(() => {
+                    const el = document.getElementById(loadingId);
+                    if(el) el.remove();
+                    appendMessage(contactMsg, 'received');
+                }, 600);
+                
+                return; // Zakończ tutaj, by zapytanie nie poleciało do Twojego Apps Script
+            }
+            // --- KONIEC NOWEJ LOGIKI ---
 
             const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
             let zapytanieDoWyslania = text;
