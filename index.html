@@ -303,6 +303,51 @@
                 <div class="dabu-main-heading" id="main-heading">Spis rejonów</div>
                 <div class="week-list" id="dynamic-weeks">
                     </div>
+                
+            <div class="info-box">
+                <h3 id="info-box-head" class="info-head">💡 Sprawdzanie rejonów i Legenda Skrótów</h3>
+                <p id="info-box-desc" class="info-desc">
+                    Wybierz tydzień z powyższej listy, aby otworzyć szczegółowy wykaz rejonów. Możesz również sprawdzić dostępność konkretnego miasta w naszym <strong>Asystencie</strong> (zielona ikona) wpisując jego nazwę.
+                </p>
+                <strong id="info-legend-title" style="color:#fff; margin-top:10px; display:block;">📌 Legenda skrótów (Spisy i Asystent):</strong>
+                <ul class="legend-list">
+                    <li id="leg-sm"><strong>SM / S</strong> – Sperrmüll (Gabaryty)</li>
+                    <li id="leg-el"><strong>E / EL</strong> – Elektronik (Elektronika)</li>
+                    <li id="leg-met"><strong>M / MET</strong> – Metall (Złom / Metal)</li>
+                    <li id="leg-holz"><strong>H / HOLZ</strong> – Altholz (Drewno)</li>
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="calendar-wrapper">
+            <div class="calendar-header">
+                <div class="header-main">
+                    <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#007bff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h2 id="cal-title">Deutschland 2026</h2>
+                </div>
+                <p id="cal-hint" style="font-size: 14px; color: #aaa; margin-top: 8px; text-align:center;">
+                    🖱️ Kliknij w wybrany <strong>dzień</strong> lub <strong>numer tygodnia</strong> (z lewej), aby wygenerować i zamówić rejony na jutro rano!
+                </p>
+            </div>
+            
+            <div id="calendar-grid"></div>
+            
+            <div class="calendar-legend">
+                <div><span class="legend-box holiday-national"></span> <span id="leg-nat">National</span></div>
+                <div><span class="legend-box holiday-regional"></span> <span id="leg-reg">Regional</span></div>
+                <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Current</span></div>
+            </div>
+
+            <div id="calendar-results">
+                <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
+                <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
+                <div id="cal-res-content"></div>
+            </div>
+        </div>
 
 <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; margin: 15px auto 30px auto;">
               
@@ -480,52 +525,7 @@
                 if(compEl) compEl.innerHTML = t.competitor;
               });
             </script>
-                
-            <div class="info-box">
-                <h3 id="info-box-head" class="info-head">💡 Sprawdzanie rejonów i Legenda Skrótów</h3>
-                <p id="info-box-desc" class="info-desc">
-                    Wybierz tydzień z powyższej listy, aby otworzyć szczegółowy wykaz rejonów. Możesz również sprawdzić dostępność konkretnego miasta w naszym <strong>Asystencie</strong> (zielona ikona) wpisując jego nazwę.
-                </p>
-                <strong id="info-legend-title" style="color:#fff; margin-top:10px; display:block;">📌 Legenda skrótów (Spisy i Asystent):</strong>
-                <ul class="legend-list">
-                    <li id="leg-sm"><strong>SM / S</strong> – Sperrmüll (Gabaryty)</li>
-                    <li id="leg-el"><strong>E / EL</strong> – Elektronik (Elektronika)</li>
-                    <li id="leg-met"><strong>M / MET</strong> – Metall (Złom / Metal)</li>
-                    <li id="leg-holz"><strong>H / HOLZ</strong> – Altholz (Drewno)</li>
-                </ul>
-            </div>
             
-        </div>
-
-        <div id="calendar-wrapper">
-            <div class="calendar-header">
-                <div class="header-main">
-                    <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#007bff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <h2 id="cal-title">Deutschland 2026</h2>
-                </div>
-                <p id="cal-hint" style="font-size: 14px; color: #aaa; margin-top: 8px; text-align:center;">
-                    🖱️ Kliknij w wybrany <strong>dzień</strong> lub <strong>numer tygodnia</strong> (z lewej), aby wygenerować i zamówić rejony na jutro rano!
-                </p>
-            </div>
-            
-            <div id="calendar-grid"></div>
-            
-            <div class="calendar-legend">
-                <div><span class="legend-box holiday-national"></span> <span id="leg-nat">National</span></div>
-                <div><span class="legend-box holiday-regional"></span> <span id="leg-reg">Regional</span></div>
-                <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Current</span></div>
-            </div>
-
-            <div id="calendar-results">
-                <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
-                <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
-                <div id="cal-res-content"></div>
-            </div>
-        </div>
-
         <div class="seo-tags-container">
             <h3 style="color: #fff; font-size: 1.1em; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">
                 🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania
