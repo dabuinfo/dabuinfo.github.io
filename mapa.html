@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dabu-Info - Mapa Rejonów</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* --- BAZOWE STYLE DLA STRONY --- */
+        body {
+            font-family: sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* --- NAPRAWA CZARNEJ RAMKI FOCUS W PRZEGLĄDARKACH (CHROME/EDGE) --- */
+        .leaflet-container:focus,
+        .leaflet-interactive:focus,
+        svg:focus,
+        path:focus {
+            outline: none !important;
+        }
+        /* ------------------------------------------------------------------ */
+
+        .dabu-regions-widget { background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px; max-width: 100%; border: 1px solid rgba(0, 255, 127, 0.2); }
+        .dabu-search-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #333; color: #fff; font-size: 14px; border-radius: 6px; outline: none; box-sizing: border-box; }
+        .dabu-search-input:focus { border-color: #00FF7F; box-shadow: 0 0 5px rgba(0, 255, 127, 0.3); }
+        .dabu-county-btn { background: rgba(0, 255, 127, 0.2); color: #00FF7F; border: 1px solid #00FF7F; padding: 8px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .dabu-county-btn:hover { background: #00FF7F; color: #000; }
+        .regions-scroll-box { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+        .regions-scroll-box::-webkit-scrollbar { width: 8px; }
+        .regions-scroll-box::-webkit-scrollbar-thumb { background: #00FF7F; border-radius: 4px; }
+        .region-label { display: flex; align-items: center; color: #ccc; cursor: pointer; padding: 5px 10px; border-radius: 6px; font-family: sans-serif; font-size: 14px; transition: background 0.2s; }
+        .region-label:hover { background: rgba(0, 255, 127, 0.1); color: #fff; }
+        .region-chk { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 4px; margin-right: 12px; background: #222; position: relative; cursor: pointer; }
+        .region-chk:checked { background-color: #00FF7F; border-color: #00FF7F; }
+        .region-chk:checked::after { content: ''; position: absolute; left: 6px; top: 2px; width: 4px; height: 10px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .custom-leaflet-tooltip { background: #111; color: #fff; border: 1px solid #00FF7F; border-radius: 6px; padding: 8px; font-size: 14px; }
+        .dabu-fullscreen-map { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important; }
+    </style>
+</head>
+<body>
+
+    <div class="dabu-regions-widget">
+        <div id="dabuOSMMap" style="height: 600px; width: 100%; border-radius: 8px; margin-bottom: 20px; border: 2px solid #00FF7F; display: block; z-index: 1;"></div>
+        
+        <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="Wyszukaj swój region..." onkeyup="filterDabuRegions()">
+
+        <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="dabu-county-btn" style="background: #28a745; color: white; border-color: #28a745; font-weight: bold;" onclick="selectOnlyNormalRegions(event)">
+                🟢 Zaznacz tylko rejony "stałe"
+            </button>
+            <button class="dabu-county-btn" style="background: #dc3545; color: white; border-color: #dc3545; font-weight: bold;" onclick="clearAllFilters(event)">
+                🗑️ Wyczyść filtry i mapę
+            </button>
+        </div>
+
+        <div id="countySuggestions" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
+
+        <h3 id="selectedLandTitle" style="font-family: sans-serif; margin-top: 0; margin-bottom: 10px; font-size: 16px; display: none; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.5); color: #00FF7F; border: 1px solid rgba(0,255,127,0.3);"></h3>
+
+        <div class="regions-scroll-box" id="regionsContainer">
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis Salzwedel" /> Altmarkkreis Salzwedel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Munstereifel" /> Bad-Munstereifel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg" /> Bedburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg Powiat" /> Bedburg Powiat</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Elbe-Elster" /> Elbe-Elster</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt Powiat" /> Erftstadt Powiat</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eschwege" /> Eschwege</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gangelt" /> Gangelt</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen Powiat" /> Giessen Powiat</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe" /> Karlsruhe</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim bei München" /> Kirchheim bei München</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2-3x w roku / 2-3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach Powiat" /> Kulmbach Powiat</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1-2x w miesiącu / 1-2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübeck" /> Lübeck (Lubeka)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg Powiat" /> Lüneburg Powiat</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (18x w roku / 18x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt an der Waldnaab" /> Neustadt an der Waldnaab</label>
+            <label class="region-label" data-info="Najbliższy termin na żądanie / Nächster Termin auf Abruf"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau (Offenburg)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4 lub 6x w roku / 4 oder 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (ok. 1x w miesiącu / ca. 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (Sperrmüll 2x w miesiącu / 2x im Monat, E-Schrott co 2 miesiące / alle 2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wülfrath" /> Wülfrath</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+        </div>
+    </div>
+
+    <script>
+        let currentFilteredLand = null;
+        let kreiseLayer = null;
+
+        // Słownik z linkami do wpisów na blogu
+        const regionLinks = {
+            "Altenkirchen (Westerwald)": "https://dabu-info.blogspot.com/2026/02/sperrmull-altenkirchen-2026-terminy.html",
+            "Altmarkkreis-Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
+            "Altmarkkreis Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
+            "Alzey-Worms": "https://dabu-info.blogspot.com/2026/02/sperrmull-alzey-worms-2026-terminy.html",
+            "Amberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-amberg-2026-harmonogram-i.html",
+            "Bad Homburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-homburg-2026-terminy.html",
+            "Bad-Kreuznach": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-kreuznach-2026-terminy-i.html",
+            "Bamberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bamberg-2026-terminy-wystawek.html",
+            "Barnim": "https://dabu-info.blogspot.com/2026/02/sperrmull-barnim-2026-terminy-wystawek.html",
+            "Bayreuth": "https://dabu-info.blogspot.com/2026/02/sperrmull-bayreuth-2026-terminy-wystawek.html",
+            "Bedburg Powiat": "https://dabu-info.blogspot.com/2026/02/sperrmull-powiat-bedburg-2026-terminy-i.html",
+            "Bernkastel-Wittlich": "https://dabu-info.blogspot.com/2026/02/bernkastel-wittlich-2026-terminy.html",
+            "Biebergemünd": "https://dabu-info.blogspot.com/2026/02/sperrmull-biebergemund-2026-terminy.html",
+            "Bonn": "https://dabu-info.blogspot.com/2026/02/sperrmull-bonn-2026-terminy-wystawek.html",
+            "Braunschweig": "https://dabu-info.blogspot.com/2026/02/sperrmull-braunschweig-2026-terminy.html",
+            "Breckerfeld": "https://dabu-info.blogspot.com/2026/02/sperrmull-breckerfeld-2026.html",
+            "Brühl": "https://dabu-info.blogspot.com/2026/02/sperrmull-bruhl-2026-terminy-wystawek.html",
+            "Burgenland": "https://dabu-info.blogspot.com/2026/02/burgenlandkreis-2026-terminy-wystawek.html",
+            "Calw": "https://dabu-info.blogspot.com/2026/02/zbiorka-metalu-calw-2026-terminy-i.html",
+            "Diepholz": "https://dabu-info.blogspot.com/2026/02/sperrmull-diepholz-2026-terminy-wystawek.html",
+            "Dülmen": "https://dabu-info.blogspot.com/2026/02/sperrmull-dulmen-2026-terminy-wystawek.html",
+            "Düsseldorf": "https://dabu-info.blogspot.com/2026/02/sperrmull-dusseldorf-2026-terminy.html",
+            "Eifelkreis Bitburg-Prüm": "https://dabu-info.blogspot.com/2026/02/bitburg-prum-2026-terminy-i-specyfika.html",
+            "Elbe-Elster": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-elbe-elstern.html",
+            "Ennepetal": "https://dabu-info.blogspot.com/2026/02/sperrmull-ennepetal-2026-terminy.html",
+            "Eppstein": "https://dabu-info.blogspot.com/2026/02/sperrmull-eppstein-2026-terminy-wystawek.html",
+            "Eschwege": "https://dabu-info.blogspot.com/2026/02/sperrmull-eschwege-2026-terminy-wystawek.html",
+            "Euskirchen": "https://dabu-info.blogspot.com/2026/02/sperrmull-euskirchen-2026-terminy.html",
+            "Flörsbachtal": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsbachtal-2026-terminy.html",
+            "Flörsheim am Main": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsheim-am-main-2026.html",
+            "Frankfurt": "https://dabu-info.blogspot.com/2026/02/sperrmull-frankfurt-am-main-2026.html",
+            "Freudenstadt": "https://dabu-info.blogspot.com/2026/02/sperrmull-freudenstadt-2026-harmonogram.html",
+            "Fulda": "https://dabu-info.blogspot.com/2026/02/sperrmull-fulda-2026-terminy-wystawek.html",
+            "Fürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-furth-2026-terminy-wystawek.html",
+            "Geilenkirchen": "https://dabu-info.blogspot.com/2026/05/sperrmull-geilenkirchen-2026-terminy.html",
+            "Gelnhausen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gelnhausen-2026-terminy.html",
+            "Giessen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
+            "Giessen Powiat": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
+            "Gifhorn": "https://dabu-info.blogspot.com/2026/02/sperrmull-gifhorn-2026-terminy-wystawek.html",
+            "Glashütten": "https://dabu-info.blogspot.com/2026/05/sperrmull-glashutten-terminy-wystawek.html",
+            "Göttingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gottingen-2026-terminy.html",
+            "Gräfelfing": "https://dabu-info.blogspot.com/2026/02/sperrmull-grafelfing-2026-terminy.html",
+            "Gross-Gerau": "https://dabu-info.blogspot.com/2026/02/gro-gerau-2026-sperrmull-e-schrott.html",
+            "Gründau": "https://dabu-info.blogspot.com/2026/02/sperrmull-grundau-2026-terminy-wystawek.html",
+            "Hannover": "https://dabu-info.blogspot.com/2026/02/sperrmull-hannover-2026-terminy-wystawek.html",
+            "Harburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-harburg-2026.html",
+            "Hattersheim am Main": "https://dabu-info.blogspot.com/2026/02/hattersheim-am-main-2026-terminy.html",
+            "Heidekreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidekreis-2026-terminy.html",
+            "Heidelberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidelberg-2026-terminy.html",
+            "Heilbronn": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-heilbronn-2026-terminy.html",
+            "Hersfeld-Rotenburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-hersfeld-rotenburg-2026.html",
+            "Hofheim am Taunus": "https://dabu-info.blogspot.com/2026/02/sperrmull-hofheim-am-taunus-2026-terminy.html",
+            "Holzminden": "https://dabu-info.blogspot.com/2026/02/sperrmull-holzminden-2026-terminy.html",
+            "Hürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-hurth-2026-terminy-wystawek.html",
+            "Kamp-Lintfort": "https://dabu-info.blogspot.com/2026/02/sperrmull-kamp-lintfort-2026-terminy.html",
+            "Karlsruhe": "https://dabu-info.blogspot.com/2026/02/sperrmull-karlsruhe-stadt-2026-terminy.html",
+            "Karlsruhe Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-karlsruhe-2026.html",
+            "Kelkheim (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-kelkheim-taunus-2026-terminy.html",
+            "Kirchheim bei München": "https://dabu-info.blogspot.com/2026/02/sperrmull-kirchheim-2026-terminy.html",
+            "Königstein (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-konigstein-taunus-2026.html",
+            "Konstanz": "https://dabu-info.blogspot.com/2026/02/sperrmull-konstanz-2026-terminy-wystawek.html",
+            "Kulmbach": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
+            "Kulmbach Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
+            "Leverkusen": "https://dabu-info.blogspot.com/2026/02/sperrmull-leverkusen-2026-terminy.html",
+            "Limburg-Weilburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-limburg-weilburg-2026-terminy.html",
+            "Lübeck": "https://dabu-info.blogspot.com/2026/02/sperrmull-lubecke-2026-terminy.html",
+            "Lüneburg": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
+            "Lüneburg Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
+            "Mayen-Koblenz": "https://dabu-info.blogspot.com/2026/02/sperrmull-mayen-koblenz-2026-terminy.html",
+            "Monachium": "https://dabu-info.blogspot.com/2026/02/sperrmull-monachium-munchen-2026-terminy.html",
+            "Münster": "https://dabu-info.blogspot.com/2026/02/sperrmull-munster-2026-terminy-i.html",
+            "Neu-Anspach": "https://dabu-info.blogspot.com/2026/02/sperrmull-neu-anspach-2026-terminy.html",
+            "Neustadt an der Waldnaab": "https://dabu-info.blogspot.com/2026/02/sperrmull-neustadt-der-waldnaab-2026.html",
+            "Nidderau": "https://dabu-info.blogspot.com/2026/02/sperrmull-nidderau-2026-terminy-wystawek.html",
+            "Nordsachsen": "https://dabu-info.blogspot.com/2026/02/sperrmull-nordsachsen-2026-harmonogram.html",
+            "Oberberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberbergischer-kreis-2026.html",
+            "Oberursel (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberursel-taunus-2026.html",
+            "Oder-Spree": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-oder-spree.html",
+            "Olpe": "https://dabu-info.blogspot.com/2026/02/sperrmull-olpe-2026-terminy-wystawek.html",
+            "Ortenau": "https://dabu-info.blogspot.com/2026/02/sperrmull-ortenaukreis-2026-terminy.html",
+            "Osnabrück": "https://dabu-info.blogspot.com/2026/02/sperrmull-osnabruck-2026-terminy.html",
+            "Pulheim": "https://dabu-info.blogspot.com/2026/02/sperrmull-pulheim-2026-terminy-wystawek.html",
+            "Regensburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-regensburg-2026-terminy-i.html",
+            "Rendsburg-Eckernförde": "https://dabu-info.blogspot.com/2026/02/rendsburg-eckernforde-2026-terminy.html",
+            "Rhein-Neckar-Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-neckar-kreis-2026.html",
+            "Rhein-Sieg": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-sieg-kreis-2026.html",
+            "Rheingau-Taunus": "https://dabu-info.blogspot.com/2026/02/rheingau-taunus-kreis-2026-terminy-i.html",
+            "Rheinisch-Bergischer": "https://dabu-info.blogspot.com/2026/02/sperrmull-rheinisch-bergischer-kreis.html",
+            "Schlüchtern": "https://dabu-info.blogspot.com/2026/02/schluchtern-2026-terminy-wystawek.html",
+            "Schwedt/Oder": "https://dabu-info.blogspot.com/2026/02/sperrmull-schwedtoder-2026-harmonogram.html",
+            "Sinntal": "https://dabu-info.blogspot.com/2026/02/sperrmull-sinntal-2026-terminy-wystawek.html",
+            "Solingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-solingen-2026-terminy-wystawek.html",
+            "Spree-Neiße": "https://dabu-info.blogspot.com/2026/02/sperrmull-spree-neie-2026-terminy.html",
+            "Sprockhövel": "https://dabu-info.blogspot.com/2026/02/sperrmull-sprockhovel-2026-terminy.html",
+            "Stade": "https://dabu-info.blogspot.com/2026/02/sperrmull-stade-2026-terminy-i-specyfika.html",
+            "Straubing-Bogen": "https://dabu-info.blogspot.com/2026/02/straubing-bogen-2026-terminy-wystawek.html",
+            "Tönisvorst": "https://dabu-info.blogspot.com/2026/02/sperrmull-tonisvorst-2026-terminy.html",
+            "Trier-Saarburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-trier-saarburg-2026.html",
+            "Tuttlingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-tuttlingen-2026-terminy.html",
+            "Usingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-usingen-2026-terminy-wystawek.html",
+            "Vulkaneifel": "https://dabu-info.blogspot.com/2026/02/sperrmull-vulkaneifel-2026-terminy-i.html",
+            "Walldorf-Mörfelden": "https://dabu-info.blogspot.com/2026/02/sperrmull-walldorf-morfelden-2026.html",
+            "Wehrheim": "https://dabu-info.blogspot.com/2026/02/sperrmull-wehrheim-2026-terminy-wystawek.html",
+            "Werra-Meissner": "https://dabu-info.blogspot.com/2026/02/werra-meiner-2026-e-schrott-agd.html",
+            "Wesseling": "https://dabu-info.blogspot.com/2026/02/sperrmull-wesseling-2026-terminy-wystawek.html",
+            "Westerwald": "https://dabu-info.blogspot.com/2026/02/sperrmull-westerwaldkreis-2026-terminy.html",
+            "Wolfsburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-wolfsburg-2026-terminy.html",
+            "Wülfrath": "https://dabu-info.blogspot.com/2026/05/sperrmull-wulfrath-2026-terminy-wystawek.html",
+            "Wuppertal": "https://dabu-info.blogspot.com/2026/02/sperrmull-wuppertal-2026-terminy.html",
+            "Zollernalb": "https://dabu-info.blogspot.com/2026/02/sperrmull-zollernalb-2026-tylko-agd.html"
+        };
+
+        const regionToCountyMap = {
+            "Elbe-Elster": "Elbe-Elster",
+            "Oder-Spree": "Oder-Spree",
+            "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
+            "Bad Homburg": "Hochtaunuskreis", "Friedrichsdorf": "Hochtaunuskreis", "Glashütten": "Hochtaunuskreis", "Grävenwiesbach": "Hochtaunuskreis", "Königstein (Taunus)": "Hochtaunuskreis", "Kronberg im Taunus": "Hochtaunuskreis", "Neu-Anspach": "Hochtaunuskreis", "Oberursel (Taunus)": "Hochtaunuskreis", "Schmitten im Taunus": "Hochtaunuskreis", "Steinbach": "Hochtaunuskreis", "Usingen": "Hochtaunuskreis", "Wehrheim": "Hochtaunuskreis", "Weilrod": "Hochtaunuskreis",
+            "Eppstein": "Main-Taunus-Kreis", "Flörsheim am Main": "Main-Taunus-Kreis", "Hattersheim am Main": "Main-Taunus-Kreis", "Hofheim am Taunus": "Main-Taunus-Kreis", "Kelkheim (Taunus)": "Main-Taunus-Kreis", "Schwalbach": "Main-Taunus-Kreis",
+            "Gross-Gerau": "Groß-Gerau", "Walldorf-Mörfelden": "Groß-Gerau", "Giessen": "Landkreis Gießen", "Giessen Powiat": "Landkreis Gießen",
+            "Eschwege": "Werra-Meißner-Kreis", "Werra-Meissner": "Werra-Meißner-Kreis",
+            "Bad-Munstereifel": "Euskirchen", "Blankenheim": "Euskirchen", "Dahlem": "Euskirchen", "Euskirchen": "Euskirchen", "Hellenthal": "Euskirchen", "Kall": "Euskirchen", "Mechernich": "Euskirchen", "Schleiden": "Euskirchen", "Weilerswist": "Euskirchen", "Zülpich": "Euskirchen",
+            "Brühl": "Rhein-Erft-Kreis", "Erftstadt": "Rhein-Erft-Kreis", "Erftstadt Powiat": "Rhein-Erft-Kreis", "Hürth": "Rhein-Erft-Kreis", "Pulheim": "Rhein-Erft-Kreis", "Wesseling": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis", "Bedburg Powiat": "Rhein-Erft-Kreis",
+            "Ennepetal": "Ennepe-Ruhr-Kreis", "Breckerfeld": "Ennepe-Ruhr-Kreis", "Sprockhövel": "Ennepe-Ruhr-Kreis",
+            "Gangelt": "Heinsberg", "Geilenkirchen": "Heinsberg", "Wülfrath": "Mettmann", "Dülmen": "Coesfeld",
+            "Gräfelfing": "München", "Kirchheim bei München": "München", "Kulmbach Powiat": "Kulmbach",
+            "Nordsachsen": "Nordsachsen",
+            "Altmarkkreis-Salzwedel": "Altmarkkreis Salzwedel", "Altmarkkreis Salzwedel": "Altmarkkreis Salzwedel",
+            "Burgenland": "Burgenlandkreis",
+            "Heidekreis": "Heidekreis", "Lüneburg Powiat": "Lüneburg",
+            "Schwedt/Oder": "Uckermark",
+            "Rendsburg-Eckernförde": "Rendsburg-Eckernförde",
+            "Neustadt an der Waldnaab": "Neustadt an der Waldnaab",
+            "Lübeck": "Lübeck"
+        };
+
+        function normalizeLandName(rawName) {
+            const aliases = { "Bavaria": "Bayern", "Hesse": "Hessen", "North Rhine-Westphalia": "Nordrhein-Westfalen", "Rhineland-Palatinate": "Rheinland-Pfalz", "Saxony": "Sachsen", "Lower Saxony": "Niedersachsen", "Saxony-Anhalt": "Sachsen-Anhalt", "Thuringia": "Thüringen", "Schleswig-Holstein": "Schleswig-Holstein", "Brandenburg": "Brandenburg", "Baden-Württemberg": "Baden-Württemberg" };
+            return aliases[rawName] || rawName;
+        }
+
+        function matchRegionName(myName, geoName) {
+            if (!geoName || !myName) return false;
+            let gn = geoName.toLowerCase().trim();
+            let sn = myName.toLowerCase().trim();
+            let mappedCounty = (regionToCountyMap[myName] || myName).toLowerCase().trim();
+
+            if (sn.includes("waldnaab") && gn.includes("waldnaab")) return true;
+
+            // SUPER-NORMALIZACJA: Usuwamy kropki, myślniki i spacje
+            let cleanGn = gn.replace(/[\s\.\-]/g, '');
+            let cleanSn = sn.replace(/[\s\.\-]/g, '');
+            let cleanMapped = mappedCounty.replace(/[\s\.\-]/g, '');
+
+            if (cleanGn.includes(cleanSn) || cleanGn.includes(cleanMapped)) return true;
+            const aliases = {
+                "monachium": ["münchen"], 
+                "karlsruhe kreis": ["karlsruhe"], 
+                "amberg": ["amberg-sulzbach"],
+                "nordsachsen": ["nordsachsen", "delitzsch", "torgau", "oschatz"], 
+                "rendsburg-eckernförde": ["rendsburg-eckernförde", "rendsburg"],
+                "giessen": ["gießen"], 
+                "altmarkkreis salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"],
+                "altmarkkreis-salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"], 
+                "burgenlandkreis": ["burgenlandkreis", "burgenland"],
+                "burgenland": ["burgenlandkreis"], 
+                "heidekreis": ["heidekreis", "soltau-fallingbostel"],
+                "werra-meissner": ["werra-meißner", "werra-meissner-kreis", "werra-meissner"],
+                "werra-meißner-kreis": ["werra-meißner", "werra-meissner-kreis", "werra-meissner"],
+                "lübeck": ["lübeck", "luebeck"]
+            };
+            if (aliases[sn] && aliases[sn].some(a => gn.includes(a))) return true;
+            if (aliases[mappedCounty] && aliases[mappedCounty].some(a => gn.includes(a))) return true;
+
+            return false;
+        }
+
+        const landMap = {
+            "Baden-Württemberg": ["Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe", "Karlsruhe Kreis", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"],
+            "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kirchheim bei München", "Kulmbach", "Kulmbach Powiat", "Monachium", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
+            "Brandenburg": ["Barnim", "Elbe-Elster", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
+            "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Eschwege", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Giessen Powiat", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Wehrheim", "Weilrod", "Werra-Meissner"],
+            "Niedersachsen": ["Braunschweig", "Diepholz", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Lüneburg Powiat", "Osnabrück", "Stade", "Wolfsburg"],
+            "Nordrhein-Westfalen": ["Bad-Munstereifel", "Bedburg", "Bedburg Powiat", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Erftstadt Powiat", "Euskirchen", "Gangelt", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Mechernich", "Münster", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wülfrath", "Wuppertal", "Zülpich"],
+            "Rheinland-Pfalz": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
+            "Sachsen": ["Nordsachsen"],
+            "Sachsen-Anhalt": ["Altmarkkreis-Salzwedel", "Altmarkkreis Salzwedel", "Burgenland"],
+            "Schleswig-Holstein": ["Rendsburg-Eckernförde", "Lübeck"]
+        };
+
+        const landColors = {
+            "Baden-Württemberg": "#FF5733", "Bayern": "#3385FF", "Brandenburg": "#E633FF", "Hessen": "#FFD133", "Niedersachsen": "#33FF85", "Nordrhein-Westfalen": "#8A33FF", "Rheinland-Pfalz": "#FF8A33", "Sachsen": "#33FFE6", "Sachsen-Anhalt": "#FF3366", "Schleswig-Holstein": "#A1FF33" 
+        };
+
+        const regionCoords = {
+            "Elbe-Elster": [51.6167, 13.4000],
+            "Rendsburg-Eckernförde": [54.3044, 9.6631], "Altenkirchen (Westerwald)": [50.6874, 7.6456], "Altmarkkreis-Salzwedel": [52.8494, 11.1506], "Altmarkkreis Salzwedel": [52.8494, 11.1506], "Alzey-Worms": [49.7408, 8.1130], "Amberg": [49.4442, 11.8484], "Bad Homburg": [50.2269, 8.6186], "Bad Orb": [50.2264, 9.3467], "Bad Soden-Salmünster": [50.2833, 9.3667], "Bad-Kreuznach": [49.8430, 7.8660], "Bad-Munstereifel": [50.5562, 6.7640], "Bamberg": [49.8916, 10.8985], "Barnim": [52.8318, 13.8211], "Bayreuth": [49.9456, 11.5713], "Bedburg": [51.0000, 6.5833], "Bedburg Powiat": [51.0000, 6.5833], "Bernkastel-Wittlich": [49.9880, 6.8906], "Biebergemünd": [50.2272, 9.2789], "Blankenheim": [50.4386, 6.6492], "Bonn": [50.7374, 7.0982], "Braunschweig": [52.2689, 10.5268], "Breckerfeld": [51.2618, 7.4665], "Brühl": [50.8274, 6.9042], "Burgenland": [51.1500, 11.8333], "Calw": [48.7132, 8.7369], "Dahlem": [50.3833, 6.5500], "Diepholz": [52.6046, 8.3683], "Dülmen": [51.8288, 7.2798], "Düsseldorf": [51.2277, 6.7735], "Eifelkreis Bitburg-Prüm": [50.0500, 6.4167], "Ennepetal": [51.2982, 7.3508], "Eppstein": [50.1408, 8.3917], "Erftstadt": [50.8034, 6.7681], "Erftstadt Powiat": [50.8034, 6.7681], "Eschwege": [51.1833, 10.0500], "Euskirchen": [50.6606, 6.7865], "Flörsbachtal": [50.1167, 9.4333], "Flörsheim am Main": [50.0125, 8.4286], "Frankfurt": [50.1109, 8.6821], "Freigericht": [50.1333, 9.1167], "Freudenstadt": [48.4632, 8.4116], "Friedrichsdorf": [50.2562, 8.6384], "Fulda": [50.5528, 9.6766], "Fürth": [49.4774, 10.9886], "Gangelt": [50.9833, 6.0000], "Geilenkirchen": [50.9654, 6.1197], "Gelnhausen": [50.2017, 9.1869], "Giessen": [50.5841, 8.6784], "Giessen Powiat": [50.5841, 8.6784], "Gifhorn": [52.4884, 10.5473], "Glashütten": [50.2167, 8.4000], "Göttingen": [51.5413, 9.9158], "Gräfelfing": [48.1192, 11.4293], "Grävenwiesbach": [50.3861, 8.4550], "Gross-Gerau": [49.9234, 8.4830], "Gründau": [50.2185, 9.1179], "Hannover": [52.3759, 9.7320], "Harburg": [53.4608, 9.9822], "Hasselroth": [50.1667, 9.1000], "Hattersheim am Main": [50.0673, 8.4860], "Heidekreis": [52.8833, 9.6667], "Heidelberg": [49.3988, 8.6724], "Heilbronn": [49.1427, 9.2109], "Hellenthal": [50.4907, 6.4385], "Hersfeld-Rotenburg": [50.8667, 9.7167], "Hofheim am Taunus": [50.0877, 8.4452], "Holzminden": [51.8266, 9.4475], "Hürth": [50.8772, 6.8741], "Jossgrund": [50.1833, 9.4667], "Jülich": [50.9221, 6.3571], "Kall": [50.5398, 6.5540], "Kamp-Lintfort": [51.4988, 6.5332], "Karlsruhe": [49.0069, 8.4037], "Karlsruhe Kreis": [49.0833, 8.5167], "Kelkheim (Taunus)": [50.1384, 8.4526], "Kirchheim bei München": [48.1758, 11.7511], "Königstein (Taunus)": [50.1824, 8.4651], "Konstanz": [47.6603, 9.1758], "Kronberg im Taunus": [50.1814, 8.5076], "Kulmbach": [50.1082, 11.4586], "Kulmbach Powiat": [50.1082, 11.4586], "Leverkusen": [51.0303, 6.9843], "Limburg-Weilburg": [50.4167, 8.1667], "Linsengericht": [50.1833, 9.2167], "Lübeck": [53.8690, 10.6870], "Lüneburg": [53.2452, 10.4089], "Lüneburg Powiat": [53.2452, 10.4089], "Mayen-Koblenz": [50.3333, 7.3000], "Mechernich": [50.5910, 6.6543], "Monachium": [48.1351, 11.5820], "Münster": [51.9607, 7.6261], "Neu-Anspach": [50.3000, 8.5000], "Neustadt an der Waldnaab": [49.7314, 12.1706], "Nidderau": [50.2443, 8.8787], "Nordsachsen": [51.5000, 12.8333], "Oberberg": [51.0267, 7.5644], "Oberursel (Taunus)": [50.2014, 8.5778], "Oder-Spree": [52.2167, 14.2667], "Olpe": [51.0298, 7.8458], "Ortenau": [48.4167, 8.0000], "Osnabrück": [52.2799, 8.0472], "Pulheim": [51.0000, 6.8000], "Regensburg": [49.0134, 12.1016], "Rhein-Neckar-Kreis": [49.3500, 8.7667], "Rhein-Sieg": [50.7833, 7.3333], "Rheingau-Taunus": [50.1333, 8.0667], "Rheinisch-Bergischer": [51.0167, 7.2000], "Rodenbach": [50.1500, 9.0167], "Ronneburg": [50.2333, 9.0500], "Schleiden": [50.5303, 6.4746], "Schlüchtern": [50.3475, 9.5247], "Schmitten im Taunus": [50.2683, 8.4419], "Schwalbach": [50.1539, 8.5325], "Schwedt/Oder": [53.0583, 14.2833], "Sinntal": [50.2833, 9.6167], "Solingen": [51.1702, 7.0827], "Spree-Neiße": [51.7167, 14.4167], "Sprockhövel": [51.3683, 7.2483], "Stade": [53.6006, 9.4759], "Steinbach": [50.1683, 8.5714], "Straubing-Bogen": [48.9167, 12.6333], "Tönisvorst": [51.3204, 6.4950], "Trier-Saarburg": [49.6333, 6.6667], "Tuttlingen": [47.9839, 8.8174], "Usingen": [50.3344, 8.5323], "Vulkaneifel": [50.2167, 6.7833], "Walldorf-Mörfelden": [49.9833, 8.5667], "Wehrheim": [50.3040, 8.5721], "Weilerswist": [50.7601, 6.8404], "Weilrod": [50.3333, 8.4000], "Werra-Meissner": [51.2167, 9.9833], "Wesseling": [50.8252, 6.9792], "Westerwald": [50.5167, 7.8667], "Wolfsburg": [52.4227, 10.7865], "Wülfrath": [51.2833, 7.0333], "Wuppertal": [51.2562, 7.1508], "Zollernalb": [48.2667, 8.9167], "Zülpich": [50.6922, 6.6481]
+        };
+
+        var map = L.map('dabuOSMMap').setView([51.3, 10.45], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+        var markersLayer = new L.FeatureGroup().addTo(map);
+        var mapPlaceholder = document.createElement('div');
+        var fsControl = L.control({position: 'topright'});
+        fsControl.onAdd = function (map) {
+            var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+            var button = L.DomUtil.create('a', '', container);
+            button.innerHTML = '⛶'; button.href = '#'; button.title = 'Pełny ekran'; button.style.fontSize = '18px';
+            button.style.lineHeight = '30px'; button.style.textAlign = 'center'; button.style.textDecoration = 'none'; button.style.fontWeight = 'bold';
+            button.onclick = function(e){
+                e.preventDefault(); var mapDiv = document.getElementById('dabuOSMMap');
+                if(mapDiv.classList.contains('dabu-fullscreen-map')) {
+                    mapDiv.classList.remove('dabu-fullscreen-map'); button.innerHTML = '⛶';
+                    if (mapPlaceholder.parentNode) { mapPlaceholder.parentNode.insertBefore(mapDiv, mapPlaceholder); mapPlaceholder.parentNode.removeChild(mapPlaceholder); }
+                } else {
+                    mapDiv.classList.add('dabu-fullscreen-map');
+                    button.innerHTML = '✖';
+                    mapDiv.parentNode.insertBefore(mapPlaceholder, mapDiv); document.body.appendChild(mapDiv);
+                }
+                setTimeout(function(){ map.invalidateSize(); }, 300);
+            };
+            return container;
+        };
+        fsControl.addTo(map);
+
+        fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
+            .then(r => r.json())
+            .then(geoData => {
+               L.geoJSON(geoData, {
+                  style: function(feature) {
+                      let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
+                      let active = landMap[name] && landMap[name].length > 0;
+                      let regionColor = landColors[name] || "#00FF7F"; 
+                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 0.2 : 0.05 };
+                  },
+                  onEachFeature: function (feature, layer) {
+                      let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
+                      let count = landMap[name] ? landMap[name].length : 0;
+                      layer.bindTooltip("<b>"+name+"</b><br>"+(count > 0 ? "Rejony: "+count : "Brak rejonów"), {sticky: true, className: 'custom-leaflet-tooltip'});
+                      layer.on('click', () => selectLand(name));
+                  }
+               }).addTo(map);
+            });
+
+        fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
+            .then(r => r.json())
+            .then(geoData => {
+               kreiseLayer = L.geoJSON(geoData, {
+                  interactive: false,
+                  style: { color: "transparent", weight: 1, fillOpacity: 0 },
+                  onEachFeature: function (feature, layer) {
+                      let p = feature.properties || {};
+                      layer.featureName = p.GEN || p.NAME_3 || p.name || p.NAME_2 || "unknown";
+                  }
+               }).addTo(map);
+            });
+
+        function selectLand(landName) {
+            let regions = landMap[landName] || [];
+            let header = document.getElementById('selectedLandTitle');
+            header.style.display = 'block';
+            if (regions.length === 0) {
+                header.innerHTML = `❌ Brak rejonów w: <strong>${landName}</strong>`;
+                return;
+            }
+            header.innerHTML = `Wybrano: <strong>${landName}</strong> (${regions.length} rejonów)`;
+            currentFilteredLand = landName;
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                chk.checked = regions.includes(chk.value);
+                chk.closest('.region-label').style.display = regions.includes(chk.value) ? 'flex' : 'none';
+            });
+            refreshMarkers();
+        }
+
+        function refreshMarkers() {
+            markersLayer.clearLayers();
+            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
+
+            document.querySelectorAll('.region-chk:checked').forEach(cb => {
+                let name = cb.value.trim();
+                if(regionCoords[name]) {
+                    let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
+                    
+                    if (regionLinks[name]) {
+                        popupContent += `<br><br><a href="${regionLinks[name]}" target="_blank" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">🔗 Przejdź do wpisu</a>`;
+                    }
+
+                    L.marker(regionCoords[name], {
+                        icon: L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+                        })
+                    }).bindPopup(popupContent).addTo(markersLayer);
+                }
+
+                // --- AWARYJNY RĘCZNY OBRYS DLA NEUSTADT AN DER WALDNAAB ---
+                if (name === "Neustadt an der Waldnaab") {
+                    let neustadtPolygon = [
+                        [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
+                        [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
+                        [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
+                        [49.811, 11.722], [49.863, 11.855]
+                    ];
+                    L.polygon(neustadtPolygon, {
+                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
+                    }).addTo(markersLayer);
+                }
+
+                // --- AWARYJNY RĘCZNY OBRYS DLA ALTENKIRCHEN (WESTERWALD) ---
+                if (name === "Altenkirchen (Westerwald)") {
+                    let altenkirchenPolygon = [
+                        [50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], 
+                        [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], 
+                        [50.785, 7.444], [50.865, 7.533]
+                    ];
+                    L.polygon(altenkirchenPolygon, {
+                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
+                    }).addTo(markersLayer);
+                }
+
+                // --- AWARYJNY RĘCZNY OBRYS DLA EIFELKREIS BITBURG-PRÜM ---
+                if (name === "Eifelkreis Bitburg-Prüm") {
+                    let bitburgPolygon = [
+                        [50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], 
+                        [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], 
+                        [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]
+                    ];
+                    L.polygon(bitburgPolygon, {
+                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
+                    }).addTo(markersLayer);
+                }
+
+                if (kreiseLayer) {
+                    kreiseLayer.eachLayer(function(layer) {
+                         if (matchRegionName(name, layer.featureName)) {
+                             layer.setStyle({ color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 });
+                             if (layer.bringToFront) { layer.bringToFront(); }
+                         }
+                    });
+                }
+            });
+            
+            if(markersLayer.getLayers().length > 0) { 
+                map.fitBounds(markersLayer.getBounds(), {padding: [40, 40], maxZoom: 10});
+            }
+            updateCountySuggestions();
+        }
+
+        function resetMapAndList() {
+            currentFilteredLand = null;
+            document.getElementById('selectedLandTitle').style.display = 'none';
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                chk.checked = false; chk.closest('.region-label').style.display = 'flex';
+            });
+            markersLayer.clearLayers();
+            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
+            map.setView([51.3, 10.45], 6);
+            updateCountySuggestions();
+        }
+
+        function selectAllInCounty(countyName) {
+            document.querySelectorAll('.region-chk').forEach(cb => {
+                cb.checked = false;
+                if (regionToCountyMap[cb.value.trim()] === countyName) {
+                    cb.checked = true;
+                }
+            });
+            refreshMarkers();
+        }
+
+        function selectOnlyNormalRegions(e) {
+            if (e) e.preventDefault();
+            currentFilteredLand = null;
+            document.getElementById('selectedLandTitle').style.display = 'none';
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                let info = chk.closest('.region-label').getAttribute('data-info') || "";
+                chk.checked = info.includes("Terminy stałe");
+                chk.closest('.region-label').style.display = 'flex'; 
+            });
+            refreshMarkers();
+        }
+
+        function clearAllFilters(e) {
+            if (e) e.preventDefault();
+            document.getElementById('dabuRegionSearch').value = '';
+            resetMapAndList();
+        }
+
+        function updateCountySuggestions() {
+            let container = document.getElementById('countySuggestions');
+            container.innerHTML = '';
+            if (currentFilteredLand) {
+                let btnReset = document.createElement('button');
+                btnReset.className = 'dabu-county-btn';
+                btnReset.style.background = '#ff4444'; btnReset.style.color = 'white';
+                btnReset.innerHTML = '✖ Reset mapy';
+                btnReset.onclick = (e) => { e.preventDefault(); clearAllFilters(); };
+                container.appendChild(btnReset);
+
+                let btnLand = document.createElement('button');
+                btnLand.className = 'dabu-county-btn'; btnLand.style.background = '#3385FF'; btnLand.style.color = 'white';
+                btnLand.innerHTML = '🗺️ Pokaż cały Land';
+                btnLand.onclick = (e) => { 
+                    e.preventDefault();
+                    document.querySelectorAll('.region-chk').forEach(cb => {
+                        cb.checked = landMap[currentFilteredLand].includes(cb.value.trim());
+                    });
+                    refreshMarkers();
+                };
+                container.appendChild(btnLand);
+            }
+
+            let activeCounties = new Set();
+            if (currentFilteredLand && landMap[currentFilteredLand]) {
+                landMap[currentFilteredLand].forEach(regionName => {
+                    let county = regionToCountyMap[regionName];
+                    if (county) activeCounties.add(county);
+                });
+            } else {
+                document.querySelectorAll('.region-chk:checked').forEach(cb => {
+                    let county = regionToCountyMap[cb.value.trim()];
+                    if (county) activeCounties.add(county);
+                });
+            }
+            activeCounties.forEach(county => {
+                let btn = document.createElement('button');
+                btn.className = 'dabu-county-btn'; btn.innerHTML = `🎯 Pokaż tylko: ${county}`;
+                btn.onclick = (e) => { e.preventDefault(); selectAllInCounty(county); };
+                container.appendChild(btn);
+            });
+        }
+
+        function filterDabuRegions() {
+            let input = document.getElementById('dabuRegionSearch').value.toLowerCase();
+            document.querySelectorAll('.region-label').forEach(label => {
+                label.style.display = label.textContent.toLowerCase().includes(input) ? "flex" : "none";
+            });
+        }
+
+        // --- PODPIĘCIE EVENTÓW I DODANIE LINKÓW DO LISTY ---
+        document.querySelectorAll('.region-chk').forEach(cb => { 
+            cb.addEventListener('change', refreshMarkers); 
+        });
+
+        // Wstrzykiwanie ikony z linkiem obok checkboxów na liście
+        document.querySelectorAll('.region-label').forEach(label => {
+            let val = label.querySelector('input').value.trim();
+            if (regionLinks[val]) {
+                let btn = document.createElement('a');
+                btn.href = regionLinks[val];
+                btn.target = "_blank";
+                btn.innerHTML = "🔗";
+                btn.style.textDecoration = "none";
+                btn.style.marginLeft = "auto";
+                btn.style.paddingLeft = "10px";
+                btn.title = "Przejdź do artykułu";
+                
+                btn.addEventListener('click', (e) => e.stopPropagation()); 
+                
+                label.appendChild(btn);
+            }
+        });
+    </script>
+</body>
+</html>
