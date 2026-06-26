@@ -7,8 +7,11 @@
     <style>
         body { background-color: #121212; margin: 0; padding: 0; color: #e0e0e0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 200px; }
+        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 220px; }
         .order-module h2 { color: #f1c40f; border-bottom: 2px solid #333; padding-bottom: 15px; }
+        
+        /* Box z opisem */
+        .service-info { background: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #f1c40f; font-size: 0.95rem; line-height: 1.5; }
         
         .order-regions-container { padding: 10px; }
         .powiat-header { color: #3498db; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 20px 0 10px 0; font-size: 1.1rem; }
@@ -32,10 +35,10 @@
         }
         .cart-content { max-width: 1000px; margin: 0 auto; }
         .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .btn-order:disabled { background-color: #555; }
+        .btn-order:disabled { background-color: #555; cursor: not-allowed; }
 
         @media (max-width: 600px) {
-            .order-module { padding: 10px; padding-bottom: 180px; }
+            .order-module { padding: 10px; padding-bottom: 200px; }
             .regions-grid { grid-template-columns: 1fr; }
             .cart-summary { padding: 10px; }
         }
@@ -45,6 +48,11 @@
 
 <div class="order-module">
     <h2>📦 Zleć przygotowanie harmonogramów</h2>
+    
+    <div class="service-info">
+        ⚠️ <strong>Opis usługi:</strong> Terminy są pobierane automatycznie (botem) bezpośrednio z serwerów firm sprzątających. W cenie otrzymujesz przygotowanie zestawienia dla wszystkich wybranych adresów (wioski/ulice) na najbliższy dostępny termin dla wybranej frakcji.
+    </div>
+
     <div id="regionsContainer" class="order-regions-container"></div>
 </div>
 
@@ -57,7 +65,7 @@
 
 <script>
     (function() {
-        const pricePerRegion = 40;
+        const pricePerRegion = 40; // Aktualizacja ceny na 40 zł
         const targetPhoneNumber = "+48600812820";
         const regionsToOrder = {
             "📍 Powiat Kleve": ["Bedburg-Hau (E); (S)", "Emmerich am Rhein (E); (S)", "Geldern (E); (S)", "Issum (E); (S)", "Kerken (E); (S)", "Kevelaer (E); (S)", "Rees (E); (S)", "Rheurdt (E); (S)", "Straelen (E); (S)", "Uedem (E); (S)", "Weeze (E); (S)"],
