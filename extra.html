@@ -8,19 +8,25 @@
         body { background-color: #121212; margin: 0; padding: 0; color: #e0e0e0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         .order-module { background-color: #121212; color: #e0e0e0; padding: 25px; border-radius: 12px; border: 1px solid #333; max-width: 1000px; margin: 40px auto; box-sizing: border-box; }
         .order-module h2 { color: #f1c40f; border-bottom: 2px solid #333; padding-bottom: 15px; font-size: 1.8rem; }
-        .order-regions-container { max-height: 500px; overflow-y: auto; padding: 15px; border: 1px solid #222; border-radius: 8px; background: #171717; }
-        .powiat-header { color: #3498db; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 25px 0 12px 0; font-size: 1.15rem; }
+        .order-regions-container { max-height: 400px; overflow-y: auto; padding: 15px; border: 1px solid #222; border-radius: 8px; background: #171717; }
+        .powiat-header { color: #3498db; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 20px 0 10px 0; font-size: 1.1rem; }
         .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
-        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.95rem; }
-        .region-checkbox-label input { margin-right: 12px; width: 20px; height: 20px; accent-color: #f39c12; cursor: pointer; }
-        .cart-summary { background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #ffffff; border: none; padding: 20px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
+        .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }
+        
+        .cart-summary { background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #ffffff; border: none; padding: 18px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; }
 
+        /* OPTYMALIZACJA MOBILNA */
         @media (max-width: 600px) {
-            .order-module { padding: 15px; margin: 0; border-radius: 0; border: none; }
-            .regions-grid { grid-template-columns: 1fr; }
-            .region-checkbox-label { padding: 16px; font-size: 1rem; }
+            .order-module { padding: 10px; margin: 5px 0; border-radius: 0; border: none; }
+            .order-module h2 { font-size: 1.2rem; margin-bottom: 10px; }
+            .order-regions-container { max-height: 250px; } 
+            .cart-summary { margin-top: 10px; padding: 10px; } 
+            .regions-grid { grid-template-columns: 1fr; gap: 5px; }
+            .region-checkbox-label { padding: 12px; font-size: 0.95rem; }
+            .btn-order { padding: 15px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -31,9 +37,9 @@
     <div id="regionsContainer" class="order-regions-container"></div>
     <div class="cart-summary">
         <h3>🛒 Twój koszyk</h3>
-        <ul id="selectedRegionsList"><li>Brak wybranych gmin.</li></ul>
-        <div class="total-price-box">Razem do zapłaty: <span id="totalPrice">0</span> zł</div>
-        <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie</button>
+        <ul id="selectedRegionsList" style="padding-left: 20px; font-size: 0.9rem;"><li>Brak wybranych gmin.</li></ul>
+        <div style="font-size: 1.2rem; font-weight: bold;">Razem: <span id="totalPrice">0</span> zł</div>
+        <button id="submitOrderBtn" class="btn-order" disabled style="margin-top: 10px;">📱 Złóż zamówienie</button>
     </div>
 </div>
 
@@ -80,8 +86,10 @@
         }
 
         orderBtn.addEventListener('click', () => {
-            const orderId = `ZAM-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-            const msg = `Dzień dobry, składam zamówienie nr: ${orderId}\n\nWybrane rejony: ${selectedItems.join(', ')}.\nRazem do zapłaty: ${selectedItems.length * pricePerRegion} zł.`;
+            const dateStr = "20260626";
+            const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+            const orderId = `${dateStr}-${randomSuffix}`;
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${selectedItems.join(', ')}. Razem: ${selectedItems.length * pricePerRegion} zł.`;
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
