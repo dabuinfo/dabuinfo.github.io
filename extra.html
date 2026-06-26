@@ -7,9 +7,10 @@
     <style>
         body { background-color: #121212; margin: 0; padding: 0; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; }
         .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 220px; }
-        .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.95rem; line-height: 1.5; }
-        .powiat-header { color: #f1c40f; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 20px 0 10px; font-size: 1.1rem; }
-        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.9rem; }
+        .land-header { color: #f1c40f; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 25px 0 10px; font-size: 1.2rem; }
+        .powiat-sub-header { color: #3498db; margin: 15px 0 5px 20px; font-size: 1rem; font-style: italic; }
+        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-bottom: 10px; margin-left: 20px; }
         .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
@@ -19,7 +20,8 @@
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
-            .regions-grid { grid-template-columns: 1fr; }
+            .regions-grid { grid-template-columns: 1fr; margin-left: 0; }
+            .powiat-sub-header { margin-left: 10px; }
         }
     </style>
 </head>
@@ -28,9 +30,8 @@
 <div class="order-module">
     <h2>📦 Zamówienie harmonogramów</h2>
     <div class="service-info">
-        ⚠️ <b>Opis usługi:</b> Terminy są pobierane automatycznie (botem) bezpośrednio z serwerów firm sprzątających. <br>
-        • <b>Cena: 40 zł</b> za każdy wybrany rejon.<br>
-        • W cenie otrzymujesz przygotowanie zestawienia dla wybranych adresów (wioski/ulice) na <b>najbliższy dostępny termin</b>.
+        ⚠️ <b>Opis usługi:</b> Terminy pobierane botem z serwerów firm sprzątających. <br>
+        • <b>Cena: 40 zł</b> za każdą wybraną pozycję (najbliższy termin).
     </div>
     <div id="regionsContainer"></div>
 </div>
@@ -48,12 +49,34 @@
         const targetPhoneNumber = "+48600812820";
         
         const data = {
-            "📍 Gminy (Extra)": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
-            "📍 Baden-Württemberg": ["Freudenstadt", "Karlsruhe", "Ortenau", "Tuttlingen"],
-            "📍 Bayern": ["Bamberg", "München", "Regensburg", "Straubing-Bogen"],
-            "📍 Hessen": ["Bad-Homburg", "Giessen", "Hersfeld-Rotenburg", "Limburg-Weilburg", "Rheingau-Taunus"],
-            "📍 Nordrhein-Westfalen": ["Bonn", "Dortmund", "Neuss", "Solingen", "Wuppertal", "Leverkusen"],
-            "📍 Pozostałe": ["Leipzig", "Stade", "Wolfsburg", "Göttingen"]
+            "Gminy (Extra)": {
+                type: "nested",
+                sub: {
+                    "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
+                    "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
+                    "Powiat Neuss": ["Dormagen", "Grevenbroich", "Jüchen", "Kaarst", "Korschenbroich", "Meerbusch", "Neuss", "Rommerskirchen"],
+                    "Powiat Wesel": ["Alpen", "Neukirchen-Vluyn", "Sonsbeck", "Voerde", "Xanten"],
+                    "Powiat Düren": ["Aldenhoven", "Jülich", "Merzenich"],
+                    "Powiat Heinsberg": ["Hückelhoven", "Selfkant", "Übach-Palenberg"],
+                    "Powiat Viersen": ["Grefrath", "Nettetal", "Tönisvorst", "Viersen"],
+                    "Powiat Märkischer": ["Altena", "Balve", "Iserlohn", "Menden", "Nachrodt-Wiblingwerde", "Plettenberg", "Werdohl"]
+                }
+            },
+            "Landy": {
+                type: "simple",
+                list: {
+                    "Baden-Württemberg": ["&#128205; Freudenstadt", "&#128205; Karlsruhe", "&#128205; Ortenau (Offenburg)", "&#128205; Tuttlingen"],
+                    "Bayern": ["&#128205; Bamberg", "&#128205; Monachium-Południowy Wschód", "&#128205; Neustadt an der Waldnaab", "&#128205; Regensburg", "&#128205; Straubing-Bogen"],
+                    "Brandenburg": ["&#128205; Elbe-Elstern", "&#128205; Oder-Spree"],
+                    "Hessen": ["&#128205; Bad-Homburg", "&#128205; Giessen", "&#128205; Hersfeld-Rotenburg", "&#128205; Limburg-Weilburg", "&#128205; Rheingau-Taunus"],
+                    "Niedersachsen": ["&#128205; Diepholz", "&#128205; Emsland", "&#128205; Göttingen", "&#128205; Gifhorn", "&#128205; Harburg", "&#128205; Lüneburg", "&#128205; Stade", "&#128205; Wolfsburg"],
+                    "Nordrhein-Westfalen": ["&#128205; Bonn", "&#128205; Dortmund", "&#128205; Erftstadt", "&#128205; Jülich", "&#128205; Leverkusen", "&#128205; Neuss", "&#128205; Pulheim", "&#128205; Rhein-Sieg", "&#128205; Solingen", "&#128205; Wesseling", "&#128205; Wuppertal"],
+                    "Rheinland-Pfalz": ["&#128205; Alzey-Worms", "&#128205; Bad-Kreuznach", "&#128205; Mayen-Koblenz", "&#128205; Westerwald"],
+                    "Sachsen": ["&#128205; Leipzig", "&#128205; Nordsachsen"],
+                    "Sachsen-Anhalt": ["&#128205; Altmarkkreis Salzwedel", "&#128205; Burgenland"],
+                    "Schleswig-Holstein": ["&#128205; Rendsburg-Eckenförde"]
+                }
+            }
         };
 
         const container = document.getElementById('regionsContainer');
@@ -61,21 +84,33 @@
         const orderBtn = document.getElementById('submitOrderBtn');
         let selectedItems = [];
 
-        Object.entries(data).forEach(([land, regions]) => {
-            const h = document.createElement('h4'); h.className = 'powiat-header'; h.textContent = land; container.appendChild(h);
+        Object.entries(data).forEach(([group, config]) => {
+            const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${group}`; container.appendChild(h);
+            
+            if (config.type === "nested") {
+                Object.entries(config.sub).forEach(([powiat, regions]) => {
+                    const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = powiat; container.appendChild(subH);
+                    createGrid(regions);
+                });
+            } else {
+                Object.values(config.list).forEach(regions => createGrid(regions));
+            }
+        });
+
+        function createGrid(regions) {
             const grid = document.createElement('div'); grid.className = 'regions-grid';
-            regions.forEach(item => {
+            regions.forEach(r => {
+                const cleanName = r.replace(/&#\d+;\s*/g, '');
                 const label = document.createElement('label'); label.className = 'region-checkbox-label';
                 const input = document.createElement('input'); input.type = 'checkbox';
                 input.addEventListener('change', (e) => {
-                    if (e.target.checked) selectedItems.push(item);
-                    else selectedItems = selectedItems.filter(i => i !== item);
+                    selectedItems = e.target.checked ? [...selectedItems, cleanName] : selectedItems.filter(i => i !== cleanName);
                     updateUI();
                 });
-                label.appendChild(input); label.appendChild(document.createTextNode(item)); grid.appendChild(label);
+                label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
             });
             container.appendChild(grid);
-        });
+        }
 
         function updateUI() {
             priceDisplay.textContent = selectedItems.length * pricePerRegion;
@@ -84,8 +119,7 @@
 
         orderBtn.addEventListener('click', () => {
             const orderId = `20260626-${Math.floor(1000 + Math.random() * 9000)}`;
-            const total = selectedItems.length * pricePerRegion;
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${selectedItems.join(', ')}. Razem: ${total} zł.`;
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${selectedItems.join(', ')}. Razem: ${selectedItems.length * pricePerRegion} zł.`;
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
