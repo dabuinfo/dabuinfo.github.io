@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>dabu-info - Terminy Wystawek 2026 | Plany i Rozpiski Sperrmüll w Niemczech</title>
+    <meta name="description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów wielkogabarytowych (Sperrmüll) w Niemczech na rok 2026. Sprawdź harmonogramy dla ponad 100 rejonów w Europie.">
+    <meta name="keywords" content="terminy wystawek, rozpiski, plany, harmonogramy 2026, gabaryty Niemcy, Sperrmüll Termine, Sperrmüllkalender, bulk waste collection Germany, termíny svozu, krupni otpad, lomtalanítás idopontok">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dabu-info.com/">
+    <meta property="og:title" content="dabu-info - Terminy Wystawek 2026">
+    <meta property="og:description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów (Sperrmüll) w Niemczech.">
+    
+    <meta property="og:image" content="https://dabu-info.com/dabu-infologo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="600">
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
+    <style>
+        /*<![CDATA[*/
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        /* ========================================= */
+        /* STYL GŁÓWNY WIZYTÓWKI (DARK MODE)         */
+        /* ========================================= */
+        html, body {
+            background-color: #0a0a0a !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 15px;
+            box-sizing: border-box;
+        }
+
+        .offer-wrapper {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            width: 100%;
+            max-width: 1200px;
+            padding: 35px 25px;
+            box-sizing: border-box;
+            border-radius: 12px;
+            border: 1px solid #333;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin: 20px 0;
+            padding-bottom: 80px;
+        }
+
+        /* ========================================= */
+        /* PRZYCISKI AKCJI (CTA)                     */
+        /* ========================================= */
+        .cta-btn-primary, .cta-btn-secondary {
+            display: inline-block; padding: 16px 30px; font-size: 1.1em; font-weight: bold;
+            text-transform: uppercase; border-radius: 50px; text-decoration: none; transition: all 0.3s;
+            flex: 1; min-width: 250px; max-width: 350px; cursor: pointer; text-align: center;
+        }
+
+        .cta-btn-primary { background: linear-gradient(90deg, #2ecc71, #27ae60); color: #000 !important; box-shadow: 0 5px 15px rgba(46,204,113,0.3); border: none; }
+        .cta-btn-primary:hover { transform: translateY(-3px); background: linear-gradient(90deg, #27ae60, #2ecc71); box-shadow: 0 8px 20px rgba(46,204,113,0.5); }
+
+        /* ========================================= */
+        /* STYL KALENDARZA                           */
+        /* ========================================= */
+        #calendar-wrapper { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e0e0e0; width: 100%; margin: 0 auto 30px auto; background: #1a1a1a; padding: 20px; border-radius: 12px; box-sizing: border-box; border: 1px solid #333; }
+        .header-main { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .calendar-icon { width: 32px; height: 32px; flex-shrink: 0; }
+        .calendar-header { border-bottom: 2px solid #333; margin-bottom: 25px; padding-bottom: 15px; }
+        .calendar-header h2 { margin: 0; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        #calendar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; }
+        .month-table { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 12px; background: #252525; border-radius: 8px; padding: 5px; }
+        .current-month { outline: 2px solid #007bff; box-shadow: 0 0 15px rgba(0, 123, 255, 0.3); }
+        .month-title { background-color: #333; color: #007bff; text-align: center; padding: 8px; font-weight: bold; text-transform: uppercase; border-radius: 4px; font-size: 13px; }
+        .current-month .month-title { background-color: #007bff; color: #fff; }
+        .month-table th { color: #888; padding: 5px 0; font-weight: 600; font-size: 11px; }
+        .month-table td { background: #2d2d2d; text-align: center; padding: 6px 0; border-radius: 3px; position: relative; cursor: default; height: 28px; }
+        
+        .week-header { color: #555 !important; font-size: 10px !important; }
+        .week-number { background: #1e1e1e !important; color: #666 !important; font-size: 10px !important; font-weight: bold; border-right: 1px solid #333; cursor: pointer; transition: all 0.2s; }
+        .week-number:hover { background: #3498db !important; color: #fff !important; }
+        .has-holiday:hover::after { content: attr(data-holiday); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #007bff; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; white-space: nowrap; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: none; }
+        .has-holiday:hover::before { content: ''; position: absolute; bottom: 110%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #007bff transparent transparent transparent; z-index: 999; }
+        .month-table td:nth-child(8) { color: #ff5555; } 
+        .month-table td:nth-child(7) { color: #ffaaaa; } 
+        .holiday-national { background-color: #8B0000 !important; color: #fff !important; font-weight: bold; cursor: help; }
+        .holiday-regional { background-color: #4A2323 !important; color: #ffcccc !important; cursor: help; }
+        .today { background-color: #007bff !important; color: white !important; font-weight: bold; }
+        .calendar-legend { margin-top: 30px; padding: 15px; background: #252525; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px; justify-content: center; }
+        .legend-box { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+        .current-month-indicator { border: 2px solid #007bff; }
+        .clickable-day:hover { background-color: #444 !important; outline: 1px solid #007bff; }
+
+        #calendar-results { display: none; margin-top: 25px; background: #151515; border-radius: 10px; border: 1px solid #333; text-align: left; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        #cal-res-title { background: #1a1a1a; color: #007bff; margin: 0; font-size: 16px; padding: 15px 20px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
+        .zebra-row { background-color: #222; padding: 15px 20px; color: #ddd; font-size: 15px; line-height: 1.5; border-left: 4px solid transparent; transition: all 0.2s ease; display: block; }
+        .zebra-row:nth-child(even) { background-color: #1a1a1a; }
+        .zebra-row:hover { background-color: #2a2a2a; border-left-color: #2ecc71; }
+        .zebra-row strong { color: #fff; font-size: 16px; letter-spacing: 0.5px; }
+        .zebra-row input[type="checkbox"] { cursor: pointer; }
+
+        /* KOSZYK ZAMÓWIEŃ */
+        #order-cart-widget {
+            position: fixed; bottom: 20px; left: 20px; width: 320px; max-width: 90vw; background: #1e1e1e;
+            border: 2px solid #2ecc71; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 1001; display: none; flex-direction: column; overflow: hidden; font-family: 'Segoe UI', sans-serif;
+        }
+        .cart-header { background: #2ecc71; color: #000; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .cart-body { max-height: 250px; overflow-y: auto; padding: 10px; background: #121212; color: #ccc; font-size: 13px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px; border-bottom: 1px dashed #333; gap: 10px; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-title { flex: 1; word-wrap: break-word; }
+        .cart-item-remove { color: #ff5555; cursor: pointer; font-weight: bold; background: none; border: none; font-size: 14px; }
+        .cart-footer { padding: 15px; background: #1a1a1a; border-top: 1px solid #333; text-align: center; }
+        .btn-send-cart { padding: 10px; color: #000; font-weight: bold; font-size: 13px; letter-spacing: 0.5px; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-send-cart:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        .calendar-info { margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px; border-left: 4px solid #007bff; font-size: 13px; text-align: left; }
+        .calendar-info h3 { margin-top: 0; color: #fff; font-size: 16px; margin-bottom: 15px; }
+        .calendar-info p { margin: 5px 0 10px; }
+        .calendar-info ul { margin: 0; padding-left: 20px; }
+        .calendar-info li { margin-bottom: 8px; color: #d0d0d0; }
+        .calendar-info strong { color: #fff; }
+
+        .seo-tags-container { margin-top: 30px; padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #262626; text-align: left; }
+        .seo-tags-container h4 { color: #666; font-size: 0.9em; margin: 0 0 10px 0; text-transform: uppercase; }
+        .seo-tags { font-size: 0.8em; color: #555; line-height: 1.8; }
+        
+        .footer-info { font-size: 0.85em; color: #777; border-top: 1px solid #222; padding-top: 20px; margin-top: 30px; text-align: left; line-height:1.6; }
+
+        @media (max-width: 768px) {
+            #calendar-grid { grid-template-columns: 1fr; }
+            #order-cart-widget { bottom: 90px; left: 10px; right: 10px; width: auto; max-width: none; }
+        }
+        @media (min-width: 769px) {
+            .offer-wrapper { padding: 50px 45px; }
+            .calendar-header h2 { font-size: 28px; }
+        }
+        /*]]>*/
+    </style>
+</head>
+<body>
+
+    <div class="offer-wrapper">
+
+        <div id="calendar-wrapper">
+            <div class="calendar-header">
+                <div class="header-main">
+                    <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#007bff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h2 id="cal-title">Deutschland 2026</h2>
+                </div>
+                <p id="cal-hint" style="font-size: 13px; color: #aaa; margin-top: 5px; text-align:center;">
+                    Kliknij w wybrany <strong>dzień</strong>, aby wygenerować rejony do zamówienia.<br>
+                    Kliknij w <strong>numer tygodnia</strong> (lewa kolumna), aby dodać cały tydzień do zapytania!
+                </p>
+            </div>
+            
+            <div id="calendar-grid"></div>
+            
+            <div class="calendar-legend">
+                <div><span class="legend-box holiday-national"></span> <span id="leg-nat">National</span></div>
+                <div><span class="legend-box holiday-regional"></span> <span id="leg-reg">Regional</span></div>
+                <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Current</span></div>
+            </div>
+
+            <div id="calendar-results">
+                <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
+                <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
+                <div id="cal-res-content"></div>
+            </div>
+        </div>
+
+        <div class="seo-tags-container">
+            <h3 style="color: #fff; font-size: 1.1em; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
+            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy.</p>
+            <div class="seo-tags" style="font-size: 0.85em; color: #888; line-height: 1.8; border-top: 1px solid #262626; padding-top: 15px;">
+                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
+                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
+                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates.</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
+            </div>
+        </div>
+
+        <div class="footer-info" id="t_footer_contact">
+            <strong>🏠 Kontakt i Zamówienia:</strong><br>
+            👤 Dariusz (Zamówienia i Wsparcie)<br>
+            📧 dariusz@dabu-info.com | 📞 +48 600 812 820<br><br>
+            <strong>💼 Realizacja i Płatności:</strong><br>
+            👤 Ewa Buczkowska (Szef)<br>
+            📍 56-300 Milicz<br>
+            💳 Płatności: BLIK, <a href="mailto:ewabu74@gmail.com" style="color:#2ecc71; text-decoration:none; font-weight:bold;">PayPal</a><br>
+            🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323<br><br>
+            <strong>Odbiór osobisty:</strong> Możliwość odbioru w Miliczu po wcześniejszym kontakcie.<br><br>
+            © 2026 dabu-info
+        </div>
+
+    </div>
+
+    <div id="order-cart-widget">
+        <div class="cart-header">
+            <span>🛒 Twój Koszyk Wyceny</span>
+            <span id="cart-counter" style="background:#000; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:12px;">0</span>
+        </div>
+        <div class="cart-body" id="cart-items-container">
+            <div style="text-align:center; color:#666; padding:10px;">Koszyk jest pusty. Zaznacz rejony w kalendarzu.</div>
+        </div>
+        <div class="cart-footer">
+            <div style="margin-bottom: 10px; font-size: 12px; color: #aaa;">Wybierz formę zamówienia:</div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-send-cart" id="btn-submit-email" style="flex: 1; background: #2ecc71;">✉️ E-MAIL</button>
+                <button class="btn-send-cart" id="btn-submit-sms" style="flex: 1; background: #3498db; color: #fff;">📱 SMS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TŁUMACZENIA -->
+    <script>
+        //<![CDATA[
+        const trData = {
+            pl: {
+                t_footer_contact: "<strong>🏠 Kontakt i Zamówienia:</strong><br>👤 Dariusz (Zamówienia i Wsparcie)<br>📧 dariusz@dabu-info.com | 📞 +48 600 812 820<br><br><strong>💼 Realizacja i Płatności:</strong><br>👤 Ewa Buczkowska (Szef)<br>📍 56-300 Milicz<br>💳 Płatności: BLIK, <a href=\"mailto:ewabu74@gmail.com\" style=\"color:#2ecc71; text-decoration:none; font-weight:bold;\">PayPal</a><br>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323<br><br><strong>Odbiór osobisty:</strong> Możliwość odbioru w Miliczu po wcześniejszym kontakcie.<br><br>© 2026 dabu-info",
+                "cal-info-h3": "ℹ️ Informacje o zasięgu najbliższych świąt",
+                "cal-info-p1": "<strong>Święta Narodowe (National)</strong> są dniami wolnymi w <strong>całych Niemczech</strong>.",
+                "cal-info-p2": "<strong>Święta Regionalne (Regional)</strong> obowiązują tylko w określonych landach. Sprawdź, gdzie najbliższe święto regionalne w 2026 roku <strong>NIE JEST</strong> dniem wolnym:",
+                "cal-info-l1": "<strong>Trzech Króli (06.01):</strong> Normalny dzień roboczy z wyjątkiem BW, BY, ST.",
+                "cal-info-l2": "<strong>Dzień Kobiet (08.03):</strong> Normalny dzień roboczy z wyjątkiem BE, MV.",
+                "cal-info-l3": "<strong>Boże Ciało (04.06):</strong> Brak dnia wolnego w północnych i wschodnich landach.",
+                "cal-info-l4": "<strong>Wniebowzięcie NMP (15.08):</strong> Dzień roboczy niemal wszędzie, z wyjątkiem SL i gmin w BY.",
+                "cal-info-l5": "<strong>Święto Reformacji (31.10):</strong> Brak wolnego na zachodzie i południu kraju.",
+                "cal-info-l6": "<strong>Wszystkich Świętych (01.11):</strong> Dzień roboczy na północy i wschodzie kraju.",
+                "cal-info-l7": "<strong>Dzień Pokuty (18.11):</strong> Normalny dzień roboczy w 15 z 16 landów (tylko w Saksonii wolne)."
+            },
+            de: {
+                t_footer_contact: "<strong>🏠 Kontakt & Bestellungen:</strong><br>👤 Dariusz (Bestellungen & Support)<br>📧 dariusz@dabu-info.com | 📞 +48 600 812 820<br><br><strong>💼 Abwicklung & Zahlungen:</strong><br>👤 Ewa Buczkowska (Geschäftsführung)<br>📍 56-300 Milicz (Polen)<br>💳 Zahlungen: BLIK, <a href=\"mailto:ewabu74@gmail.com\" style=\"color:#2ecc71; text-decoration:none; font-weight:bold;\">PayPal</a><br>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323<br><br>© 2026 dabu-info",
+                "cal-info-h3": "ℹ️ Informationen zu anstehenden Feiertagen",
+                "cal-info-p1": "<strong>Nationale Feiertage</strong> sind in <strong>ganz Deutschland</strong> gesetzliche Ruhetage.",
+                "cal-info-p2": "<strong>Regionale Feiertage</strong> gelten nur in bestimmten Bundesländern. Prüfen Sie das nächste regionale Fest:",
+                "cal-info-l1": "<strong>Heilige Drei Könige (06.01):</strong> Arbeitstag außer in BW, BY, ST.",
+                "cal-info-l2": "<strong>Frauentag (08.03):</strong> Arbeitstag außer in BE, MV.",
+                "cal-info-l3": "<strong>Fronleichnam (04.06):</strong> Kein Feiertag im Norden und Osten.",
+                "cal-info-l4": "<strong>Mariä Himmelfahrt (15.08):</strong> Arbeitstag außer im Saarland und in Teilen Bayerns.",
+                "cal-info-l5": "<strong>Reformationstag (31.10):</strong> Kein Feiertag im Westen und Süden.",
+                "cal-info-l6": "<strong>Allerheiligen (01.11):</strong> Arbeitstag im Norden und Osten.",
+                "cal-info-l7": "<strong>Buß- und Bettag (18.11):</strong> Nur in Sachsen ein Feiertag."
+            },
+            en: {
+                t_footer_contact: "<strong>🏠 Contact & Orders:</strong><br>👤 Dariusz (Orders & Support)<br>📧 dariusz@dabu-info.com | 📞 +48 600 812 820<br><br><strong>💼 Fulfillment & Payments:</strong><br>👤 Ewa Buczkowska (Manager)<br>📍 56-300 Milicz (Poland)<br>💳 Payments: BLIK, <a href=\"mailto:ewabu74@gmail.com\" style=\"color:#2ecc71; text-decoration:none; font-weight:bold;\">PayPal</a><br>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323<br><br>© 2026 dabu-info",
+                "cal-info-h3": "ℹ️ Upcoming Holiday Coverage",
+                "cal-info-p1": "<strong>National Holidays</strong> are legally non-working days <strong>throughout Germany</strong>.",
+                "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states:",
+                "cal-info-l1": "<strong>Epiphany (06.01):</strong> Working day except BW, BY, ST.",
+                "cal-info-l2": "<strong>Women's Day (08.03):</strong> Working day except BE, MV.",
+                "cal-info-l3": "<strong>Corpus Christi (04.06):</strong> No day off in northern and eastern states.",
+                "cal-info-l4": "<strong>Assumption Day (15.08):</strong> Working day except SL and parts of Bavaria.",
+                "cal-info-l5": "<strong>Reformation Day (31.10):</strong> No day off in the west and south.",
+                "cal-info-l6": "<strong>All Saints' Day (01.11):</strong> Working day in the north and east.",
+                "cal-info-l7": "<strong>Day of Repentance (18.11):</strong> Day off only in Saxony."
+            },
+            fr: { "cal-info-h3": "ℹ️ Jours fériés", "cal-info-p1": "<strong>Les jours fériés nationaux</strong> s'appliquent à toute l'Allemagne.", "cal-info-p2": "<strong>Les jours fériés régionaux</strong> diffèrent selon les États.", "cal-info-l1": "Épiphanie (06.01)", "cal-info-l2": "Journée des femmes (08.03)", "cal-info-l3": "Fête-Dieu (04.06)", "cal-info-l4": "Assomption (15.08)", "cal-info-l5": "Fête de la Réformation (31.10)", "cal-info-l6": "Toussaint (01.11)", "cal-info-l7": "Jour de la repentance (18.11)" },
+            cs: { "cal-info-h3": "ℹ️ Státní svátky", "cal-info-p1": "<strong>Národní svátky</strong> platí v celém Německu.", "cal-info-p2": "<strong>Regionální svátky</strong> se liší podle spolkových zemí.", "cal-info-l1": "Tři králové (06.01)", "cal-info-l2": "MDŽ (08.03)", "cal-info-l3": "Boží Tělo (04.06)", "cal-info-l4": "Nanebevzetí (15.08)", "cal-info-l5": "Den reformace (31.10)", "cal-info-l6": "Všech svatých (01.11)", "cal-info-l7": "Den pokání (18.11)" },
+            hu: { "cal-info-h3": "ℹ️ Ünnepnapok", "cal-info-p1": "<strong>A nemzeti ünnepek</strong> egész Németországban érvényesek.", "cal-info-p2": "<strong>A regionális ünnepek</strong> tartományonként változnak.", "cal-info-l1": "Vízkereszt (06.01)", "cal-info-l2": "Nőnap (08.03)", "cal-info-l3": "Úrnapja (04.06)", "cal-info-l4": "Nagyboldogasszony (15.08)", "cal-info-l5": "Reformáció napja (31.10)", "cal-info-l6": "Mindenszentek (01.11)", "cal-info-l7": "Bűnbánat napja (18.11)" },
+            ro: { "cal-info-h3": "ℹ️ Sărbători legale", "cal-info-p1": "<strong>Sărbătorile naționale</strong> se aplică în toată Germania.", "cal-info-p2": "<strong>Sărbătorile regionale</strong> diferă în funcție de land.", "cal-info-l1": "Boboteaza (06.01)", "cal-info-l2": "Ziua Femeii (08.03)", "cal-info-l3": "Corpus Christi (04.06)", "cal-info-l4": "Adormirea Maicii Domnului (15.08)", "cal-info-l5": "Ziua Reformei (31.10)", "cal-info-l6": "Toți Sfinții (01.11)", "cal-info-l7": "Ziua Pocăinței (18.11)" },
+            tr: { "cal-info-h3": "ℹ️ Resmi Tatiller", "cal-info-p1": "<strong>Ulusal tatiller</strong> tüm Almanya'da geçerlidir.", "cal-info-p2": "<strong>Bölgesel tatiller</strong> eyaletlere göre değişir.", "cal-info-l1": "Epifani (06.01)", "cal-info-l2": "Kadınlar Günü (08.03)", "cal-info-l3": "Corpus Christi (04.06)", "cal-info-l4": "Meryem'in Göğe Kabulü (15.08)", "cal-info-l5": "Reformasyon Günü (31.10)", "cal-info-l6": "Azizler Günü (01.11)", "cal-info-l7": "Tövbe Günü (18.11)" },
+            hr: { "cal-info-h3": "ℹ️ Praznici", "cal-info-p1": "<strong>Nacionalni praznici</strong> vrijede za cijelu Njemačku.", "cal-info-p2": "<strong>Regionalni praznici</strong> razlikuju se po saveznim pokrajinama.", "cal-info-l1": "Sveta tri kralja (06.01)", "cal-info-l2": "Dan žena (08.03)", "cal-info-l3": "Tijelovo (04.06)", "cal-info-l4": "Velika Gospa (15.08)", "cal-info-l5": "Dan reformacije (31.10)", "cal-info-l6": "Svi sveti (01.11)", "cal-info-l7": "Dan pokajanja (18.11)" },
+            uk: { "cal-info-h3": "ℹ️ Святкові дні", "cal-info-p1": "<strong>Національні свята</strong> діють по всій Німеччині.", "cal-info-p2": "<strong>Регіональні свята</strong> відрізняються залежно від землі.", "cal-info-l1": "Водохреща (06.01)", "cal-info-l2": "Жіночий день (08.03)", "cal-info-l3": "Свято Тіла і Крові (04.06)", "cal-info-l4": "Успіння (15.08)", "cal-info-l5": "День Реформації (31.10)", "cal-info-l6": "День усіх святих (01.11)", "cal-info-l7": "День покаяння (18.11)" },
+            ru: { "cal-info-h3": "ℹ️ Праздничные дни", "cal-info-p1": "<strong>Национальные праздники</strong> действуют по всей Германии.", "cal-info-p2": "<strong>Региональные праздники</strong> зависят от земли.", "cal-info-l1": "Крещение (06.01)", "cal-info-l2": "Женский день (08.03)", "cal-info-l3": "Праздник Тела и Крови (04.06)", "cal-info-l4": "Успение (15.08)", "cal-info-l5": "День Реформации (31.10)", "cal-info-l6": "День всех святых (01.11)", "cal-info-l7": "День покаяния (18.11)" },
+            lt: { "cal-info-h3": "ℹ️ Šventės", "cal-info-p1": "<strong>Nacionalinės šventės</strong> galioja visoje Vokietijoje.", "cal-info-p2": "<strong>Regioninės šventės</strong> skiriasi pagal žemę.", "cal-info-l1": "Trys Karaliai (06.01)", "cal-info-l2": "Moters diena (08.03)", "cal-info-l3": "Devintinės (04.06)", "cal-info-l4": "Žolinė (15.08)", "cal-info-l5": "Reformacijos diena (31.10)", "cal-info-l6": "Visų Šventųjų diena (01.11)", "cal-info-l7": "Atgailos diena (18.11)" },
+            lv: { "cal-info-h3": "ℹ️ Svētku dienas", "cal-info-p1": "<strong>Nacionālie svētki</strong> ir spēkā visā Vācijā.", "cal-info-p2": "<strong>Reģionālie svētki</strong> atšķiras pa federālajām zemēm.", "cal-info-l1": "Zvaigznes diena (06.01)", "cal-info-l2": "Sieviešu diena (08.03)", "cal-info-l3": "Kristus Miesas svētki (04.06)", "cal-info-l4": "Marijas debesbraukšana (15.08)", "cal-info-l5": "Reformācijas diena (31.10)", "cal-info-l6": "Visu Svēto diena (01.11)", "cal-info-l7": "Grēku nožēlas diena (18.11)" }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var userLangRaw = navigator.language || navigator.userLanguage;
+            var userLang = userLangRaw.substring(0, 2).toLowerCase();
+            const supported = ['pl','de','en','fr','cs','hu','ro','tr','hr','uk','ru','lt','lv']; 
+            if (!supported.includes(userLang)) { userLang = 'de'; }
+            
+            var tc = trData[userLang] || trData['de'];
+            var fallback = trData['en'];
+
+            var baseKeys = Object.keys(trData['pl']);
+            baseKeys.forEach(function(k) {
+                var el = document.getElementById(k);
+                if(el) el.innerHTML = tc[k] || fallback[k] || trData['de'][k];
+            });
+        });
+        //]]>
+    </script>
+
+    <script>
+    //<![CDATA[
+    let orderCart = [];
+
+    function updateCartUI() {
+        const cartWidget = document.getElementById('order-cart-widget');
+        const cartContainer = document.getElementById('cart-items-container');
+        const cartCounter = document.getElementById('cart-counter');
+
+        if (orderCart.length > 0) {
+            cartWidget.style.display = 'flex';
+            cartCounter.innerText = orderCart.length;
+            cartContainer.innerHTML = orderCart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-title">${item}</div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${index})">✕</button>
+                </div>
+            `).join('');
+        } else {
+            cartWidget.style.display = 'none';
+            cartCounter.innerText = '0';
+            cartContainer.innerHTML = `<div style="text-align:center; color:#666; padding:10px;">Koszyk jest pusty.</div>`;
+        }
+    }
+
+    function addToCart(itemString) {
+        if (!orderCart.includes(itemString)) {
+            orderCart.push(itemString);
+            updateCartUI();
+        }
+    }
+
+    function removeFromCart(index) { orderCart.splice(index, 1); updateCartUI(); }
+
+    function generateOrderNumber() {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const random4 = Math.floor(1000 + Math.random() * 9000);
+        return `${yyyy}${mm}${dd}-${random4}`;
+    }
+
+    function getCartMessage(orderNum) {
+        let msgBody = `Dzień dobry,\n\nZamówienie nr: ${orderNum}\nProszę o wycenę dostępu do poniższych planów i rejonów:\n\n`;
+        
+        let grouped = {};
+        let weeks = [];
+        
+        orderCart.forEach(item => {
+            if (item.startsWith('Tydzień') || item.startsWith('Week')) {
+                weeks.push(item);
+            } else {
+                let match = item.match(/\[(.*?)\]\s*(.*)/);
+                if (match) {
+                    let date = match[1];
+                    let city = match[2];
+                    if (!grouped[date]) grouped[date] = [];
+                    grouped[date].push(city);
+                } else {
+                    if (!grouped['Inne']) grouped['Inne'] = [];
+                    grouped['Inne'].push(item);
+                }
+            }
+        });
+
+        if (weeks.length > 0) {
+            weeks.forEach(w => { msgBody += `📌 ${w}\n`; });
+            msgBody += `\n`;
+        }
+
+        for (let date in grouped) {
+            if (date !== 'Inne') {
+                msgBody += `📅 ${date}:\n`;
+            }
+            grouped[date].forEach(city => {
+                msgBody += `  - ${city}\n`;
+            });
+            msgBody += `\n`;
+        }
+        
+        msgBody += "Pozdrawiam";
+        return msgBody;
+    }
+
+    // WYSYŁKA DO DARIUSZA (E-mail / Zamówienia)
+    document.getElementById('btn-submit-email').addEventListener('click', function() {
+        if (orderCart.length === 0) return;
+        let orderNum = generateOrderNumber();
+        let mailBody = getCartMessage(orderNum);
+        let subject = encodeURIComponent(`Zapytanie o wycenę rejonów - ZAM. ${orderNum} - dabu-info`);
+        let body = encodeURIComponent(mailBody);
+        window.location.href = `mailto:dariusz@dabu-info.com?subject=${subject}&body=${body}`;
+    });
+
+    // WYSYŁKA DO DARIUSZA (SMS / Zamówienia)
+    document.getElementById('btn-submit-sms').addEventListener('click', function() {
+        if (orderCart.length === 0) return;
+        let orderNum = generateOrderNumber();
+        let smsBody = getCartMessage(orderNum);
+        let phone = "+48600812820";
+        let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        let separator = isIOS ? "&" : "?";
+        let body = encodeURIComponent(smsBody);
+        window.location.href = `sms:${phone}${separator}body=${body}`;
+    });
+
+    // --- KALENDARZ DO KOŃCA ROKU I OPISY ŚWIĄT ---
+    (function() {
+        const calTr = {
+            'pl': { head: "Niemcy 2026", nat: "Narodowe", reg: "Regionalne", curr: "Bieżący", wk: "Ty", m: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"], d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"], h: { "0-1": "Nowy Rok", "0-6": "Trzech Króli", "2-8": "Dzień Kobiet", "3-3": "Wielki Piątek", "3-6": "Poniedziałek Wielkanocny", "4-1": "Święto Pracy", "4-14": "Wniebowstąpienie", "4-25": "Zielone Świątki", "5-4": "Boże Ciało", "7-15": "Wniebowzięcie NMP", "9-3": "Dzień Jedności", "9-31": "Święto Reformacji", "10-1": "Wszystkich Świętych", "10-18": "Dzień Pokuty", "11-25": "1. Dzień Świąt", "11-26": "2. Dzień Świąt" } },
+            'de': { head: "Deutschland 2026", nat: "National", reg: "Regional", curr: "Aktueller", wk: "KW", m: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"], d: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"], h: { "0-1": "Neujahr", "0-6": "Heilige Drei Könige", "2-8": "Frauentag", "3-3": "Karfreitag", "3-6": "Ostermontag", "4-1": "Tag der Arbeit", "4-14": "Christi Himmelfahrt", "4-25": "Pfingstmontag", "5-4": "Fronleichnam", "7-15": "Mariä Himmelfahrt", "9-3": "Tag der Deutschen Einheit", "9-31": "Reformationstag", "10-1": "Allerheiligen", "10-18": "Buß- und Bettag", "11-25": "1. Weihnachtstag", "11-26": "2. Weihnachtstag" } },
+            'en': { head: "Germany 2026", nat: "National", reg: "Regional", curr: "Current", wk: "Wk", m: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], d: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], h: { "0-1": "New Year's", "0-6": "Epiphany", "2-8": "Women's Day", "3-3": "Good Friday", "3-6": "Easter Monday", "4-1": "Labor Day", "4-14": "Ascension", "4-25": "Whit Monday", "5-4": "Corpus Christi", "7-15": "Assumption", "9-3": "German Unity", "9-31": "Reformation", "10-1": "All Saints", "10-18": "Repentance", "11-25": "Christmas", "11-26": "Boxing Day" } },
+            'fr': { head: "Allemagne 2026", nat: "National", reg: "Régional", curr: "Mois", wk: "Sm", m: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], d: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"], h: { "0-1": "Nouvel An", "0-6": "Épiphanie", "2-8": "Journée des femmes", "3-3": "Vendredi Saint", "3-6": "Lundi de Pâques", "4-1": "Fête du Travail", "4-14": "Ascension", "4-25": "Lundi de Pentecôte", "5-4": "Fête-Dieu", "7-15": "Assomption", "9-3": "Unité allemande", "9-31": "Réformation", "10-1": "Toussaint", "10-18": "Repentance", "11-25": "Noël", "11-26": "Lendemain Noël" } },
+            'cs': { head: "Německo 2026", nat: "Národní", reg: "Regionální", curr: "Aktuální", wk: "Tý", m: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"], d: ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"], h: { "0-1": "Nový rok", "0-6": "Tři králové", "2-8": "MDŽ", "3-3": "Velký pátek", "3-6": "Velikonoční pondělí", "4-1": "Svátek práce", "4-14": "Nanebevstoupení", "4-25": "Svatodušní pondělí", "5-4": "Boží Tělo", "7-15": "Nanebevzetí", "9-3": "Den jednoty", "9-31": "Den reformace", "10-1": "Všech svatých", "10-18": "Den pokání", "11-25": "1. svátek vánoční", "11-26": "2. svátek vánoční" } },
+            'hu': { head: "Németország 2026", nat: "Nemzeti", reg: "Regionális", curr: "Aktuális", wk: "Hét", m: ["Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"], d: ["Hé", "Ke", "Sze", "Cs", "Pé", "Szo", "Va"], h: { "0-1": "Újév", "0-6": "Vízkereszt", "2-8": "Nőnap", "3-3": "Nagypéntek", "3-6": "Húsvéthétfő", "4-1": "Munka ünnepe", "4-14": "Áldozócsütörtök", "4-25": "Pünkösdhétfő", "5-4": "Úrnapja", "7-15": "Nagyboldogasszony", "9-3": "Egység napja", "9-31": "Reformáció", "10-1": "Mindenszentek", "10-18": "Bűnbánat napja", "11-25": "Karácsony", "11-26": "Karácsony 2. napja" } },
+            'ro': { head: "Germania 2026", nat: "Național", reg: "Regional", curr: "Curent", wk: "Săp", m: ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"], d: ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"], h: { "0-1": "Anul Nou", "0-6": "Boboteaza", "2-8": "Ziua Femeii", "3-3": "Vinerea Mare", "3-6": "Lunea Paștelui", "4-1": "Ziua Muncii", "4-14": "Înălțarea", "4-25": "Lusalii", "5-4": "Corpus Christi", "7-15": "Adormirea", "9-3": "Ziua Unității", "9-31": "Reforma", "10-1": "Toți Sfinții", "10-18": "Pocăinței", "11-25": "Crăciun", "11-26": "A doua zi de Crăciun" } },
+            'tr': { head: "Almanya 2026", nat: "Ulusal", reg: "Bölgesel", curr: "Geçerli", wk: "Hf", m: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"], d: ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pz"], h: { "0-1": "Yılbaşı", "0-6": "Epifani", "2-8": "Kadınlar Günü", "3-3": "Kutsal Cuma", "3-6": "Paskalya Pazartesisi", "4-1": "İşçi Bayramı", "4-14": "Yükseliş", "4-25": "Hamsin", "5-4": "Corpus Christi", "7-15": "Meryem'in Göğe Kabulü", "9-3": "Birlik Günü", "9-31": "Reformasyon", "10-1": "Azizler Günü", "10-18": "Tövbe Günü", "11-25": "Noel", "11-26": "Noel (2. gün)" } },
+            'hr': { head: "Njemačka 2026", nat: "Nacionalni", reg: "Regionalni", curr: "Trenutni", wk: "Tj", m: ["Siječanj", "Veljača", "Ožujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"], d: ["Po", "Ut", "Sr", "Če", "Pe", "Su", "Ne"], h: { "0-1": "Nova godina", "0-6": "Tri kralja", "2-8": "Dan žena", "3-3": "Veliki petak", "3-6": "Uskrsni ponedjeljak", "4-1": "Praznik rada", "4-14": "Uzašašće", "4-25": "Duhovski ponedjeljak", "5-4": "Tijelovo", "7-15": "Velika Gospa", "9-3": "Dan jedinstva", "9-31": "Dan reformacije", "10-1": "Svi sveti", "10-18": "Dan pokajanja", "11-25": "Božić", "11-26": "Sveti Stjepan" } },
+            'uk': { head: "Німеччина 2026", nat: "Національні", reg: "Регіональні", curr: "Поточний", wk: "Тиж", m: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"], d: ["Пн", "Вв", "Ср", "Чт", "Пт", "Сб", "Нд"], h: { "0-1": "Новий рік", "0-6": "Водохреща", "2-8": "Жіночий день", "3-3": "Страсна п'ятниця", "3-6": "Великодній понеділок", "4-1": "День праці", "4-14": "Вознесіння", "4-25": "Трійця", "5-4": "Свято Тіла і Крові", "7-15": "Успіння", "9-3": "День єдності", "9-31": "День Реформації", "10-1": "День усіх святих", "10-18": "День покаяння", "11-25": "Різдво", "11-26": "Різдво (2-й день)" } },
+            'ru': { head: "Германия 2026", nat: "Национальные", reg: "Региональные", curr: "Текущий", wk: "Нед", m: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], d: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], h: { "0-1": "Новый год", "0-6": "Крещение", "2-8": "Женский день", "3-3": "Страстная пятница", "3-6": "Пасхальный понедельник", "4-1": "День труда", "4-14": "Вознесение", "4-25": "Троица", "5-4": "Праздник Тела и Крови", "7-15": "Успение", "9-3": "День единства", "9-31": "День Реформации", "10-1": "День всех святых", "10-18": "День покаяния", "11-25": "Рождество", "11-26": "Рождество (2-й день)" } },
+            'lt': { head: "Vokietija 2026", nat: "Nacionalinės", reg: "Regioninės", curr: "Dabartinis", wk: "Sav", m: ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"], d: ["Pr", "An", "Tr", "Kt", "Pn", "Še", "Se"], h: { "0-1": "Naujieji metai", "0-6": "Trys Karaliai", "2-8": "Moters diena", "3-3": "Didysis penktadienis", "3-6": "Velykų pirmadienis", "4-1": "Darbo diena", "4-14": "Šeštinės", "4-25": "Sekminės", "5-4": "Devintinės", "7-15": "Žolinė", "9-3": "Vienybės diena", "9-31": "Reformacijos diena", "10-1": "Visų Šventųjų diena", "10-18": "Atgailos diena", "11-25": "Kalėdos", "11-26": "Antroji Kalėdų diena" } },
+            'lv': { head: "Vācija 2026", nat: "Nacionālie", reg: "Reģionālie", curr: "Pašreizējais", wk: "Ned", m: ["Janvāris", "Februāris", "Marts", "Aprīlis", "Maijs", "Jūnijs", "Jūlijs", "Augusts", "Septembris", "Oktobris", "Novembris", "Decembris"], d: ["Pi", "Ot", "Tr", "Ce", "Pi", "Se", "Sv"], h: { "0-1": "Jaunais gads", "0-6": "Zvaigznes diena", "2-8": "Sieviešu diena", "3-3": "Lielā piektdiena", "3-6": "Otrās Lieldienas", "4-1": "Darba svētki", "4-14": "Debesbraukšanas diena", "4-25": "Vasarsvētku pirmdiena", "5-4": "Kristus Miesas svētki", "7-15": "Marijas debesbraukšana", "9-3": "Vienības diena", "9-31": "Reformācijas diena", "10-1": "Visu Svēto diena", "10-18": "Grēku nožēlas diena", "11-25": "Ziemassvētki", "11-26": "Otrie Ziemassvētki" } }
+        };
+
+        const holidayTypes = {
+            "0-1": "national", "0-6": "regional", "2-8": "regional", "3-3": "national", "3-6": "national",
+            "4-1": "national", "4-14": "national", "4-25": "national", "5-4": "regional", "7-15": "regional",
+            "9-3": "national", "9-31": "regional", "10-1": "regional", "10-18": "regional", "11-25": "national", "11-26": "national"
+        };
+
+        function getISOWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function generateCalendar() {
+            let userLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+            const supported = ['pl','de','en','fr','cs','hu','ro','tr','hr','uk','ru','lt','lv']; 
+            if (!supported.includes(userLang)) userLang = 'de';
+            const t = calTr[userLang] || calTr['de'];
+            
+            const calTitle = document.getElementById('cal-title');
+            if (calTitle) calTitle.innerText = t.head;
+            const legNat = document.getElementById('leg-nat');
+            if (legNat) legNat.innerText = t.nat;
+            const legReg = document.getElementById('leg-reg');
+            if (legReg) legReg.innerText = t.reg;
+            const legCurr = document.getElementById('leg-curr');
+            if (legCurr) legCurr.innerText = t.curr;
+
+            const year = 2026;
+            const now = new Date();
+            let currentMonthIdx = (now.getFullYear() === year) ? now.getMonth() : (now.getFullYear() > year ? 11 : 0);
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            for (let m = currentMonthIdx; m <= 11; m++) {
+                let table = document.createElement('table');
+                table.className = 'month-table' + (m === currentMonthIdx ? ' current-month' : '');
+                
+                let header = `<thead>
+                    <tr><th colspan="8" class="month-title">${t.m[m]}</th></tr>
+                    <tr><th class="week-header">${t.wk}</th>${t.d.map(d => `<th>${d}</th>`).join('')}</tr>
+                </thead>`;
+                
+                let firstDay = new Date(year, m, 1).getDay();
+                let daysInMonth = new Date(year, m + 1, 0).getDate();
+                let startingDay = firstDay === 0 ? 6 : firstDay - 1; 
+                
+                let body = '<tbody><tr>';
+                let firstDateForWeek = new Date(year, m, 1);
+                
+                let wNum = getISOWeekNumber(firstDateForWeek);
+                body += `<td class="week-number" data-week="${wNum}" title="Select Week ${wNum}">${wNum}</td>`;
+                
+                let dayCount = 0;
+                for (let i = 0; i < startingDay; i++) { body += '<td style="background:transparent;"></td>'; dayCount++; }
+                
+                for (let d = 1; d <= daysInMonth; d++) {
+                    if (dayCount % 7 === 0 && dayCount !== 0) {
+                        body += '</tr><tr>';
+                        let currentDayForWeek = new Date(year, m, d);
+                        let wNumRow = getISOWeekNumber(currentDayForWeek);
+                        body += `<td class="week-number" data-week="${wNumRow}" title="Select Week ${wNumRow}">${wNumRow}</td>`;
+                    }
+                    
+                    let key = `${m}-${d}`;
+                    let isHoliday = holidayTypes[key];
+                    let hName = isHoliday ? (t.h[key] || "") : "";
+                    let hClass = "";
+                    if (isHoliday === "national") hClass = "holiday-national has-holiday";
+                    else if (isHoliday === "regional") hClass = "holiday-regional has-holiday";
+                    
+                    let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
+                    let mStr = String(m + 1).padStart(2, '0');
+                    let dStr = String(d).padStart(2, '0');
+                    body += `<td class="${hClass} ${isToday} clickable-day" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}">${d}</td>`;
+                    dayCount++;
+                }
+                while (dayCount % 7 !== 0) { body += '<td style="background:transparent;"></td>'; dayCount++; }
+                body += '</tr></tbody>';
+                table.innerHTML = header + body;
+                grid.appendChild(table);
+            }
+
+            const wrapper = document.getElementById('calendar-wrapper');
+            if (wrapper && typeof trData !== 'undefined') {
+                const dict = trData[userLang] || trData['en'];
+                let existingInfo = document.querySelector('.calendar-info');
+                if (existingInfo) existingInfo.remove();
+
+                const regionalHolidaysInfo = [
+                    { m: 0, d: 6, key: "cal-info-l1" }, { m: 2, d: 8, key: "cal-info-l2" },
+                    { m: 5, d: 4, key: "cal-info-l3" }, { m: 7, d: 15, key: "cal-info-l4" },
+                    { m: 9, d: 31, key: "cal-info-l5" }, { m: 10, d: 1, key: "cal-info-l6" },
+                    { m: 10, d: 18, key: "cal-info-l7" }
+                ];
+                
+                let closestKey = null;
+                let minDiff = Infinity;
+                
+                for (let rh of regionalHolidaysInfo) {
+                    let hDate = new Date(year, rh.m, rh.d, 23, 59, 59);
+                    let diff = hDate - now;
+                    if (diff >= 0 && diff < minDiff) { 
+                        minDiff = diff; 
+                        closestKey = rh.key; 
+                    }
+                }
+                if (!closestKey) closestKey = "cal-info-l7";
+
+                const calInfoHTML = `
+                    <div class="calendar-info">
+                        <h3 id="cal-info-h3">${dict["cal-info-h3"] || trData['en']["cal-info-h3"]}</h3>
+                        <p id="cal-info-p1">${dict["cal-info-p1"] || trData['en']["cal-info-p1"]}</p>
+                        <p id="cal-info-p2">${dict["cal-info-p2"] || trData['en']["cal-info-p2"]}</p>
+                        <ul><li id="${closestKey}">${dict[closestKey] || trData['en'][closestKey]}</li></ul>
+                    </div>
+                `;
+                wrapper.insertAdjacentHTML('beforeend', calInfoHTML);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', generateCalendar);
+    })();
+
+    // --- WYSZUKIWANIE BAZY DANYCH I PARSER Z CHECKBOXAMI ---
+    (function() {
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
+
+        const calendarGrid = document.getElementById('calendar-grid');
+        const resultsBox = document.getElementById('calendar-results');
+        const resultsContent = document.getElementById('cal-res-content');
+        const resultsTitle = document.getElementById('cal-res-title');
+
+        if(calendarGrid) {
+            calendarGrid.addEventListener('click', async function(e) {
+                
+                if (e.target.classList.contains('week-number')) {
+                    const weekNum = e.target.getAttribute('data-week');
+                    addToCart(`Tydzień / Week ${weekNum}`);
+                    let originalBg = e.target.style.backgroundColor;
+                    e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
+                    setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
+                    return;
+                }
+
+                if (e.target.tagName === 'TD' && e.target.classList.contains('clickable-day')) {
+                    const clickedDateStr = e.target.getAttribute('data-date');
+                    if (!clickedDateStr) return;
+
+                    const parts = clickedDateStr.split('-');
+                    const clickedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                    const tomorrow = new Date(clickedDate);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+
+                    const dd = String(tomorrow.getDate()).padStart(2, '0');
+                    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                    const yyyy = tomorrow.getFullYear();
+                    const targetDateFormatted = `${yyyy}-${mm}-${dd}`; 
+
+                    let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+
+                    resultsBox.style.display = 'block';
+                    resultsTitle.innerHTML = `📅 ${dd}.${mm}.${yyyy}`;
+                    resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ ...</div>`;
+                    
+                    document.querySelectorAll('.clickable-day').forEach(td => td.style.outline = 'none');
+                    e.target.style.outline = '2px solid #007bff';
+
+                    try {
+                        const resp = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'text/plain;charset=utf-8'},
+                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: browserLang })
+                        });
+                        
+                        const data = await resp.json();
+                        
+                        if (data && data.odpowiedz) {
+                            let rawText = data.odpowiedz;
+                            let parsedText = rawText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            
+                            if (parsedText.includes('📍')) {
+                                let items = parsedText.split(/<br\s*\/?>\s*<br\s*\/?>|\n\n/i);
+                                
+                                // Dodajemy żółty pasek informacyjny zamiast przycisków do zaznaczania
+                                let htmlZebra = `
+                                    <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #f1c40f;">
+                                        <span style="color:#f1c40f; font-size:14px; font-weight:bold;">⚠️ Podgląd informacyjny</span><br>
+                                        <span style="color:#aaa; font-size:13px;">Zamówienia realizowane są wyłącznie dla całych tygodni.<br>Aby zamówić, <strong>kliknij 👉Sprawdż lub numer tygodnia</strong> w lewej kolumnie kalendarza.</span>
+                                    </div>
+                                `;
+                                
+                                htmlZebra += items.filter(i => i.trim() !== '').map(item => {
+                                    let formattedItem = item.trim().replace(/👉/g, '<span class="tile-link-icon">👉</span>');
+                                    formattedItem = formattedItem.replace('<span class="tile-link-icon">', '<br><span class="tile-link-icon">');
+                                    
+                                    // Usuwamy tag <form>, <label> oraz <input type="checkbox">. Zostawiamy czysty tekst.
+                                    return `
+                                    <div class="zebra-row" style="display:flex; align-items:flex-start; gap:15px; cursor:default;">
+                                        <div style="flex:1;">${formattedItem}</div>
+                                    </div>`;
+                                }).join('');
+                                
+                                resultsContent.innerHTML = htmlZebra;
+
+                                // Uwaga: Usunąłem tutaj funkcje obsługujące przyciski "Zaznacz wszystkie" i "Dodaj zaznaczone",
+                                // ponieważ tych przycisków już nie ma i generowałyby błędy w przeglądarce.
+
+                            } else {
+                                resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
+                            }
+                        } else {
+                            resultsContent.innerHTML = `<div style="padding: 20px; color:#ff5555;">❌ Brak zaplanowanych zbiórek na ten dzień.</div>`;
+                        }
+
+                    } catch(err) {
+                        resultsContent.innerHTML = `<div style="padding: 20px; color:#ff5555;">❌ Błąd połączenia z serwerem.</div>`;
+                    }
+                }
+            });
+        }
+    })();
+    //]]>
+    </script>
+</body>
+</html>
