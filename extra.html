@@ -7,10 +7,10 @@
     <style>
         body { background-color: #121212; margin: 0; padding: 0; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; }
         .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 220px; }
-        .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.9rem; }
+        .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.95rem; }
         .land-header { color: #f1c40f; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 25px 0 10px; font-size: 1.2rem; }
         .powiat-sub-header { color: #3498db; margin: 15px 0 5px 20px; font-size: 1rem; font-style: italic; }
-        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-bottom: 10px; margin-left: 20px; }
+        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 5px 0 15px 20px; }
         .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
@@ -30,8 +30,7 @@
 <div class="order-module">
     <h2>📦 Zamówienie harmonogramów</h2>
     <div class="service-info">
-        ⚠️ <b>Opis usługi:</b> Terminy pobierane botem z serwerów firm sprzątających. <br>
-        • <b>Cena: 40 zł</b> za każdą wybraną pozycję (najbliższy termin).
+        ⚠️ <b>Cena: 40 zł za każdą wybraną pozycję.</b> Terminy pobierane botem z serwerów firm sprzątających na najbliższy dostępny termin.
     </div>
     <div id="regionsContainer"></div>
 </div>
@@ -50,8 +49,7 @@
         
         const data = {
             "Gminy (Extra)": {
-                type: "nested",
-                sub: {
+                "Powiaty": {
                     "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
                     "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
                     "Powiat Neuss": ["Dormagen", "Grevenbroich", "Jüchen", "Kaarst", "Korschenbroich", "Meerbusch", "Neuss", "Rommerskirchen"],
@@ -63,18 +61,17 @@
                 }
             },
             "Landy": {
-                type: "simple",
-                list: {
-                    "Baden-Württemberg": ["&#128205; Freudenstadt", "&#128205; Karlsruhe", "&#128205; Ortenau (Offenburg)", "&#128205; Tuttlingen"],
-                    "Bayern": ["&#128205; Bamberg", "&#128205; Monachium-Południowy Wschód", "&#128205; Neustadt an der Waldnaab", "&#128205; Regensburg", "&#128205; Straubing-Bogen"],
-                    "Brandenburg": ["&#128205; Elbe-Elstern", "&#128205; Oder-Spree"],
-                    "Hessen": ["&#128205; Bad-Homburg", "&#128205; Giessen", "&#128205; Hersfeld-Rotenburg", "&#128205; Limburg-Weilburg", "&#128205; Rheingau-Taunus"],
-                    "Niedersachsen": ["&#128205; Diepholz", "&#128205; Emsland", "&#128205; Göttingen", "&#128205; Gifhorn", "&#128205; Harburg", "&#128205; Lüneburg", "&#128205; Stade", "&#128205; Wolfsburg"],
-                    "Nordrhein-Westfalen": ["&#128205; Bonn", "&#128205; Dortmund", "&#128205; Erftstadt", "&#128205; Jülich", "&#128205; Leverkusen", "&#128205; Neuss", "&#128205; Pulheim", "&#128205; Rhein-Sieg", "&#128205; Solingen", "&#128205; Wesseling", "&#128205; Wuppertal"],
-                    "Rheinland-Pfalz": ["&#128205; Alzey-Worms", "&#128205; Bad-Kreuznach", "&#128205; Mayen-Koblenz", "&#128205; Westerwald"],
-                    "Sachsen": ["&#128205; Leipzig", "&#128205; Nordsachsen"],
-                    "Sachsen-Anhalt": ["&#128205; Altmarkkreis Salzwedel", "&#128205; Burgenland"],
-                    "Schleswig-Holstein": ["&#128205; Rendsburg-Eckenförde"]
+                "Rejony": {
+                    "Baden-Württemberg": ["Freudenstadt", "Karlsruhe", "Ortenau (Offenburg)", "Tuttlingen"],
+                    "Bayern": ["Bamberg", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
+                    "Brandenburg": ["Elbe-Elstern", "Oder-Spree"],
+                    "Hessen": ["Bad-Homburg", "Giessen", "Hersfeld-Rotenburg", "Limburg-Weilburg", "Rheingau-Taunus"],
+                    "Niedersachsen": ["Diepholz", "Emsland", "Göttingen", "Gifhorn", "Harburg", "Lüneburg", "Stade", "Wolfsburg"],
+                    "Nordrhein-Westfalen": ["Bonn", "Dortmund", "Erftstadt", "Jülich", "Leverkusen", "Neuss", "Pulheim", "Rhein-Sieg", "Solingen", "Wesseling", "Wuppertal"],
+                    "Rheinland-Pfalz": ["Alzey-Worms", "Bad-Kreuznach", "Mayen-Koblenz", "Westerwald"],
+                    "Sachsen": ["Leipzig", "Nordsachsen"],
+                    "Sachsen-Anhalt": ["Altmarkkreis Salzwedel", "Burgenland"],
+                    "Schleswig-Holstein": ["Rendsburg-Eckenförde"]
                 }
             }
         };
@@ -84,33 +81,23 @@
         const orderBtn = document.getElementById('submitOrderBtn');
         let selectedItems = [];
 
-        Object.entries(data).forEach(([group, config]) => {
+        Object.entries(data).forEach(([group, content]) => {
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${group}`; container.appendChild(h);
-            
-            if (config.type === "nested") {
-                Object.entries(config.sub).forEach(([powiat, regions]) => {
-                    const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = powiat; container.appendChild(subH);
-                    createGrid(regions);
+            Object.entries(content.Powiaty || content.Rejony).forEach(([sub, regions]) => {
+                const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = sub; container.appendChild(subH);
+                const grid = document.createElement('div'); grid.className = 'regions-grid';
+                regions.forEach(r => {
+                    const label = document.createElement('label'); label.className = 'region-checkbox-label';
+                    const input = document.createElement('input'); input.type = 'checkbox';
+                    input.addEventListener('change', (e) => {
+                        selectedItems = e.target.checked ? [...selectedItems, r] : selectedItems.filter(i => i !== r);
+                        updateUI();
+                    });
+                    label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
                 });
-            } else {
-                Object.values(config.list).forEach(regions => createGrid(regions));
-            }
-        });
-
-        function createGrid(regions) {
-            const grid = document.createElement('div'); grid.className = 'regions-grid';
-            regions.forEach(r => {
-                const cleanName = r.replace(/&#\d+;\s*/g, '');
-                const label = document.createElement('label'); label.className = 'region-checkbox-label';
-                const input = document.createElement('input'); input.type = 'checkbox';
-                input.addEventListener('change', (e) => {
-                    selectedItems = e.target.checked ? [...selectedItems, cleanName] : selectedItems.filter(i => i !== cleanName);
-                    updateUI();
-                });
-                label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
+                container.appendChild(grid);
             });
-            container.appendChild(grid);
-        }
+        });
 
         function updateUI() {
             priceDisplay.textContent = selectedItems.length * pricePerRegion;
