@@ -3,7 +3,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dabu-Info - Mapa Rejonów</title>
 
-    <!-- Biblioteki Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -27,15 +26,15 @@
         /* ------------------------------------------------------------------ */
 
         .dabu-regions-widget { background: rgba(0, 0, 0, 0.3);
-            padding: 15px; border-radius: 8px; max-width: 100%; border: 1px solid rgba(0, 255, 127, 0.2);
+        padding: 15px; border-radius: 8px; max-width: 100%; border: 1px solid rgba(0, 255, 127, 0.2);
         }
         .dabu-search-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a;
-            border: 1px solid #333; color: #fff; font-size: 14px; border-radius: 6px; outline: none; box-sizing: border-box;
+        border: 1px solid #333; color: #fff; font-size: 14px; border-radius: 6px; outline: none; box-sizing: border-box;
         }
         .dabu-search-input:focus { border-color: #00FF7F; box-shadow: 0 0 5px rgba(0, 255, 127, 0.3);
         }
         .dabu-county-btn { background: rgba(0, 255, 127, 0.2); color: #00FF7F;
-            border: 1px solid #00FF7F; padding: 8px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s;
+        border: 1px solid #00FF7F; padding: 8px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s;
         }
         .dabu-county-btn:hover { background: #00FF7F; color: #000;
         }
@@ -46,22 +45,22 @@
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #00FF7F; border-radius: 4px;
         }
         .region-label { display: flex; align-items: center; color: #ccc; cursor: pointer;
-            padding: 5px 10px; border-radius: 6px; font-family: sans-serif; font-size: 14px; transition: background 0.2s;
+        padding: 5px 10px; border-radius: 6px; font-family: sans-serif; font-size: 14px; transition: background 0.2s;
         }
         .region-label:hover { background: rgba(0, 255, 127, 0.1); color: #fff;
         }
         .region-chk { appearance: none; width: 20px; height: 20px; border: 2px solid #555;
-            border-radius: 4px; margin-right: 12px; background: #222; position: relative; cursor: pointer;
+        border-radius: 4px; margin-right: 12px; background: #222; position: relative; cursor: pointer;
         }
         .region-chk:checked { background-color: #00FF7F; border-color: #00FF7F;
         }
         .region-chk:checked::after { content: ''; position: absolute; left: 6px; top: 2px; width: 4px;
-            height: 10px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg);
+        height: 10px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg);
         }
         .custom-leaflet-tooltip { background: #111; color: #fff; border: 1px solid #00FF7F; border-radius: 6px;
-            padding: 8px; font-size: 14px; }
+        padding: 8px; font-size: 14px; }
         .dabu-fullscreen-map { position: fixed !important; top: 0 !important;
-            left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important;
+        left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important;
         }
     </style>
 </head>
@@ -118,6 +117,7 @@
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
           <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
+          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dormagen" /> Dormagen</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dortmund" /> Dortmund</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
@@ -150,6 +150,7 @@
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
           <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
           <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
+          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grefrath" /> Grefrath</label>
           <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grevenbroich" /> Grevenbroich</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
           <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
@@ -199,6 +200,7 @@
           <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Merzenich" /> Merzenich</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
+          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Nettetal" /> Nettetal</label>
           <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
           <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Neukirchen-Vluyn" /> Neukirchen-Vluyn</label>
           <label class="region-label" data-info="Sprawdź terminy wystawek"><input class="region-chk" name="regiony[]" type="checkbox" value="Neuss" /> Neuss</label>
@@ -391,8 +393,10 @@
             "Bedburg-Hau": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Blankenheim": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Dahlem": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
+            "Dormagen": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Emmerich am Rhein": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Geldern": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
+            "Grefrath": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Grevenbroich": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Hellenthal": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Hückelhoven": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
@@ -407,6 +411,7 @@
             "Mechernich": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Meerbusch": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Merzenich": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
+            "Nettetal": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Neukirchen-Vluyn": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Rees": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
             "Rheurdt": "https://dabu-info.blogspot.com/p/zamow-najblizsze-terminy.html",
@@ -433,8 +438,7 @@
             "Eppstein": "Main-Taunus-Kreis", "Flörsheim am Main": "Main-Taunus-Kreis", "Hattersheim am Main": "Main-Taunus-Kreis", "Hofheim am Taunus": "Main-Taunus-Kreis", "Kelkheim (Taunus)": "Main-Taunus-Kreis", "Schwalbach": "Main-Taunus-Kreis",
             "Gross-Gerau": "Groß-Gerau", "Walldorf-Mörfelden": "Groß-Gerau", "Giessen": "Landkreis Gießen", "Giessen Powiat": "Landkreis Gießen",
             "Eschwege": "Werra-Meißner-Kreis", "Werra-Meissner": "Werra-Meißner-Kreis",
-            "Bad Münstereifel": "Euskirchen", "Blankenheim": "Euskirchen", "Dahlem": 
-            "Euskirchen", "Euskirchen": "Euskirchen", "Hellenthal": "Euskirchen", "Kall": "Euskirchen", "Mechernich": "Euskirchen", "Schleiden": "Euskirchen", "Weilerswist": "Euskirchen", "Zülpich": "Euskirchen",
+            "Bad Münstereifel": "Euskirchen", "Blankenheim": "Euskirchen", "Dahlem": "Euskirchen", "Euskirchen": "Euskirchen", "Hellenthal": "Euskirchen", "Kall": "Euskirchen", "Mechernich": "Euskirchen", "Schleiden": "Euskirchen", "Weilerswist": "Euskirchen", "Zülpich": "Euskirchen",
             "Brühl": "Rhein-Erft-Kreis", "Erftstadt": "Rhein-Erft-Kreis", "Erftstadt Powiat": "Rhein-Erft-Kreis", "Hürth": "Rhein-Erft-Kreis", "Pulheim": "Rhein-Erft-Kreis", "Wesseling": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis", "Bedburg Powiat": "Rhein-Erft-Kreis",
             "Ennepetal": "Ennepe-Ruhr-Kreis", "Breckerfeld": "Ennepe-Ruhr-Kreis", "Sprockhövel": "Ennepe-Ruhr-Kreis",
             "Gangelt": "Heinsberg", "Geilenkirchen": "Heinsberg", "Wülfrath": "Mettmann", "Dülmen": "Coesfeld",
@@ -450,7 +454,10 @@
             "Rendsburg-Eckernförde": "Rendsburg-Eckernförde",
             "Neustadt an der Waldnaab": "Neustadt an der Waldnaab",
             "Lübeck": "Lübeck",
-            "Neuss": "Rhein-Kreis Neuss"
+            "Neuss": "Rhein-Kreis Neuss",
+            "Dormagen": "Rhein-Kreis Neuss",
+            "Grefrath": "Viersen",
+            "Nettetal": "Viersen"
         };
         function normalizeLandName(rawName) {
             const aliases = { "Bavaria": "Bayern", "Hesse": "Hessen", "North Rhine-Westphalia": "Nordrhein-Westfalen", "Rhineland-Palatinate": "Rheinland-Pfalz", "Saxony": "Sachsen", "Lower Saxony": "Niedersachsen", "Saxony-Anhalt": "Sachsen-Anhalt", "Thuringia": "Thüringen", "Schleswig-Holstein": "Schleswig-Holstein", "Brandenburg": "Brandenburg", "Baden-Württemberg": "Baden-Württemberg" };
@@ -500,7 +507,7 @@
             "Brandenburg": ["Barnim", "Elbe-Elster", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
             "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Eschwege", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Giessen Powiat", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Wehrheim", "Weilrod", "Werra-Meissner"],
             "Niedersachsen": ["Braunschweig", "Diepholz", "Emsland", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Lüneburg Powiat", "Osnabrück", "Stade", "Wolfsburg"],
-            "Nordrhein-Westfalen": ["Bad Münstereifel", "Bedburg", "Bedburg Powiat", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dortmund", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Erftstadt Powiat", "Euskirchen", "Gangelt", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Mechernich", "Münster", "Neuss", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wülfrath", "Wuppertal", "Zülpich", "Aldenhoven", "Alpen", "Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Grevenbroich", "Hückelhoven", "Issum", "Jüchen", "Jülich (E)", "Kaarst", "Kerken", "Kevelaer", "Korschenbroich", "Meerbusch", "Merzenich", "Neukirchen-Vluyn", "Rees", "Rheurdt", "Rommerskirchen", "Selfkant", "Sonsbeck", "Straelen", "Übach-Palenberg", "Uedem", "Viersen", "Voerde", "Weeze", "Xanten"],
+            "Nordrhein-Westfalen": ["Bad Münstereifel", "Bedburg", "Bedburg Powiat", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dortmund", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Erftstadt Powiat", "Euskirchen", "Gangelt", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Mechernich", "Münster", "Neuss", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wülfrath", "Wuppertal", "Zülpich", "Aldenhoven", "Alpen", "Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Grevenbroich", "Hückelhoven", "Issum", "Jüchen", "Jülich (E)", "Kaarst", "Kerken", "Kevelaer", "Korschenbroich", "Meerbusch", "Merzenich", "Neukirchen-Vluyn", "Rees", "Rheurdt", "Rommerskirchen", "Selfkant", "Sonsbeck", "Straelen", "Übach-Palenberg", "Uedem", "Viersen", "Voerde", "Weeze", "Xanten", "Dormagen", "Grefrath", "Nettetal"],
             "Rheinland-Pfalz": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
             "Sachsen": ["Lipsk (Leipzig)", "Nordsachsen"],
             "Sachsen-Anhalt": ["Altmarkkreis-Salzwedel", "Altmarkkreis Salzwedel", "Burgenland"],
@@ -521,8 +528,11 @@
             "Rheurdt": [51.450, 6.480], "Rommerskirchen": [51.033, 6.683], "Selfkant": [51.018, 5.908], 
             "Sonsbeck": [51.611, 6.280], "Straelen": [51.443, 6.265], "Übach-Palenberg": [50.916, 6.116], 
             "Uedem": [51.666, 6.283], "Viersen": [51.255, 6.395], "Voerde": [51.597, 6.685], 
-            "Weeze": [51.626, 6.202], "Xanten": [51.661, 6.453]
-        };
+            "Weeze": [51.626, 6.202], "Xanten": [51.661, 6.453],
+            "Dormagen": [51.0964, 6.8402],
+            "Grefrath": [51.3364, 6.3375],
+            "Nettetal": [51.3167, 6.2833]
+         };
         var map = L.map('dabuOSMMap').setView([51.3, 10.45], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
         var markersLayer = new L.FeatureGroup().addTo(map);
@@ -557,19 +567,16 @@
                L.geoJSON(geoData, {
                   style: function(feature) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
-  
                       let active = landMap[name] && landMap[name].length > 0;
                       let regionColor = landColors[name] || "#00FF7F"; 
-                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 
-0.2 : 0.05 };
+                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 0.2 : 0.05 };
                   },
                   onEachFeature: function (feature, layer) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
-                      let count = landMap[name] ? landMap[name].length 
-: 0;
+                      let count = landMap[name] ? landMap[name].length : 0;
                       layer.bindTooltip("<b>"+name+"</b><br>"+(count > 0 ? "Rejony: "+count : "Brak rejonów"), {sticky: true, className: 'custom-leaflet-tooltip'});
                       layer.on('click', () => selectLand(name));
-}
+                  }
                }).addTo(map);
             });
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
@@ -578,12 +585,10 @@
                kreiseLayer = L.geoJSON(geoData, {
                   interactive: false,
                   style: { color: "transparent", weight: 1, fillOpacity: 0 },
-         
                   onEachFeature: function (feature, layer) {
                       let p = feature.properties || {};
                       layer.featureName = p.GEN || p.NAME_3 || p.name || p.NAME_2 || "unknown";
                   }
-          
                }).addTo(map);
             });
         function selectLand(landName) {
@@ -611,18 +616,15 @@
                 let name = cb.value.trim();
                 if(regionCoords[name]) {
                     let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
-                  
                     
                     if (regionLinks[name]) {
                         popupContent += `<br><br><a href="${regionLinks[name]}" target="_blank" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">🔗 Przejdź do wpisu</a>`;
                     }
 
-               
                     L.marker(regionCoords[name], {
                         icon: L.icon({
                             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
                             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-           
                             iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
                         })
                     }).bindPopup(popupContent).addTo(markersLayer);
@@ -636,7 +638,6 @@
                         [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
                         [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
                         [49.811, 11.722], [49.863, 11.855]
-     
                     ];
                     L.polygon(neustadtPolygon, {
                         color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
@@ -670,8 +671,7 @@
                 if (kreiseLayer) {
                     kreiseLayer.eachLayer(function(layer) {
                          if (matchRegionName(name, layer.featureName)) {
-                             layer.setStyle({ color: "#00FF7F", weight: 
-3, fillColor: "#00FF7F", fillOpacity: 0.4 });
+                             layer.setStyle({ color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 });
                              if (layer.bringToFront) { layer.bringToFront(); }
                          }
                     });
@@ -701,7 +701,6 @@
                 cb.checked = false;
                 if (regionToCountyMap[cb.value.trim()] === countyName) {
                     cb.checked = true;
-                
                 }
             });
             refreshMarkers();
@@ -767,7 +766,6 @@
                 btn.className = 'dabu-county-btn'; btn.innerHTML = `🎯 Pokaż tylko: ${county}`;
                 btn.onclick = (e) => { e.preventDefault(); selectAllInCounty(county); };
                 container.appendChild(btn);
-    
             });
         }
 
@@ -788,17 +786,13 @@
             if (regionLinks[val]) {
                 let btn = document.createElement('a');
                 btn.href = regionLinks[val];
-                
                 btn.target = "_blank";
                 btn.innerHTML = "🔗";
                 btn.style.textDecoration = "none";
                 btn.style.marginLeft = "auto";
                 btn.style.paddingLeft = "10px";
                 btn.title = "Przejdź do artykułu";
-      
-                
                 btn.addEventListener('click', (e) => e.stopPropagation()); 
-                
                 label.appendChild(btn);
             }
         });
