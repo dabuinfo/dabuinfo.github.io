@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zestaw Tygodniowy PRO - Harmonogram Wywozów</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+/* <![CDATA[ */
+        body {
+            background-color: #121212;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none;
+        }
+        .about-text { text-align: justify; hyphens: auto; color: #eee; font-size: 1.1em; margin: 20px auto 30px auto; width: 100%; max-width: 900px; line-height: 1.6; font-style: italic; padding: 0 15px; box-sizing: border-box; }
+        input, textarea, select { -webkit-user-select: text !important; user-select: text !important; }
+        .harmonogram-wrapper { background: transparent; color: #e0e0e0; width: 100%; max-width: 800px; margin: 0 auto; padding: 0; line-height: 1.6; box-sizing: border-box; }
+        .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 25px; border-radius: 12px; margin-top: 20px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; }
+        .form-wrapper-locked { background: rgba(44, 62, 80, 0.95); border: 2px solid #3498db; }
+        .form-wrapper-regions { background: rgba(30, 39, 46, 0.95); border: 2px solid #e74c3c; }
+        .form-header { text-align: center; font-weight: 900; font-size: 1.2em; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .regions-scroll-box { position: relative; min-height: 150px; max-height: 300px; overflow-y: scroll; background: rgba(0, 0, 0, 0.4); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: left; }
+        .regions-scroll-box::-webkit-scrollbar { width: 8px; } .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; } .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
+        .pro-loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #2ecc71; font-weight: bold; text-align: center; border-radius: 4px; }
+        .pro-spinner { width: 40px; height: 40px; border: 4px solid rgba(46, 204, 113, 0.2); border-left-color: #2ecc71; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        
+        .region-label { display: block; padding: 8px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; font-size: 0.95em; transition: background 0.2s; }
+        .region-label:hover { background: rgba(255,255,255,0.1); }
+        .region-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); }
+        
+        .selection-tools { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px; font-size: 0.95em; }
+        .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; } .selection-tools a:hover { color: #fff; text-decoration: underline; }
+        
+        .client-input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #4ca1af; background: rgba(255,255,255,0.95); color: #222; font-size: 1.05em; box-sizing: border-box; font-family: inherit; }
+        .land-selector { background: #2c3e50 !important; color: #2ecc71 !important; font-weight: bold; border: 2px solid #2ecc71 !important; margin-bottom: 15px !important; cursor: pointer; }
+        
+        .submit-btn { width: 100%; color: #fff; padding: 16px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; margin-top: 5px; letter-spacing: 1px; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+        .btn-orange { background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%); }
+        .btn-blue { background: linear-gradient(90deg, #2980b9 0%, #3498db 100%); }
+        .btn-red { background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%); }
+
+        .help-text { font-size: 0.85em; color: #bdc3c7; text-align: center; margin-top: -10px; margin-bottom: 15px; display: block; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes opacityPulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+/* ]]> */
+    </style>
+</head>
+<body>
+
+<div id="fullScreenLoader" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #121212; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; text-align: center; padding: 20px; box-sizing: border-box;">
+    <div style="font-size: 70px; margin-bottom: 20px; animation: opacityPulse 1.5s infinite;">📡</div>
+    <h2 style="color: #2ecc71; font-size: 22px; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 2px;">Synchronizacja Danych</h2>
+    <p id="mainLoaderText" style="color: #bbb; font-size: 18px; max-width: 450px; line-height: 1.6; margin: 0 auto 40px auto;">Przetwarzanie żądania...</p>
+    <div style="width: 55px; height: 55px; border: 6px solid rgba(46, 204, 113, 0.15); border-top: 6px solid #2ecc71; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+</div>
+
+<div class="about-text" id="aboutUsText">
+    <span data-i18n="intro1">Ten generator jest wyjątkowy, ponieważ zyskujesz dostęp do <b>wszystkich rejonów</b>. <b>Indywidualną wycenę</b> otrzymasz po szybkim kontakcie z naszej strony.</span> 
+    <br><br>
+    <span data-i18n="intro2">Zapomnij o zwykłych, nieczytelnych na telefonie białych kartkach A4, które trzeba ciągle powiększać! Nasze narzędzie pozwala wygenerować <b>Zestaw Tygodniowy PRO</b> dopasowany do Twoich potrzeb – jako zoptymalizowany pod ekrany smartfonów mobilny PDF z aktywnymi linkami.</span>
+    <br><br>
+    <span data-i18n="hint"><span style="color: #f1c40f;">💡 <b>Wskazówka:</b></span> Tuż pod spodem znajdziesz <b>darmowy podgląd terminów</b>. Zanim wybierzesz tygodnie do zamówienia, sprawdź co i w jakich rejonach jest wystawiane w danym czasie. Dzięki temu o wiele łatwiej zdecydujesz, które tygodnie są dla Ciebie najlepsze!</span>
+</div>
+
+<div class="harmonogram-wrapper">
+    <div class="form-wrapper">
+        <div id="freePreviewSection" style="margin-bottom: 25px; display: none;">
+            <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
+            <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
+                <option value="">-- Wybierz tydzień do podglądu --</option>
+            </select>
+            
+            <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
+                <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
+                    <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
+                    <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
+                </div>
+                <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                    <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-header" style="color: #f1c40f;" data-i18n="step1">📅 1. Wybierz tygodnie i zamów:</div>
+        <div class="regions-scroll-box" id="weeksContainer" style="max-height: 200px;"></div>
+     
+        <div style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; border-radius: 8px; margin-bottom: 15px; color: #ddd; font-size: 0.95em; line-height: 1.5;">
+            <p style="margin-top: 0; color: #2ecc71; font-weight: bold; text-align: center; font-size: 1.1em;" data-i18n="howTo">Jak uzyskać dostęp?</p>
+            <ol style="margin-bottom: 0; padding-left: 20px;">
+                <li style="margin-bottom: 5px;" data-i18n="list1">Zaznacz powyżej wybrane tygodnie.</li>
+                <li style="margin-bottom: 5px;" data-i18n="list2">Wpisz swój <b>e-mail</b> w polu poniżej i wyślij zamówienie przez <b>SMS</b> lub <b>E-mail</b>. Numer Zamówienia wygeneruje się sam.</li>
+                <li data-i18n="list3">Po opłaceniu zamówienia, Twój dostęp zostanie odblokowany!</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 10px;">
+            <input type="email" id="orderEmail" placeholder="Wpisz E-mail" data-i18n-ph="emailPh" class="client-input" style="width: 100%; border: 2px solid #f39c12; font-weight: bold; text-align: center;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            <button class="submit-btn btn-orange" id="btnSubmitSMS" type="button" style="margin-top: 0; flex: 1; font-size: 0.95em; padding: 14px;" data-i18n="btnSms">📱 WYŚLIJ (SMS)</button>
+            <button class="submit-btn btn-blue" id="btnSubmitEmail" type="button" style="margin-top: 0; flex: 1; font-size: 0.95em; padding: 14px;" data-i18n="btnEmail">✉️ WYŚLIJ (E-MAIL)</button>
+        </div>
+    </div>
+
+    <div class="form-wrapper form-wrapper-locked">
+        <div class="form-header" style="color: #3498db;" data-i18n="step2">🔐 2. Zaloguj się po opłaceniu:</div>
+        <p style="text-align: center; font-size: 0.95em; color: #ddd; margin-bottom: 20px;" data-i18n="step2Desc">Wpisz swój E-mail oraz Kod z wiadomości SMS, aby odblokować pełną listę rejonów na wybrane tygodnie.</p>
+        
+        <input type="email" id="proEmail" data-i18n-ph="proEmailPh" placeholder="Twój adres E-mail" class="client-input">
+        <input type="text" id="proOrder" data-i18n-ph="proOrderPh" placeholder="Twój Numer Zamówienia" class="client-input" style="margin-bottom: 8px;">
+        <span class="help-text" data-i18n="step2Help">Wpisz numer z wiadomości SMS (np. 20260510-1234)</span>
+        
+        <div id="loginStatusText" style="text-align: center; margin-bottom: 10px; font-weight: bold;"></div>
+        <button id="btnUnlockRegions" class="submit-btn btn-blue" data-i18n="btnUnlock">🔓 ODBLOKUJ LISTĘ REJONÓW</button>
+    </div>
+
+    <div class="form-wrapper form-wrapper-regions" id="step3Wrapper" style="display: none;">
+        <div class="form-header" style="color: #e74c3c;" data-i18n="step3">📍 3. Wybierz rejony i generuj:</div>
+        <p style="text-align: center; font-size: 0.9em; color: #bbb; margin-bottom: 15px;" data-i18n="step3Desc">Wybierz dowolne rejony z listy, a następnie pobierz gotowy harmonogram w formacie PDF.</p>
+
+        <select id="landSelector" class="client-input land-selector">
+            <option value="" data-i18n="landDefault">🗺️ -- Zaznacz cały LAND (automatyczny wybór) --</option>
+            <option value="Normalne" data-i18n="landNormal">TYLKO REJONY NORMALNE</option>
+            <option value="Hessen">Hessen</option>
+            <option value="NRW">Nordrhein-Westfalen (NRW)</option>
+            <option value="Bayern">Bayern (Bawaria)</option>
+            <option value="Baden">Baden-Württemberg</option>
+            <option value="Niedersachsen">Niedersachsen (Dolna Saksonia)</option>
+            <option value="Rheinland">Rheinland-Pfalz</option>
+            <option value="Brandenburg">Brandenburg</option>
+            <option value="Wszystkie" data-i18n="landAll">ZAZNACZ WSZYSTKIE REJONY NA LIŚCIE</option>
+        </select>
+
+        <div class="selection-tools"><a href="javascript:void(0)" id="btnUnselectAll" data-i18n="unselect">[ Odznacz wszystko / Clear ]</a></div>
+    
+        <div class="regions-scroll-box" id="regionsContainer">
+            <div id="regionsCheckboxes">
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Munstereifel" /> Bad-Munstereifel</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Stadt" /> Karlsruhe Stadt</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim" /> Kirchheim</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Liederbach" /> Liederbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübecke" /> Lübecke</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt a.d. Waldnaab" /> Neustadt a.d. Waldnaab</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckenförde" /> Rendsburg-Eckenförde</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wiesbaden-Naurod" /> Wiesbaden-Naurod</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
+                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; border: 1px solid #f39c12; text-align: center;">
+            <label style="color: #f39c12; font-weight: bold; cursor: pointer; font-size: 1.1em;">
+                <input type="checkbox" id="scrapFilter" style="transform: scale(1.3); margin-right: 10px;">
+                🧲 Tylko Złom / Elektro (Filtr dla złomiarzy)
+            </label>
+        </div>
+
+        <button id="btnDownloadZestawPDF" class="submit-btn btn-red" data-i18n="btnDownloadPdf" style="margin-bottom: 15px;">📥 POBIERZ JAKO PDF (Smartfon)</button>
+    </div>
+</div>
+
+<script>
+// <![CDATA[
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const apiURL = "https://script.google.com/macros/s/AKfycbz3Hj1JtmQI8-OCE3B_7zfDWMePfaNhYuuitjs1Ji7TkDLja7KzkVDuoKmGfZT8b3Z5lA/exec";
+        const availabilityApiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec";
+        
+        const landMap = {
+            "Normalne": ["Altmarkkreis-Salzwedel", "Bonn", "Dülmen", "Eppstein", "Eschwege", "Flörsbachtal", "Freudenstadt", "Fulda", "Gifhorn", "Gräfelfing", "Gründau", "Hofheim am Taunus", "Holzminden", "Karlsruhe Stadt", "Kelkheim (Taunus)", "Kirchheim", "Königstein (Taunus)", "Konstanz", "Neustadt a.d. Waldnaab", "Ortenau", "Rendsburg-Eckenförde", "Schlüchtern", "Schwedt/Oder", "Sinntal", "Walldorf-Mörfelden", "Werra-Meissner", "Westerwald", "Wuppertal"],
+            "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Wehrheim", "Weilrod", "Wiesbaden-Naurod", "Liederbach"],
+            "NRW": ["Bad-Munstereifel", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dülmen", "Düsseldorf", "Ennepetal", "Erftstadt", "Euskirchen", "Geilenkirchen", "Hellenthal", "Hürth", "Jülich", "Kall", "Kamp-Lintfort", "Leverkusen", "Lübecke", "Mechernich", "Münster", "Oberberg", "Olpe", "Pulheim", "Rheinisch-Bergischer", "Rhein-Sieg", "Schleiden", "Solingen", "Sprockhövel", "Tönisvorst", "Weilerswist", "Wesseling", "Wuppertal", "Zülpich"],
+            "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kulmbach", "Monachium", "Neustadt a.d. Waldnaab", "Regensburg", "Straubing-Bogen"],
+            "Baden": ["Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Stadt", "Karlsruhe Kreis", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"],
+            "Niedersachsen": ["Braunschweig", "Diepholz", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Osnabrück", "Stade", "Wolfsburg"],
+            "Rheinland": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
+            "Brandenburg": ["Barnim", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
+            "Sachsen": ["Nordsachsen"],
+            "Sachsen Anhalt": ["Burgenland"]
+        };
+
+        const config = {
+            'pl': { d:['PON','WT','SR','CZW','PT','SOB'], warn:'UWAGA: Wywoz rano. Badz dzien wczesniej!', leg:'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info:'Brak dodatkowych informacji.', info_label: 'Info', subtitle: 'ZESTAW MOBILNY PREMIUM', region: 'REGION', date: 'Data', to: 'do', week: 'Tydzien', order: 'Zamowienie', no_terms: 'BRAK TERMINOW', page: 'Strona', of: 'z', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', pdfReg: 'Rejon', pdfDat: 'Dni Wywozu', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "INSTRUKCJA OPERACYJNA", warn_text: "• <b>Czas:</b> Bądź na miejscu dzień wcześniej wieczorem. <b>Strategia:</b> Objazd rano przed śmieciarką.<br>• <b>Kultura:</b> Zachowaj porządek. <b>Prawo:</b> Pytaj właściciela o pozwolenie." },
+            'de': { d:['MO','DI','MI','DO','FR','SA'], warn:'ACHTUNG: Morgendliche Abholung. Sei am Vorabend da!', leg:'LEGENDE: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info:'Keine zusaetzlichen Informationen.', info_label: 'Information', subtitle: 'PREMIUM MOBILPAKET', region: 'REGION', date: 'Datum', to: 'bis', week: 'Woche', order: 'Bestellung', no_terms: 'KEINE TERMINE', page: 'Seite', of: 'von', previewTitle: '👀 Kostenlose Terminübersicht:', previewDefault: '-- Wählen Sie eine Woche zur Vorschau --', pdfReg: 'Region', pdfDat: 'Tage', pdfLegend: 'LEGENDE: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "BETRIEBSANLEITUNG", warn_text: "• <b>Zeit:</b> Seien Sie am Vorabend da. <b>Strategie:</b> Tour am Morgen vor der Müllabfuhr.<br>• <b>Kultur:</b> Ordnung halten. <b>Recht:</b> Besitzer um Erlaubnis fragen." },
+            'cs': { d: ['PO', 'UT', 'ST', 'CT', 'PA', 'SO'], warn: 'POZOR: Ranni svoz. Budte tam den predem!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Zadne dalsi informace.', info_label: 'Info', subtitle: 'PREMIUM MOBILNI BALICEK', region: 'REGION', date: 'Datum', to: 'do', week: 'Tyden', order: 'Objednavka', no_terms: 'ZADNE TERMINY', page: 'Strana', of: 'z', previewTitle: '👀 Bezplatný náhled termínů:', previewDefault: '-- Vyberte týden pro náhled --', pdfReg: 'Region', pdfDat: 'Dny svozu', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "PROVOZNÍ POKYNY", warn_text: "• <b>Čas:</b> Buďte tam den předem. <b>Strategie:</b> Svoz ráno před popeláři.<br>• <b>Kultura:</b> Udržujte pořádek. <b>Právo:</b> Ptejte se majitele na svolení." },
+            'sk': { d: ['PO', 'UT', 'STR', 'STV', 'PI', 'SO'], warn: 'POZOR: Ranny zvoz. Budte tam den vopred!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Ziadne dalsie informacie.', info_label: 'Info', subtitle: 'PREMIUM MOBILNY BALICEK', region: 'REGION', date: 'Datum', to: 'do', week: 'Tyden', order: 'Objednavka', no_terms: 'ZIADNE TERMINY', page: 'Strana', of: 'z', previewTitle: '👀 Bezplatný náhľad termínov:', previewDefault: '-- Vyberte týždeň pre náhľad --', pdfReg: 'Región', pdfDat: 'Dni zvozu', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "PREVÁDZKOVÉ POKYNY", warn_text: "• <b>Čas:</b> Buďte tam deň vopred. <b>Stratégia:</b> Zvoz ráno pred smetiarmi.<br>• <b>Kultúra:</b> Udržujte poriadok. <b>Právo:</b> Pýtajte sa majiteľa na povolenie." },
+            'hu': { d: ['HE', 'KE', 'SZE', 'CSU', 'PE', 'SZO'], warn: 'FIGYELEM: Reggeli elszallitas. Legyen ott egy nappal korabban!', leg: 'JELMAGYARAZAT: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nincs tovabbi informacio.', info_label: 'Info', subtitle: 'PREMIUM MOBIL CSOMAG', region: 'REGIO', date: 'Datum', to: '-', week: 'Het', order: 'Rendeles', no_terms: 'NINCS IDOPONT', page: 'Oldal', of: '/', previewTitle: '👀 Ingyenes időpont előnézet:', previewDefault: '-- Válasszon hetet az előnézethez --', pdfReg: 'Régió', pdfDat: 'Elszállítás napjai', pdfLegend: 'JELMAGYARÁZAT: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "ÜZEMELTETÉSI UTASÍTÁSOK", warn_text: "• <b>Idő:</b> Legyen ott előző este. <b>Stratégia:</b> Reggeli túra a kukásautó előtt.<br>• <b>Kultúra:</b> Tartson rendet. <b>Jog:</b> Kérjen engedélyt a tulajdonostól." },
+            'ro': { d: ['LUN', 'MAR', 'MIE', 'JOI', 'VIN', 'SAM'], warn: 'ATENTIE: Colectare dimineata. Fiti acolo cu o zi inainte!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nu exista informatii suplimentare.', info_label: 'Info', subtitle: 'PACHET MOBIL PREMIUM', region: 'REGIUNE', date: 'Data', to: 'pana la', week: 'Saptamana', order: 'Comanda', no_terms: 'FARA TERMINE', page: 'Pagina', of: 'din', previewTitle: '👀 Previzualizare gratuită a programului:', previewDefault: '-- Selectați o săptămână pentru previzualizare --', pdfReg: 'Regiune', pdfDat: 'Zile de colectare', pdfLegend: 'LEGENDĂ: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "INSTRUCȚIUNI DE OPERARE", warn_text: "• <b>Timp:</b> Fii acolo cu o seară înainte. <b>Strategie:</b> Tur de dimineață înainte de mașina de gunoi.<br>• <b>Cultură:</b> Păstrați curățenia. <b>Drept:</b> Cereți permisiunea proprietarului." },
+            'bg': { d: ['PON', 'VTO', 'SRY', 'CHET', 'PET', 'SUB'], warn: 'VNIMANIE: Sutreshno subirane. Budete tam den po-rano!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nyama dopulnitelna informatsiya.', info_label: 'Info', subtitle: 'PREMIUM MOBILEN PAKET', region: 'REGION', date: 'Data', to: 'do', week: 'Sedmitsa', order: 'Poruchka', no_terms: 'NYAMA TERMINI', page: 'Stranitsa', of: 'ot', previewTitle: '👀 Безплатен преглед на датите:', previewDefault: '-- Изберете седмица за преглед --', pdfReg: 'Регион', pdfDat: 'Дни на извозване', pdfLegend: 'ЛЕГЕНДА: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "ИНСТРУКЦИИ ЗА РАБОТА", warn_text: "• <b>Време:</b> Бъдете там предишната вечер. <b>Стратегия:</b> Сутрешна обиколка преди камиона за боклук.<br>• <b>Култура:</b> Пазете чистота. <b>Право:</b> Попитайте собственика за разрешение." },
+            'tr': { d: ['PZT', 'SAL', 'CAR', 'PER', 'CUM', 'CMT'], warn: 'DIKKAT: Sabah alimi. Bir gun onceden orada olun!', leg: 'EFSANE: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Ek bilgi yok.', info_label: 'Bilgi', subtitle: 'PREMIUM MOBIL PAKET', region: 'BOLGE', date: 'Tarih', to: 'ile', week: 'Hafta', order: 'Siparis', no_terms: 'TARIH YOK', page: 'Sayfa', of: '/', previewTitle: '👀 Ücretsiz tarih önizlemesi:', previewDefault: '-- Önizleme için bir hafta seçin --', pdfReg: 'Bölge', pdfDat: 'Alım Günleri', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "KULLANIM TALİMATLARI", warn_text: "• <b>Zaman:</b> Bir gece önceden orada olun. <b>Strateji:</b> Çöp arabasından önce sabah turu.<br>• <b>Kültür:</b> Düzenli tutun. <b>Hak:</b> Sahibinden izin isteyin." },
+            'bs': { d: ['PON', 'UTO', 'SRI', 'CET', 'PET', 'SUB'], warn: 'PAZNJA: Jutarnji odvoz. Budite tamo dan ranije!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nema dodatnih informacija.', info_label: 'Info', subtitle: 'PREMIUM MOBILNI PAKET', region: 'REGION', date: 'Datum', to: 'do', week: 'Sedmica', order: 'Narudzba', no_terms: 'NEMA TERMINA', page: 'Stranica', of: 'od', previewTitle: '👀 Besplatan pregled termina:', previewDefault: '-- Izaberite sedmicu za pregled --', pdfReg: 'Regija', pdfDat: 'Dani odvoza', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "UPUTSTVO ZA RAD", warn_text: "• <b>Vrijeme:</b> Budite tamo večer prije. <b>Strategija:</b> Jutarnji obilazak prije kamiona za smeće.<br>• <b>Kultura:</b> Održavajte red. <b>Zakon:</b> Pitajte vlasnika za dozvolu." },
+            'uk': { d: ['PON', 'VIV', 'SER', 'CHET', 'PYA', 'SUB'], warn: 'UVAHA: Rankovyi zbir. Budte tam za den do toho!', leg: 'LEHENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nemaye dodatkovoyi informatsiyi.', info_label: 'Info', subtitle: 'PREMIUM MOBILNYI PAKET', region: 'REHION', date: 'Data', to: 'do', week: 'Tyzhden', order: 'Zamovlennya', no_terms: 'NEMAYE TERMINIV', page: 'Storinka', of: 'z', previewTitle: '👀 Безкоштовний перегляд дат:', previewDefault: '-- Виберіть тиждень для перегляду --', pdfReg: 'Регіон', pdfDat: 'Дні вивезення', pdfLegend: 'ЛЕГЕНДА: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "ІНСТРУКЦІЯ З ЕКСПЛУАТАЦІЇ", warn_text: "• <b>Час:</b> Будьте там напередодні ввечері. <b>Стратегия:</b> Ранковий об'їзд перед сміттєвозом.<br>• <b>Культура:</b> Дотримуйтесь чистоти. <b>Право:</b> Питайте дозволу у власника." },
+            'ru': { d: ['PON', 'VTO', 'SRE', 'CHE', 'PYA', 'SUB'], warn: 'VNIMANIE: Utrenniy sbor. Budte tam za den do etogo!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Net dopolnitelnoy informatsii.', info_label: 'Info', subtitle: 'PREMIUM MOBILNYY PAKET', region: 'REGION', date: 'Data', to: 'do', week: 'Nedelya', order: 'Zakaz', no_terms: 'NET TERMINOV', page: 'Stranitsa', of: 'iz', previewTitle: '👀 Бесплатный просмотр дат:', previewDefault: '-- Выберите неделю для просмотра --', pdfReg: 'Регион', pdfDat: 'Дни вывоза', pdfLegend: 'ЛЕГЕНДА: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "ИНСТРУКЦИЯ ПО ЭКСПЛУАТАЦИИ", warn_text: "• <b>Время:</b> Будьте там накануне вечером. <b>Стратегия:</b> Утренний объезд перед мусоровозом.<br>• <b>Культура:</b> Соблюдайте чистоту. <b>Право:</b> Спрашивайте разрешения у владельца." },
+            'lt': { d: ['PIRM', 'ANTR', 'TREC', 'KETV', 'PENK', 'SEST'], warn: 'DEMESIO: Rytinis isvezimas. Bukite ten diena pries!', leg: 'LEGENDA: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'Nera papildomos informacijos.', info_label: 'Info', subtitle: 'PREMIUM MOBILUS PAKETAS', region: 'REGIONAS', date: 'Data', to: 'iki', week: 'Savaite', order: 'Uzsakymas', no_terms: 'NERA TERMINU', page: 'Puslapis', of: 'is', previewTitle: '👀 Nemokama datų peržiūra:', previewDefault: '-- Pasirinkite savaitę peržiūrai --', pdfReg: 'Regionas', pdfDat: 'Išvežimo dienos', pdfLegend: 'LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "NAUDOJIMO INSTRUKCIJA", warn_text: "• <b>Laikas:</b> Būkite ten išvakarėse. <b>Strategija:</b> Rytinis turas prieš šiukšliavežę.<br>• <b>Kultūra:</b> Palaikykite tvarką. <b>Teisė:</b> Prašykite savininko leidimo." },
+            'en': { d: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'], warn: 'ATTENTION: Morning pickup. Be there the day before!', leg: 'LEGEND: [S] Sperrmuell | [E] Elektro | [M] Metall | [H] Holz', info: 'No additional information.', info_label: 'Info', subtitle: 'PREMIUM MOBILE PACKAGE', region: 'REGION', date: 'Date', to: 'to', week: 'Week', order: 'Order', no_terms: 'NO DATES', page: 'Page', of: 'of', previewTitle: '👀 Free dates preview:', previewDefault: '-- Select a week to preview --', pdfReg: 'Region', pdfDat: 'Pickup Days', pdfLegend: 'LEGEND: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz', warn_title: "OPERATING INSTRUCTIONS", warn_text: "• <b>Time:</b> Be there the evening before. <b>Strategy:</b> Morning tour before the garbage truck.<br>• <b>Culture:</b> Keep it tidy. <b>Right:</b> Ask the owner for permission." }
+        };
+
+        const infoTranslations = {
+            'de': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Termine auf Abruf (von wenigen bereitgestellt) jeden Monat!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normale Termine (für alle) 2 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Termine auf Abruf (von wenigen bereitgestellt) jeden Monat oder öfter!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Termine auf Abruf (von wenigen bereitgestellt) sehr oft!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Termine auf Abruf (von wenigen bereitgestellt) zweimal im Monat oder öfter!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normale Termine (für alle) 3 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Termine auf Abruf (von wenigen bereitgestellt) 6 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Termine auf Abruf (von wenigen bereitgestellt) einmal im Jahr!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normale Termine (für alle) einmal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Termine auf Abruf (von wenigen bereitgestellt) zweimal im Monat!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normale Termine (für alle) 4 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Termine auf Abruf (von wenigen bereitgestellt) 4 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Termine auf Abruf (von wenigen bereitgestellt) 8 mal im Jahr!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normale Termine (für alle) 2-3 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Termine auf Abruf (von wenigen bereitgestellt) ein- oder zweimal im Monat!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Termine auf Abruf (von wenigen bereitgestellt) 18 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Termine auf Abruf (von wenigen bereitgestellt) jeden oder jeden zweiten Monat!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Nächster Termin auf Abruf (von wenigen bereitgestellt)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normale Termine (für alle) 4 oder 6 mal im Jahr!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Termine auf Abruf (von wenigen bereitgestellt) durchschnittlich einmal im Monat!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Termine auf Abruf (von wenigen bereitgestellt) zweimal im Monat Sperrmüll und alle zwei Monate E-Schrott!"
+            },
+            'en': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "On-call dates (provided by few) every month!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normal dates (for everyone) 2 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "On-call dates (provided by few) every month or more often!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "On-call dates (provided by few) very often!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "On-call dates (provided by few) twice a month or more often!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normal dates (for everyone) 3 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "On-call dates (provided by few) 6 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "On-call dates (provided by few) once a year!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normal dates (for everyone) once a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "On-call dates (provided by few) twice a month!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normal dates (for everyone) 4 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "On-call dates (provided by few) 4 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "On-call dates (provided by few) 8 times a year!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normal dates (for everyone) 2-3 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "On-call dates (provided by few) once or twice a month!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "On-call dates (provided by few) 18 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "On-call dates (provided by few) every month or two!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Next on-call date (provided by few)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normal dates (for everyone) 4 or 6 times a year!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "On-call dates (provided by few) on average once a month!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "On-call dates (provided by few) twice a month Sperrmull and every two months E-Schrott!"
+            },
+            'cs': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Terminy na zavolani (poskytuje malokdo) kazdy mesic!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalni terminy (pro vsechny) 2x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Terminy na zavolani (poskytuje malokdo) kazdy mesic nebo casteji!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Terminy na zavolani (poskytuje malokdo) velmi casto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Terminy na zavolani (poskytuje malokdo) dvakrat mesicne nebo casteji!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalni terminy (pro vsechny) 3x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Terminy na zavolani (poskytuje malokdo) 6x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Terminy na zavolani (poskytuje malokdo) jednou rocne!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalni terminy (pro vsechny) jednou rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Terminy na zavolani (poskytuje malokdo) dvakrat mesicne!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalni terminy (pro vsechny) 4x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Terminy na zavolani (poskytuje malokdo) 4x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Terminy na zavolani (poskytuje malokdo) 8x rocne!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalni terminy (pro vsechny) 2-3x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Terminy na zavolani (poskytuje malokdo) jednou nebo dvakrat mesicne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Terminy na zavolani (poskytuje malokdo) 18x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Terminy na zavolani (poskytuje malokdo) kazdy mesic nebo dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Nejblizsi termin na zavolani (poskytuje malokdo)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalni terminy (pro vsechny) 4 nebo 6x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Terminy na zavolani (poskytuje malokdo) v prumeru jednou mesicne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Terminy na zavolani (poskytuje malokdo) dvakrat mesicne Sperrmull a kazde dva mesice E-Schrott!"
+            },
+            'sk': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Terminy na zavolanie (poskytuje malokto) kazdy mesiac!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalne terminy (pre vsetkych) 2x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Terminy na zavolanie (poskytuje malokto) kazdy mesiac alebo castejsie!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Terminy na zavolanie (poskytuje malokto) velmi casto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Terminy na zavolanie (poskytuje malokto) dvakrat mesacne alebo castejsie!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalne terminy (pre vsetkych) 3x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Terminy na zavolanie (poskytuje malokto) 6x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Terminy na zavolanie (poskytuje malokto) raz rocne!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalne terminy (pre vsetkych) raz rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Terminy na zavolanie (poskytuje malokto) dvakrat mesacne!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalne terminy (pre vsetkych) 4x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Terminy na zavolanie (poskytuje malokto) 4x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Terminy na zavolanie (poskytuje malokto) 8x rocne!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalne terminy (pre vsetkych) 2-3x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Terminy na zavolanie (poskytuje malokto) raz alebo dvakrat mesacne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Terminy na zavolanie (poskytuje malokto) 18x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Terminy na zavolanie (poskytuje malokto) kazdy mesiac alebo dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Najblizsi termin na zavolanie (poskytuje malokto)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalne terminy (pre vsetkych) 4 alebo 6x rocne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Terminy na zavolanie (poskytuje malokto) v priemere raz mesacne!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Terminy na zavolanie (poskytuje malokto) dvakrat mesacne Sperrmull a kazde dva mesiace E-Schrott!"
+            },
+            'hu': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Telefonos idopontok (kevesen biztositjak) minden honapban!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normal idopontok (mindenkinek) evente 2 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Telefonos idopontok (kevesen biztositjak) minden honapban vagy gyakrabban!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Telefonos idopontok (kevesen biztositjak) nagyon gyakran!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Telefonos idopontok (kevesen biztositjak) havonta ketszer vagy gyakrabban!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normal idopontok (mindenkinek) evente 3 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Telefonos idopontok (kevesen biztositjak) evente 6 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Telefonos idopontok (kevesen biztositjak) evente egyszer!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normal idopontok (mindenkinek) evente egyszer!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Telefonos idopontok (kevesen biztositjak) havonta ketszer!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normal idopontok (mindenkinek) evente 4 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Telefonos idopontok (kevesen biztositjak) evente 4 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Telefonos idopontok (kevesen biztositjak) evente 8 alkalommal!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normal idopontok (mindenkinek) evente 2-3 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Telefonos idopontok (kevesen biztositjak) havonta egyszer vagy ketszer!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Telefonos idopontok (kevesen biztositjak) evente 18 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Telefonos idopontok (kevesen biztositjak) havonta vagy kethavonta!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "A kovetkezo telefonos idopont (kevesen biztositjak)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normal idopontok (mindenkinek) evente 4 vagy 6 alkalommal!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Telefonos idopontok (kevesen biztositjak) atlagosan havonta egyszer!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Telefonos idopontok (kevesen biztositjak) havonta ketszer Sperrmull es kethavonta E-Schrott!"
+            },
+            'ro': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Date la cerere (oferite de putini) in fiecare luna!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Date normale (pentru toata lumea) de 2 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Date la cerere (oferite de putini) in fiecare luna sau mai des!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Date la cerere (oferite de putini) foarte des!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Date la cerere (oferite de putini) de doua ori pe luna sau mai des!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Date normale (pentru toata lumea) de 3 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Date la cerere (oferite de putini) de 6 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Date la cerere (oferite de putini) o data pe an!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Date normale (pentru toata lumea) o data pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Date la cerere (oferite de putini) de doua ori pe luna!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Date normale (pentru toata lumea) de 4 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Date la cerere (oferite de putini) de 4 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Date la cerere (oferite de putini) de 8 ori pe an!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Date normale (pentru toata lumea) de 2-3 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Date la cerere (oferite de putini) o data sau de doua ori pe luna!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Date la cerere (oferite de putini) de 18 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Date la cerere (oferite de putini) in fiecare luna sau doua!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Urmatoarea data la cerere (oferita de putini)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Date normale (pentru toata lumea) de 4 sau 6 ori pe an!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Date la cerere (oferite de putini) in medie o data pe luna!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Date la cerere (oferite de putini) de doua ori pe luna Sperrmull si la fiecare doua luni E-Schrott!"
+            },
+            'bg': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Termini na obazhdane (predostavyani ot maltsina) vseki mesets!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalni termini (za vsichki) 2 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Termini na obazhdane (predostavyani ot maltsina) vseki mesets ili po-chesto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Termini na obazhdane (predostavyani ot maltsina) mnogo chesto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Termini na obazhdane (predostavyani ot maltsina) dva puti v mesetsa ili po-chesto!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalni termini (za vsichki) 3 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Termini na obazhdane (predostavyani ot maltsina) 6 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Termini na obazhdane (predostavyani ot maltsina) vednuzh v godinata!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalni termini (za vsichki) vednuzh v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Termini na obazhdane (predostavyani ot maltsina) dva puti v mesetsa!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalni termini (za vsichki) 4 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Termini na obazhdane (predostavyani ot maltsina) 4 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Termini na obazhdane (predostavyani ot maltsina) 8 puti v godinata!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalni termini (za vsichki) 2-3 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Termini na obazhdane (predostavyani ot maltsina) vednuzh ili dva puti v mesetsa!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Termini na obazhdane (predostavyani ot maltsina) 18 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Termini na obazhdane (predostavyani ot maltsina) vseki mesets ili dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Sledvashtiyat termin na obazhdane (predostavyan ot maltsina)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalni termini (za vsichki) 4 ili 6 puti v godinata!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Termini na obazhdane (predostavyani ot maltsina) sredno vednuzh v mesetsa!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Termini na obazhdane (predostavyani ot maltsina) dva puti v mesetsa Sperrmull i na vseki dva mesetsa E-Schrott!"
+            },
+            'tr': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Telefonla randevu (cok az kisi saglar) her ay!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normal tarihler (herkes icin) yilda 2 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Telefonla randevu (cok az kisi saglar) her ay veya daha sik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Telefonla randevu (cok az kisi saglar) cok sik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Telefonla randevu (cok az kisi saglar) ayda iki kez veya daha sik!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normal tarihler (herkes icin) yilda 3 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Telefonla randevu (cok az kisi saglar) yilda 6 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Telefonla randevu (cok az kisi saglar) yilda bir kez!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normal tarihler (herkes icin) yilda bir kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Telefonla randevu (cok az kisi saglar) ayda iki kez!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normal tarihler (herkes icin) yilda 4 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Telefonla randevu (cok az kisi saglar) yilda 4 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Telefonla randevu (cok az kisi saglar) yilda 8 kez!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normal tarihler (herkes icin) yilda 2-3 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Telefonla randevu (cok az kisi saglar) ayda bir veya iki kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Telefonla randevu (cok az kisi saglar) yilda 18 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Telefonla randevu (cok az kisi saglar) her ay veya iki ayda bir!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Yaklasan telefonla randevu (cok az kisi saglar)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normal tarihler (herkes icin) yilda 4 veya 6 kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Telefonla randevu (cok az kisi saglar) ortalama ayda bir kez!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Telefonla randevu (cok az kisi saglar) ayda iki kez Sperrmull ve iki ayda bir E-Schrott!"
+            },
+            'bs': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Termini na poziv (pruza mali broj) svaki mjesec!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalni termini (za sve) 2 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Termini na poziv (pruza mali broj) svaki mjesec ili cesce!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Termini na poziv (pruza mali broj) veoma cesto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Termini na poziv (pruza mali broj) dva puta mjesecno ili cesce!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalni termini (za sve) 3 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Termini na poziv (pruza mali broj) 6 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Termini na poziv (pruza mali broj) jednom godisnje!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalni termini (za sve) jednom godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Termini na poziv (pruza mali broj) dva puta mjesecno!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalni termini (za sve) 4 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Termini na poziv (pruza mali broj) 4 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Termini na poziv (pruza mali broj) 8 puta godisnje!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalni termini (za sve) 2-3 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Termini na poziv (pruza mali broj) jednom ili dva puta mjesecno!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Termini na poziv (pruza mali broj) 18 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Termini na poziv (pruza mali broj) svaki mjesec ili dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Sljedeci termin na poziv (pruza mali broj)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalni termini (za sve) 4 ili 6 puta godisnje!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Termini na poziv (pruza mali broj) u prosjeku jednom mjesecno!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Termini na poziv (pruza mali broj) dva puta mjesecno Sperrmull i svaka dva mjeseca E-Schrott!"
+            },
+            'uk': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Terminy na vyklyk (nadayut odynytsi) shchomisyatsya!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalni terminy (dlya vsikh) 2 razy na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Terminy na vyklyk (nadayut odynytsi) shchomisyatsya abo chastishe!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Terminy na vyklyk (nadayut odynytsi) duzhe chasto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Terminy na vyklyk (nadayut odynytsi) dvichi na misyats abo chastishe!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalni terminy (dlya vsikh) 3 razy na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Terminy na vyklyk (nadayut odynytsi) 6 raziv na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Terminy na vyklyk (nadayut odynytsi) raz na rik!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalni terminy (dlya vsikh) raz na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Terminy na vyklyk (nadayut odynytsi) dvichi na misyats!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalni terminy (dlya vsikh) 4 razy na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Terminy na vyklyk (nadayut odynytsi) 4 razy na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Terminy na vyklyk (nadayut odynytsi) 8 raziv na rik!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalni terminy (dlya vsikh) 2-3 razy na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Terminy na vyklyk (nadayut odynytsi) raz chy dva na misyats!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Terminy na vyklyk (nadayut odynytsi) 18 raziv na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Terminy na vyklyk (nadayut odynytsi) shchomisyatsya abo dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Nayblyzhchyi termin na vyklyk (nadayut odynytsi)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalni terminy (dlya vsikh) 4 abo 6 raziv na rik!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Terminy na vyklyk (nadayut odynytsi) v serednomu raz na misyats!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Terminy na vyklyk (nadayut odynytsi) dvichi na misyats Sperrmull ta kozhni dva misyatsi E-Schrott!"
+            },
+            'ru': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Terminy po zvonku (predostavlyayut nemnogie) kazhdyy mesyats!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalnye terminy (dlya vseh) 2 raza v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Terminy po zvonku (predostavlyayut nemnogie) kazhdyy mesyats ili chasche!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Terminy po zvonku (predostavlyayut nemnogie) ochen chasto!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Terminy po zvonku (predostavlyayut nemnogie) dva raza v mesyats ili chasche!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalnye terminy (dlya vseh) 3 raza v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Terminy po zvonku (predostavlyayut nemnogie) 6 raz v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Terminy po zvonku (predostavlyayut nemnogie) raz v god!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalnye terminy (dlya vseh) raz v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Terminy po zvonku (predostavlyayut nemnogie) dva raza v mesyats!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalnye terminy (dlya vseh) 4 raza v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Terminy po zvonku (predostavlyayut nemnogie) 4 raza v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Terminy po zvonku (predostavlyayut nemnogie) 8 raz v god!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalnye terminy (dlya vseh) 2-3 raza v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Terminy po zvonku (predostavlyayut nemnogie) raz ili dva v mesyats!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Terminy po zvonku (predostavlyayut nemnogie) 18 raz v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Terminy po zvonku (predostavlyayut nemnogie) kazhdyy mesyats ili dva!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Blizhayshiy termin po zvonku (predostavlyayut nemnogie)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalnye terminy (dlya vseh) 4 ili 6 raz v god!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Terminy po zvonku (predostavlyayut nemnogie) v srednem raz v mesyats!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Terminy po zvonku (predostavlyayut nemnogie) dva raza v mesyats Sperrmull i kazhdye dva mesyatsa E-Schrott!"
+            },
+            'lt': {
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc!": "Terminai telefonu (pateikia nedaugelis) kas menesi!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2 razy w roku!": "Normalus terminai (visiems) 2 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub częściej!": "Terminai telefonu (pateikia nedaugelis) kas menesi ar dazniau!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) bardzo często!": "Terminai telefonu (pateikia nedaugelis) labai daznai!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu lub częściej!": "Terminai telefonu (pateikia nedaugelis) du kartus per menesi ar dazniau!",
+                "Terminy Normal (wystawiać mogą wszyscy) 3 razy w roku!": "Normalus terminai (visiems) 3 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 6 razy w roku!": "Terminai telefonu (pateikia nedaugelis) 6 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz w roku!": "Terminai telefonu (pateikia nedaugelis) karta per metus!",
+                "Terminy Normal (wystawiać mogą wszyscy) raz w roku!": "Normalus terminai (visiems) karta per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy w miesiącu!": "Terminai telefonu (pateikia nedaugelis) du kartus per menesi!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 razy w roku!": "Normalus terminai (visiems) 4 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 4 razy w roku!": "Terminai telefonu (pateikia nedaugelis) 4 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 8 razy w roku!": "Terminai telefonu (pateikia nedaugelis) 8 kartus per metus!",
+                "Terminy Normal (wystawiać mogą wszyscy) 2-3 razy w roku!": "Normalus terminai (visiems) 2-3 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) raz lub dwa na miesiąc!": "Terminai telefonu (pateikia nedaugelis) karta ar du per menesi!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) 18 razy w roku!": "Terminai telefonu (pateikia nedaugelis) 18 kartu per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) co miesiąc lub dwa!": "Terminai telefonu (pateikia nedaugelis) kas menesi ar du!",
+                "Najbliższy termin auf Abruf (na telefon wystawiają nieliczni)!": "Kitas terminas telefonu (pateikia nedaugelis)!",
+                "Terminy Normal (wystawiać mogą wszyscy) 4 lub 6 razy w roku!": "Normalus terminai (visiems) 4 ar 6 kartus per metus!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) średnio raz w miesiącu!": "Terminai telefonu (pateikia nedaugelis) vidutinisiskai karta per menesi!",
+                "Terminy auf Abruf (na telefon wystawiają nieliczni) dwa razy na miesiąc Sperrmüll i co dwa miesiące E-Schrott!": "Terminai telefonu (pateikia nedaugelis) du kartus per menesi Sperrmull ir kas du menesius E-Schrott!"
+            }
+        };
+
+        const uiTranslations = {
+            'pl': {
+                intro1: 'Zyskaj dostęp do harmonogramu wywozu dla <b>wszystkich rejonów</b>. Indywidualną wycenę otrzymasz po szybkim kontakcie.',
+                intro2: 'Generuj czytelne na telefonie zestawy <b>PDF PRO</b> z aktywnymi linkami do nawigacji.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Wskazówka:</b></span> Poniżej znajdziesz <b>darmowy podgląd</b>. Sprawdź terminy i rejony przed złożeniem zamówienia!',
+                step1: '📅 1. Wybierz tygodnie i zamów:',
+                howTo: 'Jak uzyskać dostęp?',
+                list1: 'Zaznacz powyżej wybrane tygodnie.',
+                list2: 'Wpisz swój <b>e-mail</b> w polu poniżej i wyślij zamówienie przez <b>SMS</b> lub <b>E-mail</b>. Numer Zamówienia wygeneruje się sam.',
+                list3: 'Po opłaceniu zamówienia, Twój dostęp zostanie odblokowany!',
+                emailPh: 'Wpisz E-mail',
+                btnSms: '📱 WYŚLIJ (SMS)',
+                btnEmail: '✉️ WYŚLIJ (E-MAIL)',
+                step2: '🔐 2. Zaloguj się po opłaceniu:',
+                step2Desc: 'Wpisz swój E-mail oraz Kod z wiadomości SMS, aby odblokować pełną listę rejonów na wybrane tygodnie.',
+                proEmailPh: 'Twój adres E-mail',
+                proOrderPh: 'Twój Numer Zamówienia',
+                step2Help: 'Wpisz numer z wiadomości SMS (np. 20260510-1234)',
+                btnUnlock: '🔓 ODBLOKUJ LISTĘ REJONÓW',
+                step3: '📍 3. Wybierz rejony i generuj:',
+                step3Desc: 'Wybierz dowolne rejony z listy, a następnie pobierz gotowy harmonogram w formacie PDF.',
+                landDefault: '🗺️ -- Zaznacz cały LAND (automatyczny wybór) --',
+                landNormal: 'TYLKO REJONY NORMALNE',
+                landAll: 'ZAZNACZ WSZYSTKIE REJONY NA LIŚCIE',
+                unselect: '[ Odznacz wszystko / Clear ]',
+                btnDownloadPdf: '📥 POBIERZ JAKO PDF (Smartfon)'
+            },
+            'de': {
+                intro1: 'Erhalten Sie Zugang zum Abholplan für <b>alle Regionen</b>. Ein individuelles Angebot erhalten Sie nach kurzer Kontaktaufnahme.',
+                intro2: 'Generieren Sie auf dem Telefon gut lesbare <b>PDF PRO</b>-Sets mit aktiven Navigationslinks.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Tipp:</b></span> Unten finden Sie eine <b>kostenlose Vorschau</b>. Prüfen Sie Termine und Regionen vor der Bestellung!',
+                step1: '📅 1. Wochen auswählen und bestellen:',
+                howTo: 'Wie erhalte ich Zugang?',
+                list1: 'Wählen Sie oben die gewünschten Wochen aus.',
+                list2: 'Geben Sie unten Ihre <b>E-Mail</b> ein und senden Sie die Bestellung per <b>SMS</b> oder <b>E-Mail</b>.',
+                list3: 'Nach Bezahlung wird Ihr Zugang freigeschaltet!',
+                emailPh: 'E-Mail eingeben',
+                btnSms: '📱 SENDEN (SMS)',
+                btnEmail: '✉️ SENDEN (E-MAIL)',
+                step2: '🔐 2. Nach der Bezahlung anmelden:',
+                step2Desc: 'Geben Sie Ihre E-Mail und den Code aus der SMS ein, um die vollständige Liste der Regionen freizuschalten.',
+                proEmailPh: 'Ihre E-Mail-Adresse',
+                proOrderPh: 'Ihre Bestellnummer',
+                step2Help: 'Nummer aus der SMS eingeben (z.B. 20260510-1234)',
+                btnUnlock: '🔓 REGIONENLISTE FREISCHALTEN',
+                step3: '📍 3. Regionen wählen und generieren:',
+                step3Desc: 'Wählen Sie beliebige Regionen aus der Liste und laden Sie den fertigen Plan im PDF Format herunter.',
+                landDefault: '🗺️ -- Gesamtes BUNDESLAND markieren (automatisch) --',
+                landNormal: 'NUR NORMALE REGIONEN',
+                landAll: 'ALLE REGIONEN IN DER LISTE MARKIEREN',
+                unselect: '[ Alles abwählen / Clear ]',
+                btnDownloadPdf: '📥 ALS PDF HERUNTERLADEN (Smartphone)'
+            },
+            'en': {
+                intro1: 'Gain access to the collection schedule for <b>all regions</b>. You will receive an individual quote after a quick contact.',
+                intro2: 'Generate phone-readable <b>PDF PRO</b> sets with active navigation links.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Tip:</b></span> Below you will find a <b>free preview</b>. Check dates and regions before placing an order!',
+                step1: '📅 1. Select weeks and order:',
+                howTo: 'How to get access?',
+                list1: 'Select the desired weeks above.',
+                list2: 'Enter your <b>e-mail</b> in the field below and send the order via <b>SMS</b> or <b>E-mail</b>.',
+                list3: 'After paying for the order, your access will be unlocked!',
+                emailPh: 'Enter e-mail',
+                btnSms: '📱 SEND (SMS)',
+                btnEmail: '✉️ SEND (E-MAIL)',
+                step2: '🔐 2. Log in after payment:',
+                step2Desc: 'Enter your E-mail and the Code from the SMS to unlock the full list of regions.',
+                proEmailPh: 'Your E-mail address',
+                proOrderPh: 'Your Order Number',
+                step2Help: 'Enter the number from the SMS message (e.g. 20260510-1234)',
+                btnUnlock: '🔓 UNLOCK REGIONS LIST',
+                step3: '📍 3. Select regions and generate:',
+                step3Desc: 'Select any regions from the list and download the ready schedule in PDF format.',
+                landDefault: '🗺️ -- Select the whole STATE (automatic) --',
+                landNormal: 'ONLY NORMAL REGIONS',
+                landAll: 'SELECT ALL REGIONS ON THE LIST',
+                unselect: '[ Unselect all / Clear ]',
+                btnDownloadPdf: '📥 DOWNLOAD AS PDF (Smartphone)'
+            },
+            'cs': {
+                intro1: 'Získejte přístup k harmonogramu svozu pro <b>všechny regiony</b>. Individuální cenovou nabídku obdržíte po rychlém kontaktu.',
+                intro2: 'Generujte v telefonu čitelné sady <b>PDF PRO</b> s aktivními odkazy pro navigaci.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Tip:</b></span> Níže najdete <b>bezplatný náhled</b>. Před objednáním zkontrolujte termíny a regiony!',
+                step1: '📅 1. Vyberte týdny a objednejte:',
+                howTo: 'Jak získat přístup?',
+                list1: 'Vyberte výše požadované týdny.',
+                list2: 'Zadejte svůj <b>e-mail</b> do pole níže a odešlete objednávku přes <b>SMS</b> nebo <b>E-mail</b>.',
+                list3: 'Po zaplacení objednávky bude váš přístup odemčen!',
+                emailPh: 'Zadejte e-mail',
+                btnSms: '📱 ODESLAT (SMS)',
+                btnEmail: '✉️ ODESLAT (E-MAIL)',
+                step2: '🔐 2. Přihlaste se po zaplacení:',
+                step2Desc: 'Zadejte svůj E-mail a Kód ze zprávy SMS pro odemčení plného seznamu.',
+                proEmailPh: 'Váš e-mail',
+                proOrderPh: 'Vaše číslo objednávky',
+                step2Help: 'Zadejte číslo ze zprávy SMS (např. 20260510-1234)',
+                btnUnlock: '🔓 ODEMKNOUT SEZNAM REGIONŮ',
+                step3: '📍 3. Vyberte regiony a generujte:',
+                step3Desc: 'Vyberte libovolné regiony ze seznamu a stáhněte hotový harmonogram v PDF formátu.',
+                landDefault: '🗺️ -- Vybrat celou SPOLKOVOU ZEMI (automaticky) --',
+                landNormal: 'POUZE NORMÁLNÍ REGIONY',
+                landAll: 'VYBRAT VŠECHNY REGIONY V SEZNAMU',
+                unselect: '[ Zrušit výběr / Clear ]',
+                btnDownloadPdf: '📥 STÁHNOUT JAKO PDF (Smartphone)'
+            },
+            'sk': {
+                intro1: 'Získajte prístup k harmonogramu zvozu pre <b>všetky regióny</b>. Individuálnu cenovú ponuku dostanete po rýchlom kontakte.',
+                intro2: 'Generujte v telefóne čitateľné sady <b>PDF PRO</b> s aktívnymi odkazmi pre navigáciu.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Tip:</b></span> Nižšie nájdete <b>bezplatný náhľad</b>. Pred objednaním skontrolujte termíny a regióny!',
+                step1: '📅 1. Vyberte týždne a objednajte:',
+                howTo: 'Ako získať prístup?',
+                list1: 'Vyberte vyššie požadované týždne.',
+                list2: 'Zadajte svoj <b>e-mail</b> do poľa nižšie a odošlite objednávku cez <b>SMS</b> alebo <b>E-mail</b>.',
+                list3: 'Po zaplatení objednávky bude váš prístup odomknutý!',
+                emailPh: 'Zadajte e-mail',
+                btnSms: '📱 ODOSLAŤ (SMS)',
+                btnEmail: '✉️ ODOSLAŤ (E-MAIL)',
+                step2: '🔐 2. Prihláste sa po zaplatení:',
+                step2Desc: 'Zadajte svoj E-mail a Kód zo správy SMS pre odomknutie zoznamu.',
+                proEmailPh: 'Váš e-mail',
+                proOrderPh: 'Vaše číslo objednávky',
+                step2Help: 'Zadajte číslo zo správy SMS (napr. 20260510-1234)',
+                btnUnlock: '🔓 ODOMKNÚŤ ZOZNAM REGIÓNOV',
+                step3: '📍 3. Vyberte regióny a generujte:',
+                step3Desc: 'Vyberte ľubovoľné regióny zo zoznamu a stiahnite hotový harmonogram v PDF formáte.',
+                landDefault: '🗺️ -- Vybrať celú SPOLKOVÚ KRAJINU (automaticky) --',
+                landNormal: 'IBA NORMÁLNE REGIÓNY',
+                landAll: 'VYBRAŤ VŠETKY REGIÓNY V ZOZNAME',
+                unselect: '[ Zrušiť výber / Clear ]',
+                btnDownloadPdf: '📥 STIAHNUŤ AKO PDF (Smartfón)'
+            },
+            'hu': {
+                intro1: 'Kapjon hozzáférést a gyűjtési ütemtervhez az <b>összes régióban</b>. Egyéni árajánlatot gyors kapcsolatfelvétel után kap.',
+                intro2: 'Generáljon telefonon is olvasható <b>PDF PRO</b> készleteket aktív navigációs linkekkel.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Tipp:</b></span> Alább talál egy <b>ingyenes előnézetet</b>. Rendelés előtt ellenőrizze az időpontokat és a régiókat!',
+                step1: '📅 1. Válassza ki a heteket és rendeljen:',
+                howTo: 'Hogyan kaphat hozzáférést?',
+                list1: 'Válassza ki a fenti kívánt heteket.',
+                list2: 'Írja be az <b>e-mail</b> címét az alábbi mezőbe, és küldje el rendelését <b>SMS-ben</b> vagy <b>E-mailben</b>.',
+                list3: 'A rendelés kifizetése után hozzáférése feloldódik!',
+                emailPh: 'Adja meg az e-mailt',
+                btnSms: '📱 KÜLDÉS (SMS)',
+                btnEmail: '✉️ KÜLDÉS (E-MAIL)',
+                step2: '🔐 2. Jelentkezzen be fizetés után:',
+                step2Desc: 'Írja be az e-mail címét és az SMS-ben kapott kódot a teljes lista feloldásához.',
+                proEmailPh: 'Az Ön E-mail címe',
+                proOrderPh: 'Rendelésszáma',
+                step2Help: 'Írja be az SMS-ben szereplő számot (pl. 20260510-1234)',
+                btnUnlock: '🔓 RÉGIÓLISTA FELOLDÁSA',
+                step3: '📍 3. Válasszon régiókat és generáljon:',
+                step3Desc: 'Válasszon tetszőleges régiókat a listából, és töltse le a kész ütemtervet PDF formátumban.',
+                landDefault: '🗺️ -- TARTOMÁNY kijelölése (automatikus) --',
+                landNormal: 'CSAK NORMÁL RÉGIÓK',
+                landAll: 'ÖSSZES RÉGIÓ KIJELÖLÉSE A LISTÁN',
+                unselect: '[ Kijelölés törlése / Clear ]',
+                btnDownloadPdf: '📥 LETÖLTÉS PDF-KÉNT (Okostelefon)'
+            },
+            'ro': {
+                intro1: 'Obțineți acces la programul de colectare pentru <b>toate regiunile</b>. Veți primi o ofertă individuală după un scurt contact.',
+                intro2: 'Generați seturi <b>PDF PRO</b> lizibile pe telefon, cu linkuri de navigare active.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Sfat:</b></span> Mai jos veți găsi o <b>previzualizare gratuită</b>. Verificați datele și regiunile înainte de a plasa o comandă!',
+                step1: '📅 1. Selectați săptămânile și comandați:',
+                howTo: 'Cum să obțineți acces?',
+                list1: 'Selectați săptămânile dorite mai sus.',
+                list2: 'Introduceți <b>e-mail-ul</b> în câmpul de mai jos și trimiteți comanda prin <b>SMS</b> sau <b>E-mail</b>.',
+                list3: 'După achitarea comenzii, accesul va fi deblocat!',
+                emailPh: 'Introduceți e-mailul',
+                btnSms: '📱 TRIMITEȚI (SMS)',
+                btnEmail: '✉️ TRIMITEȚI (E-MAIL)',
+                step2: '🔐 2. Autentificați-vă după plată:',
+                step2Desc: 'Introduceți adresa de E-mail și Codul din mesajul SMS pentru a debloca lista.',
+                proEmailPh: 'Adresa dvs. de E-mail',
+                proOrderPh: 'Numărul dvs. de Comandă',
+                step2Help: 'Introduceți numărul din mesajul SMS (ex. 20260510-1234)',
+                btnUnlock: '🔓 DEBLOCAȚI LISTA DE REGIUNI',
+                step3: '📍 3. Selectați regiunile și generați:',
+                step3Desc: 'Selectați orice regiune din listă și descărcați programul gata făcut în format PDF.',
+                landDefault: '🗺️ -- Marcați întregul STAT (automat) --',
+                landNormal: 'DOAR REGIUNI NORMALE',
+                landAll: 'MARCAȚI TOATE REGIUNILE DE PE LISTĂ',
+                unselect: '[ Deselectați tot / Clear ]',
+                btnDownloadPdf: '📥 DESCĂRCAȚI CA PDF (Smartphone)'
+            },
+            'bg': {
+                intro1: 'Получете достъп до графика за извозване за <b>всички региони</b>. Ще получите индивидуална оферта след бърз контакт.',
+                intro2: 'Генерирайте четими на телефон <b>PDF PRO</b> комплекти с активни връзки за навигация.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Съвет:</b></span> По-долу ще намерите <b>безплатен преглед</b>. Проверете датите и регионите, преди да направите поръчка!',
+                step1: '📅 1. Изберете седмици и поръчайте:',
+                howTo: 'Как да получите достъп?',
+                list1: 'Изберете желаните седмици по-горе.',
+                list2: 'Въведете своя <b>имейл</b> в полето по-долу и изпратете поръчката чрез <b>SMS</b> или <b>Имейл</b>.',
+                list3: 'След плащане, достъпът ви ще бъде отключен!',
+                emailPh: 'Въведете имейл',
+                btnSms: '📱 ИЗПРАТИ (SMS)',
+                btnEmail: '✉️ ИЗПРАТИ (E-MAIL)',
+                step2: '🔐 2. Влезте след плащане:',
+                step2Desc: 'Въведете своя имейл и кода от SMS, за да отключите списъка.',
+                proEmailPh: 'Вашият имейл адрес',
+                proOrderPh: 'Номер на вашата поръчка',
+                step2Help: 'Въведете номера от SMS съобщението (напр. 20260510-1234)',
+                btnUnlock: '🔓 ОТКЛЮЧЕТЕ СПИСЪКА С РЕГИОНИ',
+                step3: '📍 3. Изберете региони и генерирайте:',
+                step3Desc: 'Изберете региони от списъка и изтеглете готовия график във формат PDF.',
+                landDefault: '🗺️ -- Маркирайте цялата ОБЛАСТ (автоматично) --',
+                landNormal: 'САМО НОРМАЛНИ РЕГИОНИ',
+                landAll: 'МАРКИРАЙТЕ ВСИЧКИ РЕГИОНИ В СПИСЪКА',
+                unselect: '[ Размаркирай всичко / Clear ]',
+                btnDownloadPdf: '📥 ИЗТЕГЛЯНЕ КАТО PDF (Смартфон)'
+            },
+            'tr': {
+                intro1: '<b>Tüm bölgeler</b> için toplama programına erişim sağlayın. Hızlı bir iletişimin ardından bireysel bir teklif alacaksınız.',
+                intro2: 'Aktif gezinme bağlantılarına sahip, telefonda okunabilen <b>PDF PRO</b> setleri oluşturun.',
+                hint: '<span style="color: #f1c40f;">💡 <b>İpucu:</b></span> Aşağıda <b>ücretsiz bir önizleme</b> bulacaksınız. Sipariş vermeden önce tarihleri ve bölgeleri kontrol edin!',
+                step1: '📅 1. Haftaları seçin ve sipariş verin:',
+                howTo: 'Nasıl erişim sağlanır?',
+                list1: 'Yukarıdan istediğiniz haftaları seçin.',
+                list2: 'Aşağıdaki alana <b>e-posta</b> adresinizi girin ve siparişi <b>SMS</b> veya <b>E-posta</b> ile gönderin.',
+                list3: 'Sipariş ödendikten sonra erişiminizin kilidi açılacaktır!',
+                emailPh: 'E-posta girin',
+                btnSms: '📱 GÖNDER (SMS)',
+                btnEmail: '✉️ GÖNDER (E-MAIL)',
+                step2: '🔐 2. Ödemeden sonra giriş yapın:',
+                step2Desc: 'Listeyi açmak için E-postanızı ve SMS kodunu girin.',
+                proEmailPh: 'E-posta adresiniz',
+                proOrderPh: 'Sipariş Numaranız',
+                step2Help: 'SMS mesajındaki numarayı girin (örn. 20260510-1234)',
+                btnUnlock: '🔓 BÖLGE LİSTESİNİN KİLİDİNİ AÇ',
+                step3: '📍 3. Bölgeleri seçin ve oluşturun:',
+                step3Desc: 'Listeden herhangi bir bölgeyi seçin ve programı PDF formatında indirin.',
+                landDefault: '🗺️ -- Tüm EYALETİ seçin (otomatik) --',
+                landNormal: 'SADECE NORMAL BÖLGELER',
+                landAll: 'LİSTEDEKİ TÜM BÖLGELERİ SEÇİN',
+                unselect: '[ Seçimi temizle / Clear ]',
+                btnDownloadPdf: '📥 PDF OLARAK İNDİR (Akıllı Telefon)'
+            },
+            'bs': {
+                intro1: 'Ostvarite pristup rasporedu odvoza za <b>sve regije</b>. Individualnu ponudu dobit ćete nakon brzog kontakta.',
+                intro2: 'Generišite na telefonu čitljive <b>PDF PRO</b> setove sa aktivnim linkovima za navigaciju.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Savjet:</b></span> U nastavku ćete pronaći <b>besplatan pregled</b>. Provjerite termine i regije prije naručivanja!',
+                step1: '📅 1. Odaberite sedmice i naručite:',
+                howTo: 'Kako dobiti pristup?',
+                list1: 'Odaberite željene sedmice iznad.',
+                list2: 'Unesite svoj <b>e-mail</b> u polje ispod i pošaljite narudžbu putem <b>SMS-a</b> ili <b>E-maila</b>.',
+                list3: 'Nakon uplate, vaš pristup će biti otključan!',
+                emailPh: 'Unesite e-mail',
+                btnSms: '📱 POŠALJI (SMS)',
+                btnEmail: '✉️ POŠALJI (E-MAIL)',
+                step2: '🔐 2. Prijavite se nakon uplate:',
+                step2Desc: 'Unesite svoj E-mail i Kod iz SMS poruke da otključate listu.',
+                proEmailPh: 'Vaša E-mail adresa',
+                proOrderPh: 'Vaš Broj Narudžbe',
+                step2Help: 'Unesite broj iz SMS poruke (npr. 20260510-1234)',
+                btnUnlock: '🔓 OTKLJUČAJ LISTU REGIJA',
+                step3: '📍 3. Odaberite regije i generišite:',
+                step3Desc: 'Odaberite željene regije sa liste i preuzmite raspored u PDF formatu.',
+                landDefault: '🗺️ -- Označite cijelu POKRAJINU (automatski) --',
+                landNormal: 'SAMO NORMALNE REGIJE',
+                landAll: 'OZNAČITE SVE REGIJE NA LISTI',
+                unselect: '[ Poništi odabir / Clear ]',
+                btnDownloadPdf: '📥 PREUZMI KAO PDF (Pametni telefon)'
+            },
+            'uk': {
+                intro1: 'Отримайте доступ до графіка вивезення для <b>всіх регіонів</b>. Індивідуальну пропозицію ви отримаєте після швидкого контакту.',
+                intro2: 'Генеруйте зручні для читання на телефоні набори <b>PDF PRO</b> з активними посиланнями для навігації.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Підказка:</b></span> Нижче ви знайдете <b>безкоштовний попередній перегляд</b>. Перевірте дати та регіони перед оформленням замовлення!',
+                step1: '📅 1. Виберіть тижні та замовте:',
+                howTo: 'Як отримати доступ?',
+                list1: 'Виберіть бажані тижні вище.',
+                list2: 'Введіть свій <b>e-mail</b> у поле нижче та надішліть замовлення через <b>SMS</b> або <b>E-mail</b>.',
+                list3: 'Після оплати ваш доступ буде розблоковано!',
+                emailPh: 'Введіть e-mail',
+                btnSms: '📱 ВІДПРАВИТИ (SMS)',
+                btnEmail: '✉️ ВІДПРАВИТИ (E-MAIL)',
+                step2: '🔐 2. Увійдіть після оплати:',
+                step2Desc: 'Введіть свій E-mail та Код із SMS-повідомлення, щоб розблокувати список.',
+                proEmailPh: 'Ваша E-mail адреса',
+                proOrderPh: 'Номер Вашого замовлення',
+                step2Help: 'Введіть номер з SMS-повідомлення (напр. 20260510-1234)',
+                btnUnlock: '🔓 РОЗБЛОКУВАТИ СПИСОК РЕГІОНІВ',
+                step3: '📍 3. Виберіть регіони та генеруйте:',
+                step3Desc: 'Виберіть будь-які регіони зі списку та завантажте готовий графік у форматі PDF.',
+                landDefault: '🗺️ -- Вибрати всю ЗЕМЛЮ (автоматично) --',
+                landNormal: 'ТІЛЬКИ НОРМАЛЬНІ РЕГІОНИ',
+                landAll: 'ВИБРАТИ ВСІ РЕГІОНИ В СПИСКУ',
+                unselect: '[ Скасувати вибір / Clear ]',
+                btnDownloadPdf: '📥 ЗАВАНТАЖИТИ ЯК PDF (Смартфон)'
+            },
+            'ru': {
+                intro1: 'Получите доступ к графику вывоза для <b>всех регионов</b>. Индивидуальное предложение вы получите после быстрого контакта.',
+                intro2: 'Генерируйте удобные для чтения на телефоне наборы <b>PDF PRO</b> с активными ссылками для навигации.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Подсказка:</b></span> Ниже вы найдете <b>бесплатный предварительный просмотр</b>. Проверьте даты и регионы перед оформлением заказа!',
+                step1: '📅 1. Выберите недели и закажите:',
+                howTo: 'Как получить доступ?',
+                list1: 'Выберите желаемые недели выше.',
+                list2: 'Введите свой <b>e-mail</b> в поле ниже и отправьте заказ через <b>SMS</b> или <b>E-mail</b>.',
+                list3: 'После оплаты ваш доступ будет разблокирован!',
+                emailPh: 'Введите e-mail',
+                btnSms: '📱 ОТПРАВИТЬ (SMS)',
+                btnEmail: '✉️ ОТПРАВИТЬ (E-MAIL)',
+                step2: '🔐 2. Войдите после оплаты:',
+                step2Desc: 'Введите свой E-mail и Код из SMS для разблокировки списка.',
+                proEmailPh: 'Ваш E-mail адрес',
+                proOrderPh: 'Ваш Номер Заказа',
+                step2Help: 'Введите номер из SMS-сообщения (напр. 20260510-1234)',
+                btnUnlock: '🔓 РАЗБЛОКИРОВАТЬ СПИСОК РЕГИОНОВ',
+                step3: '📍 3. Выберите регионы и генерируйте:',
+                step3Desc: 'Выберите любые регионы из списка и скачайте готовый график в формате PDF.',
+                landDefault: '🗺️ -- Выбрать всю ЗЕМЛЮ (автоматически) --',
+                landNormal: 'ТОЛЬКО НОРМАЛЬНЫЕ РЕГИОНИ',
+                landAll: 'ВЫБРАТЬ ВСЕ РЕГИОНИ В СПИСКЕ',
+                unselect: '[ Снять выделение / Clear ]',
+                btnDownloadPdf: '📥 СКАЧАТЬ КАК PDF (Смартфон)'
+            },
+            'lt': {
+                intro1: 'Gaukite prieigą prie išvežimo grafiko <b>visiems regionams</b>. Individualų pasiūlymą gausite po greito kontakto.',
+                intro2: 'Generuokite telefone lengvai skaitomus <b>PDF PRO</b> rinkinius su aktyviomis naršymo nuorodomis.',
+                hint: '<span style="color: #f1c40f;">💡 <b>Patarimas:</b></span> Žemiau rasite <b>nemokamą peržiūrą</b>. Prieš pateikdami užsakymą patikrinkite datas ir regionus!',
+                step1: '📅 1. Pasirinkite savaites ir užsisakykite:',
+                howTo: 'Kaip gauti prieigą?',
+                list1: 'Aukščiau pasirinkite norimas savaites.',
+                list2: 'Įveskite savo <b>el. paštą</b> žemiau esančiame laukelyje ir išsiųskite užsakymą per <b>SMS</b> arba <b>El. paštą</b>.',
+                list3: 'Apmokėjus užsakymą, prieiga bus atblokuota!',
+                emailPh: 'Įveskite el. paštą',
+                btnSms: '📱 SIŲSTI (SMS)',
+                btnEmail: '✉️ SIŲSTI (E-MAIL)',
+                step2: '🔐 2. Prisijunkite po apmokėjimo:',
+                step2Desc: 'Įveskite savo El. paštą ir Kodą iš SMS, kad atblokuotumėte sąrašą.',
+                proEmailPh: 'Jūsų El. pašto adresas',
+                proOrderPh: 'Jūsų Užsakymo Numeris',
+                step2Help: 'Įveskite numerį iš SMS žinutės (pvz. 20260510-1234)',
+                btnUnlock: '🔓 ATBLOKUOTI REGIONŲ SĄRAŠĄ',
+                step3: '📍 3. Pasirinkite regionus ir generuokite:',
+                step3Desc: 'Pasirinkite bet kokius regionus iš sąrašo ir atsisiųskite grafiką PDF formatu.',
+                landDefault: '🗺️ -- Pažymėti visą ŽEMĘ (automatiškai) --',
+                landNormal: 'TIK NORMALŪS REGIONAI',
+                landAll: 'PAŽYMĖTI VISUS REGIONUS SĄRAŠE',
+                unselect: '[ Panaikinti žymėjimą / Clear ]',
+                btnDownloadPdf: '📥 ATSISIŲSTI KAIP PDF (Išmanusis)'
+            }
+        };
+
+        var userLang = (navigator.language || 'de').substr(0, 2).toLowerCase();
+        if (userLang === 'hr' || userLang === 'sr') userLang = 'bs';
+        if (!config[userLang]) userLang = 'pl';
+        
+        const t = config[userLang];
+        const currentUiLang = uiTranslations[userLang] || uiTranslations['pl'];
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (currentUiLang[key]) el.innerHTML = currentUiLang[key];
+        });
+
+        document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+            const key = el.getAttribute('data-i18n-ph');
+            if (currentUiLang[key]) el.setAttribute('placeholder', currentUiLang[key]);
+        });
+
+        if(document.getElementById('freePreviewTitle')) document.getElementById('freePreviewTitle').innerHTML = t.previewTitle;
+
+        const clean = (str) => {
+            if (!str) return "";
+            const map = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z','Ą':'A','Ć':'C','Ę':'E','Ł':'L','Ń':'N','Ó':'O','Ś':'S','Ź':'Z','Ż':'Z','ä':'ae','ö':'oe','ü':'ue','ß':'ss'};
+            return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüß]/g, m => map[m] || m);
+        };
+
+        // Krok 2: Odblokowanie Listy - WERSJA Z WERYFIKACJĄ
+        document.getElementById('btnUnlockRegions').addEventListener('click', async function() {
+            let email = document.getElementById('proEmail').value.trim();
+            let order = document.getElementById('proOrder').value.trim();
+            
+            if (!email || !order) { 
+                alert("Podaj najpierw swój E-mail oraz otrzymany Numer zamówienia z SMS!"); 
+                return; 
+            }
+
+            // Uruchamiamy loader na czas łączenia z Google Sheets
+            document.getElementById('mainLoaderText').innerText = "Weryfikacja płatności w bazie...";
+            document.getElementById('fullScreenLoader').style.display = 'flex';
+
+            try {
+                // Wysyłamy zapytanie do Apps Script z nową akcją: verify_order
+                const res = await fetch(`${apiURL}?action=verify_order&email=${encodeURIComponent(email)}&order=${encodeURIComponent(order)}`);
+                const json = await res.json();
+
+                if (json.status === "OK") {
+                    // Płatność zweryfikowana - pokazujemy rejony
+                    document.getElementById('step3Wrapper').style.display = 'block';
+                    this.style.display = 'none';
+                    document.getElementById('loginStatusText').innerHTML = '<span style="color:#2ecc71;">✅ Zalogowano pomyślnie. Wybierz poniżej interesujące Cię rejony.</span>';
+                    document.getElementById('step3Wrapper').scrollIntoView({ behavior: 'smooth' });
+                } else if (json.status === "NOT_FOUND") {
+                    alert("Nie znaleziono takiego zamówienia. Sprawdź, czy wpisałeś poprawny adres e-mail i kod.");
+                } else if (json.status === "NOT_PAID") {
+                    alert("Zamówienie czeka na zaksięgowanie płatności (lub nie zmieniono statusu w arkuszu na 'opłacone').");
+                } else {
+                    alert("BŁĄD: " + (json.message || "Brak dostępu."));
+                }
+            } catch (error) {
+                console.error("Błąd weryfikacji:", error);
+                alert("Wystąpił problem z połączeniem z serwerem. Odśwież stronę i spróbuj ponownie.");
+            } finally {
+                // Wyłączamy loader niezależnie od wyniku
+                document.getElementById('fullScreenLoader').style.display = 'none';
+            }
+        });
+
+        // Filtr z Land Selector
+        document.getElementById('landSelector').addEventListener('change', function() {
+            let selected = this.value;
+            if(!selected) return;
+            document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
+            if(selected === "Wszystkie") {
+                document.querySelectorAll('.region-chk').forEach(c => { if(!c.disabled) c.checked = true; });
+            } else if (landMap[selected]) {
+                document.querySelectorAll('.region-chk').forEach(c => {
+                    if (landMap[selected].includes(c.value) && !c.disabled) { c.checked = true; }
+                });
+            }
+            this.value = "";
+        });
+
+        document.getElementById('btnUnselectAll').addEventListener('click', function() {
+            document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
+        });
+
+        // Budowa tygodni
+        var weeksContainer = document.getElementById('weeksContainer');
+        if (weeksContainer) {
+            weeksContainer.innerHTML = '';
+            var today = new Date();
+            var day = today.getDay(); 
+            var hour = today.getHours();
+            var diff = today.getDate() - day + (day == 0 ? -6 : 1);
+            if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
+            
+            var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
+            var startYear = startPoint.getFullYear();
+            
+            for (var i = 0; i < 53; i++) {
+                var sW = new Date(startPoint);
+                sW.setDate(startPoint.getDate() + (i * 7));
+                if (sW.getFullYear() > startYear) break; 
+                var weekNum = getWeekNumber(sW);
+                if (weekNum > 53) continue;
+                
+                var eW = new Date(sW); 
+                eW.setDate(sW.getDate() + 5); 
+                
+                var label = document.createElement('label'); label.className = "region-label";
+                var input = document.createElement('input');
+                input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
+                input.setAttribute('data-week', weekNum);
+                
+                var dStart = String(sW.getDate()).padStart(2, '0') + "." + String(sW.getMonth()+1).padStart(2, '0');
+                var dEnd = String(eW.getDate()).padStart(2, '0') + "." + String(eW.getMonth()+1).padStart(2, '0');
+                
+                var labelText = (t.week || "Tydzień") + " " + weekNum + " (" + dStart + " " + (t.to || "do") + " " + dEnd + ")";
+                input.value = labelText;
+                label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
+                weeksContainer.appendChild(label);
+            }
+        }
+
+        /* ---------------------------------------------------------
+           GENERATOR 1: PDF MOBILNY
+           --------------------------------------------------------- */
+        async function generateZestawPDF(data, orderNr) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: "p", unit: "mm", format: [108, 192] });
+            doc.setProperties({ title: orderNr });
+            
+            const drawBackgroundAndHeader = () => {
+                doc.setFillColor(18, 18, 18);
+                doc.rect(0, 0, 108, 192, 'F');
+                doc.setFillColor(25, 45, 35);
+                doc.rect(0, 0, 108, 22, 'F');
+                doc.setFontSize(20);
+                doc.setTextColor(46, 204, 113);
+                doc.setFont("helvetica", "bold");
+                doc.text("DABU-INFO", 54, 11, { align: 'center' });
+                doc.setFontSize(9);
+                doc.setTextColor(200, 200, 200);
+                doc.setFont("helvetica", "normal");
+                doc.text(clean(t.subtitle), 54, 17, { align: 'center' });
+            };
+
+            doc.internal.events.subscribe('addPage', function () { drawBackgroundAndHeader(); });
+            drawBackgroundAndHeader();
+
+            data.forEach((item, index) => {
+                if (index > 0) doc.addPage([108, 192]);
+
+                let rawStart = item.range.substring(0, 10);
+                let parts = rawStart.split('-'); 
+                let startObj = new Date(parts[0], parts[1] - 1, parts[2]);
+    
+                let allowedDates = [];
+                for(let i = 0; i < 6; i++) {
+                    let d = new Date(startObj);
+                    d.setDate(startObj.getDate() + i);
+                    let iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+                    allowedDates.push(iso);
+                }
+                
+                let displayRange = allowedDates[0] + ` ${t.to} ` + allowedDates[4];
+   
+                let extraInfoText = "";
+                let bazaInfo = (item.extraInfo && String(item.extraInfo).trim() !== "") ? String(item.extraInfo).trim() : "";
+
+                if (bazaInfo !== "") {
+                    if (infoTranslations[userLang] && infoTranslations[userLang][bazaInfo]) {
+                        extraInfoText = infoTranslations[userLang][bazaInfo];
+                    } else {
+                        extraInfoText = bazaInfo;
+                    }
+                } else {
+                    extraInfoText = t.info;
+                }
+
+                let splitInfo = doc.splitTextToSize(clean(`${t.info_label}: ${extraInfoText}`), 88);
+                let infoY = 41;
+                let infoHeight = splitInfo.length * 4.5;
+                let detailsY = infoY + infoHeight + 2;
+                
+                let splitWarn = doc.splitTextToSize(clean(t.warn), 88);
+                let warnY = detailsY + 10;
+                let warnHeight = splitWarn.length * 4.5;
+                
+                let splitLeg = doc.splitTextToSize(clean(t.leg), 88);
+                let legY = warnY + warnHeight + 1;
+                let legHeight = splitLeg.length * 3.5;
+                
+                let boxHeight = (legY + legHeight) - 22;
+
+                doc.setFillColor(30, 30, 30);
+                doc.setDrawColor(46, 204, 113);
+                doc.setLineWidth(0.5);
+                doc.rect(5, 26, 98, boxHeight, 'FD');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(11);
+                doc.setFont("helvetica", "bold");
+                doc.text(clean(`${t.region}: ${item.region.toUpperCase()}`), 8, 33);
+                
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(9);
+                doc.setTextColor(241, 196, 15);
+                doc.text(splitInfo, 8, infoY);
+                
+                doc.setTextColor(200, 200, 200);
+                doc.setFontSize(8);
+                doc.text(clean(`${t.date}: ${displayRange}`), 8, detailsY);
+                doc.text(clean(`${t.week}: ${item.week} | ${t.order}: ${orderNr}`), 8, detailsY + 5);
+
+                doc.setTextColor(231, 76, 60);
+                doc.setFontSize(10); 
+                doc.setFont("helvetica", "bold");
+                doc.text(splitWarn, 54, warnY, { align: 'center' });
+
+                doc.setTextColor(150, 150, 150);
+                doc.setFontSize(7.5);
+                doc.setFont("helvetica", "normal");
+                doc.text(splitLeg, 54, legY, { align: 'center' });
+
+                let currentY = 26 + boxHeight + 10;
+                let isScrapFilterOn = document.getElementById('scrapFilter') ? document.getElementById('scrapFilter').checked : false;
+
+                let groups = {};
+                if (item.entries) {
+                    item.entries.forEach(e => {
+                        let dStr = e.Data || "";
+                        let match = dStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+             
+                        if (match && allowedDates.includes(match[0])) {
+                            let r = (e.Rodzaj || "").toLowerCase();
+                            let isScrap = /elektro|agd|schrank|schrott|metal|zlom|eisen/i.test(r);
+                     
+                            if (isScrapFilterOn && !isScrap) return; 
+
+                            let tagStr = e.Rodzaj ? e.Rodzaj.trim() : "Sperrmüll";
+                            let groupKey = match[0] + "|" + tagStr;
+                  
+                            if (!groups[groupKey]) {
+                                groups[groupKey] = { date: match[0], tags: tagStr, entries: [] };
+                            }
+                   
+                            groups[groupKey].entries.push(e);
+                        }
+                    });
+                }
+
+                let sortedKeys = Object.keys(groups).sort((a, b) => {
+                    let dateA = groups[a].date;
+                    let dateB = groups[b].date;
+                    if (dateA === dateB) return a.localeCompare(b);
+                    return dateA.localeCompare(dateB);
+                });
+                
+                if (sortedKeys.length === 0) {
+                    doc.setTextColor(231, 76, 60);
+                    doc.setFontSize(14);
+                    doc.text(clean(t.no_terms), 54, currentY + 10, { align: 'center' });
+                } else {
+                    sortedKeys.forEach(groupKey => {
+                        let groupData = groups[groupKey];
+                        let dateKey = groupData.date;
+                        let entries = groupData.entries;
+                        let dParts = dateKey.split('-');
+                        let dayIdx = new Date(dParts[0], dParts[1] - 1, dParts[2]).getDay();
+                        let dayStr = (dayIdx >= 1 && dayIdx <= 6) ? t.d[dayIdx - 1] : (dayIdx === 0 ? t.d[5] : "");
+                        let tagStr = "[" + groupData.tags + "]";
+
+                        if (currentY > 160) { 
+                            doc.addPage([108, 192]);
+                            currentY = 28; 
+                        }
+
+                        doc.setFillColor(46, 204, 113);
+                        doc.rect(5, currentY - 4, 2, 5, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(11); 
+                        doc.setFont("helvetica", "bold");
+                        doc.text(clean(`${dayStr} (${dateKey}) ${tagStr}`), 9, currentY);
+                        doc.setFont("helvetica", "normal");
+
+                        let adresy = entries.filter(e => e.Ulica || e.Miejscowosc).map(e => {
+                            let txt = [e.Ulica, e.Miejscowosc].filter(x => x).join(", ");
+                            let link = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(txt + ", " + item.region + ", Deutschland");
+                            return { name: clean(txt), link: link };
+                        });
+                        
+                        if (adresy.length > 0) {
+                            doc.autoTable({
+                                startY: currentY + 2,
+                                body: adresy.map(a => [a.name]),
+                                theme: 'grid',
+                                styles: { fontSize: 9.5, cellPadding: 3, fillColor: [20, 20, 20], textColor: [100, 190, 255], lineColor: [40, 40, 40], valign: 'middle' },
+                                alternateRowStyles: { fillColor: [28, 28, 28] }, 
+                                margin: { top: 25, bottom: 20, left: 5, right: 5 }, 
+                                columnStyles: { 0: { cellWidth: 98 } },
+                                didDrawCell: function(data) {
+                                    if (data.section === 'body') {
+                                        doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: adresy[data.row.index].link });
+                                    }
+                                }
+                            });
+                            currentY = doc.lastAutoTable.finalY + 8;
+                        } else {
+                            currentY += 8;
+                        }
+                    });
+                }
+            });
+
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                let footY = 175;
+                doc.setDrawColor(60, 60, 60);
+                doc.setLineWidth(0.3);
+                doc.line(5, footY - 3, 103, footY - 3);
+
+                doc.setFontSize(7.5);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`${t.page} ${i} ${t.of} ${pageCount}`, 54, footY + 1, { align: 'center' });
+
+                doc.setTextColor(100, 100, 100);
+                doc.text("Service Desk DABU-INFO:", 54, footY + 5, { align: 'center' });
+
+                doc.setTextColor(52, 152, 219);
+                doc.text("dariusz@dabu-info.com", 54, footY + 9, { align: 'center' });
+                doc.link(30, footY + 6, 48, 4, { url: 'mailto:dariusz@dabu-info.com' });
+                
+                doc.setTextColor(150, 150, 150);
+                doc.text(" | ", 54, footY + 13, { align: 'center' });
+
+                doc.setTextColor(46, 204, 113);
+                doc.text("+48 600 812 820", 54, footY + 13, { align: 'center' });
+                doc.link(30, footY + 10, 48, 4, { url: 'tel:+48600812820' });
+            }
+
+            doc.save(`${orderNr}.pdf`);
+        }
+
+        /* ---------------------------------------------------------
+           POBIERANIE I TRIGGERY PRZYCISKÓW (Wspólna logika)
+           --------------------------------------------------------- */
+        async function handleDownload() {
+            let email = document.getElementById('proEmail').value;
+            let order = document.getElementById('proOrder').value;
+            let regions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value);
+            let weeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
+            
+            if (!email || !order) { alert("Błąd: Brak e-maila lub numeru zamówienia!"); return; }
+            if (regions.length === 0 || weeks.length === 0) { alert("Zaznacz najpierw rejony, które chcesz pobrać, oraz tygodnie z listy u góry!"); return; }
+
+            document.getElementById('fullScreenLoader').style.display = 'flex';
+            document.getElementById('mainLoaderText').innerText = "Trwa budowanie dokumentu PDF...";
+            
+            try {
+                const res = await fetch(`${apiURL}?action=get_pro_data&email=${encodeURIComponent(email)}&order=${encodeURIComponent(order)}&regions=${regions.join(',')}&weeks=${weeks.join(',')}`);
+                const json = await res.json();
+                
+                if (json.status === "OK" && json.data.length > 0) {
+                    await generateZestawPDF(json.data, order);
+                } else if (json.status === "NOT_FOUND") {
+                    alert("Nie znaleziono takiego zamówienia. Sprawdź, czy na pewno podajesz poprawny E-mail oraz Numer z SMS.");
+                } else if (json.status === "NOT_PAID") {
+                    alert("Twoje zamówienie czeka jeszcze na zaksięgowanie płatności.");
+                } else if (json.status === "WEEK_NOT_ALLOWED") {
+                    alert("BŁĄD: " + json.message + "\n\nOdznacz nieopłacone tygodnie z listy na górze.");
+                } else if (json.status === "ERROR" || json.status === "AUTH_ERROR") {
+                    alert("Błąd: " + json.message);
+                } else {
+                    alert("Brak szczegółowych danych na serwerze dla tego wyboru.");
+                }
+            } catch (e) {
+                console.error("Błąd podczas tworzenia pliku:", e);
+                alert("Wystąpił problem z wygenerowaniem pliku na Twoim telefonie/komputerze. Pamiętaj o twardym odświeżeniu strony (Ctrl+F5)!");
+            } finally {
+                document.getElementById('fullScreenLoader').style.display = 'none';
+            }
+        }
+
+        document.getElementById('btnDownloadZestawPDF').addEventListener('click', () => handleDownload());
+
+        // REZERWACJA / SMS LUB E-MAIL
+        function processOrder(method) {
+            var wT = document.querySelectorAll('.week-chk:checked');
+            var orderEmail = document.getElementById('orderEmail').value.trim();
+            if (wT.length === 0) { alert("Zaznacz najpierw na liście tygodnie, do których chcesz kupić dostęp!"); return; }
+            if (!orderEmail || !orderEmail.includes('@')) { alert("Podany adres e-mail jest nieprawidłowy."); return; }
+            
+            var dzisiaj = new Date();
+            var yyyy = dzisiaj.getFullYear();
+            var mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+            var dd = String(dzisiaj.getDate()).padStart(2, '0');
+            var rand = Math.floor(1000 + Math.random() * 9000); 
+            var nrZamowienia = yyyy + mm + dd + "-" + rand;
+            
+            var bodyText = "Dzień dobry, proszę o wycenę dostępu do rejonów.\n\nMój numer zamówienia: " + nrZamowienia + "\nMój e-mail: " + orderEmail + "\n\nTYGODNIE:\n";
+            var wybraneTygodnieNumery = [];
+            
+            wT.forEach(w => {
+                bodyText += "- " + w.value + "\n";
+                wybraneTygodnieNumery.push(w.getAttribute('data-week'));
+            });
+            
+            document.getElementById('proEmail').value = orderEmail;
+            document.getElementById('proOrder').value = nrZamowienia;
+
+            var urlToSave = apiURL + "?action=save_order" 
+                          + "&email=" + encodeURIComponent(orderEmail) 
+                          + "&order=" + encodeURIComponent(nrZamowienia) 
+                          + "&weeks=" + encodeURIComponent(wybraneTygodnieNumery.join(", "));
+            
+            // Zapis do arkusza Google
+            fetch(urlToSave, { mode: 'no-cors' })
+                .catch(err => console.log("Błąd zapisu w arkuszu: ", err));
+                
+            if (method === 'sms') {
+                var phoneNumber = "+48600812820";
+                if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                    window.location.href = "sms:" + phoneNumber + "?body=" + encodeURIComponent(bodyText);
+                } else { 
+                    alert("Zamawiasz z komputera.\nWyślij wiadomość pod numer: " + phoneNumber + " (Service Desk)\n\nSkopiuj poniższą treść:\n\n" + bodyText);
+                }
+            } else if (method === 'email') {
+                var targetEmail = "ewa@dabu-info.com";
+                var subject = encodeURIComponent("Zamówienie dostępu - " + nrZamowienia);
+                window.location.href = "mailto:" + targetEmail + "?subject=" + subject + "&body=" + encodeURIComponent(bodyText);
+            }
+        }
+
+        document.getElementById('btnSubmitSMS').addEventListener('click', function() { processOrder('sms'); });
+        document.getElementById('btnSubmitEmail').addEventListener('click', function() { processOrder('email'); });
+
+        /* ---------------------------------------------------------
+           DARMOWY PODGLĄD 
+           --------------------------------------------------------- */
+        let availabilityMatrixAll = {};
+        
+        function fetchAvailableRegions() {
+            var d = new Date();
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var dzisiaj = d.getFullYear() + month + day;
+            var dynamicznyToken = "Dabu" + dzisiaj;
+            
+            fetch(availabilityApiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "OK" && data.data) {
+                        availabilityMatrixAll = data.data;
+                        
+                        var now = new Date(); 
+                        var currentDay = now.getDay();
+                        var currentHour = now.getHours();
+                        var currentWeek = getWeekNumber(now).toString();
+                        
+                        if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
+                            delete availabilityMatrixAll[currentWeek];
+                        }
+                        
+                        populateFreePreviewDropdown(availabilityMatrixAll);
+                    }
+                }).catch(err => console.error("Błąd fetch podglądu:", err));
+        }
+
+        function populateFreePreviewDropdown(matrix) {
+            let select = document.getElementById('freePreviewWeek');
+            let section = document.getElementById('freePreviewSection');
+            if (!select || !section) return;
+            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+            
+            let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
+            if(weeks.length > 0) {
+                section.style.display = 'block';
+                weeks.forEach(w => {
+                    let opt = document.createElement('option'); opt.value = w;
+                    let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
+                    opt.textContent = (existingCheckbox && existingCheckbox.value) ? existingCheckbox.value : (t.week || "Tydzień") + " " + w;
+                    select.appendChild(opt);
+                });
+            } else { section.style.display = 'none'; }
+        }
+
+        if (document.getElementById('freePreviewWeek')) {
+            document.getElementById('freePreviewWeek').addEventListener('change', function() {
+                var w = this.value; 
+                var tableContainer = document.getElementById('freePreviewContainer'); 
+                var table = document.getElementById('freePreviewTable');
+                
+                if(!w || !availabilityMatrixAll[w]) { tableContainer.style.display = 'none'; return; }
+                
+                var dataCopy = [...availabilityMatrixAll[w]];
+                
+                dataCopy.sort((a, b) => {
+                    let nameA = typeof a === 'string' ? a : a.nazwa;
+                    let nameB = typeof b === 'string' ? b : b.nazwa;
+                    return nameA.localeCompare(nameB, 'pl');
+                });
+                
+                document.getElementById('fpTitleText').innerHTML = "📍 " + (t.pdfReg || "Rejon") + " / 📅 " + (t.pdfDat || "Dni wywozu");
+                document.getElementById('fpLegendText').innerHTML = (t.pdfLegend || "");
+                
+                var html = '';
+                
+                const EXCLUDED_PREVIEW_REGIONS = [
+                    'usingen', 'wehrheim', 'gräfelfing', 'kirchheim', 
+                    'neu-anspach', 'glashütte', 'glashütten', 'gründau', 
+                    'walldorf-mörfelden', 'königstein (taunus)', 'eppstein'
+                ];
+                
+                dataCopy.forEach(item => {
+                    let n = typeof item === 'string' ? item : item.nazwa;
+                    
+                    if (n && EXCLUDED_PREVIEW_REGIONS.includes(n.toLowerCase().trim())) return;
+
+                    let dStr = typeof item === 'string' ? "-" : (item.daty || "-");
+                    let rStr = typeof item === 'string' ? "" : (item.rodzaj || "");
+                    let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
+                    let uniqueDays = "-";
+                    
+                    if (dStr !== "-") {
+                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                        let rodzajeArr = rStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                        let daysWithTags = [];
+                        
+                        for(let i = 0; i < datyArr.length; i++) {
+                            let match = datyArr[i].match(/(\d{4})-(\d{2})-(\d{2})/);
+                            if(match) {
+                                let dIdx = new Date(match[1], match[2]-1, match[3]).getDay();
+                                let dayName = "";
+                                if (t.d && Array.isArray(t.d)) {
+                                    if(dIdx >= 1 && dIdx <= 6) { dayName = t.d[dIdx - 1]; } 
+                                    else if (dIdx === 0) { dayName = userLang === 'de' ? 'SO' : 'ND'; }
+                                } else {
+                                    let dayNames = [
+                                        (userLang === 'de' ? 'SO' : 'ND'), 
+                                        t.d_pon || "PON", t.d_wt || "WT", 
+                                        t.d_sr || "SR", t.d_czw || "CZW", 
+                                        t.d_pt || "PT", t.d_sob || "SOB"
+                                    ];
+                                    dayName = dayNames[dIdx];
+                                }
+                                
+                                let tags = new Set();
+                                let r = (rodzajeArr[i] || "").toLowerCase();
+                                if (/sperr|meble|gabaryt|rest/i.test(r)) tags.add("S");
+                                if (/elektro|kühl|agd|schrank/i.test(r)) tags.add("E");
+                                if (/schrott|złom|metal|eisen/i.test(r)) tags.add("M");
+                                if (/holz|drewno/i.test(r)) tags.add("H");
+                                if (tags.size === 0) tags.add("S");
+                                daysWithTags.push(`${dayName} [${Array.from(tags).join("/")}]`);
+                            }
+                        }
+                        if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
+                    }
+                    
+                    let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
+                    
+                    html += `<tr><td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>${infoHtml}<div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;"><span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}</div></td></tr>`;
+                });
+                
+                if (html === '') { html = '<tr><td style="padding: 12px; text-align: center; color: #e74c3c;">Brak widocznych rejonów dla tego tygodnia.</td></tr>'; }
+                
+                table.innerHTML = html;
+                tableContainer.style.display = 'block';
+            });
+        }
+        fetchAvailableRegions();
+    });
+
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        return Math.ceil((((d - new Date(Date.UTC(d.getUTCFullYear(), 0, 1))) / 86400000) + 1) / 7);
+    }
+// ]]>
+</script>
+
+</body>
+</html>
