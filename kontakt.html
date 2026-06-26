@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skontaktuj się ze mną</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Style dla inputów focus */
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db !important;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        /* Checkbox custom style */
+        input[type="checkbox"] {
+            accent-color: #27ae60;
+        }
+
+        button:hover {
+            background-color: #219150 !important;
+        }
+
+        /* Style mobilne */
+        @media only screen and (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            .kontakt-container-wrapper {
+                margin: 0;
+                width: 100%;
+            }
+            .kontakt-container {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                padding: 20px 15px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kontakt-container-wrapper" style="box-sizing: border-box; width: 100%;">
+    <div class="kontakt-container" style="background-color: #121212; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 8px; box-sizing: border-box; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; margin: 0px auto; max-width: 100%; overflow: hidden; padding: 30px 20px; max-width: 800px;">
+        
+        <div data-i18n="contact_title" style="border-bottom: 2px solid rgb(39, 174, 96); color: #27ae60; display: block; font-size: 2.2em; font-weight: bold; line-height: 1.2; margin-bottom: 15px; padding-bottom: 10px; text-align: center; width: 100%;">
+            Skontaktuj się ze mną
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px; padding: 0 10px;">
+            <p data-i18n="contact_desc" style="color: #e0e0e0; font-size: 1.1em; line-height: 1.5; margin: 0;">
+                Tu Ewa, odpowiadam codziennie w godzinach 6:00 - 20:00.
+            </p>
+        </div>
+
+        <div style="background-color: #1e1e1e; border-radius: 8px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; margin: 0 auto; max-width: 600px; padding: 25px;">
+            <h3 data-i18n="form_header" style="color: #3498db; margin-top: 0px; margin-bottom: 20px; text-align: center;">📝 Formularz kontaktowy</h3>
+            
+            <form id="appContactForm" onsubmit="handleFormSubmit(event)">
+                <div style="margin-bottom: 15px;">
+                    <label for="formName" data-i18n="lbl_name" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Imię</label>
+                    <input id="formName" required style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; width: 100%;" type="text" />
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="formEmail" data-i18n="lbl_email" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Twój E-mail</label>
+                    <input id="formEmail" required style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; width: 100%;" type="email" />
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="formPhone" data-i18n="lbl_phone" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Numer telefonu</label>
+                    <input id="formPhone" style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; width: 100%;" type="tel" />
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label for="formMessage" data-i18n="lbl_message" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Wiadomość</label>
+                    <textarea id="formMessage" required rows="5" style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; resize: vertical; width: 100%;"></textarea>
+                </div>
+                
+                <div style="border-top: 1px solid rgb(68, 68, 68); color: #cccccc; font-size: 0.9em; margin-bottom: 25px; padding-top: 15px;">
+                    <div style="align-items: flex-start; display: flex; gap: 10px;">
+                        <input id="rodoConsent" required style="cursor: pointer; height: 18px; margin-top: 4px; width: 18px;" type="checkbox" />
+                        <label for="rodoConsent" style="cursor: pointer; line-height: 1.4;">
+                            <span data-i18n="rodo_consent">Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania.</span>
+                        </label>
+                    </div>
+                    <p data-i18n="rodo_details" style="color: #888888; font-size: 0.85em; line-height: 1.4; margin: 10px 0px 0px;">
+                        Administratorem danych jest właściciel aplikacji. Dane podane w formularzu będą przetwarzane wyłącznie w celu udzielenia odpowiedzi na przesłaną wiadomość.
+                    </p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button style="background-color: #27ae60; border-radius: 5px; border: none; color: white; cursor: pointer; font-size: 1.1em; max-width: 300px; padding: 12px 30px; transition: 0.3s; width: 100%;" type="submit">
+                        <span data-i18n="btn_send">Wyślij wiadomość</span> 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funkcja obsługi formularza
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('formName').value;
+    const email = document.getElementById('formEmail').value;
+    const phone = document.getElementById('formPhone').value;
+    const message = document.getElementById('formMessage').value;
+    
+    const subject = `Wiadomość z aplikacji od: ${name}`;
+    const body = `Zgoda RODO: TAK%0D%0A%0D%0AImię: ${name}%0D%0AEmail: ${email}%0D%0ATelefon: ${phone}%0D%0A%0D%0ATreść wiadomości:%0D%0A${message}`;
+    
+    window.location.href = `mailto:wystawki@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+}
+
+// Skrypt tłumaczeń (i18n)
+(function() {
+    function getLanguage() {
+        const userLang = navigator.language || navigator.userLanguage;
+        if (!userLang) return 'pl';
+        const code = userLang.split('-')[0];
+        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'bs', 'rom', 'bg', 'tr'];
+        return supported.includes(code) ? code : 'pl';
+    }
+
+    const lang = getLanguage();
+    
+    const i18n = {
+        pl: {
+            contact_title: "Skontaktuj się ze mną",
+            contact_desc: "Tu Ewa, odpowiadam codziennie w godzinach 6:00 - 20:00.",
+            form_header: "📝 Formularz kontaktowy",
+            lbl_name: "Imię",
+            lbl_email: "Twój E-mail",
+            lbl_phone: "Numer telefonu",
+            lbl_message: "Treść wiadomości",
+            btn_send: "Wyślij wiadomość",
+            rodo_consent: "Wyrażam zgodę na przetwarzanie danych osobowych w celu odpowiedzi.",
+            rodo_details: "Administratorem danych jest właściciel aplikacji. Dane służą wyłącznie do kontaktu."
+        },
+        de: {
+            contact_title: "Kontaktieren Sie uns",
+            contact_desc: "Ich antworte täglich von 6:00 bis 20:00 Uhr.",
+            form_header: "📝 Kontaktformular",
+            lbl_name: "Name",
+            lbl_email: "Ihre E-Mail",
+            lbl_phone: "Telefonnummer",
+            lbl_message: "Nachricht",
+            btn_send: "Nachricht senden",
+            rodo_consent: "Ich stimme der Datenverarbeitung zur Beantwortung meiner Anfrage zu.",
+            rodo_details: "Verantwortlicher ist der App-Inhaber. Daten werden nur für den Kontakt genutzt."
+        },
+        cs: {
+            contact_title: "Kontaktujte nás",
+            contact_desc: "Odpovídám každý den od 6:00 do 20:00.",
+            form_header: "📝 Kontaktní formulář",
+            lbl_name: "Jméno",
+            lbl_email: "Váš E-mail",
+            lbl_phone: "Telefonní číslo",
+            lbl_message: "Zpráva",
+            btn_send: "Odeslat zprávu",
+            rodo_consent: "Souhlasím se zpracováním osobních údajů pro účely odpovědi.",
+            rodo_details: "Správcem je vlastník aplikace. Údaje slouží pouze ke kontaktu."
+        },
+        sk: {
+            contact_title: "Kontaktujte nás",
+            contact_desc: "Odpovedám každý deň od 6:00 do 20:00.",
+            form_header: "📝 Kontaktný formulár",
+            lbl_name: "Meno",
+            lbl_email: "Váš E-mail",
+            lbl_phone: "Telefónne číslo",
+            lbl_message: "Správa",
+            btn_send: "Odoslať správu",
+            rodo_consent: "Súhlasím so spracovaním osobných údajov pre účely odpovede.",
+            rodo_details: "Správcom je vlastník aplikácie. Údaje slúžia len na kontakt."
+        },
+        hu: {
+            contact_title: "Lépjen kapcsolatba velünk",
+            contact_desc: "Naponta 6:00 és 20:00 között válaszolok.",
+            form_header: "📝 Kapcsolatfelvételi űrlap",
+            lbl_name: "Név",
+            lbl_email: "Az Ön e-mail címe",
+            lbl_phone: "Telefonszám",
+            lbl_message: "Üzenet",
+            btn_send: "Üzenet küldése",
+            rodo_consent: "Hozzájárulok személyes adataim kezeléséhez a válaszadás érdekében.",
+            rodo_details: "Az adatkezelő az alkalmazás tulajdonosa. Az adatok csak kapcsolattartásra szolgálnak."
+        },
+        bs: {
+            contact_title: "Kontaktirajte nas",
+            contact_desc: "Odgovaram svaki dan od 6:00 do 20:00.",
+            form_header: "📝 Kontakt obrazac",
+            lbl_name: "Ime",
+            lbl_email: "Vaš E-mail",
+            lbl_phone: "Broj telefona",
+            lbl_message: "Poruka",
+            btn_send: "Pošalji poruku",
+            rodo_consent: "Pristajem na obradu ličnih podataka radi odgovora.",
+            rodo_details: "Administrator je vlasnik aplikacije. Podaci služe samo za kontakt."
+        },
+        rom: {
+            contact_title: "De duma amenca",
+            contact_desc: "Răspund zilnic între 6:00 și 20:00.",
+            form_header: "📝 Lil kontaktesko",
+            lbl_name: "Anav",
+            lbl_email: "Tiro E-mail",
+            lbl_phone: "Numar de telefon",
+            lbl_message: "Vorba",
+            btn_send: "Bichhal mesaj",
+            rodo_consent: "Dav voja te kerel buki me datenca te del man raspunso.",
+            rodo_details: "O baro si o gazda la aplikaciako. Le date si numa te das duma."
+        },
+        bg: {
+            contact_title: "Свържете се с нас",
+            contact_desc: "Отговарям всеки ден от 6:00 до 20:00.",
+            form_header: "📝 Форма за контакт",
+            lbl_name: "Име",
+            lbl_email: "Вашият имейл",
+            lbl_phone: "Телефонен номер",
+            lbl_message: "Съобщение",
+            btn_send: "Изпрати съобщение",
+            rodo_consent: "Съгласен съм с обработката на лични данни за отговор.",
+            rodo_details: "Администратор е собственикът на приложението. Данните са само за контакт."
+        },
+        tr: {
+            contact_title: "Bize Ulaşın",
+            contact_desc: "Her gün 06:00 - 20:00 saatleri arasında yanıt veriyorum.",
+            form_header: "📝 İletişim Formu",
+            lbl_name: "İsim",
+            lbl_email: "E-posta adresiniz",
+            lbl_phone: "Telefon numarası",
+            lbl_message: "Mesaj",
+            btn_send: "Mesaj gönder",
+            rodo_consent: "Yanıt için kişisel verilerin işlenmesini kabul ediyorum.",
+            rodo_details: "Yönetici uygulama sahibidir. Veriler sadece iletişim içindir."
+        }
+    };
+
+    if (i18n[lang]) {
+        const t = i18n[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                el.innerHTML = t[key];
+            }
+        });
+        
+        // Zaktualizowanie atrybutu 'lang' tagu html dla SEO/Dostępności
+        document.documentElement.lang = lang;
+    }
+})();
+</script>
+</body>
+</html>
