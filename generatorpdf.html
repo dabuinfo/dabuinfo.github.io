@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zestaw Tygodniowy PRO - Harmonogram Wywozów</title>
+    <title>Zestaw Tygodniowy - Generator PDF</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -1426,22 +1426,29 @@
         }
 
         function populateFreePreviewDropdown(matrix) {
-            let select = document.getElementById('freePreviewWeek');
-            let section = document.getElementById('freePreviewSection');
-            if (!select || !section) return;
-            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+    let select = document.getElementById('freePreviewWeek');
+    let section = document.getElementById('freePreviewSection');
+    if (!select || !section) return;
+    select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+    
+    let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
+    if(weeks.length > 0) {
+        section.style.display = 'block';
+        weeks.forEach(w => {
+            let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
             
-            let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
-            if(weeks.length > 0) {
-                section.style.display = 'block';
-                weeks.forEach(w => {
-                    let opt = document.createElement('option'); opt.value = w;
-                    let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
-                    opt.textContent = (existingCheckbox && existingCheckbox.value) ? existingCheckbox.value : (t.week || "Tydzień") + " " + w;
-                    select.appendChild(opt);
-                });
-            } else { section.style.display = 'none'; }
-        }
+            // POPRAWKA: Pokaż opcję tylko, jeśli tydzień jest dostępny na liście checkboxów
+            if (existingCheckbox) {
+                let opt = document.createElement('option'); 
+                opt.value = w;
+                opt.textContent = existingCheckbox.value;
+                select.appendChild(opt);
+            }
+        });
+    } else { 
+        section.style.display = 'none'; 
+    }
+}
 
         if (document.getElementById('freePreviewWeek')) {
             document.getElementById('freePreviewWeek').addEventListener('change', function() {
