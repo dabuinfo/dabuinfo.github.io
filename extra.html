@@ -34,9 +34,10 @@
     <div class="service-info">
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie (botem) z serwerów firm sprzątających.
         <ul>
-            <li><b>Gminy (Extra): 40 zł</b> – za najbliższy dostępny termin (z podziałem na wioski/ulice).</li>
-            <li><b>Landy (Powiaty/Miasta): 80 zł</b> – za terminy w tygodniu.</li>
+            <li><b>Gminy (Extra): 40 zł</b> – za najbliższy dostępny termin (1 dzień) z podziałem na wioski/ulice.</li>
+            <li><b>Landy (Powiaty/Miasta): 20 zł</b> – za najbliższy dostępny termin (1 dzień).</li>
         </ul>
+        <i>Ważne: Pamiętaj, aby wystawić odpady dzień wcześniej!</i>
     </div>
     <div id="regionsContainer"></div>
 </div>
@@ -52,11 +53,10 @@
     (function() {
         const targetPhoneNumber = "+48600812820";
         
-        // Zmodyfikowana struktura danych zawierająca cenę i krótki opis dla każdej grupy
         const data = {
             "Gminy (Extra)": {
                 price: 40,
-                desc: "Cena: 40 zł / najbliższy termin",
+                desc: "Cena: 40 zł / najbliższy termin (dzień)",
                 items: {
                     "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
                     "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
@@ -69,8 +69,8 @@
                 }
             },
             "Landy (Powiaty i Miasta)": {
-                price: 80,
-                desc: "Cena: 80 zł / terminy w tygodniu",
+                price: 20,
+                desc: "Cena: 20 zł / najbliższy termin (dzień)",
                 items: {
                     "Baden-Württemberg": ["Freudenstadt", "Karlsruhe", "Ortenau (Offenburg)", "Tuttlingen"],
                     "Bayern": ["Bamberg", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
@@ -90,11 +90,9 @@
         const priceDisplay = document.getElementById('totalPrice');
         const orderBtn = document.getElementById('submitOrderBtn');
         
-        // Tablica przechowuje teraz obiekty { name: "Nazwa", price: 40/80 }
         let selectedItems = []; 
 
         Object.entries(data).forEach(([groupName, config]) => {
-            // Nagłówek grupy i jej opis cenowy
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
             const desc = document.createElement('div'); desc.className = 'group-desc'; desc.textContent = config.desc; container.appendChild(desc);
 
@@ -122,14 +120,12 @@
         });
 
         function updateUI() {
-            // Sumujemy ceny wszystkich wybranych elementów
             const total = selectedItems.reduce((sum, item) => sum + item.price, 0);
             priceDisplay.textContent = total;
             orderBtn.disabled = selectedItems.length === 0;
         }
 
         orderBtn.addEventListener('click', () => {
-            // Generowanie dzisiejszej daty w formacie RRRRMMDD
             const dzisiaj = new Date();
             const rrrr = dzisiaj.getFullYear();
             const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
@@ -139,10 +135,9 @@
             const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
             const totalToPay = selectedItems.reduce((sum, item) => sum + item.price, 0);
             
-            // Mapujemy obiekty na same nazwy, żeby ładnie wyglądały w SMS
             const itemNames = selectedItems.map(i => i.name).join(', ');
             
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemNames}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy odpowiednie terminy od dziś!`;
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemNames}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy odpowiednie terminy (1 dzień) na najbliższy czas.`;
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
