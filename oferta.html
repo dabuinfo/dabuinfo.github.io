@@ -42,7 +42,7 @@
 
         /* Desktop */
         @media (min-width: 601px) {
-            .region-tag { background: #1e1e1e; padding: 5px 12px; border-radius: 30px; display: inline-block; margin: 5px 8px 5px 0; border-left: 3px solid #2ecc71; font-size: 0.9rem; color: #e0e0e0; text-decoration: none; }
+            .region-tag { background: #1e1e1e; padding: 5px 12px; border-radius: 30px; display: inline-block; margin: 5px 8px 5px 0; border-left: 3px solid #2ecc71; font-size: 0.9rem; color: #e0e0e0; text-decoration: none; transition: background-color 0.2s, color 0.2s; }
             .region-tag.building { border-left-color: #f39c12; }
             .region-tag:hover { background-color: #2ecc71; color: #121212; }
         }
@@ -78,7 +78,7 @@
                     intro: "Zależy nam, abyście mieli 100% pewności, skąd pochodzą Wasze terminy.",
                     benefit1: "Zgodność z RODO – Przetwarzamy tylko jawne, publiczne dane.",
                     benefit2: "100% Pewności – Potwierdzamy każdy termin bezpośrednio u wydawcy.",
-                    regionsIntro: "Aktualnie w naszym systemie znajdziecie regiony:",
+                    regionsIntro: "Aktualnie w naszym systemie znajdziecie regiony (kliknij, aby zamówić):",
                     thanks: "Dziękujemy za zaufanie."
                 }
             };
@@ -92,7 +92,8 @@
             let regionsHtml = "";
             for (const [state, regions] of Object.entries(regionsByState)) {
                 regionsHtml += `<div class="state-title">${state}</div>`;
-                regionsHtml += regions.map(r => `<a href="#" class="region-tag">${r}</a>`).join('');
+                // Zmieniono href na link do zamówień
+                regionsHtml += regions.map(r => `<a href="https://dabu-info.com/zamowienia.html" class="region-tag">${r}</a>`).join('');
             }
 
             container.innerHTML = `
@@ -107,24 +108,8 @@
                 
                 <div style="margin-top: 30px;"><strong>${t.regionsIntro}</strong></div>
                 ${regionsHtml}
-
-                <div style="margin: 50px 0; text-align: center;">
-                    <a href="https://dabu-info.com/zamowienia.html" style="
-                        display: inline-block;
-                        background-color: #2ecc71;
-                        color: #ffffff;
-                        padding: 20px 40px;
-                        text-decoration: none;
-                        font-weight: bold;
-                        font-size: 1.2rem;
-                        border-radius: 8px;
-                        border: 2px solid #fff;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                    ">
-                        📦 Złóż zamówienie (Wybierz rejony)
-                    </a>
-                </div>
             `;
+            // Sekcja z dużym przyciskiem "Złóż zamówienie" na dole została usunięta
         })();
     </script>
 </body>
