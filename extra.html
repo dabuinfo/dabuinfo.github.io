@@ -30,7 +30,7 @@
 <div class="order-module">
     <h2>📦 Zamówienie harmonogramów</h2>
     <div class="service-info">
-        ⚠️ <b>Cena: 40 zł za każdą wybraną pozycję.</b> Terminy pobierane botem z serwerów firm sprzątających na najbliższy dostępny termin.
+        ⚠️ <b>Cennik Usług: Cena bazowa wynosi 20 zł. Ostateczna kwota zostanie wyliczona w koszyku po wybraniu odpowiednich opcji.</b> Terminy pobierane botem z serwerów firm sprzątających na najbliższy dostępny termin.
     </div>
     <div id="regionsContainer"></div>
 </div>
@@ -44,7 +44,7 @@
 
 <script>
     (function() {
-        const pricePerRegion = 40;
+        const pricePerRegion = 20; // Zaktualizowana cena bazowa
         const targetPhoneNumber = "+48600812820";
         
         const data = {
@@ -74,7 +74,7 @@
                     "Schleswig-Holstein": ["Rendsburg-Eckenförde"]
                 }
             }
-                };
+        };
 
         const container = document.getElementById('regionsContainer');
         const priceDisplay = document.getElementById('totalPrice');
@@ -106,7 +106,8 @@
 
         orderBtn.addEventListener('click', () => {
             const orderId = `20260626-${Math.floor(1000 + Math.random() * 9000)}`;
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${selectedItems.join(', ')}. Razem: ${total} zł. UWAGA: Wysyłamy najbliższy dostępny termin od dziś!`;
+            const totalToPay = selectedItems.length * pricePerRegion; // Zdefiniowano poprawnie całkowitą kwotę
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${selectedItems.join(', ')}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy najbliższy dostępny termin od dziś!`;
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
