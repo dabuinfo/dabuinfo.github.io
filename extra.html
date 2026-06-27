@@ -12,18 +12,32 @@
         .land-header { color: #f1c40f; border-bottom: 1px dashed #444; padding-bottom: 5px; margin: 25px 0 5px; font-size: 1.2rem; }
         .group-desc { color: #2ecc71; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; }
         .powiat-sub-header { color: #3498db; margin: 15px 0 5px 20px; font-size: 1rem; font-style: italic; }
-        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 5px 0 20px 20px; }
-        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
+        
+        .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 5px 0 20px 20px; }
+        
+        /* Style dla checkboxów (Gminy Extra) */
+        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
+        /* Style dla liczników dni (Landy) */
+        .region-counter-wrapper { display: flex; align-items: center; justify-content: space-between; background: #252525; padding: 6px 12px; border-radius: 6px; border: 1px solid #333; }
+        .region-name { font-size: 0.9rem; }
+        .counter-controls { display: flex; align-items: center; gap: 12px; }
+        .counter-btn { background: #333; color: #f1c40f; border: 1px solid #444; width: 32px; height: 32px; border-radius: 4px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .counter-btn:active { background: #2ecc71; color: #fff; border-color: #2ecc71; }
+        .counter-qty { font-weight: bold; font-size: 1rem; width: 20px; text-align: center; }
+        
+        /* Koszyk */
         .cart-summary { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 2px solid #2ecc71; padding: 15px; box-sizing: border-box; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
-        .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .btn-order:disabled { background-color: #555; }
+        .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+        .btn-order:active { transform: scale(0.98); }
+        .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
             .regions-grid { grid-template-columns: 1fr; margin-left: 0; }
             .powiat-sub-header { margin-left: 10px; }
+            .counter-btn { width: 36px; height: 36px; }
         }
     </style>
 </head>
@@ -34,8 +48,8 @@
     <div class="service-info">
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie (botem) z serwerów firm sprzątających.
         <ul>
-            <li><b>Gminy (Extra): 40 zł</b> – za najbliższy dostępny termin (1 dzień) z podziałem na wioski/ulice.</li>
-            <li><b>Landy (Powiaty/Miasta): 20 zł</b> – za najbliższy dostępny termin (1 dzień).</li>
+            <li><b>Gminy (Extra): 40 zł</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
+            <li><b>Landy (Powiaty/Miasta): 20 zł</b> – za 1 dzień (wybierz ilość dni za pomocą +/-).</li>
         </ul>
         <i>Ważne: Pamiętaj, aby wystawić odpady dzień wcześniej!</i>
     </div>
@@ -56,7 +70,8 @@
         const data = {
             "Gminy (Extra)": {
                 price: 40,
-                desc: "Cena: 40 zł / najbliższy termin (dzień)",
+                type: "checkbox", // Tutaj definiujemy, że ma być tylko ptaszek
+                desc: "Cena: 40 zł / najbliższy termin",
                 items: {
                     "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
                     "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
@@ -70,7 +85,8 @@
             },
             "Landy (Powiaty i Miasta)": {
                 price: 20,
-                desc: "Cena: 20 zł / najbliższy termin (dzień)",
+                type: "counter", // Tutaj definiujemy wybór ilości dni (+/-)
+                desc: "Cena: 20 zł / dzień (wybierz ilość dni)",
                 items: {
                     "Baden-Württemberg": ["Freudenstadt", "Karlsruhe", "Ortenau (Offenburg)", "Tuttlingen"],
                     "Bayern": ["Bamberg", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
@@ -90,7 +106,7 @@
         const priceDisplay = document.getElementById('totalPrice');
         const orderBtn = document.getElementById('submitOrderBtn');
         
-        let selectedItems = []; 
+        let cart = {};
 
         Object.entries(data).forEach(([groupName, config]) => {
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
@@ -101,28 +117,59 @@
                 const grid = document.createElement('div'); grid.className = 'regions-grid';
                 
                 regions.forEach(r => {
-                    const label = document.createElement('label'); label.className = 'region-checkbox-label';
-                    const input = document.createElement('input'); input.type = 'checkbox';
-                    
-                    input.addEventListener('change', (e) => {
-                        if (e.target.checked) {
-                            selectedItems.push({ name: r, price: config.price });
-                        } else {
-                            selectedItems = selectedItems.filter(i => i.name !== r);
-                        }
-                        updateUI();
-                    });
-                    
-                    label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
+                    if (config.type === "checkbox") {
+                        // Tworzenie zwykłego ptaszka dla Gmin
+                        const label = document.createElement('label'); label.className = 'region-checkbox-label';
+                        const input = document.createElement('input'); input.type = 'checkbox';
+                        input.addEventListener('change', (e) => {
+                            if (e.target.checked) cart[r] = { qty: 1, price: config.price, isCounter: false };
+                            else delete cart[r];
+                            updateUI();
+                        });
+                        label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
+                    } else if (config.type === "counter") {
+                        // Tworzenie licznika +/- dla Landów
+                        const wrapper = document.createElement('div'); wrapper.className = 'region-counter-wrapper';
+                        const nameSpan = document.createElement('span'); nameSpan.className = 'region-name'; nameSpan.textContent = r;
+                        
+                        const controls = document.createElement('div'); controls.className = 'counter-controls';
+                        const btnMinus = document.createElement('button'); btnMinus.className = 'counter-btn'; btnMinus.textContent = '-';
+                        const spanQty = document.createElement('span'); spanQty.className = 'counter-qty'; spanQty.textContent = '0';
+                        const btnPlus = document.createElement('button'); btnPlus.className = 'counter-btn'; btnPlus.textContent = '+';
+                        
+                        let qty = 0;
+                        btnPlus.addEventListener('click', () => {
+                            qty++; spanQty.textContent = qty;
+                            cart[r] = { qty: qty, price: config.price, isCounter: true };
+                            updateUI();
+                        });
+                        
+                        btnMinus.addEventListener('click', () => {
+                            if (qty > 0) {
+                                qty--; spanQty.textContent = qty;
+                                if (qty === 0) delete cart[r];
+                                else cart[r] = { qty: qty, price: config.price, isCounter: true };
+                                updateUI();
+                            }
+                        });
+                        
+                        controls.appendChild(btnMinus); controls.appendChild(spanQty); controls.appendChild(btnPlus);
+                        wrapper.appendChild(nameSpan); wrapper.appendChild(controls); grid.appendChild(wrapper);
+                    }
                 });
                 container.appendChild(grid);
             });
         });
 
         function updateUI() {
-            const total = selectedItems.reduce((sum, item) => sum + item.price, 0);
+            let total = 0;
+            let itemCount = 0;
+            Object.values(cart).forEach(item => {
+                total += item.price * item.qty;
+                itemCount++;
+            });
             priceDisplay.textContent = total;
-            orderBtn.disabled = selectedItems.length === 0;
+            orderBtn.disabled = itemCount === 0;
         }
 
         orderBtn.addEventListener('click', () => {
@@ -133,11 +180,14 @@
             const dataString = `${rrrr}${mm}${dd}`;
 
             const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
-            const totalToPay = selectedItems.reduce((sum, item) => sum + item.price, 0);
             
-            const itemNames = selectedItems.map(i => i.name).join(', ');
+            let totalToPay = 0;
+            const itemsList = Object.entries(cart).map(([name, item]) => {
+                totalToPay += item.price * item.qty;
+                return item.isCounter ? `${name} (${item.qty} dni)` : name;
+            }).join(', ');
             
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemNames}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy odpowiednie terminy (1 dzień) na najbliższy czas.`;
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemsList}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy odpowiednie terminy na najbliższy czas. Odpady należy wystawić dzień wcześniej!`;
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
