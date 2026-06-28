@@ -1256,35 +1256,37 @@
                 }
             });
 
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                let footY = 175;
-                doc.setDrawColor(60, 60, 60);
-                doc.setLineWidth(0.3);
-                doc.line(5, footY - 3, 103, footY - 3);
+const pageCount = doc.internal.getNumberOfPages();
+for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    let footY = 175;
+    doc.setDrawColor(60, 60, 60);
+    doc.setLineWidth(0.3);
+    doc.line(5, footY - 3, 103, footY - 3);
 
-                doc.setFontSize(7.5);
-                doc.setTextColor(150, 150, 150);
-                doc.text(`${t.page} ${i} ${t.of} ${pageCount}`, 54, footY + 1, { align: 'center' });
+    doc.setFontSize(7.5);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`${t.page} ${i} ${t.of} ${pageCount}`, 54, footY + 1, { align: 'center' });
 
-                doc.setTextColor(100, 100, 100);
-                doc.text("Service Desk DABU-INFO:", 54, footY + 5, { align: 'center' });
+    doc.setTextColor(100, 100, 100);
+    doc.text("Service Desk DABU-INFO:", 54, footY + 5, { align: 'center' });
 
-                doc.setTextColor(52, 152, 219);
-                doc.text("dariusz@dabu-info.com", 54, footY + 9, { align: 'center' });
-                doc.link(30, footY + 6, 48, 4, { url: 'mailto:dariusz@dabu-info.com' });
-                
-                doc.setTextColor(150, 150, 150);
-                doc.text(" | ", 54, footY + 13, { align: 'center' });
+    // Zmieniono tekst na adres strony
+    doc.setTextColor(52, 152, 219);
+    doc.text("Generator PDF", 54, footY + 9, { align: 'center' });
+    
+    // Zmieniono link z mailto na adres URL strony
+    doc.link(30, footY + 6, 48, 4, { url: 'https://dabu-info.com/generatorpdf.html' });
+    
+    doc.setTextColor(150, 150, 150);
+    doc.text(" | ", 54, footY + 13, { align: 'center' });
 
-                doc.setTextColor(46, 204, 113);
-                doc.text("+48 600 812 820", 54, footY + 13, { align: 'center' });
-                doc.link(30, footY + 10, 48, 4, { url: 'tel:+48600812820' });
-            }
+    doc.setTextColor(46, 204, 113);
+    doc.text("+48 600 812 820", 54, footY + 13, { align: 'center' });
+    doc.link(30, footY + 10, 48, 4, { url: 'tel:+48600812820' });
+}
 
-            doc.save(`${orderNr}.pdf`);
-        }
+doc.save(`${orderNr}.pdf`);
 
         /* ---------------------------------------------------------
            POBIERANIE I TRIGGERY PRZYCISKÓW (Wspólna logika)
