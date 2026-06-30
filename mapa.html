@@ -2,9 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Mapa Wystawek w Niemczech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Wystawek w Niemczech | Dabu-Info</title>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -13,13 +15,6 @@
     </script>
     
     <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dabu-Info - Mapa Rejonów</title>
 
     <!-- Biblioteki Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -32,7 +27,15 @@
             background-color: #121212;
             color: #ffffff;
             margin: 0;
+            padding: 0; /* Wyzerowany padding dla body, przeniesiony do wrappera mapy */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content {
             padding: 20px;
+            flex-grow: 1;
         }
 
         /* --- NAPRAWA CZARNEJ RAMKI FOCUS W PRZEGLĄDARKACH (CHROME/EDGE) --- */
@@ -81,213 +84,320 @@
         .dabu-fullscreen-map { position: fixed !important; top: 0 !important;
         left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important;
         }
+
+        /* ========================================= */
+        /* STYLE STOPKI                              */
+        /* ========================================= */
+        .dabu-footer {
+            background-color: #121212;
+            border-top: 1px solid #333;
+            color: #ccc;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 50px 20px 20px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 40px;
+        }
+
+        .dabu-footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+
+        .dabu-footer-col {
+            flex: 1;
+            min-width: 280px;
+            text-align: left;
+        }
+
+        .dabu-footer-heading {
+            color: #2ecc71;
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dabu-footer-text {
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .dabu-footer-links, .dabu-footer-contact {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .dabu-footer-links li a, .dabu-footer-contact li a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .dabu-footer-links li a:hover, .dabu-footer-contact li a:hover {
+            color: #2ecc71;
+            text-decoration: underline;
+        }
+
+        .dabu-footer-contact li {
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .dabu-footer-contact strong {
+            color: #e0e0e0;
+        }
+
+        .dabu-footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid #222;
+            text-align: center;
+            font-size: 0.85em;
+            color: #777;
+        }
+
+        .dabu-footer-bottom a {
+            color: #2ecc71;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dabu-footer-bottom a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .dabu-footer {
+                padding: 40px 15px 15px;
+            }
+            .dabu-footer-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .dabu-footer-col {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="dabu-regions-widget">
-        <div id="dabuOSMMap" style="height: 600px; width: 100%; border-radius: 8px; margin-bottom: 20px; border: 2px solid #00FF7F; display: block; z-index: 1;"></div>
-        
-        <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="Wyszukaj swój region..." onkeyup="filterDabuRegions()">
+    <div class="main-content">
+        <div class="dabu-regions-widget">
+            <div id="dabuOSMMap" style="height: 600px; width: 100%; border-radius: 8px; margin-bottom: 20px; border: 2px solid #00FF7F; display: block; z-index: 1;"></div>
+            
+            <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="Wyszukaj swój region..." onkeyup="filterDabuRegions()">
 
-        <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="dabu-county-btn" style="background: #28a745; color: white; border-color: #28a745; font-weight: bold;"
-            onclick="selectOnlyNormalRegions(event)">
-                🟢 Zaznacz tylko rejony "stałe"
-            </button>
-            <button class="dabu-county-btn" style="background: #dc3545; color: white; border-color: #dc3545; font-weight: bold;"
-            onclick="clearAllFilters(event)">
-                🗑️ Wyczyść filtry i mapę
-            </button>
-        </div>
+            <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="dabu-county-btn" style="background: #28a745; color: white; border-color: #28a745; font-weight: bold;"
+                onclick="selectOnlyNormalRegions(event)">
+                    🟢 Zaznacz tylko rejony "stałe"
+                </button>
+                <button class="dabu-county-btn" style="background: #dc3545; color: white; border-color: #dc3545; font-weight: bold;"
+                onclick="clearAllFilters(event)">
+                    🗑️ Wyczyść filtry i mapę
+                </button>
+            </div>
 
-        <div id="countySuggestions" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
+            <div id="countySuggestions" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
 
-        <h3 id="selectedLandTitle" style="font-family: sans-serif; margin-top: 0; margin-bottom: 10px; font-size: 16px; display: none; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.5); color: #00FF7F; border: 1px solid rgba(0,255,127,0.3);"></h3>
+            <h3 id="selectedLandTitle" style="font-family: sans-serif; margin-top: 0; margin-bottom: 10px; font-size: 16px; display: none; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.5); color: #00FF7F; border: 1px solid rgba(0,255,127,0.3);"></h3>
 
-        <div class="regions-scroll-box" id="regionsContainer">
-  
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Aldenhoven" /> Aldenhoven</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Alpen" /> Alpen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Altena" /> Altena</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis Salzwedel" /> Altmarkkreis Salzwedel</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Münstereifel" /> Bad Münstereifel</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Balve" /> Balve</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg" /> Bedburg</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg-Hau" /> Bedburg-Hau</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dormagen" /> Dormagen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dortmund" /> Dortmund</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Elbe-Elster" /> Elbe-Elster</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Emmerich am Rhein" /> Emmerich am Rhein</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Emsland" /> Emsland</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt Powiat" /> Erftstadt Powiat</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eschwege" /> Eschwege</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gangelt" /> Gangelt</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Geldern" /> Geldern</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen Powiat" /> Giessen Powiat</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grefrath" /> Grefrath</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grevenbroich" /> Grevenbroich</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Hückelhoven" /> Hückelhoven</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Iserlohn" /> Iserlohn</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Issum" /> Issum</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Jüchen" /> Jüchen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich (E)" /> Jülich (E)</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kaarst" /> Kaarst</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe" /> Karlsruhe</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kerken" /> Kerken</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kevelaer" /> Kevelaer</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim bei München" /> Kirchheim bei München</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2-3x w roku / 2-3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Korschenbroich" /> Korschenbroich</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach Powiat" /> Kulmbach Powiat</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lipsk (Leipzig)" /> Lipsk (Leipzig)</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1-2x w miesiącu / 1-2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübeck" /> Lübeck (Lubeka)</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg Powiat" /> Lüneburg Powiat</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (18x w roku / 18x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Meerbusch" /> Meerbusch</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Menden" /> Menden</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Merzenich" /> Merzenich</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Nachrodt-Wiblingwerde" /> Nachrodt-Wiblingwerde</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Nettetal" /> Nettetal</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Neukirchen-Vluyn" /> Neukirchen-Vluyn</label>
-          <label class="region-label" data-info="Sprawdź terminy wystawek"><input class="region-chk" name="regiony[]" type="checkbox" value="Neuss" /> Neuss</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt an der Waldnaab" /> Neustadt an der Waldnaab</label>
-          <label class="region-label" data-info="Najbliższy termin na żądanie / Nächster Termin auf Abruf"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau (Offenburg)</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Plettenberg" /> Plettenberg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rees" /> Rees</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheurdt" /> Rheurdt</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rommerskirchen" /> Rommerskirchen</label>
-          <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4 lub 6x w roku / 4 oder 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Selfkant" /> Selfkant</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (ok. 1x w miesiącu / ca. 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Sonsbeck" /> Sonsbeck</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Straelen" /> Straelen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Übach-Palenberg" /> Übach-Palenberg</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Uedem" /> Uedem</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Viersen" /> Viersen</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Voerde" /> Voerde</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Weeze" /> Weeze</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
-          <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Werdohl" /> Werdohl</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (Sperrmüll 2x w miesiącu / 2x im Monat, E-Schrott co 2 miesiące / alle 2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wülfrath" /> Wülfrath</label>
-          <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Xanten" /> Xanten</label>
-          <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
-          <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+            <div class="regions-scroll-box" id="regionsContainer">
+    
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Aldenhoven" /> Aldenhoven</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Alpen" /> Alpen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Altena" /> Altena</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis Salzwedel" /> Altmarkkreis Salzwedel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Münstereifel" /> Bad Münstereifel</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Balve" /> Balve</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg" /> Bedburg</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Bedburg-Hau" /> Bedburg-Hau</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Dormagen" /> Dormagen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dortmund" /> Dortmund</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Elbe-Elster" /> Elbe-Elster</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Emmerich am Rhein" /> Emmerich am Rhein</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Emsland" /> Emsland</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt Powiat" /> Erftstadt Powiat</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Eschwege" /> Eschwege</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gangelt" /> Gangelt</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Geldern" /> Geldern</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen Powiat" /> Giessen Powiat</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grefrath" /> Grefrath</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Grevenbroich" /> Grevenbroich</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Hückelhoven" /> Hückelhoven</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Iserlohn" /> Iserlohn</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Issum" /> Issum</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Jüchen" /> Jüchen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich (E)" /> Jülich (E)</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kaarst" /> Kaarst</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe" /> Karlsruhe</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kerken" /> Kerken</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Kevelaer" /> Kevelaer</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim bei München" /> Kirchheim bei München</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2-3x w roku / 2-3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Korschenbroich" /> Korschenbroich</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach Powiat" /> Kulmbach Powiat</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lipsk (Leipzig)" /> Lipsk (Leipzig)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1-2x w miesiącu / 1-2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübeck" /> Lübeck (Lubeka)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg Powiat" /> Lüneburg Powiat</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (18x w roku / 18x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Meerbusch" /> Meerbusch</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Menden" /> Menden</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Merzenich" /> Merzenich</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (8x w roku / 8x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Nachrodt-Wiblingwerde" /> Nachrodt-Wiblingwerde</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Nettetal" /> Nettetal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Neukirchen-Vluyn" /> Neukirchen-Vluyn</label>
+            <label class="region-label" data-info="Sprawdź terminy wystawek"><input class="region-chk" name="regiony[]" type="checkbox" value="Neuss" /> Neuss</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt an der Waldnaab" /> Neustadt an der Waldnaab</label>
+            <label class="region-label" data-info="Najbliższy termin na żądanie / Nächster Termin auf Abruf"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau (Offenburg)</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Plettenberg" /> Plettenberg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rees" /> Rees</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu lub częściej / 1x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (1x w roku / 1x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu / 2x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheurdt" /> Rheurdt</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Rommerskirchen" /> Rommerskirchen</label>
+            <label class="region-label" data-info="Zlecenie przygotowania najbliższego terminu"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4 lub 6x w roku / 4 oder 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Selfkant" /> Selfkant</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (ok. 1x w miesiącu / ca. 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Sonsbeck" /> Sonsbeck</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (6x w roku / 6x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (2x w miesiącu lub częściej / 2x im Monat oder öfter)"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Straelen" /> Straelen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Übach-Palenberg" /> Übach-Palenberg</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Uedem" /> Uedem</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Viersen" /> Viersen</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Voerde" /> Voerde</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (3x w roku / 3x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Weeze" /> Weeze</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (co 1-2 miesiące / alle 1-2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
+            <label class="region-label" data-info="Do indywidualnej wyceny na najbliższy termin"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Werdohl" /> Werdohl</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (Sperrmüll 2x w miesiącu / 2x im Monat, E-Schrott co 2 miesiące / alle 2 Monate)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (2x w roku / 2x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (bardzo często / sehr oft)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wülfrath" /> Wülfrath</label>
+            <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Xanten" /> Xanten</label>
+            <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
+            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+            </div>
         </div>
     </div>
 
@@ -295,7 +405,6 @@
         let currentFilteredLand = null;
         let kreiseLayer = null;
 
-        // Słownik z linkami do wpisów na blogu
         const regionLinks = {
             "Altenkirchen (Westerwald)": "https://dabu-info.blogspot.com/2026/02/sperrmull-altenkirchen-2026-terminy.html",
             "Altmarkkreis-Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
@@ -409,58 +518,22 @@
             "Zollernalb": "https://dabu-info.blogspot.com/2026/02/sperrmull-zollernalb-2026-tylko-agd.html",
             "Neuss": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-neuss.html",
             
-// --- Gminy na indywidualne zamówienie ---
-"Aldenhoven": "https://dabu-info.com/zamowienia.html",
-"Alpen": "https://dabu-info.com/zamowienia.html",
-"Altena": "https://dabu-info.com/zamowienia.html",
-"Bad Münstereifel": "https://dabu-info.com/zamowienia.html",
-"Balve": "https://dabu-info.com/zamowienia.html",
-"Bedburg": "https://dabu-info.com/zamowienia.html",
-"Bedburg-Hau": "https://dabu-info.com/zamowienia.html",
-"Blankenheim": "https://dabu-info.com/zamowienia.html",
-"Dahlem": "https://dabu-info.com/zamowienia.html",
-"Dormagen": "https://dabu-info.com/zamowienia.html",
-"Emmerich am Rhein": "https://dabu-info.com/zamowienia.html",
-"Geldern": "https://dabu-info.com/zamowienia.html",
-"Grefrath": "https://dabu-info.com/zamowienia.html",
-"Grevenbroich": "https://dabu-info.com/zamowienia.html",
-"Hellenthal": "https://dabu-info.com/zamowienia.html",
-"Hückelhoven": "https://dabu-info.com/zamowienia.html",
-"Iserlohn": "https://dabu-info.com/zamowienia.html",
-"Issum": "https://dabu-info.com/zamowienia.html",
-"Jüchen": "https://dabu-info.com/zamowienia.html",
-"Jülich (E)": "https://dabu-info.com/zamowienia.html",
-"Kaarst": "https://dabu-info.com/zamowienia.html",
-"Kall": "https://dabu-info.com/zamowienia.html",
-"Kerken": "https://dabu-info.com/zamowienia.html",
-"Kevelaer": "https://dabu-info.com/zamowienia.html",
-"Korschenbroich": "https://dabu-info.com/zamowienia.html",
-"Lübeck": "https://dabu-info.com/zamowienia.html",
-"Mechernich": "https://dabu-info.com/zamowienia.html",
-"Meerbusch": "https://dabu-info.com/zamowienia.html",
-"Menden": "https://dabu-info.com/zamowienia.html",
-"Merzenich": "https://dabu-info.com/zamowienia.html",
-"Nachrodt-Wiblingwerde": "https://dabu-info.com/zamowienia.html",
-"Nettetal": "https://dabu-info.com/zamowienia.html",
-"Neukirchen-Vluyn": "https://dabu-info.com/zamowienia.html",
-"Plettenberg": "https://dabu-info.com/zamowienia.html",
-"Rees": "https://dabu-info.com/zamowienia.html",
-"Rheurdt": "https://dabu-info.com/zamowienia.html",
-"Rommerskirchen": "https://dabu-info.com/zamowienia.html",
-"Schleiden": "https://dabu-info.com/zamowienia.html",
-"Selfkant": "https://dabu-info.com/zamowienia.html",
-"Sonsbeck": "https://dabu-info.com/zamowienia.html",
-"Straelen": "https://dabu-info.com/zamowienia.html",
-"Übach-Palenberg": "https://dabu-info.com/zamowienia.html",
-"Uedem": "https://dabu-info.com/zamowienia.html",
-"Viersen": "https://dabu-info.com/zamowienia.html",
-"Voerde": "https://dabu-info.com/zamowienia.html",
-"Weeze": "https://dabu-info.com/zamowienia.html",
-"Weilerswist": "https://dabu-info.com/zamowienia.html",
-"Werdohl": "https://dabu-info.com/zamowienia.html",
-"Xanten": "https://dabu-info.com/zamowienia.html",
-"Zülpich": "https://dabu-info.com/zamowienia.html"
+            // --- Gminy na indywidualne zamówienie ---
+            "Aldenhoven": "https://dabu-info.com/zamowienia.html", "Alpen": "https://dabu-info.com/zamowienia.html", "Altena": "https://dabu-info.com/zamowienia.html",
+            "Bad Münstereifel": "https://dabu-info.com/zamowienia.html", "Balve": "https://dabu-info.com/zamowienia.html", "Bedburg": "https://dabu-info.com/zamowienia.html", "Bedburg-Hau": "https://dabu-info.com/zamowienia.html", "Blankenheim": "https://dabu-info.com/zamowienia.html",
+            "Dahlem": "https://dabu-info.com/zamowienia.html", "Dormagen": "https://dabu-info.com/zamowienia.html", "Emmerich am Rhein": "https://dabu-info.com/zamowienia.html", "Geldern": "https://dabu-info.com/zamowienia.html",
+            "Grefrath": "https://dabu-info.com/zamowienia.html", "Grevenbroich": "https://dabu-info.com/zamowienia.html", "Hellenthal": "https://dabu-info.com/zamowienia.html", "Hückelhoven": "https://dabu-info.com/zamowienia.html",
+            "Iserlohn": "https://dabu-info.com/zamowienia.html", "Issum": "https://dabu-info.com/zamowienia.html", "Jüchen": "https://dabu-info.com/zamowienia.html", "Jülich (E)": "https://dabu-info.com/zamowienia.html",
+            "Kaarst": "https://dabu-info.com/zamowienia.html", "Kall": "https://dabu-info.com/zamowienia.html", "Kerken": "https://dabu-info.com/zamowienia.html", "Kevelaer": "https://dabu-info.com/zamowienia.html",
+            "Korschenbroich": "https://dabu-info.com/zamowienia.html", "Lübeck": "https://dabu-info.com/zamowienia.html", "Mechernich": "https://dabu-info.com/zamowienia.html", "Meerbusch": "https://dabu-info.com/zamowienia.html",
+            "Menden": "https://dabu-info.com/zamowienia.html", "Merzenich": "https://dabu-info.com/zamowienia.html", "Nachrodt-Wiblingwerde": "https://dabu-info.com/zamowienia.html", "Nettetal": "https://dabu-info.com/zamowienia.html",
+            "Neukirchen-Vluyn": "https://dabu-info.com/zamowienia.html", "Plettenberg": "https://dabu-info.com/zamowienia.html", "Rees": "https://dabu-info.com/zamowienia.html", "Rheurdt": "https://dabu-info.com/zamowienia.html",
+            "Rommerskirchen": "https://dabu-info.com/zamowienia.html", "Schleiden": "https://dabu-info.com/zamowienia.html", "Selfkant": "https://dabu-info.com/zamowienia.html", "Sonsbeck": "https://dabu-info.com/zamowienia.html",
+            "Straelen": "https://dabu-info.com/zamowienia.html", "Übach-Palenberg": "https://dabu-info.com/zamowienia.html", "Uedem": "https://dabu-info.com/zamowienia.html", "Viersen": "https://dabu-info.com/zamowienia.html",
+            "Voerde": "https://dabu-info.com/zamowienia.html", "Weeze": "https://dabu-info.com/zamowienia.html", "Weilerswist": "https://dabu-info.com/zamowienia.html", "Werdohl": "https://dabu-info.com/zamowienia.html",
+            "Xanten": "https://dabu-info.com/zamowienia.html", "Zülpich": "https://dabu-info.com/zamowienia.html"
         };
+
         const regionToCountyMap = {
             "Elbe-Elster": "Elbe-Elster",
             "Oder-Spree": "Oder-Spree",
@@ -471,7 +544,7 @@
             "Gross-Gerau": "Groß-Gerau", "Walldorf-Mörfelden": "Groß-Gerau", "Giessen": "Landkreis Gießen", "Giessen Powiat": "Landkreis Gießen",
             "Eschwege": "Werra-Meißner-Kreis", "Werra-Meissner": "Werra-Meißner-Kreis",
             "Bad Münstereifel": "Euskirchen", "Blankenheim": "Euskirchen", "Dahlem": "Euskirchen", "Euskirchen": "Euskirchen", "Hellenthal": "Euskirchen", "Kall": "Euskirchen", "Mechernich": "Euskirchen", "Schleiden": "Euskirchen", "Weilerswist": "Euskirchen", "Zülpich": "Euskirchen",
-            "Brühl": "Rhein-Erft-Kreis", "Erftstadt": "Rhein-Erft-Kreis", "Erftstadt Powiat": "Rhein-Erft-Kreis", "Hürth": "Rhein-Erft-Kreis", "Pulheim": "Rhein-Erft-Kreis", "Wesseling": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis",
+            "Brühl": "Rhein-Erft-Kreis", "Erftstadt": "Rhein-Erft-Kreis", "Erftstadt Powiat": "Rhein-Erft-Kreis", "Hürth": "Rhein-Erft-Kreis", "Pulheim": "Rhein-Erft-Kreis", "Wesseling": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis",
             "Ennepetal": "Ennepe-Ruhr-Kreis", "Breckerfeld": "Ennepe-Ruhr-Kreis", "Sprockhövel": "Ennepe-Ruhr-Kreis",
             "Gangelt": "Heinsberg", "Geilenkirchen": "Heinsberg", "Wülfrath": "Mettmann", "Dülmen": "Coesfeld",
             "Gräfelfing": "München", "Kirchheim bei München": "München", "Kulmbach Powiat": "Kulmbach",
@@ -510,7 +583,6 @@
             let mappedCounty = (regionToCountyMap[myName] || myName).toLowerCase().trim();
 
             if (sn.includes("waldnaab") && gn.includes("waldnaab")) return true;
-            // SUPER-NORMALIZACJA: Usuwamy kropki, myślniki i spacje
             let cleanGn = gn.replace(/[\s\.\-]/g, '');
             let cleanSn = sn.replace(/[\s\.\-]/g, '');
             let cleanMapped = mappedCounty.replace(/[\s\.\-]/g, '');
@@ -556,8 +628,7 @@
             "Baden-Württemberg": "#FF5733", "Bayern": "#3385FF", "Brandenburg": "#E633FF", "Hessen": "#FFD133", "Niedersachsen": "#33FF85", "Nordrhein-Westfalen": "#8A33FF", "Rheinland-Pfalz": "#FF8A33", "Sachsen": "#33FFE6", "Sachsen-Anhalt": "#FF3366", "Schleswig-Holstein": "#A1FF33" 
         };
         const regionCoords = {
-            "Elbe-Elster": [51.6167, 13.4000],
-            "Rendsburg-Eckernförde": [54.3044, 9.6631], "Altenkirchen (Westerwald)": [50.6874, 7.6456], "Altmarkkreis-Salzwedel": [52.8494, 11.1506], "Altmarkkreis Salzwedel": [52.8494, 11.1506], "Alzey-Worms": [49.7408, 8.1130], "Amberg": [49.4442, 11.8484], "Bad Homburg": [50.2269, 8.6186], "Bad Orb": [50.2264, 9.3467], "Bad Soden-Salmünster": [50.2833, 9.3667], "Bad-Kreuznach": [49.8430, 7.8660], "Bad Münstereifel": [50.5562, 6.7640], "Bamberg": [49.8916, 10.8985], "Barnim": [52.8318, 13.8211], "Bayreuth": [49.9456, 11.5713], "Bedburg": [51.00152268965858, 6.563050792319124], "Bernkastel-Wittlich": [49.9880, 6.8906], "Biebergemünd": [50.2272, 9.2789], "Blankenheim": [50.4386, 6.6492], "Bonn": [50.7374, 7.0982], "Braunschweig": [52.2689, 10.5268], "Breckerfeld": [51.2618, 7.4665], "Brühl": [50.8274, 6.9042], "Burgenland": [51.1500, 11.8333], "Calw": [48.7132, 8.7369], "Dahlem": [50.3833, 6.5500], "Diepholz": [52.6046, 8.3683], "Dortmund": [51.5136, 7.4653], "Dülmen": [51.8288, 7.2798], "Düsseldorf": [51.2277, 6.7735], "Eifelkreis Bitburg-Prüm": [50.0500, 6.4167], "Emsland": [52.6908, 7.2917], "Ennepetal": [51.2982, 7.3508], "Eppstein": [50.1408, 8.3917], "Erftstadt": [50.8034, 6.7681], "Erftstadt Powiat": [50.8034, 6.7681], "Eschwege": [51.1833, 10.0500], "Euskirchen": [50.6606, 6.7865], "Flörsbachtal": [50.1167, 9.4333], "Flörsheim am Main": [50.0125, 8.4286], "Frankfurt": [50.1109, 8.6821], "Freigericht": [50.1333, 9.1167], "Freudenstadt": [48.4632, 8.4116], "Friedrichsdorf": [50.2562, 8.6384], "Fulda": [50.5528, 9.6766], "Fürth": [49.4774, 10.9886], "Gangelt": [50.9833, 6.0000], "Geilenkirchen": [50.9654, 6.1197], "Gelnhausen": [50.2017, 9.1869], "Giessen": [50.5841, 8.6784], "Giessen Powiat": [50.5841, 8.6784], "Gifhorn": [52.4884, 10.5473], "Glashütten": [50.2167, 8.4000], "Göttingen": [51.5413, 9.9158], "Gräfelfing": [48.1192, 11.4293], "Grävenwiesbach": [50.3861, 8.4550], "Gross-Gerau": [49.9234, 8.4830], "Gründau": [50.2185, 9.1179], "Hannover": [52.3759, 9.7320], "Harburg": [53.4608, 9.9822], "Hasselroth": [50.1667, 9.1000], "Hattersheim am Main": [50.0673, 8.4860], "Heidekreis": [52.8833, 9.6667], "Heidelberg": [49.3988, 8.6724], "Heilbronn": [49.1427, 9.2109], "Hellenthal": [50.4907, 6.4385], "Hersfeld-Rotenburg": [50.8667, 9.7167], "Hofheim am Taunus": [50.0877, 8.4452], "Holzminden": [51.8266, 9.4475], "Hürth": [50.8772, 6.8741], "Jossgrund": [50.1833, 9.4667], "Jülich": [50.9221, 6.3571], "Kall": [50.5398, 6.5540], "Kamp-Lintfort": [51.4988, 6.5332], "Karlsruhe": [49.0069, 8.4037], "Karlsruhe Kreis": [49.0833, 8.5167], "Kelkheim (Taunus)": [50.1384, 8.4526], "Kirchheim bei München": [48.1758, 11.7511], "Königstein (Taunus)": [50.1824, 8.4651], "Konstanz": [47.6603, 9.1758], "Kronberg im Taunus": [50.1814, 8.5076], "Kulmbach": [50.1082, 11.4586], "Kulmbach Powiat": [50.1082, 11.4586], "Leverkusen": [51.0303, 6.9843], "Limburg-Weilburg": [50.4167, 8.1667], "Linsengericht": [50.1833, 9.2167], "Lipsk (Leipzig)": [51.3397, 12.3731], "Lübeck": [53.8690, 10.6870], "Lüneburg": [53.2452, 10.4089], "Lüneburg Powiat": [53.2452, 10.4089], "Mayen-Koblenz": [50.3333, 7.3000], "Mechernich": [50.5910, 6.6543], "Monachium": [48.1351, 11.5820], "Münster": [51.9607, 7.6261], "Neu-Anspach": [50.3000, 8.5000], "Neuss": [51.198, 6.691], "Neustadt an der Waldnaab": [49.7314, 12.1706], "Nidderau": [50.2443, 8.8787], "Nordsachsen": [51.5000, 12.8333], "Oberberg": [51.0267, 7.5644], "Oberursel (Taunus)": [50.2014, 8.5778], "Oder-Spree": [52.2167, 14.2667], "Olpe": [51.0298, 7.8458], "Ortenau": [48.4167, 8.0000], "Osnabrück": [52.2799, 8.0472], "Pulheim": [51.0000, 6.8000], "Regensburg": [49.0134, 12.1016], "Rhein-Neckar-Kreis": [49.3500, 8.7667], "Rhein-Sieg": [50.7833, 7.3333], "Rheingau-Taunus": [50.1333, 8.0667], "Rheinisch-Bergischer": [51.0167, 7.2000], "Rodenbach": [50.1500, 9.0167], "Ronneburg": [50.2333, 9.0500], "Schleiden": [50.5303, 6.4746], "Schlüchtern": [50.3475, 9.5247], "Schmitten im Taunus": [50.2683, 8.4419], "Schwalbach": [50.1539, 8.5325], "Schwedt/Oder": [53.0583, 14.2833], "Sinntal": [50.2833, 9.6167], "Solingen": [51.1702, 7.0827], "Spree-Neiße": [51.7167, 14.4167], "Sprockhövel": [51.3683, 7.2483], "Stade": [53.6006, 9.4759], "Steinbach": [50.1683, 8.5714], "Straubing-Bogen": [48.9167, 12.6333], "Tönisvorst": [51.3204, 6.4950], "Trier-Saarburg": [49.6333, 6.6667], "Tuttlingen": [47.9839, 8.8174], "Usingen": [50.3344, 8.5323], "Vulkaneifel": [50.2167, 6.7833], "Walldorf-Mörfelden": [49.9833, 8.5667], "Wehrheim": [50.3040, 8.5721], "Weilerswist": [50.7601, 6.8404], "Weilrod": [50.3333, 8.4000], "Werra-Meissner": [51.2167, 9.9833], "Wesseling": [50.8252, 6.9792], "Westerwald": [50.5167, 7.8667], "Wolfsburg": [52.4227, 10.7865], "Wülfrath": [51.2833, 7.0333], "Wuppertal": [51.2562, 7.1508], "Zollernalb": [48.2667, 8.9167], "Zülpich": [50.6922, 6.6481],
+            "Elbe-Elster": [51.6167, 13.4000], "Rendsburg-Eckernförde": [54.3044, 9.6631], "Altenkirchen (Westerwald)": [50.6874, 7.6456], "Altmarkkreis-Salzwedel": [52.8494, 11.1506], "Altmarkkreis Salzwedel": [52.8494, 11.1506], "Alzey-Worms": [49.7408, 8.1130], "Amberg": [49.4442, 11.8484], "Bad Homburg": [50.2269, 8.6186], "Bad Orb": [50.2264, 9.3467], "Bad Soden-Salmünster": [50.2833, 9.3667], "Bad-Kreuznach": [49.8430, 7.8660], "Bad Münstereifel": [50.5562, 6.7640], "Bamberg": [49.8916, 10.8985], "Barnim": [52.8318, 13.8211], "Bayreuth": [49.9456, 11.5713], "Bedburg": [51.00152268965858, 6.563050792319124], "Bernkastel-Wittlich": [49.9880, 6.8906], "Biebergemünd": [50.2272, 9.2789], "Blankenheim": [50.4386, 6.6492], "Bonn": [50.7374, 7.0982], "Braunschweig": [52.2689, 10.5268], "Breckerfeld": [51.2618, 7.4665], "Brühl": [50.8274, 6.9042], "Burgenland": [51.1500, 11.8333], "Calw": [48.7132, 8.7369], "Dahlem": [50.3833, 6.5500], "Diepholz": [52.6046, 8.3683], "Dortmund": [51.5136, 7.4653], "Dülmen": [51.8288, 7.2798], "Düsseldorf": [51.2277, 6.7735], "Eifelkreis Bitburg-Prüm": [50.0500, 6.4167], "Emsland": [52.6908, 7.2917], "Ennepetal": [51.2982, 7.3508], "Eppstein": [50.1408, 8.3917], "Erftstadt": [50.8034, 6.7681], "Erftstadt Powiat": [50.8034, 6.7681], "Eschwege": [51.1833, 10.0500], "Euskirchen": [50.6606, 6.7865], "Flörsbachtal": [50.1167, 9.4333], "Flörsheim am Main": [50.0125, 8.4286], "Frankfurt": [50.1109, 8.6821], "Freigericht": [50.1333, 9.1167], "Freudenstadt": [48.4632, 8.4116], "Friedrichsdorf": [50.2562, 8.6384], "Fulda": [50.5528, 9.6766], "Fürth": [49.4774, 10.9886], "Gangelt": [50.9833, 6.0000], "Geilenkirchen": [50.9654, 6.1197], "Gelnhausen": [50.2017, 9.1869], "Giessen": [50.5841, 8.6784], "Giessen Powiat": [50.5841, 8.6784], "Gifhorn": [52.4884, 10.5473], "Glashütten": [50.2167, 8.4000], "Göttingen": [51.5413, 9.9158], "Gräfelfing": [48.1192, 11.4293], "Grävenwiesbach": [50.3861, 8.4550], "Gross-Gerau": [49.9234, 8.4830], "Gründau": [50.2185, 9.1179], "Hannover": [52.3759, 9.7320], "Harburg": [53.4608, 9.9822], "Hasselroth": [50.1667, 9.1000], "Hattersheim am Main": [50.0673, 8.4860], "Heidekreis": [52.8833, 9.6667], "Heidelberg": [49.3988, 8.6724], "Heilbronn": [49.1427, 9.2109], "Hellenthal": [50.4907, 6.4385], "Hersfeld-Rotenburg": [50.8667, 9.7167], "Hofheim am Taunus": [50.0877, 8.4452], "Holzminden": [51.8266, 9.4475], "Hürth": [50.8772, 6.8741], "Jossgrund": [50.1833, 9.4667], "Jülich": [50.9221, 6.3571], "Kall": [50.5398, 6.5540], "Kamp-Lintfort": [51.4988, 6.5332], "Karlsruhe": [49.0069, 8.4037], "Karlsruhe Kreis": [49.0833, 8.5167], "Kelkheim (Taunus)": [50.1384, 8.4526], "Kirchheim bei München": [48.1758, 11.7511], "Königstein (Taunus)": [50.1824, 8.4651], "Konstanz": [47.6603, 9.1758], "Kronberg im Taunus": [50.1814, 8.5076], "Kulmbach": [50.1082, 11.4586], "Kulmbach Powiat": [50.1082, 11.4586], "Leverkusen": [51.0303, 6.9843], "Limburg-Weilburg": [50.4167, 8.1667], "Linsengericht": [50.1833, 9.2167], "Lipsk (Leipzig)": [51.3397, 12.3731], "Lübeck": [53.8690, 10.6870], "Lüneburg": [53.2452, 10.4089], "Lüneburg Powiat": [53.2452, 10.4089], "Mayen-Koblenz": [50.3333, 7.3000], "Mechernich": [50.5910, 6.6543], "Monachium": [48.1351, 11.5820], "Münster": [51.9607, 7.6261], "Neu-Anspach": [50.3000, 8.5000], "Neuss": [51.198, 6.691], "Neustadt an der Waldnaab": [49.7314, 12.1706], "Nidderau": [50.2443, 8.8787], "Nordsachsen": [51.5000, 12.8333], "Oberberg": [51.0267, 7.5644], "Oberursel (Taunus)": [50.2014, 8.5778], "Oder-Spree": [52.2167, 14.2667], "Olpe": [51.0298, 7.8458], "Ortenau": [48.4167, 8.0000], "Osnabrück": [52.2799, 8.0472], "Pulheim": [51.0000, 6.8000], "Regensburg": [49.0134, 12.1016], "Rhein-Neckar-Kreis": [49.3500, 8.7667], "Rhein-Sieg": [50.7833, 7.3333], "Rheingau-Taunus": [50.1333, 8.0667], "Rheinisch-Bergischer": [51.0167, 7.2000], "Rodenbach": [50.1500, 9.0167], "Ronneburg": [50.2333, 9.0500], "Schleiden": [50.5303, 6.4746], "Schlüchtern": [50.3475, 9.5247], "Schmitten im Taunus": [50.2683, 8.4419], "Schwalbach": [50.1539, 8.5325], "Schwedt/Oder": [53.0583, 14.2833], "Sinntal": [50.2833, 9.6167], "Solingen": [51.1702, 7.0827], "Spree-Neiße": [51.7167, 14.4167], "Sprockhövel": [51.3683, 7.2483], "Stade": [53.6006, 9.4759], "Steinbach": [50.1683, 8.5714], "Straubing-Bogen": [48.9167, 12.6333], "Tönisvorst": [51.3204, 6.4950], "Trier-Saarburg": [49.6333, 6.6667], "Tuttlingen": [47.9839, 8.8174], "Usingen": [50.3344, 8.5323], "Vulkaneifel": [50.2167, 6.7833], "Walldorf-Mörfelden": [49.9833, 8.5667], "Wehrheim": [50.3040, 8.5721], "Weilerswist": [50.7601, 6.8404], "Weilrod": [50.3333, 8.4000], "Werra-Meissner": [51.2167, 9.9833], "Wesseling": [50.8252, 6.9792], "Westerwald": [50.5167, 7.8667], "Wolfsburg": [52.4227, 10.7865], "Wülfrath": [51.2833, 7.0333], "Wuppertal": [51.2562, 7.1508], "Zollernalb": [48.2667, 8.9167], "Zülpich": [50.6922, 6.6481],
             "Aldenhoven": [50.895, 6.282], "Alpen": [51.575, 6.513], "Bedburg-Hau": [51.761, 6.177], 
             "Emmerich am Rhein": [51.833, 6.246], "Geldern": [51.516, 6.326], "Grevenbroich": [51.088, 6.587], 
             "Hückelhoven": [51.058, 6.220], "Issum": [51.534, 6.425], "Jüchen": [51.101, 6.500], 
@@ -568,15 +639,9 @@
             "Sonsbeck": [51.611, 6.280], "Straelen": [51.443, 6.265], "Übach-Palenberg": [50.916, 6.116], 
             "Uedem": [51.666, 6.283], "Viersen": [51.255, 6.395], "Voerde": [51.597, 6.685], 
             "Weeze": [51.626, 6.202], "Xanten": [51.661, 6.453],
-            "Dormagen": [51.0964, 6.8402],
-            "Grefrath": [51.3364, 6.3375],
-            "Nettetal": [51.3167, 6.2833],
-            "Altena": [51.302, 7.674],
-            "Balve": [51.331, 7.865],
-            "Iserlohn": [51.383, 7.666],
-            "Menden": [51.438, 7.794],
-            "Nachrodt-Wiblingwerde": [51.336, 7.629],
-            "Plettenberg": [51.213, 7.874],
+            "Dormagen": [51.0964, 6.8402], "Grefrath": [51.3364, 6.3375], "Nettetal": [51.3167, 6.2833],
+            "Altena": [51.302, 7.674], "Balve": [51.331, 7.865], "Iserlohn": [51.383, 7.666],
+            "Menden": [51.438, 7.794], "Nachrodt-Wiblingwerde": [51.336, 7.629], "Plettenberg": [51.213, 7.874],
             "Werdohl": [51.258, 7.761]
          };
         var map = L.map('dabuOSMMap').setView([51.3, 10.45], 6);
@@ -679,15 +744,12 @@
                 // --- AWARYJNY RĘCZNY OBRYS DLA NEUSTADT AN DER WALDNAAB ---
                 if (name === "Neustadt an der Waldnaab") {
                     let neustadtPolygon = [
-                        [49.863, 11.855], [49.895, 11.965], 
-                        [49.876, 12.155], [49.899, 12.355], 
+                        [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
                         [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
                         [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
                         [49.811, 11.722], [49.863, 11.855]
                     ];
-                    L.polygon(neustadtPolygon, {
-                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
-                    }).addTo(markersLayer);
+                    L.polygon(neustadtPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
                 }
 
                 // --- AWARYJNY RĘCZNY OBRYS DLA ALTENKIRCHEN (WESTERWALD) ---
@@ -697,9 +759,7 @@
                         [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], 
                         [50.785, 7.444], [50.865, 7.533]
                     ];
-                    L.polygon(altenkirchenPolygon, {
-                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
-                    }).addTo(markersLayer);
+                    L.polygon(altenkirchenPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
                 }
 
                 // --- AWARYJNY RĘCZNY OBRYS DLA EIFELKREIS BITBURG-PRÜM ---
@@ -709,9 +769,7 @@
                         [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], 
                         [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]
                     ];
-                    L.polygon(bitburgPolygon, {
-                        color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4
-                    }).addTo(markersLayer);
+                    L.polygon(bitburgPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
                 }
 
                 if (kreiseLayer) {
@@ -778,8 +836,7 @@
                 btnReset.className = 'dabu-county-btn';
                 btnReset.style.background = '#ff4444'; btnReset.style.color = 'white';
                 btnReset.innerHTML = '✖ Reset mapy';
-                btnReset.onclick = (e) => { e.preventDefault();
-                clearAllFilters(); };
+                btnReset.onclick = (e) => { e.preventDefault(); clearAllFilters(); };
                 container.appendChild(btnReset);
 
                 let btnLand = document.createElement('button');
@@ -822,11 +879,10 @@
             });
         }
 
-        // --- PODPIĘCIE EVENTÓW I DODANIE LINKÓW DO LISTY ---
         document.querySelectorAll('.region-chk').forEach(cb => { 
             cb.addEventListener('change', refreshMarkers); 
         });
-        // Wstrzykiwanie ikony z linkiem obok checkboxów na liście
+
         document.querySelectorAll('.region-label').forEach(label => {
             let val = label.querySelector('input').value.trim();
             if (regionLinks[val]) {
@@ -842,7 +898,47 @@
                 label.appendChild(btn);
             }
         });
-</script>
+    </script>
+
+    <!-- Tutaj dodajemy stopkę na sam dół dokumentu -->
+    <footer class="dabu-footer">
+        <div class="dabu-footer-container">
+            <!-- Kolumna 1: Marka i nawigacja -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">dabu-info</h4>
+                <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
+                <ul class="dabu-footer-links">
+                    <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
+                    <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
+                </ul>
+            </div>
+
+            <!-- Kolumna 2: Kontakt i Zamówienia -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
+                <ul class="dabu-footer-contact">
+                    <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                    <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
+                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
+                </ul>
+            </div>
+
+            <!-- Kolumna 3: Dane Firmy i Płatności -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
+                <ul class="dabu-footer-contact">
+                    <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
+                    <li>💳 Płatności: BLIK, PayPal</li>
+                    <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="dabu-footer-bottom">
+            <p>&copy; 2026 <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
     
-    </body>
+</body>
 </html>
