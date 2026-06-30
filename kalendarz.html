@@ -423,53 +423,53 @@
     }
 
     function getCartMessage(orderNum) {
-        let msgBody = `Dzień dobry,\n\nZamówienie nr: ${orderNum}\n`;
-        
-        // Dodajemy e-mail raz, na samej górze (jeśli istnieje w zmiennej)
-        if (typeof savedUserEmail !== 'undefined' && savedUserEmail !== "") {
-            msgBody += `E-mail do wyceny: ${savedUserEmail}\n`;
-        }
-        
-        msgBody += `\nProszę o wycenę dostępu do poniższych planów i rejonów:\n\n`;
-        
-        let grouped = {};
-        let weeks = [];
-        
-        orderCart.forEach(item => {
-            if (item.startsWith('Tydzień') || item.startsWith('Week')) {
-                weeks.push(item);
-            } else {
-                let match = item.match(/\[(.*?)\]\s*(.*)/);
-                if (match) {
-                    let date = match[1];
-                    let city = match[2];
-                    if (!grouped[date]) grouped[date] = [];
-                    grouped[date].push(city);
-                } else {
-                    if (!grouped['Inne']) grouped['Inne'] = [];
-                    grouped['Inne'].push(item);
-                }
-            }
-        });
-
-        if (weeks.length > 0) {
-            weeks.forEach(w => { msgBody += `📌 ${w}\n`; });
-            msgBody += `\n`;
-        }
-
-        for (let date in grouped) {
-            if (date !== 'Inne') {
-                msgBody += `📅 ${date}:\n`;
-            }
-            grouped[date].forEach(city => {
-                msgBody += `  - ${city}\n`;
-            });
-            msgBody += `\n`;
-        }
-        
-        msgBody += "Pozdrawiam";
-        return msgBody;
+    let msgBody = `Dzień dobry,\n\nZamówienie nr: ${orderNum}\n`;
+    
+    // Wstawienie adresu e-mail raz, na samej górze wiadomości
+    if (typeof savedUserEmail !== 'undefined' && savedUserEmail !== "") {
+        msgBody += `E-mail do wyceny: ${savedUserEmail}\n`;
     }
+    
+    msgBody += `\nProszę o wycenę dostępu do poniższych planów i rejonów:\n\n`;
+    
+    let grouped = {};
+    let weeks = [];
+    
+    orderCart.forEach(item => {
+        if (item.startsWith('Tydzień') || item.startsWith('Week')) {
+            weeks.push(item); // Tutaj trafi czysty tekst, np. "Tydzień / Week 28"
+        } else {
+            let match = item.match(/\[(.*?)\]\s*(.*)/);
+            if (match) {
+                let date = match[1];
+                let city = match[2];
+                if (!grouped[date]) grouped[date] = [];
+                grouped[date].push(city);
+            } else {
+                if (!grouped['Inne']) grouped['Inne'] = [];
+                grouped['Inne'].push(item);
+            }
+        }
+    });
+
+    if (weeks.length > 0) {
+        weeks.forEach(w => { msgBody += `📌 ${w}\n`; });
+        msgBody += `\n`;
+    }
+
+    for (let date in grouped) {
+        if (date !== 'Inne') {
+            msgBody += `📅 ${date}:\n`;
+        }
+        grouped[date].forEach(city => {
+            msgBody += `  - ${city}\n`;
+        });
+        msgBody += `\n`;
+    }
+    
+    msgBody += "Pozdrawiam";
+    return msgBody;
+}
 
     // WYSYŁKA DO DARIUSZA (E-mail / Zamówienia)
     document.getElementById('btn-submit-email').addEventListener('click', function() {
@@ -650,42 +650,41 @@
             calendarGrid.addEventListener('click', async function(e) {
                 
                 if (e.target.classList.contains('week-number')) {
-                    const weekNum = e.target.getAttribute('data-week');
-                    
-                    // 1. Zliczanie, ile tygodni jest już w koszyku
-                    let weeksInCart = orderCart.filter(item => item.startsWith('Tydzień') || item.startsWith('Week')).length;
-                    
-                    // 2. Blokada powyżej 4 tygodni
-                    if (weeksInCart >= 4) {
-                        alert("Możesz dodać maksymalnie 4 tygodnie do jednego zamówienia!");
-                        return;
-                    }
+    const weekNum = e.target.getAttribute('data-week');
+    
+    // 1. Zliczanie tygodni w koszyku
+    let weeksInCart = orderCart.filter(item => item.startsWith('Tydzień') || item.startsWith('Week')).length;
+    
+    // 2. Blokada powyżej 4 tygodni
+    if (weeksInCart >= 4) {
+        alert("Możesz dodać maksymalnie 4 tygodnie do jednego zamówienia!");
+        return;
+    }
 
-                    // 3. Pytamy o e-mail TYLKO wtedy, gdy jeszcze go nie znamy
-                    if (!savedUserEmail) {
-                        const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
-                        
-                        if (userEmail === null) {
-                            return; // Użytkownik kliknął "Anuluj"
-                        }
-                        
-                        if (userEmail.trim() === "" || !userEmail.includes("@")) {
-                            alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
-                            return;
-                        }
-                        // Zapisujemy poprawny mail do zmiennej globalnej, żeby nie pytać ponownie
-                        savedUserEmail = userEmail.trim();
-                    }
+    // 3. Pytamy o e-mail tylko raz
+    if (!savedUserEmail) {
+        const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
+        
+        if (userEmail === null) {
+            return; // Anulowano
+        }
+        
+        if (userEmail.trim() === "" || !userEmail.includes("@")) {
+            alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
+            return;
+        }
+        savedUserEmail = userEmail.trim();
+    }
 
-                    // 4. Dodajemy do koszyka używając zapisanego maila
-                    addToCart(`Tydzień / Week ${weekNum} (E-mail: ${savedUserEmail})`);
-                    
-                    // Efekt wizualny kliknięcia
-                    let originalBg = e.target.style.backgroundColor;
-                    e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
-                    setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
-                    return;
-                }
+    // 4. DODAJEMY CZYSTĄ NAZWĘ (tutaj usuwamy dopisek o mailu)
+    addToCart(`Tydzień / Week ${weekNum}`);
+    
+    // Efekt wizualny kliknięcia
+    let originalBg = e.target.style.backgroundColor;
+    e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
+    setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
+    return;
+}
 
                 if (e.target.tagName === 'TD' && e.target.classList.contains('clickable-day')) {
                     const clickedDateStr = e.target.getAttribute('data-date');
