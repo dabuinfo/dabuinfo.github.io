@@ -423,7 +423,14 @@
     }
 
     function getCartMessage(orderNum) {
-        let msgBody = `Dzień dobry,\n\nZamówienie nr: ${orderNum}\nProszę o wycenę dostępu do poniższych planów i rejonów:\n\n`;
+        let msgBody = `Dzień dobry,\n\nZamówienie nr: ${orderNum}\n`;
+        
+        // Dodajemy e-mail raz, na samej górze (jeśli istnieje w zmiennej)
+        if (typeof savedUserEmail !== 'undefined' && savedUserEmail !== "") {
+            msgBody += `E-mail do wyceny: ${savedUserEmail}\n`;
+        }
+        
+        msgBody += `\nProszę o wycenę dostępu do poniższych planów i rejonów:\n\n`;
         
         let grouped = {};
         let weeks = [];
