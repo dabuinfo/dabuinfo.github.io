@@ -643,7 +643,24 @@
                 
                 if (e.target.classList.contains('week-number')) {
                     const weekNum = e.target.getAttribute('data-week');
-                    addToCart(`Tydzień / Week ${weekNum}`);
+                    
+                    // Wymuszenie podania adresu e-mail
+                    const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
+                    
+                    // Przerwij, jeśli użytkownik anulował okienko
+                    if (userEmail === null) {
+                        return; 
+                    }
+                    
+                    // Walidacja poprawności (czy nie jest puste i czy zawiera znak @)
+                    if (userEmail.trim() === "" || !userEmail.includes("@")) {
+                        alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
+                        return;
+                    }
+
+                    // Dodanie do koszyka wraz z adresem e-mail
+                    addToCart(`Tydzień / Week ${weekNum} (E-mail: ${userEmail.trim()})`);
+                    
                     let originalBg = e.target.style.backgroundColor;
                     e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
                     setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
