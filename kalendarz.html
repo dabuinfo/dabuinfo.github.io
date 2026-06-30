@@ -381,6 +381,7 @@
     <script>
     //<![CDATA[
     let orderCart = [];
+    let savedUserEmail = ""; // Zmienna do zapamiętania maila na czas sesji
 
     function updateCartUI() {
         const cartWidget = document.getElementById('order-cart-widget');
@@ -644,23 +645,35 @@
                 if (e.target.classList.contains('week-number')) {
                     const weekNum = e.target.getAttribute('data-week');
                     
-                    // Wymuszenie podania adresu e-mail
-                    const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
+                    // 1. Zliczanie, ile tygodni jest już w koszyku
+                    let weeksInCart = orderCart.filter(item => item.startsWith('Tydzień') || item.startsWith('Week')).length;
                     
-                    // Przerwij, jeśli użytkownik anulował okienko
-                    if (userEmail === null) {
-                        return; 
-                    }
-                    
-                    // Walidacja poprawności (czy nie jest puste i czy zawiera znak @)
-                    if (userEmail.trim() === "" || !userEmail.includes("@")) {
-                        alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
+                    // 2. Blokada powyżej 4 tygodni
+                    if (weeksInCart >= 4) {
+                        alert("Możesz dodać maksymalnie 4 tygodnie do jednego zamówienia!");
                         return;
                     }
 
-                    // Dodanie do koszyka wraz z adresem e-mail
-                    addToCart(`Tydzień / Week ${weekNum} (E-mail: ${userEmail.trim()})`);
+                    // 3. Pytamy o e-mail TYLKO wtedy, gdy jeszcze go nie znamy
+                    if (!savedUserEmail) {
+                        const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
+                        
+                        if (userEmail === null) {
+                            return; // Użytkownik kliknął "Anuluj"
+                        }
+                        
+                        if (userEmail.trim() === "" || !userEmail.includes("@")) {
+                            alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
+                            return;
+                        }
+                        // Zapisujemy poprawny mail do zmiennej globalnej, żeby nie pytać ponownie
+                        savedUserEmail = userEmail.trim();
+                    }
+
+                    // 4. Dodajemy do koszyka używając zapisanego maila
+                    addToCart(`Tydzień / Week ${weekNum} (E-mail: ${savedUserEmail})`);
                     
+                    // Efekt wizualny kliknięcia
                     let originalBg = e.target.style.backgroundColor;
                     e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
                     setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
