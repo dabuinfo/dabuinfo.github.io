@@ -25,7 +25,17 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            /* Zmiany dla stopki */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
+        
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+        }
+
         input, textarea, select {
             -webkit-user-select: text !important;
             -moz-user-select: text !important;
@@ -178,386 +188,493 @@
             .form-header { font-size: 1.3em; margin-bottom: 15px; margin-top: 25px; }
             .client-input { font-size: 1.1em; padding: 15px; }
         }
+
+        /* ========================================= */
+        /* STYLE STOPKI                              */
+        /* ========================================= */
+        .dabu-footer {
+            background-color: #121212;
+            border-top: 1px solid #333;
+            color: #ccc;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 50px 20px 20px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 40px;
+        }
+
+        .dabu-footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+
+        .dabu-footer-col {
+            flex: 1;
+            min-width: 280px;
+            text-align: left;
+        }
+
+        .dabu-footer-heading {
+            color: #2ecc71;
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dabu-footer-text {
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .dabu-footer-links, .dabu-footer-contact {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .dabu-footer-links li a, .dabu-footer-contact li a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .dabu-footer-links li a:hover, .dabu-footer-contact li a:hover {
+            color: #2ecc71;
+            text-decoration: underline;
+        }
+
+        .dabu-footer-contact li {
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .dabu-footer-contact strong {
+            color: #e0e0e0;
+        }
+
+        .dabu-footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid #222;
+            text-align: center;
+            font-size: 0.85em;
+            color: #777;
+        }
+
+        .dabu-footer-bottom a {
+            color: #2ecc71;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dabu-footer-bottom a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .dabu-footer {
+                padding: 40px 15px 15px;
+            }
+            .dabu-footer-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .dabu-footer-col {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
-          <defs>
-            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#1e3c72" />
-              <stop offset="100%" stop-color="#2a5298" />
-            </linearGradient>
-            <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
-            </filter>
-          </defs>
-          <rect width="800" height="400" rx="15" fill="url(#bg)" />
-          <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
-          <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
-          
-          <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
-          <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
-          <g transform="translate(150, 180)">
-            <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
-            <circle cx="0" cy="-5" r="8" fill="#fff" />
-          </g>
-          <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
-          <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" id="svgPriceSub">na zapytanie</text>
-          
-          <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
-          
-          <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
-          <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
-          <g transform="translate(430, 180)">
-            <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
-            <circle cx="0" cy="-5" r="8" fill="#fff" />
-            <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
-            <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
-          </g>
-          <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNE</text>
-          <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">opcje</text>
-          
-          <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
-          
-          <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
-          <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
-          <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
-          <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
-          <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
-          
-          <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
-          <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
-        </svg>
-    </div>
-
-    <div class="harmonogram-wrapper">
-        <h2 id="headerChoose">Skonfiguruj swój pakiet</h2>
-
-        <div class="strategy-container">
-            <div class="strategy-card basic">
-                <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
-                <div class="price-tag-large" id="configPrice">Wycena Indywidualna</div>
-                <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zapytanie</span>
-                
-                <ul class="strategy-list" style="margin-bottom: 20px;">
-                    <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                    <li id="configLi2">Cenę ustalamy indywidualnie, w zależności od wielkości zestawu.</li>
-                    <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
-                </ul>
-
-                <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
-
-                <p class="info-text" id="infoDesc" style="margin-bottom: 15px;"><b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b></p>
-                
-                <div class="format-columns">
-                    <div class="format-col format-col-pdf">
-                        <p style="color: #e74c3c; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatPdfTitle">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF (dokument):
-                        </p>
-                        <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
-                            <li id="formatPdfLi1"><strong>Do druku:</strong> Jasne tło, oszczędza tusz w drukarce.</li>
-                            <li id="formatPdfLi2"><strong>Smartfon (Dark Mode):</strong> Ciemne tło, nie męczy oczu w nocy.</li>
-                            <li id="formatPdfLi3"><strong>Aktywne linki:</strong> W wersji mobilnej linki do map Google wciąż działają!</li>
-                        </ul>
-                    </div>
-                    <div class="format-col format-col-jpg">
-                        <p style="color: #f39c12; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatJpgTitle">🖼️ Wersja JPG (zdjęcia):</p>
-                        <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
-                            <li id="formatJpgLi1"><strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.</li>
-                            <li id="formatJpgLi2"><strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym na WhatsApp czy Messengerze.</li>
-                        </ul>
-                    </div>
-                    <div class="format-col format-col-online">
-                        <p style="color: #3498db; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatOnlineTitle">🌐 Wersja Online:</p>
-                        <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
-                            <li id="formatOnlineLi1"><strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.</li>
-                            <li id="formatOnlineLi2"><strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="bonus-box" id="bonusInfo" style="margin-top: 5px;">
-                    🎁 <b>Gratis:</b> Do zamówienia otrzymasz <b>Poradnik Wystawkowicza</b>!
-                </div>
-            </div>
+    <div class="main-content">
+        <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
+              <defs>
+                <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1e3c72" />
+                  <stop offset="100%" stop-color="#2a5298" />
+                </linearGradient>
+                <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+              <rect width="800" height="400" rx="15" fill="url(#bg)" />
+              <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
+              <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
+              
+              <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
+              <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
+              <g transform="translate(150, 180)">
+                <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
+                <circle cx="0" cy="-5" r="8" fill="#fff" />
+              </g>
+              <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
+              <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" id="svgPriceSub">na zapytanie</text>
+              
+              <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
+              
+              <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
+              <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
+              <g transform="translate(430, 180)">
+                <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
+                <circle cx="0" cy="-5" r="8" fill="#fff" />
+                <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
+                <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
+              </g>
+              <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNE</text>
+              <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">opcje</text>
+              
+              <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
+              
+              <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
+              <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
+              <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
+              <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
+              <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
+              
+              <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
+              <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
+            </svg>
         </div>
 
-        <div class="form-wrapper" id="inlineLoader" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 400px; transition: opacity 0.3s ease;">
-            <div style="font-size: 60px; margin-bottom: 20px; animation: opacityPulse 1.5s infinite;">📡</div>
-            <h2 id="loaderTitle" style="color: #2ecc71; font-size: 24px; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px;">Synchronizacja Danych</h2>
-            <p id="mainLoaderText" style="color: #bbb; font-size: 16px; max-width: 450px; line-height: 1.5; margin: 0 auto 30px auto;"></p>
-            <div style="width: 50px; height: 50px; border: 5px solid rgba(46, 204, 113, 0.15); border-top: 5px solid #2ecc71; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        </div>
+        <div class="harmonogram-wrapper">
+            <h2 id="headerChoose">Skonfiguruj swój pakiet</h2>
 
-        <div class="form-wrapper" id="formContent" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
-            
-            <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
+            <div class="strategy-container">
+                <div class="strategy-card basic">
+                    <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
+                    <div class="price-tag-large" id="configPrice">Wycena Indywidualna</div>
+                    <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zapytanie</span>
+                    
+                    <ul class="strategy-list" style="margin-bottom: 20px;">
+                        <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
+                        <li id="configLi2">Cenę ustalamy indywidualnie, w zależności od wielkości zestawu.</li>
+                        <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
+                    </ul>
 
-            <div class="land-selection-tools" id="landButtonsContainer">
-                <button type="button" class="land-btn" id="btnLandNormal" data-land="Normalne">Normalne</button>
-                <button type="button" class="land-btn" data-land="Hessen">Hessen</button>
-                <button type="button" class="land-btn" data-land="NRW">NRW</button>
-                <button type="button" class="land-btn" data-land="Bayern">Bayern</button>
-                <button type="button" class="land-btn" data-land="Baden">Baden</button>
-                <button type="button" class="land-btn" data-land="Niedersachsen">Niedersachsen</button>
-                <button type="button" class="land-btn" data-land="Rheinland">Rheinland</button>
-                <button type="button" class="land-btn" data-land="Brandenburg">Brandenburg</button>
-                <button type="button" class="land-btn" data-land="Sachsen">Sachsen</button>
-                <button type="button" class="land-btn" data-land="Sachsen Anhalt">Sachsen Anhalt</button>
-                
-                <button type="button" class="land-btn btn-full-width" id="btnLandAll">🌟 CAŁE NIEMCY (Zestaw Premium)</button>
-            </div>
+                    <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
 
-            <div style="background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; line-height: 1.4;">
-                <span id="searchEngineDesc" style="color: #ddd; font-size: 0.9em;">Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:</span><br>
-                <a id="searchEngineLink" href="https://dabu-info.blogspot.com/p/wyszukiwarka-rejonow.html" target="_blank" style="color: #3498db; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 1.05em;">
-                    🔍 WYSZUKIWARKA REJONÓW
-                </a>
-            </div>
-
-            <div class="selection-tools">
-                <a href="javascript:void(0)" id="btnUnselectAll" style="opacity: 0.8;">[ Odznacz wszystko / Clear ]</a>
-            </div>
-            
-            <div class="regions-scroll-box" id="regionsContainer">
-                <div id="regionsLoading" class="pro-loader-overlay">
-                    <div class="pro-spinner"></div>
-                    <span id="loadingDataText">⏳ Pobieranie dostępnych opcji...</span>
-                </div>
-
-                <div id="regionsCheckboxes">
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Munstereifel" /> Bad-Munstereifel</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Stadt" /> Karlsruhe Stadt</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim" /> Kirchheim</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Liederbach" /> Liederbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübecke" /> Lübecke</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt a.d. Waldnaab" /> Neustadt a.d. Waldnaab</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wiesbaden-Naurod" /> Wiesbaden-Naurod</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
-                    <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
-                </div>
-            </div>
-
-            <div id="step2Wrapper" style="margin-top: 20px;">
-                <div class="form-header" id="step2Header">📅 2. Wybierz Tygodnie:</div>
-                <div class="regions-scroll-box" id="weeksContainer"></div>
-                
-                <div id="freePreviewSection" style="margin-top: 25px; margin-bottom: 20px; display: none;">
-                <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
-                <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
-                    <option value="">-- Wybierz tydzień do podglądu --</option>
-                </select>
-                
-                <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
-                    <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
-                        <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
-                        <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
+                    <p class="info-text" id="infoDesc" style="margin-bottom: 15px;"><b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b></p>
+                    
+                    <div class="format-columns">
+                        <div class="format-col format-col-pdf">
+                            <p style="color: #e74c3c; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatPdfTitle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF (dokument):
+                            </p>
+                            <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
+                                <li id="formatPdfLi1"><strong>Do druku:</strong> Jasne tło, oszczędza tusz w drukarce.</li>
+                                <li id="formatPdfLi2"><strong>Smartfon (Dark Mode):</strong> Ciemne tło, nie męczy oczu w nocy.</li>
+                                <li id="formatPdfLi3"><strong>Aktywne linki:</strong> W wersji mobilnej linki do map Google wciąż działają!</li>
+                            </ul>
+                        </div>
+                        <div class="format-col format-col-jpg">
+                            <p style="color: #f39c12; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatJpgTitle">🖼️ Wersja JPG (zdjęcia):</p>
+                            <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
+                                <li id="formatJpgLi1"><strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.</li>
+                                <li id="formatJpgLi2"><strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym na WhatsApp czy Messengerze.</li>
+                            </ul>
+                        </div>
+                        <div class="format-col format-col-online">
+                            <p style="color: #3498db; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatOnlineTitle">🌐 Wersja Online:</p>
+                            <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
+                                <li id="formatOnlineLi1"><strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.</li>
+                                <li id="formatOnlineLi2"><strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
-                        <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
+
+                    <div class="bonus-box" id="bonusInfo" style="margin-top: 5px;">
+                        🎁 <b>Gratis:</b> Do zamówienia otrzymasz <b>Poradnik Wystawkowicza</b>!
                     </div>
                 </div>
             </div>
 
-                <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
-                    <span id="specialDateText">Przygotowanie najbliższego terminu</span>
-                </div>
+            <div class="form-wrapper" id="inlineLoader" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 400px; transition: opacity 0.3s ease;">
+                <div style="font-size: 60px; margin-bottom: 20px; animation: opacityPulse 1.5s infinite;">📡</div>
+                <h2 id="loaderTitle" style="color: #2ecc71; font-size: 24px; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px;">Synchronizacja Danych</h2>
+                <p id="mainLoaderText" style="color: #bbb; font-size: 16px; max-width: 450px; line-height: 1.5; margin: 0 auto 30px auto;"></p>
+                <div style="width: 50px; height: 50px; border: 5px solid rgba(46, 204, 113, 0.15); border-top: 5px solid #2ecc71; border-radius: 50%; animation: spin 1s linear infinite;"></div>
             </div>
 
-            <div class="form-header" id="step3Header">📄 3. Wybierz format:</div>
-            <div class="extra-options-group" id="formatBox">
-                <div class="option-box">
-                    <label class="region-label">
-                        <input type="radio" name="format" value="PDF (Do druku)" checked /> 
-                        <span id="formatPdfPrintRadio">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF do druku (jasne tło, oszczędność tuszu)
-                        </span>
-                    </label>
-                </div>
-                <div class="option-box">
-                    <label class="region-label">
-                        <input type="radio" name="format" value="PDF (Smartfon - Dark Mode)" /> 
-                        <span id="formatPdfSmartRadio">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF na smartfona (Dark Mode + aktywne linki do map)
-                        </span>
-                    </label>
-                </div>
-                <div class="option-box">
-                    <label class="region-label">
-                        <input type="radio" name="format" value="JPG" /> 
-                        <span id="formatJpgRadio">🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)</span>
-                     </label>
-                </div>
-                <div class="option-box">
-                    <label class="region-label">
-                        <input type="radio" name="format" value="Wersja Online (Panel Klienta)" /> 
-                        <span id="formatOnlineRadio">🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)</span>
-                     </label>
-                </div>
-            </div>
+            <div class="form-wrapper" id="formContent" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+                
+                <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
 
-            <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
-            <div class="extra-options-group">
-                <div class="option-box" id="guideBoxContainer">
-                    <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel">🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b></span></label>
+                <div class="land-selection-tools" id="landButtonsContainer">
+                    <button type="button" class="land-btn" id="btnLandNormal" data-land="Normalne">Normalne</button>
+                    <button type="button" class="land-btn" data-land="Hessen">Hessen</button>
+                    <button type="button" class="land-btn" data-land="NRW">NRW</button>
+                    <button type="button" class="land-btn" data-land="Bayern">Bayern</button>
+                    <button type="button" class="land-btn" data-land="Baden">Baden</button>
+                    <button type="button" class="land-btn" data-land="Niedersachsen">Niedersachsen</button>
+                    <button type="button" class="land-btn" data-land="Rheinland">Rheinland</button>
+                    <button type="button" class="land-btn" data-land="Brandenburg">Brandenburg</button>
+                    <button type="button" class="land-btn" data-land="Sachsen">Sachsen</button>
+                    <button type="button" class="land-btn" data-land="Sachsen Anhalt">Sachsen Anhalt</button>
+                    
+                    <button type="button" class="land-btn btn-full-width" id="btnLandAll">🌟 CAŁE NIEMCY (Zestaw Premium)</button>
                 </div>
-                 <div class="option-box" id="dhlBox">
-                     <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)</span></label>
-                     <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
-                </div>
-                <div class="option-box" id="schrottBox">
-                     <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
-                </div>
-            </div>
 
-            <div class="form-header" id="step5Header">💳 5. Preferowana forma płatności:</div>
-            <div class="extra-options-group" id="paymentBox">
-                <div class="option-box">
-                    <label class="region-label"><input type="radio" name="payment" value="IBAN" checked /> <span id="payIban">🏦 IBAN / Przelew bankowy</span></label>
+                <div style="background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; line-height: 1.4;">
+                    <span id="searchEngineDesc" style="color: #ddd; font-size: 0.9em;">Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:</span><br>
+                    <a id="searchEngineLink" href="https://dabu-info.blogspot.com/p/wyszukiwarka-rejonow.html" target="_blank" style="color: #3498db; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 1.05em;">
+                        🔍 WYSZUKIWARKA REJONÓW
+                    </a>
                 </div>
-                <div class="option-box">
-                    <label class="region-label"><input type="radio" name="payment" value="PAYPAL" /> <span id="payPaypal">🅿️ PayPal</span></label>
-                </div>
-                <div class="option-box" id="blikContainer">
-                    <label class="region-label"><input type="radio" name="payment" value="BLIK" /> <span id="payBlik">📱 BLIK na Telefon</span></label>
-                </div>
-                <div class="option-box">
-                     <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span id="payOther">❓ Inne</span></label>
-                </div>
-            </div>
 
-            <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
+                <div class="selection-tools">
+                    <a href="javascript:void(0)" id="btnUnselectAll" style="opacity: 0.8;">[ Odznacz wszystko / Clear ]</a>
+                </div>
+                
+                <div class="regions-scroll-box" id="regionsContainer">
+                    <div id="regionsLoading" class="pro-loader-overlay">
+                        <div class="pro-spinner"></div>
+                        <span id="loadingDataText">⏳ Pobieranie dostępnych opcji...</span>
+                    </div>
 
-            <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAPYTANIE O WYCENĘ</button>
+                    <div id="regionsCheckboxes">
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altenkirchen (Westerwald)" /> Altenkirchen (Westerwald)</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Altmarkkreis-Salzwedel" /> Altmarkkreis-Salzwedel</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Alzey-Worms" /> Alzey-Worms</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Amberg" /> Amberg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Homburg" /> Bad Homburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Orb" /> Bad Orb</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad Soden-Salmünster" /> Bad Soden-Salmünster</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Kreuznach" /> Bad-Kreuznach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bad-Munstereifel" /> Bad-Munstereifel</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bamberg" /> Bamberg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Barnim" /> Barnim</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bayreuth" /> Bayreuth</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bernkastel-Wittlich" /> Bernkastel-Wittlich</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Biebergemünd" /> Biebergemünd</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Blankenheim" /> Blankenheim</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Bonn" /> Bonn</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Braunschweig" /> Braunschweig</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Breckerfeld" /> Breckerfeld</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Brühl" /> Brühl</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Burgenland" /> Burgenland</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Calw" /> Calw</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dahlem" /> Dahlem</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsbachtal" /> Flörsbachtal</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Flörsheim am Main" /> Flörsheim am Main</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Frankfurt" /> Frankfurt</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freigericht" /> Freigericht</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Friedrichsdorf" /> Friedrichsdorf</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Glashütten" /> Glashütten</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gräfelfing" /> Gräfelfing</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Grävenwiesbach" /> Grävenwiesbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gross-Gerau" /> Gross-Gerau</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gründau" /> Gründau</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hannover" /> Hannover</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Harburg" /> Harburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hasselroth" /> Hasselroth</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hattersheim am Main" /> Hattersheim am Main</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidekreis" /> Heidekreis</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heidelberg" /> Heidelberg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Heilbronn" /> Heilbronn</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hellenthal" /> Hellenthal</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hersfeld-Rotenburg" /> Hersfeld-Rotenburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hofheim am Taunus" /> Hofheim am Taunus</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Holzminden" /> Holzminden</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Hürth" /> Hürth</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Stadt" /> Karlsruhe Stadt</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim" /> Kirchheim</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Königstein (Taunus)" /> Königstein (Taunus)</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Konstanz" /> Konstanz</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kronberg im Taunus" /> Kronberg im Taunus</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kulmbach" /> Kulmbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Leverkusen" /> Leverkusen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Liederbach" /> Liederbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Limburg-Weilburg" /> Limburg-Weilburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Linsengericht" /> Linsengericht</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lübecke" /> Lübecke</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Lüneburg" /> Lüneburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mayen-Koblenz" /> Mayen-Koblenz</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Mechernich" /> Mechernich</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Monachium" /> Monachium</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Münster" /> Münster</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neu-Anspach" /> Neu-Anspach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Neustadt a.d. Waldnaab" /> Neustadt a.d. Waldnaab</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nidderau" /> Nidderau</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Nordsachsen" /> Nordsachsen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberberg" /> Oberberg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oberursel (Taunus)" /> Oberursel (Taunus)</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Oder-Spree" /> Oder-Spree</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Olpe" /> Olpe</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ortenau" /> Ortenau</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Osnabrück" /> Osnabrück</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Pulheim" /> Pulheim</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Regensburg" /> Regensburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rendsburg-Eckernförde" /> Rendsburg-Eckernförde</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Neckar-Kreis" /> Rhein-Neckar-Kreis</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheingau-Taunus" /> Rheingau-Taunus</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rheinisch-Bergischer" /> Rheinisch-Bergischer</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rhein-Sieg" /> Rhein-Sieg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Rodenbach" /> Rodenbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ronneburg" /> Ronneburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schleiden" /> Schleiden</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schlüchtern" /> Schlüchtern</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schmitten im Taunus" /> Schmitten im Taunus</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwalbach" /> Schwalbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Schwedt/Oder" /> Schwedt/Oder</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sinntal" /> Sinntal</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Solingen" /> Solingen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Spree-Neiße" /> Spree-Neiße</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Sprockhövel" /> Sprockhövel</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Stade" /> Stade</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Steinbach" /> Steinbach</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Straubing-Bogen" /> Straubing-Bogen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tönisvorst" /> Tönisvorst</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Trier-Saarburg" /> Trier-Saarburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Tuttlingen" /> Tuttlingen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Usingen" /> Usingen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Vulkaneifel" /> Vulkaneifel</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Walldorf-Mörfelden" /> Walldorf-Mörfelden</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wehrheim" /> Wehrheim</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilerswist" /> Weilerswist</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Weilrod" /> Weilrod</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Werra-Meissner" /> Werra-Meissner</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wesseling" /> Wesseling</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Westerwald" /> Westerwald</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wiesbaden-Naurod" /> Wiesbaden-Naurod</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wolfsburg" /> Wolfsburg</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+                    </div>
+                </div>
 
-            <div class="extra-services-box" style="display: none;">
-                <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
-                    <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.
-                </p>
-                <a class="extra-services-link" href="#" id="extraInfoBtn">Napisz do nas</a>
+                <div id="step2Wrapper" style="margin-top: 20px;">
+                    <div class="form-header" id="step2Header">📅 2. Wybierz Tygodnie:</div>
+                    <div class="regions-scroll-box" id="weeksContainer"></div>
+                    
+                    <div id="freePreviewSection" style="margin-top: 25px; margin-bottom: 20px; display: none;">
+                    <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
+                    <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
+                        <option value="">-- Wybierz tydzień do podglądu --</option>
+                    </select>
+                    
+                    <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
+                        <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
+                            <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
+                            <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
+                        </div>
+                        <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                            <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
+                        </div>
+                    </div>
+                </div>
+
+                    <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
+                        <span id="specialDateText">Przygotowanie najbliższego terminu</span>
+                    </div>
+                </div>
+
+                <div class="form-header" id="step3Header">📄 3. Wybierz format:</div>
+                <div class="extra-options-group" id="formatBox">
+                    <div class="option-box">
+                        <label class="region-label">
+                            <input type="radio" name="format" value="PDF (Do druku)" checked /> 
+                            <span id="formatPdfPrintRadio">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF do druku (jasne tło, oszczędność tuszu)
+                            </span>
+                        </label>
+                    </div>
+                    <div class="option-box">
+                        <label class="region-label">
+                            <input type="radio" name="format" value="PDF (Smartfon - Dark Mode)" /> 
+                            <span id="formatPdfSmartRadio">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF na smartfona (Dark Mode + aktywne linki do map)
+                            </span>
+                        </label>
+                    </div>
+                    <div class="option-box">
+                        <label class="region-label">
+                            <input type="radio" name="format" value="JPG" /> 
+                            <span id="formatJpgRadio">🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)</span>
+                         </label>
+                    </div>
+                    <div class="option-box">
+                        <label class="region-label">
+                            <input type="radio" name="format" value="Wersja Online (Panel Klienta)" /> 
+                            <span id="formatOnlineRadio">🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)</span>
+                         </label>
+                    </div>
+                </div>
+
+                <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
+                <div class="extra-options-group">
+                    <div class="option-box" id="guideBoxContainer">
+                        <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel">🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b></span></label>
+                    </div>
+                     <div class="option-box" id="dhlBox">
+                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)</span></label>
+                         <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
+                    </div>
+                    <div class="option-box" id="schrottBox">
+                         <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
+                    </div>
+                </div>
+
+                <div class="form-header" id="step5Header">💳 5. Preferowana forma płatności:</div>
+                <div class="extra-options-group" id="paymentBox">
+                    <div class="option-box">
+                        <label class="region-label"><input type="radio" name="payment" value="IBAN" checked /> <span id="payIban">🏦 IBAN / Przelew bankowy</span></label>
+                    </div>
+                    <div class="option-box">
+                        <label class="region-label"><input type="radio" name="payment" value="PAYPAL" /> <span id="payPaypal">🅿️ PayPal</span></label>
+                    </div>
+                    <div class="option-box" id="blikContainer">
+                        <label class="region-label"><input type="radio" name="payment" value="BLIK" /> <span id="payBlik">📱 BLIK na Telefon</span></label>
+                    </div>
+                    <div class="option-box">
+                         <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span id="payOther">❓ Inne</span></label>
+                    </div>
+                </div>
+
+                <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
+
+                <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAPYTANIE O WYCENĘ</button>
+
+                <div class="extra-services-box" style="display: none;">
+                    <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
+                        <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.
+                    </p>
+                    <a class="extra-services-link" href="#" id="extraInfoBtn">Napisz do nas</a>
+                </div>
             </div>
         </div>
     </div>
@@ -608,10 +725,9 @@
         
         const config = {
             'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 WYŚLIJ ZAPYTANIE O WYCENĘ', priceInd: "Wycena indywidualna", configLi4: '<b>Zestaw Premium:</b> Wybierz z Landów "Całe Niemcy", aby zaplanować trasy samodzielnie!', landAll: iconRobot + ' Całe Niemcy', landNormal: 'Normalne', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zapytanie', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 WYŚLIJ ZAPYTANIE O WYCENĘ', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację w celu przygotowania wyceny za zestaw:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Preferowana płatność / Identyfikator:', emailWarning: 'Czekam na zwrotną informację z wyceną.' } }
-            // Ucięto inne języki (możesz dodać analogicznie 'de', 'en', itp. z podmienionymi tekstami przycisku)
         };
 
-        if (!config[userLang]) userLang = 'pl'; // Domyślnie PL ze względu na charakter rozmowy
+        if (!config[userLang]) userLang = 'pl'; 
         const currentConfig = config[userLang] || config['pl'];
         const t = currentConfig.texts;
         const valuta = currentConfig.currency;
@@ -624,12 +740,10 @@
         function setHtml(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerHTML = text; }
         function setText(id, text) { if(document.getElementById(id) && text) document.getElementById(id).innerText = text; }
 
-        // --- EKRAN ŁADOWANIA ---
         setHtml('loaderTitle', t.loaderTitle);
         setHtml('mainLoaderText', t.loaderDesc);
         if(t.loadingData && document.getElementById('loadingDataText')) document.getElementById('loadingDataText').innerHTML = t.loadingData;
         
-        // --- POZOSTAŁE TEKSTY ---
         setHtml('bonusInfo', t.bonus);
         setHtml('infoDesc', t.infoDesc);
         
@@ -647,7 +761,6 @@
         if(t.formatJpgLi1) setHtml('formatJpgLi1', t.formatJpgLi1);
         if(t.formatJpgLi2) setHtml('formatJpgLi2', t.formatJpgLi2);
 
-        // WERSJA ONLINE
         if(t.formatOnlineTitle) setHtml('formatOnlineTitle', t.formatOnlineTitle);
         if(t.formatOnlineLi1) setHtml('formatOnlineLi1', t.formatOnlineLi1);
         if(t.formatOnlineLi2) setHtml('formatOnlineLi2', t.formatOnlineLi2);
@@ -656,7 +769,6 @@
         setText('step1Header', t.step1Header);
         setText('step2Header', t.step2Header);
         
-        // --- WYSZUKIWARKA I PREMIUM ---
         if(t.landAll) setHtml('btnLandAll', t.landAll);
         setText('btnLandNormal', t.landNormal || 'Normalne');
         setHtml('searchEngineDesc', t.searchDesc);
@@ -781,7 +893,6 @@
                 });
         }
 
-        // --- ZARZĄDZANIE WIDOCZNOŚCIĄ PACZKOMATÓW ---
         document.querySelectorAll('input[name="format"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 var dhlBox = document.getElementById('dhlBox');
@@ -807,7 +918,6 @@
             });
         }
 
-        // Uproszczona funkcja - służy jedynie odświeżeniu widoku
         function updatePriceDisplay() {
             let btn = document.getElementById('btnSubmit');
             if (btn) {
@@ -1252,6 +1362,46 @@
     });
 //]]>
 </script>
+
+    <!-- Stopka -->
+    <footer class="dabu-footer">
+        <div class="dabu-footer-container">
+            <!-- Kolumna 1: Marka i nawigacja -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">dabu-info</h4>
+                <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
+                <ul class="dabu-footer-links">
+                    <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
+                    <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
+                </ul>
+            </div>
+
+            <!-- Kolumna 2: Kontakt i Zamówienia -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
+                <ul class="dabu-footer-contact">
+                    <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                    <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
+                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
+                </ul>
+            </div>
+
+            <!-- Kolumna 3: Dane Firmy i Płatności -->
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
+                <ul class="dabu-footer-contact">
+                    <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
+                    <li>💳 Płatności: BLIK, PayPal</li>
+                    <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="dabu-footer-bottom">
+            <p>&copy; 2026 <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
