@@ -1215,10 +1215,31 @@
             if (!select || !section) return;
             
             select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+            
+            // Pobieramy i sortujemy wszystkie tygodnie z bazy
             let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
-            if(weeks.length > 0) {
+            
+            // DODANA LINIJKA: Filtrujemy tygodnie - zostawiamy tylko te, które mają wygenerowany checkbox (odrzucamy przeszłość)
+            let validWeeks = weeks.filter(w => document.querySelector('.week-chk[data-week="' + w + '"]'));
+
+            if(validWeeks.length > 0) {
                 section.style.display = 'block';
-                weeks.forEach(w => {
+                validWeeks.forEach(w => {
+                    let opt = document.createElement('option');
+                    opt.value = w;
+                    
+                    let existingCheckbox = document.querySelector('.week-chk[data-week="' + w + '"]');
+                    if (existingCheckbox && existingCheckbox.value) {
+                        opt.textContent = existingCheckbox.value; 
+                    } else {
+                        opt.textContent = (t.weekLabel || "Tydzień") + " " + w;
+                    }
+                    select.appendChild(opt);
+                });
+            } else {
+                section.style.display = 'none';
+            }
+        }
                     let opt = document.createElement('option');
                     opt.value = w;
                     
