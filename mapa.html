@@ -405,192 +405,6 @@
         let currentFilteredLand = null;
         let kreiseLayer = null;
 
-        const regionLinks = {
-            "Altenkirchen (Westerwald)": "https://dabu-info.com/zestaw.html",
-            "Altmarkkreis-Salzwedel": "https://dabu-info.com/zestaw.html",
-            "Alzey-Worms": "https://dabu-info.com/zestaw.html",
-            "Amberg": "https://dabu-info.com/zestaw.html",
-            "Bad Homburg": "https://dabu-info.com/zestaw.html",
-            "Bad Münstereifel": "https://dabu-info.com/zestaw.html",
-            "Bad Orb": "https://dabu-info.com/zestaw.html",
-            "Bad Soden-Salmünster": "https://dabu-info.com/zestaw.html",
-            "Bad-Kreuznach": "https://dabu-info.com/zestaw.html",
-            "Bamberg": "https://dabu-info.com/zestaw.html",
-            "Barnim": "https://dabu-info.com/zestaw.html",
-            "Bayreuth": "https://dabu-info.com/zestaw.html",
-            "Bernkastel-Wittlich": "https://dabu-info.com/zestaw.html",
-            "Biebergemünd": "https://dabu-info.com/zestaw.html",
-            "Blankenheim": "https://dabu-info.com/zestaw.html",
-            "Bonn": "https://dabu-info.com/zestaw.html",
-            "Braunschweig": "https://dabu-info.com/zestaw.html",
-            "Breckerfeld": "https://dabu-info.com/zestaw.html",
-            "Brühl": "https://dabu-info.com/zestaw.html",
-            "Burgenland": "https://dabu-info.com/zestaw.html",
-            "Calw": "https://dabu-info.com/zestaw.html",
-            "Dahlem": "https://dabu-info.com/zestaw.html",
-            "Diepholz": "https://dabu-info.com/zestaw.html",
-            "Dülmen": "https://dabu-info.com/zestaw.html",
-            "Düsseldorf": "https://dabu-info.com/zestaw.html",
-            "Eifelkreis Bitburg-Prüm": "https://dabu-info.com/zestaw.html",
-            "Ennepetal": "https://dabu-info.com/zestaw.html",
-            "Eppstein": "https://dabu-info.com/zestaw.html",
-            "Erftstadt": "https://dabu-info.com/zestaw.html",
-            "Eschwege": "https://dabu-info.com/zestaw.html",
-            "Euskirchen": "https://dabu-info.com/zestaw.html",
-            "Flörsbachtal": "https://dabu-info.com/zestaw.html",
-            "Flörsheim am Main": "https://dabu-info.com/zestaw.html",
-            "Frankfurt": "https://dabu-info.com/zestaw.html",
-            "Freigericht": "https://dabu-info.com/zestaw.html",
-            "Freudenstadt": "https://dabu-info.com/zestaw.html",
-            "Friedrichsdorf": "https://dabu-info.com/zestaw.html",
-            "Fulda": "https://dabu-info.com/zestaw.html",
-            "Fürth": "https://dabu-info.com/zestaw.html",
-            "Geilenkirchen": "https://dabu-info.com/zestaw.html",
-            "Gelnhausen": "https://dabu-info.com/zestaw.html",
-            "Giessen": "https://dabu-info.com/zestaw.html",
-            "Giessen Powiat": "https://dabu-info.com/zestaw.html",
-            "Gifhorn": "https://dabu-info.com/zestaw.html",
-            "Glashütten": "https://dabu-info.com/zestaw.html",
-            "Göttingen": "https://dabu-info.com/zestaw.html",
-            "Gräfelfing": "https://dabu-info.com/zestaw.html",
-            "Grävenwiesbach": "https://dabu-info.com/zestaw.html",
-            "Gross-Gerau": "https://dabu-info.com/zestaw.html",
-            "Gründau": "https://dabu-info.com/zestaw.html",
-            "Hannover": "https://dabu-info.com/zestaw.html",
-            "Harburg": "https://dabu-info.com/zestaw.html",
-            "Hasselroth": "https://dabu-info.com/zestaw.html",
-            "Hattersheim am Main": "https://dabu-info.com/zestaw.html",
-            "Heidekreis": "https://dabu-info.com/zestaw.html",
-            "Heidelberg": "https://dabu-info.com/zestaw.html",
-            "Heilbronn": "https://dabu-info.com/zestaw.html",
-            "Hellenthal": "https://dabu-info.com/zestaw.html",
-            "Hersfeld-Rotenburg": "https://dabu-info.com/zestaw.html",
-            "Hofheim am Taunus": "https://dabu-info.com/zestaw.html",
-            "Holzminden": "https://dabu-info.com/zestaw.html",
-            "Hürth": "https://dabu-info.com/zestaw.html",
-            "Jossgrund": "https://dabu-info.com/zestaw.html",
-            "Jülich": "https://dabu-info.com/zestaw.html",
-            "Kall": "https://dabu-info.com/zestaw.html",
-            "Kamp-Lintfort": "https://dabu-info.com/zestaw.html",
-            "Karlsruhe": "https://dabu-info.com/zestaw.html",
-            "Karlsruhe Kreis": "https://dabu-info.com/zestaw.html",
-            "Kelkheim (Taunus)": "https://dabu-info.com/zestaw.html",
-            "Kirchheim bei München": "https://dabu-info.com/zestaw.html",
-            "Königstein (Taunus)": "https://dabu-info.com/zestaw.html",
-            "Konstanz": "https://dabu-info.com/zestaw.html",
-            "Kronberg im Taunus": "https://dabu-info.com/zestaw.html",
-            "Kulmbach": "https://dabu-info.com/zestaw.html",
-            "Kulmbach Powiat": "https://dabu-info.com/zestaw.html",
-            "Leverkusen": "https://dabu-info.com/zestaw.html",
-            "Limburg-Weilburg": "https://dabu-info.com/zestaw.html",
-            "Linsengericht": "https://dabu-info.com/zestaw.html",
-            "Lüneburg": "https://dabu-info.com/zestaw.html",
-            "Lüneburg Powiat": "https://dabu-info.com/zestaw.html",
-            "Mayen-Koblenz": "https://dabu-info.com/zestaw.html",
-            "Mechernich": "https://dabu-info.com/zestaw.html",
-            "Monachium": "https://dabu-info.com/zestaw.html",
-            "Münster": "https://dabu-info.com/zestaw.html",
-            "Neu-Anspach": "https://dabu-info.com/zestaw.html",
-            "Neustadt an der Waldnaab": "https://dabu-info.com/zestaw.html",
-            "Nidderau": "https://dabu-info.com/zestaw.html",
-            "Nordsachsen": "https://dabu-info.com/zestaw.html",
-            "Oberberg": "https://dabu-info.com/zestaw.html",
-            "Oberursel (Taunus)": "https://dabu-info.com/zestaw.html",
-            "Oder-Spree": "https://dabu-info.com/zestaw.html",
-            "Olpe": "https://dabu-info.com/zestaw.html",
-            "Ortenau": "https://dabu-info.com/zestaw.html",
-            "Osnabrück": "https://dabu-info.com/zestaw.html",
-            "Pulheim": "https://dabu-info.com/zestaw.html",
-            "Regensburg": "https://dabu-info.com/zestaw.html",
-            "Rendsburg-Eckernförde": "https://dabu-info.com/zestaw.html",
-            "Rhein-Neckar-Kreis": "https://dabu-info.com/zestaw.html",
-            "Rhein-Sieg": "https://dabu-info.com/zestaw.html",
-            "Rheingau-Taunus": "https://dabu-info.com/zestaw.html",
-            "Rheinisch-Bergischer": "https://dabu-info.com/zestaw.html",
-            "Rodenbach": "https://dabu-info.com/zestaw.html",
-            "Ronneburg": "https://dabu-info.com/zestaw.html",
-            "Schleiden": "https://dabu-info.com/zestaw.html",
-            "Schlüchtern": "https://dabu-info.com/zestaw.html",
-            "Schmitten im Taunus": "https://dabu-info.com/zestaw.html",
-            "Schwalbach": "https://dabu-info.com/zestaw.html",
-            "Schwedt/Oder": "https://dabu-info.com/zestaw.html",
-            "Sinntal": "https://dabu-info.com/zestaw.html",
-            "Solingen": "https://dabu-info.com/zestaw.html",
-            "Spree-Neiße": "https://dabu-info.com/zestaw.html",
-            "Sprockhövel": "https://dabu-info.com/zestaw.html",
-            "Stade": "https://dabu-info.com/zestaw.html",
-            "Steinbach": "https://dabu-info.com/zestaw.html",
-            "Straubing-Bogen": "https://dabu-info.com/zestaw.html",
-            "Tönisvorst": "https://dabu-info.com/zestaw.html",
-            "Trier-Saarburg": "https://dabu-info.com/zestaw.html",
-            "Tuttlingen": "https://dabu-info.com/zestaw.html",
-            "Usingen": "https://dabu-info.com/zestaw.html",
-            "Vulkaneifel": "https://dabu-info.com/zestaw.html",
-            "Walldorf-Mörfelden": "https://dabu-info.com/zestaw.html",
-            "Wehrheim": "https://dabu-info.com/zestaw.html",
-            "Weilerswist": "https://dabu-info.com/zestaw.html",
-            "Weilrod": "https://dabu-info.com/zestaw.html",
-            "Werra-Meissner": "https://dabu-info.com/zestaw.html",
-            "Wesseling": "https://dabu-info.com/zestaw.html",
-            "Westerwald": "https://dabu-info.com/zestaw.html",
-            "Wolfsburg": "https://dabu-info.com/zestaw.html",
-            "Wuppertal": "https://dabu-info.com/zestaw.html",
-            "Zollernalb": "https://dabu-info.com/zestaw.html",
-            "Zülpich": "https://dabu-info.com/zestaw.html",
-            
-            // --- Gminy na indywidualne zamówienie ---
-            "Aldenhoven": "https://dabu-info.com/oferta.html", 
-            "Alpen": "https://dabu-info.com/oferta.html", 
-            "Altena": "https://dabu-info.com/oferta.html",
-            "Bad Münstereifel": "https://dabu-info.com/oferta.html", 
-            "Balve": "https://dabu-info.com/oferta.html", 
-            "Bedburg": "https://dabu-info.com/oferta.html", 
-            "Bedburg-Hau": "https://dabu-info.com/oferta.html", 
-            "Blankenheim": "https://dabu-info.com/oferta.html",
-            "Dahlem": "https://dabu-info.com/oferta.html", 
-            "Dormagen": "https://dabu-info.com/oferta.html", 
-            "Emmerich am Rhein": "https://dabu-info.com/oferta.html", 
-            "Geldern": "https://dabu-info.com/oferta.html",
-            "Grefrath": "https://dabu-info.com/oferta.html", 
-            "Grevenbroich": "https://dabu-info.com/oferta.html", 
-            "Hellenthal": "https://dabu-info.com/oferta.html", 
-            "Hückelhoven": "https://dabu-info.com/oferta.html",
-            "Iserlohn": "https://dabu-info.com/oferta.html", 
-            "Issum": "https://dabu-info.com/oferta.html", 
-            "Jüchen": "https://dabu-info.com/oferta.html", 
-            "Jülich (E)": "https://dabu-info.com/oferta.html",
-            "Kaarst": "https://dabu-info.com/oferta.html", 
-            "Kall": "https://dabu-info.com/oferta.html", 
-            "Kerken": "https://dabu-info.com/oferta.html", 
-            "Kevelaer": "https://dabu-info.com/oferta.html",
-            "Korschenbroich": "https://dabu-info.com/oferta.html", 
-            "Lübeck": "https://dabu-info.com/oferta.html", 
-            "Mechernich": "https://dabu-info.com/oferta.html", 
-            "Meerbusch": "https://dabu-info.com/oferta.html",
-            "Menden": "https://dabu-info.com/oferta.html", 
-            "Merzenich": "https://dabu-info.com/oferta.html", 
-            "Nachrodt-Wiblingwerde": "https://dabu-info.com/oferta.html", 
-            "Nettetal": "https://dabu-info.com/oferta.html",
-            "Neukirchen-Vluyn": "https://dabu-info.com/oferta.html", 
-            "Plettenberg": "https://dabu-info.com/oferta.html", 
-            "Rees": "https://dabu-info.com/oferta.html", 
-            "Rheurdt": "https://dabu-info.com/oferta.html",
-            "Rommerskirchen": "https://dabu-info.com/oferta.html", 
-            "Schleiden": "https://dabu-info.com/oferta.html", 
-            "Selfkant": "https://dabu-info.com/oferta.html", 
-            "Sonsbeck": "https://dabu-info.com/oferta.html",
-            "Straelen": "https://dabu-info.com/oferta.html", 
-            "Übach-Palenberg": "https://dabu-info.com/oferta.html", 
-            "Uedem": "https://dabu-info.com/oferta.html", 
-            "Viersen": "https://dabu-info.com/oferta.html",
-            "Voerde": "https://dabu-info.com/oferta.html", 
-            "Weeze": "https://dabu-info.com/oferta.html", 
-            "Weilerswist": "https://dabu-info.com/oferta.html", 
-            "Werdohl": "https://dabu-info.com/oferta.html",
-            "Xanten": "https://dabu-info.com/oferta.html", 
-            "Zülpich": "https://dabu-info.com/oferta.html"
-        };
-
         const regionToCountyMap = {
             "Elbe-Elster": "Elbe-Elster",
             "Oder-Spree": "Oder-Spree",
@@ -785,9 +599,12 @@
                 if(regionCoords[name]) {
                     let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
                     
-                    if (regionLinks[name]) {
-                        popupContent += `<br><br><a href="${regionLinks[name]}" target="_blank" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">🔗 Przejdź do wpisu</a>`;
-                    }
+                    // --- DYNAMICZNY GENERATOR LINKÓW EMAIL DO POPUPU MAPY ---
+                    let mailSubject = encodeURIComponent("Zamówienie rejonu - " + name);
+                    let mailBody = encodeURIComponent("Prośba o kontakt w sprawie zamówienia rejonu.");
+                    let mailLink = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+                    popupContent += `<br><br><a href="${mailLink}" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">✉️ Napisz do nas w sprawie rejonu</a>`;
 
                     L.marker(regionCoords[name], {
                         icon: L.icon({
@@ -940,20 +757,23 @@
             cb.addEventListener('change', refreshMarkers); 
         });
 
+        // --- DYNAMICZNY GENERATOR LINKÓW EMAIL NA LIŚCIE REJONÓW ---
         document.querySelectorAll('.region-label').forEach(label => {
             let val = label.querySelector('input').value.trim();
-            if (regionLinks[val]) {
-                let btn = document.createElement('a');
-                btn.href = regionLinks[val];
-                btn.target = "_blank";
-                btn.innerHTML = "🔗";
-                btn.style.textDecoration = "none";
-                btn.style.marginLeft = "auto";
-                btn.style.paddingLeft = "10px";
-                btn.title = "Przejdź do artykułu";
-                btn.addEventListener('click', (e) => e.stopPropagation()); 
-                label.appendChild(btn);
-            }
+            
+            let mailSubject = encodeURIComponent("Zamówienie rejonu - " + val);
+            let mailBody = encodeURIComponent("Prośba o kontakt w sprawie zamówienia rejonu.");
+            let mailLink = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+            let btn = document.createElement('a');
+            btn.href = mailLink;
+            btn.innerHTML = "✉️";
+            btn.style.textDecoration = "none";
+            btn.style.marginLeft = "auto";
+            btn.style.paddingLeft = "10px";
+            btn.title = "Napisz do nas w sprawie rejonu";
+            btn.addEventListener('click', (e) => e.stopPropagation()); 
+            label.appendChild(btn);
         });
     </script>
 
