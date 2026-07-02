@@ -405,6 +405,135 @@
         let currentFilteredLand = null;
         let kreiseLayer = null;
 
+        const regionLinks = {
+            "Altenkirchen (Westerwald)": "https://dabu-info.blogspot.com/2026/02/sperrmull-altenkirchen-2026-terminy.html",
+            "Altmarkkreis-Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
+            "Altmarkkreis Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
+            "Alzey-Worms": "https://dabu-info.blogspot.com/2026/02/sperrmull-alzey-worms-2026-terminy.html",
+            "Amberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-amberg-2026-harmonogram-i.html",
+            "Bad Homburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-homburg-2026-terminy.html",
+            "Bad-Kreuznach": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-kreuznach-2026-terminy-i.html",
+            "Bamberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bamberg-2026-terminy-wystawek.html",
+            "Barnim": "https://dabu-info.blogspot.com/2026/02/sperrmull-barnim-2026-terminy-wystawek.html",
+            "Bayreuth": "https://dabu-info.blogspot.com/2026/02/sperrmull-bayreuth-2026-terminy-wystawek.html",
+            "Bernkastel-Wittlich": "https://dabu-info.blogspot.com/2026/02/bernkastel-wittlich-2026-terminy.html",
+            "Biebergemünd": "https://dabu-info.blogspot.com/2026/02/sperrmull-biebergemund-2026-terminy.html",
+            "Bonn": "https://dabu-info.blogspot.com/2026/02/sperrmull-bonn-2026-terminy-wystawek.html",
+            "Braunschweig": "https://dabu-info.blogspot.com/2026/02/sperrmull-braunschweig-2026-terminy.html",
+            "Breckerfeld": "https://dabu-info.blogspot.com/2026/02/sperrmull-breckerfeld-2026.html",
+            "Brühl": "https://dabu-info.blogspot.com/2026/02/sperrmull-bruhl-2026-terminy-wystawek.html",
+            "Burgenland": "https://dabu-info.blogspot.com/2026/02/burgenlandkreis-2026-terminy-wystawek.html",
+            "Calw": "https://dabu-info.blogspot.com/2026/02/zbiorka-metalu-calw-2026-terminy-i.html",
+            "Diepholz": "https://dabu-info.blogspot.com/2026/02/sperrmull-diepholz-2026-terminy-wystawek.html",
+            "Dortmund": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-dortmund.html",
+            "Dülmen": "https://dabu-info.blogspot.com/2026/02/sperrmull-dulmen-2026-terminy-wystawek.html",
+            "Düsseldorf": "https://dabu-info.blogspot.com/2026/02/sperrmull-dusseldorf-2026-terminy.html",
+            "Eifelkreis Bitburg-Prüm": "https://dabu-info.blogspot.com/2026/02/bitburg-prum-2026-terminy-i-specyfika.html",
+            "Elbe-Elster": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-elbe-elstern.html",
+            "Emsland": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-emsland.html",
+            "Ennepetal": "https://dabu-info.blogspot.com/2026/02/sperrmull-ennepetal-2026-terminy.html",
+            "Eppstein": "https://dabu-info.blogspot.com/2026/02/sperrmull-eppstein-2026-terminy-wystawek.html",
+            "Eschwege": "https://dabu-info.blogspot.com/2026/02/sperrmull-eschwege-2026-terminy-wystawek.html",
+            "Euskirchen": "https://dabu-info.blogspot.com/2026/02/sperrmull-euskirchen-2026-terminy.html",
+            "Flörsbachtal": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsbachtal-2026-terminy.html",
+            "Flörsheim am Main": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsheim-am-main-2026.html",
+            "Frankfurt": "https://dabu-info.blogspot.com/2026/02/sperrmull-frankfurt-am-main-2026.html",
+            "Freudenstadt": "https://dabu-info.blogspot.com/2026/02/sperrmull-freudenstadt-2026-harmonogram.html",
+            "Fulda": "https://dabu-info.blogspot.com/2026/02/sperrmull-fulda-2026-terminy-wystawek.html",
+            "Fürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-furth-2026-terminy-wystawek.html",
+            "Geilenkirchen": "https://dabu-info.blogspot.com/2026/05/sperrmull-geilenkirchen-2026-terminy.html",
+            "Gelnhausen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gelnhausen-2026-terminy.html",
+            "Giessen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
+            "Giessen Powiat": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
+            "Gifhorn": "https://dabu-info.blogspot.com/2026/02/sperrmull-gifhorn-2026-terminy-wystawek.html",
+            "Glashütten": "https://dabu-info.blogspot.com/2026/05/sperrmull-glashutten-terminy-wystawek.html",
+            "Göttingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gottingen-2026-terminy.html",
+            "Gräfelfing": "https://dabu-info.blogspot.com/2026/02/sperrmull-grafelfing-2026-terminy.html",
+            "Gross-Gerau": "https://dabu-info.blogspot.com/2026/02/gro-gerau-2026-sperrmull-e-schrott.html",
+            "Gründau": "https://dabu-info.blogspot.com/2026/02/sperrmull-grundau-2026-terminy-wystawek.html",
+            "Hannover": "https://dabu-info.blogspot.com/2026/02/sperrmull-hannover-2026-terminy-wystawek.html",
+            "Harburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-harburg-2026.html",
+            "Hattersheim am Main": "https://dabu-info.blogspot.com/2026/02/hattersheim-am-main-2026-terminy.html",
+            "Heidekreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidekreis-2026-terminy.html",
+            "Heidelberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidelberg-2026-terminy.html",
+            "Heilbronn": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-heilbronn-2026-terminy.html",
+            "Hersfeld-Rotenburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-hersfeld-rotenburg-2026.html",
+            "Hofheim am Taunus": "https://dabu-info.blogspot.com/2026/02/sperrmull-hofheim-am-taunus-2026-terminy.html",
+            "Holzminden": "https://dabu-info.blogspot.com/2026/02/sperrmull-holzminden-2026-terminy.html",
+            "Hürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-hurth-2026-terminy-wystawek.html",
+            "Kamp-Lintfort": "https://dabu-info.blogspot.com/2026/02/sperrmull-kamp-lintfort-2026-terminy.html",
+            "Karlsruhe": "https://dabu-info.blogspot.com/2026/02/sperrmull-karlsruhe-stadt-2026-terminy.html",
+            "Karlsruhe Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-karlsruhe-2026.html",
+            "Kelkheim (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-kelkheim-taunus-2026-terminy.html",
+            "Kirchheim bei München": "https://dabu-info.blogspot.com/2026/02/sperrmull-kirchheim-2026-terminy.html",
+            "Königstein (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-konigstein-taunus-2026.html",
+            "Konstanz": "https://dabu-info.blogspot.com/2026/02/sperrmull-konstanz-2026-terminy-wystawek.html",
+            "Kulmbach": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
+            "Kulmbach Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
+            "Leverkusen": "https://dabu-info.blogspot.com/2026/02/sperrmull-leverkusen-2026-terminy.html",
+            "Limburg-Weilburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-limburg-weilburg-2026-terminy.html",
+            "Lipsk (Leipzig)": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-lipsk.html",
+            "Lüneburg": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
+            "Lüneburg Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
+            "Mayen-Koblenz": "https://dabu-info.blogspot.com/2026/02/sperrmull-mayen-koblenz-2026-terminy.html",
+            "Monachium": "https://dabu-info.blogspot.com/2026/02/sperrmull-monachium-munchen-2026-terminy.html",
+            "Münster": "https://dabu-info.blogspot.com/2026/02/sperrmull-munster-2026-terminy-i.html",
+            "Neu-Anspach": "https://dabu-info.blogspot.com/2026/02/sperrmull-neu-anspach-2026-terminy.html",
+            "Neustadt an der Waldnaab": "https://dabu-info.blogspot.com/2026/02/sperrmull-neustadt-der-waldnaab-2026.html",
+            "Nidderau": "https://dabu-info.blogspot.com/2026/02/sperrmull-nidderau-2026-terminy-wystawek.html",
+            "Nordsachsen": "https://dabu-info.blogspot.com/2026/02/sperrmull-nordsachsen-2026-harmonogram.html",
+            "Oberberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberbergischer-kreis-2026.html",
+            "Oberursel (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberursel-taunus-2026.html",
+            "Oder-Spree": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-sperrmull-oder-spree.html",
+            "Olpe": "https://dabu-info.blogspot.com/2026/02/sperrmull-olpe-2026-terminy-wystawek.html",
+            "Ortenau": "https://dabu-info.blogspot.com/2026/02/sperrmull-ortenaukreis-2026-terminy.html",
+            "Osnabrück": "https://dabu-info.blogspot.com/2026/02/sperrmull-osnabruck-2026-terminy.html",
+            "Pulheim": "https://dabu-info.blogspot.com/2026/02/sperrmull-pulheim-2026-terminy-wystawek.html",
+            "Regensburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-regensburg-2026-terminy-i.html",
+            "Rendsburg-Eckernförde": "https://dabu-info.blogspot.com/2026/02/rendsburg-eckernforde-2026-terminy.html",
+            "Rhein-Neckar-Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-neckar-kreis-2026.html",
+            "Rhein-Sieg": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-sieg-kreis-2026.html",
+            "Rheingau-Taunus": "https://dabu-info.blogspot.com/2026/02/rheingau-taunus-kreis-2026-terminy-i.html",
+            "Rheinisch-Bergischer": "https://dabu-info.blogspot.com/2026/02/sperrmull-rheinisch-bergischer-kreis.html",
+            "Schlüchtern": "https://dabu-info.blogspot.com/2026/02/schluchtern-2026-terminy-wystawek.html",
+            "Schwedt/Oder": "https://dabu-info.blogspot.com/2026/02/sperrmull-schwedtoder-2026-harmonogram.html",
+            "Sinntal": "https://dabu-info.blogspot.com/2026/02/sperrmull-sinntal-2026-terminy-wystawek.html",
+            "Solingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-solingen-2026-terminy-wystawek.html",
+            "Spree-Neiße": "https://dabu-info.blogspot.com/2026/02/sperrmull-spree-neie-2026-terminy.html",
+            "Sprockhövel": "https://dabu-info.blogspot.com/2026/02/sperrmull-sprockhovel-2026-terminy.html",
+            "Stade": "https://dabu-info.blogspot.com/2026/02/sperrmull-stade-2026-terminy-i-specyfika.html",
+            "Straubing-Bogen": "https://dabu-info.blogspot.com/2026/02/straubing-bogen-2026-terminy-wystawek.html",
+            "Tönisvorst": "https://dabu-info.blogspot.com/2026/02/sperrmull-tonisvorst-2026-terminy.html",
+            "Trier-Saarburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-trier-saarburg-2026.html",
+            "Tuttlingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-tuttlingen-2026-terminy.html",
+            "Usingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-usingen-2026-terminy-wystawek.html",
+            "Vulkaneifel": "https://dabu-info.blogspot.com/2026/02/sperrmull-vulkaneifel-2026-terminy-i.html",
+            "Walldorf-Mörfelden": "https://dabu-info.blogspot.com/2026/02/sperrmull-walldorf-morfelden-2026.html",
+            "Werra-Meissner": "https://dabu-info.blogspot.com/2026/02/werra-meiner-2026-e-schrott-agd.html",
+            "Wesseling": "https://dabu-info.blogspot.com/2026/02/sperrmull-wesseling-2026-terminy-wystawek.html",
+            "Westerwald": "https://dabu-info.blogspot.com/2026/02/sperrmull-westerwaldkreis-2026-terminy.html",
+            "Wolfsburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-wolfsburg-2026-terminy.html",
+            "Wülfrath": "https://dabu-info.blogspot.com/2026/05/sperrmull-wulfrath-2026-terminy-wystawek.html",
+            "Wuppertal": "https://dabu-info.blogspot.com/2026/02/sperrmull-wuppertal-2026-terminy.html",
+            "Zollernalb": "https://dabu-info.blogspot.com/2026/02/sperrmull-zollernalb-2026-tylko-agd.html",
+            "Neuss": "https://dabu-info.blogspot.com/2026/06/terminy-wystawek-neuss.html",
+            
+            // --- Gminy na indywidualne zamówienie ---
+            "Aldenhoven": "https://dabu-info.com/zamowienia.html", "Alpen": "https://dabu-info.com/zamowienia.html", "Altena": "https://dabu-info.com/zamowienia.html",
+            "Bad Münstereifel": "https://dabu-info.com/zamowienia.html", "Balve": "https://dabu-info.com/zamowienia.html", "Bedburg": "https://dabu-info.com/zamowienia.html", "Bedburg-Hau": "https://dabu-info.com/zamowienia.html", "Blankenheim": "https://dabu-info.com/zamowienia.html",
+            "Dahlem": "https://dabu-info.com/zamowienia.html", "Dormagen": "https://dabu-info.com/zamowienia.html", "Emmerich am Rhein": "https://dabu-info.com/zamowienia.html", "Geldern": "https://dabu-info.com/zamowienia.html",
+            "Grefrath": "https://dabu-info.com/zamowienia.html", "Grevenbroich": "https://dabu-info.com/zamowienia.html", "Hellenthal": "https://dabu-info.com/zamowienia.html", "Hückelhoven": "https://dabu-info.com/zamowienia.html",
+            "Iserlohn": "https://dabu-info.com/zamowienia.html", "Issum": "https://dabu-info.com/zamowienia.html", "Jüchen": "https://dabu-info.com/zamowienia.html", "Jülich (E)": "https://dabu-info.com/zamowienia.html",
+            "Kaarst": "https://dabu-info.com/zamowienia.html", "Kall": "https://dabu-info.com/zamowienia.html", "Kerken": "https://dabu-info.com/zamowienia.html", "Kevelaer": "https://dabu-info.com/zamowienia.html",
+            "Korschenbroich": "https://dabu-info.com/zamowienia.html", "Lübeck": "https://dabu-info.com/zamowienia.html", "Mechernich": "https://dabu-info.com/zamowienia.html", "Meerbusch": "https://dabu-info.com/zamowienia.html",
+            "Menden": "https://dabu-info.com/zamowienia.html", "Merzenich": "https://dabu-info.com/zamowienia.html", "Nachrodt-Wiblingwerde": "https://dabu-info.com/zamowienia.html", "Nettetal": "https://dabu-info.com/zamowienia.html",
+            "Neukirchen-Vluyn": "https://dabu-info.com/zamowienia.html", "Plettenberg": "https://dabu-info.com/zamowienia.html", "Rees": "https://dabu-info.com/zamowienia.html", "Rheurdt": "https://dabu-info.com/zamowienia.html",
+            "Rommerskirchen": "https://dabu-info.com/zamowienia.html", "Schleiden": "https://dabu-info.com/zamowienia.html", "Selfkant": "https://dabu-info.com/zamowienia.html", "Sonsbeck": "https://dabu-info.com/zamowienia.html",
+            "Straelen": "https://dabu-info.com/zamowienia.html", "Übach-Palenberg": "https://dabu-info.com/zamowienia.html", "Uedem": "https://dabu-info.com/zamowienia.html", "Viersen": "https://dabu-info.com/zamowienia.html",
+            "Voerde": "https://dabu-info.com/zamowienia.html", "Weeze": "https://dabu-info.com/zamowienia.html", "Weilerswist": "https://dabu-info.com/zamowienia.html", "Werdohl": "https://dabu-info.com/zamowienia.html",
+            "Xanten": "https://dabu-info.com/zamowienia.html", "Zülpich": "https://dabu-info.com/zamowienia.html"
+        };
+
         const regionToCountyMap = {
             "Elbe-Elster": "Elbe-Elster",
             "Oder-Spree": "Oder-Spree",
@@ -599,12 +728,9 @@
                 if(regionCoords[name]) {
                     let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
                     
-                    // --- DYNAMICZNY GENERATOR LINKÓW EMAIL DO POPUPU MAPY ---
-                    let mailSubject = encodeURIComponent("Zamówienie rejonu - " + name);
-                    let mailBody = encodeURIComponent("Prośba o kontakt w sprawie zamówienia rejonu.");
-                    let mailLink = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-
-                    popupContent += `<br><br><a href="${mailLink}" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">✉️ Napisz do nas w sprawie rejonu</a>`;
+                    if (regionLinks[name]) {
+                        popupContent += `<br><br><a href="${regionLinks[name]}" target="_blank" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">🔗 Przejdź do wpisu</a>`;
+                    }
 
                     L.marker(regionCoords[name], {
                         icon: L.icon({
@@ -757,23 +883,20 @@
             cb.addEventListener('change', refreshMarkers); 
         });
 
-        // --- DYNAMICZNY GENERATOR LINKÓW EMAIL NA LIŚCIE REJONÓW ---
         document.querySelectorAll('.region-label').forEach(label => {
             let val = label.querySelector('input').value.trim();
-            
-            let mailSubject = encodeURIComponent("Zamówienie rejonu - " + val);
-            let mailBody = encodeURIComponent("Prośba o kontakt w sprawie zamówienia rejonu.");
-            let mailLink = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-
-            let btn = document.createElement('a');
-            btn.href = mailLink;
-            btn.innerHTML = "✉️";
-            btn.style.textDecoration = "none";
-            btn.style.marginLeft = "auto";
-            btn.style.paddingLeft = "10px";
-            btn.title = "Napisz do nas w sprawie rejonu";
-            btn.addEventListener('click', (e) => e.stopPropagation()); 
-            label.appendChild(btn);
+            if (regionLinks[val]) {
+                let btn = document.createElement('a');
+                btn.href = regionLinks[val];
+                btn.target = "_blank";
+                btn.innerHTML = "🔗";
+                btn.style.textDecoration = "none";
+                btn.style.marginLeft = "auto";
+                btn.style.paddingLeft = "10px";
+                btn.title = "Przejdź do artykułu";
+                btn.addEventListener('click', (e) => e.stopPropagation()); 
+                label.appendChild(btn);
+            }
         });
     </script>
 
