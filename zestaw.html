@@ -319,7 +319,8 @@
               <g transform="translate(150, 180)">
                 <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
                 <circle cx="0" cy="-5" r="8" fill="#fff" />
-              </g> <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
+              </g>
+              <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
               <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle" id="svgPriceSub">na zapytanie</text>
               
               <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
@@ -832,6 +833,7 @@
         let availabilityMatrixScrap = {};
         let availabilityMatrix = {};
         let isPremiumMode = false;
+        let premiumPackageName = ""; // ZMIENNA ODPAWIADAJĄCA ZA WYCENĘ INDYWIDUALNĄ
         
         function fetchAvailableRegions() {
             var d = new Date();
@@ -925,7 +927,7 @@
             if (btn) {
                 let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
                 if (isPremiumMode) {
-                    btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE (Całe Niemcy - Wycena Indywidualna)";
+                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (${premiumPackageName} - Wycena Indywidualna)`;
                     if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
                 } else if (selectedRegionsCount > 0) {
                     let sumPLN = selectedRegionsCount * 100;
@@ -1066,16 +1068,13 @@
             }
         }
 
-        function setPremiumMode(active) {
+        function setPremiumMode(active, packageName = "Całe Niemcy") {
             isPremiumMode = active;
+            premiumPackageName = packageName;
             var regionBox = document.getElementById('regionsContainer');
             var searchBox = document.getElementById('searchEngineLink').parentNode;
             
-            var btnPremium = document.getElementById('btnLandAll');
-            if(btnPremium) {
-                if(active) btnPremium.classList.add('active');
-                else btnPremium.classList.remove('active');
-            }
+            document.querySelectorAll('.land-btn').forEach(b => b.classList.remove('active'));
 
             var formatSmart = document.querySelector('input[name="format"][value="PDF (Smartfon - Dark Mode)"]');
             var formatJpg = document.querySelector('input[name="format"][value="JPG"]');
@@ -1083,6 +1082,14 @@
             var formatPrint = document.querySelector('input[name="format"][value="PDF (Do druku)"]');
             
             if (active) {
+                if (packageName === "Całe Niemcy") {
+                    var btnAll = document.getElementById('btnLandAll');
+                    if(btnAll) btnAll.classList.add('active');
+                } else {
+                    var btn = document.querySelector(`.land-btn[data-land="${packageName}"]`);
+                    if(btn) btn.classList.add('active');
+                }
+
                 document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
                 regionBox.style.opacity = '0.3';
                 regionBox.style.pointerEvents = 'none';
@@ -1115,30 +1122,13 @@
         });
 
         document.querySelectorAll('.land-btn').forEach(btn => {
-            if(btn.id === 'btnLandAll') {
-                btn.addEventListener('click', function() {
-                    setPremiumMode(true);
-                });
-                return;
-            }
-            
             btn.addEventListener('click', function() {
-                setPremiumMode(false);
-                
-                const landName = this.getAttribute('data-land');
-                const regionsToSelect = landMap[landName] || [];
-                
-                document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false);
-                
-                document.querySelectorAll('.region-chk').forEach(chk => {
-                    const regionValue = chk.value.trim().toLowerCase();
-                    const isSpecial = GLOBAL_SPECIAL_REGIONS.includes(regionValue);
-                    
-                    if (!isSpecial && regionsToSelect.map(r => r.toLowerCase()).includes(regionValue)) {
-                        chk.checked = true;
-                    }
-                });
-                updateMutualFiltering();
+                if(this.id === 'btnLandAll') {
+                    setPremiumMode(true, "Całe Niemcy");
+                } else {
+                    const landName = this.getAttribute('data-land') || "Normalne";
+                    setPremiumMode(true, landName);
+                }
             });
         });
 
@@ -1158,12 +1148,12 @@
             var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
             
             if (isPremiumMode && wT.length === 0) {
-                alert("[ UWAGA ] Dla zestawu 'Całe Niemcy' wymagany jest wybór przynajmniej jednego tygodnia!");
+                alert("[ UWAGA ] Dla wybranego pakietu wymagany jest wybór przynajmniej jednego tygodnia!");
                 return;
             }
             
             if ((wR.length === 0 && !isPremiumMode) || (!isSpecialMode && wT.length === 0)) { 
-                alert("[ UWAGA ] Wybierz rejony (lub Zestaw Całe Niemcy) oraz tygodnie!"); 
+                alert("[ UWAGA ] Wybierz rejony (lub odpowiedni pakiet) oraz tygodnie!"); 
                 return; 
             }
                     
@@ -1172,7 +1162,7 @@
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             if (isPremiumMode) {
-                body += " *** ZESTAW CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
+                body += ` *** PAKIET: ${premiumPackageName.toUpperCase()} (Wycena indywidualna)\n`;
             } else {
                 let sumPLN = wR.length * 100;
                 let sumEUR = wR.length * 25;
@@ -1213,7 +1203,7 @@
             
             body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
             if (isPremiumMode) {
-                body += "- *** CAŁE NIEMCY (Wszystkie dostępne rejony)\n";
+                body += `- *** WYBRANY PAKIET Z GÓRY: ${premiumPackageName.toUpperCase()}\n`;
             } else {
                 wR.forEach(b => body += "- " + b.value + "\n");
             }
