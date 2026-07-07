@@ -361,7 +361,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Cenę ustalamy na podstawie liczby wybranych rejonów.</li>
+                        <li id="configLi2">Cena wynosi 100 PLN za rejon (od 4 rejonów <b>wycena indywidualna</b>).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                     </ul>
 
@@ -926,15 +926,26 @@
             let svgPriceSub = document.getElementById('svgPriceSub');
             if (btn) {
                 let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
+                
+                // Jeśli wybrano gotowy pakiet z przycisku (np. Hessen, Całe Niemcy)
                 if (isPremiumMode) {
                     btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (${premiumPackageName} - Wycena Indywidualna)`;
                     if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                } else if (selectedRegionsCount > 0) {
+                } 
+                // Jeśli wybrano RĘCZNIE więcej niż 3 rejony
+                else if (selectedRegionsCount > 3) {
+                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+                    if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
+                } 
+                // Jeśli wybrano RĘCZNIE od 1 do 3 rejonów
+                else if (selectedRegionsCount > 0) {
                     let sumPLN = selectedRegionsCount * 100;
                     let sumEUR = selectedRegionsCount * 25;
                     btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
                     if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
-                } else {
+                } 
+                // Stan początkowy (nic nie wybrano)
+                else {
                     btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
                     if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
                 }
@@ -1163,6 +1174,9 @@
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             if (isPremiumMode) {
                 body += ` *** PAKIET: ${premiumPackageName.toUpperCase()} (Wycena indywidualna)\n`;
+            } else if (wR.length > 3) {
+                body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
+                body += " PODSUMOWANIE CENY: Wycena indywidualna (powyżej 3 rejonów)\n";
             } else {
                 let sumPLN = wR.length * 100;
                 let sumEUR = wR.length * 25;
