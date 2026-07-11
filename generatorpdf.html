@@ -1067,46 +1067,6 @@
             document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
         });
 
-        // ZMODYFIKOWANA, STABILNA BUDOWA TYGODNI Z GÓRY NA 15 TYGODNI
-        var weeksContainer = document.getElementById('weeksContainer');
-        if (weeksContainer) {
-            weeksContainer.innerHTML = '';
-            var today = new Date();
-            var day = today.getDay(); 
-            var hour = today.getHours();
-            var diff = today.getDate() - day + (day == 0 ? -6 : 1);
-            if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
-            
-            var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
-            
-            for (var i = 0; i < 52; i++) {
-                var sW = new Date(startPoint.getTime() + (i * 7 * 86400000));
-                
-                var weekNum = getWeekNumber(sW);
-                if (weekNum > 53) continue;
-                
-                var eW = new Date(sW.getTime() + (5 * 86400000)); 
-                
-                var label = document.createElement('label'); 
-                label.className = "region-label";
-                
-                var input = document.createElement('input');
-                input.type = "checkbox"; 
-                input.className = "week-chk"; 
-                input.name = "tygodnie[]";
-                input.setAttribute('data-week', weekNum);
-                
-                var dStart = String(sW.getDate()).padStart(2, '0') + "." + String(sW.getMonth()+1).padStart(2, '0');
-                var dEnd = String(eW.getDate()).padStart(2, '0') + "." + String(eW.getMonth()+1).padStart(2, '0');
-                
-                var labelText = (t.week || "Tydzień") + " " + weekNum + " (" + dStart + " " + (t.to || "do") + " " + dEnd + ")";
-                
-                input.value = labelText;
-                label.appendChild(input); 
-                label.appendChild(document.createTextNode(" " + input.value));
-                weeksContainer.appendChild(label);
-            }
-        }
 
         /* ---------------------------------------------------------
            GENERATOR 1: PDF MOBILNY
@@ -1463,42 +1423,68 @@
         function populateFreePreviewDropdown(matrix) {
             let select = document.getElementById('freePreviewWeek');
             let section = document.getElementById('freePreviewSection');
+            let weeksContainer = document.getElementById('weeksContainer');
+
             if (!select || !section) return;
+            
             select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+            if (weeksContainer) weeksContainer.innerHTML = ''; // Czyścimy kontener checkboxów
             
             let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
+            
             if(weeks.length > 0) {
                 section.style.display = 'block';
-                weeks.forEach(w => {
-                    let wInt = parseInt(w);
-                    let existingCheckbox = document.querySelector('.week-chk[data-week="' + wInt + '"]');
+                
+                // Obliczamy daty początkowe (zabezpieczenie na weekendy z oryginalnego kodu)
+                var today = new Date();
+                var day = today.getDay(); 
+                var hour = today.getHours();
+                var diff = today.getDate() - day + (day == 0 ? -6 : 1);
+                if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
+                
+                var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
+
+                // Przechodzimy przez 52 tygodnie do przodu
+                for (var i = 0; i < 52; i++) {
+                    var sW = new Date(startPoint.getTime() + (i * 7 * 86400000));
+                    var weekNum = getWeekNumber(sW);
+                    if (weekNum > 53) continue;
                     
-                    if (existingCheckbox) {
+                    let wStr = weekNum.toString();
+                    
+                    // Budujemy element TYLKO jeśli ten tydzień jest dostępny w arkuszu (matrix)
+                    if (matrix[wStr]) {
+                        var eW = new Date(sW.getTime() + (5 * 86400000)); 
+                        
+                        var dStart = String(sW.getDate()).padStart(2, '0') + "." + String(sW.getMonth()+1).padStart(2, '0');
+                        var dEnd = String(eW.getDate()).padStart(2, '0') + "." + String(eW.getMonth()+1).padStart(2, '0');
+                        var labelText = (t.week || "Tydzień") + " " + weekNum + " (" + dStart + " " + (t.to || "do") + " " + dEnd + ")";
+                        
+                        // 1. Dodajemy Checkbox do głównego panelu zamówień
+                        var label = document.createElement('label'); 
+                        label.className = "region-label";
+                        var input = document.createElement('input');
+                        input.type = "checkbox"; 
+                        input.className = "week-chk"; 
+                        input.name = "tygodnie[]";
+                        input.setAttribute('data-week', weekNum);
+                        input.value = labelText;
+                        
+                        label.appendChild(input); 
+                        label.appendChild(document.createTextNode(" " + input.value));
+                        if (weeksContainer) weeksContainer.appendChild(label);
+
+                        // 2. Dodajemy opcję do darmowego podglądu
                         let opt = document.createElement('option'); 
-                        opt.value = w;
-                        opt.textContent = existingCheckbox.value;
+                        opt.value = wStr;
+                        opt.textContent = labelText;
                         select.appendChild(opt);
                     }
-                });
-            } else { 
-                section.style.display = 'none'; 
-            }
-
-            // --- FILTR: Ukrywanie tygodni w formularzu zamówień, których nie ma w arkuszu ---
-            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
-                let input = label.querySelector('.week-chk');
-                if (input) {
-                    let weekValue = input.getAttribute('data-week');
-                    // Jeśli tygodnia nie ma w matrix (czyli w arkuszu), ukryj cały element
-                    if (!matrix[weekValue]) {
-                        label.style.display = 'none';
-                        input.disabled = true; // Zabezpieczenie, by nikt tego nie zaznaczył
-                    } else {
-                        label.style.display = 'block';
-                        input.disabled = false;
-                    }
                 }
-            });
+            } else { 
+                section.style.display = 'none';
+                if (weeksContainer) weeksContainer.innerHTML = '<div style="color: #e74c3c; padding: 15px; text-align: center;">Brak dostępnych tygodni w bazie.</div>';
+            }
         }
 
         if (document.getElementById('freePreviewWeek')) {
