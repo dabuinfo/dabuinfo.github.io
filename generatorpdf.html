@@ -1079,7 +1079,7 @@
             
             var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
             
-            for (var i = 0; i < 15; i++) {
+            for (var i = 0; i < 52; i++) {
                 var sW = new Date(startPoint.getTime() + (i * 7 * 86400000));
                 
                 var weekNum = getWeekNumber(sW);
@@ -1483,6 +1483,22 @@
             } else { 
                 section.style.display = 'none'; 
             }
+
+            // --- FILTR: Ukrywanie tygodni w formularzu zamówień, których nie ma w arkuszu ---
+            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
+                let input = label.querySelector('.week-chk');
+                if (input) {
+                    let weekValue = input.getAttribute('data-week');
+                    // Jeśli tygodnia nie ma w matrix (czyli w arkuszu), ukryj cały element
+                    if (!matrix[weekValue]) {
+                        label.style.display = 'none';
+                        input.disabled = true; // Zabezpieczenie, by nikt tego nie zaznaczył
+                    } else {
+                        label.style.display = 'block';
+                        input.disabled = false;
+                    }
+                }
+            });
         }
 
         if (document.getElementById('freePreviewWeek')) {
