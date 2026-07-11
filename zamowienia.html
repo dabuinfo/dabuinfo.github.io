@@ -37,6 +37,8 @@
         .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
         .btn-order:active { transform: scale(0.98); }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
+        .price-container { font-size: 1.1rem; }
+        .price-eur { color: #f1c40f; font-weight: bold; }
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
@@ -53,9 +55,9 @@
     <div class="service-info">
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie z serwerów firm sprzątających.
         <ul>
-            <li><b>Gminy (Extra): 25 zł</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
-            <li><b>Landy (Powiaty/Miasta): 25 zł</b> – za 1 dzień (wybierz ilość dni za pomocą +/-).</li>
-            <li><b>Jednorazowe Pobieranie Botem: 850 zł</b> – za pobranie terminów do końca roku w formie arkusza danych.</li>
+            <li><b>Gminy (Extra): 25 zł (6 €)</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
+            <li><b>Landy (Powiaty/Miasta): 25 zł (6 €)</b> – za 1 dzień (wybierz ilość dni za pomocą +/-).</li>
+            <li><b>Jednorazowe Pobieranie Botem: 850 zł (204 €)</b> – za pobranie terminów do końca roku w formie arkusza danych.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
     </div>
@@ -64,7 +66,9 @@
 
 <div class="cart-summary">
     <div style="max-width: 1000px; margin: 0 auto;">
-        <div style="margin-bottom: 10px;">Razem do zapłaty: <span id="totalPrice">0</span> zł</div>
+        <div class="price-container" style="margin-bottom: 10px;">
+            Razem do zapłaty: <span id="totalPrice">0</span> zł (<span class="price-eur"><span id="totalPriceEur">0</span> €</span>)
+        </div>
         <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie</button>
     </div>
 </div>
@@ -74,70 +78,68 @@
         const targetPhoneNumber = "+48600812820";
         
         const data = {
-    
-    "Landy (Powiaty i Miasta)": {
-        price: 25,
-        type: "counter", // Tutaj definiujemy wybór ilości dni (+/-)
-        desc: "Cena: 25 zł / dzień (wybierz ilość dni)",
-        items: {
-            "Baden-Württemberg": ["Freudenstadt", "Heidelberg", "Karlsruhe Powiat", "Karlsruhe Stadt", "Ortenau (Offenburg)", "Tuttlingen"],
-            "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Kulmbach", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
-            "Brandenburg": ["Elbe-Elstern", "Oder-Spree"],
-            "Hessen": ["Bad-Homburg", "Giessen", "Hersfeld-Rotenburg", "Limburg-Weilburg", "Rheingau-Taunus"],
-            "Niedersachsen": ["Diepholz", "Emsland", "Göttingen", "Gifhorn", "Harburg", "Heidekreis", "Lüneburg", "Stade", "Wolfsburg"],
-            "Nordrhein-Westfalen": ["Bonn", "Dortmund", "Erftstadt", "Jülich", "Leverkusen", "Neuss", "Pulheim", "Rhein-Sieg", "Solingen", "Wesseling", "Wuppertal"],
-            "Rheinland-Pfalz": ["Alzey-Worms", "Bad-Kreuznach", "Mayen-Koblenz", "Westerwald"],
-            "Sachsen": ["Leipzig", "Nordsachsen"],
-            "Sachsen-Anhalt": ["Altmarkkreis Salzwedel", "Burgenland"],
-            "Schleswig-Holstein": ["Rendsburg-Eckenförde"]
-        }
-    },
-    "Gminy (Extra)": {
-        price: 25,
-        type: "checkbox", // Tutaj definiujemy, że ma być tylko ptaszek
-        desc: "Cena: 25 zł / najbliższy termin",
-        items: {
-            "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
-            "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
-            "Powiat Neuss": ["Dormagen", "Grevenbroich", "Jüchen", "Kaarst", "Korschenbroich", "Meerbusch", "Neuss", "Rommerskirchen"],
-            "Powiat Wesel": ["Alpen", "Neukirchen-Vluyn", "Sonsbeck", "Voerde", "Xanten"],
-            "Powiat Düren": ["Aldenhoven", "Jülich", "Merzenich"],
-            "Powiat Heinsberg": ["Geilenkirchen", "Hückelhoven", "Selfkant", "Übach-Palenberg"],
-            "Powiat Viersen": ["Grefrath", "Nettetal", "Tönisvorst", "Viersen"],
-            "Powiat Märkischer": ["Altena", "Balve", "Iserlohn", "Menden", "Nachrodt-Wiblingwerde", "Plettenberg", "Werdohl"],
-            "Powiat Mettmann": ["Wülfrath"],
-            "Powiat Rhein-Erft": ["Bedburg"],
-            
-        }
-    },
-    "Jednorazowe Pobieranie Bazy Botem": {
-        price: 850,
-        type: "checkbox", 
-        desc: "Cena: 850 zł / pojedyncze pobranie",
-        items: {
-    
-    "Do końca roku (plik csv)": [
-        "Altmarkkreis-Salzwedel",
-        "Bonn 2026",
-        "Erftstadt 2026", 
-        "Freudenstadt 2026", 
-        "Gifhorn 2026", 
-        "Karlsruhe Stadt 2026",
-        "Limburg-Weilburg 2026", 
-        "Lüneburg 2026", 
-        "Mayen-Koblenz 2026", 
-        "Monachium-Południowy Wschód 2026", 
-        "Neustadt an der Waldnaab 2026", 
-        "Ortenau (Offenburg) 2026", 
-        "Rendsburg-Eckenförde 2026", 
-        "Westerwald 2026"
-    ]
-}
-    }
-};
+            "Landy (Powiaty i Miasta)": {
+                price: 25,
+                type: "counter",
+                desc: "Cena: 25 zł (6 €) / dzień (wybierz ilość dni)",
+                items: {
+                    "Baden-Württemberg": ["Freudenstadt", "Heidelberg", "Karlsruhe Powiat", "Karlsruhe Stadt", "Ortenau (Offenburg)", "Tuttlingen"],
+                    "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Kulmbach", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
+                    "Brandenburg": ["Elbe-Elstern", "Oder-Spree"],
+                    "Hessen": ["Bad-Homburg", "Giessen", "Hersfeld-Rotenburg", "Limburg-Weilburg", "Rheingau-Taunus"],
+                    "Niedersachsen": ["Diepholz", "Emsland", "Göttingen", "Gifhorn", "Harburg", "Heidekreis", "Lüneburg", "Stade", "Wolfsburg"],
+                    "Nordrhein-Westfalen": ["Bonn", "Dortmund", "Erftstadt", "Jülich", "Leverkusen", "Neuss", "Pulheim", "Rhein-Sieg", "Solingen", "Wesseling", "Wuppertal"],
+                    "Rheinland-Pfalz": ["Alzey-Worms", "Bad-Kreuznach", "Mayen-Koblenz", "Westerwald"],
+                    "Sachsen": ["Leipzig", "Nordsachsen"],
+                    "Sachsen-Anhalt": ["Altmarkkreis Salzwedel", "Burgenland"],
+                    "Schleswig-Holstein": ["Rendsburg-Eckenförde"]
+                }
+            },
+            "Gminy (Extra)": {
+                price: 25,
+                type: "checkbox",
+                desc: "Cena: 25 zł (6 €) / najbliższy termin",
+                items: {
+                    "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
+                    "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
+                    "Powiat Neuss": ["Dormagen", "Grevenbroich", "Jüchen", "Kaarst", "Korschenbroich", "Meerbusch", "Neuss", "Rommerskirchen"],
+                    "Powiat Wesel": ["Alpen", "Neukirchen-Vluyn", "Sonsbeck", "Voerde", "Xanten"],
+                    "Powiat Düren": ["Aldenhoven", "Jülich", "Merzenich"],
+                    "Powiat Heinsberg": ["Geilenkirchen", "Hückelhoven", "Selfkant", "Übach-Palenberg"],
+                    "Powiat Viersen": ["Grefrath", "Nettetal", "Tönisvorst", "Viersen"],
+                    "Powiat Märkischer": ["Altena", "Balve", "Iserlohn", "Menden", "Nachrodt-Wiblingwerde", "Plettenberg", "Werdohl"],
+                    "Powiat Mettmann": ["Wülfrath"],
+                    "Powiat Rhein-Erft": ["Bedburg"],
+                }
+            },
+            "Jednorazowe Pobieranie Bazy Botem": {
+                price: 850,
+                type: "checkbox", 
+                desc: "Cena: 850 zł (204 €) / pojedyncze pobranie",
+                items: {
+                    "Do końca roku (plik csv)": [
+                        "Altmarkkreis-Salzwedel",
+                        "Bonn 2026",
+                        "Erftstadt 2026", 
+                        "Freudenstadt 2026", 
+                        "Gifhorn 2026", 
+                        "Karlsruhe Stadt 2026",
+                        "Limburg-Weilburg 2026", 
+                        "Lüneburg 2026", 
+                        "Mayen-Koblenz 2026", 
+                        "Monachium-Południowy Wschód 2026", 
+                        "Neustadt an der Waldnaab 2026", 
+                        "Ortenau (Offenburg) 2026", 
+                        "Rendsburg-Eckenförde 2026", 
+                        "Westerwald 2026"
+                    ]
+                }
+            }
+        };
 
         const container = document.getElementById('regionsContainer');
         const priceDisplay = document.getElementById('totalPrice');
+        const priceDisplayEur = document.getElementById('totalPriceEur');
         const orderBtn = document.getElementById('submitOrderBtn');
         
         let cart = {};
@@ -152,7 +154,6 @@
                 
                 regions.forEach(r => {
                     if (config.type === "checkbox") {
-                        // Tworzenie zwykłego ptaszka dla Gmin i Pobierania Botem
                         const label = document.createElement('label'); label.className = 'region-checkbox-label';
                         const input = document.createElement('input'); input.type = 'checkbox';
                         input.addEventListener('change', (e) => {
@@ -162,7 +163,6 @@
                         });
                         label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
                     } else if (config.type === "counter") {
-                        // Tworzenie licznika +/- dla Landów
                         const wrapper = document.createElement('div'); wrapper.className = 'region-counter-wrapper';
                         const nameSpan = document.createElement('span'); nameSpan.className = 'region-name'; nameSpan.textContent = r;
                         
@@ -202,7 +202,13 @@
                 total += item.price * item.qty;
                 itemCount++;
             });
+            
+            // Sztywne przeliczenie oparte na proporcji 25 zł = 6 € (czyli total * 6 / 25)
+            let totalEur = (total * 6) / 25;
+
             priceDisplay.textContent = total;
+            priceDisplayEur.textContent = totalEur;
+            
             orderBtn.disabled = itemCount === 0;
         }
 
@@ -221,7 +227,10 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemsList}. Razem: ${totalToPay} zł. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            // Sztywne wyliczenie euro do wiadomości SMS
+            const totalEurToPay = (totalToPay * 6) / 25;
+            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
     })();
