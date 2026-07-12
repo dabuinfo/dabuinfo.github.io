@@ -11,6 +11,8 @@
             --text-color: #333;
             --accent-color: #000;
             --border-color: #ccc;
+            --info-bg: #f8f9fa;
+            --info-border: #adb5bd;
         }
 
         /* Dark Mode */
@@ -21,6 +23,8 @@
                 --text-color: #e0e0e0;
                 --accent-color: #ffffff;
                 --border-color: #444;
+                --info-bg: #2d2d2d;
+                --info-border: #555;
             }
         }
 
@@ -46,16 +50,30 @@
             box-sizing: border-box;
         }
 
-        .header-graphic { text-align: center; margin-bottom: 25px; }
+        .header-graphic { text-align: center; margin-bottom: 20px; }
         .header-graphic svg { fill: var(--accent-color); width: 64px; height: 64px; }
 
         h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; }
-        .subtitle { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 25px; }
+        .subtitle { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px; }
+
+        /* Styl dla ramki z informacjami o CSV */
+        .info-box {
+            background-color: var(--info-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .info-box strong { display: block; margin-bottom: 8px; }
+        .info-box ul { margin: 0; padding-left: 20px; }
+        .info-box li { margin-bottom: 4px; }
 
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
 
-        input, select { 
+        input { 
             width: 100%; 
             padding: 14px; 
             border: 1px solid var(--border-color); 
@@ -64,10 +82,9 @@
             color: var(--text-color);
             box-sizing: border-box;
             font-size: 16px; 
-            appearance: auto;
         }
         
-        input:focus, select:focus { outline: none; border-color: var(--accent-color); }
+        input:focus { outline: none; border-color: var(--accent-color); }
 
         button { 
             background: var(--accent-color); 
@@ -76,14 +93,14 @@
             border: none; 
             cursor: pointer; 
             width: 100%; 
-            font-size: 16px; 
+            font-size: 18px; 
             border-radius: 8px; 
             font-weight: bold;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
             margin-top: 10px;
         }
 
-        button:active { opacity: 0.8; }
+        button:active { opacity: 0.8; transform: scale(0.98); }
 
         #wynik { 
             margin-top: 25px; 
@@ -99,13 +116,17 @@
             display: inline-block;
             background-color: #ffffff;
             color: #2e7d32;
-            padding: 12px 20px;
+            padding: 14px 24px;
             margin-top: 15px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s;
         }
+        
+        .sms-btn:active { background-color: #f0f0f0; }
 
         footer { 
             margin-top: 30px; 
@@ -126,27 +147,23 @@
                 <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
             </svg>
             <h2>Data Mining Service</h2>
-            <div class="subtitle">Data is the new oil. Let's drill it.</div>
+            <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
+        </div>
+        
+        <!-- NOWA SEKCJA INFORMACYJNA -->
+        <div class="info-box">
+            <strong>Kupujesz gotowy plik .CSV, który zawiera wyciągnięte surowe dane firm z serwisu Gelbe Seiten (o ile zostały tam podane):</strong>
+            <ul>
+                <li>Nazwa firmy i kategoria (branża)</li>
+                <li>Dokładny adres</li>
+                <li>Najbliższe godziny otwarcia (od dziś)</li>
+                <li>Dane kontaktowe: Telefon, E-mail, strona WWW</li>
+            </ul>
         </div>
         
         <div class="form-group">
-            <label>Wybierz branżę:</label>
-            <select id="branzaWybierz" onchange="pokazInne()">
-                <option value="" disabled selected>Wybierz z listy...</option>
-                <option value="Fahrradreparaturen">Naprawa rowerów</option>
-                <option value="Gebrauchte Fahrräder">Rowery używane</option>
-                <option value="Gartengeräte">Sprzęt ogrodniczy</option>
-                <option value="Landmaschinen">Maszyny rolnicze</option>
-                <option value="Reifendienste">Opony</option>
-                <option value="Hochdruckreiniger">Myjki ciśnieniowe</option>
-                <option value="Quad">Quady</option>
-                <option value="Motorräder">Motory</option>
-                <option value="Autoteile">Części samochodowe</option>
-                <option value="Autoverwertung">Utylizacja aut</option>
-                <option value="Autolackiererei">Lakiernie</option>
-                <option value="INNE">Inne (wpisz własną)...</option>
-            </select>
-            <input type="text" id="branzaInne" placeholder="Wpisz nazwę szukanej branży..." style="display: none; margin-top: 10px;">
+            <label>Czego szukasz (branża):</label>
+            <input type="text" id="branza" placeholder="np. Naprawa rowerów, opony, rolnictwo..." required>
         </div>
         
         <div class="form-group">
@@ -155,15 +172,16 @@
         </div>
 
         <div class="form-group">
-            <label>Dystans (do 50 km):</label>
-            <input type="number" id="dystans" value="50" min="1" max="50">
+            <label>Dystans w km (max 100 km):</label>
+            <input type="number" id="dystans" value="50" min="1" max="100">
         </div>
 
-        <button onclick="generujZamowienie()">Generuj zamówienie (50 PLN)</button>
+        <button id="submitBtn" onclick="generujZamowienie()">Generuj zamówienie (50 PLN)</button>
 
         <div id="wynik">
             <p style="margin-top:0;"><strong>Zamówienie gotowe!</strong></p>
             <p>Twój numer: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+            <p style="font-size: 1.2em; margin-bottom:0;">Kwota: <b id="kwotaWynik"></b></p>
             <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
         </div>
     </div>
@@ -173,32 +191,40 @@
     </footer>
 
     <script>
-        function pokazInne() {
-            const select = document.getElementById('branzaWybierz');
-            const poleInne = document.getElementById('branzaInne');
-            if (select.value === 'INNE') {
-                poleInne.style.display = 'block';
-                poleInne.focus();
-            } else {
-                poleInne.style.display = 'none';
-                poleInne.value = '';
+        const dystansInput = document.getElementById('dystans');
+        const btn = document.getElementById('submitBtn');
+        let aktualnaCena = 50; 
+
+        function przeliczCene() {
+            let km = parseInt(dystansInput.value) || 0;
+            
+            if (km > 100) {
+                km = 100;
+                dystansInput.value = 100;
             }
+
+            if (km < 25) {
+                aktualnaCena = 25;
+            } else {
+                aktualnaCena = km; 
+            }
+
+            btn.innerText = `Generuj zamówienie (${aktualnaCena} PLN)`;
         }
 
-        function generujZamowienie() {
-            const miasto = document.getElementById('miasto').value;
-            const dystans = document.getElementById('dystans').value;
-            const select = document.getElementById('branzaWybierz');
-            
-            let branza = select.value;
-            if (branza === 'INNE') { branza = document.getElementById('branzaInne').value; }
+        dystansInput.addEventListener('input', przeliczCene);
+        window.onload = przeliczCene;
 
+        function generujZamowienie() {
+            const miasto = document.getElementById('miasto').value.trim();
+            const dystans = document.getElementById('dystans').value.trim();
+            const branza = document.getElementById('branza').value.trim();
+            
             if(!miasto || !branza) { 
                 alert('Proszę wypełnić wszystkie dane (miejscowość i branżę)!'); 
                 return; 
             }
             
-            // Generowanie kodu
             const now = new Date();
             const rok = now.getFullYear().toString().slice(-2);
             const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -207,27 +233,22 @@
             
             const nr = `${rok}${miesiac}${dzien}-${losowy}`;
             
-            // Przygotowanie treści SMS
             const numerTelefonu = "+48600812820";
-            const trescSms = `Zamówienie bazy danych.\nNumer: ${nr}\nBranża: ${branza}\nMiasto: ${miasto}\nDystans: ${dystans} km`;
+            const trescSms = `Zamówienie Bazy.\nNr: ${nr}\nBranża: ${branza}\nMiasto: ${miasto}\nDystans: ${dystans} km\nCena: ${aktualnaCena} PLN`;
             
-            // Kodowanie znaków (spacje, polskie znaki itp. w SMS)
             const encodedTresc = encodeURIComponent(trescSms);
             
-            // Tworzenie linku SMS (format uniwersalny)
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? '&' : '?';
             const smsLink = `sms:${numerTelefonu}${smsSeparator}body=${encodedTresc}`;
 
-            // Aktualizacja HTML
             document.getElementById('nrZamowienia').innerText = nr;
+            document.getElementById('kwotaWynik').innerText = `${aktualnaCena} PLN`;
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
-            // Przewinięcie ekranu
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
 
-            // Automatyczne otwarcie aplikacji SMS
             window.location.href = smsLink;
         }
     </script>
