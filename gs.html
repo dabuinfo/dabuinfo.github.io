@@ -29,9 +29,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0; 
-            padding: 15px; 
+            padding: 20px 15px; 
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* TO NAPRAWIA PROBLEM - układa w kolumnie (góra-dół) */
+            align-items: center;    /* Środkuje wszystko w poziomie */
+            min-height: 100vh;
         }
 
         .box { 
@@ -70,7 +72,7 @@
             background-color: var(--box-bg);
             color: var(--text-color);
             box-sizing: border-box;
-            font-size: 16px; /* 16px zapobiega auto-zoomowi na iOS */
+            font-size: 16px; 
             appearance: auto;
         }
         
@@ -105,7 +107,15 @@
             text-align: center;
         }
 
-        footer { margin-top: 30px; font-size: 0.75em; color: #888; text-align: justify; line-height: 1.4; }
+        footer { 
+            margin-top: 30px; 
+            font-size: 0.75em; 
+            color: #888; 
+            text-align: justify; 
+            line-height: 1.4; 
+            width: 100%;
+            max-width: 500px; /* Stopka będzie tak samo szeroka jak okienko */
+        }
     </style>
 </head>
 <body>
@@ -204,7 +214,7 @@
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('wynik').style.display = 'block';
             
-            // Przewinięcie ekranu do wyniku (przydatne na mniejszych smartfonach)
+            // Przewinięcie ekranu do wyniku
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
