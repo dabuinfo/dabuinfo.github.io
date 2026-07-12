@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zamówienie Bazy Danych - Gelbe Seiten</title>
+    <title>Zamówienie Bazy Danych</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #333; }
-        .box { border: 1px solid #ddd; padding: 25px; border-radius: 10px; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        :root { --bg-color: #f4f4f9; --box-bg: #ffffff; --text-color: #333; --accent-color: #000; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg-color: #121212; --box-bg: #1e1e1e; --text-color: #e0e0e0; --accent-color: #ffffff; }
+        }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .box { width: 100%; max-width: 500px; background-color: var(--box-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h2 { margin-top: 0; color: var(--accent-color); }
         .form-group { margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { background: #000; color: #fff; padding: 14px; border: none; cursor: pointer; width: 100%; font-size: 16px; border-radius: 5px; font-weight: bold; }
-        button:hover { background: #333; }
-        #wynik { margin-top: 25px; padding: 20px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px; display: none; }
-        footer { margin-top: 40px; font-size: 0.85em; color: #666; border-top: 1px solid #eee; padding-top: 15px; text-align: justify; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #555; border-radius: 8px; background-color: var(--box-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; }
+        button { background: var(--accent-color); color: var(--bg-color); padding: 16px; border: none; cursor: pointer; width: 100%; font-size: 16px; border-radius: 8px; font-weight: bold; }
+        #wynik { margin-top: 25px; padding: 20px; background: #2e7d32; color: white; border-radius: 8px; display: none; }
+        footer { margin-top: 30px; font-size: 0.75em; color: #888; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="box">
         <h2>Zamówienie bazy danych</h2>
-        <p>Wybierz branżę i podaj miasto, aby otrzymać unikalny numer zamówienia.</p>
         
         <div class="form-group">
             <label>Branża:</label>
-            <input type="text" id="branza" list="branze-list" placeholder="Wybierz lub wpisz branżę..." required>
+            <input type="text" id="branza" list="branze-list" placeholder="np. Fahrradreparaturen" required>
             <datalist id="branze-list">
-                <option value="Fahrradreparaturen">Rowery - Naprawa</option>
+                <option value="Fahrradreparaturen">Naprawa rowerów</option>
                 <option value="Gebrauchte Fahrräder">Rowery używane</option>
-                <option value="Gartengeräte">Kosiarki / Sprzęt ogrodniczy</option>
+                <option value="Gartengeräte">Sprzęt ogrodniczy</option>
                 <option value="Landmaschinen">Maszyny rolnicze</option>
                 <option value="Reifendienste">Opony</option>
                 <option value="Hochdruckreiniger">Myjki ciśnieniowe</option>
@@ -36,7 +40,7 @@
                 <option value="Autoteile">Części samochodowe</option>
                 <option value="Autoverwertung">Utylizacja aut</option>
                 <option value="Autolackiererei">Lakiernie</option>
-            </datalist>
+                </datalist>
         </div>
         
         <div class="form-group">
@@ -45,37 +49,31 @@
         </div>
 
         <div class="form-group">
-            <label>Dystans (max 50 km):</label>
+            <label>Dystans (km):</label>
             <input type="number" id="dystans" value="50" min="1" max="50">
         </div>
 
         <button onclick="generujZamowienie()">Generuj zamówienie (50 PLN)</button>
 
         <div id="wynik">
-            <p><strong>Zamówienie zarejestrowane!</strong></p>
-            <p>Twój numer zamówienia: <b id="nrZamowienia" style="font-size: 1.3em; color: #2e7d32;"></b></p>
-            <p>Wyślij SMS z tym numerem na numer: <b>+48 600 812 820</b></p>
+            <p><strong>Zamówienie gotowe!</strong></p>
+            <p>Numer: <b id="nrZamowienia"></b></p>
+            <p>Wyślij SMS na: <b>+48 600 812 820</b></p>
         </div>
     </div>
 
     <footer>
-        <p><b>RODO i Informacje:</b> Administratorem danych jest Darek [Twoje Nazwisko/Firma]. Dane pozyskane z publicznie dostępnych rejestrów (Gelbe Seiten) wykorzystywane są wyłącznie do celów przygotowania bazy danych na zlecenie klienta. Zamawiający oświadcza, że wykorzysta dane zgodnie z obowiązującym prawem (UWG).</p>
+        <p><b>RODO:</b> Administratorem danych jest Darek [Twoje Nazwisko]. Dane pozyskane z publicznych rejestrów (Gelbe Seiten).</p>
     </footer>
 
     <script>
         function generujZamowienie() {
             const miasto = document.getElementById('miasto').value;
             const branza = document.getElementById('branza').value;
+            if(!miasto || !branza) { alert('Wypełnij wszystkie pola!'); return; }
             
-            if(!miasto || !branza) { alert('Proszę wypełnić wszystkie pola'); return; }
-            
-            const data = new Date();
-            const rok = data.getFullYear().toString().slice(-2);
-            const miesiac = (data.getMonth() + 1).toString().padStart(2, '0');
-            const dzien = data.getDate().toString().padStart(2, '0');
-            const losowy = Math.floor(1000 + Math.random() * 9000);
-            
-            const nr = `${rok}${miesiac}${dzien}-${losowy}`;
+            const now = new Date();
+            const nr = `${now.getFullYear().toString().slice(-2)}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}-${Math.floor(1000 + Math.random()*9000)}`;
             
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('wynik').style.display = 'block';
