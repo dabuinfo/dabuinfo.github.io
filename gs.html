@@ -2,33 +2,127 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zamówienie Bazy Danych</title>
     <style>
-        :root { --bg-color: #f4f4f9; --box-bg: #ffffff; --text-color: #333; --accent-color: #000; }
-        @media (prefers-color-scheme: dark) {
-            :root { --bg-color: #121212; --box-bg: #1e1e1e; --text-color: #e0e0e0; --accent-color: #ffffff; }
+        :root {
+            --bg-color: #f4f4f9;
+            --box-bg: #ffffff;
+            --text-color: #333;
+            --accent-color: #000;
+            --border-color: #ccc;
         }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .box { width: 100%; max-width: 500px; background-color: var(--box-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h2 { margin-top: 0; color: var(--accent-color); }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --box-bg: #1e1e1e;
+                --text-color: #e0e0e0;
+                --accent-color: #ffffff;
+                --border-color: #444;
+            }
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0; 
+            padding: 15px; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .box { 
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--box-bg);
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+            box-sizing: border-box;
+        }
+
+        /* Grafika SVG nagłówka */
+        .header-graphic {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header-graphic svg {
+            fill: var(--accent-color);
+            width: 64px;
+            height: 64px;
+        }
+
+        h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; }
+        .subtitle { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 25px; }
+
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, select { width: 100%; padding: 14px; border: 1px solid #555; border-radius: 8px; background-color: var(--box-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; }
-        button { background: var(--accent-color); color: var(--bg-color); padding: 16px; border: none; cursor: pointer; width: 100%; font-size: 16px; border-radius: 8px; font-weight: bold; }
-        #wynik { margin-top: 25px; padding: 20px; background: #2e7d32; color: white; border-radius: 8px; display: none; }
-        footer { margin-top: 30px; font-size: 0.75em; color: #888; text-align: center; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
+
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-size: 16px; /* 16px zapobiega auto-zoomowi na iOS */
+            appearance: auto;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button { 
+            background: var(--accent-color); 
+            color: var(--bg-color); 
+            padding: 16px; 
+            border: none; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px; 
+            border-radius: 8px; 
+            font-weight: bold;
+            transition: opacity 0.2s;
+            margin-top: 10px;
+        }
+
+        button:active { opacity: 0.8; }
+
+        #wynik { 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: #2e7d32; 
+            color: white;
+            border-radius: 8px; 
+            display: none; 
+            text-align: center;
+        }
+
+        footer { margin-top: 30px; font-size: 0.75em; color: #888; text-align: justify; line-height: 1.4; }
     </style>
 </head>
 <body>
 
     <div class="box">
-        <h2>Zamówienie bazy danych</h2>
+        <div class="header-graphic">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
+            </svg>
+            <h2>Data Mining Service</h2>
+            <div class="subtitle">Data is the new oil. Let's drill it.</div>
+        </div>
         
         <div class="form-group">
-            <label>Branża:</label>
-            <input type="text" id="branza" list="branze-list" placeholder="np. Fahrradreparaturen" required>
-            <datalist id="branze-list">
+            <label>Wybierz branżę:</label>
+            <select id="branzaWybierz" onchange="pokazInne()">
+                <option value="" disabled selected>Wybierz z listy...</option>
                 <option value="Fahrradreparaturen">Naprawa rowerów</option>
                 <option value="Gebrauchte Fahrräder">Rowery używane</option>
                 <option value="Gartengeräte">Sprzęt ogrodniczy</option>
@@ -40,7 +134,9 @@
                 <option value="Autoteile">Części samochodowe</option>
                 <option value="Autoverwertung">Utylizacja aut</option>
                 <option value="Autolackiererei">Lakiernie</option>
-                </datalist>
+                <option value="INNE">Inne (wpisz własną)...</option>
+            </select>
+            <input type="text" id="branzaInne" placeholder="Wpisz nazwę szukanej branży..." style="display: none; margin-top: 10px;">
         </div>
         
         <div class="form-group">
@@ -49,34 +145,67 @@
         </div>
 
         <div class="form-group">
-            <label>Dystans (km):</label>
+            <label>Dystans (do 50 km):</label>
             <input type="number" id="dystans" value="50" min="1" max="50">
         </div>
 
         <button onclick="generujZamowienie()">Generuj zamówienie (50 PLN)</button>
 
         <div id="wynik">
-            <p><strong>Zamówienie gotowe!</strong></p>
-            <p>Numer: <b id="nrZamowienia"></b></p>
-            <p>Wyślij SMS na: <b>+48 600 812 820</b></p>
+            <p style="margin-top:0;"><strong>Zamówienie gotowe!</strong></p>
+            <p>Twój numer: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+            <p style="margin-bottom:0;">Wyślij SMS na numer:<br><b style="font-size: 1.2em;">+48 600 812 820</b></p>
         </div>
     </div>
 
     <footer>
-        <p><b>RODO:</b> Administratorem danych jest Darek [Twoje Nazwisko]. Dane pozyskane z publicznych rejestrów (Gelbe Seiten).</p>
+        <p><b>RODO:</b> Administratorem danych jest Darek [Twoje Nazwisko]. Dane pozyskane z publicznych rejestrów (Gelbe Seiten). Zamawiający oświadcza, że wykorzysta pozyskane dane b2b zgodnie z obowiązującym prawem o zwalczaniu nieuczciwej konkurencji (UWG).</p>
     </footer>
 
     <script>
+        // Pokazywanie dodatkowego pola "Inne"
+        function pokazInne() {
+            const select = document.getElementById('branzaWybierz');
+            const poleInne = document.getElementById('branzaInne');
+            if (select.value === 'INNE') {
+                poleInne.style.display = 'block';
+                poleInne.focus();
+            } else {
+                poleInne.style.display = 'none';
+                poleInne.value = '';
+            }
+        }
+
+        // Generowanie zamówienia
         function generujZamowienie() {
             const miasto = document.getElementById('miasto').value;
-            const branza = document.getElementById('branza').value;
-            if(!miasto || !branza) { alert('Wypełnij wszystkie pola!'); return; }
+            const select = document.getElementById('branzaWybierz');
             
+            // Logika wyboru branży (z listy lub wpisanej z palca)
+            let branza = select.value;
+            if (branza === 'INNE') {
+                branza = document.getElementById('branzaInne').value;
+            }
+
+            if(!miasto || !branza) { 
+                alert('Proszę wypełnić wszystkie dane (miejscowość i branżę)!'); 
+                return; 
+            }
+            
+            // Generowanie kodu
             const now = new Date();
-            const nr = `${now.getFullYear().toString().slice(-2)}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}-${Math.floor(1000 + Math.random()*9000)}`;
+            const rok = now.getFullYear().toString().slice(-2);
+            const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dzien = now.getDate().toString().padStart(2, '0');
+            const losowy = Math.floor(1000 + Math.random() * 9000);
+            
+            const nr = `${rok}${miesiac}${dzien}-${losowy}`;
             
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('wynik').style.display = 'block';
+            
+            // Przewinięcie ekranu do wyniku (przydatne na mniejszych smartfonach)
+            document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
