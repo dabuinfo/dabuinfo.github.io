@@ -1000,14 +1000,13 @@
 
         const clean = (str) => {
     if (!str) return "";
-    // Mapa polskich znaków na odpowiedniki ASCII
+    // Mapa polskich znaków na odpowiedniki ASCII (niemieckie umlauty pozostawiamy nienaruszone)
     const map = {
         'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
-        'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
-        'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss', 'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
+        'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z'
     };
-    // Zamiana znaków zgodnie z mapą
-    return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
+    // Zamiana tylko polskich znaków, umlauty przechodzą dalej
+    return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, m => map[m] || m);
 };
 
         // Krok 2: Odblokowanie Listy - WERSJA Z WERYFIKACJĄ
