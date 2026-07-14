@@ -926,35 +926,42 @@
         }
 
         function updatePriceDisplay() {
-            let btn = document.getElementById('btnSubmit');
-            let svgPriceSub = document.getElementById('svgPriceSub');
-            if (btn) {
-                let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
-                
-                // Gotowe pakiety (np. Hessen, Całe Niemcy)
-                if (isPremiumMode) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (${premiumPackageName} - Wycena Indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                } 
-                // Powyżej 3 rejonów
-                else if (selectedRegionsCount > 3) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
-                } 
-                // 1, 2 lub 3 rejony (STAŁA CENA)
-                else if (selectedRegionsCount > 0) {
-                    let sumPLN = 125;
-                    let sumEUR = 30;
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
-                } 
-                // Stan początkowy
-                else {
-                    btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                }
-            }
+    let btn = document.getElementById('btnSubmit');
+    let svgPriceSub = document.getElementById('svgPriceSub');
+    if (btn) {
+        let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
+        let selectedWeeksCount = document.querySelectorAll('.week-chk:checked').length;
+        
+        // Sprawdzamy czy aktywny jest tryb specjalny (gdzie nie wybiera się tygodni z listy)
+        let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
+        
+        // Jeśli zaznaczono tygodnie i nie jest to tryb specjalny, używamy ich liczby jako mnożnika
+        let multiplier = (selectedWeeksCount > 0 && !isSpecialMode) ? selectedWeeksCount : 1;
+
+        // Gotowe pakiety (np. Hessen, Całe Niemcy)
+        if (isPremiumMode) {
+            btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (${premiumPackageName} - Wycena Indywidualna)`;
+            if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
+        } 
+        // Powyżej 3 rejonów
+        else if (selectedRegionsCount > 3) {
+            btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+            if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
+        } 
+        // 1, 2 lub 3 rejony (STAŁA CENA X LICZBA TYGODNI)
+        else if (selectedRegionsCount > 0) {
+            let sumPLN = 125 * multiplier;
+            let sumEUR = 30 * multiplier;
+            btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
+            if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
+        } 
+        // Stan początkowy
+        else {
+            btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
+            if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
         }
+    }
+}
 
         function updateMutualFiltering() {
             if(Object.keys(availabilityMatrix).length === 0) return;
@@ -1182,8 +1189,10 @@
                 body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
                 body += " PODSUMOWANIE CENY: Wycena indywidualna (powyżej 3 rejonów)\n";
             } else {
-                let sumPLN = 125; // Stała cena
-                let sumEUR = 30;  // Stała cena
+                // Dodany mnożnik do generowania treści maila
+                let multiplier = (wT.length > 0 && !isSpecialMode) ? wT.length : 1;
+                let sumPLN = 125 * multiplier; 
+                let sumEUR = 30 * multiplier;  
                 body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
                 body += " PODSUMOWANIE CENY: " + sumPLN + " PLN / " + sumEUR + " €\n";
             }
