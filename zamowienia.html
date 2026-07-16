@@ -162,11 +162,12 @@
                 wasteOptions.innerHTML = `
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
                         <span style="color: #ffffff; font-weight: bold;">♻️ Frakcja (dla Gmin):</span>
-                        <label style="cursor: pointer; font-weight: bold; color: #e0e0e0;">
-                            <input type="radio" name="wasteType" value="Sperrmüll" checked> Sperrmüll (Gabaryty)
+                        <span style="color: #888; font-size: 0.9em;">(Domyślnie wszystkie, zaznacz żeby filtrować)</span>
+                        <label style="cursor: pointer; font-weight: bold; color: #e0e0e0; display: flex; align-items: center; gap: 5px;">
+                            <input type="checkbox" class="waste-filter" value="Sperrmüll"> Sperrmüll
                         </label>
-                        <label style="cursor: pointer; font-weight: bold; color: #e67e22;">
-                            <input type="radio" name="wasteType" value="Elektro"> Elektro (Dla złomiarzy)
+                        <label style="cursor: pointer; font-weight: bold; color: #e67e22; display: flex; align-items: center; gap: 5px;">
+                            <input type="checkbox" class="waste-filter" value="Elektro"> 🧲 Elektro
                         </label>
                     </div>
                 `;
@@ -253,9 +254,13 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            // Pobranie wybranego typu (zabezpieczenie na wypadek braku elementu)
-            const wasteTypeEl = document.querySelector('input[name="wasteType"]:checked');
-            const selectedWasteType = wasteTypeEl ? wasteTypeEl.value : "Brak";
+            // Logika dla filtrów frakcji
+            const checkedFilters = document.querySelectorAll('.waste-filter:checked');
+            let selectedWasteType = "Wszystkie frakcje"; // Domyślnie gdy nic nie jest zaznaczone (lub zaznaczone są oba)
+            
+            if (checkedFilters.length === 1) {
+                selectedWasteType = checkedFilters[0].value;
+            }
 
             // Sztywne wyliczenie euro do wiadomości SMS
             const totalEurToPay = (totalToPay * 6) / 25;
