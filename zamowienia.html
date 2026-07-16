@@ -144,33 +144,35 @@
         
         let cart = {};
 
-        // SEKCJA: Wybór rodzaju odpadów w stylu DARK MODE
-        const wasteOptions = document.createElement('div');
-        wasteOptions.className = 'waste-type-selector';
-        wasteOptions.style.marginBottom = '20px';
-        wasteOptions.style.padding = '15px';
-        wasteOptions.style.backgroundColor = '#1e1e1e'; // Ciemne tło
-        wasteOptions.style.border = '1px solid #444';    // Delikatna, ciemna ramka
-        wasteOptions.style.borderRadius = '8px';
-        wasteOptions.style.color = '#e0e0e0';            // Domyślny jasny tekst
-        wasteOptions.innerHTML = `
-            <h3 class="land-header" style="margin-top: 0; margin-bottom: 15px; color: #ffffff;">♻️ Co zbierasz?</h3>
-            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                <label style="cursor: pointer; font-weight: bold; color: #5dade2;"> <input type="radio" name="wasteType" value="Wszystko (Sperrmüll + Elektro)" checked> Wszystko (Sperrmüll + Elektro)
-                </label>
-                <label style="cursor: pointer; font-weight: bold; color: #e0e0e0;"> <input type="radio" name="wasteType" value="Sperrmüll"> Sperrmüll (Gabaryty)
-                </label>
-                <label style="cursor: pointer; font-weight: bold; color: #e67e22;"> <input type="radio" name="wasteType" value="Elektro"> Elektro (Dla złomiarzy)
-                </label>
-            </div>
-        `;
-        container.appendChild(wasteOptions);
-        // KONIEC SEKCJI
-
         // Generowanie regionów (Landy, Gminy, Bazy)
         Object.entries(data).forEach(([groupName, config]) => {
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
             const desc = document.createElement('div'); desc.className = 'group-desc'; desc.textContent = config.desc; container.appendChild(desc);
+
+            // SEKCJA: Wybór rodzaju odpadów wstrzyknięty TYLKO dla Gminy (Extra)
+            if (groupName === "Gminy (Extra)") {
+                const wasteOptions = document.createElement('div');
+                wasteOptions.className = 'waste-type-selector';
+                wasteOptions.style.marginTop = '10px';
+                wasteOptions.style.marginBottom = '20px';
+                wasteOptions.style.padding = '10px 15px';
+                wasteOptions.style.backgroundColor = '#1e1e1e';
+                wasteOptions.style.border = '1px solid #444';
+                wasteOptions.style.borderRadius = '8px';
+                wasteOptions.innerHTML = `
+                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                        <span style="color: #ffffff; font-weight: bold;">♻️ Frakcja (dla Gmin):</span>
+                        <label style="cursor: pointer; font-weight: bold; color: #e0e0e0;">
+                            <input type="radio" name="wasteType" value="Sperrmüll" checked> Sperrmüll (Gabaryty)
+                        </label>
+                        <label style="cursor: pointer; font-weight: bold; color: #e67e22;">
+                            <input type="radio" name="wasteType" value="Elektro"> Elektro (Dla złomiarzy)
+                        </label>
+                    </div>
+                `;
+                container.appendChild(wasteOptions);
+            }
+            // KONIEC SEKCJI
 
             Object.entries(config.items).forEach(([sub, regions]) => {
                 const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = sub; container.appendChild(subH);
@@ -251,14 +253,15 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            // Pobranie wybranego typu z radio buttonów
-            const selectedWasteType = document.querySelector('input[name="wasteType"]:checked').value;
+            // Pobranie wybranego typu (zabezpieczenie na wypadek braku elementu)
+            const wasteTypeEl = document.querySelector('input[name="wasteType"]:checked');
+            const selectedWasteType = wasteTypeEl ? wasteTypeEl.value : "Brak";
 
             // Sztywne wyliczenie euro do wiadomości SMS
             const totalEurToPay = (totalToPay * 6) / 25;
             
             // Aktualizacja treści SMS
-            const msg = `Dzień dobry, zamówienie ${orderId} [Typ: ${selectedWasteType}]: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            const msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
             
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
