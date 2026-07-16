@@ -149,7 +149,7 @@
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
             const desc = document.createElement('div'); desc.className = 'group-desc'; desc.textContent = config.desc; container.appendChild(desc);
 
-            // SEKCJA: Wybór rodzaju odpadów wstrzyknięty TYLKO dla Gminy (Extra)
+            // SEKCJA: Opcja dla złomiarzy (TYLKO dla Gminy Extra)
             if (groupName === "Gminy (Extra)") {
                 const wasteOptions = document.createElement('div');
                 wasteOptions.className = 'waste-type-selector';
@@ -160,13 +160,11 @@
                 wasteOptions.style.border = '1px solid #444';
                 wasteOptions.style.borderRadius = '8px';
                 wasteOptions.innerHTML = `
-                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                        <span style="color: #ffffff; font-weight: bold;">♻️ Frakcja (dla Gmin):</span>
-                        <label style="cursor: pointer; font-weight: bold; color: #e0e0e0; display: flex; align-items: center; gap: 5px;">
-                            <input type="checkbox" class="waste-filter" value="Sperrmüll"> 🛋️ Sperrmüll
-                        </label>
-                        <label style="cursor: pointer; font-weight: bold; color: #e67e22; display: flex; align-items: center; gap: 5px;">
-                            <input type="checkbox" class="waste-filter" value="Elektro"> 🧲 Elektro
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <span style="color: #ffffff; font-weight: bold;">Opcja dla złomiarzy:</span>
+                        <label style="cursor: pointer; font-weight: bold; color: #e67e22; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="elektroOnlyFilter" value="Tylko Elektro"> 
+                            🧲 Chcę otrzymywać TYLKO terminy Elektro
                         </label>
                     </div>
                 `;
@@ -253,12 +251,12 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            // Logika dla filtrów frakcji
-            const checkedFilters = document.querySelectorAll('.waste-filter:checked');
-            let selectedWasteType = "Wszystkie frakcje"; // Domyślnie gdy nic nie jest zaznaczone (lub zaznaczone są oba)
+            // Logika dla filtra Elektro
+            const elektroFilter = document.getElementById('elektroOnlyFilter');
+            let selectedWasteType = "Wszystko (Domyślnie)"; 
             
-            if (checkedFilters.length === 1) {
-                selectedWasteType = checkedFilters[0].value;
+            if (elektroFilter && elektroFilter.checked) {
+                selectedWasteType = "Tylko Elektro";
             }
 
             // Sztywne wyliczenie euro do wiadomości SMS
