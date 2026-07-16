@@ -195,6 +195,26 @@
             });
         });
 
+        // DODANA SEKCJA: Wybór rodzaju odpadów (Sperrmüll / Elektro)
+        const wasteOptions = document.createElement('div');
+        wasteOptions.className = 'waste-type-selector';
+        wasteOptions.style.marginTop = '20px';
+        wasteOptions.style.padding = '10px';
+        wasteOptions.style.borderTop = '1px solid #ccc';
+        wasteOptions.innerHTML = `
+            <h3 class="land-header" style="margin-bottom: 10px;">♻️ Co zbierasz?</h3>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <label style="cursor: pointer; font-weight: bold;">
+                    <input type="radio" name="wasteType" value="Sperrmüll" checked> Sperrmüll (Gabaryty)
+                </label>
+                <label style="cursor: pointer; font-weight: bold; color: #d35400;">
+                    <input type="radio" name="wasteType" value="Elektro"> Elektro (Dla złomiarzy)
+                </label>
+            </div>
+        `;
+        container.appendChild(wasteOptions);
+        // KONIEC DODANEJ SEKCJI
+
         function updateUI() {
             let total = 0;
             let itemCount = 0;
@@ -227,9 +247,14 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
+            // Pobranie wybranego typu z radio buttonów
+            const selectedWasteType = document.querySelector('input[name="wasteType"]:checked').value;
+
             // Sztywne wyliczenie euro do wiadomości SMS
             const totalEurToPay = (totalToPay * 6) / 25;
-            const msg = `Dzień dobry, zamówienie ${orderId}: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            
+            // Aktualizacja treści SMS o wybrany typ odpadów
+            const msg = `Dzień dobry, zamówienie ${orderId} [Typ: ${selectedWasteType}]: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
             
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
