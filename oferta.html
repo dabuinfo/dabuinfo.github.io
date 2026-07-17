@@ -200,62 +200,102 @@
     </div>
 
     <!-- Skrypty zawartości -->
-    <script>
-        (function() {
-            const regionsByState = {
-                "Baden-Württemberg": ["&#128205; Freudenstadt", "&#128205; Heidelberg", "&#128205; Karlsruhe Powiat", "&#128205; Karlsruhe Stadt", "&#128205; Ortenau (Offenburg)", "&#128205; Tuttlingen"],
-                "Bayern": ["&#128205; Amberg", "&#128205; Bamberg", "&#128205; Bayreuth","&#128205; Kulmbach", "&#128205; Monachium-Południowy Wschód", "&#128205; Neustadt an der Waldnaab", "&#128205; Regensburg", "&#128205; Straubing-Bogen"],
-                "Brandenburg": ["&#128205; Elbe-Elstern", "&#128205; Oder-Spree"],
-                "Hessen": ["&#128205; Bad-Homburg", "&#128205; Giessen", "&#128205; Hersfeld-Rotenburg", "&#128205; Limburg-Weilburg", "&#128205; Rheingau-Taunus"],
-                "Niedersachsen": ["&#128205; Diepholz", "&#128205; Emsland", "&#128205; Göttingen", "&#128205; Gifhorn", "&#128205; Harburg", "&#128205; Hannover", "&#128205; Lüneburg", "&#128205; Stade", "&#128205; Wolfsburg"],
-                "Nordrhein-Westfalen": ["&#128205; Bonn", "&#128205; Dortmund", "&#128205; Erftstadt","&#128205; Jülich", "&#128205; Leverkusen", "&#128205; Neuss", "&#128205; Pulheim", "&#128205; Rhein-Sieg", "&#128205; Solingen", "&#128205; Wesseling", "&#128205; Wuppertal"],
-                "Rheinland-Pfalz": ["&#128205; Alzey-Worms", "&#128205; Bad-Kreuznach", "&#128205; Mayen-Koblenz", "&#128205; Westerwald"],
-                "Sachsen": ["&#128205; Leipzig", "&#128205; Nordsachsen"],
-                "Sachsen-Anhalt": ["&#128205; Altmarkkreis Salzwedel", "&#128205; Burgenland"],
-                "Schleswig-Holstein": ["&#128205; Rendsburg-Eckenförde"],
-                "Na zlecenie": ["&#128205; Powiat Kleve", "&#128205; Powiat Euskirchen", "&#128205; Powiat Neuss", "&#128205; Powiat Wesel", "&#128205; Powiat Düren", "&#128205; Powiat Heinsberg", "&#128205; Powiat Viersen"]
-            };
+<script>
+    (function() {
+        const regionsByState = {
+            "Baden-Württemberg": ["&#128205; Freudenstadt", "&#128205; Heidelberg", "&#128205; Karlsruhe Powiat", "&#128205; Karlsruhe Stadt", "&#128205; Ortenau (Offenburg)", "&#128205; Tuttlingen"],
+            "Bayern": ["&#128205; Amberg", "&#128205; Bamberg", "&#128205; Bayreuth","&#128205; Kulmbach", "&#128205; Monachium-Południowy Wschód", "&#128205; Neustadt an der Waldnaab", "&#128205; Regensburg", "&#128205; Straubing-Bogen"],
+            "Brandenburg": ["&#128205; Elbe-Elstern", "&#128205; Oder-Spree"],
+            "Hessen": ["&#128205; Bad-Homburg", "&#128205; Giessen", "&#128205; Hersfeld-Rotenburg", "&#128205; Limburg-Weilburg", "&#128205; Rheingau-Taunus"],
+            "Niedersachsen": ["&#128205; Diepholz", "&#128205; Emsland", "&#128205; Göttingen", "&#128205; Gifhorn", "&#128205; Harburg", "&#128205; Hannover", "&#128205; Lüneburg", "&#128205; Stade", "&#128205; Wolfsburg"],
+            "Nordrhein-Westfalen": ["&#128205; Bonn", "&#128205; Dortmund", "&#128205; Erftstadt","&#128205; Jülich", "&#128205; Leverkusen", "&#128205; Neuss", "&#128205; Pulheim", "&#128205; Rhein-Sieg", "&#128205; Solingen", "&#128205; Wesseling", "&#128205; Wuppertal"],
+            "Rheinland-Pfalz": ["&#128205; Alzey-Worms", "&#128205; Bad-Kreuznach", "&#128205; Mayen-Koblenz", "&#128205; Westerwald"],
+            "Sachsen": ["&#128205; Leipzig", "&#128205; Nordsachsen"],
+            "Sachsen-Anhalt": ["&#128205; Altmarkkreis Salzwedel", "&#128205; Burgenland"],
+            "Schleswig-Holstein": ["&#128205; Rendsburg-Eckenförde"],
+            "Na zlecenie": ["&#128205; Powiat Kleve", "&#128205; Powiat Euskirchen", "&#128205; Powiat Neuss", "&#128205; Powiat Wesel", "&#128205; Powiat Düren", "&#128205; Powiat Heinsberg", "&#128205; Powiat Viersen"]
+        };
 
-            const translations = {
-                pl: {
-                    header: "🛡️ Dabu-Info – Legalność i Zaufanie",
-                    title: "Jawność danych to nasz priorytet!",
-                    intro: "Zależy nam, abyście mieli 100% pewności, skąd pochodzą Wasze terminy.",
-                    benefit1: "Zgodność z RODO – Przetwarzamy tylko jawne, publiczne dane.",
-                    benefit2: "100% Pewności – Potwierdzamy każdy termin bezpośrednio u wydawcy.",
-                    regionsIntro: "Aktualnie w naszym systemie <span style=\"color: #10b981; font-weight: bold; text-shadow: 0 0 8px rgba(16, 185, 129, 0.4); font-family: monospace;\">Automated Data Scraper</span> znajdziecie poniższe regiony (kliknij, aby zamówić):",
-                    thanks: "Dziękujemy za zaufanie."
-                }
-            };
-
-            const container = document.getElementById("blogPostContainer");
-            const headerContainer = document.getElementById("dynamic-header");
-            const t = translations.pl;
-
-            headerContainer.innerHTML = t.header;
-
-            let regionsHtml = "";
-            for (const [state, regions] of Object.entries(regionsByState)) {
-                regionsHtml += `<div class="state-title">${state}</div>`;
-                // Zmieniono href na link do zamówień
-                regionsHtml += regions.map(r => `<a href="https://dabu-info.com/zamowienia.html" class="region-tag">${r}</a>`).join('');
+        const translations = {
+            pl: {
+                header: "🛡️ Dabu-Info – Legalność i Zaufanie",
+                title: "Jawność danych to nasz priorytet!",
+                intro: "Zależy nam, abyście mieli 100% pewności, skąd pochodzą Wasze terminy.",
+                benefit1: "Zgodność z RODO – Przetwarzamy tylko jawne, publiczne dane.",
+                benefit2: "100% Pewności – Potwierdzamy każdy termin bezpośrednio u wydawcy.",
+                comparisonBox: `
+                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; font-family: sans-serif; margin: 25px 0; text-align: left; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <h3 style="margin-top: 0; margin-bottom: 12px; color: #0f172a; font-size: 17px;">Ręczna praca vs Automated Data Scraper</h3>
+                        <p style="color: #475569; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Pozyskiwanie danych samemu to koszty i ryzyko błędów. Zobacz różnicę:</p>
+                        
+                        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
+                            <li style="margin-bottom: 12px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                                    <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
+                                    Przeszukiwanie PDF-ów, stron urzędowych i przepisywanie dat.
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                    <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
+                                    Gotowe pakiety danych generowane w ułamkach sekund.
+                                </div>
+                            </li>
+                            <li style="margin-bottom: 12px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                                    <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
+                                    Ryzyko literówek i przegapienia zmian w harmonogramach.
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                    <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
+                                    100% precyzji strukturalnej i algorytmy wyłapujące braki.
+                                </div>
+                            </li>
+                            <li style="background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                                    <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
+                                    Godziny frustrującej pracy przy każdym nowym regionie.
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                    <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
+                                    Klikasz, zamawiasz i otrzymujesz gotowy, sformatowany produkt.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                `,
+                regionsIntro: "Aktualnie w naszym systemie <span style=\"color: #10b981; font-weight: bold; text-shadow: 0 0 8px rgba(16, 185, 129, 0.4); font-family: monospace;\">Automated Data Scraper</span> znajdziecie poniższe regiony (kliknij, aby zamówić):",
+                thanks: "Dziękujemy za zaufanie."
             }
+        };
 
-            container.innerHTML = `
-                <div class="section-title">${t.title}</div>
-                <p>${t.intro}</p>
-                <div class="feature-box">
-                    <ul class="benefit-list">
-                        <li><span class="check-icon">&#10004;</span><div>${t.benefit1}</div></li>
-                        <li><span class="check-icon">&#10004;</span><div>${t.benefit2}</div></li>
-                    </ul>
-                </div>
-                
-                <div style="margin-top: 30px;"><strong>${t.regionsIntro}</strong></div>
-                ${regionsHtml}
-            `;
-        })();
-    </script>
+        const container = document.getElementById("blogPostContainer");
+        const headerContainer = document.getElementById("dynamic-header");
+        const t = translations.pl;
+
+        headerContainer.innerHTML = t.header;
+
+        let regionsHtml = "";
+        for (const [state, regions] of Object.entries(regionsByState)) {
+            regionsHtml += `<div class="state-title">${state}</div>`;
+            regionsHtml += regions.map(r => `<a href="https://dabu-info.com/zamowienia.html" class="region-tag">${r}</a>`).join('');
+        }
+
+        container.innerHTML = `
+            <div class="section-title">${t.title}</div>
+            <p>${t.intro}</p>
+            <div class="feature-box">
+                <ul class="benefit-list">
+                    <li><span class="check-icon">&#10004;</span><div>${t.benefit1}</div></li>
+                    <li><span class="check-icon">&#10004;</span><div>${t.benefit2}</div></li>
+                </ul>
+            </div>
+            
+            ${t.comparisonBox}
+            
+            <div style="margin-top: 30px; margin-bottom: 15px;"><strong>${t.regionsIntro}</strong></div>
+            ${regionsHtml}
+        `;
+    })();
+</script>
     
     <!-- Stopka -->
     <footer class="dabu-footer">
