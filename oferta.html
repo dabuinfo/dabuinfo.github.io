@@ -202,6 +202,7 @@
     <!-- Skrypty zawartości -->
 <script>
     (function() {
+        // --- KONFIGURACJA DANYCH ---
         const regionsByState = {
             "Baden-Württemberg": ["&#128205; Freudenstadt", "&#128205; Heidelberg", "&#128205; Karlsruhe Powiat", "&#128205; Karlsruhe Stadt", "&#128205; Ortenau (Offenburg)", "&#128205; Tuttlingen"],
             "Bayern": ["&#128205; Amberg", "&#128205; Bamberg", "&#128205; Bayreuth","&#128205; Kulmbach", "&#128205; Monachium-Południowy Wschód", "&#128205; Neustadt an der Waldnaab", "&#128205; Regensburg", "&#128205; Straubing-Bogen"],
@@ -216,6 +217,7 @@
             "Na zlecenie": ["&#128205; Powiat Kleve", "&#128205; Powiat Euskirchen", "&#128205; Powiat Neuss", "&#128205; Powiat Wesel", "&#128205; Powiat Düren", "&#128205; Powiat Heinsberg", "&#128205; Powiat Viersen"]
         };
 
+        // --- KONFIGURACJA TEKSTÓW I STYLÓW (DARK MODE) ---
         const translations = {
             pl: {
                 header: "🛡️ Dabu-Info – Legalność i Zaufanie",
@@ -223,38 +225,40 @@
                 intro: "Zależy nam, abyście mieli 100% pewności, skąd pochodzą Wasze terminy.",
                 benefit1: "Zgodność z RODO – Przetwarzamy tylko jawne, publiczne dane.",
                 benefit2: "100% Pewności – Potwierdzamy każdy termin bezpośrednio u wydawcy.",
+                
+                // PANEL PORÓWNAWCZY DOSTOSOWANY DO DARK MODE
                 comparisonBox: `
-                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; font-family: sans-serif; margin: 25px 0; text-align: left; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                        <h3 style="margin-top: 0; margin-bottom: 12px; color: #0f172a; font-size: 17px;">Ręczna praca vs Automated Data Scraper</h3>
-                        <p style="color: #475569; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Pozyskiwanie danych samemu to koszty i ryzyko błędów. Zobacz różnicę:</p>
+                    <div style="background-color: #111827; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; font-family: sans-serif; margin: 25px 0; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        <h3 style="margin-top: 0; margin-bottom: 12px; color: #f1f5f9; font-size: 17px; font-weight: 700;">Ręczna praca vs Automated Data Scraper</h3>
+                        <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Pozyskiwanie danych samemu to koszty i ryzyko błędów. Zobacz różnicę:</p>
                         
                         <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
-                            <li style="margin-bottom: 12px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                            <li style="margin-bottom: 12px; background-color: #1f2937; padding: 12px; border-radius: 6px; border: 1px solid #374151;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #94a3b8;">
                                     <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
                                     Przeszukiwanie PDF-ów, stron urzędowych i przepisywanie dat.
                                 </div>
-                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                <div style="font-size: 14px; line-height: 1.4; color: #e2e8f0;">
                                     <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
                                     Gotowe pakiety danych generowane w ułamkach sekund.
                                 </div>
                             </li>
-                            <li style="margin-bottom: 12px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                            <li style="margin-bottom: 12px; background-color: #1f2937; padding: 12px; border-radius: 6px; border: 1px solid #374151;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #94a3b8;">
                                     <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
                                     Ryzyko literówek i przegapienia zmian w harmonogramach.
                                 </div>
-                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                <div style="font-size: 14px; line-height: 1.4; color: #e2e8f0;">
                                     <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
                                     100% precyzji strukturalnej i algorytmy wyłapujące braki.
                                 </div>
                             </li>
-                            <li style="background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #64748b;">
+                            <li style="background-color: #1f2937; padding: 12px; border-radius: 6px; border: 1px solid #374151;">
+                                <div style="font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #94a3b8;">
                                     <span style="color: #ef4444; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">❌ Ręcznie</span> 
                                     Godziny frustrującej pracy przy każdym nowym regionie.
                                 </div>
-                                <div style="font-size: 14px; line-height: 1.4; color: #334155;">
+                                <div style="font-size: 14px; line-height: 1.4; color: #e2e8f0;">
                                     <span style="color: #10b981; font-weight: bold; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">✅ Nasz system</span> 
                                     Klikasz, zamawiasz i otrzymujesz gotowy, sformatowany produkt.
                                 </div>
@@ -262,13 +266,18 @@
                         </ul>
                     </div>
                 `,
-                regionsIntro: "Aktualnie w naszym systemie <span style=\"color: #10b981; font-weight: bold; text-shadow: 0 0 8px rgba(16, 185, 129, 0.4); font-family: monospace;\">Automated Data Scraper</span> znajdziecie poniższe regiony (kliknij, aby zamówić):",
+                // ZIELONY "GLOW" ZOSTAŁ, BO ŚWIETNIE WYGLĄDA W DARK MODE
+                regionsIntro: "Aktualnie w naszym systemie <span style=\"color: #10b981; font-weight: bold; text-shadow: 0 0 8px rgba(16, 185, 129, 0.6); font-family: monospace;\">Automated Data Scraper</span> znajdziecie poniższe regiony (kliknij, aby zamówić):",
                 thanks: "Dziękujemy za zaufanie."
             }
         };
 
+        // --- LOGIKA RENDEROWANIA ---
         const container = document.getElementById("blogPostContainer");
         const headerContainer = document.getElementById("dynamic-header");
+        
+        if (!container || !headerContainer) return; // Zabezpieczenie przed błędami
+
         const t = translations.pl;
 
         headerContainer.innerHTML = t.header;
@@ -291,7 +300,7 @@
             
             ${t.comparisonBox}
             
-            <div style="margin-top: 30px; margin-bottom: 15px;"><strong>${t.regionsIntro}</strong></div>
+            <div style="margin-top: 30px; margin-bottom: 15px; color: #f1f5f9;"><strong>${t.regionsIntro}</strong></div>
             ${regionsHtml}
         `;
     })();
