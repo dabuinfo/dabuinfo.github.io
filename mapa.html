@@ -515,7 +515,7 @@
             <label class="region-label" data-info="Terminy stałe / Feste Termine (4x w roku / 4x im Jahr)"><input class="region-chk" name="regiony[]" type="checkbox" value="Wuppertal" /> Wuppertal</label>
             <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Xanten" /> Xanten</label>
             <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
-            <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
+            <label class="region-label" data-info="Możno zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
             </div>
 
             <!-- FORMULARZ DO WYCENY SMS -->
@@ -742,7 +742,6 @@
                     markerMapElements[name] = marker; 
                 }
 
-                // --- PRZEŹROCZYSTE OBRYSY POWIATÓW (fillOpacity ustawione na 0 lub bardzo niską wartość) ---
                 if (name === "Neustadt an der Waldnaab") {
                     let neustadtPolygon = [
                         [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
@@ -772,11 +771,64 @@
                 if (kreiseLayer) {
                     kreiseLayer.eachLayer(function(layer) {
                          if (matchRegionName(name, layer.featureName)) {
-                             // fillOpacity ustawione na 0.0 zapewnia pełną przezroczystość środka, zostaje sam złoty kontur
                              let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
                              countyPolygonsLayer.addLayer(countyPoly);
                          }
                     });
+                }
+            });
+
+            if(markersLayer.getLayers().length > 0) { 
+                map.fitBounds(markersLayer.getBounds(), {padding: [40, 40], maxZoom: 10});
+            }
+            updateCountySuggestions();
+        }
+
+        /* NAPRAWIONE: Funkcja zaznacza wyłącznie rejony ze stałym terminem */
+        function selectOnlyNormalRegions(e) {
+            if (e) e.preventDefault();
+            currentFilteredLand = null;
+            document.getElementById('selectedLandTitle').style.display = 'none';
+            
+            markersLayer.clearLayers();
+            countyPolygonsLayer.clearLayers();
+            markerMapElements = {};
+
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                let info = chk.closest('.region-label').getAttribute('data-info') || "";
+                // Sprawdzamy czy termin jest stały
+                let isFesteTermine = info.includes("Terminy stałe");
+                
+                chk.checked = isFesteTermine;
+                chk.closest('.region-label').style.display = 'flex'; 
+
+                if (isFesteTermine) {
+                    let name = chk.value.trim();
+                    if (regionCoords[name]) {
+                        let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
+                            `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">💎 Dodaj do zamówienia</button>`;
+                        
+                        let treasureIcon = L.divIcon({
+                            className: '',
+                            html: '<div class="treasure-pin"></div>',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12],
+                            popupAnchor: [0, -12]
+                        });
+
+                        let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
+                        marker.addTo(markersLayer);
+                        markerMapElements[name] = marker;
+                    }
+
+                    if (kreiseLayer) {
+                        kreiseLayer.eachLayer(function(layer) {
+                             if (matchRegionName(name, layer.featureName)) {
+                                 let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
+                                 countyPolygonsLayer.addLayer(countyPoly);
+                             }
+                        });
+                    }
                 }
             });
 
