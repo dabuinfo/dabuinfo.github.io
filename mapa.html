@@ -31,7 +31,7 @@
             background-color: #121212;
             color: #ffffff;
             margin: 0;
-            padding: 0; /* Wyzerowany padding dla body, przeniesiony do wrappera mapy */
+            padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -42,7 +42,7 @@
             flex-grow: 1;
         }
 
-        /* --- NAPRAWA CZARNEJ RAMKI FOCUS W PRZEGLĄDARKACH (CHROME/EDGE) --- */
+        /* --- NAPRAWA CZARNEJ RAMKI FOCUS W PRZEGLĄDARKACH --- */
         .leaflet-container:focus,
         .leaflet-interactive:focus,
         svg:focus,
@@ -64,7 +64,7 @@
         }
         .dabu-county-btn:hover { background: #00FF7F; color: #000;
         }
-        .regions-scroll-box { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;
+        .regions-scroll-box { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-bottom: 15px;
         }
         .regions-scroll-box::-webkit-scrollbar { width: 8px;
         }
@@ -87,6 +87,66 @@
         padding: 8px; font-size: 14px; }
         .dabu-fullscreen-map { position: fixed !important; top: 0 !important;
         left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important;
+        }
+
+        /* ========================================= */
+        /* STYLE FORMULARZA SMS                      */
+        /* ========================================= */
+        .dabu-sms-form {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #00FF7F;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .dabu-sms-form h3 {
+            margin: 0;
+            color: #00FF7F;
+            font-size: 16px;
+        }
+        .dabu-date-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .dabu-date-group label {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+            color: #ccc;
+            flex: 1;
+            min-width: 140px;
+        }
+        .dabu-date-group input[type="date"] {
+            margin-top: 5px;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            outline: none;
+            color-scheme: dark;
+        }
+        .dabu-date-group input[type="date"]:focus {
+            border-color: #00FF7F;
+        }
+        .dabu-sms-btn {
+            background: #00FF7F;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        .dabu-sms-btn:hover {
+            background: #00cc66;
         }
 
         /* ========================================= */
@@ -169,16 +229,6 @@
             text-align: center;
             font-size: 0.85em;
             color: #777;
-        }
-
-        .dabu-footer-bottom a {
-            color: #2ecc71;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .dabu-footer-bottom a:hover {
-            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -405,6 +455,23 @@
             <label class="region-label" data-info="Terminy na żądanie / Termine auf Abruf (1x w miesiącu / 1x im Monat)"><input class="region-chk" name="regiony[]" type="checkbox" value="Zollernalb" /> Zollernalb</label>
             <label class="region-label" data-info="Można zamówić najbliższy termin na zgłoszenie"><input class="region-chk" name="regiony[]" type="checkbox" value="Zülpich" /> Zülpich</label>
             </div>
+
+            <!-- FORMULARZ DO WYCENY SMS -->
+            <div class="dabu-sms-form">
+                <h3>💬 Zapytaj o wycenę dla wybranych rejonów</h3>
+                <div class="dabu-date-group">
+                    <label>
+                        Data wyjazdu (od):
+                        <input type="date" id="smsDateFrom" required>
+                    </label>
+                    <label>
+                        Data wyjazdu (do):
+                        <input type="date" id="smsDateTo" required>
+                    </label>
+                </div>
+                <button class="dabu-sms-btn" onclick="sendSmsQuote()">Wyślij zapytanie SMS</button>
+            </div>
+
         </div>
     </div>
 
@@ -412,139 +479,8 @@
         let currentFilteredLand = null;
         let kreiseLayer = null;
 
-        const regionLinks = {
-            "Altenkirchen (Westerwald)": "https://dabu-info.blogspot.com/2026/02/sperrmull-altenkirchen-2026-terminy.html",
-            "Altmarkkreis-Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
-            "Altmarkkreis Salzwedel": "https://dabu-info.blogspot.com/2026/02/sperrmull-altmarkkreis-salzwedel-2026.html",
-            "Alzey-Worms": "https://dabu-info.blogspot.com/2026/02/sperrmull-alzey-worms-2026-terminy.html",
-            "Amberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-amberg-2026-harmonogram-i.html",
-            "Bad Homburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-homburg-2026-terminy.html",
-            "Bad-Kreuznach": "https://dabu-info.blogspot.com/2026/02/sperrmull-bad-kreuznach-2026-terminy-i.html",
-            "Bamberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-bamberg-2026-terminy-wystawek.html",
-            "Barnim": "https://dabu-info.blogspot.com/2026/02/sperrmull-barnim-2026-terminy-wystawek.html",
-            "Bayreuth": "https://dabu-info.blogspot.com/2026/02/sperrmull-bayreuth-2026-terminy-wystawek.html",
-            "Bernkastel-Wittlich": "https://dabu-info.blogspot.com/2026/02/bernkastel-wittlich-2026-terminy.html",
-            "Biebergemünd": "https://dabu-info.blogspot.com/2026/02/sperrmull-biebergemund-2026-terminy.html",
-            "Bonn": "https://dabu-info.blogspot.com/2026/02/sperrmull-bonn-2026-terminy-wystawek.html",
-            "Braunschweig": "https://dabu-info.blogspot.com/2026/02/sperrmull-braunschweig-2026-terminy.html",
-            "Breckerfeld": "https://dabu-info.blogspot.com/2026/02/sperrmull-breckerfeld-2026.html",
-            "Brühl": "https://dabu-info.blogspot.com/2026/02/sperrmull-bruhl-2026-terminy-wystawek.html",
-            "Burgenland": "https://dabu-info.blogspot.com/2026/02/burgenlandkreis-2026-terminy-wystawek.html",
-            "Calw": "https://dabu-info.blogspot.com/2026/02/zbiorka-metalu-calw-2026-terminy-i.html",
-            "Diepholz": "https://dabu-info.blogspot.com/2026/02/sperrmull-diepholz-2026-terminy-wystawek.html",
-            "Dülmen": "https://dabu-info.blogspot.com/2026/02/sperrmull-dulmen-2026-terminy-wystawek.html",
-            "Düsseldorf": "https://dabu-info.blogspot.com/2026/02/sperrmull-dusseldorf-2026-terminy.html",
-            "Eifelkreis Bitburg-Prüm": "https://dabu-info.blogspot.com/2026/02/bitburg-prum-2026-terminy-i-specyfika.html",
-            "Ennepetal": "https://dabu-info.blogspot.com/2026/02/sperrmull-ennepetal-2026-terminy.html",
-            "Eppstein": "https://dabu-info.blogspot.com/2026/02/sperrmull-eppstein-2026-terminy-wystawek.html",
-            "Eschwege": "https://dabu-info.blogspot.com/2026/02/sperrmull-eschwege-2026-terminy-wystawek.html",
-            "Euskirchen": "https://dabu-info.blogspot.com/2026/02/sperrmull-euskirchen-2026-terminy.html",
-            "Flörsbachtal": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsbachtal-2026-terminy.html",
-            "Flörsheim am Main": "https://dabu-info.blogspot.com/2026/02/sperrmull-florsheim-am-main-2026.html",
-            "Frankfurt": "https://dabu-info.blogspot.com/2026/02/sperrmull-frankfurt-am-main-2026.html",
-            "Freudenstadt": "https://dabu-info.blogspot.com/2026/02/sperrmull-freudenstadt-2026-harmonogram.html",
-            "Fulda": "https://dabu-info.blogspot.com/2026/02/sperrmull-fulda-2026-terminy-wystawek.html",
-            "Fürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-furth-2026-terminy-wystawek.html",
-            "Geilenkirchen": "https://dabu-info.blogspot.com/2026/05/sperrmull-geilenkirchen-2026-terminy.html",
-            "Gelnhausen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gelnhausen-2026-terminy.html",
-            "Giessen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
-            "Giessen Powiat": "https://dabu-info.blogspot.com/2026/02/sperrmull-gieen-2026-terminy-i-specyfika.html",
-            "Gifhorn": "https://dabu-info.blogspot.com/2026/02/sperrmull-gifhorn-2026-terminy-wystawek.html",
-            "Glashütten": "https://dabu-info.blogspot.com/2026/05/sperrmull-glashutten-terminy-wystawek.html",
-            "Göttingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-gottingen-2026-terminy.html",
-            "Gräfelfing": "https://dabu-info.blogspot.com/2026/02/sperrmull-grafelfing-2026-terminy.html",
-            "Gross-Gerau": "https://dabu-info.blogspot.com/2026/02/gro-gerau-2026-sperrmull-e-schrott.html",
-            "Gründau": "https://dabu-info.blogspot.com/2026/02/sperrmull-grundau-2026-terminy-wystawek.html",
-            "Hannover": "https://dabu-info.blogspot.com/2026/02/sperrmull-hannover-2026-terminy-wystawek.html",
-            "Harburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-harburg-2026.html",
-            "Hattersheim am Main": "https://dabu-info.blogspot.com/2026/02/hattersheim-am-main-2026-terminy.html",
-            "Heidekreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidekreis-2026-terminy.html",
-            "Heidelberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-heidelberg-2026-terminy.html",
-            "Heilbronn": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-heilbronn-2026-terminy.html",
-            "Hersfeld-Rotenburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-hersfeld-rotenburg-2026.html",
-            "Hofheim am Taunus": "https://dabu-info.blogspot.com/2026/02/sperrmull-hofheim-am-taunus-2026-terminy.html",
-            "Holzminden": "https://dabu-info.blogspot.com/2026/02/sperrmull-holzminden-2026-terminy.html",
-            "Hürth": "https://dabu-info.blogspot.com/2026/02/sperrmull-hurth-2026-terminy-wystawek.html",
-            "Kamp-Lintfort": "https://dabu-info.blogspot.com/2026/02/sperrmull-kamp-lintfort-2026-terminy.html",
-            "Karlsruhe": "https://dabu-info.blogspot.com/2026/02/sperrmull-karlsruhe-stadt-2026-terminy.html",
-            "Karlsruhe Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-landkreis-karlsruhe-2026.html",
-            "Kelkheim (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-kelkheim-taunus-2026-terminy.html",
-            "Kirchheim bei München": "https://dabu-info.blogspot.com/2026/02/sperrmull-kirchheim-2026-terminy.html",
-            "Königstein (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-konigstein-taunus-2026.html",
-            "Konstanz": "https://dabu-info.blogspot.com/2026/02/sperrmull-konstanz-2026-terminy-wystawek.html",
-            "Kulmbach": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
-            "Kulmbach Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-kulmbach-2026-terminy.html",
-            "Leverkusen": "https://dabu-info.blogspot.com/2026/02/sperrmull-leverkusen-2026-terminy.html",
-            "Limburg-Weilburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-limburg-weilburg-2026-terminy.html",
-            "Lüneburg": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
-            "Lüneburg Powiat": "https://dabu-info.blogspot.com/2026/03/sperrmull-powiat-luneburg-2026-terminy.html",
-            "Mayen-Koblenz": "https://dabu-info.blogspot.com/2026/02/sperrmull-mayen-koblenz-2026-terminy.html",
-            "Monachium": "https://dabu-info.blogspot.com/2026/02/sperrmull-monachium-munchen-2026-terminy.html",
-            "Münster": "https://dabu-info.blogspot.com/2026/02/sperrmull-munster-2026-terminy-i.html",
-            "Neu-Anspach": "https://dabu-info.blogspot.com/2026/02/sperrmull-neu-anspach-2026-terminy.html",
-            "Neustadt an der Waldnaab": "https://dabu-info.blogspot.com/2026/02/sperrmull-neustadt-der-waldnaab-2026.html",
-            "Nidderau": "https://dabu-info.blogspot.com/2026/02/sperrmull-nidderau-2026-terminy-wystawek.html",
-            "Nordsachsen": "https://dabu-info.blogspot.com/2026/02/sperrmull-nordsachsen-2026-harmonogram.html",
-            "Oberberg": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberbergischer-kreis-2026.html",
-            "Oberursel (Taunus)": "https://dabu-info.blogspot.com/2026/02/sperrmull-oberursel-taunus-2026.html",
-            "Olpe": "https://dabu-info.blogspot.com/2026/02/sperrmull-olpe-2026-terminy-wystawek.html",
-            "Ortenau": "https://dabu-info.blogspot.com/2026/02/sperrmull-ortenaukreis-2026-terminy.html",
-            "Osnabrück": "https://dabu-info.blogspot.com/2026/02/sperrmull-osnabruck-2026-terminy.html",
-            "Pulheim": "https://dabu-info.blogspot.com/2026/02/sperrmull-pulheim-2026-terminy-wystawek.html",
-            "Regensburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-regensburg-2026-terminy-i.html",
-            "Rendsburg-Eckernförde": "https://dabu-info.blogspot.com/2026/02/rendsburg-eckernforde-2026-terminy.html",
-            "Rhein-Neckar-Kreis": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-neckar-kreis-2026.html",
-            "Rhein-Sieg": "https://dabu-info.blogspot.com/2026/02/sperrmull-rhein-sieg-kreis-2026.html",
-            "Rheingau-Taunus": "https://dabu-info.blogspot.com/2026/02/rheingau-taunus-kreis-2026-terminy-i.html",
-            "Rheinisch-Bergischer": "https://dabu-info.blogspot.com/2026/02/sperrmull-rheinisch-bergischer-kreis.html",
-            "Schlüchtern": "https://dabu-info.blogspot.com/2026/02/schluchtern-2026-terminy-wystawek.html",
-            "Schwedt/Oder": "https://dabu-info.blogspot.com/2026/02/sperrmull-schwedtoder-2026-harmonogram.html",
-            "Sinntal": "https://dabu-info.blogspot.com/2026/02/sperrmull-sinntal-2026-terminy-wystawek.html",
-            "Solingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-solingen-2026-terminy-wystawek.html",
-            "Spree-Neiße": "https://dabu-info.blogspot.com/2026/02/sperrmull-spree-neie-2026-terminy.html",
-            "Sprockhövel": "https://dabu-info.blogspot.com/2026/02/sperrmull-sprockhovel-2026-terminy.html",
-            "Stade": "https://dabu-info.blogspot.com/2026/02/sperrmull-stade-2026-terminy-i-specyfika.html",
-            "Straubing-Bogen": "https://dabu-info.blogspot.com/2026/02/straubing-bogen-2026-terminy-wystawek.html",
-            "Tönisvorst": "https://dabu-info.blogspot.com/2026/02/sperrmull-tonisvorst-2026-terminy.html",
-            "Trier-Saarburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-trier-saarburg-2026.html",
-            "Tuttlingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-tuttlingen-2026-terminy.html",
-            "Usingen": "https://dabu-info.blogspot.com/2026/02/sperrmull-usingen-2026-terminy-wystawek.html",
-            "Vulkaneifel": "https://dabu-info.blogspot.com/2026/02/sperrmull-vulkaneifel-2026-terminy-i.html",
-            "Walldorf-Mörfelden": "https://dabu-info.blogspot.com/2026/02/sperrmull-walldorf-morfelden-2026.html",
-            "Werra-Meissner": "https://dabu-info.blogspot.com/2026/02/werra-meiner-2026-e-schrott-agd.html",
-            "Wesseling": "https://dabu-info.blogspot.com/2026/02/sperrmull-wesseling-2026-terminy-wystawek.html",
-            "Westerwald": "https://dabu-info.blogspot.com/2026/02/sperrmull-westerwaldkreis-2026-terminy.html",
-            "Wolfsburg": "https://dabu-info.blogspot.com/2026/02/sperrmull-wolfsburg-2026-terminy.html",
-            "Wülfrath": "https://dabu-info.blogspot.com/2026/05/sperrmull-wulfrath-2026-terminy-wystawek.html",
-            "Wuppertal": "https://dabu-info.blogspot.com/2026/02/sperrmull-wuppertal-2026-terminy.html",
-            "Zollernalb": "https://dabu-info.blogspot.com/2026/02/sperrmull-zollernalb-2026-tylko-agd.html",
-            
-            // --- Gminy na indywidualne zamówienie ---
-            "Neuss": "https://dabu-info.com/zamowienia.html",
-            "Dortmund": "https://dabu-info.com/zamowienia.html",
-            "Lipsk (Leipzig)": "https://dabu-info.com/zamowienia.html",
-            "Emsland": "https://dabu-info.com/zamowienia.html",
-            "Oder-Spree": "https://dabu-info.com/zamowienia.html",
-            "Elbe-Elster": "https://dabu-info.com/zamowienia.html",
-            "Aldenhoven": "https://dabu-info.com/zamowienia.html", "Alpen": "https://dabu-info.com/zamowienia.html", "Altena": "https://dabu-info.com/zamowienia.html",
-            "Bad Münstereifel": "https://dabu-info.com/zamowienia.html", "Balve": "https://dabu-info.com/zamowienia.html", "Bedburg": "https://dabu-info.com/zamowienia.html", "Bedburg-Hau": "https://dabu-info.com/zamowienia.html", "Berlin": "https://dabu-info.com/zamowienia.html", "Blankenheim": "https://dabu-info.com/zamowienia.html",
-            "Dahlem": "https://dabu-info.com/zamowienia.html", "Dormagen": "https://dabu-info.com/zamowienia.html", "Emmerich am Rhein": "https://dabu-info.com/zamowienia.html", "Geldern": "https://dabu-info.com/zamowienia.html", "Goch": "https://dabu-info.com/zamowienia.html",
-            "Grefrath": "https://dabu-info.com/zamowienia.html", "Grevenbroich": "https://dabu-info.com/zamowienia.html", "Heinsberg": "https://dabu-info.com/zamowienia.html", "Hellenthal": "https://dabu-info.com/zamowienia.html", "Hückelhoven": "https://dabu-info.com/zamowienia.html",
-            "Iserlohn": "https://dabu-info.com/zamowienia.html", "Issum": "https://dabu-info.com/zamowienia.html", "Jüchen": "https://dabu-info.com/zamowienia.html", "Jülich (E)": "https://dabu-info.com/zamowienia.html",
-            "Kaarst": "https://dabu-info.com/zamowienia.html", "Kall": "https://dabu-info.com/zamowienia.html", "Kerken": "https://dabu-info.com/zamowienia.html", "Kevelaer": "https://dabu-info.com/zamowienia.html",
-            "Korschenbroich": "https://dabu-info.com/zamowienia.html", "Lübeck": "https://dabu-info.com/zamowienia.html", "Mechernich": "https://dabu-info.com/zamowienia.html", "Meerbusch": "https://dabu-info.com/zamowienia.html",
-            "Menden": "https://dabu-info.com/zamowienia.html", "Merzenich": "https://dabu-info.com/zamowienia.html", "Nachrodt-Wiblingwerde": "https://dabu-info.com/zamowienia.html", "Nettetal": "https://dabu-info.com/zamowienia.html",
-            "Neukirchen-Vluyn": "https://dabu-info.com/zamowienia.html", "Plettenberg": "https://dabu-info.com/zamowienia.html", "Rees": "https://dabu-info.com/zamowienia.html", "Rheurdt": "https://dabu-info.com/zamowienia.html",
-            "Rommerskirchen": "https://dabu-info.com/zamowienia.html", "Schleiden": "https://dabu-info.com/zamowienia.html", "Selfkant": "https://dabu-info.com/zamowienia.html", "Sonsbeck": "https://dabu-info.com/zamowienia.html",
-            "Straelen": "https://dabu-info.com/zamowienia.html", "Übach-Palenberg": "https://dabu-info.com/zamowienia.html", "Uedem": "https://dabu-info.com/zamowienia.html", "Viersen": "https://dabu-info.com/zamowienia.html",
-            "Voerde": "https://dabu-info.com/zamowienia.html", "Weeze": "https://dabu-info.com/zamowienia.html", "Weilerswist": "https://dabu-info.com/zamowienia.html", "Werdohl": "https://dabu-info.com/zamowienia.html",
-            "Xanten": "https://dabu-info.com/zamowienia.html", "Zülpich": "https://dabu-info.com/zamowienia.html"
-        };
-
         const regionToCountyMap = {
-            "Elbe-Elster": "Elbe-Elster",
-            "Oder-Spree": "Oder-Spree",
-            "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
+            "Elbe-Elster": "Elbe-Elster", "Oder-Spree": "Oder-Spree", "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
             "Bad Homburg": "Hochtaunuskreis", "Friedrichsdorf": "Hochtaunuskreis", "Glashütten": "Hochtaunuskreis", "Grävenwiesbach": "Hochtaunuskreis", "Königstein (Taunus)": "Hochtaunuskreis", "Kronberg im Taunus": "Hochtaunuskreis", 
             "Neu-Anspach": "Hochtaunuskreis", "Oberursel (Taunus)": "Hochtaunuskreis", "Schmitten im Taunus": "Hochtaunuskreis", "Steinbach": "Hochtaunuskreis", "Usingen": "Hochtaunuskreis", "Wehrheim": "Hochtaunuskreis", "Weilrod": "Hochtaunuskreis",
             "Eppstein": "Main-Taunus-Kreis", "Flörsheim am Main": "Main-Taunus-Kreis", "Hattersheim am Main": "Main-Taunus-Kreis", "Hofheim am Taunus": "Main-Taunus-Kreis", "Kelkheim (Taunus)": "Main-Taunus-Kreis", "Schwalbach": "Main-Taunus-Kreis",
@@ -560,26 +496,15 @@
             "Burgenland": "Burgenlandkreis",
             "Heidekreis": "Heidekreis", "Lüneburg Powiat": "Lüneburg",
             "Schwedt/Oder": "Uckermark",
-            "Dortmund": "Dortmund",
-            "Emsland": "Emsland",
-            "Lipsk (Leipzig)": "Leipzig",
-            "Rendsburg-Eckernförde": "Rendsburg-Eckernförde",
-            "Neustadt an der Waldnaab": "Neustadt an der Waldnaab",
-            "Lübeck": "Lübeck",
-            "Neuss": "Rhein-Kreis Neuss",
-            "Dormagen": "Rhein-Kreis Neuss",
-            "Goch": "Kleve",
-            "Grefrath": "Viersen",
-            "Nettetal": "Viersen",
-            "Altena": "Märkischer Kreis",
-            "Balve": "Märkischer Kreis",
-            "Iserlohn": "Märkischer Kreis",
-            "Menden": "Märkischer Kreis",
-            "Nachrodt-Wiblingwerde": "Märkischer Kreis",
-            "Plettenberg": "Märkischer Kreis",
-            "Werdohl": "Märkischer Kreis",
-            "Berlin": "Berlin"
+            "Dortmund": "Dortmund", "Emsland": "Emsland", "Lipsk (Leipzig)": "Leipzig",
+            "Rendsburg-Eckernförde": "Rendsburg-Eckernförde", "Neustadt an der Waldnaab": "Neustadt an der Waldnaab",
+            "Lübeck": "Lübeck", "Neuss": "Rhein-Kreis Neuss", "Dormagen": "Rhein-Kreis Neuss",
+            "Goch": "Kleve", "Grefrath": "Viersen", "Nettetal": "Viersen",
+            "Altena": "Märkischer Kreis", "Balve": "Märkischer Kreis", "Iserlohn": "Märkischer Kreis",
+            "Menden": "Märkischer Kreis", "Nachrodt-Wiblingwerde": "Märkischer Kreis", "Plettenberg": "Märkischer Kreis",
+            "Werdohl": "Märkischer Kreis", "Berlin": "Berlin"
         };
+
         function normalizeLandName(rawName) {
             const aliases = { "Bavaria": "Bayern", "Hesse": "Hessen", "North Rhine-Westphalia": "Nordrhein-Westfalen", "Rhineland-Palatinate": "Rheinland-Pfalz", "Saxony": "Sachsen", "Lower Saxony": "Niedersachsen", "Saxony-Anhalt": "Sachsen-Anhalt", "Thuringia": "Thüringen", "Schleswig-Holstein": "Schleswig-Holstein", "Brandenburg": "Brandenburg", "Baden-Württemberg": "Baden-Württemberg" };
             return aliases[rawName] || rawName;
@@ -598,21 +523,14 @@
 
             if (cleanGn.includes(cleanSn) || cleanGn.includes(cleanMapped)) return true;
             const aliases = {
-                "monachium": ["münchen"], 
-                "karlsruhe kreis": ["karlsruhe"], 
-                "amberg": ["amberg-sulzbach"],
-                "nordsachsen": ["nordsachsen", "delitzsch", "torgau", "oschatz"], 
-                "rendsburg-eckernförde": ["rendsburg-eckernförde", "rendsburg"],
-                "giessen": ["gießen"], 
-                "altmarkkreis salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"],
-                "altmarkkreis-salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"], 
-                "burgenlandkreis": ["burgenlandkreis", "burgenland"],
-                "burgenland": ["burgenlandkreis"], 
-                "heidekreis": ["heidekreis", "soltau-fallingbostel"],
+                "monachium": ["münchen"], "karlsruhe kreis": ["karlsruhe"], "amberg": ["amberg-sulzbach"],
+                "nordsachsen": ["nordsachsen", "delitzsch", "torgau", "oschatz"], "rendsburg-eckernförde": ["rendsburg-eckernförde", "rendsburg"],
+                "giessen": ["gießen"], "altmarkkreis salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"],
+                "altmarkkreis-salzwedel": ["altmarkkreis salzwedel", "altmarkkreis"], "burgenlandkreis": ["burgenlandkreis", "burgenland"],
+                "burgenland": ["burgenlandkreis"], "heidekreis": ["heidekreis", "soltau-fallingbostel"],
                 "werra-meissner": ["werra-meißner", "werra-meissner-kreis", "werra-meissner"],
                 "werra-meißner-kreis": ["werra-meißner", "werra-meissner-kreis", "werra-meissner"],
-                "lübeck": ["lübeck", "luebeck"],
-                "lipsk (leipzig)": ["leipzig"],
+                "lübeck": ["lübeck", "luebeck"], "lipsk (leipzig)": ["leipzig"],
                 "bad münstereifel": ["bad münstereifel", "euskirchen"]
             };
             if (aliases[sn] && aliases[sn].some(a => gn.includes(a))) return true;
@@ -712,6 +630,7 @@
                   }
                }).addTo(map);
             });
+            
         function selectLand(landName) {
             let regions = landMap[landName] || [];
             let header = document.getElementById('selectedLandTitle');
@@ -722,9 +641,16 @@
             }
             header.innerHTML = `Wybrano: <strong>${landName}</strong> (${regions.length} rejonów)`;
             currentFilteredLand = landName;
+            
+            let checkedCount = 0;
             document.querySelectorAll('.region-chk').forEach(chk => {
-                chk.checked = regions.includes(chk.value);
                 chk.closest('.region-label').style.display = regions.includes(chk.value) ? 'flex' : 'none';
+                if (regions.includes(chk.value) && checkedCount < 3) {
+                    chk.checked = true;
+                    checkedCount++;
+                } else {
+                    chk.checked = false;
+                }
             });
             refreshMarkers();
         }
@@ -738,10 +664,6 @@
                 if(regionCoords[name]) {
                     let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
                     
-                    if (regionLinks[name]) {
-                        popupContent += `<br><br><a href="${regionLinks[name]}" target="_blank" style="display:block; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; text-decoration:none; border-radius:4px; font-weight:bold; font-size:13px;">🔗 Przejdź do wpisu</a>`;
-                    }
-
                     L.marker(regionCoords[name], {
                         icon: L.icon({
                             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -751,7 +673,6 @@
                     }).bindPopup(popupContent).addTo(markersLayer);
                 }
 
-                // --- AWARYJNY RĘCZNY OBRYS DLA NEUSTADT AN DER WALDNAAB ---
                 if (name === "Neustadt an der Waldnaab") {
                     let neustadtPolygon = [
                         [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
@@ -761,8 +682,6 @@
                     ];
                     L.polygon(neustadtPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
                 }
-
-                // --- AWARYJNY RĘCZNY OBRYS DLA ALTENKIRCHEN (WESTERWALD) ---
                 if (name === "Altenkirchen (Westerwald)") {
                     let altenkirchenPolygon = [
                         [50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], 
@@ -771,8 +690,6 @@
                     ];
                     L.polygon(altenkirchenPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
                 }
-
-                // --- AWARYJNY RĘCZNY OBRYS DLA EIFELKREIS BITBURG-PRÜM ---
                 if (name === "Eifelkreis Bitburg-Prüm") {
                     let bitburgPolygon = [
                         [50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], 
@@ -811,12 +728,17 @@
         }
 
         function selectAllInCounty(countyName) {
+            let checkedCount = 0;
             document.querySelectorAll('.region-chk').forEach(cb => {
                 cb.checked = false;
-                if (regionToCountyMap[cb.value.trim()] === countyName) {
+                if (regionToCountyMap[cb.value.trim()] === countyName && checkedCount < 3) {
                     cb.checked = true;
+                    checkedCount++;
                 }
             });
+            if (checkedCount >= 3) {
+                alert("Zaznaczono tylko pierwsze 3 rejony (maksymalny limit).");
+            }
             refreshMarkers();
         }
 
@@ -824,10 +746,17 @@
             if (e) e.preventDefault();
             currentFilteredLand = null;
             document.getElementById('selectedLandTitle').style.display = 'none';
+            
+            let checkedCount = 0;
             document.querySelectorAll('.region-chk').forEach(chk => {
                 let info = chk.closest('.region-label').getAttribute('data-info') || "";
-                chk.checked = info.includes("Terminy stałe");
                 chk.closest('.region-label').style.display = 'flex'; 
+                if (info.includes("Terminy stałe") && checkedCount < 3) {
+                    chk.checked = true;
+                    checkedCount++;
+                } else {
+                    chk.checked = false;
+                }
             });
             refreshMarkers();
         }
@@ -854,9 +783,16 @@
                 btnLand.innerHTML = '🗺️ Pokaż cały Land';
                 btnLand.onclick = (e) => { 
                     e.preventDefault();
+                    let checkedCount = 0;
                     document.querySelectorAll('.region-chk').forEach(cb => {
-                        cb.checked = landMap[currentFilteredLand].includes(cb.value.trim());
+                        if (landMap[currentFilteredLand].includes(cb.value.trim()) && checkedCount < 3) {
+                            cb.checked = true;
+                            checkedCount++;
+                        } else {
+                            cb.checked = false;
+                        }
                     });
+                    if (checkedCount >= 3) alert("Zaznaczono tylko 3 pierwsze rejony z wybranego landu ze względu na limit.");
                     refreshMarkers();
                 };
                 container.appendChild(btnLand);
@@ -889,31 +825,44 @@
             });
         }
 
+        /* LIMIT DO 3 ZAZNACZONYCH CHECKBOXÓW */
         document.querySelectorAll('.region-chk').forEach(cb => { 
-            cb.addEventListener('change', refreshMarkers); 
+            cb.addEventListener('change', function(e) {
+                let checkedBoxes = document.querySelectorAll('.region-chk:checked');
+                if (checkedBoxes.length > 3) {
+                    this.checked = false; // Cofnięcie zaznaczenia
+                    alert("Możesz wybrać maksymalnie 3 rejony!");
+                }
+                refreshMarkers();
+            }); 
         });
 
-        document.querySelectorAll('.region-label').forEach(label => {
-            let val = label.querySelector('input').value.trim();
-            if (regionLinks[val]) {
-                let btn = document.createElement('a');
-                btn.href = regionLinks[val];
-                btn.target = "_blank";
-                btn.innerHTML = "🔗";
-                btn.style.textDecoration = "none";
-                btn.style.marginLeft = "auto";
-                btn.style.paddingLeft = "10px";
-                btn.title = "Przejdź do artykułu";
-                btn.addEventListener('click', (e) => e.stopPropagation()); 
-                label.appendChild(btn);
+        /* FUNKCJA DO GENEROWANIA SMS */
+        function sendSmsQuote() {
+            let selectedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value);
+            let dateFrom = document.getElementById('smsDateFrom').value;
+            let dateTo = document.getElementById('smsDateTo').value;
+
+            if (selectedRegions.length === 0) {
+                alert("Wybierz przynajmniej 1 rejon z mapy lub listy (maksymalnie 3).");
+                return;
             }
-        });
+            if (!dateFrom || !dateTo) {
+                alert("Proszę podać datę wyjazdu (od kiedy i do kiedy).");
+                return;
+            }
+
+            let message = `Dzień dobry, proszę o wycenę dla rejonów: ${selectedRegions.join(', ')}. Termin wyjazdu: od ${dateFrom} do ${dateTo}.`;
+            let phoneNumber = "+48600812820";
+            let encodedMessage = encodeURIComponent(message);
+            
+            // Otwarcie aplikacji do SMS
+            window.location.href = `sms:${phoneNumber}?body=${encodedMessage}`;
+        }
     </script>
 
-    <!-- Tutaj dodajemy stopkę na sam dół dokumentu -->
     <footer class="dabu-footer">
         <div class="dabu-footer-container">
-            <!-- Kolumna 1: Marka i nawigacja -->
             <div class="dabu-footer-col">
                 <h4 class="dabu-footer-heading">dabu-info</h4>
                 <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
@@ -923,8 +872,6 @@
                     <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
                 </ul>
             </div>
-
-            <!-- Kolumna 2: Kontakt i Zamówienia -->
             <div class="dabu-footer-col">
                 <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                 <ul class="dabu-footer-contact">
@@ -933,8 +880,6 @@
                     <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
                 </ul>
             </div>
-
-            <!-- Kolumna 3: Dane Firmy i Płatności -->
             <div class="dabu-footer-col">
                 <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
                 <ul class="dabu-footer-contact">
