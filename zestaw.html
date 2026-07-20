@@ -337,12 +337,12 @@
             <div class="strategy-container">
                 <div class="strategy-card basic">
                     <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice" style="text-align: center;">100 PLN / 25 € <span style="font-size: 0.5em; color: #ccc;">za 1 rejon</span></div>
+                    <div class="price-tag-large" id="configPrice" style="text-align: center;">125 PLN / 25 € <span style="font-size: 0.5em; color: #ccc;">za tydzień</span></div>
                     <span class="price-subtitle-small" id="configSubtitle" style="text-align: center;">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Cena dotyczy każdego, wybranego rejonu osobno.</li>
+                        <li id="configLi2">Cena dotyczy każdego wybranego rejonu osobno.</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                     </ul>
 
@@ -830,9 +830,12 @@
                 let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
                 let multiplier = (selectedWeeksCount > 0 && !isSpecialMode) ? selectedWeeksCount : 1;
 
-                if (selectedRegionsCount > 0) {
-                    let sumPLN = selectedRegionsCount * multiplier * 100;
-                    let sumEUR = selectedRegionsCount * multiplier * 25;
+                if (selectedRegionsCount > 6) {
+                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+                    if (svgPriceSub) svgPriceSub.textContent = `do uzgodnienia`;
+                } else if (selectedRegionsCount > 0) {
+                    let sumPLN = multiplier * 125;
+                    let sumEUR = multiplier * 25;
                     btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
                     if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
                 } 
@@ -955,7 +958,6 @@
         document.getElementById('btnSubmit').addEventListener('click', function() {
             var wR = document.querySelectorAll('.region-chk:checked');
             var wT = document.querySelectorAll('.week-chk:checked');
-            var isSpecialMode = false; 
             
             if (wR.length === 0 || wT.length === 0) { 
                 alert("[ UWAGA ] Wybierz rejony oraz tygodnie!"); 
@@ -967,11 +969,16 @@
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             
-            let multiplier = wT.length;
-            let sumPLN = wR.length * multiplier * 100; 
-            let sumEUR = wR.length * multiplier * 25;  
-            body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
-            body += " PODSUMOWANIE CENY: " + sumPLN + " PLN / " + sumEUR + " €\n";
+            if (wR.length > 6) {
+                body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
+                body += " PODSUMOWANIE CENY: Wycena indywidualna (powyżej 3 rejonów)\n";
+            } else {
+                let multiplier = wT.length;
+                let sumPLN = multiplier * 125; 
+                let sumEUR = multiplier * 25;  
+                body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
+                body += " PODSUMOWANIE CENY: " + sumPLN + " PLN / " + sumEUR + " €\n";
+            }
             
             body += (t.paymentNote || "Preferowana płatność / Identyfikator:") + " " + nr + "\n\n";
 
