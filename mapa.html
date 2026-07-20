@@ -83,10 +83,72 @@
         .region-chk:checked::after { content: ''; position: absolute; left: 6px; top: 2px; width: 4px;
         height: 10px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg);
         }
+        .add-list-btn {
+            background: rgba(0, 255, 127, 0.15);
+            color: #00FF7F;
+            border: 1px solid #00FF7F;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            margin-left: auto;
+            transition: all 0.2s;
+        }
+        .add-list-btn:hover {
+            background: #00FF7F;
+            color: #000;
+        }
         .custom-leaflet-tooltip { background: #111; color: #fff; border: 1px solid #00FF7F; border-radius: 6px;
         padding: 8px; font-size: 14px; }
         .dabu-fullscreen-map { position: fixed !important; top: 0 !important;
         left: 0 !important; width: 100% !important; height: 100% !important; z-index: 99999 !important; margin: 0 !important; border-radius: 0 !important;
+        }
+
+        /* ========================================= */
+        /* STYL I IKONA SKARBU (ZŁOTA SKRZYNKA)      */
+        /* ========================================= */
+        .treasure-pin {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            border: 2px solid #ffffff;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            width: 24px;
+            height: 24px;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .treasure-pin::after {
+            content: '💎';
+            font-size: 12px;
+            transform: rotate(45deg);
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.6) rotate(-45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2.2) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+        .pulse-treasure {
+            position: relative;
+        }
+        .pulse-treasure::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 2px solid #ffd700;
+            border-radius: 50% 50% 50% 0;
+            animation: pulse-ring 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
         /* ========================================= */
@@ -479,7 +541,9 @@
     <script>
         let currentFilteredLand = null;
         let kreiseLayer = null;
+        let countyPolygonsLayer = L.layerGroup();
         let cartRegions = [];
+        let markerMapElements = {};
 
         const regionToCountyMap = {
             "Elbe-Elster": "Elbe-Elster", "Oder-Spree": "Oder-Spree", "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
@@ -577,6 +641,8 @@
         var map = L.map('dabuOSMMap').setView([51.3, 10.45], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
         var markersLayer = new L.FeatureGroup().addTo(map);
+        countyPolygonsLayer.addTo(map);
+
         var mapPlaceholder = document.createElement('div');
         var fsControl = L.control({position: 'topright'});
         fsControl.onAdd = function (map) {
@@ -609,8 +675,8 @@
                   style: function(feature) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
                       let active = landMap[name] && landMap[name].length > 0;
-                      let regionColor = landColors[name] || "#00FF7F"; 
-                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 0.2 : 0.05 };
+                      let regionColor = landColors[name] || "#ffd700"; 
+                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 0.05 : 0.02 };
                   },
                   onEachFeature: function (feature, layer) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
@@ -620,6 +686,7 @@
                   }
                }).addTo(map);
             });
+
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
@@ -641,7 +708,7 @@
                 header.innerHTML = `❌ Brak rejonów w: <strong>${landName}</strong>`;
                 return;
             }
-            header.innerHTML = `Wybrano land: <strong>${landName}</strong> (${regions.length} rejonów - kliknij piny na mapie, aby dodać do koszyka)`;
+            header.innerHTML = `Wybrano land: <strong>${landName}</strong> (${regions.length} rejonów - kliknij piny-skarby na mapie lub przycisk [+] na liście)`;
             currentFilteredLand = landName;
             
             document.querySelectorAll('.region-label').forEach(label => {
@@ -650,7 +717,8 @@
             });
 
             markersLayer.clearLayers();
-            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
+            countyPolygonsLayer.clearLayers(); 
+            markerMapElements = {}; 
 
             regions.forEach(name => {
                 if(regionCoords[name]) {
@@ -658,15 +726,57 @@
                     let info = matchingLabel ? matchingLabel.closest('.region-label').getAttribute('data-info') : "";
                     
                     let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
-                        `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">➕ Dodaj do zamówienia</button>`;
+                        `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">💎 Dodaj do zamówienia</button>`;
                     
-                    L.marker(regionCoords[name], {
-                        icon: L.icon({
-                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-                        })
-                    }).bindPopup(popupContent).addTo(markersLayer);
+                    let treasureIcon = L.divIcon({
+                        className: '',
+                        html: '<div class="treasure-pin"></div>',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12],
+                        popupAnchor: [0, -12]
+                    });
+
+                    let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
+
+                    marker.addTo(markersLayer);
+                    markerMapElements[name] = marker; 
+                }
+
+                // --- PRZEŹROCZYSTE OBRYSY POWIATÓW (fillOpacity ustawione na 0 lub bardzo niską wartość) ---
+                if (name === "Neustadt an der Waldnaab") {
+                    let neustadtPolygon = [
+                        [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
+                        [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
+                        [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
+                        [49.811, 11.722], [49.863, 11.855]
+                    ];
+                    L.polygon(neustadtPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+                }
+                if (name === "Altenkirchen (Westerwald)") {
+                    let altenkirchenPolygon = [
+                        [50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], 
+                        [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], 
+                        [50.785, 7.444], [50.865, 7.533]
+                    ];
+                    L.polygon(altenkirchenPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+                }
+                if (name === "Eifelkreis Bitburg-Prüm") {
+                    let bitburgPolygon = [
+                        [50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], 
+                        [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], 
+                        [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]
+                    ];
+                    L.polygon(bitburgPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+                }
+
+                if (kreiseLayer) {
+                    kreiseLayer.eachLayer(function(layer) {
+                         if (matchRegionName(name, layer.featureName)) {
+                             // fillOpacity ustawione na 0.0 zapewnia pełną przezroczystość środka, zostaje sam złoty kontur
+                             let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
+                             countyPolygonsLayer.addLayer(countyPoly);
+                         }
+                    });
                 }
             });
 
@@ -680,6 +790,24 @@
             if (!cartRegions.includes(regionName)) {
                 cartRegions.push(regionName);
                 updateCartSummary();
+                updateListButtons();
+                triggerMarkerPulse(regionName); 
+            }
+        }
+
+        function triggerMarkerPulse(regionName) {
+            let marker = markerMapElements[regionName];
+            if (marker) {
+                let iconEl = marker.getElement();
+                if (iconEl) {
+                    let pinDiv = iconEl.querySelector('.treasure-pin');
+                    if (pinDiv) {
+                        pinDiv.classList.add('pulse-treasure');
+                        setTimeout(() => {
+                            pinDiv.classList.remove('pulse-treasure');
+                        }, 2400); 
+                    }
+                }
             }
         }
 
@@ -692,17 +820,36 @@
             }
         }
 
+        function updateListButtons() {
+            document.querySelectorAll('.add-list-btn').forEach(btn => {
+                let rName = btn.getAttribute('data-region');
+                if (cartRegions.includes(rName)) {
+                    btn.innerHTML = "✓ Dodano";
+                    btn.style.background = "#ffd700";
+                    btn.style.color = "#000";
+                    btn.style.borderColor = "#ffd700";
+                } else {
+                    btn.innerHTML = "+";
+                    btn.style.background = "rgba(0, 255, 127, 0.15)";
+                    btn.style.color = "#00FF7F";
+                    btn.style.borderColor = "#00FF7F";
+                }
+            });
+        }
+
         function resetMapAndList() {
             currentFilteredLand = null;
             cartRegions = [];
+            markerMapElements = {};
             updateCartSummary();
+            updateListButtons();
             document.getElementById('selectedLandTitle').style.display = 'none';
             document.querySelectorAll('.region-chk').forEach(chk => {
                 chk.checked = false; 
                 chk.closest('.region-label').style.display = 'flex';
             });
             markersLayer.clearLayers();
-            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
+            countyPolygonsLayer.clearLayers(); 
             map.setView([51.3, 10.45], 6);
             updateCountySuggestions();
         }
@@ -740,12 +887,33 @@
             });
         }
 
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.region-label').forEach(label => {
+                let chk = label.querySelector('.region-chk');
+                if (chk) {
+                    let rName = chk.value;
+                    let btn = document.createElement('button');
+                    btn.type = "button";
+                    btn.className = "add-list-btn";
+                    btn.innerHTML = "+";
+                    btn.setAttribute('data-region', rName);
+                    btn.title = "Dodaj do zamówienia";
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        addToCart(rName);
+                    };
+                    label.appendChild(btn);
+                }
+            });
+        });
+
         function sendSmsQuote() {
             let dateFrom = document.getElementById('smsDateFrom').value;
             let dateTo = document.getElementById('smsDateTo').value;
 
             if (cartRegions.length === 0) {
-                alert("Wybierz przynajmniej jeden rejon klikając 'Dodaj do zamówienia' w dymku na mapie.");
+                alert("Wybierz przynajmniej jeden rejon klikając '+' na liście lub w dymku na mapie.");
                 return;
             }
             
@@ -754,7 +922,6 @@
                 return;
             }
 
-            // Generowanie numeru zamówienia w formacie rokmiesiacdzien-1234 (np. 20260720-4821)
             let now = new Date();
             let year = now.getFullYear();
             let month = String(now.getMonth() + 1).padStart(2, '0');
@@ -777,7 +944,6 @@
                 <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
                 <ul class="dabu-footer-links">
                     <li><a href="https://dabu-info.com/">Strona Główna</a></li>
-                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
                     <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
                 </ul>
             </div>
