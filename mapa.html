@@ -459,6 +459,7 @@
             <!-- FORMULARZ DO WYCENY SMS -->
             <div class="dabu-sms-form">
                 <h3>💬 Zapytaj o wycenę dla wybranych rejonów</h3>
+                <div id="selectedRegionsSummary" style="font-size: 13px; color: #00FF7F; margin-bottom: 5px;">Wybrane rejony (koszyk): brak</div>
                 <div class="dabu-date-group">
                     <label>
                         Data wyjazdu (od):
@@ -478,6 +479,7 @@
     <script>
         let currentFilteredLand = null;
         let kreiseLayer = null;
+        let cartRegions = [];
 
         const regionToCountyMap = {
             "Elbe-Elster": "Elbe-Elster", "Oder-Spree": "Oder-Spree", "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
@@ -639,30 +641,24 @@
                 header.innerHTML = `❌ Brak rejonów w: <strong>${landName}</strong>`;
                 return;
             }
-            header.innerHTML = `Wybrano: <strong>${landName}</strong> (${regions.length} rejonów)`;
+            header.innerHTML = `Wybrano land: <strong>${landName}</strong> (${regions.length} rejonów - kliknij piny na mapie, aby dodać do koszyka)`;
             currentFilteredLand = landName;
             
-            let checkedCount = 0;
-            document.querySelectorAll('.region-chk').forEach(chk => {
-                chk.closest('.region-label').style.display = regions.includes(chk.value) ? 'flex' : 'none';
-                if (regions.includes(chk.value) && checkedCount < 3) {
-                    chk.checked = true;
-                    checkedCount++;
-                } else {
-                    chk.checked = false;
-                }
+            document.querySelectorAll('.region-label').forEach(label => {
+                let val = label.querySelector('input').value.trim();
+                label.style.display = regions.includes(val) ? 'flex' : 'none';
             });
-            refreshMarkers();
-        }
 
-        function refreshMarkers() {
             markersLayer.clearLayers();
             if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
 
-            document.querySelectorAll('.region-chk:checked').forEach(cb => {
-                let name = cb.value.trim();
+            regions.forEach(name => {
                 if(regionCoords[name]) {
-                    let popupContent = `<b>${name}</b><br><small>${cb.closest('.region-label').getAttribute('data-info')}</small>`;
+                    let matchingLabel = Array.from(document.querySelectorAll('.region-chk')).find(cb => cb.value.trim() === name);
+                    let info = matchingLabel ? matchingLabel.closest('.region-label').getAttribute('data-info') : "";
+                    
+                    let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
+                        `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:#00FF7F; color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">➕ Dodaj do zamówienia</button>`;
                     
                     L.marker(regionCoords[name], {
                         icon: L.icon({
@@ -672,93 +668,43 @@
                         })
                     }).bindPopup(popupContent).addTo(markersLayer);
                 }
-
-                if (name === "Neustadt an der Waldnaab") {
-                    let neustadtPolygon = [
-                        [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
-                        [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
-                        [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
-                        [49.811, 11.722], [49.863, 11.855]
-                    ];
-                    L.polygon(neustadtPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
-                }
-                if (name === "Altenkirchen (Westerwald)") {
-                    let altenkirchenPolygon = [
-                        [50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], 
-                        [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], 
-                        [50.785, 7.444], [50.865, 7.533]
-                    ];
-                    L.polygon(altenkirchenPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
-                }
-                if (name === "Eifelkreis Bitburg-Prüm") {
-                    let bitburgPolygon = [
-                        [50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], 
-                        [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], 
-                        [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]
-                    ];
-                    L.polygon(bitburgPolygon, { color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 }).addTo(markersLayer);
-                }
-
-                if (kreiseLayer) {
-                    kreiseLayer.eachLayer(function(layer) {
-                         if (matchRegionName(name, layer.featureName)) {
-                             layer.setStyle({ color: "#00FF7F", weight: 3, fillColor: "#00FF7F", fillOpacity: 0.4 });
-                             if (layer.bringToFront) { layer.bringToFront(); }
-                         }
-                    });
-                }
             });
+
             if(markersLayer.getLayers().length > 0) { 
                 map.fitBounds(markersLayer.getBounds(), {padding: [40, 40], maxZoom: 10});
             }
             updateCountySuggestions();
         }
 
+        function addToCart(regionName) {
+            if (!cartRegions.includes(regionName)) {
+                cartRegions.push(regionName);
+                updateCartSummary();
+            }
+        }
+
+        function updateCartSummary() {
+            let summaryEl = document.getElementById('selectedRegionsSummary');
+            if (cartRegions.length === 0) {
+                summaryEl.innerHTML = "Wybrane rejony (koszyk): brak";
+            } else {
+                summaryEl.innerHTML = "Wybrane rejony (koszyk): <strong>" + cartRegions.join(', ') + "</strong>";
+            }
+        }
+
         function resetMapAndList() {
             currentFilteredLand = null;
+            cartRegions = [];
+            updateCartSummary();
             document.getElementById('selectedLandTitle').style.display = 'none';
             document.querySelectorAll('.region-chk').forEach(chk => {
-                chk.checked = false; chk.closest('.region-label').style.display = 'flex';
+                chk.checked = false; 
+                chk.closest('.region-label').style.display = 'flex';
             });
             markersLayer.clearLayers();
-            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 });
-            }
+            if (kreiseLayer) { kreiseLayer.setStyle({ color: "transparent", fillOpacity: 0 }); }
             map.setView([51.3, 10.45], 6);
             updateCountySuggestions();
-        }
-
-        function selectAllInCounty(countyName) {
-            let checkedCount = 0;
-            document.querySelectorAll('.region-chk').forEach(cb => {
-                cb.checked = false;
-                if (regionToCountyMap[cb.value.trim()] === countyName && checkedCount < 3) {
-                    cb.checked = true;
-                    checkedCount++;
-                }
-            });
-            if (checkedCount >= 3) {
-                alert("Zaznaczono tylko pierwsze 3 rejony (maksymalny limit).");
-            }
-            refreshMarkers();
-        }
-
-        function selectOnlyNormalRegions(e) {
-            if (e) e.preventDefault();
-            currentFilteredLand = null;
-            document.getElementById('selectedLandTitle').style.display = 'none';
-            
-            let checkedCount = 0;
-            document.querySelectorAll('.region-chk').forEach(chk => {
-                let info = chk.closest('.region-label').getAttribute('data-info') || "";
-                chk.closest('.region-label').style.display = 'flex'; 
-                if (info.includes("Terminy stałe") && checkedCount < 3) {
-                    chk.checked = true;
-                    checkedCount++;
-                } else {
-                    chk.checked = false;
-                }
-            });
-            refreshMarkers();
         }
 
         function clearAllFilters(e) {
@@ -777,86 +723,49 @@
                 btnReset.innerHTML = '✖ Reset mapy';
                 btnReset.onclick = (e) => { e.preventDefault(); clearAllFilters(); };
                 container.appendChild(btnReset);
-
-                let btnLand = document.createElement('button');
-                btnLand.className = 'dabu-county-btn'; btnLand.style.background = '#3385FF'; btnLand.style.color = 'white';
-                btnLand.innerHTML = '🗺️ Pokaż cały Land';
-                btnLand.onclick = (e) => { 
-                    e.preventDefault();
-                    let checkedCount = 0;
-                    document.querySelectorAll('.region-chk').forEach(cb => {
-                        if (landMap[currentFilteredLand].includes(cb.value.trim()) && checkedCount < 3) {
-                            cb.checked = true;
-                            checkedCount++;
-                        } else {
-                            cb.checked = false;
-                        }
-                    });
-                    if (checkedCount >= 3) alert("Zaznaczono tylko 3 pierwsze rejony z wybranego landu ze względu na limit.");
-                    refreshMarkers();
-                };
-                container.appendChild(btnLand);
             }
-
-            let activeCounties = new Set();
-            if (currentFilteredLand && landMap[currentFilteredLand]) {
-                landMap[currentFilteredLand].forEach(regionName => {
-                    let county = regionToCountyMap[regionName];
-                    if (county) activeCounties.add(county);
-                });
-            } else {
-                document.querySelectorAll('.region-chk:checked').forEach(cb => {
-                    let county = regionToCountyMap[cb.value.trim()];
-                    if (county) activeCounties.add(county);
-                });
-            }
-            activeCounties.forEach(county => {
-                let btn = document.createElement('button');
-                btn.className = 'dabu-county-btn'; btn.innerHTML = `🎯 Pokaż tylko: ${county}`;
-                btn.onclick = (e) => { e.preventDefault(); selectAllInCounty(county); };
-                container.appendChild(btn);
-            });
         }
 
         function filterDabuRegions() {
             let input = document.getElementById('dabuRegionSearch').value.toLowerCase();
             document.querySelectorAll('.region-label').forEach(label => {
-                label.style.display = label.textContent.toLowerCase().includes(input) ? "flex" : "none";
+                let textMatch = label.textContent.toLowerCase().includes(input);
+                if (currentFilteredLand) {
+                    let val = label.querySelector('input').value.trim();
+                    let inLand = landMap[currentFilteredLand] && landMap[currentFilteredLand].includes(val);
+                    label.style.display = (textMatch && inLand) ? "flex" : "none";
+                } else {
+                    label.style.display = textMatch ? "flex" : "none";
+                }
             });
         }
 
-        /* LIMIT DO 3 ZAZNACZONYCH CHECKBOXÓW */
-        document.querySelectorAll('.region-chk').forEach(cb => { 
-            cb.addEventListener('change', function(e) {
-                let checkedBoxes = document.querySelectorAll('.region-chk:checked');
-                if (checkedBoxes.length > 3) {
-                    this.checked = false; // Cofnięcie zaznaczenia
-                    alert("Możesz wybrać maksymalnie 3 rejony!");
-                }
-                refreshMarkers();
-            }); 
-        });
-
-        /* FUNKCJA DO GENEROWANIA SMS */
         function sendSmsQuote() {
-            let selectedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value);
             let dateFrom = document.getElementById('smsDateFrom').value;
             let dateTo = document.getElementById('smsDateTo').value;
 
-            if (selectedRegions.length === 0) {
-                alert("Wybierz przynajmniej 1 rejon z mapy lub listy (maksymalnie 3).");
+            if (cartRegions.length === 0) {
+                alert("Wybierz przynajmniej jeden rejon klikając 'Dodaj do zamówienia' w dymku na mapie.");
                 return;
             }
+            
             if (!dateFrom || !dateTo) {
                 alert("Proszę podać datę wyjazdu (od kiedy i do kiedy).");
                 return;
             }
 
-            let message = `Dzień dobry, proszę o wycenę dla rejonów: ${selectedRegions.join(', ')}. Termin wyjazdu: od ${dateFrom} do ${dateTo}.`;
+            // Generowanie numeru zamówienia w formacie rokmiesiacdzien-1234 (np. 20260720-4821)
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = String(now.getMonth() + 1).padStart(2, '0');
+            let day = String(now.getDate()).padStart(2, '0');
+            let randomDigits = Math.floor(1000 + Math.random() * 9000);
+            let orderNumber = `${year}${month}${day}-${randomDigits}`;
+
+            let message = `Zamówienie nr ${orderNumber}. Rejony: ${cartRegions.join(', ')}. Termin wyjazdu: od ${dateFrom} do ${dateTo}.`;
             let phoneNumber = "+48600812820";
             let encodedMessage = encodeURIComponent(message);
             
-            // Otwarcie aplikacji do SMS
             window.location.href = `sms:${phoneNumber}?body=${encodedMessage}`;
         }
     </script>
