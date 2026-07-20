@@ -337,12 +337,12 @@
             <div class="strategy-container">
                 <div class="strategy-card basic">
                     <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice" style="text-align: center;">125 PLN / 25 € <span style="font-size: 0.5em; color: #ccc;">za tydzień</span></div>
+                    <div class="price-tag-large" id="configPrice" style="text-align: center;">125 PLN / 30 € <span style="font-size: 0.5em; color: #ccc;">za tydzień</span></div>
                     <span class="price-subtitle-small" id="configSubtitle" style="text-align: center;">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Cena dotyczy każdego wybranego rejonu osobno.</li>
+                        <li id="configLi2">Cena jest stała za każdy tydzień dla wyboru do 3 rejonów (powyżej 3 – <b>wycena indywidualna</b>).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                     </ul>
 
@@ -823,26 +823,24 @@
         function updatePriceDisplay() {
             let btn = document.getElementById('btnSubmit');
             let svgPriceSub = document.getElementById('svgPriceSub');
-            if (btn) {
-                let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
-                let selectedWeeksCount = document.querySelectorAll('.week-chk:checked').length;
-                
-                let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
-                let multiplier = (selectedWeeksCount > 0 && !isSpecialMode) ? selectedWeeksCount : 1;
+            if (!btn) return;
+            
+            let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
+            let selectedWeeksCount = document.querySelectorAll('.week-chk:checked').length;
 
-                if (selectedRegionsCount > 6) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `do uzgodnienia`;
-                } else if (selectedRegionsCount > 0) {
-                    let sumPLN = multiplier * 125;
-                    let sumEUR = multiplier * 25;
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
-                } 
-                else {
-                    btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                }
+            if (selectedRegionsCount > 3) {
+                btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+                if (svgPriceSub) svgPriceSub.textContent = `do uzgodnienia`;
+            } else if (selectedRegionsCount > 0 || selectedWeeksCount > 0) {
+                let weeksForCalculation = Math.max(1, selectedWeeksCount);
+                let sumPLN = weeksForCalculation * 125;
+                let sumEUR = weeksForCalculation * 30;
+                
+                btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
+                if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
+            } else {
+                btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
+                if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
             }
         }
 
@@ -872,9 +870,6 @@
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
             let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            
-            let limitToSingleRegion = selectedWeeks.length > 1;
-            let limitToSingleWeek = selectedRegions.length > 1;
 
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
@@ -884,8 +879,6 @@
     
                 if (!allAvailableRegionsInDb.has(rName)) {
                     isAvailable = false; 
-                } else if (limitToSingleRegion && !chk.checked) {
-                    isAvailable = false; 
                 } else if (selectedWeeks.length > 0) {
                     for(let i = 0; i < selectedWeeks.length; i++) {
                         let w = selectedWeeks[i];
@@ -894,7 +887,6 @@
                                 let n = typeof item === 'string' ? item : item.nazwa;
                                 return n.toLowerCase() === rName;
                             })) {
-    
                             isAvailable = false;
                             break;
                         }
@@ -908,7 +900,6 @@
             
             selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            limitToSingleWeek = selectedRegions.length > 1;
             
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
@@ -916,22 +907,20 @@
                 let wNum = chk.getAttribute('data-week');
                 let isAvailable = true;
 
-                if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
-                    isAvailable = false; 
-                } else if (selectedRegions.length > 0) {
-                    let hasAtLeastOneRegion = false;
+                if (selectedRegions.length > 0) {
                     for(let i = 0; i < selectedRegions.length; i++) {
                         let r = selectedRegions[i];
+                        let found = false;
                         if(availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
                             return n.toLowerCase() === r;
                         })) {
-                            hasAtLeastOneRegion = true;
+                            found = true;
+                        }
+                        if (!found) {
+                            isAvailable = false;
                             break;
                         }
-                    }
-                    if (!hasAtLeastOneRegion) {
-                        isAvailable = false;
                     }
                 }
 
@@ -948,11 +937,13 @@
             updateMutualFiltering();
         });
 
-        document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
-            if(el) el.addEventListener('change', () => {
-                if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
+        document.body.addEventListener('change', function(e) {
+            if (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption') {
+                if(e.target.id === 'schrottOption') { 
+                    availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
+                }
                 updateMutualFiltering();
-            });
+            }
         });
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
@@ -969,13 +960,13 @@
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             
-            if (wR.length > 6) {
+            if (wR.length > 3) {
                 body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
                 body += " PODSUMOWANIE CENY: Wycena indywidualna (powyżej 3 rejonów)\n";
             } else {
-                let multiplier = wT.length;
+                let multiplier = Math.max(1, wT.length);
                 let sumPLN = multiplier * 125; 
-                let sumEUR = multiplier * 25;  
+                let sumEUR = multiplier * 30;  
                 body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
                 body += " PODSUMOWANIE CENY: " + sumPLN + " PLN / " + sumEUR + " €\n";
             }
