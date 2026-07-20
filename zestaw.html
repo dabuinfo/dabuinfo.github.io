@@ -122,12 +122,6 @@
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
         
-        .pro-loader-overlay { position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); z-index: 10; display: flex;
-            flex-direction: column; align-items: center; justify-content: center; color: #2ecc71; font-weight: bold; text-align: center; border-radius: 4px; transition: opacity 0.3s ease; }
-        .pro-spinner { width: 40px; height: 40px; border: 4px solid rgba(46, 204, 113, 0.2); border-left-color: #2ecc71;
-            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-
         .region-label { display: block; padding: 5px;
             cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; font-size: 0.9em; transition: opacity 0.3s ease; }
         .region-label:hover { background: rgba(255,255,255,0.1); }
@@ -343,7 +337,7 @@
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>tygodnie</b> (otrzymasz dostęp do pełnej bazy <b>całych Niemiec</b>).</li>
                         <li id="configLi2">Cena to stały ryczałt na wybrane okresy.</li>
-                        <li id="configLi3">Skorzystaj z darmowego podglądu poniżej, aby sprawdzić dostępne opcje.</li>
+                        <li id="configLi3">Skorzystaj z darmowego podglądu poniżej, aby sprawdzić zawartość.</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
@@ -383,14 +377,7 @@
                 </div>
             </div>
 
-            <div class="form-wrapper" id="inlineLoader" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 400px; transition: opacity 0.3s ease;">
-                <div style="font-size: 60px; margin-bottom: 20px; animation: opacityPulse 1.5s infinite;">📡</div>
-                <h2 id="loaderTitle" style="color: #2ecc71; font-size: 24px; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px;">Synchronizacja Danych</h2>
-                <p id="mainLoaderText" style="color: #bbb; font-size: 16px; max-width: 450px; line-height: 1.5; margin: 0 auto 30px auto;"></p>
-                <div style="width: 50px; height: 50px; border: 5px solid rgba(46, 204, 113, 0.15); border-top: 5px solid #2ecc71; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            </div>
-
-            <div class="form-wrapper" id="formContent" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+            <div class="form-wrapper" id="formContent" style="display: block; opacity: 1; transition: opacity 0.5s ease;">
                 
                 <div class="selection-tools" style="margin-top: 20px;">
                     <a href="javascript:void(0)" id="btnUnselectAll" style="opacity: 0.8;">[ Odznacz wszystko / Clear ]</a>
@@ -401,7 +388,7 @@
                     <div class="regions-scroll-box" id="weeksContainer"></div>
                     
                     <div id="freePreviewSection" style="margin-top: 25px; margin-bottom: 20px; display: none;">
-                    <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
+                    <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Podgląd terminów:</div>
                     <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
                         <option value="">-- Wybierz tydzień do podglądu --</option>
                     </select>
@@ -409,17 +396,12 @@
                     <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
                         <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
                             <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
-                            <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
                         </div>
                         <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
                             <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
                         </div>
                     </div>
                 </div>
-
-                    <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
-                        <span id="specialDateText">Przygotowanie najbliższego terminu</span>
-                    </div>
                 </div>
 
                 <div class="form-header" id="step2Header">📄 2. Wybierz format:</div>
@@ -427,29 +409,25 @@
                     <div class="option-box">
                         <label class="region-label">
                             <input type="radio" name="format" value="PDF (Do druku)" checked /> 
-                            <span id="formatPdfPrintRadio">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF do druku (jasne tło, oszczędność tuszu)
-                            </span>
+                            <span id="formatPdfPrintRadio"></span>
                         </label>
                     </div>
                     <div class="option-box">
                         <label class="region-label">
                             <input type="radio" name="format" value="PDF (Smartfon - Dark Mode)" /> 
-                            <span id="formatPdfSmartRadio">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF na smartfona (Dark Mode + aktywne linki do map)
-                            </span>
+                            <span id="formatPdfSmartRadio"></span>
                         </label>
                     </div>
                     <div class="option-box">
                         <label class="region-label">
                             <input type="radio" name="format" value="JPG" /> 
-                            <span id="formatJpgRadio">🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)</span>
+                            <span id="formatJpgRadio"></span>
                          </label>
                     </div>
                     <div class="option-box">
                         <label class="region-label">
                             <input type="radio" name="format" value="Wersja Online (O nas / Oferta)" /> 
-                            <span id="formatOnlineRadio">🌐 Wersja Online (Dostęp przez interaktywną sekcję O nas / Oferta)</span>
+                            <span id="formatOnlineRadio"></span>
                          </label>
                     </div>
                 </div>
@@ -457,43 +435,36 @@
                 <div class="form-header" id="step3Header">💾 3. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
                     <div class="option-box" id="guideBoxContainer">
-                        <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel">🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b></span></label>
+                        <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel"></span></label>
                     </div>
                      <div class="option-box" id="dhlBox">
-                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)</span></label>
+                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel"></span></label>
                          <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
                     </div>
                     <div class="option-box" id="schrottBox">
-                         <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel">🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
+                         <label class="region-label"><input id="schrottOption" type="checkbox" /> <span id="schrottLabel"></span></label>
                     </div>
                 </div>
 
                 <div class="form-header" id="step4Header">💳 4. Preferowana forma płatności:</div>
                 <div class="extra-options-group" id="paymentBox">
                     <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="IBAN" checked /> <span id="payIban">🏦 IBAN / Przelew bankowy</span></label>
+                        <label class="region-label"><input type="radio" name="payment" value="IBAN" checked /> <span id="payIban"></span></label>
                     </div>
                     <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="PAYPAL" /> <span id="payPaypal">🅿️ PayPal</span></label>
+                        <label class="region-label"><input type="radio" name="payment" value="PAYPAL" /> <span id="payPaypal"></span></label>
                     </div>
                     <div class="option-box" id="blikContainer">
-                        <label class="region-label"><input type="radio" name="payment" value="BLIK" /> <span id="payBlik">📱 BLIK na Telefon</span></label>
+                        <label class="region-label"><input type="radio" name="payment" value="BLIK" /> <span id="payBlik"></span></label>
                     </div>
                     <div class="option-box">
-                         <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span id="payOther">❓ Inne</span></label>
+                         <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span id="payOther"></span></label>
                     </div>
                 </div>
 
                 <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
 
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
-
-                <div class="extra-services-box" style="display: none;">
-                    <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
-                        <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.
-                    </p>
-                    <a class="extra-services-link" href="#" id="extraInfoBtn">Napisz do nas</a>
-                </div>
             </div>
         </div>
     </div>
@@ -501,121 +472,76 @@
 <script>
 //<![CDATA[
     document.addEventListener("DOMContentLoaded", function() {
-        
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
-        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA0em0tNC01bC00LTRWNGg4djMuNWwtNCA0eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
-        const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
-
-        var userLang = navigator.language || navigator.userLanguage; 
-        userLang = userLang.substr(0, 2).toLowerCase();
-        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
-        if (!supported.includes(userLang)) userLang = 'de';
         
-        const config = {
-            'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem...<br><br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Dostęp online bez konieczności pobierania plików.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywną sekcję O nas / Oferta)', step1Header: '📅 1. Wybierz Tygodnie:', step2Header: '📄 2. Wybierz format:', step3Header: '💾 3. Opcje dodatkowe:', step4Header: '💳 4. Preferowana forma płatności:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', weekLabel: 'Tydzień', emailGreeting: 'Dzień dobry,', emailDates: 'DATY', paymentNote: 'Preferowana płatność / Identyfikator:', emailWarning: 'Czekam na zwrotną informację z wyceną.' } }
+        // Inicjalizacja tekstów
+        const t = {
+            weekLabel: "Tydzień", previewDefault: "-- Wybierz tydzień do podglądu --",
+            btnSubmit: "🛒 WYŚLIJ ZAMÓWIENIE", pdfDat: "Dni wywozu", pdfLegend: "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz"
         };
 
-        const t = config[userLang]?.texts || config['pl'].texts;
-
-        setHtml('loaderTitle', t.loaderTitle);
-        setHtml('mainLoaderText', t.loaderDesc);
-        setHtml('bonusInfo', t.bonus);
-        setHtml('infoDesc', t.infoDesc);
-        setText('headerChoose', t.headerChoose);
-        setHtml('configTitle', t.configTitle);
-        setText('configSubtitle', t.configSubtitle);
-        setHtml('formatPdfTitle', t.formatPdfTitle);
-        setHtml('formatPdfLi1', t.formatPdfLi1);
-        setHtml('formatPdfLi2', t.formatPdfLi2);
-        setHtml('formatPdfLi3', t.formatPdfLi3);
-        setHtml('formatJpgTitle', t.formatJpgTitle);
-        setHtml('formatJpgLi1', t.formatJpgLi1);
-        setHtml('formatJpgLi2', t.formatJpgLi2);
-        setHtml('formatOnlineTitle', t.formatOnlineTitle);
-        setHtml('formatOnlineLi1', t.formatOnlineLi1);
-        setHtml('formatOnlineLi2', t.formatOnlineLi2);
-        setHtml('formatOnlineRadio', t.formatOnlineRadio);
-        setText('step1Header', t.step1Header);
-        setText('step2Header', t.step2Header);
-        setText('step3Header', t.step3Header);
-        setText('step4Header', t.step4Header);
-        setHtml('freePreviewTitle', t.previewTitle);
-        setText('btnUnselectAll', t.btnUnselectAll);
-        setHtml('formatPdfPrintRadio', t.formatPdfPrintRadio);
-        setHtml('formatPdfSmartRadio', t.formatPdfSmartRadio);
-        setHtml('formatJpgRadio', t.formatJpgRadio);
-        setHtml('payIban', t.payIban);
-        setHtml('payPaypal', t.payPaypal);
-        if(t.payBlik) setHtml('payBlik', t.payBlik);
-        setHtml('payOther', t.payOther);
-        if(t.guideLabel) setHtml('guideLabel', t.guideLabel);
-        if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
-        if(t.dhlLabel) setHtml('dhlLabel', t.dhlLabel);
-        setText('btnSubmit', t.btnSubmit);
-
         var weeksContainer = document.getElementById('weeksContainer');
-        if (weeksContainer) {
-            var today = new Date();
-            var day = today.getDay(); var hour = today.getHours();
-            var diff = today.getDate() - day + (day == 0 ? -6 : 1);
-            if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
-            var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
-            
-            for (var i = 0; i < 53; i++) {
-                var sW = new Date(startPoint); sW.setDate(startPoint.getDate() + (i * 7));
-                var weekNum = getWeekNumber(sW);
-                var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
-                var label = document.createElement('label'); label.className = "region-label";
-                var input = document.createElement('input'); input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
-                input.setAttribute('data-week', weekNum);
-                input.value = (t.weekLabel || "Tydzień") + " " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
-                label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
-                weeksContainer.appendChild(label);
-            }
-            fetchAvailableWeeks();
-        }
-
-        let availabilityMatrixAll = {};
+        var today = new Date();
+        var day = today.getDay(); var hour = today.getHours();
+        var diff = today.getDate() - day + (day == 0 ? -6 : 1);
+        if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
+        var startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
         
-        function fetchAvailableWeeks() {
-            fetch(apiURL + "?action=getAllAvailability")
-                .then(res => res.json())
-                .then(data => { availabilityMatrixAll = data.data; updatePriceDisplay(); })
-                .finally(() => {
-                    document.getElementById('inlineLoader').style.display = 'none';
-                    document.getElementById('formContent').style.display = 'block';
-                    document.getElementById('formContent').style.opacity = '1';
-                });
+        for (var i = 0; i < 53; i++) {
+            var sW = new Date(startPoint); sW.setDate(startPoint.getDate() + (i * 7));
+            var weekNum = getWeekNumber(sW);
+            var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
+            var label = document.createElement('label'); label.className = "region-label";
+            var input = document.createElement('input'); input.type = "checkbox"; input.className = "week-chk";
+            input.setAttribute('data-week', weekNum);
+            input.value = t.weekLabel + " " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
+            label.appendChild(input); label.appendChild(document.createTextNode(" " + input.value));
+            weeksContainer.appendChild(label);
         }
 
-        function updatePriceDisplay() {
-            let btn = document.getElementById('btnSubmit');
-            let svgPriceSub = document.getElementById('svgPriceSub');
-            let selectedWeeksCount = document.querySelectorAll('.week-chk:checked').length;
-
-            if (selectedWeeksCount > 0) {
-                let sumPLN = selectedWeeksCount * 250;
-                let sumEUR = selectedWeeksCount * 60;
-                btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${sumPLN} PLN / ${sumEUR} €)`;
-                if (svgPriceSub) svgPriceSub.textContent = `${sumPLN} PLN / ${sumEUR} €`;
-            } else {
-                btn.innerHTML = t.btnSubmit;
-                if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
+        let previewCache = {};
+        document.getElementById('freePreviewWeek').addEventListener('change', function() {
+            let w = this.value;
+            let table = document.getElementById('freePreviewTable');
+            if(!w) { document.getElementById('freePreviewContainer').style.display = 'none'; return; }
+            
+            if(previewCache[w]) renderTable(previewCache[w]);
+            else {
+                fetch(apiURL + "?action=getWeek&week=" + w).then(res => res.json()).then(data => {
+                    previewCache[w] = data.data; renderTable(data.data);
+                });
             }
+        });
+
+        function renderTable(data) {
+            let table = document.getElementById('freePreviewTable');
+            let html = data.map(item => `<tr><td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div style="font-weight: bold; color: #2ecc71;">${item.nazwa}</div><div style="font-size: 0.85em;">${item.daty}</div></td></tr>`).join('');
+            table.innerHTML = html;
+            document.getElementById('freePreviewContainer').style.display = 'block';
+            document.getElementById('freePreviewSection').style.display = 'block';
         }
 
         document.body.addEventListener('change', function(e) {
-            if (e.target.classList.contains('week-chk')) updatePriceDisplay();
+            if (e.target.classList.contains('week-chk')) {
+                let count = document.querySelectorAll('.week-chk:checked').length;
+                let btn = document.getElementById('btnSubmit');
+                let sub = document.getElementById('svgPriceSub');
+                if(count > 0) {
+                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Suma: ${count * 250} PLN / ${count * 60} €)`;
+                    sub.textContent = `${count * 250} PLN / ${count * 60} €`;
+                } else {
+                    btn.innerHTML = t.btnSubmit;
+                    sub.textContent = "na zapytanie";
+                }
+            }
         });
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
             var wT = document.querySelectorAll('.week-chk:checked');
             if (wT.length === 0) { alert("Wybierz przynajmniej jeden tydzień!"); return; }
-            
-            var body = "Specyfikacja zamówienia za zestaw CAŁE NIEMCY:\n\n";
-            body += "PODSUMOWANIE: " + (wT.length * 250) + " PLN / " + (wT.length * 60) + " €\n\n";
+            var body = "Zamówienie zestawu CAŁE NIEMCY:\n\nSuma: " + (wT.length * 250) + " PLN / " + (wT.length * 60) + " €\n\n";
             wT.forEach(w => body += "- " + w.value + "\n");
-            window.location.href = "mailto:wystawki@gmail.com?subject=Zamówienie zestawu CAŁE NIEMCY&body=" + encodeURIComponent(body);
+            window.location.href = "mailto:wystawki@gmail.com?subject=Zamówienie CAŁE NIEMCY&body=" + encodeURIComponent(body);
         });
 
         function getWeekNumber(d) { 
@@ -627,42 +553,5 @@
     }); 
 //]]>
 </script>
-
-    <footer class="dabu-footer">
-        <div class="dabu-footer-container">
-            <div class="dabu-footer-col">
-                <h4 class="dabu-footer-heading">dabu-info</h4>
-                <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
-                <ul class="dabu-footer-links">
-                    <li><a href="https://dabu-info.com/">Strona Główna</a></li>
-                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
-                    <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
-                </ul>
-            </div>
-
-            <div class="dabu-footer-col">
-                <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
-                <ul class="dabu-footer-contact">
-                    <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
-                    <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
-                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
-                </ul>
-            </div>
-
-            <div class="dabu-footer-col">
-                <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
-                <ul class="dabu-footer-contact">
-                    <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
-                    <li>💳 Płatności: BLIK, PayPal</li>
-                    <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="dabu-footer-bottom">
-            <p>&copy; 2026 <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
-        </div>
-    </footer>
-
 </body>
 </html>
