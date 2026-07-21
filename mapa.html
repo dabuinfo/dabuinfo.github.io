@@ -305,6 +305,34 @@
                 text-align: center;
             }
         }
+
+        /* ========================================= */
+        /* STYLE POPUPU (ŚRODEK EKRANU)              */
+        /* ========================================= */
+        .dabu-order-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0, 255, 127, 0.95);
+            color: #000;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 255, 127, 0.6);
+            z-index: 999999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-out;
+        }
+
+        .dabu-order-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
     </style>
 </head>
 <body>
@@ -700,6 +728,77 @@
                }).addTo(map);
             });
             
+        // --- NOWA FUNKCJA DO RYSOWANIA POJEDYNCZEGO REJONU ---
+        function drawSingleRegionOnMap(name, info) {
+            if (!regionCoords[name] || markerMapElements[name]) return; // Zapobieganie błędom i duplikatom
+            
+            let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
+                `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">💎 Dodaj do zamówienia</button>`;
+            
+            let treasureIcon = L.divIcon({
+                className: '',
+                html: '<div class="treasure-pin"></div>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            });
+
+            let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
+            marker.addTo(markersLayer);
+            markerMapElements[name] = marker; 
+
+            // Rysowanie specjalnych poligonów
+            if (name === "Neustadt an der Waldnaab") {
+                let neustadtPolygon = [[49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], [49.811, 11.722], [49.863, 11.855]];
+                L.polygon(neustadtPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+            }
+            if (name === "Altenkirchen (Westerwald)") {
+                let altenkirchenPolygon = [[50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], [50.785, 7.444], [50.865, 7.533]];
+                L.polygon(altenkirchenPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+            }
+            if (name === "Eifelkreis Bitburg-Prüm") {
+                let bitburgPolygon = [[50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]];
+                L.polygon(bitburgPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
+            }
+
+            if (kreiseLayer) {
+                kreiseLayer.eachLayer(function(layer) {
+                     if (matchRegionName(name, layer.featureName)) {
+                         let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
+                         countyPolygonsLayer.addLayer(countyPoly);
+                     }
+                });
+            }
+        }
+
+        // --- NOWA FUNKCJA SYNCHRONIZUJĄCA MAPĘ ZE STANEM CHECKBOXÓW ---
+        function refreshMapState() {
+            markersLayer.clearLayers();
+            countyPolygonsLayer.clearLayers();
+            markerMapElements = {};
+
+            let regionsToDraw = new Set();
+            
+            // 1. Z landu (jeśli wybrano klikając w mapę główną)
+            if (currentFilteredLand && landMap[currentFilteredLand]) {
+                landMap[currentFilteredLand].forEach(r => regionsToDraw.add(r));
+            }
+            
+            // 2. Z zaznaczonych ręcznie checkboxów
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                if (chk.checked) {
+                    regionsToDraw.add(chk.value.trim());
+                }
+            });
+
+            // Rysujemy wszystkie odnalezione
+            regionsToDraw.forEach(name => {
+                let matchingLabel = Array.from(document.querySelectorAll('.region-chk')).find(cb => cb.value.trim() === name);
+                let info = matchingLabel ? matchingLabel.closest('.region-label').getAttribute('data-info') : "";
+                drawSingleRegionOnMap(name, info);
+            });
+        }
+
         function selectLand(landName) {
             let regions = landMap[landName] || [];
             let header = document.getElementById('selectedLandTitle');
@@ -716,67 +815,7 @@
                 label.style.display = regions.includes(val) ? 'flex' : 'none';
             });
 
-            markersLayer.clearLayers();
-            countyPolygonsLayer.clearLayers(); 
-            markerMapElements = {}; 
-
-            regions.forEach(name => {
-                if(regionCoords[name]) {
-                    let matchingLabel = Array.from(document.querySelectorAll('.region-chk')).find(cb => cb.value.trim() === name);
-                    let info = matchingLabel ? matchingLabel.closest('.region-label').getAttribute('data-info') : "";
-                    
-                    let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
-                        `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">💎 Dodaj do zamówienia</button>`;
-                    
-                    let treasureIcon = L.divIcon({
-                        className: '',
-                        html: '<div class="treasure-pin"></div>',
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 12],
-                        popupAnchor: [0, -12]
-                    });
-
-                    let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
-
-                    marker.addTo(markersLayer);
-                    markerMapElements[name] = marker; 
-                }
-
-                if (name === "Neustadt an der Waldnaab") {
-                    let neustadtPolygon = [
-                        [49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], 
-                        [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], 
-                        [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], 
-                        [49.811, 11.722], [49.863, 11.855]
-                    ];
-                    L.polygon(neustadtPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-                }
-                if (name === "Altenkirchen (Westerwald)") {
-                    let altenkirchenPolygon = [
-                        [50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], 
-                        [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], 
-                        [50.785, 7.444], [50.865, 7.533]
-                    ];
-                    L.polygon(altenkirchenPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-                }
-                if (name === "Eifelkreis Bitburg-Prüm") {
-                    let bitburgPolygon = [
-                        [50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], 
-                        [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], 
-                        [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]
-                    ];
-                    L.polygon(bitburgPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-                }
-
-                if (kreiseLayer) {
-                    kreiseLayer.eachLayer(function(layer) {
-                         if (matchRegionName(name, layer.featureName)) {
-                             let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
-                             countyPolygonsLayer.addLayer(countyPoly);
-                         }
-                    });
-                }
-            });
+            refreshMapState();
 
             if(markersLayer.getLayers().length > 0) { 
                 map.fitBounds(markersLayer.getBounds(), {padding: [40, 40], maxZoom: 10});
@@ -784,53 +823,20 @@
             updateCountySuggestions();
         }
 
-        /* NAPRAWIONE: Funkcja zaznacza wyłącznie rejony ze stałym terminem */
         function selectOnlyNormalRegions(e) {
             if (e) e.preventDefault();
             currentFilteredLand = null;
             document.getElementById('selectedLandTitle').style.display = 'none';
             
-            markersLayer.clearLayers();
-            countyPolygonsLayer.clearLayers();
-            markerMapElements = {};
-
             document.querySelectorAll('.region-chk').forEach(chk => {
                 let info = chk.closest('.region-label').getAttribute('data-info') || "";
-                // Sprawdzamy czy termin jest stały
                 let isFesteTermine = info.includes("Terminy stałe");
                 
                 chk.checked = isFesteTermine;
                 chk.closest('.region-label').style.display = 'flex'; 
-
-                if (isFesteTermine) {
-                    let name = chk.value.trim();
-                    if (regionCoords[name]) {
-                        let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
-                            `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#000; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer;">💎 Dodaj do zamówienia</button>`;
-                        
-                        let treasureIcon = L.divIcon({
-                            className: '',
-                            html: '<div class="treasure-pin"></div>',
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 12],
-                            popupAnchor: [0, -12]
-                        });
-
-                        let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
-                        marker.addTo(markersLayer);
-                        markerMapElements[name] = marker;
-                    }
-
-                    if (kreiseLayer) {
-                        kreiseLayer.eachLayer(function(layer) {
-                             if (matchRegionName(name, layer.featureName)) {
-                                 let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
-                                 countyPolygonsLayer.addLayer(countyPoly);
-                             }
-                        });
-                    }
-                }
             });
+
+            refreshMapState();
 
             if(markersLayer.getLayers().length > 0) { 
                 map.fitBounds(markersLayer.getBounds(), {padding: [40, 40], maxZoom: 10});
@@ -844,7 +850,21 @@
                 updateCartSummary();
                 updateListButtons();
                 triggerMarkerPulse(regionName); 
+                
+                showOrderPopup(regionName);
             }
+        }
+
+        function showOrderPopup(regionName) {
+            let popup = document.getElementById('dabuOrderPopup');
+            let popupText = document.getElementById('dabuOrderPopupText');
+            
+            popupText.innerText = regionName;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 1500);
         }
 
         function triggerMarkerPulse(regionName) {
@@ -944,6 +964,30 @@
                 let chk = label.querySelector('.region-chk');
                 if (chk) {
                     let rName = chk.value;
+                    let info = label.getAttribute('data-info') || "";
+
+                    // --- NOWE: RYSOWANIE PO ZAZNACZENIU W LIŚCIE ---
+                    chk.addEventListener('change', () => {
+                        if (chk.checked) {
+                            // Rysuj na mapie, jeśli jeszcze go tam nie ma
+                            drawSingleRegionOnMap(rName, info);
+                            
+                            // Wycentruj i przybliż widok mapy do tego pinu
+                            if (regionCoords[rName]) {
+                                map.flyTo(regionCoords[rName], 9, {duration: 0.5});
+                                // Otwórz dymek informacyjny po ułamku sekundy
+                                setTimeout(() => {
+                                    if (markerMapElements[rName]) {
+                                        markerMapElements[rName].openPopup();
+                                    }
+                                }, 500);
+                            }
+                        } else {
+                            // Jeśli odznaczono na liście, aktualizujemy całą mapę
+                            refreshMapState();
+                        }
+                    });
+
                     let btn = document.createElement('button');
                     btn.type = "button";
                     btn.className = "add-list-btn";
@@ -1022,5 +1066,11 @@
         </div>
     </footer>
     
+    <!-- POPUP DODANIA DO ZAMÓWIENIA -->
+    <div id="dabuOrderPopup" class="dabu-order-popup">
+        <div class="popup-content">
+            ✅ Dodano: <strong id="dabuOrderPopupText"></strong>
+        </div>
+    </div>
 </body>
 </html>
