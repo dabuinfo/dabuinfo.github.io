@@ -283,50 +283,61 @@
         }
 
         orderBtn.addEventListener('click', () => {
-            const dzisiaj = new Date();
-            const rrrr = dzisiaj.getFullYear();
-            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dzisiaj.getDate()).padStart(2, '0');
-            const dataString = `${rrrr}${mm}${dd}`;
+    const dzisiaj = new Date();
+    const rrrr = dzisiaj.getFullYear();
+    const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dzisiaj.getDate()).padStart(2, '0');
+    const dataString = `${rrrr}${mm}${dd}`;
 
-            const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
-            
-            let totalToPay = 0;
-            let hasBotDownload = false;
+    const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
+    
+    let totalToPay = 0;
+    let hasBotDownload = false;
 
-            const itemsList = Object.entries(cart).map(([name, item]) => {
-                totalToPay += item.price * item.qty;
-                if (item.price === 0) {
-                    hasBotDownload = true;
-                }
-                return item.isCounter ? `${name} (${item.qty} dni)` : name;
-            }).join(', ');
-            
-            const scrappersFilter = document.getElementById('scrappersFilter');
-            let selectedWasteType = "Wszystko (Domyślnie)"; 
-            
-            if (scrappersFilter && scrappersFilter.checked) {
-                selectedWasteType = "Opcja dla złomiarzy";
-            }
+    const selectedRegions = Object.keys(cart);
+    
+    // Filtrujemy wybrane rejony na dwie grupy
+    const mandatoryList = selectedRegions.filter(region => onlyScrappersRegions.includes(region));
+    const standardList = selectedRegions.filter(region => !onlyScrappersRegions.includes(region));
 
-            const totalEurToPay = (totalToPay * 6) / 25;
-            
-            let msg = "";
+    const scrappersFilter = document.getElementById('scrappersFilter');
+    let selectedWasteType = "Wszystko (Domyślnie)"; 
 
-            // Jeśli zamówienie dotyczy Pobierania Bazy Botem
-            if (hasBotDownload && totalToPay === 0) {
-                msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
-            } else {
-                // Standardowa treść dla pozostałych usług
-                let priceText = totalToPay > 0 
-                    ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
-                    : `Cena do uzgodnienia`;
+    // Opcja szczegółowa budowania opisu typu zamówienia:
+    if (mandatoryList.length > 0 && standardList.length > 0) {
+        selectedWasteType = `Standard + Złomiarze (dotyczy: ${mandatoryList.join(', ')})`;
+    } else if (mandatoryList.length > 0) {
+        selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${mandatoryList.join(', ')})`;
+    } else if (scrappersFilter && scrappersFilter.checked) {
+        selectedWasteType = "Opcja dla złomiarzy";
+    }
 
-                msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
-            }
-            
-            window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
-        });
+    const itemsList = Object.entries(cart).map(([name, item]) => {
+        totalToPay += item.price * item.qty;
+        if (item.price === 0) {
+            hasBotDownload = true;
+        }
+        return item.isCounter ? `${name} (${item.qty} dni)` : name;
+    }).join(', ');
+
+    const totalEurToPay = (totalToPay * 6) / 25;
+    
+    let msg = "";
+
+    // Jeśli zamówienie dotyczy Pobierania Bazy Botem
+    if (hasBotDownload && totalToPay === 0) {
+        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
+    } else {
+        // Standardowa treść dla pozostałych usług
+        let priceText = totalToPay > 0 
+            ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
+            : `Cena do uzgodnienia`;
+
+        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+    }
+    
+    window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
+});
     })();
 </script>
     
