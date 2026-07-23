@@ -57,7 +57,7 @@
         <ul>
             <li><b>Gminy (Extra): 25 zł (6 €)</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
             <li><b>Landy (Powiaty/Miasta): 25 zł (6 €)</b> – za 1 dzień (wybierz ilość dni za pomocą +/-).</li>
-            <li><b>Jednorazowe Pobieranie Botem: 850 zł (204 €)</b> – za pobranie terminów do końca roku w formie PDF do druku.</li>
+            <li><b>Jednorazowe Pobieranie Botem: Cena do uzgodnienia</b> – więcej informacji po kontakcie.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
     </div>
@@ -113,32 +113,32 @@
                 }
             },
             "Jednorazowe Pobieranie Bazy Botem": {
-    price: 0,
-    type: "checkbox", 
-    desc: "Cena do uzgodnienia, więcej informacji po kontakcie",
-    items: {
-        "Do końca roku": [
-            "Altmarkkreis-Salzwedel",
-            "Bonn",
-            "Erftstadt",
-            "Eschwege",
-            "Freudenstadt",
-            "Gifhorn",
-            "Heilbronn",
-            "Karlsruhe Stadt",
-            "Limburg-Weilburg",
-            "Lüneburg",
-            "Mayen-Koblenz",
-            "Monachium-Południowy Wschód",
-            "Neustadt an der Waldnaab",
-            "Ortenau (Offenburg)",
-            "Rendsburg-Eckenförde",
-            "Rheingau-Taunus",
-            "Westerwald",
-            "Zollernalb"
-        ]
-    }
-}
+                price: 0,
+                type: "checkbox", 
+                desc: "Cena do uzgodnienia, więcej informacji po kontakcie",
+                items: {
+                    "Do końca roku": [
+                        "Altmarkkreis-Salzwedel",
+                        "Bonn",
+                        "Erftstadt",
+                        "Eschwege",
+                        "Freudenstadt",
+                        "Gifhorn",
+                        "Heilbronn",
+                        "Karlsruhe Stadt",
+                        "Limburg-Weilburg",
+                        "Lüneburg",
+                        "Mayen-Koblenz",
+                        "Monachium-Południowy Wschód",
+                        "Neustadt an der Waldnaab",
+                        "Ortenau (Offenburg)",
+                        "Rendsburg-Eckenförde",
+                        "Rheingau-Taunus",
+                        "Westerwald",
+                        "Zollernalb"
+                    ]
+                }
+            }
         };
 
         const container = document.getElementById('regionsContainer');
@@ -174,7 +174,6 @@
                 `;
                 container.appendChild(wasteOptions);
             }
-            // KONIEC SEKCJI
 
             Object.entries(config.items).forEach(([sub, regions]) => {
                 const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = sub; container.appendChild(subH);
@@ -231,7 +230,6 @@
                 itemCount++;
             });
             
-            // Sztywne przeliczenie oparte na proporcji 25 zł = 6 €
             let totalEur = (total * 6) / 25;
 
             priceDisplay.textContent = total;
@@ -255,7 +253,6 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            // Logika dla filtra Elektro
             const elektroFilter = document.getElementById('elektroOnlyFilter');
             let selectedWasteType = "Wszystko (Domyślnie)"; 
             
@@ -263,11 +260,14 @@
                 selectedWasteType = "Tylko Elektro";
             }
 
-            // Sztywne wyliczenie euro do wiadomości SMS
             const totalEurToPay = (totalToPay * 6) / 25;
             
-            // Aktualizacja treści SMS
-            const msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Razem: ${totalToPay} zł (${totalEurToPay} €). UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            // Czy w zamówieniu jest tylko pozycja "do uzgodnienia"?
+            let priceText = totalToPay > 0 
+                ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
+                : `Cena do uzgodnienia`;
+
+            const msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
             
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
