@@ -239,38 +239,50 @@
         }
 
         orderBtn.addEventListener('click', () => {
-            const dzisiaj = new Date();
-            const rrrr = dzisiaj.getFullYear();
-            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dzisiaj.getDate()).padStart(2, '0');
-            const dataString = `${rrrr}${mm}${dd}`;
+    const dzisiaj = new Date();
+    const rrrr = dzisiaj.getFullYear();
+    const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dzisiaj.getDate()).padStart(2, '0');
+    const dataString = `${rrrr}${mm}${dd}`;
 
-            const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
-            
-            let totalToPay = 0;
-            const itemsList = Object.entries(cart).map(([name, item]) => {
-                totalToPay += item.price * item.qty;
-                return item.isCounter ? `${name} (${item.qty} dni)` : name;
-            }).join(', ');
-            
-            const elektroFilter = document.getElementById('elektroOnlyFilter');
-            let selectedWasteType = "Wszystko (Domyślnie)"; 
-            
-            if (elektroFilter && elektroFilter.checked) {
-                selectedWasteType = "Tylko Elektro";
-            }
+    const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
+    
+    let totalToPay = 0;
+    let hasBotDownload = false;
 
-            const totalEurToPay = (totalToPay * 6) / 25;
-            
-            // Czy w zamówieniu jest tylko pozycja "do uzgodnienia"?
-            let priceText = totalToPay > 0 
-                ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
-                : `Cena do uzgodnienia`;
+    const itemsList = Object.entries(cart).map(([name, item]) => {
+        totalToPay += item.price * item.qty;
+        if (item.price === 0) {
+            hasBotDownload = true;
+        }
+        return item.isCounter ? `${name} (${item.qty} dni)` : name;
+    }).join(', ');
+    
+    const elektroFilter = document.getElementById('elektroOnlyFilter');
+    let selectedWasteType = "Wszystko (Domyślnie)"; 
+    
+    if (elektroFilter && elektroFilter.checked) {
+        selectedWasteType = "Tylko Elektro";
+    }
 
-            const msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
-            
-            window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
-        });
+    const totalEurToPay = (totalToPay * 6) / 25;
+    
+    let msg = "";
+
+    // Jeśli zamówienie dotyczy Pobierania Bazy Botem
+    if (hasBotDownload && totalToPay === 0) {
+        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: Do końca roku]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
+    } else {
+        // Standardowa treść dla pozostałych usług
+        let priceText = totalToPay > 0 
+            ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
+            : `Cena do uzgodnienia`;
+
+        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+    }
+    
+    window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
+});
     })();
 </script>
     
