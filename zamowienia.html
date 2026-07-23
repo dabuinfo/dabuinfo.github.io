@@ -148,6 +148,23 @@
         
         let cart = {};
 
+        // Lista rejonów, w których opcja dla złomiarzy NIE JEST dostępna
+        const noScrappersRegions = [
+            "Rhein-Neckar-Kreis",
+            "Freudenstadt Powiat",
+            "Freudenstadt",
+            "Eschwege Miasto",
+            "Eschwege",
+            "Werra-Meissner"
+        ];
+
+        // Lista rejonów, w których DOSTĘPNA JEST TYLKO opcja dla złomiarzy (brak Sperrmüll)
+        const onlyScrappersRegions = [
+            "Calw Powiat",
+            "Zollernalb Powiat",
+            "Zollernalb"
+        ];
+
         // SEKCJA: Opcja dla złomiarzy (Wspólna dla wszystkich rejonów)
         const wasteOptions = document.createElement('div');
         wasteOptions.className = 'waste-type-selector';
@@ -164,6 +181,7 @@
                     <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy"> 
                     🧲 Chcę zamawiać jako opcja dla złomiarzy
                 </label>
+                <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
             </div>
         `;
         container.appendChild(wasteOptions);
@@ -220,6 +238,32 @@
             });
         });
 
+        function updateScrappersOptionStatus() {
+            const scrappersFilter = document.getElementById('scrappersFilter');
+            const scrappersNote = document.getElementById('scrappersNote');
+            const selectedRegions = Object.keys(cart);
+
+            let hasForbidden = selectedRegions.some(region => noScrappersRegions.includes(region));
+            let hasMandatory = selectedRegions.some(region => onlyScrappersRegions.includes(region));
+
+            if (hasForbidden) {
+                scrappersFilter.checked = false;
+                scrappersFilter.disabled = true;
+                scrappersNote.textContent = "⚠️ Wybrany rejon nie posiada opcji dla złomiarzy.";
+                scrappersNote.style.color = "#e74c3c";
+                scrappersNote.style.display = "inline";
+            } else if (hasMandatory) {
+                scrappersFilter.checked = true;
+                scrappersFilter.disabled = true;
+                scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy (brak Sperrmüll).";
+                scrappersNote.style.color = "#2ecc71";
+                scrappersNote.style.display = "inline";
+            } else {
+                scrappersFilter.disabled = false;
+                scrappersNote.style.display = "none";
+            }
+        }
+
         function updateUI() {
             let total = 0;
             let itemCount = 0;
@@ -234,6 +278,8 @@
             priceDisplayEur.textContent = totalEur;
             
             orderBtn.disabled = itemCount === 0;
+
+            updateScrappersOptionStatus();
         }
 
         orderBtn.addEventListener('click', () => {
