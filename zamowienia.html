@@ -148,7 +148,7 @@
         
         let cart = {};
 
-        // SEKCJA: Opcja dla złomiarzy (Wspólna dla WSZYSTKICH rejonów)
+        // SEKCJA: Opcja dla złomiarzy (Wspólna dla wszystkich rejonów)
         const wasteOptions = document.createElement('div');
         wasteOptions.className = 'waste-type-selector';
         wasteOptions.style.marginTop = '10px';
@@ -159,10 +159,10 @@
         wasteOptions.style.borderRadius = '8px';
         wasteOptions.innerHTML = `
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <span style="color: #ffffff; font-weight: bold;">Opcja dla złomiarzy:</span>
+                <span style="color: #ffffff; font-weight: bold;">Ustawienia zamówienia:</span>
                 <label style="cursor: pointer; font-weight: bold; color: #e67e22; display: flex; align-items: center; gap: 8px;">
-                    <input type="checkbox" id="elektroOnlyFilter" value="Tylko Elektro"> 
-                    🧲 Chcę otrzymywać TYLKO terminy Elektro
+                    <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy"> 
+                    🧲 Chcę zamawiać jako opcja dla złomiarzy
                 </label>
             </div>
         `;
@@ -256,11 +256,11 @@
                 return item.isCounter ? `${name} (${item.qty} dni)` : name;
             }).join(', ');
             
-            const elektroFilter = document.getElementById('elektroOnlyFilter');
+            const scrappersFilter = document.getElementById('scrappersFilter');
             let selectedWasteType = "Wszystko (Domyślnie)"; 
             
-            if (elektroFilter && elektroFilter.checked) {
-                selectedWasteType = "Tylko Elektro";
+            if (scrappersFilter && scrappersFilter.checked) {
+                selectedWasteType = "Opcja dla złomiarzy";
             }
 
             const totalEurToPay = (totalToPay * 6) / 25;
