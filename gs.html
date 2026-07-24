@@ -150,7 +150,7 @@
             <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
         </div>
         
-        <!-- NOWA SEKCJA INFORMACYJNA -->
+        <!-- SEKCJA INFORMACYJNA -->
         <div class="info-box">
             <strong>Kupujesz gotowy plik .CSV, który zawiera wyciągnięte surowe dane firm z serwisu Gelbe Seiten (o ile zostały tam podane):</strong>
             <ul>
@@ -176,12 +176,12 @@
             <input type="number" id="dystans" value="50" min="1" max="100">
         </div>
 
-        <button id="submitBtn" onclick="generujZamowienie()">Generuj zamówienie (50 PLN)</button>
+        <button id="submitBtn" onclick="generujZamowienie()">Wyślij zapytanie</button>
 
         <div id="wynik">
-            <p style="margin-top:0;"><strong>Zamówienie gotowe!</strong></p>
-            <p>Twój numer: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-            <p style="font-size: 1.2em; margin-bottom:0;">Kwota: <b id="kwotaWynik"></b></p>
+            <p style="margin-top:0;"><strong>Zapytanie gotowe do wysłania!</strong></p>
+            <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+            <p style="font-size: 0.95em; margin-bottom:0;">Cena zostanie ustalona indywidualnie po przygotowaniu bazy.</p>
             <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
         </div>
     </div>
@@ -192,28 +192,12 @@
 
     <script>
         const dystansInput = document.getElementById('dystans');
-        const btn = document.getElementById('submitBtn');
-        let aktualnaCena = 50; 
 
-        function przeliczCene() {
-            let km = parseInt(dystansInput.value) || 0;
-            
-            if (km > 100) {
-                km = 100;
+        dystansInput.addEventListener('input', function() {
+            if (parseInt(dystansInput.value) > 100) {
                 dystansInput.value = 100;
             }
-
-            if (km < 25) {
-                aktualnaCena = 25;
-            } else {
-                aktualnaCena = km; 
-            }
-
-            btn.innerText = `Generuj zamówienie (${aktualnaCena} PLN)`;
-        }
-
-        dystansInput.addEventListener('input', przeliczCene);
-        window.onload = przeliczCene;
+        });
 
         function generujZamowienie() {
             const miasto = document.getElementById('miasto').value.trim();
@@ -234,7 +218,7 @@
             const nr = `${rok}${miesiac}${dzien}-${losowy}`;
             
             const numerTelefonu = "+48600812820";
-            const trescSms = `Zamówienie Bazy.\nNr: ${nr}\nBranża: ${branza}\nMiasto: ${miasto}\nDystans: ${dystans} km\nCena: ${aktualnaCena} PLN`;
+            const trescSms = `Zapytanie o Bazę.\nNr: ${nr}\nBranża: ${branza}\nMiasto: ${miasto}\nDystans: ${dystans} km\n(Wytrzymałość/wycena po przygotowaniu)`;
             
             const encodedTresc = encodeURIComponent(trescSms);
             
@@ -243,7 +227,6 @@
             const smsLink = `sms:${numerTelefonu}${smsSeparator}body=${encodedTresc}`;
 
             document.getElementById('nrZamowienia').innerText = nr;
-            document.getElementById('kwotaWynik').innerText = `${aktualnaCena} PLN`;
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
