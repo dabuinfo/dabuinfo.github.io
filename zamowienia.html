@@ -143,6 +143,9 @@
                         "Westerwald",
                         "Wuppertal",
                         "Zollernalb"
+                    ],
+                    "Najbliższe terminy": [
+                        "Hersfeld-Rotenburg"
                     ]
                 }
             }
@@ -207,7 +210,7 @@
                         const label = document.createElement('label'); label.className = 'region-checkbox-label';
                         const input = document.createElement('input'); input.type = 'checkbox';
                         input.addEventListener('change', (e) => {
-                            if (e.target.checked) cart[r] = { qty: 1, price: config.price, isCounter: false };
+                            if (e.target.checked) cart[r] = { qty: 1, price: config.price, isCounter: false, sub: sub };
                             else delete cart[r];
                             updateUI();
                         });
@@ -224,7 +227,7 @@
                         let qty = 0;
                         btnPlus.addEventListener('click', () => {
                             qty++; spanQty.textContent = qty;
-                            cart[r] = { qty: qty, price: config.price, isCounter: true };
+                            cart[r] = { qty: qty, price: config.price, isCounter: true, sub: sub };
                             updateUI();
                         });
                         
@@ -232,7 +235,7 @@
                             if (qty > 0) {
                                 qty--; spanQty.textContent = qty;
                                 if (qty === 0) delete cart[r];
-                                else cart[r] = { qty: qty, price: config.price, isCounter: true };
+                                else cart[r] = { qty: qty, price: config.price, isCounter: true, sub: sub };
                                 updateUI();
                             }
                         });
@@ -290,61 +293,76 @@
         }
 
         orderBtn.addEventListener('click', () => {
-    const dzisiaj = new Date();
-    const rrrr = dzisiaj.getFullYear();
-    const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-    const dd = String(dzisiaj.getDate()).padStart(2, '0');
-    const dataString = `${rrrr}${mm}${dd}`;
+            const dzisiaj = new Date();
+            const rrrr = dzisiaj.getFullYear();
+            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dzisiaj.getDate()).padStart(2, '0');
+            const dataString = `${rrrr}${mm}${dd}`;
 
-    const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
-    
-    let totalToPay = 0;
-    let hasBotDownload = false;
+            const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
+            
+            let totalToPay = 0;
+            let hasBotDownload = false;
+            let hasDoKoncaRoku = false;
+            let hasNajblizszeTerminy = false;
 
-    const selectedRegions = Object.keys(cart);
-    
-    // Filtrujemy wybrane rejony na dwie grupy
-    const mandatoryList = selectedRegions.filter(region => onlyScrappersRegions.includes(region));
-    const standardList = selectedRegions.filter(region => !onlyScrappersRegions.includes(region));
+            const selectedRegions = Object.keys(cart);
+            
+            // Filtrujemy wybrane rejony na dwie grupy
+            const mandatoryList = selectedRegions.filter(region => onlyScrappersRegions.includes(region));
+            const standardList = selectedRegions.filter(region => !onlyScrappersRegions.includes(region));
 
-    const scrappersFilter = document.getElementById('scrappersFilter');
-    let selectedWasteType = "Wszystko (Domyślnie)"; 
+            const scrappersFilter = document.getElementById('scrappersFilter');
+            let selectedWasteType = "Wszystko (Domyślnie)"; 
 
-    // Opcja szczegółowa budowania opisu typu zamówienia:
-    if (mandatoryList.length > 0 && standardList.length > 0) {
-        selectedWasteType = `Standard + Złomiarze (dotyczy: ${mandatoryList.join(', ')})`;
-    } else if (mandatoryList.length > 0) {
-        selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${mandatoryList.join(', ')})`;
-    } else if (scrappersFilter && scrappersFilter.checked) {
-        selectedWasteType = "Opcja dla złomiarzy";
-    }
+            // Opcja szczegółowa budowania opisu typu zamówienia:
+            if (mandatoryList.length > 0 && standardList.length > 0) {
+                selectedWasteType = `Standard + Złomiarze (dotyczy: ${mandatoryList.join(', ')})`;
+            } else if (mandatoryList.length > 0) {
+                selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${mandatoryList.join(', ')})`;
+            } else if (scrappersFilter && scrappersFilter.checked) {
+                selectedWasteType = "Opcja dla złomiarzy";
+            }
 
-    const itemsList = Object.entries(cart).map(([name, item]) => {
-        totalToPay += item.price * item.qty;
-        if (item.price === 0) {
-            hasBotDownload = true;
-        }
-        return item.isCounter ? `${name} (${item.qty} dni)` : name;
-    }).join(', ');
+            const itemsList = Object.entries(cart).map(([name, item]) => {
+                totalToPay += item.price * item.qty;
+                if (item.price === 0) {
+                    hasBotDownload = true;
+                }
+                if (item.sub === "Do końca roku") {
+                    hasDoKoncaRoku = true;
+                }
+                if (item.sub === "Najbliższe terminy") {
+                    hasNajblizszeTerminy = true;
+                }
+                return item.isCounter ? `${name} (${item.qty} dni)` : name;
+            }).join(', ');
 
-    const totalEurToPay = (totalToPay * 6) / 25;
-    
-    let msg = "";
+            const totalEurToPay = (totalToPay * 6) / 25;
+            
+            let msg = "";
 
-    // Jeśli zamówienie dotyczy Pobierania Bazy Botem
-    if (hasBotDownload && totalToPay === 0) {
-        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
-    } else {
-        // Standardowa treść dla pozostałych usług
-        let priceText = totalToPay > 0 
-            ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
-            : `Cena do uzgodnienia`;
+            // Jeśli zamówienie dotyczy Pobierania Bazy Botem
+            if (hasBotDownload && totalToPay === 0) {
+                if (hasNajblizszeTerminy && !hasDoKoncaRoku) {
+                    msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Chcę jednorazowe pobranie najbliższych terminów do wyceny.`;
+                } else if (hasDoKoncaRoku && !hasNajblizszeTerminy) {
+                    msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
+                } else {
+                    // W sytuacji gdy zaznaczono oba rodzaje opcji za darmo
+                    msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Chcę jednorazowe pobranie najbliższych terminów oraz terminów do końca roku do wyceny.`;
+                }
+            } else {
+                // Standardowa treść dla pozostałych usług
+                let priceText = totalToPay > 0 
+                    ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
+                    : `Cena do uzgodnienia`;
 
-        msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
-    }
-    
-    window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
-});
+                msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}. UWAGA: Wysyłamy odpowiednie terminy na najbliższy termin!`;
+            }
+            
+            window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
+        });
     })();
 </script>
     
