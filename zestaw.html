@@ -735,7 +735,7 @@
             'weeze', 'wehrheim', 'weilerswist', 'weilrod', 'werdohl', 'wülfrath', 'xanten', 'zülpich'
         ];
 
-        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA8em0tNC01bC00LTRWNGg8djMuNWwtNCA8eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
+        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
         const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
 
         var userLang = navigator.language || navigator.userLanguage; 
@@ -982,6 +982,7 @@
 
             let limitToSingleRegion = selectedWeeks.length > 1;
             let limitToSingleWeek = selectedRegions.length > 1;
+            
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
                 if(!chk) return;
@@ -1020,6 +1021,7 @@
             selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
             limitToSingleWeek = selectedRegions.length > 1;
+            
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
                 if(!chk) return;
@@ -1082,11 +1084,14 @@
             updateMutualFiltering();
         });
 
-        document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
-            if(el) el.addEventListener('change', () => {
-                if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
+        // Nasłuchiwanie zmian w rejonach, tygodniach i złomie, upewniając się, że filtrujemy asynchronicznie załadowane tygodnie
+        document.querySelector('#formContent').addEventListener('change', function(e) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption')) {
+                if(e.target.id === 'schrottOption') { 
+                    availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
+                }
                 updateMutualFiltering();
-            });
+            }
         });
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
