@@ -147,14 +147,6 @@
         .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; user-select: none; }
         .selection-tools a:hover { color: #fff; text-decoration: underline; }
 
-        /* PRZYCISKI DO SZYBKIEGO ZAZNACZANIA LANDÓW */
-        .land-selection-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: center; }
-        .land-btn { background: rgba(46, 204, 113, 0.1);
-            border: 1px solid #2ecc71; color: #ddd; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85em; transition: all 0.3s ease; }
-        .land-btn:hover, .land-btn.active { background: #2ecc71; color: #121212; font-weight: bold; }
-        
-        .btn-full-width { flex: 1 1 100%; margin-top: 5px; background: rgba(46, 204, 113, 0.2); border-color: #2ecc71; font-size: 1.05em; padding: 10px; }
-
         /* OPCJE DODATKOWE & PŁATNOŚĆ */
         .extra-options-group { background: rgba(0, 0, 0, 0.2);
             border: 1px dashed #f1c40f; border-radius: 8px; padding: 5px; margin-bottom: 10px; box-sizing: border-box; }
@@ -368,7 +360,7 @@
                         <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena indywidualna</b> w zależności od wybranych opcji.</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
-                        <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na terminy <b>do końca 2026 roku</b> (wycena indywidualna).</li>
+                        <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna).</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
@@ -418,18 +410,6 @@
             <div class="form-wrapper" id="formContent" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
                 
                 <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
-
-                <div class="land-selection-tools" id="landButtonsContainer">
-                    <button type="button" class="land-btn" data-land="Hessen">Hessen</button>
-                    <button type="button" class="land-btn" data-land="NRW">NRW</button>
-                    <button type="button" class="land-btn" data-land="Bayern">Bayern</button>
-                    <button type="button" class="land-btn" data-land="Baden">Baden</button>
-                    <button type="button" class="land-btn" data-land="Niedersachsen">Niedersachsen</button>
-                    <button type="button" class="land-btn" data-land="Rheinland">Rheinland</button>
-                    <button type="button" class="land-btn" data-land="Brandenburg">Brandenburg</button>
-                    <button type="button" class="land-btn" data-land="Sachsen">Sachsen</button>
-                    <button type="button" class="land-btn" data-land="Sachsen Anhalt">Sachsen Anhalt</button>
-                </div>
 
                 <div style="background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; line-height: 1.4;">
                     <span id="searchEngineDesc" style="color: #ddd; font-size: 0.9em;">Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:</span><br>
@@ -730,7 +710,7 @@
 //<![CDATA[
     document.addEventListener("DOMContentLoaded", function() {
     
-    // --- NOWY KOD: Dynamiczne zliczanie rejonów ---
+    // --- Dynamiczne zliczanie rejonów ---
     const allRegions = document.querySelectorAll('#regionsCheckboxes .region-chk');
     const countDisplay = document.getElementById('dynamicRegionCount');
     if (countDisplay && allRegions.length > 0) {
@@ -754,19 +734,8 @@
             'straelen', 'tönisvorst', 'übach-palenberg', 'uedem', 'usingen', 'viersen', 'voerde', 
             'weeze', 'wehrheim', 'weilerswist', 'weilrod', 'werdohl', 'wülfrath', 'xanten', 'zülpich'
         ];
-        const landMap = {
-            "Hessen": ["Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", "Eschwege", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Giessen", "Glashütten", "Grävenwiesbach", "Gross-Gerau", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Limburg-Weilburg", "Linsengericht", "Neu-Anspach", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schmitten im Taunus", "Schwalbach", "Sinntal", "Steinbach", "Usingen", "Walldorf-Mörfelden", "Werra-Meissner", "Wehrheim", "Weilrod"],
-            "NRW": ["Aldenhoven", "Alpen", "Altena", "Bad Münstereifel", "Balve", "Bedburg", "Bedburg-Hau", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dormagen", "Dortmund", "Dülmen", "Düsseldorf", "Emmerich am Rhein", "Ennepetal", "Erftstadt", "Euskirchen", "Geilenkirchen", "Geldern", "Goch", "Grefrath", "Grevenbroich", "Heinsberg", "Hellenthal", "Hückelhoven", "Hürth", "Iserlohn", "Issum", "Jüchen", "Jülich", "Kaarst", "Kall", "Kamp-Lintfort", "Kerken", "Kevelaer", "Korschenbroich", "Leverkusen", "Lübecke", "Mechernich", "Meerbusch", "Menden", "Merzenich", "Münster", "Nachrodt-Wiblingwerde", "Nettetal", "Neukirchen-Vluyn", "Neuss", "Oberberg", "Olpe", "Plettenberg", "Pulheim", "Rees", "Rheinisch-Bergischer", "Rhein-Sieg", "Rheurdt", "Rommerskirchen", "Schleiden", "Selfkant", "Solingen", "Sonsbeck", "Sprockhövel", "Straelen", "Tönisvorst", "Übach-Palenberg", "Uedem", "Viersen", "Voerde", "Weeze", "Weilerswist", "Werdohl", "Wesseling", "Wülfrath", "Wuppertal", "Xanten", "Zülpich"],
-            "Bayern": ["Amberg", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kulmbach", "Monachium-Południowy Wschód", "Neustadt a.d. Waldnaab", "Regensburg", "Straubing-Bogen"],
-            "Baden": ["Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Stadt", "Karlsruhe Kreis", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"],
-            "Niedersachsen": ["Braunschweig", "Diepholz", "Emsland", "Gifhorn", "Göttingen", "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", "Osnabrück", "Stade", "Wolfsburg"],
-            "Rheinland": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
-            "Brandenburg": ["Barnim", "Berlin", "Elbe-Elster", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
-            "Sachsen": ["Leipzig", "Nordsachsen"],
-            "Sachsen Anhalt": ["Burgenland"]
-        };
 
-        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA8em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
+        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA8em0tNC01bC00LTRWNGg8djMuNWwtNCA8eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
         const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
 
         var userLang = navigator.language || navigator.userLanguage; 
@@ -879,8 +848,6 @@
         let availabilityMatrixAll = {}; 
         let availabilityMatrixScrap = {};
         let availabilityMatrix = {};
-        let isPremiumMode = false;
-        let premiumPackageName = ""; 
         
         function fetchAvailableRegions() {
             var d = new Date();
@@ -973,20 +940,10 @@
             let svgPriceSub = document.getElementById('svgPriceSub');
             if (btn) {
                 let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
-                let isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
-                
-                // Gotowe pakiety (np. Hessen)
-                if (isPremiumMode) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (${premiumPackageName} - Wycena Indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                } 
-                // Wybór standardowy - zawsze wycena indywidualna
-                else if (selectedRegionsCount > 0) {
+                if (selectedRegionsCount > 0) {
                     btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
                     if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
-                } 
-                // Stan początkowy
-                else {
+                } else {
                     btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
                     if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
                 }
@@ -1120,67 +1077,14 @@
             }
         }
 
-        function setPremiumMode(active, packageName = "") {
-            isPremiumMode = active;
-            premiumPackageName = packageName;
-            var regionBox = document.getElementById('regionsContainer');
-            var searchBox = document.getElementById('searchEngineLink').parentNode;
-            
-            document.querySelectorAll('.land-btn').forEach(b => b.classList.remove('active'));
-
-            var formatSmart = document.querySelector('input[name="format"][value="PDF (Smartfon - Dark Mode)"]');
-            var formatJpg = document.querySelector('input[name="format"][value="JPG"]');
-            var formatOnline = document.querySelector('input[name="format"][value="Wersja Online (Panel Klienta)"]');
-            var formatPrint = document.querySelector('input[name="format"][value="PDF (Do druku)"]');
-            
-            if (active) {
-                var btn = document.querySelector(`.land-btn[data-land="${packageName}"]`);
-                if(btn) btn.classList.add('active');
-
-                document.querySelectorAll('.region-chk').forEach(c => c.checked = false);
-                regionBox.style.opacity = '0.3';
-                regionBox.style.pointerEvents = 'none';
-                searchBox.style.opacity = '0.3';
-
-                if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'none';
-                if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'none';
-                
-                var selectedFormat = document.querySelector('input[name="format"]:checked');
-                if(selectedFormat && (selectedFormat.value === "PDF (Smartfon - Dark Mode)" || selectedFormat.value === "JPG")) {
-                    if(formatOnline) formatOnline.checked = true;
-                    else if(formatPrint) formatPrint.checked = true;
-                }
-                
-            } else {
-                regionBox.style.opacity = '1';
-                regionBox.style.pointerEvents = 'auto';
-                searchBox.style.opacity = '1';
-                    
-                if(formatSmart && formatSmart.closest('.option-box')) formatSmart.closest('.option-box').style.display = 'block';
-                if(formatJpg && formatJpg.closest('.option-box')) formatJpg.closest('.option-box').style.display = 'block';
-            }
-            updateMutualFiltering();
-        }
-
         document.getElementById('btnUnselectAll').addEventListener('click', function() {
-            setPremiumMode(false);
             document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
             updateMutualFiltering();
-        });
-
-        document.querySelectorAll('.land-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const landName = this.getAttribute('data-land');
-                setPremiumMode(true, landName);
-            });
         });
 
         document.querySelectorAll('.region-chk, .week-chk, #schrottOption').forEach(el => {
             if(el) el.addEventListener('change', () => {
                 if(el.id === 'schrottOption') { availabilityMatrix = el.checked ? availabilityMatrixScrap : availabilityMatrixAll; }
-                if(el.classList.contains('region-chk') && el.checked) {
-                    setPremiumMode(false);
-                }
                 updateMutualFiltering();
             });
         });
@@ -1190,13 +1094,8 @@
             var wT = document.querySelectorAll('.week-chk:checked');
             var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
             
-            if (isPremiumMode && wT.length === 0) {
-                alert("[ UWAGA ] Dla wybranego pakietu wymagany jest wybór przynajmniej jednego tygodnia!");
-                return;
-            }
-            
-            if ((wR.length === 0 && !isPremiumMode) || (!isSpecialMode && wT.length === 0)) { 
-                alert("[ UWAGA ] Wybierz rejony (lub odpowiedni pakiet) oraz tygodnie!"); 
+            if (wR.length === 0 || (!isSpecialMode && wT.length === 0)) { 
+                alert("[ UWAGA ] Wybierz rejony oraz tygodnie!"); 
                 return; 
             }
                     
@@ -1205,13 +1104,8 @@
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             
-            if (isPremiumMode) {
-                body += ` *** PAKIET: ${premiumPackageName.toUpperCase()} (Wycena indywidualna)\n`;
-            } else {
-                body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
-                body += " PODSUMOWANIE CENY: Wycena indywidualna\n";
-            }
-            
+            body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
+            body += " PODSUMOWANIE CENY: Wycena indywidualna\n";
             body += (t.paymentNote || "Preferowana płatność / Identyfikator:") + " " + nr + "\n\n";
 
             if(selectedFormat) {
@@ -1244,11 +1138,7 @@
             }
             
             body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
-            if (isPremiumMode) {
-                body += `- *** WYBRANY PAKIET Z GÓRY: ${premiumPackageName.toUpperCase()}\n`;
-            } else {
-                wR.forEach(b => body += "- " + b.value + "\n");
-            }
+            wR.forEach(b => body += "- " + b.value + "\n");
             
             body += "\n\n--------------------------------------------------------\n" + (t.emailWarning || "Czekam na zwrotną informację z wyceną.") + "\n";
             const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
