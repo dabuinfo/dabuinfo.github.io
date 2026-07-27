@@ -238,12 +238,14 @@
                 const grid = document.createElement('div'); grid.className = 'regions-grid';
                 
                 regions.forEach(r => {
+                    const cartKey = `${groupName}_${r}`; // Unikalny identyfikator
+
                     if (config.type === "checkbox") {
                         const label = document.createElement('label'); label.className = 'region-checkbox-label';
                         const input = document.createElement('input'); input.type = 'checkbox';
                         input.addEventListener('change', (e) => {
-                            if (e.target.checked) cart[r] = { qty: 1, price: config.price, isCounter: false, sub: sub };
-                            else delete cart[r];
+                            if (e.target.checked) cart[cartKey] = { name: r, qty: 1, price: config.price, isCounter: false, sub: sub, group: groupName };
+                            else delete cart[cartKey];
                             updateUI();
                         });
                         label.appendChild(input); label.appendChild(document.createTextNode(r)); grid.appendChild(label);
@@ -259,15 +261,15 @@
                         let qty = 0;
                         btnPlus.addEventListener('click', () => {
                             qty++; spanQty.textContent = qty;
-                            cart[r] = { qty: qty, price: config.price, isCounter: true, sub: sub };
+                            cart[cartKey] = { name: r, qty: qty, price: config.price, isCounter: true, sub: sub, group: groupName };
                             updateUI();
                         });
                         
                         btnMinus.addEventListener('click', () => {
                             if (qty > 0) {
                                 qty--; spanQty.textContent = qty;
-                                if (qty === 0) delete cart[r];
-                                else cart[r] = { qty: qty, price: config.price, isCounter: true, sub: sub };
+                                if (qty === 0) delete cart[cartKey];
+                                else cart[cartKey] = { name: r, qty: qty, price: config.price, isCounter: true, sub: sub, group: groupName };
                                 updateUI();
                             }
                         });
@@ -283,10 +285,11 @@
         function updateScrappersOptionStatus() {
             const scrappersFilter = document.getElementById('scrappersFilter');
             const scrappersNote = document.getElementById('scrappersNote');
-            const selectedRegions = Object.keys(cart);
+            
+            const selectedRegionNames = Object.values(cart).map(item => item.name);
 
-            let hasForbidden = selectedRegions.some(region => noScrappersRegions.includes(region));
-            let hasMandatory = selectedRegions.some(region => onlyScrappersRegions.includes(region));
+            let hasForbidden = selectedRegionNames.some(region => noScrappersRegions.includes(region));
+            let hasMandatory = selectedRegionNames.some(region => onlyScrappersRegions.includes(region));
 
             if (hasForbidden) {
                 scrappersFilter.checked = false;
@@ -335,57 +338,53 @@
             
             let totalToPay = 0;
             let hasBotDownload = false;
-            let hasDoKoncaRoku = false;
-            let hasNajblizszeTerminy = false;
+            let botSubTypes = [];
 
-            const selectedRegions = Object.keys(cart);
+            const cartItems = Object.values(cart);
+            const selectedRegionNames = cartItems.map(item => item.name);
             
-            // Filtrujemy wybrane rejony na dwie grupy
-            const mandatoryList = selectedRegions.filter(region => onlyScrappersRegions.includes(region));
-            const standardList = selectedRegions.filter(region => !onlyScrappersRegions.includes(region));
+            const mandatoryList = selectedRegionNames.filter(region => onlyScrappersRegions.includes(region));
+            const standardList = selectedRegionNames.filter(region => !onlyScrappersRegions.includes(region));
 
             const scrappersFilter = document.getElementById('scrappersFilter');
             let selectedWasteType = "Wszystko (Domyślnie)"; 
 
-            // Opcja szczegółowa budowania opisu typu zamówienia:
             if (mandatoryList.length > 0 && standardList.length > 0) {
-                selectedWasteType = `Standard + Złomiarze (dotyczy: ${mandatoryList.join(', ')})`;
+                selectedWasteType = `Standard + Złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
             } else if (mandatoryList.length > 0) {
-                selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${mandatoryList.join(', ')})`;
+                selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
             } else if (scrappersFilter && scrappersFilter.checked) {
                 selectedWasteType = "Opcja dla złomiarzy";
             }
 
-            const itemsList = Object.entries(cart).map(([name, item]) => {
+            const itemsList = cartItems.map(item => {
                 totalToPay += item.price * item.qty;
-                if (item.price === 0) {
+                if (item.group === "Jednorazowe Pobieranie Bazy Botem") {
                     hasBotDownload = true;
+                    if (!botSubTypes.includes(item.sub)) {
+                        botSubTypes.push(item.sub);
+                    }
                 }
-                if (item.sub === "Do końca roku") {
-                    hasDoKoncaRoku = true;
-                }
-                if (item.sub === "Najbliższe terminy") {
-                    hasNajblizszeTerminy = true;
-                }
-                return item.isCounter ? `${name} (${item.qty} dni)` : name;
+                return item.isCounter ? `${item.name} (${item.qty} dni)` : item.name;
             }).join(', ');
 
             const totalEurToPay = (totalToPay * 6) / 25;
             
             let msg = "";
 
-            // Jeśli zamówienie dotyczy Pobierania Bazy Botem
             if (hasBotDownload && totalToPay === 0) {
-                if (hasNajblizszeTerminy && !hasDoKoncaRoku) {
+                // Sprawdzamy na podstawie uelastycznionych słów kluczowych
+                const isNajblizsze = botSubTypes.some(sub => sub.includes("Najbliższe"));
+                const isDoKonca = botSubTypes.some(sub => sub.includes("Do końca"));
+
+                if (isNajblizsze && !isDoKonca) {
                     msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Chcę jednorazowe pobranie najbliższych terminów do wyceny.`;
-                } else if (hasDoKoncaRoku && !hasNajblizszeTerminy) {
+                } else if (isDoKonca && !isNajblizsze) {
                     msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena do uzgodnienia. UWAGA: Przeliczamy dostepne tygodnie do końca roku!`;
                 } else {
-                    // W sytuacji gdy zaznaczono oba rodzaje opcji za darmo
                     msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Chcę jednorazowe pobranie najbliższych terminów oraz terminów do końca roku do wyceny.`;
                 }
             } else {
-                // Standardowa treść dla pozostałych usług
                 let priceText = totalToPay > 0 
                     ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
                     : `Cena do uzgodnienia`;
