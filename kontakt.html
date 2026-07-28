@@ -43,7 +43,7 @@
         }
 
         /* Style dla inputów focus */
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #3498db !important;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
@@ -211,6 +211,16 @@
                             <label for="formPhone" data-i18n="lbl_phone" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Numer telefonu</label>
                             <input id="formPhone" style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; width: 100%;" type="tel" />
                         </div>
+
+                        <!-- POLE WYBORU TEMATU -->
+                        <div style="margin-bottom: 15px;">
+                            <label for="formSubjectChoice" data-i18n="lbl_topic" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Temat wiadomości</label>
+                            <select id="formSubjectChoice" required style="background-color: #2d2d2d; border-radius: 5px; border: 1px solid rgb(68, 68, 68); box-sizing: border-box; color: white; padding: 12px; width: 100%;">
+                                <option value="Terminy wystawek" data-i18n="opt_sperrmuell">Terminy wystawek</option>
+                                <option value="Adresy serwisów" data-i18n="opt_services">Adresy serwisów / złomowisk</option>
+                                <option value="Inna sprawa" data-i18n="opt_other">Inna sprawa</option>
+                            </select>
+                        </div>
                         
                         <div style="margin-bottom: 20px;">
                             <label for="formMessage" data-i18n="lbl_message" style="color: #aaaaaa; display: block; margin-bottom: 8px;">Wiadomość</label>
@@ -288,12 +298,12 @@ function handleFormSubmit(e) {
     const name = document.getElementById('formName').value;
     const email = document.getElementById('formEmail').value;
     const phone = document.getElementById('formPhone').value;
+    const topic = document.getElementById('formSubjectChoice').value;
     const message = document.getElementById('formMessage').value;
     
-    const subject = `Wiadomość z formularza od: ${name}`;
-    const body = `Zgoda RODO: TAK%0D%0A%0D%0AImię: ${name}%0D%0AEmail: ${email}%0D%0ATelefon: ${phone}%0D%0A%0D%0ATreść wiadomości:%0D%0A${message}`;
+    const subject = `[${topic}] Wiadomość od: ${name}`;
+    const body = `Zgoda RODO: TAK%0D%0A%0D%0AImię: ${name}%0D%0AEmail: ${email}%0D%0ATelefon: ${phone}%0D%0ATemat: ${topic}%0D%0A%0D%0ATreść wiadomości:%0D%0A${message}`;
     
-    // Zaktualizowano adres na ten ze stopki
     window.location.href = `mailto:kontakt@dabu-info.com?subject=${encodeURIComponent(subject)}&body=${body}`;
 }
 
@@ -316,6 +326,10 @@ function handleFormSubmit(e) {
             lbl_name: "Imię",
             lbl_email: "Twój E-mail",
             lbl_phone: "Numer telefonu",
+            lbl_topic: "Temat wiadomości",
+            opt_sperrmuell: "Terminy wystawek",
+            opt_services: "Adresy serwisów / złomowisk",
+            opt_other: "Inna sprawa",
             lbl_message: "Treść wiadomości",
             btn_send: "Wyślij wiadomość",
             rodo_consent: "Wyrażam zgodę na przetwarzanie danych osobowych w celu odpowiedzi.",
@@ -327,6 +341,10 @@ function handleFormSubmit(e) {
             lbl_name: "Name",
             lbl_email: "Ihre E-Mail",
             lbl_phone: "Telefonnummer",
+            lbl_topic: "Betreff",
+            opt_sperrmuell: "Sperrmüll-Termine",
+            opt_services: "Service- / Schrottplatz-Adressen",
+            opt_other: "Sonstiges",
             lbl_message: "Nachricht",
             btn_send: "Nachricht senden",
             rodo_consent: "Ich stimme der Datenverarbeitung zur Beantwortung meiner Anfrage zu.",
@@ -337,7 +355,11 @@ function handleFormSubmit(e) {
             form_header: "📝 Kontaktní formulář",
             lbl_name: "Jméno",
             lbl_email: "Váš E-mail",
-            lbl_phone: "Telefonní číslo",
+            lbl_phone: "Telefónní číslo",
+            lbl_topic: "Předmět zprávy",
+            opt_sperrmuell: "Termíny odvozu odpadu",
+            opt_services: "Adresy servisů",
+            opt_other: "Ostatní",
             lbl_message: "Zpráva",
             btn_send: "Odeslat zprávu",
             rodo_consent: "Souhlasím se zpracováním osobních údajů pro účely odpovědi.",
@@ -349,6 +371,10 @@ function handleFormSubmit(e) {
             lbl_name: "Meno",
             lbl_email: "Váš E-mail",
             lbl_phone: "Telefónne číslo",
+            lbl_topic: "Predmet správy",
+            opt_sperrmuell: "Termíny odvozu odpadu",
+            opt_services: "Adresy servisov",
+            opt_other: "Iné",
             lbl_message: "Správa",
             btn_send: "Odoslať správu",
             rodo_consent: "Súhlasím so spracovaním osobných údajov pre účely odpovede.",
@@ -360,6 +386,10 @@ function handleFormSubmit(e) {
             lbl_name: "Név",
             lbl_email: "Az Ön e-mail címe",
             lbl_phone: "Telefonszám",
+            lbl_topic: "Üzenet tárgya",
+            opt_sperrmuell: "Lomtalanítási időpontok",
+            opt_services: "Szerviz / Hulladéktelep címek",
+            opt_other: "Egyéb",
             lbl_message: "Üzenet",
             btn_send: "Üzenet küldése",
             rodo_consent: "Hozzájárulok személyes adataim kezeléséhez a válaszadás érdekében.",
@@ -371,6 +401,10 @@ function handleFormSubmit(e) {
             lbl_name: "Ime",
             lbl_email: "Vaš E-mail",
             lbl_phone: "Broj telefona",
+            lbl_topic: "Predmet poruke",
+            opt_sperrmuell: "Termini odvoza otpada",
+            opt_services: "Adrese servisa",
+            opt_other: "Ostalo",
             lbl_message: "Poruka",
             btn_send: "Pošalji poruku",
             rodo_consent: "Pristajem na obradu ličnih podataka radi odgovora.",
@@ -382,6 +416,10 @@ function handleFormSubmit(e) {
             lbl_name: "Anav",
             lbl_email: "Tiro E-mail",
             lbl_phone: "Numar de telefon",
+            lbl_topic: "Tematika",
+            opt_sperrmuell: "Termina kethanesko",
+            opt_services: "Adrese serviso",
+            opt_other: "Kaver buki",
             lbl_message: "Vorba",
             btn_send: "Bichhal mesaj",
             rodo_consent: "Dav voja te kerel buki me datenca te del man raspunso.",
@@ -393,6 +431,10 @@ function handleFormSubmit(e) {
             lbl_name: "Име",
             lbl_email: "Вашият имейл",
             lbl_phone: "Телефонен номер",
+            lbl_topic: "Тема na съобщението",
+            opt_sperrmuell: "Дати за едрогабаритни отпадъци",
+            opt_services: "Адреси на сервизи",
+            opt_other: "Друго",
             lbl_message: "Съобщение",
             btn_send: "Изпрати съобщение",
             rodo_consent: "Съгласен съм с обработката на лични данни за отговор.",
@@ -404,6 +446,10 @@ function handleFormSubmit(e) {
             lbl_name: "İsim",
             lbl_email: "E-posta adresiniz",
             lbl_phone: "Telefon numarası",
+            lbl_topic: "Konu",
+            opt_sperrmuell: "Atık toplama tarihleri",
+            opt_services: "Servis adresleri",
+            opt_other: "Diğer",
             lbl_message: "Mesaj",
             btn_send: "Mesaj gönder",
             rodo_consent: "Yanıt için kişisel verilerin işlenmesini kabul ediyorum.",
