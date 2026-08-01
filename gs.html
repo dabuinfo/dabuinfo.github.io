@@ -13,6 +13,7 @@
             --border-color: #ccc;
             --info-bg: #f8f9fa;
             --info-border: #adb5bd;
+            --hq-color: #f39c12; /* Kolor akcentu dla oferty Husqvarna */
         }
 
         /* Dark Mode */
@@ -70,10 +71,40 @@
         .info-box ul { margin: 0; padding-left: 20px; }
         .info-box li { margin-bottom: 4px; }
 
+        /* Styl dla dedykowanej ramki Husqvarna */
+        .hq-box {
+            background-color: rgba(243, 156, 18, 0.1);
+            border: 1px solid var(--hq-color);
+            border-left: 4px solid var(--hq-color);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+            color: #888;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
 
-        input { 
+        input, select { 
             width: 100%; 
             padding: 14px; 
             border: 1px solid var(--border-color); 
@@ -82,9 +113,10 @@
             color: var(--text-color);
             box-sizing: border-box;
             font-size: 16px; 
+            font-family: inherit;
         }
         
-        input:focus { outline: none; border-color: var(--accent-color); }
+        input:focus, select:focus { outline: none; border-color: var(--accent-color); }
 
         button { 
             background: var(--accent-color); 
@@ -98,6 +130,11 @@
             font-weight: bold;
             transition: opacity 0.2s, transform 0.1s;
             margin-top: 10px;
+        }
+
+        button.hq-btn {
+            background: var(--hq-color);
+            color: #fff;
         }
 
         button:active { opacity: 0.8; transform: scale(0.98); }
@@ -149,10 +186,57 @@
             <h2>Data Mining Service</h2>
             <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
         </div>
+
+        <!-- OFERTA SPECJALNA HUSQVARNA -->
+        <div class="hq-box">
+            <strong style="color: var(--hq-color); font-size: 1.1em; display: block; margin-bottom: 8px;">🔥 Gotowe bazy: Autoryzowani Dilerzy Husqvarna</strong>
+            <p style="margin: 0 0 10px 0;">Pełne, zaktualizowane zestawienia serwisów z danymi kontaktowymi i adresowymi.</p>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <select id="husqvarnaKraj">
+                    <option value="">-- Wybierz państwo --</option>
+                    <option value="Austria">Austria (722 serwisów)</option>
+                    <option value="Belgia">Belgia (149 serwisów)</option>
+                    <option value="Bośnia i Hercegowina">Bośnia i Hercegowina (74 serwisów)</option>
+                    <option value="Bułgaria">Bułgaria (157 serwisów)</option>
+                    <option value="Chorwacja">Chorwacja (128 serwisów)</option>
+                    <option value="Cypr">Cypr (18 serwisów)</option>
+                    <option value="Czarnogóra">Czarnogóra (6 serwisów)</option>
+                    <option value="Czechy">Czechy (156 serwisów)</option>
+                    <option value="Dania">Dania (123 serwisów)</option>
+                    <option value="Estonia">Estonia (39 serwisów)</option>
+                    <option value="Finlandia">Finlandia (145 serwisów)</option>
+                    <option value="Francja">Francja (1172 serwisów)</option>
+                    <option value="Grecja">Grecja (240 serwisów)</option>
+                    <option value="Hiszpania">Hiszpania (457 serwisów)</option>
+                    <option value="Holandia">Holandia (173 serwisów)</option>
+                    <option value="Irlandia">Irlandia (75 serwisów)</option>
+                    <option value="Litwa">Litwa (71 serwisów)</option>
+                    <option value="Luksemburg">Luksemburg (8 serwisów)</option>
+                    <option value="Łotwa">Łotwa (50 serwisów)</option>
+                    <option value="Niemcy">Niemcy (1496 serwisów)</option>
+                    <option value="Norwegia">Norwegia (342 serwisów)</option>
+                    <option value="Polska">Polska (342 serwisów)</option>
+                    <option value="Portugalia">Portugalia (167 serwisów)</option>
+                    <option value="Rumunia">Rumunia (223 serwisów)</option>
+                    <option value="Serbia">Serbia (58 serwisów)</option>
+                    <option value="Słowacja">Słowacja (75 serwisów)</option>
+                    <option value="Słowenia">Słowenia (52 serwisów)</option>
+                    <option value="Szwajcaria">Szwajcaria (447 serwisów)</option>
+                    <option value="Szwecja">Szwecja (355 serwisów)</option>
+                    <option value="Turcja">Turcja (393 serwisów)</option>
+                    <option value="Ukraina">Ukraina (234 serwisów)</option>
+                    <option value="Wielka Brytania">Wielka Brytania (408 serwisów)</option>
+                    <option value="Włochy">Włochy (868 serwisów)</option>
+                </select>
+            </div>
+            <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
+        </div>
+
+        <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
         
         <!-- SEKCJA INFORMACYJNA -->
         <div class="info-box">
-            <strong>Kupujesz gotowy plik .CSV, który zawiera wyciągnięte surowe dane firm z serwisu Gelbe Seiten (o ile zostały tam podane):</strong>
+            <strong>Baza firm z serwisu Gelbe Seiten:</strong>
             <ul>
                 <li>Nazwa firmy i kategoria (branża)</li>
                 <li>Dokładny adres</li>
@@ -176,7 +260,7 @@
             <input type="number" id="dystans" value="50" min="1" max="100">
         </div>
 
-        <button id="submitBtn" onclick="generujZamowienie()">Wyślij zapytanie</button>
+        <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie</button>
 
         <div id="wynik">
             <p style="margin-top:0;"><strong>Zapytanie gotowe do wysłania!</strong></p>
@@ -199,7 +283,47 @@
             }
         });
 
-        function generujZamowienie() {
+        // Funkcja do przygotowywania numeru i otwierania okna z wynikiem
+        function przygotujSMS(nr, trescSms) {
+            const numerTelefonu = "+48600812820";
+            const encodedTresc = encodeURIComponent(trescSms);
+            
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const smsSeparator = isIOS ? '&' : '?';
+            const smsLink = `sms:${numerTelefonu}${smsSeparator}body=${encodedTresc}`;
+
+            document.getElementById('nrZamowienia').innerText = nr;
+            document.getElementById('wynik').style.display = 'block';
+            document.getElementById('linkSms').href = smsLink;
+            
+            document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
+
+            window.location.href = smsLink;
+        }
+
+        function generujZamowienieHusqvarna() {
+            const select = document.getElementById('husqvarnaKraj');
+            const wartosc = select.value;
+            const pelnyTekst = select.options[select.selectedIndex].text;
+
+            if(!wartosc) { 
+                alert('Proszę wybrać państwo z listy dla bazy Husqvarna!'); 
+                return; 
+            }
+
+            const now = new Date();
+            const rok = now.getFullYear().toString().slice(-2);
+            const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dzien = now.getDate().toString().padStart(2, '0');
+            const losowy = Math.floor(1000 + Math.random() * 9000);
+            
+            const nr = `HQ-${rok}${miesiac}${dzien}-${losowy}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Husqvarna Dilerzy\nKraj: ${pelnyTekst}`;
+            
+            przygotujSMS(nr, trescSms);
+        }
+
+        function generujZamowienieNiestandardowe() {
             const miasto = document.getElementById('miasto').value.trim();
             const dystans = document.getElementById('dystans').value.trim();
             const branza = document.getElementById('branza').value.trim();
@@ -216,23 +340,9 @@
             const losowy = Math.floor(1000 + Math.random() * 9000);
             
             const nr = `${rok}${miesiac}${dzien}-${losowy}`;
-            
-            const numerTelefonu = "+48600812820";
             const trescSms = `Zapytanie o Bazę.\nNr: ${nr}\nBranża: ${branza}\nMiasto: ${miasto}\nDystans: ${dystans} km\n(Wycena po przygotowaniu)`;
             
-            const encodedTresc = encodeURIComponent(trescSms);
-            
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const smsSeparator = isIOS ? '&' : '?';
-            const smsLink = `sms:${numerTelefonu}${smsSeparator}body=${encodedTresc}`;
-
-            document.getElementById('nrZamowienia').innerText = nr;
-            document.getElementById('wynik').style.display = 'block';
-            document.getElementById('linkSms').href = smsLink;
-            
-            document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
-
-            window.location.href = smsLink;
+            przygotujSMS(nr, trescSms);
         }
     </script>
 </body>
