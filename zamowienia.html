@@ -55,9 +55,9 @@
     <div class="service-info">
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie z serwerów firm sprzątających.
         <ul>
-            <li><b>Gminy (Extra): 25 zł (6 €)</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
-            <li><b>Landy (Powiaty/Miasta): 25 zł (6 €)</b> – za 1 dzień (wybierz ilość dni za pomocą +/-).</li>
-            <li><b>Jednorazowe Pobieranie Botem: Cena do uzgodnienia</b> – więcej informacji po kontakcie.</li>
+            <li><b>Gminy (Extra): Cena ustalana indywidualnie</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
+            <li><b>Landy (Powiaty/Miasta): Cena ustalana indywidualnie</b> – wybierz ilość dni za pomocą +/-.</li>
+            <li><b>Jednorazowe Pobieranie Botem: Cena ustalana indywidualnie</b> – więcej informacji po kontakcie.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
     </div>
@@ -67,7 +67,7 @@
 <div class="cart-summary">
     <div style="max-width: 1000px; margin: 0 auto;">
         <div class="price-container" style="margin-bottom: 10px;">
-            Razem do zapłaty: <span id="totalPrice">0</span> zł (<span class="price-eur"><span id="totalPriceEur">0</span> €</span>)
+            Razem do zapłaty: <span id="totalPrice" style="color: #f1c40f; font-weight: bold;">Cena ustalana indywidualnie</span>
         </div>
         <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie</button>
     </div>
@@ -79,9 +79,9 @@
         
         const data = {
             "Landy (Powiaty i Miasta)": {
-                price: 25,
+                price: 0,
                 type: "counter",
-                desc: "Cena: 25 zł (6 €) / dzień (wybierz ilość dni)",
+                desc: "Cena ustalana indywidualnie (wybierz ilość dni)",
                 items: {
                     "Baden-Württemberg": ["Calw Powiat", "Freudenstadt Powiat", "Heidelberg", "Heilbronn Powiat", "Heilbronn Miasto", "Karlsruhe Powiat", "Karlsruhe Miasto", "Ortenau (Offenburg Powiat)", "Rhein-Neckar-Kreis", "Tuttlingen Powiat", "Zollernalb Powiat"],
                     "Bayern": ["Amberg Miasto", "Bamberg Miasto", "Bayreuth Miasto", "Kulmbach Powiat", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab Powiat", "Regensburg Powiat", "Straubing-Bogen"],
@@ -96,9 +96,9 @@
                 }
             },
             "Gminy (Extra)": {
-                price: 25,
+                price: 0,
                 type: "checkbox",
-                desc: "Cena: 25 zł (6 €) / najbliższy termin",
+                desc: "Cena ustalana indywidualnie / najbliższy termin",
                 items: {
                     "Powiat Kleve": ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Goch", "Issum", "Kerken", "Kevelaer", "Rees", "Rheurdt", "Straelen", "Uedem", "Weeze"],
                     "Powiat Euskirchen": ["Bad Münstereifel", "Blankenheim", "Dahlem", "Hellenthal", "Kall", "Mechernich", "Schleiden", "Weilerswist", "Zülpich"],
@@ -115,7 +115,7 @@
             "Jednorazowe Pobieranie Bazy Botem": {
                 price: 0,
                 type: "checkbox", 
-                desc: "Cena do uzgodnienia, więcej informacji po kontakcie",
+                desc: "Cena ustalana indywidualnie, więcej informacji po kontakcie",
                 items: {
                     "Najbliższe wszystkie terminy": [
                         "Alzey-Worms", 
@@ -191,7 +191,6 @@
 
         const container = document.getElementById('regionsContainer');
         const priceDisplay = document.getElementById('totalPrice');
-        const priceDisplayEur = document.getElementById('totalPriceEur');
         const orderBtn = document.getElementById('submitOrderBtn');
         
         let cart = {};
@@ -316,17 +315,7 @@
         }
 
         function updateUI() {
-            let total = 0;
-            let itemCount = 0;
-            Object.values(cart).forEach(item => {
-                total += item.price * item.qty;
-                itemCount++;
-            });
-            
-            let totalEur = (total * 6) / 25;
-
-            priceDisplay.textContent = total;
-            priceDisplayEur.textContent = totalEur;
+            let itemCount = Object.keys(cart).length;
             
             orderBtn.disabled = itemCount === 0;
 
@@ -342,8 +331,6 @@
 
             const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
             
-            let totalToPay = 0;
-            
             // Tablice do grupowania wyboru
             const standardItems = [];
             const botNajblizsze = [];
@@ -351,8 +338,6 @@
 
             const cartItems = Object.values(cart);
             cartItems.forEach(item => {
-                totalToPay += item.price * item.qty;
-                
                 if (item.group === "Jednorazowe Pobieranie Bazy Botem") {
                     if (item.sub.includes("Najbliższe")) {
                         botNajblizsze.push(item.name);
@@ -385,18 +370,15 @@
                 details.push(`Standard: ${standardItems.join(', ')}`);
             }
             if (botNajblizsze.length > 0) {
-                details.push(`Najbliższe terminy (do wyceny): ${botNajblizsze.join(', ')}`);
+                details.push(`Najbliższe terminy: ${botNajblizsze.join(', ')}`);
             }
             if (botDoKonca.length > 0) {
-                details.push(`Do końca roku (do wyceny): ${botDoKonca.join(', ')}`);
+                details.push(`Do końca roku: ${botDoKonca.join(', ')}`);
             }
             
             const itemsList = details.join(' | ');
 
-            const totalEurToPay = (totalToPay * 6) / 25;
-            let priceText = totalToPay > 0 
-                ? `Razem: ${totalToPay} zł (${totalEurToPay} €)` 
-                : `Cena do uzgodnienia`;
+            let priceText = `Cena ustalana indywidualnie`;
 
             // Budowanie finałowej wiadomości
             let msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}.`;
