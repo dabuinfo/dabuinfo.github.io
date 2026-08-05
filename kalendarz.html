@@ -113,7 +113,17 @@
         .current-month-indicator { border: 2px solid #007bff; }
         .clickable-day:hover { background-color: #444 !important; outline: 1px solid #007bff; }
 
-        #calendar-results { display: none; margin-top: 25px; background: #151515; border-radius: 10px; border: 1px solid #333; text-align: left; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        #calendar-results { 
+            display: none; 
+            margin-top: 25px; 
+            background: #151515; 
+            border-radius: 10px; 
+            border: 1px solid #333; 
+            text-align: left; 
+            overflow: hidden; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
+            scroll-margin-top: 15px;
+        }
         #cal-res-title { background: #1a1a1a; color: #007bff; margin: 0; font-size: 16px; padding: 15px 20px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
         .zebra-row { background-color: #222; padding: 15px 20px; color: #ddd; font-size: 15px; line-height: 1.5; border-left: 4px solid transparent; transition: all 0.2s ease; display: block; }
         .zebra-row:nth-child(even) { background-color: #1a1a1a; }
@@ -205,6 +215,12 @@
             #calendar-grid { grid-template-columns: 1fr; }
             #order-cart-widget { bottom: 90px; left: 10px; right: 10px; width: auto; max-width: none; }
             .dabu-footer-container { flex-direction: column; gap: 20px; }
+            
+            /* Styl pełnoekranowy na smartfonie po otwarciu wyników */
+            #calendar-results {
+                min-height: calc(100vh - 40px);
+                box-sizing: border-box;
+            }
         }
         @media (min-width: 769px) {
             .offer-wrapper { padding: 50px 45px; }
@@ -650,41 +666,41 @@
             calendarGrid.addEventListener('click', async function(e) {
                 
                 if (e.target.classList.contains('week-number')) {
-    const weekNum = e.target.getAttribute('data-week');
-    
-    // 1. Zliczanie tygodni w koszyku
-    let weeksInCart = orderCart.filter(item => item.startsWith('Tydzień') || item.startsWith('Week')).length;
-    
-    // 2. Blokada powyżej 4 tygodni
-    if (weeksInCart >= 4) {
-        alert("Możesz dodać maksymalnie 4 tygodnie do jednego zamówienia!");
-        return;
-    }
+                    const weekNum = e.target.getAttribute('data-week');
+                    
+                    // 1. Zliczanie tygodni w koszyku
+                    let weeksInCart = orderCart.filter(item => item.startsWith('Tydzień') || item.startsWith('Week')).length;
+                    
+                    // 2. Blokada powyżej 4 tygodni
+                    if (weeksInCart >= 4) {
+                        alert("Możesz dodać maksymalnie 4 tygodnie do jednego zamówienia!");
+                        return;
+                    }
 
-    // 3. Pytamy o e-mail tylko raz
-    if (!savedUserEmail) {
-        const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
-        
-        if (userEmail === null) {
-            return; // Anulowano
-        }
-        
-        if (userEmail.trim() === "" || !userEmail.includes("@")) {
-            alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
-            return;
-        }
-        savedUserEmail = userEmail.trim();
-    }
+                    // 3. Pytamy o e-mail tylko raz
+                    if (!savedUserEmail) {
+                        const userEmail = prompt("Podaj swój adres e-mail, aby dodać cały tydzień do zamówienia:");
+                        
+                        if (userEmail === null) {
+                            return; // Anulowano
+                        }
+                        
+                        if (userEmail.trim() === "" || !userEmail.includes("@")) {
+                            alert("Wymagany jest poprawny adres e-mail, aby dodać tydzień do koszyka!");
+                            return;
+                        }
+                        savedUserEmail = userEmail.trim();
+                    }
 
-    // 4. DODAJEMY CZYSTĄ NAZWĘ (tutaj usuwamy dopisek o mailu)
-    addToCart(`Tydzień / Week ${weekNum}`);
-    
-    // Efekt wizualny kliknięcia
-    let originalBg = e.target.style.backgroundColor;
-    e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
-    setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
-    return;
-}
+                    // 4. DODAJEMY CZYSTĄ NAZWĘ
+                    addToCart(`Tydzień / Week ${weekNum}`);
+                    
+                    // Efekt wizualny kliknięcia
+                    let originalBg = e.target.style.backgroundColor;
+                    e.target.style.backgroundColor = '#2ecc71'; e.target.style.color = '#000';
+                    setTimeout(() => { e.target.style.backgroundColor = originalBg; e.target.style.color = ''; }, 500);
+                    return;
+                }
 
                 if (e.target.tagName === 'TD' && e.target.classList.contains('clickable-day')) {
                     const clickedDateStr = e.target.getAttribute('data-date');
@@ -703,6 +719,10 @@
                     let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
 
                     resultsBox.style.display = 'block';
+                    
+                    // Automatyczne płynne przewinięcie do wyników
+                    resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
                     resultsTitle.innerHTML = `📅 ${dd}.${mm}.${yyyy}`;
                     resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ ...</div>`;
                     
