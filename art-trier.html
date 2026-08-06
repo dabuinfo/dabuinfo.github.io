@@ -604,13 +604,22 @@
       }
 
       const res = await fetch(url);
-      daneUlice = await res.json();
+      let pobraneUlice = await res.json();
+
+      // WYMUSZENIE FILTROWANIA PO STRONIE KLIENTA
+      // Jeśli backend zwraca wszystkie ulice pomimo wysłania parametru, filtrujemy je tutaj.
+      if (litera) {
+        pobraneUlice = pobraneUlice.filter(ulica => ulica.toUpperCase().startsWith(litera.toUpperCase()));
+      }
+
+      daneUlice = pobraneUlice;
 
       if (daneUlice && daneUlice.length > 0) {
         strasseInput.disabled = false;
         strasseInput.placeholder = "Dotknij, aby wybrać ulicę...";
       } else {
-        strasseInput.placeholder = "Brak ulic na wybraną literę";
+        // Komunikat wyświetlany w przypadku braku ulic pod podaną literą
+        strasseInput.placeholder = "nie znaleziono dla tej litery";
       }
     } catch (err) {
       console.error("Błąd podczas pobierania ulic:", err);
