@@ -56,7 +56,7 @@
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie z serwerów firm sprzątających.
         <ul>
             <li><b>Gminy (Extra): Cena ustalana indywidualnie</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
-            <li><b>Landy (Powiaty/Miasta): Cena ustalana indywidualnie</b> – wybierz ilość dni za pomocą +/-.</li>
+            <li><b>Landy (Powiaty/Miasta): 25 zł / 6€ za 1 dzień</b> – wybierz ilość dni za pomocą +/-.</li>
             <li><b>Jednorazowe Pobieranie Botem: Cena ustalana indywidualnie</b> – więcej informacji po kontakcie.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej! Roczne terminy pobierzemy do końca roku.</i>
@@ -79,9 +79,10 @@
         
         const data = {
             "Landy (Powiaty i Miasta)": {
-                price: 0,
+                price: 25,
+                priceEur: 6,
                 type: "counter",
-                desc: "Cena ustalana indywidualnie (wybierz ilość dni)",
+                desc: "Cena: 25 zł / 6€ za jeden dzień",
                 items: {
                     "Baden-Württemberg": ["Calw Powiat", "Freudenstadt Powiat", "Heidelberg", "Heilbronn Powiat", "Heilbronn Miasto", "Karlsruhe Powiat", "Karlsruhe Miasto", "Ortenau (Offenburg Powiat)", "Rhein-Neckar-Kreis", "Tuttlingen Powiat", "Zollernalb Powiat"],
                     "Bayern": ["Amberg Miasto", "Bamberg Miasto", "Bayreuth Miasto", "Kulmbach Powiat", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab Powiat", "Regensburg Powiat", "Straubing-Bogen"],
@@ -267,7 +268,7 @@
                         let qty = 0;
                         btnPlus.addEventListener('click', () => {
                             qty++; spanQty.textContent = qty;
-                            cart[cartKey] = { name: r, qty: qty, price: config.price, isCounter: true, sub: sub, group: groupName };
+                            cart[cartKey] = { name: r, qty: qty, price: config.price, priceEur: config.priceEur, isCounter: true, sub: sub, group: groupName };
                             updateUI();
                         });
                         
@@ -275,7 +276,7 @@
                             if (qty > 0) {
                                 qty--; spanQty.textContent = qty;
                                 if (qty === 0) delete cart[cartKey];
-                                else cart[cartKey] = { name: r, qty: qty, price: config.price, isCounter: true, sub: sub, group: groupName };
+                                else cart[cartKey] = { name: r, qty: qty, price: config.price, priceEur: config.priceEur, isCounter: true, sub: sub, group: groupName };
                                 updateUI();
                             }
                         });
@@ -321,6 +322,31 @@
             orderBtn.disabled = itemCount === 0;
 
             updateScrappersOptionStatus();
+
+            let totalPln = 0;
+            let totalEur = 0;
+            let requiresCustomPricing = false;
+
+            Object.values(cart).forEach(item => {
+                if (item.isCounter) {
+                    totalPln += item.qty * item.price;
+                    totalEur += item.qty * item.priceEur;
+                } else {
+                    requiresCustomPricing = true;
+                }
+            });
+
+            if (itemCount === 0) {
+                priceDisplay.textContent = "Cena ustalana indywidualnie";
+            } else if (totalPln > 0) {
+                if (requiresCustomPricing) {
+                    priceDisplay.textContent = `${totalPln} zł / ${totalEur} € + wycena indywidualna (dla pozostałych)`;
+                } else {
+                    priceDisplay.textContent = `${totalPln} zł / ${totalEur} €`;
+                }
+            } else {
+                priceDisplay.textContent = "Cena ustalana indywidualnie";
+            }
         }
 
         orderBtn.addEventListener('click', () => {
@@ -337,8 +363,19 @@
             const botNajblizsze = [];
             const botDoKonca = [];
 
+            let totalPln = 0;
+            let totalEur = 0;
+            let requiresCustomPricing = false;
+
             const cartItems = Object.values(cart);
             cartItems.forEach(item => {
+                if (item.isCounter) {
+                    totalPln += item.qty * item.price;
+                    totalEur += item.qty * item.priceEur;
+                } else {
+                    requiresCustomPricing = true;
+                }
+
                 if (item.group === "Jednorazowe Pobieranie Bazy Botem") {
                     if (item.sub.includes("Najbliższe")) {
                         botNajblizsze.push(item.name);
@@ -380,6 +417,12 @@
             const itemsList = details.join(' | ');
 
             let priceText = `Cena ustalana indywidualnie`;
+            if (totalPln > 0) {
+                priceText = `Do zapłaty: ${totalPln} zł / ${totalEur} €`;
+                if (requiresCustomPricing) {
+                    priceText += " + dodatkowa wycena za wybrane pozycje";
+                }
+            }
 
             // Budowanie finałowej wiadomości
             let msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. ${priceText}.`;
