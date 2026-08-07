@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wyszukiwarka Terminów Wywozu Odpadów</title>
+
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  
+  <style>
+    /* Domyślny styl dla body (np. na smartfony) */
+    body {
+      background-color: #0f172a;
+      margin: 0;
+      padding: 20px 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Tło graficzne widoczne tylko na urządzeniach od 768px szerokości (desktop/tablet) */
+    @media (min-width: 768px) {
+      body {
+        background-image: url('3bbd5476-5918-4598-8484-65b13423c679.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+    }
+
+    .odpady-search-card {
+      max-width: 100%;
+      width: 440px;
+      margin: 0 auto;
+      padding: 24px 20px;
+      /* Lekka przezroczystość i rozmycie, aby tło fajnie przebijało na desktopie */
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      color: #f8fafc;
+      box-sizing: border-box;
+      border: 1px solid #334155;
+    }
+
+    .odpady-search-card h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.25rem;
+      text-align: center;
+      color: #f1f5f9;
+      font-weight: 700;
+    }
+
+    .odpady-form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .odpady-form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+
+    .odpady-input, .odpady-select {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.2s ease;
+      background-color: #0f172a;
+      color: #f8fafc;
+      cursor: pointer;
+      
+      /* --- Blokada kopiowania dla pól formularza --- */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .odpady-input::placeholder {
+      color: #64748b;
+    }
+
+    .odpady-input:disabled, .odpady-select:disabled {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .odpady-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      background-color: #38bdf8;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .odpady-btn:hover, .odpady-btn:active {
+      background-color: #7dd3fc;
+    }
+
+    .odpady-results {
+      margin-top: 22px;
+      text-align: left;
+    }
+
+    .odpady-result-box {
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .odpady-result-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+
+    .odpady-morning-notice {
+      font-size: 0.82rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .odpady-fraction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .odpady-fraction-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .odpady-fraction-name {
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .odpady-fraction-date {
+      color: #4ade80;
+      font-weight: 700;
+      background-color: rgba(74, 222, 128, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      padding: 5px 10px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .odpady-status-msg {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .odpady-status-msg.error { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+    .odpady-status-msg.warning { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+    .odpady-status-msg.info { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
+
+    .odpady-info-section {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid #334155;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .odpady-info-title {
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .odpady-info-item {
+      margin: 4px 0;
+    }
+
+    .odpady-info-item strong {
+      color: #f1f5f9;
+    }
+
+    .odpady-sms-promo {
+      margin-top: 20px;
+      padding: 16px;
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .odpady-sms-promo p {
+      margin: 0 0 12px 0;
+      font-size: 0.9rem;
+      color: #f8fafc;
+      line-height: 1.4;
+    }
+
+    .odpady-db-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .odpady-sms-btn {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+      border: 1px solid #38bdf8;
+    }
+
+    .odpady-sms-btn:hover, .odpady-sms-btn:active {
+      background-color: #0369a1;
+      border-color: #7dd3fc;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+    }
+
+    .odpady-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0f172a;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      box-sizing: border-box;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .odpady-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .odpady-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .odpady-modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .odpady-modal-close {
+      background: #334155;
+      border: none;
+      color: #f8fafc;
+      font-size: 1.2rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .odpady-modal-search-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 1px solid #38bdf8;
+      border-radius: 10px;
+      background: #1e293b;
+      color: #fff;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .odpady-modal-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .odpady-modal-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      /* --- Blokada kopiowania dla elementów listy --- */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .odpady-modal-item:active {
+      background-color: #334155;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="odpady-search-card">
+  <h3>🔍 Terminy odbioru odpadów</h3><br>
+
+  <!-- Pole Powiat -->
+  <div class="odpady-form-group">
+    <label for="odpadyPowiat">Powiat:</label>
+    <input 
+      type="text" 
+      id="odpadyPowiat" 
+      class="odpady-input" 
+      placeholder="Dotknij, aby wybrać powiat..." 
+      readonly
+      onclick="odpadyOtworzModal('powiat')"
+    >
+  </div>
+
+  <!-- Pole Miejscowość -->
+  <div class="odpady-form-group">
+    <label for="odpadyOrt">Miejscowość:</label>
+    <input 
+      type="text" 
+      id="odpadyOrt" 
+      class="odpady-input" 
+      placeholder="Najpierw wybierz powiat..." 
+      readonly
+      disabled
+      onclick="odpadyOtworzModal('ort')"
+    >
+  </div>
+
+  <!-- Wybór pierwszej litery ulicy -->
+  <div class="odpady-form-group">
+    <label for="odpadyLitera">Pierwsza litera ulicy:</label>
+    <select id="odpadyLitera" class="odpady-select" disabled onchange="odpadyPobierzUlice()">
+      <option value="">-- Wszystkie / Wybierz literę --</option>
+      <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+      <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+      <option value="G">G</option><option value="H">H</option><option value="I">I</option>
+      <option value="J">J</option><option value="K">K</option><option value="L">L</option>
+      <option value="M">M</option><option value="N">N</option><option value="O">O</option>
+      <option value="P">P</option><option value="Q">Q</option><option value="R">R</option>
+      <option value="S">S</option><option value="T">T</option><option value="U">U</option>
+      <option value="V">V</option><option value="W">W</option><option value="X">X</option>
+      <option value="Y">Y</option><option value="Z">Z</option><option value="Ä">Ä</option>
+      <option value="Ö">Ö</option><option value="Ü">Ü</option>
+    </select>
+  </div>
+
+  <!-- Pole Ulica -->
+  <div class="odpady-form-group">
+    <label for="odpadyStrasse">Ulica:</label>
+    <input 
+      type="text" 
+      id="odpadyStrasse" 
+      class="odpady-input" 
+      placeholder="Najpierw wybierz miejscowość..." 
+      readonly
+      disabled
+      onclick="odpadyOtworzModal('strasse')"
+    >
+  </div>
+
+  <button class="odpady-btn" onclick="odpadySzukajTerminu()">Sprawdź termin</button>
+
+  <!-- Miejsce na wyniki -->
+  <div id="odpadyWynik" class="odpady-results"></div>
+
+  <!-- Sekcja informacyjna (Legenda) -->
+  <div class="odpady-info-section">
+    <div class="odpady-info-title">💡 Przydatne informacje:</div>
+    <div class="odpady-info-item">🌅 <strong>Godzina odbioru:</strong> Śmieciarka zbiera odpady <strong>z samego rana</strong> – należy je za zgodą podjąć wcześniej.</div>
+    <div class="odpady-info-item">• <strong>EES Express:</strong> Wywóz elektrośmieci (AGD, RTV, elektronika).</div>
+    <div class="odpady-info-item">• <strong>Sperrabfall:</strong> Wywóz odpadów wielkogabarytowych (meble, materace).</div>
+  </div>
+
+  <!-- Sekcja powiadomień SMS -->
+  <div class="odpady-sms-promo">
+    <div class="odpady-db-badge">📊 Baza stale aktualizowana i powiększana o nowe rejony</div>
+    <p>📱 <strong>Chcesz terminy na wyjazd dla tych rejonów?</strong><br>Zamów dostęp w PDF.</p>
+    <a href="https://dabu-info.com/zamowienia.html" target="_blank" class="odpady-sms-btn">Zamów przez SMS ➔</a>
+  </div>
+</div>
+
+<!-- Modal pełnoekranowy dla smartfonów -->
+<div id="odpadyModal" class="odpady-modal-overlay">
+  <div class="odpady-modal-header">
+    <div id="odpadyModalTitle" class="odpady-modal-title">Wybierz...</div>
+    <button class="odpady-modal-close" onclick="odpadyZamknijModal()">✕</button>
+  </div>
+  <input 
+    type="text" 
+    id="odpadyModalSearch" 
+    class="odpady-modal-search-input" 
+    placeholder="🔎 Wpisz, aby filtrować..." 
+    oninput="odpadyFiltrujModalListe()"
+  >
+  <ul id="odpadyModalList" class="odpady-modal-list"></ul>
+</div>
+
+<script>
+  const ODPADY_API_URL = "https://script.google.com/macros/s/AKfycbzvo3gBhePfx6WnPCMX_AVwv0dbSp1i5Uly-JIMJ0wnqKZ25g2DpRYIN3GtxVEopeZU/exec";
+  
+  let danePowiaty = [];
+  let daneMiejscowosci = [];
+  let daneUlice = [];
+  
+  let aktywnyTypModala = ""; 
+  let zapamietanyPowiat = "";
+  let zapamietanyOrt = "";
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const res = await fetch(`${ODPADY_API_URL}?action=getPowiaty`);
+      danePowiaty = await res.json();
+    } catch (err) {
+      console.error("Błąd podczas pobierania powiatów:", err);
+    }
+  });
+
+  function odpadyOtworzModal(typ) {
+    aktywnyTypModala = typ;
+    const modal = document.getElementById('odpadyModal');
+    const title = document.getElementById('odpadyModalTitle');
+    const searchInput = document.getElementById('odpadyModalSearch');
+    
+    searchInput.value = "";
+
+    if (typ === 'powiat') {
+      title.innerText = "Wybierz Powiat";
+      odpadyRenderujListeModala(danePowiaty);
+    } else if (typ === 'ort') {
+      title.innerText = "Wybierz Miejscowość";
+      odpadyRenderujListeModala(daneMiejscowosci);
+    } else if (typ === 'strasse') {
+      title.innerText = "Wybierz Ulicę";
+      odpadyRenderujListeModala(daneUlice);
+    }
+
+    modal.classList.add('active');
+    setTimeout(() => searchInput.focus(), 100);
+  }
+
+  function odpadyZamknijModal() {
+    document.getElementById('odpadyModal').classList.remove('active');
+  }
+
+  function odpadyRenderujListeModala(elementy) {
+    const listContainer = document.getElementById('odpadyModalList');
+    if (!elementy || elementy.length === 0) {
+      listContainer.innerHTML = `<li class="odpady-modal-item" style="color: #64748b;">Brak wyników</li>`;
+      return;
+    }
+    listContainer.innerHTML = elementy.map(item => `
+      <li class="odpady-modal-item" onclick="odpadyWybierzElementModala('${item.replace(/'/g, "\\'")}')">
+        <span>${item}</span> ➔
+      </li>
+    `).join('');
+  }
+
+  function odpadyFiltrujModalListe() {
+    const query = document.getElementById('odpadyModalSearch').value.toLowerCase();
+    let zrodlo = [];
+    if (aktywnyTypModala === 'powiat') zrodlo = danePowiaty;
+    else if (aktywnyTypModala === 'ort') zrodlo = daneMiejscowosci;
+    else if (aktywnyTypModala === 'strasse') zrodlo = daneUlice;
+
+    const przefiltrowane = zrodlo.filter(item => item.toLowerCase().includes(query));
+    odpadyRenderujListeModala(przefiltrowane);
+  }
+
+  async function odpadyWybierzElementModala(wartosc) {
+    odpadyZamknijModal();
+
+    if (aktywnyTypModala === 'powiat') {
+      document.getElementById('odpadyPowiat').value = wartosc;
+      await odpadyPobierzMiejscowosci(wartosc);
+    } else if (aktywnyTypModala === 'ort') {
+      document.getElementById('odpadyOrt').value = wartosc;
+      odpadyObsluzMiejscowosc(wartosc);
+    } else if (aktywnyTypModala === 'strasse') {
+      document.getElementById('odpadyStrasse').value = wartosc;
+    }
+  }
+
+  async function odpadyPobierzMiejscowosci(powiatInput) {
+    const ortInput = document.getElementById('odpadyOrt');
+    const literaSelect = document.getElementById('odpadyLitera');
+    const strasseInput = document.getElementById('odpadyStrasse');
+
+    if (powiatInput.toLowerCase() === zapamietanyPowiat.toLowerCase()) return;
+    zapamietanyPowiat = powiatInput;
+
+    ortInput.value = '';
+    ortInput.disabled = true;
+    ortInput.placeholder = "Ładowanie miejscowości...";
+    literaSelect.disabled = true;
+    literaSelect.value = '';
+    strasseInput.value = '';
+    strasseInput.disabled = true;
+
+    try {
+      const res = await fetch(`${ODPADY_API_URL}?action=getOrte&powiat=${encodeURIComponent(powiatInput)}`);
+      daneMiejscowosci = await res.json();
+
+      if (daneMiejscowosci && daneMiejscowosci.length > 0) {
+        ortInput.disabled = false;
+        ortInput.placeholder = "Dotknij, aby wybrać miejscowość...";
+      } else {
+        ortInput.placeholder = "Brak miejscowości dla powiatu";
+      }
+    } catch (err) {
+      console.error("Błąd podczas pobierania miejscowości:", err);
+      ortInput.placeholder = "Błąd pobierania miejscowości";
+    }
+  }
+
+  function odpadyObsluzMiejscowosc(ortInput) {
+    const literaSelect = document.getElementById('odpadyLitera');
+    const strasseInput = document.getElementById('odpadyStrasse');
+
+    if (ortInput.toLowerCase() === zapamietanyOrt.toLowerCase()) return;
+    
+    literaSelect.disabled = false;
+    literaSelect.value = '';
+    odpadyPobierzUlice();
+  }
+
+  async function odpadyPobierzUlice() {
+    const powiatInput = document.getElementById('odpadyPowiat').value.trim();
+    const ortInput = document.getElementById('odpadyOrt').value.trim();
+    const litera = document.getElementById('odpadyLitera').value;
+    const strasseInput = document.getElementById('odpadyStrasse');
+
+    if (!ortInput) return;
+
+    zapamietanyOrt = ortInput;
+    strasseInput.disabled = true;
+    strasseInput.value = '';
+    strasseInput.placeholder = "Ładowanie ulic...";
+
+    try {
+      let url = `${ODPADY_API_URL}?action=getStrassen&powiat=${encodeURIComponent(powiatInput)}&ort=${encodeURIComponent(ortInput)}`;
+      if (litera) {
+        url += `&litera=${encodeURIComponent(litera)}`;
+      }
+
+      const res = await fetch(url);
+      let pobraneUlice = await res.json();
+
+      if (litera) {
+        pobraneUlice = pobraneUlice.filter(ulica => ulica.toUpperCase().startsWith(litera.toUpperCase()));
+      }
+
+      daneUlice = pobraneUlice;
+
+      if (daneUlice && daneUlice.length > 0) {
+        strasseInput.disabled = false;
+        strasseInput.placeholder = "Dotknij, aby wybrać ulicę...";
+      } else {
+        strasseInput.placeholder = "nie znaleziono dla tej litery";
+      }
+    } catch (err) {
+      console.error("Błąd podczas pobierania ulic:", err);
+      strasseInput.placeholder = "Błąd pobierania ulic";
+    }
+  }
+
+  function sformatujDate(dInput) {
+    if (!dInput) return '';
+    var str = String(dInput).trim();
+    
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+      return str;
+    }
+
+    var d = new Date(dInput);
+    if (!isNaN(d.getTime())) {
+      var rok = d.getFullYear();
+      var miesiac = String(d.getMonth() + 1).padStart(2, '0');
+      var dzien = String(d.getDate()).padStart(2, '0');
+      return `${rok}-${miesiac}-${dzien}`;
+    }
+    
+    return str.substring(0, 10);
+  }
+
+  async function odpadySzukajTerminu() {
+    const powiat = document.getElementById('odpadyPowiat').value.trim();
+    const ort = document.getElementById('odpadyOrt').value.trim();
+    const strasse = document.getElementById('odpadyStrasse').value.trim();
+    const wynikDiv = document.getElementById('odpadyWynik');
+
+    if (!ort || !strasse) {
+      wynikDiv.innerHTML = `<div class="odpady-status-msg warning">Proszę wybrać miejscowość i ulicę.</div>`;
+      return;
+    }
+
+    wynikDiv.innerHTML = `<div class="odpady-status-msg info">⏳ Sprawdzanie terminarza...</div>`;
+
+    try {
+      const targetUrl = `${ODPADY_API_URL}?powiat=${encodeURIComponent(powiat)}&ort=${encodeURIComponent(ort)}&strasse=${encodeURIComponent(strasse)}`;
+      const res = await fetch(targetUrl);
+      const json = await res.json();
+
+      if (json.status === "success" && json.terminy && json.terminy.length > 0) {
+        let html = `
+          <div class="odpady-result-box">
+            <div class="odpady-result-title">📅 Najbliższe nadchodzące wywozy:</div>
+            <div class="odpady-morning-notice">
+              🌅 Zbieraj wyłącznie za zgodą dzień wcześniej!
+            </div>
+        `;
+
+        json.terminy.forEach(item => {
+          const dataFormatted = sformatujDate(item.data);
+          html += `
+            <div class="odpady-fraction-item">
+              <span class="odpady-fraction-name">${item.rodzaj}</span>
+              <span class="odpady-fraction-date">${dataFormatted}</span>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+        wynikDiv.innerHTML = html;
+      } else {
+        wynikDiv.innerHTML = `<div class="odpady-status-msg warning">Brak nadchodzących terminów dla wybranego adresu.</div>`;
+      }
+    } catch (err) {
+      console.error("Błąd pobierania terminów:", err);
+      wynikDiv.innerHTML = `<div class="odpady-status-msg error">Błąd połączenia z bazą danych. Proszę spróbować później.</div>`;
+    }
+  }
+</script>
+
+</body>
+</html>
