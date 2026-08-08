@@ -42,7 +42,7 @@
             overflow-x: hidden;
         }
 
-        /* 1. TŁO Z OBRAZEM (Jasność 0.55 - ładne tło z zachowaniem kontrastu) */
+        /* 1. TŁO Z OBRAZEM */
         .background-layer {
             position: fixed;
             top: 0;
@@ -57,7 +57,7 @@
             z-index: 0;
         }
 
-        /* 2. MAŁY, PUNKTOWY STRUMIEŃ ŚWIATŁA TUŻ PRZY LATARCE */
+        /* 2. STRUMIEŃ ŚWIATŁA LATARKI */
         .flashlight-beam {
             position: fixed;
             top: 0;
@@ -67,7 +67,6 @@
             pointer-events: none;
             z-index: 1;
             
-            /* Bardzo delikatny, wąski punkt świetlny wokół punktu 94% 28% */
             background: radial-gradient(
                 circle at 94% 28%, 
                 rgba(255, 255, 255, 0.6) 0%, 
@@ -213,39 +212,50 @@
             gap: 8px;
         }
 
-        /* KARTY LINKÓW */
+        /* KARTA LINKU ZBIORCZEGO */
         .dabu-link-card {
             display: block;
             background: var(--card-hover);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
             text-decoration: none;
             color: inherit;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px var(--glow-color);
         }
 
         .dabu-link-card:hover, .dabu-link-card:active {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
+            border-color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 230, 118, 0.3);
         }
 
         .dabu-link-card .region-tag {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--accent-color);
             text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
             display: block;
         }
 
         .dabu-link-card .region-name {
-            font-size: 1.05rem;
-            font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 800;
             color: #ffffff;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: block;
+        }
+
+        .dabu-link-card .region-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.4;
         }
 
         .dabu-link-card .cta-button {
@@ -254,11 +264,11 @@
             text-align: center;
             background-color: var(--accent-color);
             color: #0d0d11;
-            font-weight: 700;
-            font-size: 0.9rem;
-            padding: 10px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px var(--glow-color);
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--glow-color);
         }
 
         /* LISTA CECH */
@@ -299,6 +309,10 @@
             font-size: 0.85rem;
             border-top: 1px solid var(--border-color);
         }
+
+        .dabu-footer p {
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
@@ -312,7 +326,7 @@
         <div class="dabu-banner-header">
             <div class="text-container">
                 <div class="main-logo-text">DABU-<span style="color: springgreen;">INFO</span></div>
-                <div class="main-sub-text">Terminy wystawek w Niemczech • Darmowe próbki</div>
+                <div class="main-sub-text">Terminy wystawek w Niemczech • Wyszukiwarka Live</div>
             </div>
             <div class="icon-container">
                 <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg">
@@ -332,48 +346,28 @@
 
         <!-- WSTĘP -->
         <div class="badge-wrapper">
-            <span class="dabu-badge">Próbki Live • Sprawdź Terminy</span>
+            <span class="dabu-badge">Wyszukiwarka Live • Wszystkie Landy</span>
             <h1 class="dabu-intro-title">🌙 Skarby z niemieckich wystawek (Sperrmüll)</h1>
         </div>
 
         <div class="dabu-content-block">
             <p>Noc, cicha ulica niemieckiego miasteczka, latarka w dłoni i zaparkowany niedaleko bus. Każdy, kto wyjeżdża na <strong>Sperrmüll</strong>, zna ten dreszczyk emocji.</p>
             <p>Jednak sukces zależy od jednego: <strong>precyzyjnych i aktualnych informacji o terminach wywozu.</strong></p>
-            <p>Przetestuj nasze darmowe próbki i sprawdź najbliższe nadchodzące terminy zbiórek w wybranym rejonie:</p>
+            <p>Połączyliśmy nasze bazy danych – teraz w jednym miejscu możesz sprawdzić terminy dla całych Niemiec z podziałem na kraje związkowe (Landy):</p>
         </div>
 
-        <div class="dabu-section-title">🔍 Wypróbuj darmowe zestawienia:</div>
+        <div class="dabu-section-title">🔍 Wypróbuj darmową wyszukiwarkę:</div>
 
-        <!-- Card 1 -->
-        <a href="https://dabu-info.com/art-trier.html" class="dabu-link-card" target="_blank">
-            <span class="region-tag">Firma wywozowa</span>
-            <span class="region-name">🚛 A.R.T. Trier i okolice</span>
-            <span class="cta-button">Sprawdź najbliższy termin →</span>
-        </a>
-
-        <!-- Card 2 -->
-        <a href="https://dabu-info.com/rp.html" class="dabu-link-card" target="_blank">
-            <span class="region-tag">Wszystkie rejony</span>
-            <span class="region-name">🗺️ Rheingau-Pfalz</span>
-            <span class="cta-button">Sprawdź najbliższy termin →</span>
-        </a>
-
-        <!-- Card 3 -->
-        <a href="https://dabu-info.com/bw.html" class="dabu-link-card" target="_blank">
-            <span class="region-tag">Wybrane rejony</span>
-            <span class="region-name">📍 Baden-Württemberg</span>
-            <span class="cta-button">Sprawdź najbliższy termin →</span>
-        </a>
-
-        <!-- Card 4 -->
-        <a href="https://dabu-info.com/he.html" class="dabu-link-card" target="_blank">
-            <span class="region-tag">Wybrane rejony</span>
-            <span class="region-name">📍 Hessen</span>
-            <span class="cta-button">Sprawdź najbliższy termin →</span>
+        <!-- KARTA ZBIORCZA DLA CAŁYCH NIEMIEC -->
+        <a href="https://dabu-info.com/de.html" class="dabu-link-card" target="_blank">
+            <span class="region-tag">Wszystkie rejony w jednym miejscu</span>
+            <span class="region-name">🇩🇪 Ogólnoniemiecka Wyszukiwarka Terminarzy</span>
+            <span class="region-desc">Wybierz Land, Powiat, Miejscowość oraz Ulicę, aby natychmiast poznać najbliższe nadchodzące wywozy gabarytów i elektrośmieci.</span>
+            <span class="cta-button">Sprawdź terminy wywozu →</span>
         </a>
 
         <!-- DLACZEGO WARTO -->
-        <div class="dabu-content-block" style="margin-top: 20px;">
+        <div class="dabu-content-block">
             <div class="dabu-section-title">⚡ Dlaczego warto?</div>
             <ul class="dabu-features-list">
                 <li><span class="check-icon">✓</span> <div><strong>Pewne źródła:</strong> Dane pobierane bezpośrednio z oficjalnych systemów komunalnych.</div></li>
@@ -384,8 +378,8 @@
 
         <!-- STOPKA -->
         <footer class="dabu-footer">
-            <p>💬 Planujesz wyjazd w inne rejony Niemiec?</p>
-            <p>Napisz do nas – przygotujemy aktualny harmonogram na dowolny obszar!</p>
+            <p>💬 Planujesz wyjazd i potrzebujesz gotowego zestawienia w PDF?</p>
+            <p>Zamów pełny harmonogram na dabu-info.com/zestaw.html</p>
         </footer>
 
     </div>
