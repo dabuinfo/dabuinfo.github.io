@@ -117,6 +117,14 @@
       background-color: #7dd3fc;
     }
 
+    /* Zablokowany przycisk wyszukiwania */
+    .art-btn:disabled {
+      background-color: #1e293b;
+      color: #64748b;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
     .art-results {
       margin-top: 22px;
       text-align: left;
@@ -367,8 +375,9 @@
       type="text" 
       id="artPowiat" 
       class="art-input" 
-      placeholder="Dotknij, aby wybrać powiat..." 
+      placeholder="Ładowanie powiatów..." 
       readonly
+      disabled
       onclick="artOtwórzModal('powiat')"
     >
   </div>
@@ -419,7 +428,8 @@
     >
   </div>
 
-  <button class="art-btn" onclick="artSzukajTerminu()">Sprawdź termin</button>
+  <!-- Przycisk wyszukiwania - zablokowany domyślnie -->
+  <button id="artPrzyciskSzukaj" class="art-btn" onclick="artSzukajTerminu()" disabled>Sprawdź termin</button>
 
   <!-- Miejsce na wyniki -->
   <div id="artWynik" class="art-results"></div>
@@ -468,11 +478,21 @@
   let zapamiętanyOrt = "";
 
   document.addEventListener('DOMContentLoaded', async () => {
+    const powiatInput = document.getElementById('artPowiat');
+
     try {
       const res = await fetch(`${ART_API_URL}?action=getPowiaty`);
       danePowiaty = await res.json();
+      
+      if (danePowiaty && danePowiaty.length > 0) {
+        powiatInput.disabled = false;
+        powiatInput.placeholder = "Dotknij, aby wybrać powiat...";
+      } else {
+        powiatInput.placeholder = "Brak dostępnych powiatów";
+      }
     } catch (err) {
       console.error("Błąd podczas pobierania powiatów:", err);
+      powiatInput.placeholder = "Błąd pobierania danych";
     }
   });
 
@@ -538,6 +558,8 @@
       artObsluzMiejscowosc(wartosc);
     } else if (aktywnyTypModala === 'strasse') {
       document.getElementById('artStrasse').value = wartosc;
+      // Odblokowanie przycisku po wybraniu ulicy
+      document.getElementById('artPrzyciskSzukaj').disabled = false;
     }
   }
 
@@ -545,6 +567,7 @@
     const ortInput = document.getElementById('artOrt');
     const literaSelect = document.getElementById('artLitera');
     const strasseInput = document.getElementById('artStrasse');
+    const przyciskSzukaj = document.getElementById('artPrzyciskSzukaj');
 
     if (powiatInput.toLowerCase() === zapamiętanyPowiat.toLowerCase()) return;
     zapamiętanyPowiat = powiatInput;
@@ -556,6 +579,7 @@
     literaSelect.value = '';
     strasseInput.value = '';
     strasseInput.disabled = true;
+    przyciskSzukaj.disabled = true; // Zablokowanie przycisku
 
     try {
       const res = await fetch(`${ART_API_URL}?action=getOrte&powiat=${encodeURIComponent(powiatInput)}`);
@@ -589,6 +613,7 @@
     const ortInput = document.getElementById('artOrt').value.trim();
     const litera = document.getElementById('artLitera').value;
     const strasseInput = document.getElementById('artStrasse');
+    const przyciskSzukaj = document.getElementById('artPrzyciskSzukaj');
 
     if (!ortInput) return;
 
@@ -596,6 +621,7 @@
     strasseInput.disabled = true;
     strasseInput.value = '';
     strasseInput.placeholder = "Ładowanie ulic...";
+    przyciskSzukaj.disabled = true; // Zablokowanie przycisku
 
     try {
       let url = `${ART_API_URL}?action=getStrassen&powiat=${encodeURIComponent(powiatInput)}&ort=${encodeURIComponent(ortInput)}`;
