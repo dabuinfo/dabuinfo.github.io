@@ -597,14 +597,18 @@
     statusDiv.innerHTML = `<div class="art-status-msg info">⏳ Weryfikacja...</div>`;
 
     try {
-      const formData = new FormData();
-      formData.append('action', 'login');
-      formData.append('login', login);
-      formData.append('haslo', haslo);
+      // Używamy URLSearchParams zamiast FormData / JSON
+      const params = new URLSearchParams();
+      params.append('action', 'login');
+      params.append('login', login);
+      params.append('haslo', haslo);
 
       const res = await fetch(ART_API_URL, {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params
       });
       
       const data = await res.json();
@@ -616,7 +620,7 @@
         statusDiv.innerHTML = `<div class="art-status-msg error">${data.message || 'Błąd logowania'}</div>`;
       }
     } catch (err) {
-      console.error("Błąd połączenia:", err);
+      console.error("Szczegóły błędu:", err);
       statusDiv.innerHTML = `<div class="art-status-msg error">Błąd połączenia z serwerem.</div>`;
     }
   }
