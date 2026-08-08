@@ -19,7 +19,6 @@
   </script>
   
   <style>
-    /* Domyślny styl dla body (np. na smartfony) */
     body {
       background-color: #0f172a;
       margin: 0;
@@ -28,7 +27,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* Tło graficzne widoczne tylko na urządzeniach od 768px szerokości (desktop/tablet) */
     @media (min-width: 768px) {
       body {
         background-image: url('3bbd5476-5918-4598-8484-65b13423c679.jpg');
@@ -110,7 +108,7 @@
       color: #f8fafc;
       box-sizing: border-box;
       border: 1px solid #334155;
-      display: none; /* Ukryte do momentu zalogowania */
+      display: none;
     }
 
     .art-search-card h3 {
@@ -520,7 +518,7 @@
     >
   </div>
 
-  <!-- Przycisk wyszukiwania - zablokowany domyślnie -->
+  <!-- Przycisk wyszukiwania -->
   <button id="artPrzyciskSzukaj" class="art-btn" onclick="artSzukajTerminu()" disabled>Sprawdź termin</button>
 
   <!-- Miejsce na wyniki -->
@@ -599,11 +597,16 @@
     statusDiv.innerHTML = `<div class="art-status-msg info">⏳ Weryfikacja...</div>`;
 
     try {
+      const formData = new FormData();
+      formData.append('action', 'login');
+      formData.append('login', login);
+      formData.append('haslo', haslo);
+
       const res = await fetch(ART_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'login', login: login, haslo: haslo })
+        body: formData
       });
+      
       const data = await res.json();
 
       if (data.status === 'success') {
@@ -613,8 +616,8 @@
         statusDiv.innerHTML = `<div class="art-status-msg error">${data.message || 'Błąd logowania'}</div>`;
       }
     } catch (err) {
-      console.error(err);
-      statusDiv.innerHTML = `<div class="art-status-msg error">Błąd połączenia.</div>`;
+      console.error("Błąd połączenia:", err);
+      statusDiv.innerHTML = `<div class="art-status-msg error">Błąd połączenia z serwerem.</div>`;
     }
   }
 
