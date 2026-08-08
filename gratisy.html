@@ -12,7 +12,7 @@
     <style>
         :root {
             --bg-color: #0c0d10;
-            --container-bg: rgba(18, 18, 20, 0.92);
+            --container-bg: rgba(18, 18, 20, 0.95);
             --card-bg: #1e1e24;
             --card-hover: #252530;
             --accent-color: #00e676;
@@ -42,7 +42,7 @@
             overflow-x: hidden;
         }
 
-        /* 1. TŁO Z OBRAZEM ELEGANCKO PRZYCIEMNIONE */
+        /* 1. TŁO Z OBRAZEM (Jasność 0.55 - ładne tło z zachowaniem kontrastu) */
         .background-layer {
             position: fixed;
             top: 0;
@@ -53,11 +53,11 @@
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            filter: brightness(0.35) contrast(1.1);
+            filter: brightness(0.55) contrast(1.1);
             z-index: 0;
         }
 
-        /* 2. EFEKT STRUMIENIA ŚWIATŁA Z LATARKI (PRAWY GÓRNY RÓG -> KONTENER) */
+        /* 2. MAŁY, PUNKTOWY STRUMIEŃ ŚWIATŁA TUŻ PRZY LATARCE */
         .flashlight-beam {
             position: fixed;
             top: 0;
@@ -67,43 +67,36 @@
             pointer-events: none;
             z-index: 1;
             
-            /* Snop światła wymierzony z pozycji latarki na zdjęciu (94% 28%) */
+            /* Bardzo delikatny, wąski punkt świetlny wokół punktu 94% 28% */
             background: radial-gradient(
                 circle at 94% 28%, 
-                rgba(255, 255, 240, 0.8) 0%, 
-                rgba(255, 255, 220, 0.35) 15%, 
-                rgba(0, 230, 118, 0.12) 40%, 
-                transparent 75%
+                rgba(255, 255, 255, 0.6) 0%, 
+                rgba(255, 255, 230, 0.2) 8%, 
+                rgba(0, 230, 118, 0.05) 20%, 
+                transparent 40%
             ),
             conic-gradient(
-                from 215deg at 94% 28%,
+                from 225deg at 94% 28%,
                 transparent 0deg,
-                rgba(255, 255, 255, 0.18) 15deg,
-                rgba(0, 255, 127, 0.08) 35deg,
-                transparent 50deg
+                rgba(255, 255, 255, 0.08) 6deg,
+                rgba(0, 255, 127, 0.04) 14deg,
+                transparent 22deg
             );
             mix-blend-mode: screen;
-            animation: pulse-light 4s ease-in-out infinite alternate;
+            opacity: 0.85;
         }
 
-        /* Subtelne powoli pulsujące światło latarki */
-        @keyframes pulse-light {
-            0% { opacity: 0.85; }
-            100% { opacity: 1; }
-        }
-
-        /* 3. KONTENER Z TREŚCIĄ */
         .dabu-page-wrapper {
             position: relative;
-            z-index: 2; /* Treść nad strumieniem światła i tłem */
+            z-index: 2;
             background-color: var(--container-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(6px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 20px;
             width: 100%;
             max-width: 600px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 230, 118, 0.1);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
         }
 
         /* NAGŁÓWEK BANNEROWY */
@@ -310,7 +303,6 @@
 </head>
 <body>
 
-    <!-- TŁO I WARSTWA STRUMIENIA LATARKI -->
     <div class="background-layer"></div>
     <div class="flashlight-beam"></div>
 
