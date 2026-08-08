@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skarby z niemieckich wystawek (Sperrmüll) – Darmowe Próbki</title>
+    <title>Skarby z niemieckich wystawek (Sperrmüll) – DABU-INFO</title>
+
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    
     <style>
         :root {
-            --bg-color: #121214;
+            --bg-color: #0c0d10;
+            --container-bg: #121214;
             --card-bg: #1e1e24;
+            --card-hover: #252530;
             --accent-color: #00e676;
             --accent-hover: #00c853;
             --text-main: #e0e0e6;
@@ -27,70 +34,86 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
-            padding: 16px;
-            max-width: 480px;
-            margin: 0 auto;
+            padding: 20px 12px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* BANNER HEADER STYLING */
-        .banner-header {
+        .dabu-page-wrapper {
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px; /* Dopasowana optymalna szerokość pod baner i smartfony */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        /* NAGŁÓWEK BANNEROWY */
+        .dabu-banner-header {
             align-items: center;
             background: linear-gradient(135deg, rgb(26, 26, 46) 0%, rgb(22, 33, 62) 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             display: flex;
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 20px;
-            min-height: 110px;
+            min-height: 140px;
             overflow: hidden;
-            padding: 18px 16px;
+            padding: 20px;
             position: relative;
             width: 100%;
             border: 1px solid var(--border-color);
         }
 
-        .banner-header .text-container {
+        .dabu-banner-header .text-container {
             flex: 1 1 0%;
         }
 
-        .banner-header .main-logo-text {
+        .dabu-banner-header .main-logo-text {
             color: #ffffff;
             font-family: 'Arial Black', sans-serif;
-            font-size: 26px;
+            font-size: 32px;
             font-weight: 900;
-            letter-spacing: -0.5px;
-            line-height: 1.1;
+            letter-spacing: -1px;
+            line-height: 1;
         }
 
-        .banner-header .main-sub-text {
+        .dabu-banner-header .main-sub-text {
             color: #cccccc;
             font-family: Verdana, sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             font-style: italic;
-            margin-top: 6px;
+            margin-top: 10px;
             line-height: 1.3;
         }
 
-        .banner-header .icon-container {
+        .dabu-banner-header .icon-container {
             align-items: center;
             display: flex;
             flex-shrink: 0;
-            height: 50px;
+            height: 65px;
             justify-content: center;
-            width: 50px;
+            width: 65px;
         }
 
-        .banner-header .bottom-bar {
+        .dabu-banner-header .bottom-bar {
             background: rgb(0, 255, 127);
             bottom: 0px;
-            height: 4px;
+            height: 6px;
             left: 0px;
             position: absolute;
             width: 100%;
         }
 
-        .badge {
+        /* NAGŁÓWEK ARTYKUŁU */
+        .badge-wrapper {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .dabu-badge {
             display: inline-block;
             background-color: var(--glow-color);
             color: var(--accent-color);
@@ -104,33 +127,34 @@
             margin-bottom: 12px;
         }
 
-        .intro-title {
-            font-size: 1.35rem;
+        .dabu-intro-title {
+            font-size: 1.4rem;
             font-weight: 800;
             line-height: 1.3;
             color: #ffffff;
             margin-bottom: 10px;
         }
 
-        .content-block {
+        /* BLOKI TREŚCI */
+        .dabu-content-block {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 20px;
         }
 
-        .content-block p {
+        .dabu-content-block p {
             font-size: 0.95rem;
             margin-bottom: 12px;
             color: var(--text-main);
         }
 
-        .content-block p:last-child {
+        .dabu-content-block p:last-child {
             margin-bottom: 0;
         }
 
-        .section-title {
+        .dabu-section-title {
             font-size: 1.1rem;
             color: #ffffff;
             font-weight: 700;
@@ -140,24 +164,25 @@
             gap: 8px;
         }
 
-        .link-card {
+        /* KARTY LINKÓW */
+        .dabu-link-card {
             display: block;
-            background: #252530;
+            background: var(--card-hover);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 14px;
+            padding: 16px;
             margin-bottom: 12px;
             text-decoration: none;
             color: inherit;
             transition: all 0.2s ease;
         }
 
-        .link-card:active {
-            background-color: #2d2d3a;
+        .dabu-link-card:hover, .dabu-link-card:active {
             border-color: var(--accent-color);
+            transform: translateY(-2px);
         }
 
-        .link-card .region-tag {
+        .dabu-link-card .region-tag {
             font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -166,55 +191,61 @@
             display: block;
         }
 
-        .link-card .region-name {
-            font-size: 1rem;
+        .dabu-link-card .region-name {
+            font-size: 1.05rem;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
         }
 
-        .link-card .cta-button {
-            display: inline-block;
+        .dabu-link-card .cta-button {
+            display: block;
             width: 100%;
             text-align: center;
             background-color: var(--accent-color);
             color: #0d0d11;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 10px;
             border-radius: 6px;
             box-shadow: 0 2px 8px var(--glow-color);
         }
 
-        .features-list {
+        /* LISTA CECH */
+        .dabu-features-list {
             list-style: none;
+            padding-left: 0;
+            margin: 0;
         }
 
-        .features-list li {
-            position: relative;
-            padding-left: 28px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+        .dabu-features-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
             color: var(--text-main);
+            line-height: 1.5;
         }
 
-        .features-list li:last-child {
+        .dabu-features-list li:last-child {
             margin-bottom: 0;
         }
 
-        .features-list li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            top: 0;
+        .dabu-features-list .check-icon {
             color: var(--accent-color);
-            font-weight: bold;
+            font-weight: 900;
+            font-size: 1.1rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .footer {
+        /* STOPKA */
+        .dabu-footer {
             text-align: center;
-            padding: 16px 0 24px;
+            padding: 16px 0 8px;
             color: var(--text-muted);
             font-size: 0.85rem;
             border-top: 1px solid var(--border-color);
@@ -223,75 +254,82 @@
 </head>
 <body>
 
-    <!-- NAGŁÓWEK BANNEROWY Z LOGO I SYMBOLEM SVG -->
-    <div class="banner-header">
-        <div class="text-container">
-            <div class="main-logo-text">DABU-<span style="color: springgreen;">INFO</span></div>
-            <div class="main-sub-text">Terminy wystawek w Niemczech • Darmowe próbki</div>
+    <div class="dabu-page-wrapper">
+
+        <!-- NAGŁÓWEK BANNEROWY Z LOGO I SYMBOLEM SVG -->
+        <div class="dabu-banner-header">
+            <div class="text-container">
+                <div class="main-logo-text">DABU-<span style="color: springgreen;">INFO</span></div>
+                <div class="main-sub-text">Terminy wystawek w Niemczech • Darmowe próbki</div>
+            </div>
+            <div class="icon-container">
+                <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect fill="#00FF7F" height="5" rx="1" width="13" x="2" y="10" />
+                    <rect fill="#00FF7F" height="6" rx="0.5" width="2" x="1" y="13" />
+                    <rect fill="#00FF7F" height="6" rx="0.5" width="2" x="14" y="13" />
+                    <rect fill="#00FF7F" height="4" width="11" x="3" y="14" />
+                    <rect fill="#00FF7F" height="2" width="1.5" x="2.5" y="19" />
+                    <rect fill="#00FF7F" height="2" width="1.5" x="13" y="19" />
+                    <rect fill="#00FF7F" height="1" rx="0.5" width="4" x="18.5" y="19" />
+                    <rect fill="#00FF7F" height="12" width="0.6" x="20.2" y="7" />
+                    <path d="M18.5 7 L22.5 7 L21.5 3 L19.5 3 Z" fill="#00FF7F" />
+                </svg>
+            </div>
+            <div class="bottom-bar"></div>
         </div>
-        <div class="icon-container">
-            <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect fill="#00FF7F" height="5" rx="1" width="13" x="2" y="10" />
-                <rect fill="#00FF7F" height="6" rx="0.5" width="2" x="1" y="13" />
-                <rect fill="#00FF7F" height="6" rx="0.5" width="2" x="14" y="13" />
-                <rect fill="#00FF7F" height="4" width="11" x="3" y="14" />
-                <rect fill="#00FF7F" height="2" width="1.5" x="2.5" y="19" />
-                <rect fill="#00FF7F" height="2" width="1.5" x="13" y="19" />
-                <rect fill="#00FF7F" height="1" rx="0.5" width="4" x="18.5" y="19" />
-                <rect fill="#00FF7F" height="12" width="0.6" x="20.2" y="7" />
-                <path d="M18.5 7 L22.5 7 L21.5 3 L19.5 3 Z" fill="#00FF7F" />
-            </svg>
+
+        <!-- WSTĘP -->
+        <div class="badge-wrapper">
+            <span class="dabu-badge">Próbki Live • Sprawdź Terminy</span>
+            <h1 class="dabu-intro-title">🌙 Skarby z niemieckich wystawek (Sperrmüll)</h1>
         </div>
-        <div class="bottom-bar"></div>
+
+        <div class="dabu-content-block">
+            <p>Noc, cicha ulica niemieckiego miasteczka, latarka w dłoni i zaparkowany niedaleko bus. Każdy, kto wyjeżdża na <strong>Sperrmüll</strong>, zna ten dreszczyk emocji.</p>
+            <p>Jednak sukces zależy od jednego: <strong>precyzyjnych i aktualnych informacji o terminach wywozu.</strong></p>
+            <p>Przetestuj nasze darmowe próbki i sprawdź najbliższe nadchodzące terminy zbiórek w wybranym rejonie:</p>
+        </div>
+
+        <div class="dabu-section-title">🔍 Wypróbuj darmowe zestawienia:</div>
+
+        <!-- Card 1 -->
+        <a href="https://dabu-info.com/art-trier.html" class="dabu-link-card" target="_blank">
+            <span class="region-tag">Firma wywozowa</span>
+            <span class="region-name">🚛 A.R.T. Trier i okolice</span>
+            <span class="cta-button">Sprawdź najbliższy termin →</span>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="https://dabu-info.com/rp.html" class="dabu-link-card" target="_blank">
+            <span class="region-tag">Pełny powiat</span>
+            <span class="region-name">🗺️ Rheingau-Pfalz</span>
+            <span class="cta-button">Sprawdź najbliższy termin →</span>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="https://dabu-info.com/bw.html" class="dabu-link-card" target="_blank">
+            <span class="region-tag">Wybrane rejony</span>
+            <span class="region-name">📍 Baden-Württemberg</span>
+            <span class="cta-button">Sprawdź najbliższy termin →</span>
+        </a>
+
+        <!-- DLACZEGO WARTO -->
+        <div class="dabu-content-block" style="margin-top: 20px;">
+            <div class="dabu-section-title">⚡ Dlaczego warto?</div>
+            <ul class="dabu-features-list">
+                <li><span class="check-icon">✓</span> <div><strong>Pewne źródła:</strong> Dane pobierane bezpośrednio z oficjalnych systemów komunalnych.</div></li>
+                <li><span class="check-icon">✓</span> <div><strong>Oszczędność paliwa:</strong> Dokładnie wiesz, gdzie i kiedy opłaca się pojawić.</div></li>
+                <li><span class="check-icon">✓</span> <div><strong>Szybki dostęp:</strong> Wygodne sprawdzanie na smartfonie w trasie.</div></li>
+            </ul>
+        </div>
+
+        <!-- STOPKA -->
+        <footer class="dabu-footer">
+            <p>💬 Planujesz wyjazd w inne rejony Niemiec?</p>
+            <p>Napisz do nas – przygotujemy aktualny harmonogram na dowolny obszar!</p>
+        </footer>
+
     </div>
-
-    <div style="text-align: center; margin-bottom: 16px;">
-        <span class="badge">Próbki Live • Sprawdź Terminy</span>
-        <h1 class="intro-title">🌙 Skarby z niemieckich wystawek (Sperrmüll)</h1>
-    </div>
-
-    <div class="content-block">
-        <p>Noc, cicha ulica niemieckiego miasteczka, latarka w dłoni i zaparkowany niedaleko bus. Każdy, kto wyjeżdża na <strong>Sperrmüll</strong>, zna ten dreszczyk emocji.</p>
-        <p>Jednak sukces zależy od jednego: <strong>precyzyjnych i aktualnych informacji o terminach wywozu.</strong></p>
-        <p>Przetestuj nasze darmowe próbki i sprawdź najbliższe nadchodzące terminy zbiórek w wybranym rejonie:</p>
-    </div>
-
-    <div class="section-title">🔍 Wypróbuj darmowe zestawienia:</div>
-
-    <!-- Card 1 -->
-    <a href="https://dabu-info.com/art-trier.html" class="link-card" target="_blank">
-        <span class="region-tag">Firma wywozowa</span>
-        <span class="region-name">🚛 A.R.T. Trier i okolice</span>
-        <span class="cta-button">Sprawdź najbliższy termin →</span>
-    </a>
-
-    <!-- Card 2 -->
-    <a href="https://dabu-info.com/rp.html" class="link-card" target="_blank">
-        <span class="region-tag">Pełny powiat</span>
-        <span class="region-name">🗺️ Rheingau-Pfalz</span>
-        <span class="cta-button">Sprawdź najbliższy termin →</span>
-    </a>
-
-    <!-- Card 3 -->
-    <a href="https://dabu-info.com/bw.html" class="link-card" target="_blank">
-        <span class="region-tag">Wybrane rejony</span>
-        <span class="region-name">📍 Baden-Württemberg</span>
-        <span class="cta-button">Sprawdź najbliższy termin →</span>
-    </a>
-
-    <div class="content-block" style="margin-top: 20px;">
-        <div class="section-title">⚡ Dlaczego warto?</div>
-        <ul class="features-list">
-            <li><strong>Pewne źródła:</strong> Dane pobierane bezpośrednio z oficjalnych systemów komunalnych.</li>
-            <li><strong>Oszczędność paliwa:</strong> Dokładnie wiesz, gdzie i kiedy opłaca się pojawić.</li>
-            <li><strong>Szybki dostęp:</strong> Wygodne sprawdzanie na smartfonie w trasie.</li>
-        </ul>
-    </div>
-
-    <footer class="footer">
-        <p>💬 Planujesz wyjazd w inne rejony Niemiec?</p>
-        <p>Napisz do nas – przygotujemy aktualny harmonogram na dowolny obszar!</p>
-    </footer>
 
 </body>
 </html>
