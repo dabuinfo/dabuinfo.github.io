@@ -544,7 +544,7 @@
       return;
     }
     listContainer.innerHTML = elementy.map(item => `
-      <li class="odpady-modal-item" onclick="odpadyWybierzElementModala('${item.replace(/'/g, "\\'")}')">
+      <li class="odpady-modal-item" onclick="odpadyWybierzElementModala(this.querySelector('span').innerText)">
         <span>${item}</span> ➔
       </li>
     `).join('');
@@ -588,7 +588,6 @@
     if (landInputVal.toLowerCase() === zapamietanyLand.toLowerCase()) return;
     zapamietanyLand = landInputVal;
 
-    // Reset pól podrzędnych
     powiatInput.value = '';
     powiatInput.disabled = true;
     powiatInput.placeholder = "Ładowanie powiatów...";
@@ -657,8 +656,7 @@
   function odpadyObsluzMiejscowosc(ortInput) {
     const literaSelect = document.getElementById('odpadyLitera');
 
-    if (ortInput.toLowerCase() === zapamietanyOrt.toLowerCase()) return;
-    
+    zapamietanyOrt = ortInput;
     literaSelect.disabled = false;
     literaSelect.value = '';
     odpadyPobierzUlice();
