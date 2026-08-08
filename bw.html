@@ -367,8 +367,9 @@
       type="text" 
       id="odpadyPowiat" 
       class="odpady-input" 
-      placeholder="Dotknij, aby wybrać powiat..." 
+      placeholder="Ładowanie powiatów..." 
       readonly
+      disabled
       onclick="odpadyOtworzModal('powiat')"
     >
   </div>
@@ -468,11 +469,22 @@
   let zapamietanyOrt = "";
 
   document.addEventListener('DOMContentLoaded', async () => {
+    const powiatInput = document.getElementById('odpadyPowiat');
+    
     try {
       const res = await fetch(`${ODPADY_API_URL}?action=getPowiaty`);
       danePowiaty = await res.json();
+      
+      if (danePowiaty && danePowiaty.length > 0) {
+        // Odblokowanie pola po udanym pobraniu bazy
+        powiatInput.disabled = false;
+        powiatInput.placeholder = "Dotknij, aby wybrać powiat...";
+      } else {
+        powiatInput.placeholder = "Brak dostępnych powiatów";
+      }
     } catch (err) {
       console.error("Błąd podczas pobierania powiatów:", err);
+      powiatInput.placeholder = "Błąd pobierania danych";
     }
   });
 
