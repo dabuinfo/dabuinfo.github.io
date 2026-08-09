@@ -262,7 +262,7 @@
 </div>
 
 <script>
-  const ODPADY_API_URL = "https://script.google.com/macros/s/AKfycbzIix0sG7rCBkaeumRWYASfUyCmGPM7UxrjBiIGb2F676vmR9O__UDXqS3-Z17prlRO/exec";
+  const ODPADY_API_URL = "https://script.google.com/macros/s/AKfycbwtXIDPfuXY9nHsS1gDeXuXidBnl2n8csV_6-UXDgGWsk117eVHxO-uo_TMVTigb4ln/exec";
 
   let daneLandy = [], danePowiaty = [], daneMiejscowosci = [], daneUlice = [];
   let aktywnyTypModala = "";
@@ -312,7 +312,7 @@
       }
     } catch (err) {
       console.error(err);
-      statusDiv.innerHTML = `<div class="odpady-status-msg error">Błąd połączenia.</div>`;
+      statusDiv.innerHTML = `<div class="odpady-status-msg error">Błąd połączenia z serwerem.</div>`;
     }
   }
 
@@ -460,12 +460,12 @@
       const json = await res.json();
 
       // Obsługa braku limitów i płatności BLIK
-      if (json.message === "LIMIT_REACHED") {[cite: 2, 3]
+      if (json.message === "LIMIT_REACHED") {
         wynikDiv.innerHTML = `
           <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6;">
             ❌ <b>Wykorzystano darmowy limit zapytań na dziś.</b><br><br>
-            💰 Koszt kolejnego zapytania: <b>${json.cenaPln || '25 PLN'} / ${json.cenaEur || '6 EUR'}</b><br>[cite: 2, 3]
-            📱 Wyślij przelew BLIK na numer: <b style="color: #38bdf8;">${json.blik || '+48 733 035 301'}</b><br>[cite: 2, 3]
+            💰 Koszt kolejnego zapytania: <b>${json.cenaPln || '25 PLN'} / ${json.cenaEur || '6 EUR'}</b><br>
+            📱 Wyślij przelew BLIK na numer: <b style="color: #38bdf8;">${json.blik || '+48 733 035 301'}</b><br>
             🏷️ <i>W tytule przelewu wpisz swój login: <b style="color: #4ade80;">${user}</b></i><br><br>
             <small style="color: #94a3b8; display: block;">Po zaksięgowaniu płatności zostanie przypisany opłacony kredyt.</small>
           </div>`;
@@ -473,16 +473,16 @@
       }
 
       if (json.status === "error") {
-        wynikDiv.innerHTML = `<div class="odpady-status-msg error">${json.message || 'Błąd wyszukiwania.'}</div>`;[cite: 1, 2, 3]
+        wynikDiv.innerHTML = `<div class="odpady-status-msg error">${json.message || 'Błąd wyszukiwania.'}</div>`;
         return;
       }
 
-      if (json.status === "success" && json.terminy && json.terminy.length > 0) {[cite: 1, 2, 3]
+      if (json.status === "success" && json.terminy && json.terminy.length > 0) {
         let html = `
           <div class="odpady-result-box">
             <div class="odpady-result-title">📅 Najbliższe nadchodzące wywozy:</div>
         `;
-        json.terminy.forEach(item => {[cite: 1, 2, 3]
+        json.terminy.forEach(item => {
           html += `
             <div class="odpady-fraction-item">
               <span class="odpady-fraction-name">${item.rodzaj}</span>
