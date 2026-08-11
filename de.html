@@ -38,6 +38,10 @@
       }
     }
 
+    /* Ukrycie paska Google Translate */
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    body { top: 0px !important; }
+
     /* Modal logowania */
     .login-overlay {
       position: fixed;
@@ -183,6 +187,9 @@
 </head>
 <body>
 
+<!-- Kontener Tłumacza Google (niewidoczny dla użytkownika, do automatycznego sterowania) -->
+<div id="google_translate_element" style="display:none;"></div>
+
 <!-- Ekran logowania -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-card">
@@ -191,7 +198,7 @@
     
     <div class="odpady-form-group">
       <label for="loginInput">Login:</label>
-      <input type="text" id="loginInput" class="odpady-input" placeholder="Wpisz login...">
+      <input type="text" id="loginInput" class="odpady-input notranslate" placeholder="Wpisz login...">
     </div>
     
     <div class="odpady-form-group">
@@ -228,7 +235,7 @@
 <!-- Główna karta wyszukiwarki -->
 <div id="searchCard" class="odpady-search-card">
   <div class="user-bar">
-    <span>👤 Zalogowany: <strong id="userLoginText"></strong></span>
+    <span>👤 Zalogowany: <strong id="userLoginText" class="notranslate"></strong></span>
     <button class="logout-btn" onclick="wylogujKlienta()">Wyloguj</button>
   </div>
 
@@ -236,22 +243,22 @@
 
   <div class="odpady-form-group">
     <label for="odpadyLand">Land (Kraj związkowy):</label>
-    <input type="text" id="odpadyLand" class="odpady-input" placeholder="Dotknij, aby wybrać land..." readonly disabled onclick="odpadyOtworzModal('land')">
+    <input type="text" id="odpadyLand" class="odpady-input notranslate" placeholder="Dotknij, aby wybrać land..." readonly disabled onclick="odpadyOtworzModal('land')">
   </div>
 
   <div class="odpady-form-group">
     <label for="odpadyPowiat">Powiat/Miasto:</label>
-    <input type="text" id="odpadyPowiat" class="odpady-input" placeholder="Najpierw wybierz land..." readonly disabled onclick="odpadyOtworzModal('powiat')">
+    <input type="text" id="odpadyPowiat" class="odpady-input notranslate" placeholder="Najpierw wybierz land..." readonly disabled onclick="odpadyOtworzModal('powiat')">
   </div>
 
   <div class="odpady-form-group">
     <label for="odpadyOrt">Miejscowość:</label>
-    <input type="text" id="odpadyOrt" class="odpady-input" placeholder="Najpierw wybierz powiat/miasto..." readonly disabled onclick="odpadyOtworzModal('ort')">
+    <input type="text" id="odpadyOrt" class="odpady-input notranslate" placeholder="Najpierw wybierz powiat/miasto..." readonly disabled onclick="odpadyOtworzModal('ort')">
   </div>
 
   <div class="odpady-form-group">
     <label for="odpadyLitera">Pierwsza litera ulicy:</label>
-    <select id="odpadyLitera" class="odpady-select" disabled onchange="odpadyPobierzUlice()">
+    <select id="odpadyLitera" class="odpady-select notranslate" disabled onchange="odpadyPobierzUlice()">
       <option value="">-- Wszystkie / Wybierz literę --</option>
       <option value="A">A</option><option value="B">B</option><option value="C">C</option>
       <option value="D">D</option><option value="E">E</option><option value="F">F</option>
@@ -268,7 +275,7 @@
 
   <div class="odpady-form-group">
     <label for="odpadyStrasse">Ulica:</label>
-    <input type="text" id="odpadyStrasse" class="odpady-input" placeholder="Najpierw wybierz miejscowość..." readonly disabled onclick="odpadyOtworzModal('strasse')">
+    <input type="text" id="odpadyStrasse" class="odpady-input notranslate" placeholder="Najpierw wybierz miejscowość..." readonly disabled onclick="odpadyOtworzModal('strasse')">
   </div>
 
   <button class="odpady-btn" onclick="odpadySzukajTerminu()">Sprawdź termin</button>
@@ -282,8 +289,8 @@
     <div id="odpadyModalTitle" class="odpady-modal-title">Wybierz...</div>
     <button class="odpady-modal-close" onclick="odpadyZamknijModal()">✕</button>
   </div>
-  <input type="text" id="odpadyModalSearch" class="odpady-modal-search-input" placeholder="🔎 Wpisz, aby filtrować..." oninput="odpadyFiltrujModalListe()">
-  <ul id="odpadyModalList" class="odpady-modal-list"></ul>
+  <input type="text" id="odpadyModalSearch" class="odpady-modal-search-input notranslate" placeholder="🔎 Wpisz, aby filtrować..." oninput="odpadyFiltrujModalListe()">
+  <ul id="odpadyModalList" class="odpady-modal-list notranslate"></ul>
 </div>
 
 <script>
@@ -427,7 +434,7 @@
     }
     listContainer.innerHTML = elementy.map(item => `
       <li class="odpady-modal-item" onclick="odpadyWybierzElementModala(this.querySelector('span').innerText)">
-        <span>${item}</span> ➔
+        <span class="notranslate">${item}</span> ➔
       </li>
     `).join('');
   }
@@ -532,8 +539,8 @@
           <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6;">
             ❌ <b>Wykorzystano darmowy limit zapytań na dziś.</b><br><br>
             💰 Kup pakiet 5 kolejnych zapytań: <b>${json.cenaPln || '25 PLN'} / ${json.cenaEur || '6 EUR'}</b><br>
-            📱 Wyślij przelew BLIK na numer: <b style="color: #38bdf8;">${json.blik || '+48 733 035 301'}</b><br>
-            🏷️ <i>W tytule przelewu wpisz swój login: <b style="color: #4ade80;">${user}</b></i><br><br>
+            📱 Wyślij przelew BLIK na numer: <b style="color: #38bdf8;" class="notranslate">${json.blik || '+48 733 035 301'}</b><br>
+            🏷️ <i>W tytule przelewu wpisz swój login: <b style="color: #4ade80;" class="notranslate">${user}</b></i><br><br>
             <small style="color: #94a3b8; display: block;">Po zaksięgowaniu płatności zostanie przypisany opłacony kredyt.</small>
           </div>`;
         return;
@@ -552,8 +559,8 @@
         json.terminy.forEach(item => {
           html += `
             <div class="odpady-fraction-item">
-              <span class="odpady-fraction-name">${item.rodzaj}</span>
-              <span class="odpady-fraction-date">${item.data}</span>
+              <span class="odpady-fraction-name notranslate">${item.rodzaj}</span>
+              <span class="odpady-fraction-date notranslate">${item.data}</span>
             </div>
           `;
         });
@@ -568,12 +575,30 @@
     }
   }
 
-  // Opcjonalna inicjalizacja Google Translate
+  // LOGIKA TŁUMACZA GOOGLE
   function googleTranslateElementInit() {
-    new google.translate.TranslateElement({pageLanguage: 'pl'}, 'google_translate_element');
+    new google.translate.TranslateElement({
+      pageLanguage: 'pl',
+      autoDisplay: true
+    }, 'google_translate_element');
+
+    // Pobranie języka przeglądarki użytkownika
+    const userLang = (navigator.language || navigator.userLanguage).substring(0, 2);
+    
+    // Jeśli język nie jest polski, ustaw automatycznie tłumacz
+    if (userLang !== 'pl') {
+      setTimeout(() => {
+        const select = document.querySelector('.goog-te-combo');
+        if (select) {
+          select.value = userLang;
+          select.dispatchEvent(new Event('change'));
+        }
+      }, 800);
+    }
   }
 </script>
 
+<!-- Skrypt Google Translate włączany na końcu -->
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
