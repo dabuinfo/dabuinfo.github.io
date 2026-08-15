@@ -397,11 +397,64 @@
             <ul class="dabu-features-list">
                 <li><span class="check-icon">🎁</span> <div><strong>Darmowy start:</strong> Pierwsze logowanie to <strong>5 darmowych zapytań</strong> na start!</div></li>
                 <li><span class="check-icon">📅</span> <div><strong>Codzienny bonus:</strong> Każdego dnia otrzymujesz <strong>1 darmowe zapytanie</strong>.</div></li>
-                <li><span class="check-icon">💳</span> <div><strong>Wygodne doładowanie:</strong> Po wyczerpaniu darmowych tokenów – elastyczne pakiety dodatkowych zapytań.</div></li>
                 <li><span class="check-icon">✓</span> <div><strong>Oficjalne źródła:</strong> Dane pobierane bezpośrednio z niemieckich harmonogramów komunalnych.</div></li>
                 <li><span class="check-icon">✓</span> <div><strong>Polowanie na miejscu:</strong> Sprawdzaj terminy ulicę po ulicy bez dalekich i kosztownych podróży.</div></li>
                 <li><span class="check-icon">✓</span> <div><strong>Wygoda w telefonie:</strong> Pełny dostęp mobilny – sprawdzaj terminy prosto ze smartfona.</div></li>
             </ul>
+        </div>
+
+        <!-- SEKCJA DOŁADOWANIA ZAMÓWIENIA Z WYSYŁKĄ NA +48600812820 -->
+        <div class="dabu-content-block" id="order-section">
+            <div class="dabu-section-title">💳 Doładuj zapytania (SEPA / PayPal / SMS)</div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Wybierz pakiet zapytań i podaj swój e-mail, aby wygenerować unikalny kod zamówienia i przesłać go bezpośrednio do realizacji.
+            </p>
+
+            <div style="margin: 15px 0;">
+                <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Wybierz pakiet:</label>
+                <select id="token-package" style="width: 100%; padding: 11px; border-radius: 8px; background: #121216; border: 1px solid var(--border-color); color: #fff; margin-bottom: 12px; font-size: 0.95rem;">
+                    <option value="10T-5EUR">10 Zapytań — 5,00 €</option>
+                    <option value="25T-10EUR" selected>25 Zapytań — 10,00 € (Polecany)</option>
+                    <option value="60T-20EUR">60 Zapytań — 20,00 €</option>
+                </select>
+
+                <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Twój adres e-mail (do aktywacji tokenów):</label>
+                <input type="email" id="user-email" placeholder="twoj-email@domena.de" style="width: 100%; padding: 11px; border-radius: 8px; background: #121216; border: 1px solid var(--border-color); color: #fff; margin-bottom: 14px; font-size: 0.95rem;">
+
+                <button type="button" onclick="generateOrderReference()" style="width: 100%; background-color: var(--accent-color); color: #0d0d11; font-weight: 800; font-size: 1rem; padding: 12px; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s ease;">
+                    ⚡ Wygeneruj kod i zamów pakiet
+                </button>
+            </div>
+
+            <!-- BLOK Z WYNIKIEM ORAZ PRZYCISKAMI WYSYŁKI -->
+            <div id="order-result" style="display: none; background: rgba(0, 230, 118, 0.05); border: 1px dashed var(--accent-color); border-radius: 10px; padding: 16px; margin-top: 15px;">
+                <div style="font-size: 0.85rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">
+                    Twój unikalny kod zamówienia:
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                    <span id="generated-ref-code" style="font-family: monospace; font-size: 1.15rem; font-weight: 900; color: #00FF7F; letter-spacing: 1px;">20260815-PIN-TOKEN</span>
+                    <button type="button" onclick="copyRefCode()" style="background: var(--accent-color); border: none; padding: 5px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; color: #0d0d11;">Kopiuj</button>
+                </div>
+
+                <div style="font-size: 0.88rem; line-height: 1.5; color: var(--text-main); margin-bottom: 14px;">
+                    Wyślij zgłoszenie na numer <strong>+48 600 812 820</strong>, aby szybko potwierdzić zamówienie:
+                </div>
+
+                <!-- PRZYCISKI WYSYŁKI NA NUMER -->
+                <div style="display: flex; gap: 10px; flex-direction: column;">
+                    <a id="sms-btn" href="#" style="display: block; text-align: center; background-color: #2a2a35; color: #ffffff; font-weight: 700; font-size: 0.9rem; padding: 11px; border-radius: 8px; text-decoration: none; border: 1px solid var(--border-color);">
+                        💬 Wyślij kod przez SMS (+48 600 812 820)
+                    </a>
+                    <a id="wa-btn" href="#" target="_blank" style="display: block; text-align: center; background-color: #25D366; color: #072b11; font-weight: 800; font-size: 0.9rem; padding: 11px; border-radius: 8px; text-decoration: none;">
+                        🟢 Wyślij kod przez WhatsApp
+                    </a>
+                </div>
+
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; line-height: 1.4;">
+                    ℹ️ Po przesłaniu kodu otrzymasz zwrotnie dane do uregulowania zamówienia (np. PayPal / SEPA), a tokeny zostaną przypisane do podanego adresu e-mail.
+                </p>
+            </div>
         </div>
 
         <!-- STOPKA -->
@@ -414,6 +467,65 @@
         </footer>
 
     </div>
+
+    <!-- SKRYPT GENEROWANIA KODU I LINKÓW SMS / WHATSAPP -->
+    <script>
+    const TARGET_PHONE = "48600812820";
+
+    function generateOrderReference() {
+        const emailInput = document.getElementById('user-email');
+        const email = emailInput.value.trim();
+        
+        if (!email || !email.includes('@')) {
+            alert('Proszę podać poprawny adres e-mail.');
+            emailInput.focus();
+            return;
+        }
+
+        const pkgSelect = document.getElementById('token-package');
+        const pkgValue = pkgSelect.value;
+        const pkgCode = pkgValue.split('-')[0]; // np. 25T
+        const pkgText = pkgSelect.options[pkgSelect.selectedIndex].text;
+
+        // Data w formacie RRRRMMDD
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const dateStr = `${year}${month}${day}`;
+
+        // 4-cyfrowy PIN
+        const pin = Math.floor(1000 + Math.random() * 9000);
+
+        // Numer w formacie: 20260815-PIN-TOKEN
+        const orderCode = `${dateStr}-${pin}-${pkgCode}`;
+
+        // Wyświetlenie kodu
+        document.getElementById('generated-ref-code').innerText = orderCode;
+
+        // Treść wiadomości
+        const messageBody = `DABU-INFO Zamowienie: ${orderCode} | Pakiet: ${pkgText} | Email: ${email}`;
+        const encodedMsg = encodeURIComponent(messageBody);
+
+        // Link SMS (obsługa różnych platform)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const smsDelimiter = isIOS ? '&' : '?';
+        document.getElementById('sms-btn').href = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodedMsg}`;
+
+        // Link WhatsApp
+        document.getElementById('wa-btn').href = `https://wa.me/${TARGET_PHONE}?text=${encodedMsg}`;
+
+        // Pokazanie bloku wynikowego
+        document.getElementById('order-result').style.display = 'block';
+    }
+
+    function copyRefCode() {
+        const code = document.getElementById('generated-ref-code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Skopiowano kod zamówienia: ' + code);
+        });
+    }
+    </script>
 
     <!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA NA BAZIE JĘZYKA PRZEGLĄDARKI -->
     <script type="text/javascript">
