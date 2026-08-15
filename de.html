@@ -534,7 +534,7 @@
       const res = await fetch(targetUrl);
       const json = await res.json();
 
-      // Obsługa braku limitów - nowy format kodu RRRRMMDD-PIN-TOKEN i wysyłka na +48600812820
+      // Obsługa braku limitów - cennik i pakiety zsynchronizowane z baza.html
       if (json.message === "LIMIT_REACHED") {
         const now = new Date();
         const year = now.getFullYear();
@@ -542,16 +542,19 @@
         const day = String(now.getDate()).padStart(2, '0');
         const dateStr = `${year}${month}${day}`;
         const pin = Math.floor(1000 + Math.random() * 9000);
-        const orderCode = `${dateStr}-${pin}-5T`;
 
-        const cenaTekst = json.cenaEur ? `${json.cenaEur} (lub ${json.cenaPln || '25 PLN'})` : '6 EUR (lub 25 PLN)';
-        const msgText = `DABU-INFO Zamowienie: ${orderCode} | Pakiet: 5 zapytan (${cenaTekst}) | Login: ${user}`;
-        const encodedMsg = encodeURIComponent(msgText);
+        // Domyślny rekomendowany pakiet: 25 zapytań (25T) za 10 EUR
+        const orderCode25 = `${dateStr}-${pin}-25T`;
+        const orderCode10 = `${dateStr}-${pin}-10T`;
+
+        const msgText25 = `DABU-INFO Zamowienie: ${orderCode25} | Pakiet: 25 zapytan (10 EUR) | Login: ${user}`;
+        const msgText10 = `DABU-INFO Zamowienie: ${orderCode10} | Pakiet: 10 zapytan (5 EUR) | Login: ${user}`;
 
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const smsDelimiter = isIOS ? '&' : '?';
-        const smsLink = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodedMsg}`;
-        const waLink = `https://wa.me/${TARGET_PHONE}?text=${encodedMsg}`;
+        const smsLink25 = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodeURIComponent(msgText25)}`;
+        const waLink25 = `https://wa.me/${TARGET_PHONE}?text=${encodeURIComponent(msgText25)}`;
+        const waLink10 = `https://wa.me/${TARGET_PHONE}?text=${encodeURIComponent(msgText10)}`;
 
         wynikDiv.innerHTML = `
           <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6; padding: 16px;">
@@ -559,13 +562,16 @@
               ❌ Wykorzystano darmowy limit zapytań na dziś.
             </div>
             
-            <div style="margin-bottom: 8px; color: #e2e8f0;">
-              💰 Kup pakiet 5 kolejnych zapytań: <b style="color: #38bdf8;">${cenaTekst}</b>
+            <div style="margin-bottom: 10px; color: #e2e8f0; font-size: 0.9rem;">
+              💳 <b>Wybierz pakiet doładowania:</b><br>
+              • <strong>10 zapytań</strong> — 5,00 €<br>
+              • <strong>25 zapytań</strong> — 10,00 € <span style="color: #4ade80; font-weight: bold;">(Polecany)</span><br>
+              • <strong>60 zapytań</strong> — 20,00 €
             </div>
 
             <div style="background: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
-              <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Twój kod zamówienia:</div>
-              <div style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 4px 0;" class="notranslate">${orderCode}</div>
+              <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Twój kod zamówienia (pakiet 25 zapytań):</div>
+              <div style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 4px 0;" class="notranslate">${orderCode25}</div>
               <div style="font-size: 0.78rem; color: #94a3b8;">Dla konta: <b class="notranslate" style="color: #cbd5e1;">${user}</b></div>
             </div>
 
@@ -574,11 +580,14 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <a href="${smsLink}" style="display: block; text-align: center; background: #1e293b; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; border: 1px solid #475569;">
-                💬 Wyślij kod przez SMS (+48 600 812 820)
+              <a href="${waLink25}" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #052e16; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 800;">
+                🟢 Zamów 25 zapytań (10 €) przez WhatsApp
               </a>
-              <a href="${waLink}" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #052e16; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 800;">
-                🟢 Wyślij kod przez WhatsApp
+              <a href="${waLink10}" target="_blank" style="display: block; text-align: center; background: #1e293b; color: #4ade80; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; border: 1px solid #4ade80;">
+                🟢 Zamów 10 zapytań (5 €) przez WhatsApp
+              </a>
+              <a href="${smsLink25}" style="display: block; text-align: center; background: #1e293b; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 700; border: 1px solid #475569;">
+                💬 Wyślij kod SMS-em (+48 600 812 820)
               </a>
             </div>
 
