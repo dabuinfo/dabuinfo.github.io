@@ -296,6 +296,7 @@
 <script>
   // GŁÓWNY LINK API DO TWOJEJ BAZY TERMINÓW
   const ODPADY_API_URL = "https://script.google.com/macros/s/AKfycbwtXIDPfuXY9nHsS1gDeXuXidBnl2n8csV_6-UXDgGWsk117eVHxO-uo_TMVTigb4ln/exec";
+  const TARGET_PHONE = "48600812820";
 
   let daneLandy = [], danePowiaty = [], daneMiejscowosci = [], daneUlice = [];
   let aktywnyTypModala = "";
@@ -533,15 +534,57 @@
       const res = await fetch(targetUrl);
       const json = await res.json();
 
-      // Obsługa braku limitów i płatności BLIK
+      // Obsługa braku limitów - nowy format kodu RRRRMMDD-PIN-TOKEN i wysyłka na +48600812820
       if (json.message === "LIMIT_REACHED") {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const dateStr = `${year}${month}${day}`;
+        const pin = Math.floor(1000 + Math.random() * 9000);
+        const orderCode = `${dateStr}-${pin}-5T`;
+
+        const cenaTekst = json.cenaEur ? `${json.cenaEur} (lub ${json.cenaPln || '25 PLN'})` : '6 EUR (lub 25 PLN)';
+        const msgText = `DABU-INFO Zamowienie: ${orderCode} | Pakiet: 5 zapytan (${cenaTekst}) | Login: ${user}`;
+        const encodedMsg = encodeURIComponent(msgText);
+
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const smsDelimiter = isIOS ? '&' : '?';
+        const smsLink = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodedMsg}`;
+        const waLink = `https://wa.me/${TARGET_PHONE}?text=${encodedMsg}`;
+
         wynikDiv.innerHTML = `
-          <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6;">
-            ❌ <b>Wykorzystano darmowy limit zapytań na dziś.</b><br><br>
-            💰 Kup pakiet 5 kolejnych zapytań: <b>${json.cenaPln || '25 PLN'} / ${json.cenaEur || '6 EUR'}</b><br>
-            📱 Wyślij przelew BLIK na numer: <b style="color: #38bdf8;" class="notranslate">${json.blik || '+48 733 035 301'}</b><br>
-            🏷️ <i>W tytule przelewu wpisz swój login: <b style="color: #4ade80;" class="notranslate">${user}</b></i><br><br>
-            <small style="color: #94a3b8; display: block;">Po zaksięgowaniu płatności zostanie przypisany opłacony kredyt.</small>
+          <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6; padding: 16px;">
+            <div style="font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: #f87171;">
+              ❌ Wykorzystano darmowy limit zapytań na dziś.
+            </div>
+            
+            <div style="margin-bottom: 8px; color: #e2e8f0;">
+              💰 Kup pakiet 5 kolejnych zapytań: <b style="color: #38bdf8;">${cenaTekst}</b>
+            </div>
+
+            <div style="background: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
+              <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Twój kod zamówienia:</div>
+              <div style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 4px 0;" class="notranslate">${orderCode}</div>
+              <div style="font-size: 0.78rem; color: #94a3b8;">Dla konta: <b class="notranslate" style="color: #cbd5e1;">${user}</b></div>
+            </div>
+
+            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 12px;">
+              📱 Wyślij zgłoszenie na numer <b class="notranslate" style="color: #38bdf8;">+48 600 812 820</b>, aby otrzymać dane do płatności (PayPal / SEPA):
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="${smsLink}" style="display: block; text-align: center; background: #1e293b; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; border: 1px solid #475569;">
+                💬 Wyślij kod przez SMS (+48 600 812 820)
+              </a>
+              <a href="${waLink}" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #052e16; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 800;">
+                🟢 Wyślij kod przez WhatsApp
+              </a>
+            </div>
+
+            <small style="color: #94a3b8; display: block; margin-top: 10px; font-size: 0.75rem;">
+              Po uregulowaniu wpłaty pakiet tokenów zostanie natychmiast przypisany do Twojego konta.
+            </small>
           </div>`;
         return;
       }
