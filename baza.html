@@ -323,6 +323,54 @@
             margin-top: 2px;
         }
 
+        /* LICZNIK ZAPYTAŃ (+ / -) */
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #121216;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .counter-btn {
+            background: #2a2a35;
+            color: #00FF7F;
+            border: 1px solid var(--border-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s ease;
+        }
+        .counter-btn:active {
+            background: var(--accent-color);
+            color: #0c0d10;
+        }
+        .counter-qty {
+            font-weight: 900;
+            font-size: 1.2rem;
+            width: 32px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .counter-price-info {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1c40f;
+        }
+
         /* STOPKA */
         .dabu-footer {
             text-align: center;
@@ -407,17 +455,23 @@
         <div class="dabu-content-block" id="order-section">
             <div class="dabu-section-title">💳 Doładuj zapytania (SEPA / PayPal / SMS)</div>
             <p style="font-size: 0.9rem; color: var(--text-muted);">
-                Wybierz pakiet zapytań i podaj swój e-mail, aby wygenerować unikalny kod zamówienia i przesłać go bezpośrednio do realizacji.
+                Wybierz ilość zapytań (25 zł / 6€ za termin) i podaj e-mail, aby wygenerować kod zamówienia.
             </p>
 
             <div style="margin: 15px 0;">
-                <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Wybierz pakiet:</label>
-                <select id="token-package" style="width: 100%; padding: 11px; border-radius: 8px; background: #121216; border: 1px solid var(--border-color); color: #fff; margin-bottom: 12px; font-size: 0.95rem;">
-                    <option value="1T-6EUR">1 Termin (Zapytanie) — 25 PLN / 6,00 €</option>
-                    <option value="5T-30EUR">5 Terminów — 125 PLN / 30,00 €</option>
-                    <option value="10T-60EUR" selected>10 Terminów — 250 PLN / 60,00 €</option>
-                    <option value="25T-150EUR">25 Terminów — 625 PLN / 150,00 €</option>
-                </select>
+                <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Wybierz ilość zapytań / terminów:</label>
+                
+                <!-- KONTROLER LICZNIKA + / - -->
+                <div class="counter-container">
+                    <div class="counter-controls">
+                        <button type="button" class="counter-btn" onclick="changeQty(-1)">-</button>
+                        <span id="selected-qty" class="counter-qty">1</span>
+                        <button type="button" class="counter-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                    <div id="calculated-price" class="counter-price-info">
+                        25 PLN / 6,00 €
+                    </div>
+                </div>
 
                 <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Twój adres e-mail (do aktywacji tokenów):</label>
                 <input type="email" id="user-email" placeholder="twoj-email@domena.de" style="width: 100%; padding: 11px; border-radius: 8px; background: #121216; border: 1px solid var(--border-color); color: #fff; margin-bottom: 14px; font-size: 0.95rem;">
@@ -472,6 +526,19 @@
     <!-- SKRYPT GENEROWANIA KODU I LINKÓW SMS / WHATSAPP -->
     <script>
     const TARGET_PHONE = "48600812820";
+    const UNIT_PRICE_PLN = 25;
+    const UNIT_PRICE_EUR = 6;
+    let currentQty = 1;
+
+    function changeQty(delta) {
+        currentQty += delta;
+        if (currentQty < 1) currentQty = 1;
+        
+        document.getElementById('selected-qty').innerText = currentQty;
+        const totalPln = currentQty * UNIT_PRICE_PLN;
+        const totalEur = currentQty * UNIT_PRICE_EUR;
+        document.getElementById('calculated-price').innerText = `${totalPln} PLN / ${totalEur},00 €`;
+    }
 
     function generateOrderReference() {
         const emailInput = document.getElementById('user-email');
@@ -483,10 +550,9 @@
             return;
         }
 
-        const pkgSelect = document.getElementById('token-package');
-        const pkgValue = pkgSelect.value;
-        const pkgCode = pkgValue.split('-')[0];
-        const pkgText = pkgSelect.options[pkgSelect.selectedIndex].text;
+        const totalPln = currentQty * UNIT_PRICE_PLN;
+        const totalEur = currentQty * UNIT_PRICE_EUR;
+        const pkgText = `${currentQty} Terminów (${totalPln} PLN / ${totalEur} €)`;
 
         // Data w formacie RRRRMMDD
         const now = new Date();
@@ -498,8 +564,8 @@
         // 4-cyfrowy PIN
         const pin = Math.floor(1000 + Math.random() * 9000);
 
-        // Numer w formacie: RRRRMMDD-PIN-TOKEN
-        const orderCode = `${dateStr}-${pin}-${pkgCode}`;
+        // Numer w formacie: RRRRMMDD-PIN-XT (np. 20260816-4321-5T)
+        const orderCode = `${dateStr}-${pin}-${currentQty}T`;
 
         // Wyświetlenie kodu
         document.getElementById('generated-ref-code').innerText = orderCode;
