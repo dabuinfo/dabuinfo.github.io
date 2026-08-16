@@ -413,9 +413,10 @@
             <div style="margin: 15px 0;">
                 <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Wybierz pakiet:</label>
                 <select id="token-package" style="width: 100%; padding: 11px; border-radius: 8px; background: #121216; border: 1px solid var(--border-color); color: #fff; margin-bottom: 12px; font-size: 0.95rem;">
-                    <option value="10T-5EUR">10 Zapytań — 5,00 €</option>
-                    <option value="25T-10EUR" selected>25 Zapytań — 10,00 € (Polecany)</option>
-                    <option value="60T-20EUR">60 Zapytań — 20,00 €</option>
+                    <option value="1T-6EUR">1 Termin (Zapytanie) — 25 PLN / 6,00 €</option>
+                    <option value="5T-25EUR">5 Terminów — 100 PLN / 25,00 €</option>
+                    <option value="10T-45EUR" selected>10 Terminów — 180 PLN / 45,00 € (Polecany)</option>
+                    <option value="25T-100EUR">25 Terminów — 400 PLN / 100,00 €</option>
                 </select>
 
                 <label style="display:block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-main); font-weight: 600;">Twój adres e-mail (do aktywacji tokenów):</label>
@@ -433,7 +434,7 @@
                 </div>
                 
                 <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; border: 1px solid var(--border-color);">
-                    <span id="generated-ref-code" style="font-family: monospace; font-size: 1.15rem; font-weight: 900; color: #00FF7F; letter-spacing: 1px;">20260815-PIN-TOKEN</span>
+                    <span id="generated-ref-code" style="font-family: monospace; font-size: 1.15rem; font-weight: 900; color: #00FF7F; letter-spacing: 1px;">20260816-PIN-TOKEN</span>
                     <button type="button" onclick="copyRefCode()" style="background: var(--accent-color); border: none; padding: 5px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; color: #0d0d11;">Kopiuj</button>
                 </div>
 
@@ -484,7 +485,7 @@
 
         const pkgSelect = document.getElementById('token-package');
         const pkgValue = pkgSelect.value;
-        const pkgCode = pkgValue.split('-')[0]; // np. 25T
+        const pkgCode = pkgValue.split('-')[0]; // np. 10T
         const pkgText = pkgSelect.options[pkgSelect.selectedIndex].text;
 
         // Data w formacie RRRRMMDD
@@ -497,7 +498,7 @@
         // 4-cyfrowy PIN
         const pin = Math.floor(1000 + Math.random() * 9000);
 
-        // Numer w formacie: 20260815-PIN-TOKEN
+        // Numer w formacie: RRRRMMDD-PIN-TOKEN
         const orderCode = `${dateStr}-${pin}-${pkgCode}`;
 
         // Wyświetlenie kodu
