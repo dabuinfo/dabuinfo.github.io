@@ -170,6 +170,49 @@
     .odpady-status-msg.info { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
     .odpady-status-msg.warning { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
 
+    /* Licznik w sekcji limitu */
+    .counter-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0b1120;
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .counter-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .counter-btn {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #475569;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .counter-qty {
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 28px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .counter-price-info {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
     .odpady-modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #0f172a; z-index: 99999;
@@ -187,7 +230,7 @@
 </head>
 <body>
 
-<!-- Kontener Tłumacza Google (niewidoczny dla użytkownika, do automatycznego sterowania) -->
+<!-- Kontener Tłumacza Google -->
 <div id="google_translate_element" style="display:none;"></div>
 
 <!-- Ekran logowania -->
@@ -197,8 +240,8 @@
     <p>Dostęp do bazy wyłącznie dla zalogowanych użytkowników.</p>
     
     <div class="odpady-form-group">
-      <label for="loginInput">Login:</label>
-      <input type="text" id="loginInput" class="odpady-input notranslate" placeholder="Wpisz login...">
+      <label for="loginInput">Login / E-mail:</label>
+      <input type="text" id="loginInput" class="odpady-input notranslate" placeholder="Wpisz login lub e-mail...">
     </div>
     
     <div class="odpady-form-group">
@@ -226,7 +269,6 @@
          data-logo_alignment="center">
       </div>
     </div>
-    <!-- KONIEC PRZYCISKU GOOGLE -->
     
     <div id="loginStatus" style="margin-top: 14px;"></div>
   </div>
@@ -294,10 +336,12 @@
 </div>
 
 <script>
-  // GŁÓWNY LINK API DO TWOJEJ BAZY TERMINÓW
   const ODPADY_API_URL = "https://script.google.com/macros/s/AKfycbwtXIDPfuXY9nHsS1gDeXuXidBnl2n8csV_6-UXDgGWsk117eVHxO-uo_TMVTigb4ln/exec";
   const TARGET_PHONE = "48600812820";
+  const UNIT_PRICE_PLN = 25;
+  const UNIT_PRICE_EUR = 6;
 
+  let currentQty = 1;
   let daneLandy = [], danePowiaty = [], daneMiejscowosci = [], daneUlice = [];
   let aktywnyTypModala = "";
 
@@ -318,7 +362,7 @@
     }
   }
 
-  // --- TRADYCYJNE LOGOWANIE ---
+  // --- LOGOWANIE TRADYCYJNE ---
   async function zalogujKlienta() {
     const login = document.getElementById('loginInput').value.trim();
     const haslo = document.getElementById('passwordInput').value.trim();
@@ -351,7 +395,7 @@
     }
   }
 
-  // --- LOGOWANIE PRZEZ GOOGLE ---
+  // --- LOGOWANIE GOOGLE ---
   function handleGoogleResponse(response) {
     const responsePayload = decodeJwtResponse(response.credential);
     const userEmail = responsePayload.email;
@@ -396,7 +440,7 @@
     location.reload();
   }
 
-  // --- POBIERANIE LIST (GET) ---
+  // --- POBIERANIE DANYCH ---
   async function pobierzLandy() {
     const landInput = document.getElementById('odpadyLand');
     try {
@@ -513,7 +557,38 @@
     } catch (err) { console.error(err); }
   }
 
-  // --- WYSZUKIWANIE TERMINÓW ---
+  // --- OBSŁUGA LIMITÓW I CENNIKA (Zsynchronizowana z baza.html) ---
+  function zmienIloscZapytan(delta) {
+    currentQty += delta;
+    if (currentQty < 1) currentQty = 1;
+    zaktualizujWidokZamowienia();
+  }
+
+  function zaktualizujWidokZamowienia() {
+    const user = localStorage.getItem('dabu_user') || '';
+    const totalPln = currentQty * UNIT_PRICE_PLN;
+    const totalEur = currentQty * UNIT_PRICE_EUR;
+
+    document.getElementById('order-qty').innerText = currentQty;
+    document.getElementById('order-price').innerText = `${totalPln} PLN / ${totalEur},00 €`;
+
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+    const pin = Math.floor(1000 + Math.random() * 9000);
+    const orderCode = `${dateStr}-${pin}-${currentQty}T`;
+
+    document.getElementById('order-code-display').innerText = orderCode;
+
+    const pkgText = `${currentQty} Terminów (${totalPln} PLN / ${totalEur} €)`;
+    const msgText = `DABU-INFO Zamowienie: ${orderCode} | Pakiet: ${pkgText} | Login/Email: ${user}`;
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const smsDelimiter = isIOS ? '&' : '?';
+
+    document.getElementById('order-sms-link').href = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodeURIComponent(msgText)}`;
+    document.getElementById('order-wa-link').href = `https://wa.me/${TARGET_PHONE}?text=${encodeURIComponent(msgText)}`;
+  }
+
   async function odpadySzukajTerminu() {
     const user = localStorage.getItem('dabu_user');
     const land = document.getElementById('odpadyLand').value.trim();
@@ -534,44 +609,32 @@
       const res = await fetch(targetUrl);
       const json = await res.json();
 
-      // Obsługa braku limitów - cennik i pakiety zsynchronizowane z baza.html
       if (json.message === "LIMIT_REACHED") {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const dateStr = `${year}${month}${day}`;
-        const pin = Math.floor(1000 + Math.random() * 9000);
-
-        // Domyślny rekomendowany pakiet: 25 zapytań (25T) za 10 EUR
-        const orderCode25 = `${dateStr}-${pin}-25T`;
-        const orderCode10 = `${dateStr}-${pin}-10T`;
-
-        const msgText25 = `DABU-INFO Zamowienie: ${orderCode25} | Pakiet: 25 zapytan (10 EUR) | Login: ${user}`;
-        const msgText10 = `DABU-INFO Zamowienie: ${orderCode10} | Pakiet: 10 zapytan (5 EUR) | Login: ${user}`;
-
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const smsDelimiter = isIOS ? '&' : '?';
-        const smsLink25 = `sms:+${TARGET_PHONE}${smsDelimiter}body=${encodeURIComponent(msgText25)}`;
-        const waLink25 = `https://wa.me/${TARGET_PHONE}?text=${encodeURIComponent(msgText25)}`;
-        const waLink10 = `https://wa.me/${TARGET_PHONE}?text=${encodeURIComponent(msgText10)}`;
-
+        currentQty = 1;
         wynikDiv.innerHTML = `
           <div class="odpady-status-msg error" style="text-align: left; line-height: 1.6; padding: 16px;">
             <div style="font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: #f87171;">
-              ❌ Wykorzystano darmowy limit zapytań na dziś.
+              ❌ Wykorzystano darmowy limit zapytań.
             </div>
             
-            <div style="margin-bottom: 10px; color: #e2e8f0; font-size: 0.9rem;">
-              💳 <b>Wybierz pakiet doładowania:</b><br>
-              • <strong>10 zapytań</strong> — 5,00 €<br>
-              • <strong>25 zapytań</strong> — 10,00 € <span style="color: #4ade80; font-weight: bold;">(Polecany)</span><br>
-              • <strong>60 zapytań</strong> — 20,00 €
+            <div style="margin-bottom: 6px; color: #e2e8f0; font-size: 0.88rem;">
+              💳 <b>Wybierz ilość zapytań (25 zł / 6 € za termin):</b>
+            </div>
+
+            <div class="counter-container">
+              <div class="counter-controls">
+                <button type="button" class="counter-btn" onclick="zmienIloscZapytan(-1)">-</button>
+                <span id="order-qty" class="counter-qty">1</span>
+                <button type="button" class="counter-btn" onclick="zmienIloscZapytan(1)">+</button>
+              </div>
+              <div id="order-price" class="counter-price-info">
+                25 PLN / 6,00 €
+              </div>
             </div>
 
             <div style="background: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
-              <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Twój kod zamówienia (pakiet 25 zapytań):</div>
-              <div style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 4px 0;" class="notranslate">${orderCode25}</div>
+              <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Twój kod zamówienia:</div>
+              <div id="order-code-display" style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: #38bdf8; margin: 4px 0;" class="notranslate">---</div>
               <div style="font-size: 0.78rem; color: #94a3b8;">Dla konta: <b class="notranslate" style="color: #cbd5e1;">${user}</b></div>
             </div>
 
@@ -580,13 +643,10 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <a href="${waLink25}" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #052e16; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 800;">
-                🟢 Zamów 25 zapytań (10 €) przez WhatsApp
+              <a id="order-wa-link" href="#" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #052e16; padding: 11px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; font-weight: 800;">
+                🟢 Wyślij zamówienie przez WhatsApp
               </a>
-              <a href="${waLink10}" target="_blank" style="display: block; text-align: center; background: #1e293b; color: #4ade80; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; border: 1px solid #4ade80;">
-                🟢 Zamów 10 zapytań (5 €) przez WhatsApp
-              </a>
-              <a href="${smsLink25}" style="display: block; text-align: center; background: #1e293b; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 700; border: 1px solid #475569;">
+              <a id="order-sms-link" href="#" style="display: block; text-align: center; background: #1e293b; color: #fff; padding: 11px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; border: 1px solid #475569;">
                 💬 Wyślij kod SMS-em (+48 600 812 820)
               </a>
             </div>
@@ -595,6 +655,7 @@
               Po uregulowaniu wpłaty pakiet tokenów zostanie natychmiast przypisany do Twojego konta.
             </small>
           </div>`;
+        zaktualizujWidokZamowienia();
         return;
       }
 
@@ -627,17 +688,14 @@
     }
   }
 
-  // LOGIKA TŁUMACZA GOOGLE
+  // --- TŁUMACZ GOOGLE ---
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'pl',
       autoDisplay: true
     }, 'google_translate_element');
 
-    // Pobranie języka przeglądarki użytkownika
     const userLang = (navigator.language || navigator.userLanguage).substring(0, 2);
-    
-    // Jeśli język nie jest polski, ustaw automatycznie tłumacz
     if (userLang !== 'pl') {
       setTimeout(() => {
         const select = document.querySelector('.goog-te-combo');
@@ -650,7 +708,6 @@
   }
 </script>
 
-<!-- Skrypt Google Translate włączany na końcu -->
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
