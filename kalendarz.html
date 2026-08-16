@@ -129,16 +129,16 @@
         .zebra-row:hover { background-color: #2a2a2a; border-left-color: #2ecc71; }
         .zebra-row strong { color: #fff; font-size: 16px; letter-spacing: 0.5px; }
         
-        .sms-action-wrapper {
+        .contact-action-wrapper {
             margin-top: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .sms-pointer-icon {
+        .contact-pointer-icon {
             font-size: 16px;
         }
-        .sms-order-btn {
+        .direct-contact-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -152,7 +152,7 @@
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
         }
-        .sms-order-btn:hover {
+        .direct-contact-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
             background: linear-gradient(90deg, #27ae60, #2ecc71);
@@ -567,10 +567,15 @@
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/<br\s*\/?>\s*<br\s*\/?>|\n\n/i);
                                 
+                                const isPolish = (userLang === 'pl');
+                                
+                                let headerHint = isPolish 
+                                    ? `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">📱 Szybkie zamawianie rejonów</span><br><span style="color:#aaa; font-size:13px;">Kliknij „Zamów przez SMS” przy wybranym rejonie, aby wysłać gotowe zgłoszenie.</span>`
+                                    : `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 WhatsApp Order</span><br><span style="color:#aaa; font-size:13px;">Click WhatsApp button to order access for this region.</span>`;
+
                                 let htmlZebra = `
                                     <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
-                                        <span style="color:#2ecc71; font-size:14px; font-weight:bold;">📱 Szybkie zamawianie rejonów</span><br>
-                                        <span style="color:#aaa; font-size:13px;">Kliknij „Zamów przez SMS” przy wybranym rejonie, aby wysłać gotowe zgłoszenie.</span>
+                                        ${headerHint}
                                     </div>
                                 `;
                                 
@@ -586,8 +591,29 @@
                                         regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
                                     }
 
-                                    let smsBodyText = `Dzień dobry, proszę o dostęp do rejonu: ${regionName} na dzień ${dd}.${mm}.${yyyy}. Pozdrawiam.`;
-                                    let smsHref = `sms:${phone}${smsSeparator}body=${encodeURIComponent(smsBodyText)}`;
+                                    let targetHref = "";
+                                    let btnLabel = "";
+
+                                    if (isPolish) {
+                                        // POLSKI UŻYTKOWNIK -> SMS
+                                        let smsBodyText = `Dzień dobry, proszę o dostęp do rejonu: ${regionName} na dzień ${dd}.${mm}.${yyyy}. Pozdrawiam.`;
+                                        targetHref = `sms:${phone}${smsSeparator}body=${encodeURIComponent(smsBodyText)}`;
+                                        btnLabel = `📱 Zamów przez SMS`;
+                                    } else {
+                                        // ZAGRANICZNY UŻYTKOWNIK -> WHATSAPP (W TYM CZECHY CS, NIEMCY DE, EN ITD.)
+                                        let waBodyText = "";
+                                        if (userLang === 'cs') {
+                                            waBodyText = `Dobrý den, žádám o přístup k oblasti: ${regionName} na den ${dd}.${mm}.${yyyy}. S pozdravem.`;
+                                            btnLabel = `💬 Objednat přes WhatsApp`;
+                                        } else if (userLang === 'de') {
+                                            waBodyText = `Hallo, ich möchte Zugang für das Gebiet bestellen: ${regionName} für den ${dd}.${mm}.${yyyy}. Danke!`;
+                                            btnLabel = `💬 Über WhatsApp bestellen`;
+                                        } else {
+                                            waBodyText = `Hello, I would like to request access for the area: ${regionName} on ${dd}.${mm}.${yyyy}. Best regards.`;
+                                            btnLabel = `💬 Order via WhatsApp`;
+                                        }
+                                        targetHref = `https://wa.me/48600812820?text=${encodeURIComponent(waBodyText)}`;
+                                    }
 
                                     let infoPart = cleanItem
                                         .replace(/\[(.*?)\]\((.*?)\)/g, '')
@@ -597,9 +623,9 @@
                                         .trim();
 
                                     let buttonHTML = `
-                                        <div class="sms-action-wrapper">
-                                            <span class="sms-pointer-icon">👉</span>
-                                            <a class="sms-order-btn" href="${smsHref}">📱 Zamów przez SMS</a>
+                                        <div class="contact-action-wrapper">
+                                            <span class="contact-pointer-icon">👉</span>
+                                            <a class="direct-contact-btn" href="${targetHref}" target="_blank">${btnLabel}</a>
                                         </div>
                                     `;
 
