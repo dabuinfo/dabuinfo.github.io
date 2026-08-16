@@ -552,10 +552,11 @@
                     e.target.style.outline = '2px solid #007bff';
 
                     try {
+                        // ZAWSZE WYSYŁAMY 'pl' DO SERWERA, ABY ZWRÓCIŁ PEŁNĄ BAZĘ BEZ UCIĘĆ
                         const resp = await fetch(SCRIPT_URL, {
                             method: 'POST',
                             headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: userLang })
+                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: 'pl' })
                         });
                         
                         const data = await resp.json();
@@ -572,10 +573,20 @@
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                                 const smsSeparator = isIOS ? "&" : "?";
 
+                                let headerHint = "";
+                                if (isPolish) {
+                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">📱 Szybkie zamawianie rejonów</span><br><span style="color:#aaa; font-size:13px;">Kliknij przycisk przy wybranym rejonie, aby wysłać gotowe zgłoszenie.</span>`;
+                                } else if (userLang === 'de') {
+                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Schnelle Bestellung über WhatsApp</span><br><span style="color:#aaa; font-size:13px;">Klicken Sie auf den Button, um den Zugang für das jeweilige Gebiet zu bestellen.</span>`;
+                                } else if (userLang === 'cs') {
+                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Rychlá objednávka přes WhatsApp</span><br><span style="color:#aaa; font-size:13px;">Klikněte na tlačítko pro objednání přístupu k dané oblasti.</span>`;
+                                } else {
+                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Quick WhatsApp Order</span><br><span style="color:#aaa; font-size:13px;">Click the button next to the region to request access.</span>`;
+                                }
+
                                 let htmlZebra = `
                                     <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
-                                        <span style="color:#2ecc71; font-size:14px; font-weight:bold;">${isPolish ? '📱 Szybkie zamawianie rejonów' : '💬 WhatsApp Order'}</span><br>
-                                        <span style="color:#aaa; font-size:13px;">${isPolish ? 'Kliknij przycisk przy wybranym rejonie, aby wysłać gotowe zgłoszenie.' : 'Click button to order access.'}</span>
+                                        ${headerHint}
                                     </div>
                                 `;
 
