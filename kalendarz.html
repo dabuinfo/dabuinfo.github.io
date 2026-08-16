@@ -524,7 +524,7 @@
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
-                    alert("Zamawianie całych tygodni jest obecnie niedostępne. Aby wycenić dostęp, wybierz konkretny dzień z kalendarza.");
+                    alert("Zamawianie całych tygodni jest obecnie niedostępne.");
                     return;
                 }
 
@@ -565,28 +565,25 @@
                             let parsedText = rawText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                             
                             if (parsedText.includes('📍')) {
-                                let items = parsedText.split(/<br\s*\/?>\s*<br\s*\/?>|\n\n/i);
+                                let items = parsedText.split(/(?=📍)/g);
                                 
                                 const isPolish = (userLang === 'pl');
-                                
-                                let headerHint = isPolish 
-                                    ? `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">📱 Szybkie zamawianie rejonów</span><br><span style="color:#aaa; font-size:13px;">Kliknij „Zamów przez SMS” przy wybranym rejonie, aby wysłać gotowe zgłoszenie.</span>`
-                                    : `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 WhatsApp Order</span><br><span style="color:#aaa; font-size:13px;">Click WhatsApp button to order access for this region.</span>`;
-
-                                let htmlZebra = `
-                                    <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
-                                        ${headerHint}
-                                    </div>
-                                `;
-                                
                                 const phone = "+48600812820";
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                                 const smsSeparator = isIOS ? "&" : "?";
 
-                                htmlZebra += items.filter(i => i.trim() !== '').map(item => {
+                                let htmlZebra = `
+                                    <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
+                                        <span style="color:#2ecc71; font-size:14px; font-weight:bold;">${isPolish ? '📱 Szybkie zamawianie rejonów' : '💬 WhatsApp Order'}</span><br>
+                                        <span style="color:#aaa; font-size:13px;">${isPolish ? 'Kliknij przycisk przy wybranym rejonie, aby wysłać gotowe zgłoszenie.' : 'Click button to order access.'}</span>
+                                    </div>
+                                `;
+
+                                htmlZebra += items.filter(i => i.trim() !== '' && i.includes('📍')).map(item => {
                                     let cleanItem = item.trim();
+                                    
                                     let regionName = "Wybrany rejon";
-                                    let matchPin = cleanItem.match(/📍\s*<strong>(.*?)<\/strong>/i) || cleanItem.match(/📍\s*(.*?)(?:<br|\n|-|$)/i);
+                                    let matchPin = cleanItem.match(/📍\s*<strong>(.*?)<\/strong>/i) || cleanItem.match(/📍\s*([^\n\r<–-]+)/i);
                                     if (matchPin && matchPin[1]) {
                                         regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
                                     }
@@ -595,12 +592,10 @@
                                     let btnLabel = "";
 
                                     if (isPolish) {
-                                        // POLSKI UŻYTKOWNIK -> SMS
                                         let smsBodyText = `Dzień dobry, proszę o dostęp do rejonu: ${regionName} na dzień ${dd}.${mm}.${yyyy}. Pozdrawiam.`;
                                         targetHref = `sms:${phone}${smsSeparator}body=${encodeURIComponent(smsBodyText)}`;
                                         btnLabel = `📱 Zamów przez SMS`;
                                     } else {
-                                        // ZAGRANICZNY UŻYTKOWNIK -> WHATSAPP (W TYM CZECHY CS, NIEMCY DE, EN ITD.)
                                         let waBodyText = "";
                                         if (userLang === 'cs') {
                                             waBodyText = `Dobrý den, žádám o přístup k oblasti: ${regionName} na den ${dd}.${mm}.${yyyy}. S pozdravem.`;
@@ -616,10 +611,11 @@
                                     }
 
                                     let infoPart = cleanItem
-                                        .replace(/\[(.*?)\]\((.*?)\)/g, '')
-                                        .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '')
+                                        .replace(/\[(?:Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat|Zamów)\]\([^)]+\)/gi, '')
+                                        .replace(/<a\b[^>]*>(?:Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat|Zamów)<\/a>/gi, '')
                                         .replace(/👉/g, '')
                                         .replace(/(Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat)/gi, '')
+                                        .replace(/<br\s*\/?>\s*$/gi, '')
                                         .trim();
 
                                     let buttonHTML = `
