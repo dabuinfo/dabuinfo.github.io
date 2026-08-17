@@ -132,7 +132,6 @@
             flex-shrink: 0;
         }
 
-        /* Pływający pasek podsumowania na dole okna */
         .summary-cart-bar {
             position: fixed;
             bottom: 0;
@@ -300,7 +299,7 @@
 
         <div class="seo-tags-container">
             <h3>🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
-            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy.</p>
+            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec[cite: 1]. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy[cite: 1].</p>
             <div class="seo-tags">
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
@@ -463,10 +462,8 @@
 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
-        // GLOBALNY KOSZYK DLA CAŁEJ SESJI (Obsługa wielu dni)
-        const globalCart = new Map(); // key: "DATE_REGION", value: { date: "DD.MM.YYYY", region: "Nazwa" }
+        const globalCart = new Map();
 
-        // Unikalny numer zamówienia dla bieżącej sesji klienta
         const sessionNow = new Date();
         const tY = sessionNow.getFullYear();
         const tM = String(sessionNow.getMonth() + 1).padStart(2, '0');
@@ -494,7 +491,6 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Ustawienie numeru zamówienia w pasku
             const globalOrderBadge = document.getElementById('global-order-id');
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
 
@@ -616,7 +612,6 @@
             const cartTotalEl = document.getElementById('cart-total');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            // Funkcja aktualizacji globalnego paska koszyka
             function refreshCartUI() {
                 const count = globalCart.size;
                 const totalCost = count * unitRate;
@@ -628,7 +623,6 @@
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
-                    // Grupowanie rejonów według dat
                     const grouped = {};
                     globalCart.forEach(item => {
                         if (!grouped[item.date]) grouped[item.date] = [];
@@ -775,7 +769,6 @@
                                 htmlZebra += `</div>`;
                                 resultsContent.innerHTML = htmlZebra;
 
-                                // Obsługa zaznaczania i odznaczania rejonów
                                 const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
                                 checkboxes.forEach(chk => {
                                     chk.addEventListener('change', function() {
