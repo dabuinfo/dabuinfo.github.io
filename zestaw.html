@@ -457,7 +457,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (25 PLN / 6 € za aktywny dzień wywozu).</li>
+                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (25 PLN / 6 € za każdy aktywny termin wywozu).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                         <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna) – <a href="https://dabu-info.com/zamowienia.html" target="_blank" style="color: #2ecc71; font-weight: bold; text-decoration: underline;">sprawdź szczegóły zamówień &raquo;</a></li>
@@ -1244,8 +1244,10 @@
 
             if (calc.totalDays > 0) {
                 let orderWord = isPl ? 'ZAMÓW PAKIET' : 'PAKET BESTELLEN';
-                let daysWord = isPl ? 'dni' : 'Tage';
-                if (btn) btn.innerHTML = `🛒 ${orderWord} – ${calc.totalPrice} ${calc.currency} (${calc.totalDays} ${daysWord})`;
+                // Odmiana: 1 termin, 2-4 terminy, 5+ terminów / po niemiecku Termine
+                let termsWord = isPl ? (calc.totalDays === 1 ? 'termin' : (calc.totalDays >= 2 && calc.totalDays <= 4 ? 'terminy' : 'terminów')) : (calc.totalDays === 1 ? 'Termin' : 'Termine');
+                
+                if (btn) btn.innerHTML = `🛒 ${orderWord} – ${calc.totalPrice} ${calc.currency} (${calc.totalDays} ${termsWord})`;
                 if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}`;
                 if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}`;
             } else {
@@ -1424,8 +1426,8 @@
             var calc = calculateActiveDaysAndPrice();
             if (!isSpecialMode && calc.totalDays > 0) {
                 var dailyRate = isPl ? '25 PLN' : '6 €';
-                var daysUnit = isPl ? 'dni' : 'Tage';
-                body += (isPl ? "PODSUMOWANIE CENY: " : "PREISÜBERSICHT: ") + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " " + daysUnit + " x " + dailyRate + ")\n";
+                var termsUnit = isPl ? (calc.totalDays === 1 ? 'termin' : (calc.totalDays >= 2 && calc.totalDays <= 4 ? 'terminy' : 'terminów')) : (calc.totalDays === 1 ? 'Termin' : 'Termine');
+                body += (isPl ? "PODSUMOWANIE CENY: " : "PREISÜBERSICHT: ") + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " " + termsUnit + " x " + dailyRate + ")\n";
             } else {
                 body += (isPl ? "PODSUMOWANIE CENY: Wycena indywidualna\n" : "PREISÜBERSICHT: Individuelle Preisgestaltung\n");
             }
