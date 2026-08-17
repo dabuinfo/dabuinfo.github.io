@@ -569,7 +569,7 @@
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
-                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony<!-- regions -->" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geldern" /> Geldern</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
@@ -857,12 +857,14 @@
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
         const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
 
-        var htmlLang = (document.documentElement.lang || '').substr(0, 2).toLowerCase();
-        var navLang = (navigator.language || navigator.userLanguage || '').substr(0, 2).toLowerCase();
-        var userLang = htmlLang || navLang || 'de';
-     
-        const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
-        if (!supported.includes(userLang)) userLang = 'de';
+        // Pobieranie języka wyłącznie z przeglądarki użytkownika
+        function getBrowserLang() {
+            var nLang = navigator.language || (navigator.languages && navigator.languages[0]) || navigator.userLanguage || 'de';
+            var shortLang = nLang.substr(0, 2).toLowerCase();
+            return (shortLang === 'pl') ? 'pl' : 'de';
+        }
+
+        var userLang = getBrowserLang();
         
         const config = {
             'pl': { 
@@ -911,7 +913,7 @@
                     weekLabel: 'Tydzień', 
                     specialDateText: 'Przygotowanie najbliższego terminu dla', 
                     emailGreeting: 'Dzień dobry,', 
-                    emailOrderSet: 'Przesyłam specyfikację w celu przygotowania zamówienia za zestaw:', 
+                    emailOrderSet: 'Przesyłam specyfikację w celu przygotowania zamówienia za zestaw:\n', 
                     emailDates: 'DATY', 
                     emailSelectedRegions: 'WYBRANE REJONY', 
                     paymentNote: 'Preferowana płatność / Identyfikator:', 
@@ -919,7 +921,7 @@
                 } 
             },
             'de': { 
-                currency: "EUR", 
+                currency: "€", 
                 texts: { 
                     btnOrderExact: '🛒 BESTELLUNG ABSENDEN', 
                     priceInd: "Individuelle Preisgestaltung", 
@@ -964,11 +966,11 @@
                     weekLabel: 'KW', 
                     specialDateText: 'Vorbereitung des nächsten Termins für', 
                     emailGreeting: 'Hallo,', 
-                    emailOrderSet: 'Bestellspezifikation:', 
+                    emailOrderSet: 'Hier ist meine Bestellspezifikation für das Paket:\n', 
                     emailDates: 'TERMINE / WOCHEN', 
                     emailSelectedRegions: 'GEWÄHLTE GEBIETE', 
                     paymentNote: 'Zahlungsart / Kennung:', 
-                    emailWarning: 'Ich bitte um Rückmeldung.' 
+                    emailWarning: 'Ich bitte um Bestätigung und Rückmeldung.' 
                 } 
             }
         };
@@ -1160,17 +1162,17 @@
         }
 
         function calculateActiveDaysAndPrice() {
+            let currentLang = getBrowserLang();
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
             
             let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
 
-            let currencySymbol = (userLang === 'pl') ? 'PLN' : '€';
+            let currencySymbol = (currentLang === 'pl') ? 'PLN' : '€';
 
-            // Dynamiczna wycena jest liczona wyłącznie po zaznaczeniu przynajmniej jednego rejonu ORAZ tygodnia
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
-                return { totalDays: 0, totalPrice: 0, currency: currencySymbol };
+                return { totalDays: 0, totalPrice: 0, currency: currencySymbol, lang: currentLang };
             }
 
             let now = new Date();
@@ -1180,7 +1182,6 @@
             let countedDates = new Set();
             let matrixToUse = availabilityMatrix;
 
-            // Przeszukujemy wyłącznie zaznaczone przez klienta tygodnie
             selectedWeeks.forEach(w => {
                 if (!matrixToUse[w]) return;
 
@@ -1209,13 +1210,14 @@
             });
 
             let totalDays = countedDates.size;
-            let ratePerDay = (userLang === 'pl') ? 25 : 6;
+            let ratePerDay = (currentLang === 'pl') ? 25 : 6;
             let totalPrice = totalDays * ratePerDay;
 
             return {
                 totalDays: totalDays,
                 totalPrice: totalPrice,
-                currency: currencySymbol
+                currency: currencySymbol,
+                lang: currentLang
             };
         }
 
@@ -1226,25 +1228,26 @@
             
             let isSpecialMode = (document.getElementById('specialDateContainer') && document.getElementById('specialDateContainer').style.display !== 'none');
             let calc = calculateActiveDaysAndPrice();
+            let isPl = (calc.lang === 'pl');
 
             if (isSpecialMode) {
                 if (btn) btn.innerHTML = `🛒 ${t.btnSubmit || 'WYŚLIJ ZAMÓWIENIE'} (${t.priceInd || 'Indywidualna'})`;
-                if (svgPriceSub) svgPriceSub.textContent = (userLang === 'pl') ? 'na zapytanie' : 'auf Anfrage';
-                if (configPrice) configPrice.textContent = t.priceInd || ((userLang === 'pl') ? 'Wycena indywidualna' : 'Individuell');
+                if (svgPriceSub) svgPriceSub.textContent = isPl ? 'na zapytanie' : 'auf Anfrage';
+                if (configPrice) configPrice.textContent = t.priceInd || (isPl ? 'Wycena indywidualna' : 'Individuell');
                 return;
             }
 
             if (calc.totalDays > 0) {
-                let orderWord = (userLang === 'pl') ? 'ZAMÓW PAKIET' : 'PAKET BESTELLEN';
-                let daysWord = (userLang === 'pl') ? 'dni' : 'Tage';
+                let orderWord = isPl ? 'ZAMÓW PAKIET' : 'PAKET BESTELLEN';
+                let daysWord = isPl ? 'dni' : 'Tage';
                 if (btn) btn.innerHTML = `🛒 ${orderWord} – ${calc.totalPrice} ${calc.currency} (${calc.totalDays} ${daysWord})`;
                 if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}`;
                 if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}`;
             } else {
-                let defaultLabel = t.btnSubmit || ((userLang === 'pl') ? "🛒 WYŚLIJ ZAMÓWIENIE" : "🛒 BESTELLUNG ABSENDEN");
+                let defaultLabel = t.btnSubmit || (isPl ? "🛒 WYŚLIJ ZAMÓWIENIE" : "🛒 BESTELLUNG ABSENDEN");
                 if (btn) btn.innerHTML = defaultLabel;
-                if (svgPriceSub) svgPriceSub.textContent = (userLang === 'pl') ? "na zapytanie" : "auf Anfrage";
-                if (configPrice) configPrice.textContent = t.priceInd || ((userLang === 'pl') ? "Wycena indywidualna" : "Individuell");
+                if (svgPriceSub) svgPriceSub.textContent = isPl ? "na zapytanie" : "auf Anfrage";
+                if (configPrice) configPrice.textContent = t.priceInd || (isPl ? "Wycena indywidualna" : "Individuell");
             }
         }
 
@@ -1392,39 +1395,45 @@
         });
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
+            var currentLang = getBrowserLang();
+            var isPl = (currentLang === 'pl');
+            var currentConf = config[currentLang] || config['de'];
+            var localT = currentConf.texts;
+
             var wR = document.querySelectorAll('.region-chk:checked');
             var wT = document.querySelectorAll('.week-chk:checked');
             var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
             
             if (wR.length === 0 || (!isSpecialMode && wT.length === 0)) { 
-                alert((userLang === 'pl') ? "[ UWAGA ] Wybierz rejony oraz tygodnie!" : "[ ACHTUNG ] Bitte Gebiete und Wochen auswählen!"); 
+                alert(isPl ? "[ UWAGA ] Wybierz rejony oraz tygodnie!" : "[ ACHTUNG ] Bitte Gebiete und Wochen auswählen!"); 
                 return; 
             }
                     
             var selectedFormat = document.querySelector('input[name="format"]:checked');
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-            var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + (t.emailOrderSet || "Przesyłam specyfikację zamówienia zestawu:\n");
             
-            body += " KONFIGURACJA / BESTELLUNG (" + wR.length + ")\n";
+            var body = localT.emailGreeting + "\n\n";
+            body += localT.emailOrderSet;
+            body += (isPl ? "WŁASNA KONFIGURACJA (" : "EIGENE KONFIGURATION (") + wR.length + (isPl ? " rejonów)\n" : " Gebiete)\n");
             
             var calc = calculateActiveDaysAndPrice();
             if (!isSpecialMode && calc.totalDays > 0) {
-                var dailyRate = (userLang === 'pl') ? '25 PLN' : '6 €';
-                var daysUnit = (userLang === 'pl') ? 'dni' : 'Tage';
-                body += " PODSUMOWANIE CENY / PREIS: " + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " " + daysUnit + " x " + dailyRate + ")\n";
+                var dailyRate = isPl ? '25 PLN' : '6 €';
+                var daysUnit = isPl ? 'dni' : 'Tage';
+                body += (isPl ? "PODSUMOWANIE CENY: " : "PREISÜBERSICHT: ") + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " " + daysUnit + " x " + dailyRate + ")\n";
             } else {
-                body += " PODSUMOWANIE CENY / PREIS: Wycena indywidualna / Auf Anfrage\n";
+                body += (isPl ? "PODSUMOWANIE CENY: Wycena indywidualna\n" : "PREISÜBERSICHT: Individuelle Preisgestaltung\n");
             }
             
-            body += (t.paymentNote || "Preferowana płatność / Identyfikator:") + " " + nr + "\n\n";
+            body += localT.paymentNote + " " + nr + "\n\n";
 
             if(selectedFormat) {
-                body += "WYBRANY FORMAT / FORMAT: " + selectedFormat.value + "\n";
+                body += (isPl ? "WYBRANY FORMAT: " : "GEWÄHLTES FORMAT: ") + selectedFormat.value + "\n";
             }
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
             if(selectedPaymentMethod) {
-                body += "WYBRANA FORMA PŁATNOŚCI / ZAHLUNG: " + selectedPaymentMethod.value + "\n";
+                body += (isPl ? "WYBRANA FORMA PŁATNOŚCI: " : "ZAHLUNGSMETHODE: ") + selectedPaymentMethod.value + "\n";
             }
 
             var telEl = document.getElementById('klientTelefon');
@@ -1435,24 +1444,29 @@
                 body += "WYSYŁKA DRUKOWANA (PACZKOMAT): TAK\nKOD PACZKOMATU: " + paczkomat + "\n";
             }
             
-            if (document.getElementById('schrottOption')?.checked) body += "FILTR: SCHROTT (Metal i Elektro)\n";
-            if (!document.getElementById('dhlOption')?.checked && tel) body += "TELEFON: " + tel + "\n";
+            if (document.getElementById('schrottOption')?.checked) {
+                body += (isPl ? "FILTR: SCHROTT (Metal i Elektro)\n" : "FILTER: E-SCHROTT (Metall & Elektro)\n");
+            }
+            if (!document.getElementById('dhlOption')?.checked && tel) {
+                body += "TELEFON: " + tel + "\n";
+            }
             
-            body += "\n\n" + (t.emailDates || "DATY") + ":\n";
+            body += "\n\n" + localT.emailDates + ":\n";
             if (isSpecialMode) {
                 var specNames = Array.from(wR).filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase())).map(chk => chk.value).join(', ');
-                body += "- " + (t.specialDateText || "Przygotowanie terminu").replace('⏳ ', '') + " " + specNames + "\n";
+                body += "- " + (localT.specialDateText || "Terminvorbereitung").replace('⏳ ', '') + " " + specNames + "\n";
             } else { 
                 wT.forEach(w => body += "- " + w.value + "\n");
             }
             
-            body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
+            body += "\n\n" + localT.emailSelectedRegions + ":\n";
             wR.forEach(b => body += "- " + b.value + "\n");
             
-            body += "\n\n--------------------------------------------------------\n" + (t.emailWarning || "Czekam na zwrotną informację z wyceną.") + "\n";
-            const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
-            var subject = "[#" + nr + "] " + ((userLang === 'pl') ? "ZAPYTANIE O WYCENĘ / ZAMÓWIENIE" : "BESTELLUNG / ANFRAGE");
-            subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m] || m);
+            body += "\n\n--------------------------------------------------------\n" + localT.emailWarning + "\n";
+            
+            const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z','ä':'ae','ö':'oe','ü':'ue','ß':'ss'};
+            var subject = "[#" + nr + "] " + (isPl ? "ZAPYTANIE O WYCENĘ / ZAMÓWIENIE" : "BESTELLUNG / ANFRAGE");
+            subject = subject.replace(/[ąćęłńóśźżäöüß]/g, m => diacritics[m] || m);
             
             window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
         });
@@ -1546,13 +1560,16 @@
                                     if(dIdx >= 1 && dIdx <= 6) {
                                         dayName = t.d[dIdx - 1];
                                     } else if (dIdx === 0) {
-                                        dayName = userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND');
+                                        dayName = userLang === 'de' ? 'SO' : 'ND';
                                     }
                                 } else {
-                                    let d_pon = t.d_pon || "PON"; let d_wt = t.d_wt || "WT";
-                                    let d_sr = t.d_sr || "SR"; let d_czw = t.d_czw || "CZW";
-                                    let d_pt = t.d_pt || "PT"; let d_sob = t.d_sob || "SOB";
-                                    let d_nd = t.d_nd || (userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND'));
+                                    let d_pon = userLang === 'pl' ? "PON" : "MO";
+                                    let d_wt = userLang === 'pl' ? "WT" : "DI";
+                                    let d_sr = userLang === 'pl' ? "SR" : "MI";
+                                    let d_czw = userLang === 'pl' ? "CZW" : "DO";
+                                    let d_pt = userLang === 'pl' ? "PT" : "FR";
+                                    let d_sob = userLang === 'pl' ? "SOB" : "SA";
+                                    let d_nd = userLang === 'pl' ? "ND" : "SO";
                                     let dayNames = [d_nd, d_pon, d_wt, d_sr, d_czw, d_pt, d_sob];
                                     dayName = dayNames[dIdx];
                                 }
