@@ -34,9 +34,6 @@
         /*<![CDATA[*/
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
-        /* ========================================= */
-        /* STYL GŁÓWNY WIZYTÓWKI (DARK MODE)         */
-        /* ========================================= */
         html, body {
             background-color: #0a0a0a !important;
             margin: 0 !important;
@@ -70,21 +67,6 @@
             padding-bottom: 80px;
         }
 
-        /* ========================================= */
-        /* PRZYCISKI AKCJI (CTA)                     */
-        /* ========================================= */
-        .cta-btn-primary, .cta-btn-secondary {
-            display: inline-block; padding: 16px 30px; font-size: 1.1em; font-weight: bold;
-            text-transform: uppercase; border-radius: 50px; text-decoration: none; transition: all 0.3s;
-            flex: 1; min-width: 250px; max-width: 350px; cursor: pointer; text-align: center;
-        }
-
-        .cta-btn-primary { background: linear-gradient(90deg, #2ecc71, #27ae60); color: #000 !important; box-shadow: 0 5px 15px rgba(46,204,113,0.3); border: none; }
-        .cta-btn-primary:hover { transform: translateY(-3px); background: linear-gradient(90deg, #27ae60, #2ecc71); box-shadow: 0 8px 20px rgba(46,204,113,0.5); }
-
-        /* ========================================= */
-        /* STYL KALENDARZA                           */
-        /* ========================================= */
         #calendar-wrapper { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e0e0e0; width: 100%; margin: 0 auto 30px auto; background: #1a1a1a; padding: 20px; border-radius: 12px; box-sizing: border-box; border: 1px solid #333; }
         .header-main { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .calendar-icon { width: 32px; height: 32px; flex-shrink: 0; }
@@ -124,20 +106,58 @@
             scroll-margin-top: 15px;
         }
         #cal-res-title { background: #1a1a1a; color: #007bff; margin: 0; font-size: 16px; padding: 15px 20px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
-        .zebra-row { background-color: #222; padding: 15px 20px; color: #ddd; font-size: 15px; line-height: 1.5; border-left: 4px solid transparent; transition: all 0.2s ease; display: block; }
+        
+        .zebra-row { 
+            background-color: #222; 
+            padding: 15px 20px; 
+            color: #ddd; 
+            font-size: 15px; 
+            line-height: 1.5; 
+            border-left: 4px solid transparent; 
+            transition: all 0.2s ease; 
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+        }
         .zebra-row:nth-child(even) { background-color: #1a1a1a; }
         .zebra-row:hover { background-color: #2a2a2a; border-left-color: #2ecc71; }
         .zebra-row strong { color: #fff; font-size: 16px; letter-spacing: 0.5px; }
         
-        .contact-action-wrapper {
-            margin-top: 10px;
+        .region-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #2ecc71;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .summary-cart-bar {
+            position: sticky;
+            bottom: 0;
+            background: #1e1e1e;
+            border-top: 2px solid #2ecc71;
+            padding: 15px 20px;
             display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            gap: 15px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            z-index: 10;
         }
-        .contact-pointer-icon {
-            font-size: 16px;
+        .cart-info {
+            text-align: left;
+            font-size: 14px;
+            color: #ccc;
         }
+        .cart-total-badge {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
         .direct-contact-btn {
             display: inline-flex;
             align-items: center;
@@ -145,18 +165,26 @@
             background: linear-gradient(90deg, #2ecc71, #27ae60);
             color: #000 !important;
             font-weight: 700;
-            font-size: 13px;
-            padding: 6px 14px;
-            border-radius: 20px;
+            font-size: 14px;
+            padding: 10px 24px;
+            border-radius: 25px;
             text-decoration: none;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+            cursor: pointer;
+            border: none;
         }
         .direct-contact-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
             background: linear-gradient(90deg, #27ae60, #2ecc71);
-            text-decoration: none;
+        }
+        .direct-contact-btn.disabled {
+            background: #444;
+            color: #888 !important;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
         .calendar-info { margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px; border-left: 4px solid #007bff; font-size: 13px; text-align: left; }
@@ -167,12 +195,9 @@
         .calendar-info strong { color: #fff; }
 
         .seo-tags-container { margin-top: 30px; padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #262626; text-align: left; }
-        .seo-tags-container h4 { color: #666; font-size: 0.9em; margin: 0 0 10px 0; text-transform: uppercase; }
-        .seo-tags { font-size: 0.8em; color: #555; line-height: 1.8; }
+        .seo-tags-container h3 { color: #fff; font-size: 1.1em; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .seo-tags { font-size: 0.85em; color: #888; line-height: 1.8; border-top: 1px solid #262626; padding-top: 15px; }
         
-        /* ========================================= */
-        /* STYL NOWEJ STOPKI DABU-INFO               */
-        /* ========================================= */
         .dabu-footer {
             margin-top: 30px;
             padding-top: 30px;
@@ -186,10 +211,7 @@
             gap: 24px;
             justify-content: space-between;
         }
-        .dabu-footer-col {
-            flex: 1;
-            min-width: 250px;
-        }
+        .dabu-footer-col { flex: 1; min-width: 250px; }
         .dabu-footer-heading {
             color: #fff;
             font-size: 1.1em;
@@ -198,11 +220,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .dabu-footer-text {
-            color: #bbb;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
+        .dabu-footer-text { color: #bbb; line-height: 1.6; margin-bottom: 15px; }
         .dabu-footer-links, .dabu-footer-contact {
             list-style: none;
             padding: 0;
@@ -219,18 +237,14 @@
             color: #27ae60;
             text-decoration: underline;
         }
-        .dabu-footer-contact strong {
-            color: #ccc;
-        }
+        .dabu-footer-contact strong { color: #ccc; }
 
         @media (max-width: 768px) {
             #calendar-grid { grid-template-columns: 1fr; }
             .dabu-footer-container { flex-direction: column; gap: 20px; }
-            
-            #calendar-results {
-                min-height: calc(100vh - 40px);
-                box-sizing: border-box;
-            }
+            .summary-cart-bar { flex-direction: column; text-align: center; }
+            .cart-info { text-align: center; }
+            .direct-contact-btn { width: 100%; justify-content: center; }
         }
         @media (min-width: 769px) {
             .offer-wrapper { padding: 50px 45px; }
@@ -273,9 +287,9 @@
         </div>
 
         <div class="seo-tags-container">
-            <h3 style="color: #fff; font-size: 1.1em; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
-            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy.</p>
-            <div class="seo-tags" style="font-size: 0.85em; color: #888; line-height: 1.8; border-top: 1px solid #262626; padding-top: 15px;">
+            <h3>🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
+            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec[cite: 1]. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy[cite: 1].</p>
+            <div class="seo-tags">
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
                 <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates.</p>
@@ -299,6 +313,7 @@
                     <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                     <ul class="dabu-footer-contact">
                         <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                        <li>📱 BLIK (płatności): <strong>+48 733 035 301</strong></li>
                         <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
                         <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
                     </ul>
@@ -308,7 +323,7 @@
                     <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
                     <ul class="dabu-footer-contact">
                         <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
-                        <li>💳 Płatności: BLIK, PayPal</li>
+                        <li>💳 Płatności: BLIK, IBAN, PayPal</li>
                         <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
                     </ul>
                 </div>
@@ -374,7 +389,7 @@
             },
             ro: {
                 "cal-hint": "Faceți clic pe o <strong>zi</strong> pentru a genera zonele disponibile.",
-                "cal-info-h3": "ℹ️ Sărbători legale", "cal-info-p1": "<strong>Sărbătorile naționale</strong> se aplică în toată Germania.", "cal-info-p2": "<strong>Sărbătorile regionale</strong> diferă în funcție de land.", "cal-info-l1": "Boboteaza (06.01)", "cal-info-l2": "Ziua Femeii (08.03)", "cal-info-l3": "Corpus Christi (04.06)", "cal-info-l4": "Adormirea Maicii Domnului (15.08)", "cal-info-l5": "Ziua Reformei (31.10)", "cal-info-l6": "Toți Sfinții (01.11)", "cal-info-l7": "Pocăinței (18.11)"
+                "cal-info-h3": "ℹ️ Sărbători legale", "cal-info-p1": "<strong>Sărbătorile naționale</strong> se aplică în toată Germania.", "cal-info-p2": "<strong>Sărbătorile regionale</strong> diferă în funcție de land.", "cal-info-l1": "Boboteaza (06.01)", "cal-info-l2": "Ziua Femeii (08.03)", "cal-info-l3": "Corpus Christi (04.06)", "cal-info-l4": "Adormirea (15.08)", "cal-info-l5": "Ziua Reformei (31.10)", "cal-info-l6": "Toți Sfinții (01.11)", "cal-info-l7": "Pocăinței (18.11)"
             },
             tr: {
                 "cal-hint": "Mevcut bölgeleri listelemek için bir <strong>güne</strong> tıklayın.",
@@ -414,7 +429,7 @@
             'hr': { head: "Njemačka 2026", nat: "Nacionalni", reg: "Regionalni", curr: "Trenutni", wk: "Tj", m: ["Siječanj", "Veljača", "Ožujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"], d: ["Po", "Ut", "Sr", "Če", "Pe", "Su", "Ne"], h: { "0-1": "Nova godina", "0-6": "Tri kralja", "2-8": "Dan žena", "3-3": "Veliki petak", "3-6": "Uskrsni ponedjeljak", "4-1": "Praznik rada", "4-14": "Uzašašće", "4-25": "Duhovski ponedjeljak", "5-4": "Tijelovo", "7-15": "Velika Gospa", "9-3": "Dan jedinstva", "9-31": "Dan reformacije", "10-1": "Svi sveti", "10-18": "Dan pokajanja", "11-25": "Božić", "11-26": "Sveti Stjepan" } },
             'uk': { head: "Німеччина 2026", nat: "Національні", reg: "Регіональні", curr: "Поточний", wk: "Тиж", m: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"], d: ["Пн", "Вв", "Ср", "Чт", "Пт", "Сб", "Нд"], h: { "0-1": "Новий рік", "0-6": "Водохреща", "2-8": "Жіночий день", "3-3": "Страсна п'ятниця", "3-6": "Великодній понеділок", "4-1": "День праці", "4-14": "Вознесіння", "4-25": "Трійця", "5-4": "Свято Tіла і Крові", "7-15": "Успіння", "9-3": "День єдності", "9-31": "День Реформації", "10-1": "День усіх святих", "10-18": "День покаяння", "11-25": "Різдво", "11-26": "Різдво (2-й день)" } },
             'ru': { head: "Германия 2026", nat: "Национальные", reg: "Региональные", curr: "Текущий", wk: "Нед", m: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], d: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], h: { "0-1": "Новый год", "0-6": "Крещение", "2-8": "Женский день", "3-3": "Страстная пятница", "3-6": "Пасхальный понедельник", "4-1": "День труда", "4-14": "Вознесение", "4-25": "Троица", "5-4": "Пrazdnik Tela i Krovi", "7-15": "Успение", "9-3": "День единства", "9-31": "День Реформации", "10-1": "День всех святых", "10-18": "День покаяния", "11-25": "Рождество", "11-26": "Рождество (2-й день)" } },
-            'lt': { head: "Vokietija 2026", nat: "Nacionalinės", reg: "Regioninės", curr: "Dabartinis", wk: "Sav", m: ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"], d: ["Pr", "An", "Tr", "Kt", "Pn", "Še", "Se"], h: { "0-1": "Naujieji metai", "0-6": "Trys Karaliai", "2-8": "Moters diena", "3-3": "Didysis penktadienis", "3-6": "Velykų pirmadienis", "4-1": "Darbo diena", "4-14": "Šeštinės", "4-25": "Sekminės", "5-4": "Devintinės", "7-15": "Žolinė", "9-3": "Vienybės diena", "9-31": "Reformacijos diena", "10-1": "Visų Šventųjų diena", "10-18": "Atgailos diena", "11-25": "Kalėdos", "11-26": "Antroji Kalėdų diena" } },
+            'lt': { head: "Vokietija 2026", nat: "Nacionalinės", reg: "Regioninės", curr: "Dabartinis", wk: "Sav", m: ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"], d: ["Pr", "An", "Tr", "Kt", "Pn", "Še", "Se"], h: { "0-1": "Naujieji metai", "0-6": "Trys Karaliai", "2-8": "Moters diena", "3-3": "Didysis penktadienis", "3-6": "Velykų pirmadienis", "4-1": "Darbo diena", "4-14": "Šeštinės", "4-25": "Sekminės", "5-4": "Devintinės", "7-15": "Žolinė", "9-3": "Vienybės diena", "9-31": "Reformacijos diena", "10-1": "Visų Šventųjų diena", "10-18": "Atgailos diena", "11-25": "Kalėdos", "11-26": "Antroji Kalėdów diena" } },
             'lv': { head: "Vācija 2026", nat: "Nacionālie", reg: "Reģionālie", curr: "Pašreizējais", wk: "Ned", m: ["Janvāris", "Februāris", "Marts", "Aprīlis", "Maijs", "Jūnijs", "Jūlijs", "Augusts", "Septembris", "Oktobris", "Novembris", "Decembris"], d: ["Pi", "Ot", "Tr", "Ce", "Pi", "Se", "Sv"], h: { "0-1": "Jaunais gads", "0-6": "Zvaigznes diena", "2-8": "Sieviešu diena", "3-3": "Lielā piektdiena", "3-6": "Otrās Lieldienas", "4-1": "Darba svētki", "4-14": "Debesbraukšanas diena", "4-25": "Vasarsvētku pirmdiena", "5-4": "Kristus Miesas svētki", "7-15": "Marijas debesbraukšana", "9-3": "Vienības diena", "9-31": "Reformācijas diena", "10-1": "Visu Svēto diena", "10-18": "Grēku nožēlas diena", "11-25": "Ziemassvētki", "11-26": "Otrie Ziemassvētki" } }
         };
 
@@ -601,56 +616,65 @@
                                 let items = parsedText.split(/(?=📍)/g);
                                 
                                 const isPolish = (userLang === 'pl');
-                                const phone = "+48600812820";
+                                const unitRate = isPolish ? 25 : 6;
+                                const currencyUnit = isPolish ? "PLN" : "€";
+                                const phoneOrder = "+48600812820";
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                                 const smsSeparator = isIOS ? "&" : "?";
 
                                 let headerHint = "";
                                 if (isPolish) {
-                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">📱 Szybkie zamawianie rejonów</span><br><span style="color:#aaa; font-size:13px;">Kliknij przycisk przy wybranym rejonie, aby wysłać gotowe zgłoszenie.</span>`;
+                                    headerHint = `
+                                        <div style="margin-bottom:6px;">
+                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Zaznacz wybrane rejony poniżej (${unitRate} PLN / rejon)</span>
+                                        </div>
+                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
+                                            Płatność: <strong>BLIK na numer +48 733 035 301</strong> lub <strong>przelew IBAN podany w stopce strony</strong>[cite: 1].
+                                        </div>
+                                    `;
                                 } else if (userLang === 'de') {
-                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Schnelle Bestellung über WhatsApp</span><br><span style="color:#aaa; font-size:13px;">Klicken Sie auf den Button, um den Zugang für das jeweilige Gebiet zu bestellen.</span>`;
+                                    headerHint = `
+                                        <div style="margin-bottom:6px;">
+                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Wählen Sie die gewünschten Gebiete aus (${unitRate} € / Gebiet)</span>
+                                        </div>
+                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
+                                            Zahlung: BLIK (+48 733 035 301) oder IBAN/PayPal in der Fußzeile[cite: 1].
+                                        </div>
+                                    `;
                                 } else if (userLang === 'cs') {
-                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Rychlá objednávka přes WhatsApp</span><br><span style="color:#aaa; font-size:13px;">Klikněte na tlačítko pro objednání přístupu k dané oblasti.</span>`;
+                                    headerHint = `
+                                        <div style="margin-bottom:6px;">
+                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Vyberte požadované oblasti (${unitRate} € / oblast)</span>
+                                        </div>
+                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
+                                            Platba: BLIK (+48 733 035 301) nebo IBAN v zápatí[cite: 1].
+                                        </div>
+                                    `;
                                 } else {
-                                    headerHint = `<span style="color:#2ecc71; font-size:14px; font-weight:bold;">💬 Quick WhatsApp Order</span><br><span style="color:#aaa; font-size:13px;">Click the button next to the region to request access.</span>`;
+                                    headerHint = `
+                                        <div style="margin-bottom:6px;">
+                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Select desired regions (${unitRate} € / region)</span>
+                                        </div>
+                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
+                                            Payment: BLIK (+48 733 035 301) or IBAN in footer[cite: 1].
+                                        </div>
+                                    `;
                                 }
 
                                 let htmlZebra = `
-                                    <div style="padding: 12px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
+                                    <div style="padding: 14px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
                                         ${headerHint}
                                     </div>
+                                    <div id="regions-list-container">
                                 `;
 
-                                htmlZebra += items.filter(i => i.trim() !== '' && i.includes('📍')).map(item => {
+                                htmlZebra += items.filter(i => i.trim() !== '' && i.includes('📍')).map((item, idx) => {
                                     let cleanItem = item.trim();
                                     
                                     let regionName = "Wybrany rejon";
                                     let matchPin = cleanItem.match(/📍\s*<strong>(.*?)<\/strong>/i) || cleanItem.match(/📍\s*([^\n\r<–-]+)/i);
                                     if (matchPin && matchPin[1]) {
                                         regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
-                                    }
-
-                                    let targetHref = "";
-                                    let btnLabel = "";
-
-                                    if (isPolish) {
-                                        let smsBodyText = `Dzień dobry, proszę o dostęp do rejonu: ${regionName} na dzień ${dd}.${mm}.${yyyy}. Pozdrawiam.`;
-                                        targetHref = `sms:${phone}${smsSeparator}body=${encodeURIComponent(smsBodyText)}`;
-                                        btnLabel = `📱 Zamów przez SMS`;
-                                    } else {
-                                        let waBodyText = "";
-                                        if (userLang === 'cs') {
-                                            waBodyText = `Dobrý den, žádám o přístup k oblasti: ${regionName} na den ${dd}.${mm}.${yyyy}. S pozdravem.`;
-                                            btnLabel = `💬 Objednat přes WhatsApp`;
-                                        } else if (userLang === 'de') {
-                                            waBodyText = `Hallo, ich möchte Zugang für das Gebiet bestellen: ${regionName} für den ${dd}.${mm}.${yyyy}. Danke!`;
-                                            btnLabel = `💬 Über WhatsApp bestellen`;
-                                        } else {
-                                            waBodyText = `Hello, I would like to request access for the area: ${regionName} on ${dd}.${mm}.${yyyy}. Best regards.`;
-                                            btnLabel = `💬 Order via WhatsApp`;
-                                        }
-                                        targetHref = `https://wa.me/48600812820?text=${encodeURIComponent(waBodyText)}`;
                                     }
 
                                     let infoPart = cleanItem
@@ -661,20 +685,88 @@
                                         .replace(/<br\s*\/?>\s*$/gi, '')
                                         .trim();
 
-                                    let buttonHTML = `
-                                        <div class="contact-action-wrapper">
-                                            <span class="contact-pointer-icon">👉</span>
-                                            <a class="direct-contact-btn" href="${targetHref}" target="_blank">${btnLabel}</a>
-                                        </div>
-                                    `;
-
                                     return `
-                                    <div class="zebra-row" style="display:flex; align-items:flex-start; gap:15px; cursor:default;">
-                                        <div style="flex:1;">${infoPart}${buttonHTML}</div>
-                                    </div>`;
+                                    <label class="zebra-row" for="reg-chk-${idx}">
+                                        <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-region="${encodeURIComponent(regionName)}">
+                                        <div style="flex:1;">${infoPart}</div>
+                                    </label>`;
                                 }).join('');
+
+                                htmlZebra += `</div>`;
+
+                                // Pasek podsumowania z licznikiem
+                                htmlZebra += `
+                                    <div class="summary-cart-bar">
+                                        <div class="cart-info">
+                                            Wybrano: <strong id="cart-count">0</strong> rejon(ów) | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 ${currencyUnit}</span>
+                                        </div>
+                                        <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
+                                            ${isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order'}
+                                        </button>
+                                    </div>
+                                `;
                                 
                                 resultsContent.innerHTML = htmlZebra;
+
+                                // Obsługa przeliczania i sumowania koszyka
+                                const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
+                                const cartCountEl = document.getElementById('cart-count');
+                                const cartTotalEl = document.getElementById('cart-total');
+                                const submitBtn = document.getElementById('cart-submit-btn');
+
+                                function updateCart() {
+                                    let selected = [];
+                                    checkboxes.forEach(chk => {
+                                        if (chk.checked) {
+                                            selected.push(decodeURIComponent(chk.getAttribute('data-region')));
+                                        }
+                                    });
+
+                                    let count = selected.length;
+                                    let totalCost = count * unitRate;
+
+                                    cartCountEl.textContent = count;
+                                    cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
+
+                                    if (count > 0) {
+                                        submitBtn.classList.remove('disabled');
+                                        submitBtn.removeAttribute('disabled');
+
+                                        let regionListFormatted = selected.join(', ');
+
+                                        if (isPolish) {
+                                            submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
+                                            let smsBodyText = `Dzień dobry, zamawiam dostęp do rejonów (${count} szt.): ${regionListFormatted} na dzień ${dd}.${mm}.${yyyy}. Łączna kwota: ${totalCost} PLN (BLIK na 733035301 lub IBAN podany w stopce)[cite: 1]. Pozdrawiam.`;
+                                            submitBtn.onclick = function() {
+                                                window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBodyText)}`;
+                                            };
+                                        } else {
+                                            submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Ausgewählte bestellen' : (userLang === 'cs' ? 'Objednat vybrané' : 'Order selected')} (${totalCost} €)`;
+                                            
+                                            let waBodyText = "";
+                                            if (userLang === 'de') {
+                                                waBodyText = `Hallo, ich möchte Zugang für folgende Gebiete bestellen (${count} Stk.): ${regionListFormatted} für den ${dd}.${mm}.${yyyy}. Gesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal)[cite: 1]. Danke!`;
+                                            } else if (userLang === 'cs') {
+                                                waBodyText = `Dobrý den, žádám o přístup k vybraným oblastem (${count} ks): ${regionListFormatted} na den ${dd}.${mm}.${yyyy}. Celková cena: ${totalCost} € (BLIK / IBAN)[cite: 1]. S pozdravem.`;
+                                            } else {
+                                                waBodyText = `Hello, I would like to order access for (${count} areas): ${regionListFormatted} on ${dd}.${mm}.${yyyy}. Total price: ${totalCost} € (BLIK / IBAN)[cite: 1]. Best regards.`;
+                                            }
+
+                                            submitBtn.onclick = function() {
+                                                window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBodyText)}`, '_blank');
+                                            };
+                                        }
+                                    } else {
+                                        submitBtn.classList.add('disabled');
+                                        submitBtn.setAttribute('disabled', 'true');
+                                        submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order';
+                                        submitBtn.onclick = null;
+                                    }
+                                }
+
+                                checkboxes.forEach(chk => {
+                                    chk.addEventListener('change', updateCart);
+                                });
 
                             } else {
                                 resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
