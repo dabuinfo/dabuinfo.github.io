@@ -569,7 +569,7 @@
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Freudenstadt" /> Freudenstadt</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fulda" /> Fulda</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Fürth" /> Fürth</label>
-                        <label class="region-label"><input class="region-chk" name="regiony<!-- regions -->" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
+                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geilenkirchen" /> Geilenkirchen</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geldern" /> Geldern</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
@@ -738,7 +738,7 @@
                         <label class="region-label">
                             <input type="radio" name="format" value="PDF (Smartfon - Dark Mode)" /> 
                             <span id="formatPdfSmartRadio">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF na smartfona (Dark Mode + aktywne linki do map)
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF na smartfona (Dark Mode + aktywne linki do map Google)
                             </span>
                         </label>
                     </div>
@@ -857,7 +857,6 @@
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
         const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
 
-        // Pobieranie języka wyłącznie z przeglądarki użytkownika
         function getBrowserLang() {
             var nLang = navigator.language || (navigator.languages && navigator.languages[0]) || navigator.userLanguage || 'de';
             var shortLang = nLang.substr(0, 2).toLowerCase();
@@ -1179,37 +1178,43 @@
             let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
             let currentWeekNum = getWeekNumber(now).toString();
 
-            let countedDates = new Set();
+            let totalDays = 0;
             let matrixToUse = availabilityMatrix;
 
-            selectedWeeks.forEach(w => {
-                if (!matrixToUse[w]) return;
+            // Przechodzimy po każdym wybranym rejonie osobno i sumujemy jego unikalne dni
+            selectedRegions.forEach(rName => {
+                let regionDates = new Set();
 
-                matrixToUse[w].forEach(item => {
-                    let rName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
-                    if (!selectedRegions.includes(rName)) return;
+                selectedWeeks.forEach(w => {
+                    if (!matrixToUse[w]) return;
 
-                    let dStr = typeof item === 'string' ? "" : (item.daty || "");
-                    if (!dStr || dStr === "-") return;
+                    matrixToUse[w].forEach(item => {
+                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                        if (itemName !== rName) return;
 
-                    let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                    datyArr.forEach(d => {
-                        let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                        if (match) {
-                            let dObj = new Date(match[1], match[2] - 1, match[3]);
-                            if (w === currentWeekNum) {
-                                if (dObj >= tomorrow) {
-                                    countedDates.add(match[0]);
+                        let dStr = typeof item === 'string' ? "" : (item.daty || "");
+                        if (!dStr || dStr === "-") return;
+
+                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                        datyArr.forEach(d => {
+                            let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                            if (match) {
+                                let dObj = new Date(match[1], match[2] - 1, match[3]);
+                                if (w === currentWeekNum) {
+                                    if (dObj >= tomorrow) {
+                                        regionDates.add(match[0]);
+                                    }
+                                } else {
+                                    regionDates.add(match[0]);
                                 }
-                            } else {
-                                countedDates.add(match[0]);
                             }
-                        }
+                        });
                     });
                 });
+
+                totalDays += regionDates.size;
             });
 
-            let totalDays = countedDates.size;
             let ratePerDay = (currentLang === 'pl') ? 25 : 6;
             let totalPrice = totalDays * ratePerDay;
 
