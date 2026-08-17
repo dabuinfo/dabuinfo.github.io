@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zestaw Tygodniowy - Skonfiguruj swój pakiet</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -36,102 +37,6 @@
         .main-content {
             flex-grow: 1;
             width: 100%;
-        }
-
-        /* UKRYCIE ZAWARTOŚCI STRONY NA CZAS ŁADOWANIA */
-        #pageWrapper {
-            opacity: 0;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
-
-        #pageWrapper.loaded {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* PEŁNOEKRANOWA NAKŁADKA POWITALNA (SPLASH SCREEN) */
-        #splashOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1b2838 0%, #0a0e14 100%);
-            z-index: 999999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-
-        #splashOverlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .splash-card {
-            width: 90%;
-            max-width: 480px;
-            background: rgba(18, 18, 18, 0.85);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 0 35px rgba(46, 204, 113, 0.35), 0 20px 50px rgba(0,0,0,0.9);
-            border: 1px solid rgba(46, 204, 113, 0.5);
-            backdrop-filter: blur(12px);
-            text-align: center;
-            animation: floatCard 4s ease-in-out infinite;
-        }
-
-        @keyframes floatCard {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .splash-video-box {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: #000;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        .splash-video-box img, .splash-video-box video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .splash-title {
-            color: #2ecc71;
-            font-size: 1.5em;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin: 18px 0 8px 0;
-            text-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .splash-desc {
-            color: #bbb;
-            font-size: 0.95em;
-            line-height: 1.5;
-            margin: 0 0 15px 0;
-        }
-
-        .splash-spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(46, 204, 113, 0.2);
-            border-top: 3px solid #2ecc71;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto;
         }
 
         input, textarea, select {
@@ -172,9 +77,18 @@
         .benefit-list li { margin-bottom: 10px; padding-left: 25px !important; position: relative; font-size: 0.95em; line-height: 1.4; }
         .benefit-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #4ca1af; font-weight: bold; }
 
+        /* BONUS BOX & ANIMACJE */
+        .bonus-box { margin-top: 20px;
+            background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 12px; border-radius: 8px; text-align: center; font-size: 0.95em; color: #2ecc71;
+            animation: pulse 2s infinite; box-sizing: border-box; }
+        .bonus-box b { color: #fff; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+            } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+            } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes opacityPulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-        /* KAFELEK STRATEGII */
+        /* NOWY KREATOR - POJEDYNCZY KAFELEK */
         .strategy-container { display: flex;
             flex-wrap: wrap; gap: 15px; margin-bottom: 30px; justify-content: center; align-items: stretch; width: 100%; }
         .strategy-card { flex: 1 1 100%; max-width: 800px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;
@@ -250,7 +164,25 @@
         
         .hidden { display: none !important; }
 
-        /* RWD */
+        /* ANIMACJA LOADER-PUPPET */
+        .spider-loader-card {
+            width: 100%;
+            max-width: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ecc71;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+            background: #000;
+        }
+
+        .spider-loader-card img, .spider-loader-card video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* RWD DLA TELEFONÓW */
         @media (max-width: 768px) {
             .harmonogram-wrapper { font-size: 1.05em; }
             .region-label { padding: 12px 5px; font-size: 1.1em; }
@@ -259,6 +191,7 @@
             .strategy-card { padding: 15px; } 
         }
 
+        /* RWD DLA DUŻYCH EKRANÓW */
         @media (min-width: 1024px) {
             .harmonogram-wrapper { font-size: 1.15em; }
             .strategy-title { font-size: 1.5em; }
@@ -269,7 +202,7 @@
             .client-input { font-size: 1.1em; padding: 15px; }
         }
 
-        /* STOPKA */
+        /* STYLE STOPKI */
         .dabu-footer {
             background-color: #121212;
             border-top: 1px solid #333;
@@ -375,76 +308,58 @@
 </head>
 <body>
 
-    <!-- PEŁNOEKRANOWA NAKŁADKA WCZYTYWANIA Z ANIMACJĄ (SPLASH SCREEN) -->
-    <div id="splashOverlay">
-        <div class="splash-card">
-            <div class="splash-video-box">
-                <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                
-                <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: auto;">
-                    <source src="1000064135.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="splash-title" id="loaderTitle">Synchronizacja Danych</div>
-            <div class="splash-desc" id="mainLoaderText">Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje konfiguracyjne i terminy.</div>
-            <div class="splash-spinner"></div>
+    <div class="main-content">
+        <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
+              <defs>
+                <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1e3c72" />
+                  <stop offset="100%" stop-color="#2a5298" />
+                </linearGradient>
+                <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+              
+              <rect width="800" height="400" rx="15" fill="url(#bg)" />
+              <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
+              <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
+              
+              <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
+              <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
+              <g transform="translate(150, 180)">
+                <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
+                <circle cx="0" cy="-5" r="8" fill="#fff" />
+              </g>
+              <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
+              <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle" id="svgPriceSub">na zapytanie</text>
+              
+              <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
+              
+              <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
+              <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
+              <g transform="translate(430, 180)">
+                <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
+                <circle cx="0" cy="-5" r="8" fill="#fff" />
+                <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
+                <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
+              </g>
+              <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNE</text>
+              <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">opcje</text>
+              
+              <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
+              
+              <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
+              <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
+              <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
+              <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
+              <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
+              
+              <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
+              <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
+            </svg>
         </div>
     </div>
-
-    <!-- GŁÓWNA ZAWARTOŚĆ STRONY (UKRYTA DO MOMENTU POBRANIA DANYCH) -->
-    <div id="pageWrapper">
-        <div class="main-content">
-            <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
-                  <defs>
-                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#1e3c72" />
-                      <stop offset="100%" stop-color="#2a5298" />
-                    </linearGradient>
-                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-                      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
-                    </filter>
-                  </defs>
-                  
-                  <rect width="800" height="400" rx="15" fill="url(#bg)" />
-                  <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
-                  <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
-                  
-                  <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
-                  <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
-                  <g transform="translate(150, 180)">
-                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
-                    <circle cx="0" cy="-5" r="8" fill="#fff" />
-                  </g>
-                  <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
-                  <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle" id="svgPriceSub">na zapytanie</text>
-                  
-                  <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
-                  
-                  <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
-                  <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
-                  <g transform="translate(430, 180)">
-                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
-                    <circle cx="0" cy="-5" r="8" fill="#fff" />
-                    <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
-                    <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
-                  </g>
-                  <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNE</text>
-                  <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">opcje</text>
-                  
-                  <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
-                  
-                  <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
-                  <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
-                  <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
-                  <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
-                  <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
-                  
-                  <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
-                  <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
-                </svg>
-            </div>
-        </div>
 
         <div class="harmonogram-wrapper">
             <h2 id="headerChoose">Skonfiguruj swój pakiet</h2>
@@ -457,10 +372,10 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena indywidualna</b> w zależności od wybranych opcji.</li>
+                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>automatyczna wycena</b> w zależności od liczby dostępnych dni wywozu (od jutra do końca tygodnia).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
-                        <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna) – <a href="https://dabu-info.com/zamowienia.html" target="_blank" style="color: #2ecc71; font-weight: bold; text-decoration: underline;">sprawdź szczegóły zamówień &raquo;</a></li>
+                        <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna).</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
@@ -493,10 +408,29 @@
                             </ul>
                         </div>
                     </div>
+
+                    <div class="bonus-box" id="bonusInfo" style="margin-top: 5px;">
+                        🎁 <b>Gratis:</b> Do zamówienia otrzymasz <b>Poradnik Wystawkowicza</b>!
+                    </div>
                 </div>
             </div>
 
-            <div class="form-wrapper" id="formContent">
+            <!-- LOADER Z ANIMACJĄ PAJĄKA -->
+            <div class="form-wrapper" id="inlineLoader" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 420px; transition: opacity 0.4s ease;">
+                <div class="spider-loader-card">
+                    <img src="loader.gif" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('loaderFallbackVideo').style.display='block';">
+                    
+                    <video id="loaderFallbackVideo" autoplay loop muted playsinline style="display: none; width: 100%; height: auto;">
+                        <source src="1000064135.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <h2 id="loaderTitle" style="color: #2ecc71; font-size: 22px; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 1px;">Synchronizacja Danych</h2>
+                <p id="mainLoaderText" style="color: #bbb; font-size: 15px; max-width: 480px; line-height: 1.5; margin: 0 auto 15px auto;"></p>
+                <div style="width: 36px; height: 36px; border: 3px solid rgba(46, 204, 113, 0.15); border-top: 3px solid #2ecc71; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+
+            <div class="form-wrapper" id="formContent" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
                 
                 <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
 
@@ -703,21 +637,21 @@
                     <div class="regions-scroll-box" id="weeksContainer"></div>
                     
                     <div id="freePreviewSection" style="margin-top: 25px; margin-bottom: 20px; display: none;">
-                        <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
-                        <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
-                            <option value="">-- Wybierz tydzień do podglądu --</option>
-                        </select>
-                        
-                        <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
-                            <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
-                                <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
-                                <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
-                            </div>
-                            <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
-                                <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
-                            </div>
+                    <div class="form-header" id="freePreviewTitle" style="color: #3498db; margin-bottom: 10px; padding-top: 0; border: none;">👀 Darmowy podgląd terminów:</div>
+                    <select id="freePreviewWeek" class="client-input" style="text-align: center; border-color: #3498db; font-weight: bold; background: rgba(255,255,255,0.9); color: #222; cursor: pointer;">
+                        <option value="">-- Wybierz tydzień do podglądu --</option>
+                    </select>
+                    
+                    <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.4); overflow: hidden;">
+                        <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; z-index: 2;">
+                            <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
+                            <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
+                        </div>
+                        <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                            <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em;"></table>
                         </div>
                     </div>
+                </div>
 
                     <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
                         <span id="specialDateText">Przygotowanie najbliższego terminu</span>
@@ -758,8 +692,11 @@
 
                 <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
+                    <div class="option-box" id="guideBoxContainer">
+                        <label class="region-label"><input id="guideOption" type="checkbox" /> <span id="guideLabel">🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b></span></label>
+                    </div>
                      <div class="option-box" id="dhlBox">
-                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty)</span></label>
+                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)</span></label>
                          <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
                     </div>
                     <div class="option-box" id="schrottBox">
@@ -786,55 +723,26 @@
                 <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
 
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
+
+                <div class="extra-services-box" style="display: none;">
+                    <p id="extraInfoText" style="font-size: 0.95em; margin: 0px 0px 10px;">
+                        <b>Dodatkowo:</b> Adresy serwisów rowerów, kosiarek, myjek, opon, autoszrotów itd. w wybranym rejonie, kraju.
+                    </p>
+                    <a class="extra-services-link" href="#" id="extraInfoBtn">Napisz do nas</a>
+                </div>
             </div>
         </div>
-
-        <footer class="dabu-footer">
-            <div class="dabu-footer-container">
-                <div class="dabu-footer-col">
-                    <h4 class="dabu-footer-heading">dabu-info</h4>
-                    <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
-                    <ul class="dabu-footer-links">
-                        <li><a href="https://dabu-info.com/">Strona Główna</a></li>
-                        <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
-                        <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
-                    </ul>
-                </div>
-
-                <div class="dabu-footer-col">
-                    <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
-                    <ul class="dabu-footer-contact">
-                        <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
-                        <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
-                        <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
-                    </ul>
-                </div>
-
-                <div class="dabu-footer-col">
-                    <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
-                    <ul class="dabu-footer-contact">
-                        <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
-                        <li>💳 Płatności: BLIK, PayPal</li>
-                        <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="dabu-footer-bottom">
-                <p>&copy; 2026 <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
-            </div>
-        </footer>
     </div>
 
 <script>
 //<![CDATA[
     document.addEventListener("DOMContentLoaded", function() {
     
-        const allRegions = document.querySelectorAll('#regionsCheckboxes .region-chk');
-        const countDisplay = document.getElementById('dynamicRegionCount');
-        if (countDisplay && allRegions.length > 0) {
-            countDisplay.textContent = allRegions.length;
-        }
+    const allRegions = document.querySelectorAll('#regionsCheckboxes .region-chk');
+    const countDisplay = document.getElementById('dynamicRegionCount');
+    if (countDisplay && allRegions.length > 0) {
+        countDisplay.textContent = allRegions.length;
+    }
         
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
  
@@ -845,7 +753,7 @@
             'geilenkirchen', 'geldern', 'gelnhausen', 'glashütten', 'goch', 'grävenwiesbach', 
             'grefrath', 'gräfelfing', 'grevenbroich', 'gründau', 'haan', 'hasselroth', 'hattersheim am main', 'heiligenhaus', 'heinsberg', 'hellenthal', 
             'hückelhoven', 'hofheim am taunus', 'holzminden', 'iserlohn', 'issum', 'jossgrund', 'jüchen', 'jülich', 'kaarst', 'kall', 'kelkheim (taunus)', 
-            'kerken', 'kevelaer', 'korschenbroich', 'königstein (taunus)', 'köln', 'kirchheim', 'kronberg', 'kronberg im taunus', 'linsengericht', 
+            'kerken', 'kevelaer', 'korschenbroich', 'königstein (taunus)', 'köln', 'kirchheim', 'kronberg', 'kronberg im taunus', 'linsengericht', 'lübeck', 
             'mechernich', 'meerbusch', 'menden', 'merzenich', 'monheim am rhein', 'nachrodt-wiblingwerde', 'nettetal', 
             'neu-anspach', 'neukirchen-vluyn', 'neuss', 'nidderau', 'plettenberg', 'ratingen', 'rees', 'rheurdt', 'rheinisch-bergischer', 
             'rodenbach', 'rommerskirchen', 'ronneburg', 'schleiden', 'schlüchtern', 'schmitten', 
@@ -864,7 +772,7 @@
         if (!supported.includes(userLang)) userLang = 'de';
         
         const config = {
-            'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena indywidualna", loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty)', btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację w celu przygotowania zamówienia za zestaw:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Preferowana płatność / Identyfikator:', emailWarning: 'Czekam na zwrotną informację z wyceną.' } }
+            'pl': { currency: "PLN", texts: { btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena indywidualna", loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje konfiguracyjne i terminy.', loadingData: "⏳ Pobieranie dostępnych opcji...", bonus: "🎁 <b>Gratis:</b> Po zamówieniu otrzymasz <b>Poradnik Wystawkowicza</b>!", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>', headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie', formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!', formatJpgTitle: '🖼️ Wersja JPG (zdjęcia):', formatJpgLi1: '<strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.', formatJpgLi2: '<strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.', formatJpgRadio: '🖼️ Wersja JPG (paczka zdjęć gotowych na telefon/tablet)', formatOnlineTitle: '🌐 Wersja Online:', formatOnlineLi1: '<strong>Wygoda:</strong> Logowanie w przeglądarce przez zintegrowany Panel Klienta.', formatOnlineLi2: '<strong>Aktualizacje:</strong> Terminy są synchronizowane na żywo z naszą bazą.', formatOnlineRadio: '🌐 Wersja Online (Dostęp przez interaktywny Panel Klienta)', searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW', step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', previewTitle: '👀 Darmowy podgląd terminów:', previewDefault: '-- Wybierz tydzień do podglądu --', btnUnselectAll: '[ Odznacz wszystko / Clear ]', step3Header: '📄 3. Wybierz format:', formatPdfPrintRadio: iconPdf + ' Wersja PDF do druku (jasne tło, oszczędność tuszu)', formatPdfSmartRadio: iconPdf + ' Wersja PDF na smartfona (Dark Mode, aktywne linki do map Google)', step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:', payIban: '🏦 IBAN / Przelew bankowy', payPaypal: '🅿️ PayPal', payBlik: '📱 BLIK na Telefon', payOther: '❓ Inne', guideLabel: '🎁 Chcę darmowy <b>Poradnik Wystawkowicza</b>', schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty InPost - tylko Polska)', btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla', emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację w celu przygotowania zamówienia za zestaw:', emailDates: 'DATY', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Preferowana płatność / Identyfikator:', emailWarning: 'Czekam na zwrotną informację z wyceną.' } }
         };
 
         if (!config[userLang]) userLang = 'pl'; 
@@ -884,6 +792,7 @@
         setHtml('mainLoaderText', t.loaderDesc);
         if(t.loadingData && document.getElementById('loadingDataText')) document.getElementById('loadingDataText').innerHTML = t.loadingData;
         
+        setHtml('bonusInfo', t.bonus);
         setHtml('infoDesc', t.infoDesc);
         
         setText('headerChoose', t.headerChoose);
@@ -926,6 +835,7 @@
         if(t.payBlik) setHtml('payBlik', t.payBlik);
         setHtml('payOther', t.payOther);
         
+        if(t.guideLabel) setHtml('guideLabel', t.guideLabel);
         if(t.schrottLabel) setHtml('schrottLabel', t.schrottLabel);
         if(t.dhlLabel) setHtml('dhlLabel', t.dhlLabel);
         setText('btnSubmit', t.btnSubmit);
@@ -973,7 +883,7 @@
             var dzisiaj = d.getFullYear() + month + day;
             var dynamicznyToken = "Dabu" + dzisiaj;
 
-            var fallbackVideo = document.getElementById('splashVideoFallback');
+            var fallbackVideo = document.getElementById('loaderFallbackVideo');
             if (fallbackVideo && fallbackVideo.style.display !== 'none') {
                 fallbackVideo.play().catch(function() {});
             }
@@ -1014,17 +924,22 @@
                         setTimeout(() => { loaderOverlay.style.display = 'none'; }, 300); 
                     }
                     
-                    let splashOverlay = document.getElementById('splashOverlay');
-                    let pageWrapper = document.getElementById('pageWrapper');
+                    let inlineLoader = document.getElementById('inlineLoader');
+                    let formContent = document.getElementById('formContent');
                     
-                    if(splashOverlay) { 
-                        splashOverlay.classList.add('hidden');
-                        if (fallbackVideo) fallbackVideo.pause();
-                    }
+                    if(inlineLoader) { 
+                        inlineLoader.style.opacity = '0';
+                        setTimeout(() => { 
+                            if (fallbackVideo) fallbackVideo.pause();
 
-                    if(pageWrapper) {
-                        pageWrapper.classList.add('loaded');
-                        updatePriceDisplay();
+                            inlineLoader.style.display = 'none'; 
+                            if(formContent) {
+                                formContent.style.display = 'block';
+                                void formContent.offsetWidth;
+                                formContent.style.opacity = '1';
+                                updatePriceDisplay();
+                            }
+                        }, 400);
                     }
                 });
         }
@@ -1054,18 +969,137 @@
             });
         }
 
+        // --- ZLICZANIE TERMINÓW OD JUTRA DO KOŃCA TYGODNIA ---
+        function getDaysCountForRegion(weekNum, regionName) {
+            if (!availabilityMatrix[weekNum]) return 0;
+            
+            let rObj = availabilityMatrix[weekNum].find(item => {
+                let n = typeof item === 'string' ? item : item.nazwa;
+                return n && n.trim().toLowerCase() === regionName.trim().toLowerCase();
+            });
+
+            if (!rObj || typeof rObj === 'string' || !rObj.daty || rObj.daty === '-') {
+                return 0;
+            }
+
+            let datyArr = rObj.daty.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+            let uniqueDays = new Set();
+            
+            let now = new Date();
+            let currentWeek = getWeekNumber(now).toString();
+            let isCurrentWeek = (weekNum.toString() === currentWeek);
+
+            // Definicja jutra (początek dnia)
+            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+
+            // Definicja końca bieżącego tygodnia (niedziela 23:59:59)
+            let dayOfWeek = now.getDay(); // 0 = niedziela
+            let daysUntilSunday = (dayOfWeek === 0) ? 0 : (7 - dayOfWeek);
+            let endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilSunday, 23, 59, 59);
+
+            datyArr.forEach(d => {
+                let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                if (match) {
+                    let dObj = new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]), 12, 0, 0);
+                    
+                    if (isCurrentWeek) {
+                        // Dla obecnego tygodnia: TYLKO od jutra do końca tego tygodnia (niedziela)
+                        if (dObj >= tomorrow && dObj <= endOfWeek) {
+                            uniqueDays.add(match[1]);
+                        }
+                    } else {
+                        // Dla przyszłych tygodni zliczamy wszystkie dni
+                        uniqueDays.add(match[1]);
+                    }
+                }
+            });
+
+            return uniqueDays.size;
+        }
+
+        function calculateOrderPricing() {
+            let isSpecialMode = (document.getElementById('specialDateContainer') && document.getElementById('specialDateContainer').style.display !== 'none');
+            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
+
+            if (selectedRegionNodes.length === 0 || (!isSpecialMode && selectedWeekNodes.length === 0)) {
+                return { totalDays: 0, totalPrice: 0, isSpecial: isSpecialMode, details: [] };
+            }
+
+            if (isSpecialMode) {
+                return { totalDays: 0, totalPrice: null, isSpecial: true, details: [] };
+            }
+
+            const ratePerDay = (userLang === 'pl') ? 25 : 6;
+            const currencyUnit = (userLang === 'pl') ? 'PLN' : '€';
+            
+            let totalDays = 0;
+            let details = [];
+
+            selectedWeekNodes.forEach(wNode => {
+                let wNum = wNode.getAttribute('data-week');
+                selectedRegionNodes.forEach(rNode => {
+                    let rName = rNode.value;
+                    let days = getDaysCountForRegion(wNum, rName);
+                    totalDays += days;
+                    if (days > 0) {
+                        details.push({
+                            week: wNum,
+                            region: rName,
+                            days: days,
+                            cost: days * ratePerDay
+                        });
+                    }
+                });
+            });
+
+            let totalPrice = totalDays * ratePerDay;
+            return {
+                totalDays: totalDays,
+                totalPrice: totalPrice,
+                currency: currencyUnit,
+                ratePerDay: ratePerDay,
+                isSpecial: false,
+                details: details
+            };
+        }
+
         function updatePriceDisplay() {
             let btn = document.getElementById('btnSubmit');
+            let configPrice = document.getElementById('configPrice');
+            let configSubtitle = document.getElementById('configSubtitle');
             let svgPriceSub = document.getElementById('svgPriceSub');
-            if (btn) {
+
+            let pricing = calculateOrderPricing();
+
+            if (pricing.isSpecial) {
+                if (configPrice) configPrice.textContent = "Wycena indywidualna";
+                if (configSubtitle) configSubtitle.textContent = "Rejon na zapytanie / termin ustalany indywidualnie";
+                if (btn) btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+                if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
+                return;
+            }
+
+            if (pricing.totalDays > 0) {
+                let priceStr = `${pricing.totalPrice} ${pricing.currency}`;
+                let subStr = `${pricing.totalDays} dni w cenie ${pricing.ratePerDay} ${pricing.currency}/dzień (od jutra)`;
+
+                if (configPrice) configPrice.textContent = priceStr;
+                if (configSubtitle) configSubtitle.textContent = subStr;
+                if (btn) btn.innerHTML = `🛒 ZAMÓW – RAZEM: ${priceStr}`;
+                if (svgPriceSub) svgPriceSub.textContent = priceStr;
+            } else {
                 let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
                 if (selectedRegionsCount > 0) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
+                    if (configPrice) configPrice.textContent = "0 " + ((userLang === 'pl') ? "PLN" : "€");
+                    if (configSubtitle) configSubtitle.textContent = "Brak terminów od jutra do końca wybranego tygodnia";
+                    if (btn) btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE`;
                 } else {
-                    btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
+                    if (configPrice) configPrice.textContent = t.priceInd || "Wycena indywidualna";
+                    if (configSubtitle) configSubtitle.textContent = t.configSubtitle || "Zaznacz opcje poniżej i wyślij zamówienie";
+                    if (btn) btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
                 }
+                if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
             }
         }
 
@@ -1221,22 +1255,30 @@
                 alert("[ UWAGA ] Wybierz rejony oraz tygodnie!"); 
                 return; 
             }
-                    
-            var selectedFormat = document.querySelector('input[name="format"]:checked');
 
+            var pricing = calculateOrderPricing();
+            var selectedFormat = document.querySelector('input[name="format"]:checked');
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-            var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             
+            var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
-            body += " PODSUMOWANIE CENY: Wycena indywidualna\n";
+
+            if (pricing.isSpecial) {
+                body += " PODSUMOWANIE CENY: Wycena indywidualna (Rejony specjalne)\n";
+            } else if (pricing.totalDays > 0) {
+                body += ` PODSUMOWANIE CENY: ${pricing.totalPrice} ${pricing.currency} (${pricing.totalDays} terminów x ${pricing.ratePerDay} ${pricing.currency})\n`;
+            } else {
+                body += " PODSUMOWANIE CENY: Do weryfikacji (0 terminów od jutra)\n";
+            }
+
             body += (t.paymentNote || "Preferowana płatność / Identyfikator:") + " " + nr + "\n\n";
 
-            if(selectedFormat) {
+            if (selectedFormat) {
                 body += "WYBRANY FORMAT: " + selectedFormat.value + "\n";
             }
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
-            if(selectedPaymentMethod) {
+            if (selectedPaymentMethod) {
                 body += "WYBRANA FORMA PŁATNOŚCI: " + selectedPaymentMethod.value + "\n";
             }
 
@@ -1249,6 +1291,7 @@
             }
             
             if (document.getElementById('schrottOption')?.checked) body += "FILTR: SCHROTT (Metal i Elektro)\n";
+            if (document.getElementById('guideOption')?.checked) body += "PORADNIK WYSTAWKOWICZA: TAK\n";
             if (!document.getElementById('dhlOption')?.checked && tel) body += "TELEFON: " + tel + "\n";
             
             body += "\n\n" + (t.emailDates || "DATY") + ":\n";
@@ -1261,8 +1304,15 @@
             
             body += "\n\n" + (t.emailSelectedRegions || "WYBRANE REJONY") + ":\n";
             wR.forEach(b => body += "- " + b.value + "\n");
+
+            if (pricing.details && pricing.details.length > 0) {
+                body += "\n\nILOŚĆ TERMINÓW I WYCENA (od jutra):\n";
+                pricing.details.forEach(d => {
+                    body += `- Tydzień ${d.week}, ${d.region}: ${d.days} terminów = ${d.cost} ${pricing.currency}\n`;
+                });
+            }
             
-            body += "\n\n--------------------------------------------------------\n" + (t.emailWarning || "Czekam na zwrotną informację z wyceną.") + "\n";
+            body += "\n\n--------------------------------------------------------\n";
             const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
             var subject = "[#" + nr + "] ZAPYTANIE O WYCENĘ / ZAMÓWIENIE";
             subject = subject.replace(/[ąćęłńóśźż]/g, m => diacritics[m] || m);
@@ -1338,50 +1388,15 @@
                     let rStr = typeof item === 'string' ? "" : (item.rodzaj || "");
                     let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
 
-                    let uniqueDays = "-";
-    
+                    let countDays = 0;
                     if (dStr !== "-") {
                         let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                        let rodzajeArr = rStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                  
-                        let daysWithTags = [];
-                        for(let i = 0; i < datyArr.length; i++) {
-                            let d = datyArr[i];
-                            let r = (rodzajeArr[i] || "").toLowerCase();
-                            
-                            let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                            if(match) {
-                                let dObj = new Date(match[1], match[2]-1, match[3]);
-                                let dIdx = dObj.getDay();
-                                
-                                let dayName = "";
-                                if (t.d && Array.isArray(t.d)) {
-                                    if(dIdx >= 1 && dIdx <= 6) {
-                                        dayName = t.d[dIdx - 1];
-                                    } else if (dIdx === 0) {
-                                        dayName = userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND');
-                                    }
-                                } else {
-                                    let d_pon = t.d_pon || "PON"; let d_wt = t.d_wt || "WT";
-                                    let d_sr = t.d_sr || "SR"; let d_czw = t.d_czw || "CZW";
-                                    let d_pt = t.d_pt || "PT"; let d_sob = t.d_sob || "SOB";
-                                    let d_nd = t.d_nd || (userLang === 'de' ? 'SO' : (userLang === 'en' ? 'SU' : 'ND'));
-                                    let dayNames = [d_nd, d_pon, d_wt, d_sr, d_czw, d_pt, d_sob];
-                                    dayName = dayNames[dIdx];
-                                }
-                                
-                                let tags = new Set();
-                                if (/sperr|meble|gabaryt|rest/i.test(r)) tags.add("S");
-                                if (/elektro|kühl|agd|schrank/i.test(r)) tags.add("E");
-                                if (/schrott|złom|metal|eisen/i.test(r)) tags.add("M");
-                                if (/holz|drewno/i.test(r)) tags.add("H");
-                                
-                                if (tags.size === 0) tags.add("S");
-                                let tagStr = "[" + Array.from(tags).join("/") + "]";
-                                daysWithTags.push(`${dayName} ${tagStr}`);
-                            }
-                        }
-                        if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
+                        let uniqueSet = new Set();
+                        datyArr.forEach(d => {
+                            let match = d.match(/(\d{4}-\d{2}-\d{2})/);
+                            if (match) uniqueSet.add(match[1]);
+                        });
+                        countDays = uniqueSet.size;
                     }
                     
                     let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
@@ -1391,7 +1406,7 @@
                             <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
                             ${infoHtml}
                             <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
-                                <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
+                                <span style="color: #888;">Ilość dostępnych terminów:</span> <b>${countDays}</b>
                             </div>
                         </td>
                     </tr>`;
@@ -1426,6 +1441,42 @@
     });
 //]]>
 </script>
+
+    <footer class="dabu-footer">
+        <div class="dabu-footer-container">
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">dabu-info</h4>
+                <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok 2026.</p>
+                <ul class="dabu-footer-links">
+                    <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
+                    <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
+                </ul>
+            </div>
+
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
+                <ul class="dabu-footer-contact">
+                    <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                    <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
+                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
+                </ul>
+            </div>
+
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
+                <ul class="dabu-footer-contact">
+                    <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
+                    <li>💳 Płatności: BLIK, PayPal</li>
+                    <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="dabu-footer-bottom">
+            <p>&copy; 2026 <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
 <script src="translator.js"></script>
 
 </body>
