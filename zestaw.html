@@ -457,7 +457,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena indywidualna</b> w zależności od wybranych opcji.</li>
+                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (25 PLN / 6 € za aktywny dzień wywozu).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                         <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna) – <a href="https://dabu-info.com/zamowienia.html" target="_blank" style="color: #2ecc71; font-weight: bold; text-decoration: underline;">sprawdź szczegóły zamówień &raquo;</a></li>
@@ -1054,18 +1054,88 @@
             });
         }
 
+        function calculateActiveDaysAndPrice() {
+            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
+            
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
+
+            if (selectedRegions.length === 0) {
+                return { totalDays: 0, totalPrice: 0, currency: valuta };
+            }
+
+            let now = new Date();
+            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+            let currentWeekNum = getWeekNumber(now).toString();
+
+            let countedDates = new Set();
+            let matrixToUse = availabilityMatrix;
+
+            let weeksToCheck = selectedWeeks.length > 0 ? selectedWeeks : Object.keys(matrixToUse);
+
+            weeksToCheck.forEach(w => {
+                if (!matrixToUse[w]) return;
+
+                matrixToUse[w].forEach(item => {
+                    let rName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                    if (!selectedRegions.includes(rName)) return;
+
+                    let dStr = typeof item === 'string' ? "" : (item.daty || "");
+                    if (!dStr || dStr === "-") return;
+
+                    let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                    datyArr.forEach(d => {
+                        let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                        if (match) {
+                            let dObj = new Date(match[1], match[2] - 1, match[3]);
+                            if (w === currentWeekNum) {
+                                if (dObj >= tomorrow) {
+                                    countedDates.add(match[0]);
+                                }
+                            } else {
+                                countedDates.add(match[0]);
+                            }
+                        }
+                    });
+                });
+            });
+
+            let totalDays = countedDates.size;
+            let ratePerDay = (userLang === 'pl') ? 25 : 6;
+            let totalPrice = totalDays * ratePerDay;
+
+            return {
+                totalDays: totalDays,
+                totalPrice: totalPrice,
+                currency: (userLang === 'pl') ? 'PLN' : '€'
+            };
+        }
+
         function updatePriceDisplay() {
             let btn = document.getElementById('btnSubmit');
             let svgPriceSub = document.getElementById('svgPriceSub');
-            if (btn) {
-                let selectedRegionsCount = document.querySelectorAll('.region-chk:checked').length;
-                if (selectedRegionsCount > 0) {
-                    btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
-                    if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
-                } else {
-                    btn.innerHTML = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
-                    if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
-                }
+            let configPrice = document.getElementById('configPrice');
+            
+            let isSpecialMode = (document.getElementById('specialDateContainer') && document.getElementById('specialDateContainer').style.display !== 'none');
+            let calc = calculateActiveDaysAndPrice();
+
+            if (isSpecialMode) {
+                if (btn) btn.innerHTML = `🛒 WYŚLIJ ZAMÓWIENIE (Wycena indywidualna)`;
+                if (svgPriceSub) svgPriceSub.textContent = `na zapytanie`;
+                if (configPrice) configPrice.textContent = `Wycena indywidualna`;
+                return;
+            }
+
+            if (calc.totalDays > 0) {
+                if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice} ${calc.currency} (${calc.totalDays} dni)`;
+                if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}`;
+                if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}`;
+            } else {
+                let defaultLabel = t.btnSubmit || "🛒 WYŚLIJ ZAMÓWIENIE";
+                if (btn) btn.innerHTML = defaultLabel;
+                if (svgPriceSub) svgPriceSub.textContent = "na zapytanie";
+                if (configPrice) configPrice.textContent = t.priceInd || "Wycena indywidualna";
             }
         }
 
@@ -1223,12 +1293,19 @@
             }
                     
             var selectedFormat = document.querySelector('input[name="format"]:checked');
-
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var body = (t.emailGreeting || "Dzień dobry,") + "\n\n" + "Przesyłam specyfikację zamówienia zestawu:\n";
             
             body += " WŁASNA KONFIGURACJA (" + wR.length + " rejonów)\n";
-            body += " PODSUMOWANIE CENY: Wycena indywidualna\n";
+            
+            var calc = calculateActiveDaysAndPrice();
+            if (!isSpecialMode && calc.totalDays > 0) {
+                var dailyRate = userLang === 'pl' ? '25 PLN' : '6 €';
+                body += " PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " dni x " + dailyRate + ")\n";
+            } else {
+                body += " PODSUMOWANIE CENY: Wycena indywidualna\n";
+            }
+            
             body += (t.paymentNote || "Preferowana płatność / Identyfikator:") + " " + nr + "\n\n";
 
             if(selectedFormat) {
