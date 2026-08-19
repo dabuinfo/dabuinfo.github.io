@@ -263,20 +263,21 @@
             <div class="form-group" style="margin-bottom: 10px;">
                 <select id="boschKraj">
                     <option value="">-- Wybierz państwo (Bosch eBike) --</option>
+                    <option value="Cała Europa Bosch">Cała Europa (14 432 serwisów)</option>
+                    <option value="Niemcy">Niemcy (4 570 serwisów)</option>
+                    <option value="Włochy">Włochy (1 505 serwisów)</option>
+                    <option value="Francja">Francja (1 500 serwisów)</option>
+                    <option value="Szwajcaria">Szwajcaria (1 419 serwisów)</option>
+                    <option value="Holandia">Holandia (1 328 serwisów)</option>
                     <option value="Austria">Austria (965 serwisów)</option>
                     <option value="Belgia">Belgia (958 serwisów)</option>
+                    <option value="Polska">Polska (404 serwisów)</option>
                     <option value="Czechy">Czechy (379 serwisów)</option>
                     <option value="Dania">Dania (302 serwisów)</option>
-                    <option value="Francja">Francja (1500 serwisów)</option>
-                    <option value="Holandia">Holandia (1328 serwisów)</option>
+                    <option value="Norwegia">Norwegia (269 serwisów)</option>
+                    <option value="Szwecja">Szwecja (212 serwisów)</option>
                     <option value="Islandia">Islandia (16 serwisów)</option>
                     <option value="Luksemburg">Luksemburg (14 serwisów)</option>
-                    <option value="Niemcy">Niemcy (4570 serwisów)</option>
-                    <option value="Norwegia">Norwegia (269 serwisów)</option>
-                    <option value="Polska">Polska (404 serwisów)</option>
-                    <option value="Szwajcaria">Szwajcaria (1419 serwisów)</option>
-                    <option value="Szwecja">Szwecja (212 serwisów)</option>
-                    <option value="Włochy">Włochy (1505 serwisów)</option>
                 </select>
             </div>
             <button class="bosch-btn" onclick="generujZamowienieBosch()">Zamów bazę Bosch eBike</button>
@@ -289,20 +290,20 @@
             <div class="form-group" style="margin-bottom: 10px;">
                 <select id="shimanoKraj">
                     <option value="">-- Wybierz państwo (Shimano SSC) --</option>
-                    <option value="Austria">Austria (1007 rekordów)</option>
-                    <option value="Belgia">Belgia (1059 rekordów)</option>
-                    <option value="Czechy">Czechy (381 rekordów)</option>
-                    <option value="Dania">Dania (361 rekordów)</option>
-                    <option value="Francja">Francja (1721 rekordów)</option>
-                    <option value="Holandia">Holandia (1365 rekordów)</option>
-                    <option value="Islandia">Islandia (18 rekordów)</option>
-                    <option value="Luksemburg">Luksemburg (14 rekordów)</option>
-                    <option value="Niemcy">Niemcy (5574 rekordów)</option>
-                    <option value="Norwegia">Norwegia (402 rekordów)</option>
-                    <option value="Polska">Polska (494 rekordów)</option>
-                    <option value="Szwajcaria">Szwajcaria (1471 rekordów)</option>
-                    <option value="Szwecja">Szwecja (221 rekordów)</option>
-                    <option value="Włochy">Włochy (1586 rekordów)</option>
+                    <option value="Cała Europa SSC">Cała Europa (1 833 serwisów)</option>
+                    <option value="Niemcy">Niemcy (1 004 serwisów)</option>
+                    <option value="Francja">Francja (221 serwisów)</option>
+                    <option value="Norwegia">Norwegia (133 serwisów)</option>
+                    <option value="Belgia">Belgia (101 serwisów)</option>
+                    <option value="Polska">Polska (90 serwisów)</option>
+                    <option value="Włochy">Włochy (81 serwisów)</option>
+                    <option value="Dania">Dania (59 serwisów)</option>
+                    <option value="Szwajcaria">Szwajcaria (52 serwisów)</option>
+                    <option value="Austria">Austria (42 serwisów)</option>
+                    <option value="Holandia">Holandia (37 serwisów)</option>
+                    <option value="Szwecja">Szwecja (9 serwisów)</option>
+                    <option value="Czechy">Czechy (2 serwisów)</option>
+                    <option value="Islandia">Islandia (2 serwisów)</option>
                 </select>
             </div>
             <button class="shimano-btn" onclick="generujZamowienieShimano()">Zamów bazę Shimano SSC</button>
@@ -449,7 +450,7 @@
             const losowy = Math.floor(1000 + Math.random() * 9000);
             
             const nr = `BOSCH-${rok}${miesiac}${dzien}-${losowy}`;
-            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Bosch eBike Serwisy\nKraj: ${pelnyTekst}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Bosch eBike Serwisy\nKraj/Pakiet: ${pelnyTekst}`;
             
             przygotujSMS(nr, trescSms);
         }
@@ -460,7 +461,7 @@
             const pelnyTekst = select.options[select.selectedIndex].text;
 
             if(!wartosc) { 
-                alert('Proszę wybrać opcję z listy dla bazy Shimano SSC!'); 
+                alert('Proszę wybrać państwo z listy dla bazy Shimano SSC!'); 
                 return; 
             }
 
