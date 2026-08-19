@@ -23,7 +23,9 @@
             --border-color: #ccc;
             --info-bg: #f8f9fa;
             --info-border: #adb5bd;
-            --hq-color: #f39c12; /* Kolor akcentu dla oferty Husqvarna */
+            --hq-color: #f39c12; /* Akcent Husqvarna */
+            --karcher-color: #ffcc00; /* Żółty Kärcher */
+            --karcher-btn-text: #111;
         }
 
         /* Dark Mode */
@@ -81,11 +83,23 @@
         .info-box ul { margin: 0; padding-left: 20px; }
         .info-box li { margin-bottom: 4px; }
 
-        /* Styl dla dedykowanej ramki Husqvarna */
+        /* Dedykowana ramka Husqvarna */
         .hq-box {
-            background-color: rgba(243, 156, 18, 0.1);
+            background-color: rgba(243, 156, 18, 0.08);
             border: 1px solid var(--hq-color);
             border-left: 4px solid var(--hq-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        /* Dedykowana ramka Kärcher */
+        .karcher-box {
+            background-color: rgba(255, 204, 0, 0.12);
+            border: 1px solid var(--karcher-color);
+            border-left: 4px solid var(--karcher-color);
             padding: 15px;
             margin-bottom: 25px;
             border-radius: 0 8px 8px 0;
@@ -147,6 +161,11 @@
             color: #fff;
         }
 
+        button.karcher-btn {
+            background: var(--karcher-color);
+            color: var(--karcher-btn-text);
+        }
+
         button:active { opacity: 0.8; transform: scale(0.98); }
 
         #wynik { 
@@ -197,13 +216,38 @@
             <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
         </div>
 
+        <!-- OFERTA SPECJALNA KÄRCHER -->
+        <div class="karcher-box">
+            <strong style="color: #b8860b; font-size: 1.1em; display: block; margin-bottom: 8px;">⚡ Gotowe bazy: Punkty sprzedaży i Serwisy Kärcher</strong>
+            <p style="margin: 0 0 10px 0;">Pełne zestawienia dilerów, centrów serwisowych i dystrybutorów urządzeń ciśnieniowych Kärcher.</p>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <select id="karcherKraj">
+                    <option value="">-- Wybierz państwo (Kärcher) --</option>
+                    <option value="Niemcy">Niemcy (3 314 punktów)</option>
+                    <option value="Polska">Polska (1 642 punkty)</option>
+                    <option value="Norwegia">Norwegia (854 punkty)</option>
+                    <option value="Hiszpania">Hiszpania (256 punktów)</option>
+                    <option value="Szwajcaria">Szwajcaria (145 punktów)</option>
+                    <option value="Włochy">Włochy (87 punktów)</option>
+                    <option value="Czechy">Czechy (68 punktów)</option>
+                    <option value="Dania">Dania (62 punkty)</option>
+                    <option value="Austria">Austria (54 punkty)</option>
+                    <option value="Belgia">Belgia (54 punkty)</option>
+                    <option value="Wielka Brytania">Wielka Brytania (24 punkty)</option>
+                    <option value="Francja">Francja (Centra serwisowe)</option>
+                    <option value="Holandia">Holandia (Pełna baza)</option>
+                </select>
+            </div>
+            <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę Kärcher</button>
+        </div>
+
         <!-- OFERTA SPECJALNA HUSQVARNA -->
         <div class="hq-box">
             <strong style="color: var(--hq-color); font-size: 1.1em; display: block; margin-bottom: 8px;">🔥 Gotowe bazy: Autoryzowani Dilerzy Husqvarna</strong>
             <p style="margin: 0 0 10px 0;">Pełne, zaktualizowane zestawienia serwisów z danymi kontaktowymi i adresowymi.</p>
             <div class="form-group" style="margin-bottom: 10px;">
                 <select id="husqvarnaKraj">
-                    <option value="">-- Wybierz państwo --</option>
+                    <option value="">-- Wybierz państwo (Husqvarna) --</option>
                     <option value="Austria">Austria (722 serwisów)</option>
                     <option value="Belgia">Belgia (149 serwisów)</option>
                     <option value="Bośnia i Hercegowina">Bośnia i Hercegowina (74 serwisów)</option>
@@ -279,7 +323,6 @@
     </footer>
 
     <script>
-        // Funkcja do przygotowywania numeru i otwierania okna z wynikiem
         function przygotujSMS(nr, trescSms) {
             const numerTelefonu = "+48600812820";
             const encodedTresc = encodeURIComponent(trescSms);
@@ -295,6 +338,28 @@
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
 
             window.location.href = smsLink;
+        }
+
+        function generujZamowienieKarcher() {
+            const select = document.getElementById('karcherKraj');
+            const wartosc = select.value;
+            const pelnyTekst = select.options[select.selectedIndex].text;
+
+            if(!wartosc) { 
+                alert('Proszę wybrać państwo z listy dla bazy Kärcher!'); 
+                return; 
+            }
+
+            const now = new Date();
+            const rok = now.getFullYear().toString().slice(-2);
+            const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dzien = now.getDate().toString().padStart(2, '0');
+            const losowy = Math.floor(1000 + Math.random() * 9000);
+            
+            const nr = `KAR-${rok}${miesiac}${dzien}-${losowy}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kärcher Dilerzy i Serwisy\nKraj: ${pelnyTekst}`;
+            
+            przygotujSMS(nr, trescSms);
         }
 
         function generujZamowienieHusqvarna() {
