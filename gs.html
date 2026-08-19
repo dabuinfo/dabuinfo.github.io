@@ -13,10 +13,6 @@
       gtag('js', new Date());
       gtag('config', 'G-YQTCG26T1B');
     </script>
-
-    <link rel="icon" href="/favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/favicon.png">
     
     <style>
         :root {
@@ -27,9 +23,10 @@
             --border-color: #ccc;
             --info-bg: #f8f9fa;
             --info-border: #adb5bd;
-            --hq-color: #f39c12; /* Akcent Husqvarna */
+            --hq-color: #f39c12;      /* Akcent Husqvarna */
             --karcher-color: #ffcc00; /* Żółty Kärcher */
             --karcher-btn-text: #111;
+            --bike-color: #0077b6;    /* Błękit Bosch eBike / Shimano */
         }
 
         /* Dark Mode */
@@ -87,11 +84,11 @@
         .info-box ul { margin: 0; padding-left: 20px; }
         .info-box li { margin-bottom: 4px; }
 
-        /* Dedykowana ramka Husqvarna */
-        .hq-box {
-            background-color: rgba(243, 156, 18, 0.08);
-            border: 1px solid var(--hq-color);
-            border-left: 4px solid var(--hq-color);
+        /* Dedykowana ramka Rowery: Bosch eBike & Shimano */
+        .bike-box {
+            background-color: rgba(0, 119, 182, 0.08);
+            border: 1px solid var(--bike-color);
+            border-left: 4px solid var(--bike-color);
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 0 8px 8px 0;
@@ -104,6 +101,18 @@
             background-color: rgba(255, 204, 0, 0.12);
             border: 1px solid var(--karcher-color);
             border-left: 4px solid var(--karcher-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        /* Dedykowana ramka Husqvarna */
+        .hq-box {
+            background-color: rgba(243, 156, 18, 0.08);
+            border: 1px solid var(--hq-color);
+            border-left: 4px solid var(--hq-color);
             padding: 15px;
             margin-bottom: 25px;
             border-radius: 0 8px 8px 0;
@@ -160,14 +169,19 @@
             margin-top: 10px;
         }
 
-        button.hq-btn {
-            background: var(--hq-color);
+        button.bike-btn {
+            background: var(--bike-color);
             color: #fff;
         }
 
         button.karcher-btn {
             background: var(--karcher-color);
             color: var(--karcher-btn-text);
+        }
+
+        button.hq-btn {
+            background: var(--hq-color);
+            color: #fff;
         }
 
         button:active { opacity: 0.8; transform: scale(0.98); }
@@ -218,6 +232,33 @@
             </svg>
             <h2>Data Mining Service</h2>
             <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
+        </div>
+
+        <!-- OFERTA SPECJALNA: BOSCH EBIKE + SHIMANO SSC -->
+        <div class="bike-box">
+            <strong style="color: var(--bike-color); font-size: 1.1em; display: block; margin-bottom: 8px;">🚲 Gotowe bazy: Serwisy Rowerowe Bosch eBike & Shimano SSC</strong>
+            <p style="margin: 0 0 10px 0;">Kompletne zestawienia autoryzowanych serwisów e-bike oraz Shimano Service Center w Europie.</p>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <select id="bikeKraj">
+                    <option value="">-- Wybierz pakiet (Rowery) --</option>
+                    <option value="Cała Europa">Cała Europa (15 674 serwisów)</option>
+                    <option value="Niemcy">Niemcy (5 574 serwisów)</option>
+                    <option value="Francja">Francja (1 721 serwisów)</option>
+                    <option value="Włochy">Włochy (1 586 serwisów)</option>
+                    <option value="Szwajcaria">Szwajcaria (1 471 serwisów)</option>
+                    <option value="Holandia">Holandia (1 365 serwisów)</option>
+                    <option value="Belgia">Belgia (1 059 serwisów)</option>
+                    <option value="Austria">Austria (1 007 serwisów)</option>
+                    <option value="Polska">Polska (494 serwisów)</option>
+                    <option value="Norwegia">Norwegia (402 serwisów)</option>
+                    <option value="Czechy">Czechy (381 serwisów)</option>
+                    <option value="Dania">Dania (361 serwisów)</option>
+                    <option value="Szwecja">Szwecja (221 serwisów)</option>
+                    <option value="Islandia">Islandia (18 serwisów)</option>
+                    <option value="Luksemburg">Luksemburg (14 serwisów)</option>
+                </select>
+            </div>
+            <button class="bike-btn" onclick="generujZamowienieBike()">Zamów bazę Rowerową</button>
         </div>
 
         <!-- OFERTA SPECJALNA KÄRCHER -->
@@ -342,6 +383,28 @@
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
 
             window.location.href = smsLink;
+        }
+
+        function generujZamowienieBike() {
+            const select = document.getElementById('bikeKraj');
+            const wartosc = select.value;
+            const pelnyTekst = select.options[select.selectedIndex].text;
+
+            if(!wartosc) { 
+                alert('Proszę wybrać pakiet z listy dla bazy Rowerowej!'); 
+                return; 
+            }
+
+            const now = new Date();
+            const rok = now.getFullYear().toString().slice(-2);
+            const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dzien = now.getDate().toString().padStart(2, '0');
+            const losowy = Math.floor(1000 + Math.random() * 9000);
+            
+            const nr = `BIKE-${rok}${miesiac}${dzien}-${losowy}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Bosch eBike & Shimano SSC\nPakiet: ${pelnyTekst}`;
+            
+            przygotujSMS(nr, trescSms);
         }
 
         function generujZamowienieKarcher() {
