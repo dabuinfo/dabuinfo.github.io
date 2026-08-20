@@ -38,100 +38,9 @@
             width: 100%;
         }
 
-        /* UKRYCIE ZAWARTOŚCI STRONY NA CZAS ŁADOWANIA */
         #pageWrapper {
-            opacity: 0;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
-
-        #pageWrapper.loaded {
             opacity: 1;
             pointer-events: auto;
-        }
-
-        /* PEŁNOEKRANOWA NAKŁADKA POWITALNA (SPLASH SCREEN) */
-        #splashOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1b2838 0%, #0a0e14 100%);
-            z-index: 999999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-
-        #splashOverlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .splash-card {
-            width: 90%;
-            max-width: 480px;
-            background: rgba(18, 18, 18, 0.85);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 0 35px rgba(46, 204, 113, 0.35), 0 20px 50px rgba(0,0,0,0.9);
-            border: 1px solid rgba(46, 204, 113, 0.5);
-            backdrop-filter: blur(12px);
-            text-align: center;
-            animation: floatCard 4s ease-in-out infinite;
-        }
-
-        @keyframes floatCard {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .splash-video-box {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: #000;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        .splash-video-box img, .splash-video-box video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .splash-title {
-            color: #2ecc71;
-            font-size: 1.5em;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin: 18px 0 8px 0;
-            text-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .splash-desc {
-            color: #bbb;
-            font-size: 0.95em;
-            line-height: 1.5;
-            margin: 0 0 15px 0;
-        }
-
-        .splash-spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(46, 204, 113, 0.2);
-            border-top: 3px solid #2ecc71;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto;
         }
 
         input, textarea, select {
@@ -207,7 +116,7 @@
             border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
-        .regions-scroll-box { position: relative; min-height: 150px; max-height: 250px; overflow-y: scroll;
+        .regions-scroll-box { position: relative; min-height: 220px; max-height: 320px; overflow-y: scroll;
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
@@ -215,12 +124,81 @@
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
         
-        /* NAKŁADKA ŁADOWANIA W RAMCE (OVERLAY) */
-        .pro-loader-overlay { position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); z-index: 10; display: flex;
-            flex-direction: column; align-items: center; justify-content: center; color: #2ecc71; font-weight: bold; text-align: center; border-radius: 4px; transition: opacity 0.3s ease; }
-        .pro-spinner { width: 40px; height: 40px; border: 4px solid rgba(46, 204, 113, 0.2); border-left-color: #2ecc71;
-            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        /* NAKŁADKA ANIMACJI I ŁADOWANIA W OKNIE REJONÓW */
+        .pro-loader-overlay { 
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(10, 14, 20, 0.92); 
+            backdrop-filter: blur(4px); 
+            z-index: 10; 
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: #2ecc71; 
+            font-weight: bold; 
+            text-align: center; 
+            border-radius: 4px; 
+            padding: 15px;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease, visibility 0.3s ease; 
+        }
+
+        .loader-card-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        .loader-video-box {
+            width: 130px;
+            max-height: 110px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            background: #000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+        }
+
+        .loader-video-box img, .loader-video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .loader-title-inline {
+            color: #2ecc71;
+            font-size: 1.05em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(46, 204, 113, 0.3);
+        }
+
+        .loader-desc-inline {
+            color: #bbb;
+            font-size: 0.82em;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .pro-spinner { 
+            width: 28px; 
+            height: 28px; 
+            border: 3px solid rgba(46, 204, 113, 0.2); 
+            border-left-color: #2ecc71;
+            border-radius: 50%; 
+            animation: spin 0.8s linear infinite; 
+        }
 
         .region-label { display: block; padding: 5px;
             cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; font-size: 0.9em; transition: opacity 0.3s ease; }
@@ -375,23 +353,7 @@
 </head>
 <body>
 
-    <!-- PEŁNOEKRANOWA NAKŁADKA WCZYTYWANIA Z ANIMACJĄ (SPLASH SCREEN) -->
-    <div id="splashOverlay">
-        <div class="splash-card">
-            <div class="splash-video-box">
-                <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                
-                <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: auto;">
-                    <source src="1000064135.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="splash-title" id="loaderTitle">Synchronizacja Danych</div>
-            <div class="splash-desc" id="mainLoaderText">Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje konfiguracyjne i terminy.</div>
-            <div class="splash-spinner"></div>
-        </div>
-    </div>
-
-    <!-- GŁÓWNA ZAWARTOŚĆ STRONY (UKRYTA DO MOMENTU POBRANIA DANYCH) -->
+    <!-- GŁÓWNA ZAWARTOŚĆ STRONY -->
     <div id="pageWrapper">
         <div class="main-content">
             <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
@@ -512,9 +474,19 @@
                 </div>
                 
                 <div class="regions-scroll-box" id="regionsContainer">
+                    <!-- ANIMACJA I KOMUNIKAT ŁADOWANIA W OKNIE REJONÓW -->
                     <div id="regionsLoading" class="pro-loader-overlay">
-                        <div class="pro-spinner"></div>
-                        <span id="loadingDataText">⏳ Pobieranie dostępnych opcji...</span>
+                        <div class="loader-card-box">
+                            <div class="loader-video-box">
+                                <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
+                                <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <source src="1000064135.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="loader-title-inline" id="loaderTitle">Synchronizacja Danych</div>
+                            <div class="loader-desc-inline" id="mainLoaderText">Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje.</div>
+                            <div class="pro-spinner"></div>
+                        </div>
                     </div>
 
                     <div id="regionsCheckboxes">
@@ -1289,21 +1261,13 @@
                     let loaderOverlay = document.getElementById('regionsLoading');
                     if(loaderOverlay) { 
                         loaderOverlay.style.opacity = '0';
-                        setTimeout(() => { loaderOverlay.style.display = 'none'; }, 300); 
+                        setTimeout(() => { 
+                            loaderOverlay.style.display = 'none'; 
+                            if (fallbackVideo) fallbackVideo.pause();
+                        }, 300); 
                     }
                     
-                    let splashOverlay = document.getElementById('splashOverlay');
-                    let pageWrapper = document.getElementById('pageWrapper');
-                    
-                    if(splashOverlay) { 
-                        splashOverlay.classList.add('hidden');
-                        if (fallbackVideo) fallbackVideo.pause();
-                    }
-
-                    if(pageWrapper) {
-                        pageWrapper.classList.add('loaded');
-                        updatePriceDisplay();
-                    }
+                    updatePriceDisplay();
                 });
         }
 
@@ -1369,7 +1333,6 @@
             let totalDays = 0;
             let matrixToUse = availabilityMatrix;
 
-            // Przechodzimy po każdym wybranym rejonie osobno i sumujemy jego terminy
             selectedRegions.forEach(rName => {
                 let regionDates = new Set();
 
@@ -1812,4 +1775,3 @@
 
 </body>
 </html>
-
