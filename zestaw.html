@@ -116,7 +116,7 @@
             border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
-        .regions-scroll-box { position: relative; min-height: 250px; max-height: 350px; overflow-y: scroll;
+        .regions-scroll-box { position: relative; min-height: 280px; max-height: 380px; overflow-y: scroll;
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
@@ -124,54 +124,67 @@
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
         
-        /* PEŁNOWYMIAROWA NAKŁADKA ANIMACJI W OKNIE REJONÓW */
+        /* NAKŁADKA ANIMACJI W OKNIE REJONÓW (2/3 WIDEO 16:9 + 1/3 TEKST) */
         .pro-loader-overlay { 
             position: absolute;
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: #000; 
+            background: rgba(10, 14, 20, 0.96); 
+            backdrop-filter: blur(4px);
             z-index: 10; 
             display: flex;
             flex-direction: column;
             overflow: hidden;
             border-radius: 4px;
+            box-sizing: border-box;
             transition: opacity 0.4s ease, visibility 0.4s ease; 
         }
 
-        .loader-full-media {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .loader-video-section {
+            flex: 2;
+            min-height: 0;
             width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .loader-full-media img, 
-        .loader-full-media video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .loader-bottom-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 2;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 70%, transparent 100%);
-            padding: 20px 15px 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            padding: 8px;
             box-sizing: border-box;
+        }
+
+        .loader-video-wrapper {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            height: 100%;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-video-wrapper img, 
+        .loader-video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .loader-text-section {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border-top: 1px solid rgba(46, 204, 113, 0.3);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 10px 18px;
+            box-sizing: border-box;
             gap: 15px;
-            backdrop-filter: blur(4px);
-            border-top: 1px solid rgba(46, 204, 113, 0.3);
         }
 
         .loader-bottom-text {
@@ -196,9 +209,9 @@
         }
 
         .pro-spinner { 
-            width: 32px; 
-            height: 32px; 
-            min-width: 32px;
+            width: 28px; 
+            height: 28px; 
+            min-width: 28px;
             border: 3px solid rgba(46, 204, 113, 0.2); 
             border-left-color: #2ecc71;
             border-radius: 50%; 
@@ -240,7 +253,7 @@
             .submit-btn { padding: 18px; font-size: 1.2em; }
             .format-columns { width: 100%; } 
             .strategy-card { padding: 15px; } 
-            .loader-bottom-bar { padding: 12px 10px 8px 10px; }
+            .loader-text-section { padding: 8px 12px; }
             .loader-title-inline { font-size: 0.95em; }
             .loader-desc-inline { font-size: 0.75em; }
         }
@@ -482,15 +495,17 @@
                 </div>
                 
                 <div class="regions-scroll-box" id="regionsContainer">
-                    <!-- PEŁNOWYMIAROWA ANIMACJA I KOMUNIKAT NA DOLE -->
+                    <!-- NAKŁADKA ANIMACJI: 2/3 EKRANU 16:9 + 1/3 TEKST I SPINNER -->
                     <div id="regionsLoading" class="pro-loader-overlay">
-                        <div class="loader-full-media">
-                            <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                            <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;">
-                                <source src="1000064135.mp4" type="video/mp4">
-                            </video>
+                        <div class="loader-video-section">
+                            <div class="loader-video-wrapper">
+                                <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
+                                <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                                    <source src="1000064135.mp4" type="video/mp4">
+                                </video>
+                            </div>
                         </div>
-                        <div class="loader-bottom-bar">
+                        <div class="loader-text-section">
                             <div class="loader-bottom-text">
                                 <div class="loader-title-inline" id="loaderTitle">Synchronizacja Danych</div>
                                 <div class="loader-desc-inline" id="mainLoaderText">Trwa łączenie z serwerem bazy danych... Pobieram opcje.</div>
@@ -950,7 +965,7 @@
                     step1Header: '👇 1. Vyberte regióny:', step2Header: '📅 2. Vyberte týždne:', previewTitle: '👀 Bezplatný náhľad termínov:', previewDefault: '-- Vyberte týždeň --', btnUnselectAll: '[ Zrušiť výber / Clear ]',
                     step3Header: '📄 3. Vyberte formát:', formatPdfPrintRadio: iconPdf + ' Tlačové PDF', formatPdfSmartRadio: iconPdf + ' PDF pre smartfón (Dark Mode)',
                     step4Header: '💾 4. Doplnkové možnosti:', step5Header: '💳 5. Platba:', payIban: '🏦 Prevod / IBAN', payPaypal: '🅿️ PayPal', payBlik: '📱 Mobilná platba', payOther: '❓ Iné',
-                    schrottLabel: '🧲 Elektro a kovový odpad', dhlLabel: '📦 Poštová zásielka',
+                    schrottLabel: '🧲 Elektro a kovový odpad', dhlLabel: '📦 Poštová zásilka',
                     btnSubmit: '🛒 ODOSLAŤ OBJEDNÁVKU', btnOrderPrefix: '🛒 OBJEDNAŤ BALÍČEK – ',
                     termsPlural: ['termín', 'termíny', 'termínov'], weekLabel: 'Týždeň', specialDateText: 'Príprava najbližšieho termínu pre',
                     emailGreeting: 'Dobrý deň,', emailOrderSet: 'Posielam špecifikáciu objednávky balíčka:\n',
@@ -1074,7 +1089,7 @@
                     formatOnlineTitle: '🌐 Онлайн-версія:', formatOnlineLi1: '<strong>Портал:</strong> Доступ прямо в браузері.', formatOnlineLi2: '<strong>Оновлення:</strong> Синхронізація наживо.', formatOnlineRadio: '🌐 Клієнтський портал',
                     searchDesc: 'Де знаходиться регіон? Перевірте карту:', searchBtn: '🔍 ПОШУК РЕГІОНІВ',
                     step1Header: '👇 1. Оберіть регіони:', step2Header: '📅 2. Оберіть тижні:', previewTitle: '👀 Безкоштовний перегляд графіку:', previewDefault: '-- Оберіть тиждень --', btnUnselectAll: '[ Зняти всі позначки ]',
-                    step3Header: '📄 3. Оберіть формат:', formatPdfPrintRadio: iconPdf + ' PDF для друку', formatPdfSmartRadio: iconPdf + ' PDF для смартфону (Dark Mode)',
+                    step3Header: '📄 3. Оберіть format:', formatPdfPrintRadio: iconPdf + ' PDF для друку', formatPdfSmartRadio: iconPdf + ' PDF для смартфону (Dark Mode)',
                     step4Header: '💾 4. Додатково:', step5Header: '💳 5. Оплата:', payIban: '🏦 Банківський переказ / IBAN', payPaypal: '🅿️ PayPal', payBlik: '📱 Мобільний платіж', payOther: '❓ Інше',
                     schrottLabel: '🧲 Металобрухт та електроніка', dhlLabel: '📦 Доставка поштою',
                     btnSubmit: '🛒 НАДІСЛАТИ ЗАМОВЛЕННЯ', btnOrderPrefix: '🛒 ЗАМОВИТИ ПАКЕТ – ',
