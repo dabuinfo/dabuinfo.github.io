@@ -116,7 +116,7 @@
             border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
-        .regions-scroll-box { position: relative; min-height: 220px; max-height: 320px; overflow-y: scroll;
+        .regions-scroll-box { position: relative; min-height: 250px; max-height: 350px; overflow-y: scroll;
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
@@ -124,54 +124,59 @@
         .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
         .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
         
-        /* NAKŁADKA ANIMACJI I ŁADOWANIA W OKNIE REJONÓW */
+        /* PEŁNOWYMIAROWA NAKŁADKA ANIMACJI W OKNIE REJONÓW */
         .pro-loader-overlay { 
             position: absolute;
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(10, 14, 20, 0.92); 
-            backdrop-filter: blur(4px); 
+            background: #000; 
             z-index: 10; 
             display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: #2ecc71; 
-            font-weight: bold; 
-            text-align: center; 
-            border-radius: 4px; 
-            padding: 15px;
-            box-sizing: border-box;
-            transition: opacity 0.3s ease, visibility 0.3s ease; 
-        }
-
-        .loader-card-box {
-            display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 320px;
-            width: 100%;
-        }
-
-        .loader-video-box {
-            width: 130px;
-            max-height: 110px;
-            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid rgba(46, 204, 113, 0.4);
-            background: #000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            margin-bottom: 10px;
+            border-radius: 4px;
+            transition: opacity 0.4s ease, visibility 0.4s ease; 
         }
 
-        .loader-video-box img, .loader-video-box video {
+        .loader-full-media {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .loader-full-media img, 
+        .loader-full-media video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        .loader-bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 70%, transparent 100%);
+            padding: 20px 15px 12px 15px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            backdrop-filter: blur(4px);
+            border-top: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .loader-bottom-text {
+            text-align: left;
+            flex: 1;
         }
 
         .loader-title-inline {
@@ -180,20 +185,20 @@
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 4px;
-            text-shadow: 0 0 8px rgba(46, 204, 113, 0.3);
+            margin-bottom: 2px;
+            text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
         }
 
         .loader-desc-inline {
-            color: #bbb;
+            color: #ddd;
             font-size: 0.82em;
             line-height: 1.3;
-            margin-bottom: 10px;
         }
 
         .pro-spinner { 
-            width: 28px; 
-            height: 28px; 
+            width: 32px; 
+            height: 32px; 
+            min-width: 32px;
             border: 3px solid rgba(46, 204, 113, 0.2); 
             border-left-color: #2ecc71;
             border-radius: 50%; 
@@ -235,6 +240,9 @@
             .submit-btn { padding: 18px; font-size: 1.2em; }
             .format-columns { width: 100%; } 
             .strategy-card { padding: 15px; } 
+            .loader-bottom-bar { padding: 12px 10px 8px 10px; }
+            .loader-title-inline { font-size: 0.95em; }
+            .loader-desc-inline { font-size: 0.75em; }
         }
 
         @media (min-width: 1024px) {
@@ -474,17 +482,19 @@
                 </div>
                 
                 <div class="regions-scroll-box" id="regionsContainer">
-                    <!-- ANIMACJA I KOMUNIKAT ŁADOWANIA W OKNIE REJONÓW -->
+                    <!-- PEŁNOWYMIAROWA ANIMACJA I KOMUNIKAT NA DOLE -->
                     <div id="regionsLoading" class="pro-loader-overlay">
-                        <div class="loader-card-box">
-                            <div class="loader-video-box">
-                                <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                                <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;">
-                                    <source src="1000064135.mp4" type="video/mp4">
-                                </video>
+                        <div class="loader-full-media">
+                            <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
+                            <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                <source src="1000064135.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="loader-bottom-bar">
+                            <div class="loader-bottom-text">
+                                <div class="loader-title-inline" id="loaderTitle">Synchronizacja Danych</div>
+                                <div class="loader-desc-inline" id="mainLoaderText">Trwa łączenie z serwerem bazy danych... Pobieram opcje.</div>
                             </div>
-                            <div class="loader-title-inline" id="loaderTitle">Synchronizacja Danych</div>
-                            <div class="loader-desc-inline" id="mainLoaderText">Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje.</div>
                             <div class="pro-spinner"></div>
                         </div>
                     </div>
@@ -843,7 +853,7 @@
                 currency: "PLN",
                 texts: {
                     btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena indywidualna",
-                    loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych...<br>Pobieram najświeższe opcje konfiguracyjne i terminy.',
+                    loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych... Pobieram opcje.',
                     loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Wybierz format dopasowany do Twojego stylu pracy – każdy ma swoje unikalne plusy:</b>',
                     headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie',
                     formatPdfTitle: iconPdf + ' Wersja PDF (dokument):', formatPdfLi1: '<strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.', formatPdfLi2: '<strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.', formatPdfLi3: '<strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!',
@@ -1264,7 +1274,7 @@
                         setTimeout(() => { 
                             loaderOverlay.style.display = 'none'; 
                             if (fallbackVideo) fallbackVideo.pause();
-                        }, 300); 
+                        }, 400); 
                     }
                     
                     updatePriceDisplay();
