@@ -1391,19 +1391,19 @@
                 totalDays += regionDates.size;
             });
 
-            // --- PROGI RABATOWE (DO 5 DNI BEZ RABATU) ---
-            let baseRate = (currentLang === 'pl') ? 25 : 6;
-            let ratePerDay = baseRate;
+            // --- ŁAGODNIEJSZE PROGI RABATOWE (DO 5 DNI BEZ RABATU) ---
+    let baseRate = (currentLang === 'pl') ? 25 : 6;
+    let ratePerDay = baseRate;
 
-            if (totalDays >= 100) {
-                ratePerDay = (currentLang === 'pl') ? 6 : 1.5;   // Powyżej 100 dni
-            } else if (totalDays >= 20) {
-                ratePerDay = (currentLang === 'pl') ? 10 : 2.5;  // Od 20 dni (miesiąc)
-            } else if (totalDays > 5) {
-                ratePerDay = (currentLang === 'pl') ? 18 : 4.5;  // Od 6 do 19 dni
-            } else {
-                ratePerDay = baseRate;                           // 1 do 5 dni: 25 zł / 6 €
-            }
+    if (totalDays >= 100) {
+        ratePerDay = (currentLang === 'pl') ? 8 : 2.0;   // Powyżej 100 dni (-68%)
+    } else if (totalDays >= 20) {
+        ratePerDay = (currentLang === 'pl') ? 14 : 3.5;  // Od 20 do 99 dni (-44%)
+    } else if (totalDays > 5) {
+        ratePerDay = (currentLang === 'pl') ? 20 : 5.0;  // Od 6 do 19 dni (-20%)
+    } else {
+        ratePerDay = baseRate;                           // 1 do 5 dni: 25 zł / 6 €
+    }
 
             let regularPrice = totalDays * baseRate;
             let totalPrice = totalDays * ratePerDay;
