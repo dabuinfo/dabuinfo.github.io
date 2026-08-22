@@ -440,7 +440,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b>.</li>
-                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (25 PLN / 6 € za każdy aktywny termin wywozu).</li>
+                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (1–5 dni = 25 PLN / 6 € za dzień | <b>powyżej 5 dni naliczamy automatyczny rabat!</b>).</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                         <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna) – <a href="https://dabu-info.com/zamowienia.html" target="_blank" style="color: #2ecc71; font-weight: bold; text-decoration: underline;">sprawdź szczegóły zamówień &raquo;</a></li>
@@ -1348,7 +1348,7 @@
             let currencySymbol = (currentLang === 'pl') ? 'PLN' : '€';
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
-                return { totalDays: 0, totalPrice: 0, currency: currencySymbol, lang: currentLang };
+                return { totalDays: 0, totalPrice: 0, regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, lang: currentLang };
             }
 
             let now = new Date();
@@ -1391,12 +1391,32 @@
                 totalDays += regionDates.size;
             });
 
-            let ratePerDay = (currentLang === 'pl') ? 25 : 6;
+            // --- PROGI RABATOWE (DO 5 DNI BEZ RABATU) ---
+            let baseRate = (currentLang === 'pl') ? 25 : 6;
+            let ratePerDay = baseRate;
+
+            if (totalDays >= 100) {
+                ratePerDay = (currentLang === 'pl') ? 6 : 1.5;   // Powyżej 100 dni
+            } else if (totalDays >= 20) {
+                ratePerDay = (currentLang === 'pl') ? 10 : 2.5;  // Od 20 dni (miesiąc)
+            } else if (totalDays > 5) {
+                ratePerDay = (currentLang === 'pl') ? 18 : 4.5;  // Od 6 do 19 dni
+            } else {
+                ratePerDay = baseRate;                           // 1 do 5 dni: 25 zł / 6 €
+            }
+
+            let regularPrice = totalDays * baseRate;
             let totalPrice = totalDays * ratePerDay;
+            let savings = regularPrice - totalPrice;
+            let discountPercent = regularPrice > 0 ? Math.round((savings / regularPrice) * 100) : 0;
 
             return {
                 totalDays: totalDays,
                 totalPrice: totalPrice,
+                regularPrice: regularPrice,
+                discountPercent: discountPercent,
+                savings: savings,
+                ratePerDay: ratePerDay,
                 currency: currencySymbol,
                 lang: currentLang
             };
@@ -1406,6 +1426,7 @@
             let btn = document.getElementById('btnSubmit');
             let svgPriceSub = document.getElementById('svgPriceSub');
             let configPrice = document.getElementById('configPrice');
+            let configSubtitle = document.getElementById('configSubtitle');
             
             let isSpecialMode = (document.getElementById('specialDateContainer') && document.getElementById('specialDateContainer').style.display !== 'none');
             let calc = calculateActiveDaysAndPrice();
@@ -1416,19 +1437,33 @@
                 if (btn) btn.innerHTML = `${localT.btnSubmit} (${localT.priceInd})`;
                 if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? 'na zapytanie' : 'auf Anfrage';
                 if (configPrice) configPrice.textContent = localT.priceInd;
+                if (configSubtitle) configSubtitle.textContent = localT.configSubtitle;
                 return;
             }
 
             if (calc.totalDays > 0) {
                 let termsWord = getPluralTerm(calc.totalDays, calc.lang);
                 let orderPrefix = localT.btnOrderPrefix || '🛒 ZAMÓW PAKIET – ';
-                if (btn) btn.innerHTML = `${orderPrefix}${calc.totalPrice} ${calc.currency} (${calc.totalDays} ${termsWord})`;
+                let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
+
+                if (btn) btn.innerHTML = `${orderPrefix}${calc.totalPrice} ${calc.currency}${discountBadge} (${calc.totalDays} ${termsWord})`;
                 if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}`;
                 if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}`;
+
+                if (configSubtitle) {
+                    if (calc.savings > 0) {
+                        configSubtitle.innerHTML = (calc.lang === 'pl')
+                            ? `Oszczędzasz <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (Stawka: ${calc.ratePerDay} zł/dzień)`
+                            : `Sie sparen <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (${calc.ratePerDay} €/Tag)`;
+                    } else {
+                        configSubtitle.textContent = localT.configSubtitle;
+                    }
+                }
             } else {
                 if (btn) btn.innerHTML = localT.btnSubmit;
                 if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? "na zapytanie" : "auf Anfrage";
                 if (configPrice) configPrice.textContent = localT.priceInd;
+                if (configSubtitle) configSubtitle.textContent = localT.configSubtitle;
             }
         }
 
@@ -1598,11 +1633,16 @@
             
             var calc = calculateActiveDaysAndPrice();
             if (!isSpecialMode && calc.totalDays > 0) {
-                var dailyRate = (currentLang === 'pl') ? '25 PLN' : '6 €';
                 var termsUnit = getPluralTerm(calc.totalDays, currentLang);
-                body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + " (" + calc.totalDays + " " + termsUnit + " x " + dailyRate + ")\n";
+                body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + "\n";
+                body += "- Liczba aktywnych dni: " + calc.totalDays + " " + termsUnit + "\n";
+                body += "- Zastosowana stawka: " + calc.ratePerDay + " " + calc.currency + " / dzień\n";
+                if (calc.savings > 0) {
+                    body += "- Naliczony rabat: " + calc.discountPercent + "% (Oszczędność: " + calc.savings + " " + calc.currency + ")\n";
+                }
+                body += "\n";
             } else {
-                body += "PODSUMOWANIE CENY: " + localT.priceInd + "\n";
+                body += "PODSUMOWANIE CENY: " + localT.priceInd + "\n\n";
             }
             
             body += localT.paymentNote + " " + nr + "\n\n";
