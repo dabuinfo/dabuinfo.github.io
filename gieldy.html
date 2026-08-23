@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wyszukiwarka Giełd i Szperaczy w Polsce</title>
-       
-    <link rel="icon" href="/favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/favicon.png">
-    
     <style>
         /* Stylizacja Dark Mode */
         body {
@@ -31,8 +26,58 @@
         .subtitle {
             text-align: center;
             color: #94a3b8;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-size: 1.1rem;
+        }
+
+        /* Sekcja Banera Zgłoszeniowego (Google Forms) */
+        .promo-banner {
+            background-color: #151b26;
+            border: 1px solid #f39c12;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 35px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .promo-banner h2 {
+            color: #f39c12;
+            margin-top: 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .promo-banner p {
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Przyciski i akcje */
+        .btn {
+            background-color: #f39c12;
+            color: #0f0f11;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background-color: #d6810a;
+            transform: translateY(-1px);
         }
 
         /* Panel wyszukiwania */
@@ -82,7 +127,6 @@
         .gielda-card:hover {
             transform: translateY(-2px);
             border-color: #4a5568;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
         }
 
         .gielda-header {
@@ -123,7 +167,7 @@
         }
 
         .description {
-            color: #94a3b8;
+            color: #cbd5e1;
             line-height: 1.6;
             margin-bottom: 20px;
         }
@@ -142,16 +186,15 @@
             color: #e2e8f0;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Wyróżnienie tagów */
-        .tag-sperrmüll { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.4); }
-        .tag-antyki { background: rgba(211, 84, 0, 0.2); color: #e67e22; border: 1px solid rgba(211, 84, 0, 0.4); }
-        .tag-rowery { background: rgba(41, 128, 185, 0.2); color: #3498db; border: 1px solid rgba(41, 128, 185, 0.4); }
+        .tag-sperrmüll { background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.3); }
+        .tag-antyki { background: rgba(211, 84, 0, 0.15); color: #e67e22; border: 1px solid rgba(211, 84, 0, 0.3); }
+        .tag-rowery { background: rgba(41, 128, 185, 0.15); color: #3498db; border: 1px solid rgba(41, 128, 185, 0.3); }
 
         /* Porady dla szperaczy */
         .tip-box {
@@ -159,7 +202,7 @@
             padding-left: 15px;
             color: #cbd5e1;
             font-size: 0.9rem;
-            background: rgba(243, 156, 18, 0.05);
+            background: rgba(243, 156, 18, 0.04);
             padding-top: 10px;
             padding-bottom: 10px;
             border-radius: 0 8px 8px 0;
@@ -172,8 +215,7 @@
             font-size: 1.1rem;
         }
 
-        /* Dostosowanie mobilne */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .controls { flex-direction: column; }
             .gielda-header { flex-direction: column; gap: 8px; }
         }
@@ -184,13 +226,26 @@
     <h1>🔍 Giełdy & Pchle Targi w Polsce</h1>
     <div class="subtitle">Interaktywna wyszukiwarka dla łowców skarbów i importerów z "wystawek"</div>
     
+    <!-- Baner z wezwaniem do dodania nowej giełdy poprzez Formularz Google -->
+    <div class="promo-banner">
+        <h2>🎯 Znasz giełdu, której tu brakuje?</h2>
+        <p>
+            Pomóż nam budować największą w Polsce mapę giełd staroci i placów z zachodnim importem! Zgłoś nowe miejsce, podaj terminy oraz asortyment, a my dodamy je do bazy.
+        </p>
+        <a href="https://forms.gle/zmdZ3VqddMWxnQ2u9" target="_blank" class="btn">
+            Zgłoś Nową Giełdę 🚀
+        </a>
+    </div>
+
+    <!-- Filtry wyszukiwania -->
     <div class="controls">
-        <input type="text" id="searchInput" placeholder="Szukaj miasta, nazwy giełdy lub asortymentu (np. rowery)...">
+        <input type="text" id="searchInput" placeholder="Szukaj miasta, nazwy giełdy lub asortymentu (np. rowery, dębowe)...">
         <select id="voivodeshipSelect">
             <option value="">Wszystkie województwa</option>
         </select>
     </div>
 
+    <!-- Wyniki wyszukiwania -->
     <div id="results">
         <div class="no-results">Ładowanie bazy danych...</div>
     </div>
@@ -198,7 +253,7 @@
     <script>
         let gieldyData = [];
 
-        // 1. Ładowanie danych z pliku JSON wygenerowanego przez Gemini Notebook
+        // 1. Ładowanie bazowych giełd z pliku JSON
         fetch('baza_gield_polska.json')
             .then(response => response.json())
             .then(data => {
@@ -208,10 +263,10 @@
             })
             .catch(error => {
                 document.getElementById('results').innerHTML = 
-                    `<div class="no-results">⚠️ Błąd ładowania danych. Upewnij się, że plik 'baza_gield_polska.json' znajduje się w tym samym katalogu.</div>`;
+                    `<div class="no-results">⚠️ Błąd ładowania danych. Upewnij się, że plik 'baza_gield_polska.json' znajduje się w tym samym katalogu na serwerze GitHub Pages.</div>`;
             });
 
-        // 2. Inicjalizacja listy województw
+        // 2. Inicjalizacja filtra województw
         function populateVoivodeships(data) {
             const select = document.getElementById('voivodeshipSelect');
             const wojewodztwa = [...new Set(data.map(g => g.wojewodztwo))].sort();
@@ -223,7 +278,7 @@
             });
         }
 
-        // 3. Renderowanie kart giełd
+        // 3. Renderowanie giełd
         function renderGieldy(data) {
             const container = document.getElementById('results');
             if (data.length === 0) {
@@ -236,12 +291,12 @@
                 const card = document.createElement('div');
                 card.className = 'gielda-card';
                 
-                // Przypisywanie specjalnych klas stylizujących tagi dla lepszego wyglądu
+                // Przypisywanie specjalnych klas dla kluczowych tagów
                 const tagsHTML = g.typ_handlu.map(t => {
                     let specialClass = '';
                     const tLower = t.toLowerCase();
                     if (tLower.includes('sperrmüll') || tLower.includes('wystawki') || tLower.includes('import')) specialClass = 'tag-sperrmüll';
-                    else if (tLower.includes('antyki') || tLower.includes('starocie')) specialClass = 'tag-antyki';
+                    else if (tLower.includes('antyki') || tLower.includes('starocie') || tLower.includes('jarmark')) specialClass = 'tag-antyki';
                     else if (tLower.includes('rowery')) specialClass = 'tag-rowery';
                     return `<span class="tag ${specialClass}">${t}</span>`;
                 }).join('');
@@ -265,7 +320,7 @@
             });
         }
 
-        // 4. Filtrowanie dynamiczne
+        // 4. Dynamiczne wyszukiwanie i filtrowanie
         function filterData() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const selectedWoj = document.getElementById('voivodeshipSelect').value;
