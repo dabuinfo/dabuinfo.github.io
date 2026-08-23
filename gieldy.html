@@ -55,7 +55,6 @@
             font-size: 1.1rem;
         }
 
-        /* Przełącznik Państwa */
         .country-switch {
             display: flex;
             justify-content: center;
@@ -89,7 +88,6 @@
             border-color: #f39c12;
         }
 
-        /* Panel wyszukiwania */
         .controls {
             display: flex;
             gap: 15px;
@@ -125,7 +123,6 @@
             font-weight: 600;
         }
 
-        /* Karty giełd */
         #results {
             display: grid;
             gap: 20px;
@@ -183,27 +180,12 @@
             color: #94a3b8;
         }
 
-        .termin-link {
-            color: #2ecc71;
-            text-decoration: underline;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: color 0.2s ease;
-        }
-
-        .termin-link:hover {
-            color: #27ae60;
-        }
-
         .description {
             color: #cbd5e1;
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
-        /* Tagi */
         .tags-container {
             display: flex;
             flex-wrap: wrap;
@@ -234,11 +216,6 @@
             font-size: 0.9rem;
             background: rgba(243, 156, 18, 0.04);
             border-radius: 0 8px 8px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .no-results {
@@ -291,7 +268,6 @@
             transform: translateY(-1px);
         }
 
-        /* Stopka dabu-info */
         .dabu-footer {
             background-color: #121212; 
             border-top: 1px solid #333; 
@@ -332,13 +308,11 @@
         <h1>🔍 Giełdy & Pchle Targi</h1>
         <div class="subtitle">Interaktywna wyszukiwarka łowców skarbów, staroci i wystawek (PL / DE)</div>
         
-        <!-- Przełącznik Państwa -->
         <div class="country-switch">
             <button class="country-btn active" onclick="zmienKraj('PL')">🇵🇱 Polska</button>
             <button class="country-btn" onclick="zmienKraj('DE')">🇩🇪 Niemcy</button>
         </div>
 
-        <!-- Filtry wyszukiwania -->
         <div class="controls">
             <input type="text" id="searchInput" placeholder="Szukaj miasta, kodu PLZ, nazwy lub asortymentu...">
             <select id="regionSelect">
@@ -348,12 +322,10 @@
 
         <div id="countDisplay" class="results-count"></div>
 
-        <!-- Wyniki wyszukiwania -->
         <div id="results">
             <div class="no-results">Ładowanie bazy danych...</div>
         </div>
 
-        <!-- Baner Zgłoszeniowy -->
         <div class="promo-banner">
             <h2 id="bannerTitle">🎯 Znasz giełdę, której tu brakuje?</h2>
             <p id="bannerDesc">
@@ -403,7 +375,6 @@
     </footer>
 
     <script>
-        // Dynamiczny rok w stopce
         document.addEventListener('DOMContentLoaded', function() {
             const currentYear = new Date().getFullYear();
             const dynYear = document.getElementById('dynamic-year');
@@ -412,7 +383,6 @@
             if (footerText) footerText.innerHTML = footerText.innerHTML.replace(/2026/g, currentYear);
         });
 
-        // Konfiguracja baz i formularzy
         const CONFIG = {
             'PL': { 
                 file: 'baza_gield_polska.json', 
@@ -436,7 +406,6 @@
         let aktualnyKraj = 'PL';
         let aktualneDane = [];
 
-        // Główna funkcja ładowania danych
         async function zaladujBaze(kraj) {
             aktualnyKraj = kraj;
             const container = document.getElementById('results');
@@ -468,7 +437,6 @@
             filtrujDane();
         }
 
-        // Przełączanie kraju
         function zmienKraj(kraj) {
             document.querySelectorAll('.country-btn').forEach(btn => btn.classList.remove('active'));
             if (kraj === 'PL') document.querySelectorAll('.country-btn')[0].classList.add('active');
@@ -478,7 +446,6 @@
             zaladujBaze(kraj);
         }
 
-        // Budowa listy regionów (Województwa / Landy)
         function zbudujListeRegionow(data, defaultLabel) {
             const select = document.getElementById('regionSelect');
             select.innerHTML = `<option value="">${defaultLabel}</option>`;
@@ -492,7 +459,6 @@
             });
         }
 
-        // Renderowanie kart
         function renderujKarty(data) {
             const container = document.getElementById('results');
             const countDisplay = document.getElementById('countDisplay');
@@ -518,21 +484,6 @@
                     return `<span class="tag ${specialClass}">${t}</span>`;
                 }).join('');
 
-                // Czyste wyświetlanie harmonogramu:
-                let terminHTML = '';
-                const cyklText = g.cykl || '';
-                const isSingleDate = /\b\d{2}\.\d{2}\.\d{4}\b/.test(cyklText);
-
-                if (g.zrodlo) {
-                    if (isSingleDate || !cyklText || cyklText === 'W wybrane weekendy') {
-                        terminHTML = `<a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">Sprawdź aktualne terminy i godziny ↗</a>`;
-                    } else {
-                        terminHTML = `${cyklText} &nbsp;|&nbsp; <a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">Sprawdź terminy ↗</a>`;
-                    }
-                } else {
-                    terminHTML = `${cyklText || 'Według harmonogramu organizatora'}`;
-                }
-
                 card.innerHTML = `
                     <div class="gielda-header">
                         <h3 class="gielda-title">${g.nazwa}</h3>
@@ -540,19 +491,18 @@
                     </div>
                     <div class="meta-info">
                         <div class="meta-item">📍 <strong>Lokalizacja / Adres:</strong> ${g.adres}</div>
-                        <div class="meta-item">📅 <strong>Termin / Harmonogram:</strong> ${terminHTML}</div>
+                        <div class="meta-item">📅 <strong>Harmonogram:</strong> ${g.cykl}</div>
                     </div>
                     <div class="description">${g.opis}</div>
                     <div class="tags-container">${tagsHTML}</div>
                     <div class="tip-box">
-                        <div>💡 <strong>Wskazówka:</strong> ${g.wskazowki}</div>
+                        💡 <strong>Wskazówka:</strong> ${g.wskazowki}
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Filtrowanie na żywo
         function filtrujDane() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const selectedRegion = document.getElementById('regionSelect').value;
@@ -573,7 +523,6 @@
         document.getElementById('searchInput').addEventListener('input', filtrujDane);
         document.getElementById('regionSelect').addEventListener('change', filtrujDane);
 
-        // Start z domyślną bazą Polski
         zaladujBaze('PL');
     </script>
 </body>
