@@ -183,6 +183,20 @@
             color: #94a3b8;
         }
 
+        .termin-link {
+            color: #2ecc71;
+            text-decoration: underline;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .termin-link:hover {
+            color: #27ae60;
+        }
+
         .description {
             color: #cbd5e1;
             line-height: 1.6;
@@ -225,16 +239,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
-        }
-
-        .link-source {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85rem;
-            background: rgba(52, 152, 219, 0.1);
-            padding: 4px 10px;
-            border-radius: 4px;
         }
 
         .no-results {
@@ -514,7 +518,12 @@
                     return `<span class="tag ${specialClass}">${t}</span>`;
                 }).join('');
 
-                const sourceLink = g.zrodlo ? `<a href="${g.zrodlo}" target="_blank" class="link-source">Szczegóły / Źródło ↗</a>` : '';
+                // Wstawianie bezpośredniego linku do źródła w terminie
+                const terminWyswietlany = g.zrodlo 
+                    ? `<a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">${g.cykl} (Sprawdź aktualne terminy ↗)</a>`
+                    : `${g.cykl}`;
+
+                const godzinyWyswietlane = g.godziny ? `(${g.godziny})` : '';
 
                 card.innerHTML = `
                     <div class="gielda-header">
@@ -523,13 +532,12 @@
                     </div>
                     <div class="meta-info">
                         <div class="meta-item">📍 <strong>Lokalizacja / Adres:</strong> ${g.adres}</div>
-                        <div class="meta-item">📅 <strong>Termin / Harmonogram:</strong> ${g.cykl} (${g.godziny || '07:00 - 15:00'})</div>
+                        <div class="meta-item">📅 <strong>Termin / Harmonogram:</strong> ${terminWyswietlany} ${godzinyWyswietlane}</div>
                     </div>
                     <div class="description">${g.opis}</div>
                     <div class="tags-container">${tagsHTML}</div>
                     <div class="tip-box">
                         <div>💡 <strong>Wskazówka:</strong> ${g.wskazowki}</div>
-                        ${sourceLink}
                     </div>
                 `;
                 container.appendChild(card);
