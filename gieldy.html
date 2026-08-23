@@ -336,7 +336,7 @@
 
         <!-- Filtry wyszukiwania -->
         <div class="controls">
-            <input type="text" id="searchInput" placeholder="Szukaj miasta, nazwy, kodu pocztowego lub asortymentu...">
+            <input type="text" id="searchInput" placeholder="Szukaj miasta, kodu PLZ, nazwy lub asortymentu...">
             <select id="regionSelect">
                 <option value="">Wszystkie województwa</option>
             </select>
@@ -349,7 +349,7 @@
             <div class="no-results">Ładowanie bazy danych...</div>
         </div>
 
-        <!-- Baner Zgłoszeniowy (konfigurowany dynamicznie dla PL i DE) -->
+        <!-- Baner Zgłoszeniowy -->
         <div class="promo-banner">
             <h2 id="bannerTitle">🎯 Znasz giełdę, której tu brakuje?</h2>
             <p id="bannerDesc">
@@ -408,7 +408,7 @@
             if (footerText) footerText.innerHTML = footerText.innerHTML.replace(/2026/g, currentYear);
         });
 
-        // Konfiguracja baz i dedykowanych formularzy zgłoszeniowych
+        // Konfiguracja baz i formularzy
         const CONFIG = {
             'PL': { 
                 file: 'baza_gield_polska.json', 
@@ -438,7 +438,6 @@
             const container = document.getElementById('results');
             container.innerHTML = '<div class="no-results">Ładowanie bazy danych...</div>';
 
-            // Aktualizacja sekcji formularza zgłoszeniowego
             document.getElementById('bannerTitle').textContent = CONFIG[kraj].bannerTitle;
             document.getElementById('bannerDesc').textContent = CONFIG[kraj].bannerDesc;
             const bannerBtn = document.getElementById('bannerBtn');
@@ -450,7 +449,6 @@
                     const response = await fetch(CONFIG[kraj].file);
                     const data = await response.json();
                     
-                    // Standaryzacja: zamiana 'wojewodztwo' lub 'land' na wspólny klucz 'region'
                     cacheBazy[kraj] = data.map(item => ({
                         ...item,
                         region: item.wojewodztwo || item.land || 'Inne'
@@ -476,7 +474,7 @@
             zaladujBaze(kraj);
         }
 
-        // Budowa listy rozwijanej (Województwa / Landy)
+        // Budowa listy regionów (Województwa / Landy)
         function zbudujListeRegionow(data, defaultLabel) {
             const select = document.getElementById('regionSelect');
             select.innerHTML = `<option value="">${defaultLabel}</option>`;
@@ -538,9 +536,9 @@
             });
         }
 
-        // Filtrowanie na bieżąco
+        // Filtrowanie na żywo
         function filtrujDane() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const selectedRegion = document.getElementById('regionSelect').value;
 
             const przefiltrowane = aktualneDane.filter(g => {
