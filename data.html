@@ -2,8 +2,8 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zamówienie Bazy Danych</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zamówienie Bazy Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -51,96 +51,123 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0; 
-            padding: 20px 15px; 
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 30px 20px 20px 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
         .box { 
             width: 100%;
-            max-width: 500px;
             background-color: var(--box-bg);
-            padding: 25px; 
+            padding: 35px 30px; 
             border-radius: 12px; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
             box-sizing: border-box;
         }
 
-        .header-graphic { text-align: center; margin-bottom: 20px; }
+        .header-graphic { text-align: center; margin-bottom: 25px; }
         .header-graphic svg { fill: var(--accent-color); width: 64px; height: 64px; }
 
-        h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; }
-        .subtitle { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px; }
+        h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; font-size: 1.8rem; }
+        .subtitle { text-align: center; font-size: 1rem; color: #888; margin-bottom: 30px; }
 
-        /* Styl dla ramki z informacjami o CSV */
-        .info-box {
-            background-color: var(--info-bg);
-            border-left: 4px solid var(--accent-color);
-            padding: 15px;
+        /* Układ kafelków na dużych ekranach */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
             margin-bottom: 25px;
-            border-radius: 0 8px 8px 0;
+        }
+
+        @media (min-width: 992px) {
+            .packages-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Ramki pakietów */
+        .package-card {
+            padding: 20px;
+            border-radius: 8px;
             font-size: 0.9em;
             line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .info-box strong { display: block; margin-bottom: 8px; }
-        .info-box ul { margin: 0; padding-left: 20px; }
-        .info-box li { margin-bottom: 4px; }
 
-        /* Ramka Serwisy Rowerowe (Bosch + Shimano) */
         .bike-box {
             background-color: rgba(0, 119, 182, 0.08);
             border: 1px solid var(--bike-color);
-            border-left: 4px solid var(--bike-color);
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.9em;
-            line-height: 1.5;
+            border-left: 5px solid var(--bike-color);
         }
 
-        /* Ramka Kärcher */
         .karcher-box {
             background-color: rgba(255, 204, 0, 0.12);
             border: 1px solid var(--karcher-color);
-            border-left: 4px solid var(--karcher-color);
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.9em;
-            line-height: 1.5;
+            border-left: 5px solid var(--karcher-color);
         }
 
-        /* Ramka Husqvarna */
         .hq-box {
             background-color: rgba(243, 156, 18, 0.08);
             border: 1px solid var(--hq-color);
-            border-left: 4px solid var(--hq-color);
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.9em;
-            line-height: 1.5;
+            border-left: 5px solid var(--hq-color);
         }
 
         .divider {
             display: flex;
             align-items: center;
             text-align: center;
-            margin: 25px 0;
+            margin: 35px 0 25px 0;
             color: #888;
-            font-size: 0.9em;
+            font-size: 0.95em;
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .divider::before, .divider::after {
             content: '';
             flex: 1;
             border-bottom: 1px solid var(--border-color);
         }
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
+        .divider:not(:empty)::before { margin-right: 1em; }
+        .divider:not(:empty)::after { margin-left: 1em; }
+
+        /* Układ dla sekcji niestandardowej na dużych ekranach */
+        .custom-order-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 992px) {
+            .custom-order-layout {
+                grid-template-columns: 1fr 1.2fr;
+                align-items: start;
+            }
+        }
+
+        .info-box {
+            background-color: var(--info-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        .info-box strong { display: block; margin-bottom: 10px; font-size: 1.05em; }
+        .info-box ul { margin: 0; padding-left: 20px; }
+        .info-box li { margin-bottom: 6px; }
 
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
@@ -153,7 +180,7 @@
             background-color: var(--box-bg);
             color: var(--text-color);
             box-sizing: border-box;
-            font-size: 16px; 
+            font-size: 15px; 
             font-family: inherit;
         }
         
@@ -162,31 +189,20 @@
         button { 
             background: var(--accent-color); 
             color: var(--bg-color); 
-            padding: 16px; 
+            padding: 15px; 
             border: none; 
             cursor: pointer; 
             width: 100%; 
-            font-size: 18px; 
+            font-size: 16px; 
             border-radius: 8px; 
             font-weight: bold;
             transition: opacity 0.2s, transform 0.1s;
             margin-top: 10px;
         }
 
-        button.bike-btn {
-            background: var(--bike-color);
-            color: #fff;
-        }
-
-        button.karcher-btn {
-            background: var(--karcher-color);
-            color: var(--karcher-btn-text);
-        }
-
-        button.hq-btn {
-            background: var(--hq-color);
-            color: #fff;
-        }
+        button.bike-btn { background: var(--bike-color); color: #fff; }
+        button.karcher-btn { background: var(--karcher-color); color: var(--karcher-btn-text); }
+        button.hq-btn { background: var(--hq-color); color: #fff; }
 
         button:active { opacity: 0.8; transform: scale(0.98); }
 
@@ -216,162 +232,287 @@
         
         .sms-btn:active { background-color: #f0f0f0; }
 
-        footer { 
-            margin-top: 30px; 
-            font-size: 0.75em; 
-            color: #888; 
-            text-align: justify; 
-            line-height: 1.4; 
-            width: 100%;
-            max-width: 500px;
+        /* ========================================= */
+        /* STOPKA DABU-INFO                          */
+        /* ========================================= */
+        .dabu-footer {
+            background-color: #121212; 
+            border-top: 1px solid #333; 
+            color: #ccc;
+            padding: 50px 20px 20px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 40px;
+        }
+        .dabu-footer-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 30px; 
+            justify-content: space-between; 
+        }
+        .dabu-footer-col { 
+            flex: 1; 
+            min-width: 280px; 
+            text-align: left; 
+        }
+        .dabu-footer-heading { 
+            color: #2ecc71; 
+            font-size: 1.3em; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+        }
+        .dabu-footer-links, .dabu-footer-contact { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            font-size: 0.9em; 
+            line-height: 1.8; 
+        }
+        .dabu-footer-links li a, .dabu-footer-contact li a { 
+            color: #3498db; 
+            text-decoration: none; 
+        }
+        .dabu-footer-links li a:hover, .dabu-footer-contact li a:hover { 
+            color: #2ecc71; 
+            text-decoration: underline; 
+        }
+        .dabu-footer-contact strong { 
+            color: #e0e0e0; 
+        }
+        .dabu-footer-bottom { 
+            max-width: 1200px; 
+            margin: 40px auto 0; 
+            padding-top: 20px; 
+            border-top: 1px solid #222; 
+            text-align: center; 
+            font-size: 0.85em; 
+            color: #777; 
+        }
+        .dabu-footer-bottom a { 
+            color: #2ecc71; 
+            text-decoration: none; 
+            font-weight: bold; 
+        }
+
+        @media (max-width: 768px) {
+            .box { padding: 25px 15px; }
+            .dabu-footer-container { flex-direction: column; }
+            .dabu-footer-col { text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <div class="header-graphic">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
-            </svg>
-            <h2>Data Mining Service</h2>
-            <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
-        </div>
-
-        <!-- OFERTA SPECJALNA: SERWISY ROWEROWE (BOSCH EBIKE + SHIMANO SSC) -->
-        <div class="bike-box">
-            <strong style="color: var(--bike-color); font-size: 1.1em; display: block; margin-bottom: 8px;">🚲 Gotowe bazy: Serwisy Rowerowe (Bosch eBike + Shimano SSC)</strong>
-            <p style="margin: 0 0 10px 0;">Kompletne zestawienia autoryzowanych serwisów Bosch eBike oraz Shimano Service Center.</p>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <select id="bikeKraj">
-                    <option value="">-- Wybierz pakiet (Rowery) --</option>
-                    <option value="Cała Europa">Cała Europa (15 674 rekordów)</option>
-                    <option value="Niemcy">Niemcy (5 574 rekordów)</option>
-                    <option value="Francja">Francja (1 721 rekordów)</option>
-                    <option value="Włochy">Włochy (1 586 rekordów)</option>
-                    <option value="Szwajcaria">Szwajcaria (1 471 rekordów)</option>
-                    <option value="Holandia">Holandia (1 365 rekordów)</option>
-                    <option value="Belgia">Belgia (1 059 rekordów)</option>
-                    <option value="Austria">Austria (1 007 rekordów)</option>
-                    <option value="Polska">Polska (494 rekordów)</option>
-                    <option value="Norwegia">Norwegia (402 rekordów)</option>
-                    <option value="Czechy">Czechy (381 rekordów)</option>
-                    <option value="Dania">Dania (361 rekordów)</option>
-                    <option value="Szwecja">Szwecja (221 rekordów)</option>
-                    <option value="Islandia">Islandia (18 rekordów)</option>
-                    <option value="Luksemburg">Luksemburg (14 rekordów)</option>
-                </select>
+    <div class="main-container">
+        <div class="box">
+            <div class="header-graphic">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
+                </svg>
+                <h2>Data Mining Service</h2>
+                <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
             </div>
-            <button class="bike-btn" onclick="generujZamowienieBike()">Zamów bazę Rowerową</button>
-        </div>
 
-        <!-- OFERTA SPECJALNA KÄRCHER -->
-        <div class="karcher-box">
-            <strong style="color: #b8860b; font-size: 1.1em; display: block; margin-bottom: 8px;">⚡ Gotowe bazy: Punkty sprzedaży i Serwisy Kärcher</strong>
-            <p style="margin: 0 0 10px 0;">Pełne zestawienia dilerów, centrów serwisowych i dystrybutorów urządzeń ciśnieniowych Kärcher.</p>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <select id="karcherKraj">
-                    <option value="">-- Wybierz państwo (Kärcher) --</option>
-                    <option value="Niemcy">Niemcy (3 314 punktów)</option>
-                    <option value="Polska">Polska (1 642 punkty)</option>
-                    <option value="Norwegia">Norwegia (854 punkty)</option>
-                    <option value="Hiszpania">Hiszpania (256 punktów)</option>
-                    <option value="Szwajcaria">Szwajcaria (145 punktów)</option>
-                    <option value="Włochy">Włochy (87 punktów)</option>
-                    <option value="Czechy">Czechy (68 punktów)</option>
-                    <option value="Dania">Dania (62 punkty)</option>
-                    <option value="Austria">Austria (54 punkty)</option>
-                    <option value="Belgia">Belgia (54 punkty)</option>
-                    <option value="Wielka Brytania">Wielka Brytania (24 punkty)</option>
-                    <option value="Francja">Francja (Centra serwisowe)</option>
-                    <option value="Holandia">Holandia (Pełna baza)</option>
-                </select>
+            <!-- SIATKA GOTOWYCH PAKIETÓW -->
+            <div class="packages-grid">
+                
+                <!-- OFERTA SPECJALNA: SERWISY ROWEROWE -->
+                <div class="package-card bike-box">
+                    <div>
+                        <strong style="color: var(--bike-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🚲 Serwisy Rowerowe (Bosch + Shimano)</strong>
+                        <p style="margin: 0 0 12px 0;">Kompletne zestawienia autoryzowanych serwisów Bosch eBike oraz Shimano Service Center.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="bikeKraj">
+                                <option value="">-- Wybierz pakiet (Rowery) --</option>
+                                <option value="Cała Europa">Cała Europa (15 674 rekordów)</option>
+                                <option value="Niemcy">Niemcy (5 574 rekordów)</option>
+                                <option value="Francja">Francja (1 721 rekordów)</option>
+                                <option value="Włochy">Włochy (1 586 rekordów)</option>
+                                <option value="Szwajcaria">Szwajcaria (1 471 rekordów)</option>
+                                <option value="Holandia">Holandia (1 365 rekordów)</option>
+                                <option value="Belgia">Belgia (1 059 rekordów)</option>
+                                <option value="Austria">Austria (1 007 rekordów)</option>
+                                <option value="Polska">Polska (494 rekordów)</option>
+                                <option value="Norwegia">Norwegia (402 rekordów)</option>
+                                <option value="Czechy">Czechy (381 rekordów)</option>
+                                <option value="Dania">Dania (361 rekordów)</option>
+                                <option value="Szwecja">Szwecja (221 rekordów)</option>
+                                <option value="Islandia">Islandia (18 rekordów)</option>
+                                <option value="Luksemburg">Luksemburg (14 rekordów)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="bike-btn" onclick="generujZamowienieBike()">Zamów bazę Rowerową</button>
+                </div>
+
+                <!-- OFERTA SPECJALNA KÄRCHER -->
+                <div class="package-card karcher-box">
+                    <div>
+                        <strong style="color: #b8860b; font-size: 1.05em; display: block; margin-bottom: 8px;">⚡ Serwisy i Dilerzy Kärcher</strong>
+                        <p style="margin: 0 0 12px 0;">Pełne zestawienia dilerów, centrów serwisowych i dystrybutorów myjek ciśnieniowych.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="karcherKraj">
+                                <option value="">-- Wybierz państwo (Kärcher) --</option>
+                                <option value="Niemcy">Niemcy (3 314 punktów)</option>
+                                <option value="Polska">Polska (1 642 punkty)</option>
+                                <option value="Norwegia">Norwegia (854 punkty)</option>
+                                <option value="Hiszpania">Hiszpania (256 punktów)</option>
+                                <option value="Szwajcaria">Szwajcaria (145 punktów)</option>
+                                <option value="Włochy">Włochy (87 punktów)</option>
+                                <option value="Czechy">Czechy (68 punktów)</option>
+                                <option value="Dania">Dania (62 punkty)</option>
+                                <option value="Austria">Austria (54 punkty)</option>
+                                <option value="Belgia">Belgia (54 punkty)</option>
+                                <option value="Wielka Brytania">Wielka Brytania (24 punkty)</option>
+                                <option value="Francja">Francja (Centra serwisowe)</option>
+                                <option value="Holandia">Holandia (Pełna baza)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę Kärcher</button>
+                </div>
+
+                <!-- OFERTA SPECJALNA HUSQVARNA -->
+                <div class="package-card hq-box">
+                    <div>
+                        <strong style="color: var(--hq-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🔥 Dilerzy Husqvarna</strong>
+                        <p style="margin: 0 0 12px 0;">Pełne, zaktualizowane zestawienia autoryzowanych dilerów i serwisów ogrodniczych.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="husqvarnaKraj">
+                                <option value="">-- Wybierz państwo (Husqvarna) --</option>
+                                <option value="Austria">Austria (722 serwisów)</option>
+                                <option value="Belgia">Belgia (149 serwisów)</option>
+                                <option value="Bośnia i Hercegowina">Bośnia i Hercegowina (74 serwisów)</option>
+                                <option value="Bułgaria">Bułgaria (157 serwisów)</option>
+                                <option value="Chorwacja">Chorwacja (128 serwisów)</option>
+                                <option value="Cypr">Cypr (18 serwisów)</option>
+                                <option value="Czarnogóra">Czarnogóra (6 serwisów)</option>
+                                <option value="Czechy">Czechy (156 serwisów)</option>
+                                <option value="Dania">Dania (123 serwisów)</option>
+                                <option value="Estonia">Estonia (39 serwisów)</option>
+                                <option value="Finlandia">Finlandia (145 serwisów)</option>
+                                <option value="Francja">Francja (1172 serwisów)</option>
+                                <option value="Grecja">Grecja (240 serwisów)</option>
+                                <option value="Hiszpania">Hiszpania (457 serwisów)</option>
+                                <option value="Holandia">Holandia (173 serwisów)</option>
+                                <option value="Irlandia">Irlandia (75 serwisów)</option>
+                                <option value="Litwa">Litwa (71 serwisów)</option>
+                                <option value="Luksemburg">Luksemburg (8 serwisów)</option>
+                                <option value="Łotwa">Łotwa (50 serwisów)</option>
+                                <option value="Niemcy">Niemcy (1496 serwisów)</option>
+                                <option value="Norwegia">Norwegia (342 serwisów)</option>
+                                <option value="Polska">Polska (342 serwisów)</option>
+                                <option value="Portugalia">Portugalia (167 serwisów)</option>
+                                <option value="Rumunia">Rumunia (223 serwisów)</option>
+                                <option value="Serbia">Serbia (58 serwisów)</option>
+                                <option value="Słowacja">Słowacja (75 serwisów)</option>
+                                <option value="Słowenia">Słowenia (52 serwisów)</option>
+                                <option value="Szwajcaria">Szwajcaria (447 serwisów)</option>
+                                <option value="Szwecja">Szwecja (355 serwisów)</option>
+                                <option value="Turcja">Turcja (393 serwisów)</option>
+                                <option value="Ukraina">Ukraina (234 serwisów)</option>
+                                <option value="Wielka Brytania">Wielka Brytania (408 serwisów)</option>
+                                <option value="Włochy">Włochy (868 serwisów)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
+                </div>
+
             </div>
-            <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę Kärcher</button>
-        </div>
 
-        <!-- OFERTA SPECJALNA HUSQVARNA -->
-        <div class="hq-box">
-            <strong style="color: var(--hq-color); font-size: 1.1em; display: block; margin-bottom: 8px;">🔥 Gotowe bazy: Autoryzowani Dilerzy Husqvarna</strong>
-            <p style="margin: 0 0 10px 0;">Pełne, zaktualizowane zestawienia serwisów z danymi kontaktowymi i adresowymi.</p>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <select id="husqvarnaKraj">
-                    <option value="">-- Wybierz państwo (Husqvarna) --</option>
-                    <option value="Austria">Austria (722 serwisów)</option>
-                    <option value="Belgia">Belgia (149 serwisów)</option>
-                    <option value="Bośnia i Hercegowina">Bośnia i Hercegowina (74 serwisów)</option>
-                    <option value="Bułgaria">Bułgaria (157 serwisów)</option>
-                    <option value="Chorwacja">Chorwacja (128 serwisów)</option>
-                    <option value="Cypr">Cypr (18 serwisów)</option>
-                    <option value="Czarnogóra">Czarnogóra (6 serwisów)</option>
-                    <option value="Czechy">Czechy (156 serwisów)</option>
-                    <option value="Dania">Dania (123 serwisów)</option>
-                    <option value="Estonia">Estonia (39 serwisów)</option>
-                    <option value="Finlandia">Finlandia (145 serwisów)</option>
-                    <option value="Francja">Francja (1172 serwisów)</option>
-                    <option value="Grecja">Grecja (240 serwisów)</option>
-                    <option value="Hiszpania">Hiszpania (457 serwisów)</option>
-                    <option value="Holandia">Holandia (173 serwisów)</option>
-                    <option value="Irlandia">Irlandia (75 serwisów)</option>
-                    <option value="Litwa">Litwa (71 serwisów)</option>
-                    <option value="Luksemburg">Luksemburg (8 serwisów)</option>
-                    <option value="Łotwa">Łotwa (50 serwisów)</option>
-                    <option value="Niemcy">Niemcy (1496 serwisów)</option>
-                    <option value="Norwegia">Norwegia (342 serwisów)</option>
-                    <option value="Polska">Polska (342 serwisów)</option>
-                    <option value="Portugalia">Portugalia (167 serwisów)</option>
-                    <option value="Rumunia">Rumunia (223 serwisów)</option>
-                    <option value="Serbia">Serbia (58 serwisów)</option>
-                    <option value="Słowacja">Słowacja (75 serwisów)</option>
-                    <option value="Słowenia">Słowenia (52 serwisów)</option>
-                    <option value="Szwajcaria">Szwajcaria (447 serwisów)</option>
-                    <option value="Szwecja">Szwecja (355 serwisów)</option>
-                    <option value="Turcja">Turcja (393 serwisów)</option>
-                    <option value="Ukraina">Ukraina (234 serwisów)</option>
-                    <option value="Wielka Brytania">Wielka Brytania (408 serwisów)</option>
-                    <option value="Włochy">Włochy (868 serwisów)</option>
-                </select>
+            <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
+            
+            <!-- SEKCJA NIESTANDARDOWA -->
+            <div class="custom-order-layout">
+                <div class="info-box">
+                    <strong>Baza firm z wyszukiwarek branżowych:</strong>
+                    <ul>
+                        <li>Nazwa firmy i kategoria (branża)</li>
+                        <li>Dokładny adres i lokalizacja</li>
+                        <li>Dane kontaktowe: Telefon, E-mail, strona WWW</li>
+                    </ul>
+                    <p style="margin: 15px 0 0 0; font-size: 0.9em; color: #888;">
+                        Dane pobieramy prosto z oficjalnych rejestrów niemieckich katalogów branżowych.
+                    </p>
+                </div>
+                
+                <div>
+                    <div class="form-group">
+                        <label>Czego szukasz (branża):</label>
+                        <input type="text" id="branza" placeholder="np. rowery, warsztaty samochodowe..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Obszar wyszukiwania (kod, miasto, km lub całe Niemcy):</label>
+                        <input type="text" id="obszar" placeholder="np. 53111 Bonn + 30 km / Berlin / Całe Niemcy" required>
+                    </div>
+
+                    <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie</button>
+                </div>
             </div>
-            <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
-        </div>
 
-        <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
-        
-        <!-- SEKCJA INFORMACYJNA -->
-        <div class="info-box">
-            <strong>Baza firm z wyszukiwarek branżowych:</strong>
-            <ul>
-                <li>Nazwa firmy i kategoria (branża)</li>
-                <li>Dokładny adres</li>
-                <li>Dane kontaktowe: Telefon, E-mail, strona WWW</li>
-            </ul>
-        </div>
-        
-        <div class="form-group">
-            <label>Czego szukasz (branża):</label>
-            <input type="text" id="branza" placeholder="np. rowery, warsztaty samochodowe..." required>
-        </div>
-        
-        <div class="form-group">
-            <label>Obszar wyszukiwania (kod, miasto, km lub całe Niemcy):</label>
-            <input type="text" id="obszar" placeholder="np. 53111 Bonn + 30 km / Berlin / Całe Niemcy" required>
-        </div>
-
-        <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie</button>
-
-        <div id="wynik">
-            <p style="margin-top:0;"><strong>Zapytanie gotowe do wysłania!</strong></p>
-            <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-            <p style="font-size: 0.95em; margin-bottom:0;">Cena zostanie ustalona indywidualnie po przygotowaniu bazy.</p>
-            <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
+            <div id="wynik">
+                <p style="margin-top:0;"><strong>Zapytanie gotowe do wysłania!</strong></p>
+                <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+                <p style="font-size: 0.95em; margin-bottom:0;">Cena zostanie ustalona indywidualnie po przygotowaniu bazy.</p>
+                <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p><b>RODO:</b> Administratorem danych jest Ewa Buczkowska. Dane pozyskane z publicznych rejestrów (Gelbe Seiten). Zamawiający oświadcza, że wykorzysta pozyskane dane b2b zgodnie z obowiązującym prawem o zwalczaniu nieuczciwej konkurencji (UWG).</p>
+    <!-- STOPKA DABU-INFO -->
+    <footer class="dabu-footer">
+        <div class="dabu-footer-container">
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">dabu-info</h4>
+                <p class="dabu-footer-text">Dedykowane bazy danych, scraping branżowy oraz plany i terminy wywozu gabarytów w Niemczech na rok 2026.</p>
+                <ul class="dabu-footer-links">
+                    <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                    <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
+                    <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Privacy</a></li>
+                </ul>
+            </div>
+
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
+                <ul class="dabu-footer-contact">
+                    <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                    <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
+                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
+                </ul>
+            </div>
+
+            <div class="dabu-footer-col">
+                <h4 class="dabu-footer-heading">Dane Firmy i RODO</h4>
+                <ul class="dabu-footer-contact">
+                    <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
+                    <li>💳 Płatności: BLIK, PayPal, Przelew</li>
+                    <li style="font-size: 0.85em; color: #999; margin-top: 5px;">
+                        Dane z publicznych rejestrów (m.in. Gelbe Seiten). Zamawiający wykorzystuje dane B2B zgodnie z UWG / RODO.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="dabu-footer-bottom">
+            <p>&copy; <span id="dynamic-year">2026</span> <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
+        </div>
     </footer>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYear = new Date().getFullYear();
+            const dynYear = document.getElementById('dynamic-year');
+            if (dynYear) dynYear.textContent = currentYear;
+
+            const footerText = document.querySelector('.dabu-footer-text');
+            if (footerText) footerText.innerHTML = footerText.innerHTML.replace(/2026/g, currentYear);
+        });
+
         function przygotujSMS(nr, trescSms) {
             const numerTelefonu = "+48600812820";
             const encodedTresc = encodeURIComponent(trescSms);
