@@ -518,12 +518,20 @@
                     return `<span class="tag ${specialClass}">${t}</span>`;
                 }).join('');
 
-                // Wstawianie bezpośredniego linku do źródła w terminie
-                const terminWyswietlany = g.zrodlo 
-                    ? `<a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">${g.cykl} (Sprawdź aktualne terminy ↗)</a>`
-                    : `${g.cykl}`;
+                // Czyste wyświetlanie harmonogramu:
+                let terminHTML = '';
+                const cyklText = g.cykl || '';
+                const isSingleDate = /\b\d{2}\.\d{2}\.\d{4}\b/.test(cyklText);
 
-                const godzinyWyswietlane = g.godziny ? `(${g.godziny})` : '';
+                if (g.zrodlo) {
+                    if (isSingleDate || !cyklText || cyklText === 'W wybrane weekendy') {
+                        terminHTML = `<a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">Sprawdź aktualne terminy i godziny ↗</a>`;
+                    } else {
+                        terminHTML = `${cyklText} &nbsp;|&nbsp; <a href="${g.zrodlo}" target="_blank" class="termin-link" title="Kliknij, aby sprawdzić wszystkie terminy na stronie organizatora">Sprawdź terminy ↗</a>`;
+                    }
+                } else {
+                    terminHTML = `${cyklText || 'Według harmonogramu organizatora'}`;
+                }
 
                 card.innerHTML = `
                     <div class="gielda-header">
@@ -532,7 +540,7 @@
                     </div>
                     <div class="meta-info">
                         <div class="meta-item">📍 <strong>Lokalizacja / Adres:</strong> ${g.adres}</div>
-                        <div class="meta-item">📅 <strong>Termin / Harmonogram:</strong> ${terminWyswietlany} ${godzinyWyswietlane}</div>
+                        <div class="meta-item">📅 <strong>Termin / Harmonogram:</strong> ${terminHTML}</div>
                     </div>
                     <div class="description">${g.opis}</div>
                     <div class="tags-container">${tagsHTML}</div>
