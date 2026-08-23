@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyszukiwarka Giełd i Szperaczy w Polsce</title>
+    <style>
+        /* Stylizacja Dark Mode */
+        body {
+            background-color: #0f0f11;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #f39c12; /* Ciepłe złoto vintage */
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Panel wyszukiwania */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        input, select {
+            padding: 14px 20px;
+            font-size: 16px;
+            border: 1px solid #2d3748;
+            border-radius: 10px;
+            background-color: #1a202c;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s ease;
+            flex: 2;
+        }
+
+        select {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        input:focus, select:focus {
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+        }
+
+        /* Karty giełd */
+        #results {
+            display: grid;
+            gap: 20px;
+        }
+
+        .gielda-card {
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            background-color: #151b26;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .gielda-card:hover {
+            transform: translateY(-2px);
+            border-color: #4a5568;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
+        }
+
+        .gielda-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .gielda-title {
+            margin: 0;
+            color: #f39c12;
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .gielda-loc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            background: #1a202c;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .meta-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        .meta-item strong {
+            color: #94a3b8;
+        }
+
+        .description {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Tagi i odznaki */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Wyróżnienie tagów */
+        .tag-sperrmüll { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.4); }
+        .tag-antyki { background: rgba(211, 84, 0, 0.2); color: #e67e22; border: 1px solid rgba(211, 84, 0, 0.4); }
+        .tag-rowery { background: rgba(41, 128, 185, 0.2); color: #3498db; border: 1px solid rgba(41, 128, 185, 0.4); }
+
+        /* Porady dla szperaczy */
+        .tip-box {
+            border-left: 4px solid #f39c12;
+            padding-left: 15px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            background: rgba(243, 156, 18, 0.05);
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Dostosowanie mobilne */
+        @media (max-width: 600px) {
+            .controls { flex-direction: column; }
+            .gielda-header { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔍 Giełdy & Pchle Targi w Polsce</h1>
+    <div class="subtitle">Interaktywna wyszukiwarka dla łowców skarbów i importerów z "wystawek"</div>
+    
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Szukaj miasta, nazwy giełdy lub asortymentu (np. rowery)...">
+        <select id="voivodeshipSelect">
+            <option value="">Wszystkie województwa</option>
+        </select>
+    </div>
+
+    <div id="results">
+        <div class="no-results">Ładowanie bazy danych...</div>
+    </div>
+
+    <script>
+        let gieldyData = [];
+
+        // 1. Ładowanie danych z pliku JSON wygenerowanego przez Gemini Notebook
+        fetch('baza_gield_polska.json')
+            .then(response => response.json())
+            .then(data => {
+                gieldyData = data;
+                populateVoivodeships(data);
+                renderGieldy(data);
+            })
+            .catch(error => {
+                document.getElementById('results').innerHTML = 
+                    `<div class="no-results">⚠️ Błąd ładowania danych. Upewnij się, że plik 'baza_gield_polska.json' znajduje się w tym samym katalogu.</div>`;
+            });
+
+        // 2. Inicjalizacja listy województw
+        function populateVoivodeships(data) {
+            const select = document.getElementById('voivodeshipSelect');
+            const wojewodztwa = [...new Set(data.map(g => g.wojewodztwo))].sort();
+            wojewodztwa.forEach(woj => {
+                const option = document.createElement('option');
+                option.value = woj;
+                option.textContent = woj;
+                select.appendChild(option);
+            });
+        }
+
+        // 3. Renderowanie kart giełd
+        function renderGieldy(data) {
+            const container = document.getElementById('results');
+            if (data.length === 0) {
+                container.innerHTML = '<div class="no-results">Nie znaleziono żadnej giełdy pasującej do kryteriów.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            
+            data.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'gielda-card';
+                
+                // Przypisywanie specjalnych klas stylizujących tagi dla lepszego wyglądu
+                const tagsHTML = g.typ_handlu.map(t => {
+                    let specialClass = '';
+                    const tLower = t.toLowerCase();
+                    if (tLower.includes('sperrmüll') || tLower.includes('wystawki') || tLower.includes('import')) specialClass = 'tag-sperrmüll';
+                    else if (tLower.includes('antyki') || tLower.includes('starocie')) specialClass = 'tag-antyki';
+                    else if (tLower.includes('rowery')) specialClass = 'tag-rowery';
+                    return `<span class="tag ${specialClass}">${t}</span>`;
+                }).join('');
+
+                card.innerHTML = `
+                    <div class="gielda-header">
+                        <h3 class="gielda-title">${g.nazwa}</h3>
+                        <span class="gielda-loc">${g.miasto} (${g.wojewodztwo})</span>
+                    </div>
+                    <div class="meta-info">
+                        <div class="meta-item">📍 <strong>Dokładny adres:</strong> ${g.adres}</div>
+                        <div class="meta-item">📅 <strong>Harmonogram:</strong> ${g.cykl} (${g.godziny})</div>
+                    </div>
+                    <div class="description">${g.opis}</div>
+                    <div class="tags-container">${tagsHTML}</div>
+                    <div class="tip-box">
+                        💡 <strong>Wskazówka szperacza:</strong> ${g.wskazowki}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 4. Filtrowanie dynamiczne
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const selectedWoj = document.getElementById('voivodeshipSelect').value;
+
+            const filtered = gieldyData.filter(g => {
+                const matchesQuery = g.nazwa.toLowerCase().includes(query) || 
+                                     g.miasto.toLowerCase().includes(query) || 
+                                     g.typ_handlu.some(t => t.toLowerCase().includes(query)) ||
+                                     g.opis.toLowerCase().includes(query);
+                const matchesWoj = !selectedWoj || g.wojewodztwo === selectedWoj;
+                return matchesQuery && matchesWoj;
+            });
+
+            renderGieldy(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterData);
+        document.getElementById('voivodeshipSelect').addEventListener('change', filterData);
+    </script>
+</body>
+</html>
