@@ -88,27 +88,39 @@
             border-color: #f39c12;
         }
 
+        /* Panel wyszukiwania z 3 filtrami */
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
-        input, select {
+        input {
+            flex: 2;
+            min-width: 240px;
             padding: 14px 20px;
-            font-size: 16px;
+            font-size: 15px;
             border: 1px solid #2d3748;
             border-radius: 10px;
             background-color: #1a202c;
             color: #ffffff;
             outline: none;
             transition: all 0.3s ease;
-            flex: 2;
         }
 
         select {
-            flex: 1.2;
+            flex: 1;
+            min-width: 180px;
+            padding: 14px 16px;
+            font-size: 15px;
+            border: 1px solid #2d3748;
+            border-radius: 10px;
+            background-color: #1a202c;
+            color: #ffffff;
+            outline: none;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
@@ -268,6 +280,7 @@
             transform: translateY(-1px);
         }
 
+        /* STOPKA DABU-INFO */
         .dabu-footer {
             background-color: #121212; 
             border-top: 1px solid #333; 
@@ -308,24 +321,40 @@
         <h1>🔍 Giełdy & Pchle Targi</h1>
         <div class="subtitle">Interaktywna wyszukiwarka łowców skarbów, staroci i wystawek (PL / DE)</div>
         
+        <!-- Przełącznik Państwa -->
         <div class="country-switch">
             <button class="country-btn active" onclick="zmienKraj('PL')">🇵🇱 Polska</button>
             <button class="country-btn" onclick="zmienKraj('DE')">🇩🇪 Niemcy</button>
         </div>
 
+        <!-- Filtry wyszukiwania: Tekst / Województwo-Land / Dzień tygodnia -->
         <div class="controls">
-            <input type="text" id="searchInput" placeholder="Szukaj miasta, kodu PLZ, nazwy lub asortymentu...">
+            <input type="text" id="searchInput" placeholder="Szukaj miasta, adresu, kodu pocztowego (PLZ) lub asortymentu...">
+            
             <select id="regionSelect">
                 <option value="">Wszystkie województwa</option>
+            </select>
+
+            <select id="daySelect">
+                <option value="">Wszystkie dni tygodnia</option>
+                <option value="poniedziałek">Poniedziałek (Montag)</option>
+                <option value="wtorek">Wtorek (Dienstag)</option>
+                <option value="środ">Środa (Mittwoch)</option>
+                <option value="czwartek">Czwartek (Donnerstag)</option>
+                <option value="piątek">Piątek (Freitag)</option>
+                <option value="sobot">Sobota (Samstag)</option>
+                <option value="niedziel">Niedziela (Sonntag)</option>
             </select>
         </div>
 
         <div id="countDisplay" class="results-count"></div>
 
+        <!-- Wyniki wyszukiwania -->
         <div id="results">
             <div class="no-results">Ładowanie bazy danych...</div>
         </div>
 
+        <!-- Baner Zgłoszeniowy -->
         <div class="promo-banner">
             <h2 id="bannerTitle">🎯 Znasz giełdę, której tu brakuje?</h2>
             <p id="bannerDesc">
@@ -443,6 +472,7 @@
             else document.querySelectorAll('.country-btn')[1].classList.add('active');
 
             document.getElementById('searchInput').value = '';
+            document.getElementById('daySelect').value = '';
             zaladujBaze(kraj);
         }
 
@@ -466,7 +496,7 @@
             countDisplay.textContent = `Znaleziono: ${data.length} giełd`;
 
             if (data.length === 0) {
-                container.innerHTML = '<div class="no-results">Nie znaleziono giełdy pasującej do kryteriów.</div>';
+                container.innerHTML = '<div class="no-results">Nie znaleziono giełdy pasującej do wybranych kryteriów (adres, region, dzień tygodnia).</div>';
                 return;
             }
             container.innerHTML = '';
@@ -503,18 +533,33 @@
             });
         }
 
+        // Filtrowanie po tekście (adres, PLZ, miasto, asortyment), regionie oraz dniu tygodnia
         function filtrujDane() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const selectedRegion = document.getElementById('regionSelect').value;
+            const selectedDay = document.getElementById('daySelect').value.toLowerCase();
 
             const przefiltrowane = aktualneDane.filter(g => {
-                const matchesQuery = (g.nazwa && g.nazwa.toLowerCase().includes(query)) || 
+                const cyklLower = (g.cykl || '').toLowerCase();
+                const nazwaLower = (g.nazwa || '').toLowerCase();
+
+                // 1. Filtr tekstu (miasto, adres, kod PLZ, nazwa, opis, asortyment)
+                const matchesQuery = !query || 
+                                     nazwaLower.includes(query) || 
                                      (g.miasto && g.miasto.toLowerCase().includes(query)) || 
                                      (g.adres && g.adres.toLowerCase().includes(query)) || 
                                      (g.opis && g.opis.toLowerCase().includes(query)) ||
                                      (g.typ_handlu && g.typ_handlu.some(t => t.toLowerCase().includes(query)));
+                
+                // 2. Filtr regionu (województwo / land)
                 const matchesRegion = !selectedRegion || g.region === selectedRegion;
-                return matchesQuery && matchesRegion;
+
+                // 3. Filtr dnia tygodnia (analizuje pole cykl oraz nazwę giełdy)
+                const matchesDay = !selectedDay || 
+                                   cyklLower.includes(selectedDay) || 
+                                   nazwaLower.includes(selectedDay);
+
+                return matchesQuery && matchesRegion && matchesDay;
             });
 
             renderujKarty(przefiltrowane);
@@ -522,7 +567,9 @@
 
         document.getElementById('searchInput').addEventListener('input', filtrujDane);
         document.getElementById('regionSelect').addEventListener('change', filtrujDane);
+        document.getElementById('daySelect').addEventListener('change', filtrujDane);
 
+        // Start z bazą Polski
         zaladujBaze('PL');
     </script>
 </body>
