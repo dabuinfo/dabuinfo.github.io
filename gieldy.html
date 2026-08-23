@@ -88,7 +88,7 @@
             border-color: #f39c12;
         }
 
-        /* Panel wyszukiwania z 3 filtrami */
+        /* Panel wyszukiwania */
         .controls {
             display: flex;
             gap: 12px;
@@ -192,6 +192,21 @@
             color: #94a3b8;
         }
 
+        .map-link-inline {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .map-link-inline:hover {
+            text-decoration: underline;
+            color: #5dade2;
+        }
+
         .description {
             color: #cbd5e1;
             line-height: 1.6;
@@ -228,6 +243,31 @@
             font-size: 0.9rem;
             background: rgba(243, 156, 18, 0.04);
             border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-source {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.4);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-source:hover {
+            background-color: #3498db;
+            color: #0a0a0a;
         }
 
         .no-results {
@@ -327,7 +367,7 @@
             <button class="country-btn" onclick="zmienKraj('DE')">🇩🇪 Niemcy</button>
         </div>
 
-        <!-- Filtry wyszukiwania: Tekst / Województwo-Land / Dzień tygodnia -->
+        <!-- Filtry wyszukiwania -->
         <div class="controls">
             <input type="text" id="searchInput" placeholder="Szukaj miasta, adresu, kodu pocztowego (PLZ) lub asortymentu...">
             
@@ -496,7 +536,7 @@
             countDisplay.textContent = `Znaleziono: ${data.length} giełd`;
 
             if (data.length === 0) {
-                container.innerHTML = '<div class="no-results">Nie znaleziono giełdy pasującej do wybranych kryteriów (adres, region, dzień tygodnia).</div>';
+                container.innerHTML = '<div class="no-results">Nie znaleziono giełdy pasującej do wybranych kryteriów.</div>';
                 return;
             }
             container.innerHTML = '';
@@ -514,26 +554,35 @@
                     return `<span class="tag ${specialClass}">${t}</span>`;
                 }).join('');
 
+                // Link do mapy i źródła
+                const sourceButton = g.zrodlo 
+                    ? `<a href="${g.zrodlo}" target="_blank" class="btn-source" title="Zobacz szczegóły, terminy i mapkę dojazdu">🗺️ Mapa & Szczegóły ↗</a>` 
+                    : '';
+
+                const mapLinkInline = g.zrodlo 
+                    ? `<a href="${g.zrodlo}" target="_blank" class="map-link-inline" title="Zobacz na mapie">(Mapa dojazdu ↗)</a>`
+                    : '';
+
                 card.innerHTML = `
                     <div class="gielda-header">
                         <h3 class="gielda-title">${g.nazwa}</h3>
                         <span class="gielda-loc">${g.miasto} (${g.region})</span>
                     </div>
                     <div class="meta-info">
-                        <div class="meta-item">📍 <strong>Lokalizacja / Adres:</strong> ${g.adres}</div>
+                        <div class="meta-item">📍 <strong>Lokalizacja / Adres:</strong> ${g.adres} ${mapLinkInline}</div>
                         <div class="meta-item">📅 <strong>Harmonogram:</strong> ${g.cykl}</div>
                     </div>
                     <div class="description">${g.opis}</div>
                     <div class="tags-container">${tagsHTML}</div>
                     <div class="tip-box">
-                        💡 <strong>Wskazówka:</strong> ${g.wskazowki}
+                        <div>💡 <strong>Wskazówka:</strong> ${g.wskazowki}</div>
+                        ${sourceButton}
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Filtrowanie po tekście (adres, PLZ, miasto, asortyment), regionie oraz dniu tygodnia
         function filtrujDane() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const selectedRegion = document.getElementById('regionSelect').value;
@@ -543,7 +592,6 @@
                 const cyklLower = (g.cykl || '').toLowerCase();
                 const nazwaLower = (g.nazwa || '').toLowerCase();
 
-                // 1. Filtr tekstu (miasto, adres, kod PLZ, nazwa, opis, asortyment)
                 const matchesQuery = !query || 
                                      nazwaLower.includes(query) || 
                                      (g.miasto && g.miasto.toLowerCase().includes(query)) || 
@@ -551,10 +599,8 @@
                                      (g.opis && g.opis.toLowerCase().includes(query)) ||
                                      (g.typ_handlu && g.typ_handlu.some(t => t.toLowerCase().includes(query)));
                 
-                // 2. Filtr regionu (województwo / land)
                 const matchesRegion = !selectedRegion || g.region === selectedRegion;
 
-                // 3. Filtr dnia tygodnia (analizuje pole cykl oraz nazwę giełdy)
                 const matchesDay = !selectedDay || 
                                    cyklLower.includes(selectedDay) || 
                                    nazwaLower.includes(selectedDay);
@@ -569,7 +615,6 @@
         document.getElementById('regionSelect').addEventListener('change', filtrujDane);
         document.getElementById('daySelect').addEventListener('change', filtrujDane);
 
-        // Start z bazą Polski
         zaladujBaze('PL');
     </script>
 </body>
