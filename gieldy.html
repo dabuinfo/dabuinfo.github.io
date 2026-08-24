@@ -545,22 +545,28 @@
                 const card = document.createElement('div');
                 card.className = 'gielda-card';
 
+                // Tagi: zamiana "Sperrmüll-Import" na "Sperrmüll"
                 const tagsHTML = (g.typ_handlu || []).map(t => {
+                    let wyswietlanyTag = t;
+                    if (t.toLowerCase() === 'sperrmüll-import') {
+                        wyswietlanyTag = 'Sperrmüll';
+                    }
+                    
                     let specialClass = '';
-                    const tLower = t.toLowerCase();
+                    const tLower = wyswietlanyTag.toLowerCase();
                     if (tLower.includes('sperrmüll') || tLower.includes('wystawki') || tLower.includes('import')) specialClass = 'tag-sperrmüll';
                     else if (tLower.includes('antyki') || tLower.includes('starocie') || tLower.includes('antik')) specialClass = 'tag-antyki';
                     else if (tLower.includes('rower') || tLower.includes('fahrrad')) specialClass = 'tag-rowery';
-                    return `<span class="tag ${specialClass}">${t}</span>`;
+                    return `<span class="tag ${specialClass}">${wyswietlanyTag}</span>`;
                 }).join('');
 
-                // Link do mapy i źródła
-                const sourceButton = g.zrodlo 
-                    ? `<a href="${g.zrodlo}" target="_blank" class="btn-source" title="Zobacz szczegóły, terminy i mapkę dojazdu">🗺️ Mapa & Szczegóły ↗</a>` 
-                    : '';
+                // Bezpośredni link do Map Google na podstawie adresu
+                const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(g.adres + ' ' + (g.miasto || ''))}`;
+                const mapLinkInline = `<a href="${googleMapsUrl}" target="_blank" class="map-link-inline" title="Otwórz w Google Maps">📍 (Google Maps ↗)</a>`;
 
-                const mapLinkInline = g.zrodlo 
-                    ? `<a href="${g.zrodlo}" target="_blank" class="map-link-inline" title="Zobacz na mapie">(Mapa dojazdu ↗)</a>`
+                // Przycisk "Źródło"
+                const sourceButton = g.zrodlo 
+                    ? `<a href="${g.zrodlo}" target="_blank" class="btn-source" title="Zobacz stronę źródłową">🔗 Źródło ↗</a>` 
                     : '';
 
                 card.innerHTML = `
