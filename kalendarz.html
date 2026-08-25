@@ -304,7 +304,7 @@
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
                 <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates.</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоza крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
             </div>
         </div>
 
@@ -324,7 +324,7 @@
                     <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                     <ul class="dabu-footer-contact">
                         <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
-                        <li>📱 BLIK (płatności): <strong>+48 733 035 301</strong></li>
+                        <li>📱 BLIK (płatności): <strong>+48 733 035 301</strong> | IBAN: <strong>PL33 1020 5297 0000 1702 0290 9323</strong></li>
                         <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
                         <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
                     </ul>
@@ -498,15 +498,14 @@
 
             const year = 2026;
             const now = new Date();
+            let currentMonthIdx = (now.getFullYear() === year) ? now.getMonth() : (now.getFullYear() > year ? 11 : 0);
             const grid = document.getElementById('calendar-grid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            // Renderowanie pełnych 12 miesięcy roku 2026
-            for (let m = 0; m <= 11; m++) {
-                let isCurrentMonth = (now.getFullYear() === year && now.getMonth() === m);
+            for (let m = currentMonthIdx; m <= 11; m++) {
                 let table = document.createElement('table');
-                table.className = 'month-table' + (isCurrentMonth ? ' current-month' : '');
+                table.className = 'month-table' + (m === currentMonthIdx ? ' current-month' : '');
                 
                 let header = `<thead>
                     <tr><th colspan="8" class="month-title">${t.m[m]}</th></tr>
@@ -621,7 +620,7 @@
 
                     if (isPolish) {
                         submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie rejonów: ${count} szt.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie rejonów: ${count} szt.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN w stopce).\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
@@ -629,11 +628,11 @@
                         submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Bestellen' : (userLang === 'cs' ? 'Objednat' : 'Order')} (${totalCost} €)`;
                         let waBody = "";
                         if (userLang === 'de') {
-                            waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${count} Gebiete\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN: PL33 1020 5297 0000 1702 0290 9323 / PayPal). Danke!`;
+                            waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${count} Gebiete\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
                         } else if (userLang === 'cs') {
-                            waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${count} oblastí\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK +48733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323). S pozdravem.`;
+                            waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${count} oblastí\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK / IBAN). S pozdravem.`;
                         } else {
-                            waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${count} areas\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK +48733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323). Best regards.`;
+                            waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${count} areas\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK / IBAN). Best regards.`;
                         }
 
                         submitBtn.onclick = function() {
@@ -702,7 +701,7 @@
                                         </div>
                                         <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
                                             Możesz wybrać rejony także z innych dni kalendarza – zostaną dodane do wspólnego koszyka na dole.<br>
-                                            Płatność: <strong>BLIK na numer: +48 733 035 301</strong> lub <strong>IBAN: PL33 1020 5297 0000 1702 0290 9323</strong>
+                                            Płatność: <strong>BLIK na numer +48 733 035 301</strong> lub <strong>przelew IBAN podany w stopce strony</strong>.
                                         </div>
                                     `;
                                 } else {
@@ -712,7 +711,7 @@
                                         </div>
                                         <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
                                             You can select areas from other days too. All will be kept in the cart below.<br>
-                                            Payment: <strong>BLIK (+48 733 035 301)</strong> or <strong>IBAN: PL33 1020 5297 0000 1702 0290 9323</strong>
+                                            Payment: BLIK (+48 733 035 301) or IBAN in footer.
                                         </div>
                                     `;
                                 }
