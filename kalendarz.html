@@ -304,7 +304,7 @@
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
                 <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates.</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоza крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
             </div>
         </div>
 
@@ -498,14 +498,15 @@
 
             const year = 2026;
             const now = new Date();
-            let currentMonthIdx = (now.getFullYear() === year) ? now.getMonth() : (now.getFullYear() > year ? 11 : 0);
             const grid = document.getElementById('calendar-grid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            for (let m = currentMonthIdx; m <= 11; m++) {
+            // Renderowanie pełnych 12 miesięcy roku 2026
+            for (let m = 0; m <= 11; m++) {
+                let isCurrentMonth = (now.getFullYear() === year && now.getMonth() === m);
                 let table = document.createElement('table');
-                table.className = 'month-table' + (m === currentMonthIdx ? ' current-month' : '');
+                table.className = 'month-table' + (isCurrentMonth ? ' current-month' : '');
                 
                 let header = `<thead>
                     <tr><th colspan="8" class="month-title">${t.m[m]}</th></tr>
