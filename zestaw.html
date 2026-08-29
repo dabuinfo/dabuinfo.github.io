@@ -1370,17 +1370,21 @@
                 totalDays += regionDates.size;
             });
 
-            let baseRate = isPl ? 25 : 6.0;
+            let baseRate = isPl ? 25.0 : 6.0;
             let ratePerDay;
 
-            if (totalDays >= 100) {
-                ratePerDay = isPl ? 10.0 : 2.50; // -60%
-            } else if (totalDays >= 60) {
-                ratePerDay = isPl ? 15.0 : 3.60; // -40%
-            } else if (totalDays >= 21) {
-                ratePerDay = isPl ? 17.5 : 4.20; // -30% (do 40 dni)
+            if (totalDays >= 200) {
+                ratePerDay = isPl ? 5.0 : 1.20;   // -80% (od 200 dni)
+            } else if (totalDays >= 100) {
+                ratePerDay = isPl ? 10.0 : 2.40;  // -60% (100 - 199 dni)
+            } else if (totalDays >= 61) {
+                ratePerDay = isPl ? 15.0 : 3.60;  // -40% (61 - 99 dni)
+            } else if (totalDays >= 41) {
+                ratePerDay = isPl ? 17.5 : 4.20;  // -30% (41 - 60 dni)
+            } else if (totalDays >= 6) {
+                ratePerDay = isPl ? 20.0 : 4.80;  // -20% (6 - 40 dni)
             } else {
-                ratePerDay = isPl ? 20.0 : 4.80; // -20% (do 20 dni)
+                ratePerDay = baseRate;            // 0% (1 - 5 dni bez rabatu)
             }
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
