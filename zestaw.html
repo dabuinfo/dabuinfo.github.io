@@ -120,7 +120,6 @@
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
-        /* Blokada przewijania w czasie ładowania */
         .regions-scroll-box.is-loading {
             overflow: hidden !important;
             touch-action: none;
@@ -425,7 +424,7 @@
                   <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
                   <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
                   <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
-                  <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
+                  <text x="680" y="260" font-family="Arial, font-weight: 900;" fill="#fff" text-anchor="middle">DOWOLNE</text>
                   <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
                   
                   <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
@@ -1000,7 +999,7 @@
                     formatOnlineTitle: '🌐 Онлайн версия:', formatOnlineLi1: '<strong>Портал:</strong> Достъп през браузър.', formatOnlineLi2: '<strong>Обновления:</strong> Синхронизация на живо.', formatOnlineRadio: '🌐 Клиентски портал',
                     searchDesc: 'Търсите регион? Вижте картата:', searchBtn: '🔍 ТЪРСЕНЕ НА РЕГИОН',
                     step1Header: '👇 1. Изберете региони:', step2Header: '📅 2. Изберете седмици:', previewTitle: '👀 Безплатен преглед:', previewDefault: '-- Изберете седмица --', btnUnselectAll: '[ Отмаркирай всички ]',
-                    step3Header: '📄 3. Изберете формат:', formatPdfPrintRadio: iconPdf + ' PDF за печат', formatPdfSmartRadio: iconPdf + ' PDF за смартфон (Dark Mode)',
+                    step3Header: '📄 3. Изберете format:', formatPdfPrintRadio: iconPdf + ' PDF за печат', formatPdfSmartRadio: iconPdf + ' PDF за смартфон (Dark Mode)',
                     step4Header: '💾 4. Допълнителни опции:', step5Header: '💳 5. Плащане:', payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 Мобилно плащане (+48 733 035 301)', payOther: '❓ Друго',
                     schrottLabel: '🧲 Електронен скрап и метал', dhlLabel: '📦 Доставка по пощата',
                     btnSubmit: '🛒 ИЗПРАТИ ПОРЪЧКА', btnOrderPrefix: '🛒 ПОРЪЧАЙ ПАКЕТ – ',
@@ -1058,7 +1057,7 @@
                     btnOrderExact: '🛒 НАДІСЛАТИ ЗАМОВЛЕННЯ', priceInd: "Індивідуальний розрахунок",
                     loaderTitle: 'Синхронізація даних', loaderDesc: 'З\'єднання з базою даних...', loadingData: "⏳ Завантаження...",
                     infoDesc: '<b>Оберіть зручний формат:</b>', headerChoose: 'Налаштуйте свій пакет', configTitle: '🛠️ Власний набір', configSubtitle: 'Оберіть параметри та надішліть замовлення',
-                    formatPdfTitle: iconPdf + ' Версія PDF:', formatPdfLi1: '<strong>Друк:</strong> Економний світлий фон.', formatPdfLi2: '<strong>Офлайн:</strong> Доступ будь-де.', formatPdfLi3: '<strong>Навігація:</strong> Активні посилання на Google Maps.',
+                    formatPdfTitle: iconPdf + ' Версія PDF:', formatPdfLi1: '<strong>Друк:</strong> Економний світлий фон.', formatPdfLi2: '<strong>Офлайн:</strong> Доступ будь-де.', formatPdfLi3: '<strong>Навіgaція:</strong> Активні посилання на Google Maps.',
                     formatJpgTitle: '🖼️ Версія JPG:', formatJpgLi1: '<strong>Галерея:</strong> Швидкий перегляд на смартфоні.', formatJpgLi2: '<strong>Поділитися:</strong> Легке пересилання в месенджерах.', formatJpgRadio: '🖼️ Набір зображень JPG',
                     formatOnlineTitle: '🌐 Онлайн-версія:', formatOnlineLi1: '<strong>Портал:</strong> Доступ прямо в браузері.', formatOnlineLi2: '<strong>Оновлення:</strong> Синхронізація наживо.', formatOnlineRadio: '🌐 Клієнтський portal',
                     searchDesc: 'Де знаходиться регіон? Перевірте карту:', searchBtn: '🔍 ПОШУК РЕГІОНІВ',
@@ -1450,27 +1449,6 @@
         }
 
         function updateMutualFiltering() {
-            if(Object.keys(availabilityMatrix).length === 0) return;
-            var dzisiaj = new Date();
-            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-            if (chkObecny && chkObecny.parentElement) {
-                if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-                    chkObecny.parentElement.style.display = 'none';
-                    chkObecny.checked = false; 
-                } else {
-                    chkObecny.parentElement.style.display = 'block';
-                }
-            }
-
-            let allAvailableRegionsInDb = new Set();
-            for(let w in availabilityMatrix) {
-                availabilityMatrix[w].forEach(rObj => {
-                    let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                    if(nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase());
-                });
-            }
-
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
@@ -1481,7 +1459,18 @@
 
             let limitToSingleRegion = selectedWeeks.length > 1;
             let limitToSingleWeek = selectedRegions.length > 1;
-            
+
+            let allAvailableRegionsInDb = new Set();
+            for(let w in availabilityMatrix) {
+                if (availabilityMatrix[w]) {
+                    availabilityMatrix[w].forEach(rObj => {
+                        let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
+                        if(nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase());
+                    });
+                }
+            }
+
+            // Filtrowanie listy rejonów
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
                 if(!chk) return;
@@ -1503,9 +1492,8 @@
                         if(!availabilityMatrix[w] ||
                             !availabilityMatrix[w].some(item => {
                                 let n = typeof item === 'string' ? item : item.nazwa;
-                                return n.toLowerCase() === rName;
+                                return n && n.toLowerCase() === rName;
                             })) {
-    
                             isAvailable = false;
                             break;
                         }
@@ -1516,18 +1504,17 @@
                 chk.disabled = !isAvailable;
                 if(!isAvailable && chk.checked) chk.checked = false;
             });
-            
-            selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            limitToSingleWeek = selectedRegions.length > 1;
-            
+
+            // Filtrowanie listy tygodni
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
                 if(!chk) return;
                 let wNum = chk.getAttribute('data-week');
                 let isAvailable = true;
 
-                if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
+                if (Object.keys(availabilityMatrix).length > 0 && (!availabilityMatrix[wNum] || availabilityMatrix[wNum].length === 0)) {
+                    isAvailable = false;
+                } else if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
                     isAvailable = false; 
                 } else if (selectedRegions.length > 0 && !hasSpecial) {
                     let hasAtLeastOneRegion = false;
@@ -1536,7 +1523,7 @@
                         if (!GLOBAL_SPECIAL_REGIONS.includes(r)) { 
                             if(availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
                                 let n = typeof item === 'string' ? item : item.nazwa;
-                                return n.toLowerCase() === r;
+                                return n && n.toLowerCase() === r;
                             })) {
                                 hasAtLeastOneRegion = true;
                                 break;
