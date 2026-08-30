@@ -152,6 +152,7 @@
         <div class="dabu-footer-nav">
             <ul class="dabu-footer-boxes">
                 <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
                 <li><a href="https://dabu-info.com/mapa.html">Mapa Wystawek</a></li>
                 <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
                 <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
