@@ -134,7 +134,7 @@
                 <ul class="dabu-footer-contact">
                     <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
                     <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
-                    <li>📍 56-300 Milicz (odbiór osobisty po wcześniejszym kontakcie)</li>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=56-300+Milicz+ul.+Mickiewicza+10A%2F1" target="_blank" rel="noopener noreferrer">📍 56-300 Milicz (umów spotkanie)</a></li>
                 </ul>
             </div>
 
@@ -148,6 +148,7 @@
             </div>
         </div>
 
+        <!-- Boxy z linkami na dole -->
         <div class="dabu-footer-nav">
             <ul class="dabu-footer-boxes">
                 <li><a href="https://dabu-info.com/">Strona Główna</a></li>
