@@ -20,6 +20,10 @@
         .group-desc { color: #2ecc71; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; }
         .powiat-sub-header { color: #3498db; margin: 15px 0 5px 20px; font-size: 1rem; font-style: italic; }
         
+        .year-selector-container { margin: 10px 0 15px 20px; display: flex; align-items: center; gap: 15px; background: #1e1e1e; padding: 10px 14px; border-radius: 6px; border: 1px solid #333; width: fit-content; }
+        .year-selector-container label { cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; font-weight: bold; color: #f1c40f; }
+        .year-selector-container input[type="radio"] { accent-color: #2ecc71; width: 16px; height: 16px; cursor: pointer; }
+
         /* Style dla checkboxów */
         .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 5px 0 20px 20px; }
         .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
@@ -45,6 +49,7 @@
             .order-module { padding: 10px; padding-bottom: 200px; }
             .regions-grid { grid-template-columns: 1fr; margin-left: 0; }
             .powiat-sub-header { margin-left: 10px; }
+            .year-selector-container { margin-left: 0; width: 100%; box-sizing: border-box; }
             .counter-btn { width: 36px; height: 36px; }
         }
     </style>
@@ -59,12 +64,12 @@
             <li><b>Landy (Powiaty/Miasta) na dni: 25 zł / 6€ za 1 dzień</b> – wybierz ilość dni za pomocą +/-.</li>
             <li><b>Opcja na cały miesiąc: Cena ustalana indywidualnie</b> – zaznacz wybrane rejony na pełen miesiąc.</li>
             <li><b>Gminy (Extra): Cena ustalana indywidualnie</b> – zaznacz interesujące Cię opcje na najbliższy termin (podział na wioski/ulice).</li>
-            <li><b>Terminy do końca roku:</b> Cena za terminy do końca roku jest ustalana automatycznie na stronie <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu możesz zamówić więcej niż jeden rejon z wyceną indywidualną.</li>
+            <li><b>Terminy roczne:</b> Cena za terminy do końca roku jest ustalana automatycznie na stronie <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu możesz wybrać rok (2026 / 2027) oraz zamówić więcej niż jeden rejon z wyceną indywidualną.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
-            💡 <b>Uwaga:</b> Zamawianie pojedynczych rejonów i zestawień tygodniowych najwygodniej złożyć przez <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu zamawiamy nietypowe okresy oraz pakiety wielu rejonów z wyceną indywidualną.
+            💡 <b>Uwaga:</b> Zamawianie pojedynczych rejonów i zestawień tygodniowych najwygodniej złożyć przez <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. <br>W tym miejscu zamawiamy nietypowe okresy oraz pakiety wielu rejonów z wyceną indywidualną.
         </div>
     </div>
     <div id="regionsContainer"></div>
@@ -82,6 +87,7 @@
 <script>
     (function() {
         const targetPhoneNumber = "+48600812820";
+        let selectedYear = "2026";
         
         const data = {
             "Landy (Powiaty i Miasta)": {
@@ -137,9 +143,10 @@
                     "Powiat Augsburg": ["Augsburg Miasto", "Augsburg Powiat"],
                 }
             },
-            "Terminy do końca roku": {
+            "Terminy roczne": {
                 price: 0,
                 type: "checkbox", 
+                hasYearSelect: true,
                 desc: "Wycena indywidualna przy zamówieniu wielu rejonów (automatyczna wycena 1 rejonu na dabu-info.com/zestaw.html)",
                 items: {
                     "Rejony z dostępnymi terminami całorocznymi": [
@@ -227,6 +234,22 @@
         Object.entries(data).forEach(([groupName, config]) => {
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
             const desc = document.createElement('div'); desc.className = 'group-desc'; desc.textContent = config.desc; container.appendChild(desc);
+
+            if (config.hasYearSelect) {
+                const yearBox = document.createElement('div');
+                yearBox.className = 'year-selector-container';
+                yearBox.innerHTML = `
+                    <span style="color: #ffffff; font-size: 0.9rem;">Wybierz rok:</span>
+                    <label><input type="radio" name="orderYear" value="2026" checked> 2026</label>
+                    <label><input type="radio" name="orderYear" value="2027"> 2027</label>
+                `;
+                yearBox.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        selectedYear = e.target.value;
+                    });
+                });
+                container.appendChild(yearBox);
+            }
 
             Object.entries(config.items).forEach(([sub, regions]) => {
                 const subH = document.createElement('div'); subH.className = 'powiat-sub-header'; subH.textContent = sub; container.appendChild(subH);
@@ -346,7 +369,7 @@
             const landItems = [];
             const monthItems = [];
             const extraGminy = [];
-            const doKoncaRoku = [];
+            const roczneItems = [];
 
             let totalPln = 0;
             let totalEur = 0;
@@ -362,8 +385,8 @@
                     requiresCustomPricing = true;
                     if (item.group === "Opcja na cały miesiąc") {
                         monthItems.push(item.name);
-                    } else if (item.group === "Terminy do końca roku") {
-                        doKoncaRoku.push(item.name);
+                    } else if (item.group === "Terminy roczne") {
+                        roczneItems.push(item.name);
                     } else {
                         extraGminy.push(item.name);
                     }
@@ -395,8 +418,8 @@
             if (extraGminy.length > 0) {
                 details.push(`Gminy Extra: ${extraGminy.join(', ')}`);
             }
-            if (doKoncaRoku.length > 0) {
-                details.push(`Do końca roku: ${doKoncaRoku.join(', ')}`);
+            if (roczneItems.length > 0) {
+                details.push(`Terminy roczne [Rok ${selectedYear}]: ${roczneItems.join(', ')}`);
             }
             
             const itemsList = details.join(' | ');
