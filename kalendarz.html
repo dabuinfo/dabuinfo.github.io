@@ -288,8 +288,10 @@
                     </svg>
                     <h2 id="cal-title">Deutschland 2026</h2>
                 </div>
-                <p id="cal-hint" style="font-size: 13px; color: #aaa; margin-top: 5px; text-align:center;">
-                    Kliknij w wybrany <strong>dzień</strong>, aby wygenerować dostępne rejony w tym dniu.
+                <p id="cal-hint" style="font-size: 13.5px; color: #bbb; margin-top: 8px; text-align: center; line-height: 1.6; max-width: 800px; margin-left: auto; margin-right: auto;">
+                    📅 <strong>Wybierz dzień w kalendarzu</strong>, aby sprawdzić dostępne rejony zbiórek.<br>
+                    ⚡ Możesz szybko zaznaczyć <strong>kolejny dzień</strong> lub <strong>cały tydzień wywozów</strong> dla wybranego rejonu.<br>
+                    🛒 Wszystkie wybrane pozycje trafią do wspólnego zamówienia na dole strony.
                 </p>
             </div>
             
@@ -315,7 +317,7 @@
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech[cite: 1].</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne[cite: 1].</p>
                 <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates[cite: 1].</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоza крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
             </div>
         </div>
 
@@ -336,7 +338,7 @@
     (function() {
         const trData = {
             pl: {
-                "cal-hint": "Kliknij w wybrany <strong>dzień</strong>, aby wygenerować dostępne rejony w tym dniu.",
+                "cal-hint": "📅 <strong>Wybierz dzień w kalendarzu</strong>, aby sprawdzić dostępne rejony zbiórek.<br>⚡ Możesz szybko zaznaczyć <strong>kolejny dzień</strong> lub <strong>cały tydzień wywozów</strong> dla wybranego rejonu.<br>🛒 Wszystkie wybrane pozycje trafią do wspólnego zamówienia na dole strony.",
                 "cal-info-h3": "ℹ️ Informacje o zasięgu najbliższych świąt",
                 "cal-info-p1": "<strong>Święta Narodowe (National)</strong> są dniami wolnymi w <strong>całych Niemczech</strong>.",
                 "cal-info-p2": "<strong>Święta Regionalne (Regional)</strong> obowiązują tylko w określonych landach. Sprawdź, gdzie najbliższe święto regionalne w 2026 roku <strong>NIE JEST</strong> dniem wolnym:",
@@ -349,7 +351,7 @@
                 "cal-info-l7": "<strong>Dzień Pokuty (18.11):</strong> Normalny dzień roboczy w 15 z 16 landów (tylko w Saksonii wolne)."
             },
             de: {
-                "cal-hint": "Klicken Sie auf einen <strong>Tag</strong>, um die verfügbaren Gebiete anzuzeigen.",
+                "cal-hint": "📅 <strong>Wählen Sie einen Tag im Kalender</strong>, um verfügbare Sammelgebiete anzuzeigen.<br>⚡ Fügen Sie schnell den <strong>nächsten Tag</strong> oder die <strong>ganze Woche</strong> hinzu.<br>🛒 Alle ausgewählten Gebiete werden im Warenkorb unten gesammelt.",
                 "cal-info-h3": "ℹ️ Informationen zu anstehenden Feiertagen",
                 "cal-info-p1": "<strong>Nationale Feiertage</strong> sind in <strong>ganz Deutschland</strong> gesetzliche Ruhetage.",
                 "cal-info-p2": "<strong>Regionale Feiertage</strong> gelten nur in bestimmten Bundesländern. Prüfen Sie das nächste regionale Fest:",
@@ -362,7 +364,7 @@
                 "cal-info-l7": "<strong>Buß- und Bettag (18.11):</strong> Nur in Sachsen ein Feiertag."
             },
             en: {
-                "cal-hint": "Click on a <strong>day</strong> to generate available collection areas for that date.",
+                "cal-hint": "📅 <strong>Select a day on the calendar</strong> to view available collection areas.<br>⚡ Quickly add the <strong>next day</strong> or the <strong>entire week</strong> for any region.<br>🛒 All selected dates are collected in the order summary bar below.",
                 "cal-info-h3": "ℹ️ Upcoming Holiday Coverage",
                 "cal-info-p1": "<strong>National Holidays</strong> are legally non-working days <strong>throughout Germany</strong>.",
                 "cal-info-p2": "<strong>Regional Holidays</strong> apply only in specific states:",
@@ -723,28 +725,36 @@
                                 let headerHint = "";
                                 if (isPolish) {
                                     headerHint = `
-                                        <div style="margin-bottom:6px;">
-                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Zaznacz wybrane rejony na dzień ${displayDate} (${unitRate} PLN / rejon)</span>
+                                        <div style="margin-bottom: 8px;">
+                                            <span style="color: #2ecc71; font-size: 16px; font-weight: bold;">
+                                                📋 Dostępne zbiórki na dzień ${displayDate} (${unitRate} PLN / rejon za dzień)
+                                            </span>
                                         </div>
-                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
-                                            Możesz wybrać rejony także z innych dni kalendarza – zostaną dodane do wspólnego koszyka na dole.<br>
-                                            Płatność: <strong>BLIK na numer +48 733 035 301</strong> lub <strong>IBAN: PL33 1020 5297 0000 1702 0290 9323</strong>.
+                                        <div style="color: #ccc; font-size: 13px; line-height: 1.6; text-align: left; max-width: 650px; margin: 0 auto;">
+                                            • <strong>Zaznacz pole wyboru</strong>, aby dodać ten konkretny termin do zamówienia.<br>
+                                            • Użyj przycisku <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong>, aby automatycznie dodać kolejne zbiórki tego rejonu bez szukania w innych dniach.<br>
+                                            • Możesz łączyć dowolne miejscowości z różnych dni – podsumowanie zamówienia znajdziesz na pasku na dole ekranu.<br>
+                                            💳 <em>Płatność: <strong>BLIK na +48 733 035 301</strong> lub przelew tradycyjny (IBAN).</em>
                                         </div>
                                     `;
                                 } else {
                                     headerHint = `
-                                        <div style="margin-bottom:6px;">
-                                            <span style="color:#2ecc71; font-size:15px; font-weight:bold;">☑️ Select regions for ${displayDate} (${unitRate} € / area)</span>
+                                        <div style="margin-bottom: 8px;">
+                                            <span style="color: #2ecc71; font-size: 16px; font-weight: bold;">
+                                                📋 Available collection areas for ${displayDate} (${unitRate} € / area per day)
+                                            </span>
                                         </div>
-                                        <div style="color:#ccc; font-size:12.5px; line-height:1.5;">
-                                            You can select areas from other days too. All will be kept in the cart below.<br>
-                                            Payment: BLIK (+48 733 035 301) or IBAN in footer.
+                                        <div style="color: #ccc; font-size: 13px; line-height: 1.6; text-align: left; max-width: 650px; margin: 0 auto;">
+                                            • <strong>Check the box</strong> to select this collection date.<br>
+                                            • Use <strong>➕ Next day</strong> or <strong>📅 Whole week</strong> to quickly add all available dates for this area.<br>
+                                            • You can combine areas from different dates – manage everything in the cart below.<br>
+                                            💳 <em>Payment: <strong>BLIK (+48 733 035 301)</strong> or IBAN bank transfer.</em>
                                         </div>
                                     `;
                                 }
 
                                 let htmlZebra = `
-                                    <div style="padding: 14px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
+                                    <div style="padding: 16px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
                                         ${headerHint}
                                     </div>
                                     <div id="regions-list-container">
