@@ -141,7 +141,7 @@
             line-height: 1.4;
         }
 
-.quick-add-container {
+        .quick-add-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
@@ -174,18 +174,6 @@
             background: #2ecc71;
             color: #000;
             border-color: #2ecc71;
-        }
-
-        @media (min-width: 769px) {
-            .quick-add-container {
-                display: flex;
-                width: auto;
-                padding-left: 35px;
-            }
-            .btn-quick-add {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
         }
 
         .summary-cart-bar {
@@ -271,11 +259,19 @@
             .summary-cart-bar { flex-direction: column; text-align: center; }
             .cart-info { text-align: center; }
             .direct-contact-btn { width: 100%; justify-content: center; }
-            .quick-add-container { padding-left: 0; }
         }
         @media (min-width: 769px) {
             .offer-wrapper { padding: 50px 45px; }
             .calendar-header h2 { font-size: 28px; }
+            .quick-add-container {
+                display: flex;
+                width: auto;
+                padding-left: 35px;
+            }
+            .btn-quick-add {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -319,7 +315,7 @@
                 <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech[cite: 1].</p>
                 <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne[cite: 1].</p>
                 <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates[cite: 1].</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоza крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
             </div>
         </div>
 
@@ -329,7 +325,7 @@
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
             ID zamówienia: <span class="cart-order-badge" id="global-order-id">---</span><br>
-            Łącznie: <strong id="cart-count">0</strong> rejon(ów) z różnych dni | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 PLN</span>
+            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 PLN</span>
         </div>
         <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
             📱 Wybierz rejony, aby zamówić
@@ -463,6 +459,17 @@
         function formatDateDisplay(ymd) {
             const p = ymd.split('-');
             return `${p[2]}.${p[1]}.${p[0]}`;
+        }
+
+        function odmienSlowo(liczba, pojedyncza, kilka, wiele) {
+            const abs = Math.abs(liczba);
+            if (abs === 1) return `${liczba} ${pojedyncza}`;
+            const n10 = abs % 10;
+            const n100 = abs % 100;
+            if (n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) {
+                return `${liczba} ${kilka}`;
+            }
+            return `${liczba} ${wiele}`;
         }
 
         function initApp() {
@@ -599,72 +606,73 @@
             const cartTotalEl = document.getElementById('cart-total');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-function refreshCartUI() {
-    const totalTermsCount = globalCart.size;
-    const totalCost = totalTermsCount * unitRate;
+            function refreshCartUI() {
+                const totalTermsCount = globalCart.size;
+                const totalCost = totalTermsCount * unitRate;
 
-    // Zliczanie unikalnych rejonów oraz grupowanie dat
-    const uniqueRegions = new Set();
-    const grouped = {};
+                const uniqueRegions = new Set();
+                const grouped = {};
 
-    globalCart.forEach(item => {
-        uniqueRegions.add(item.region);
-        if (!grouped[item.date]) grouped[item.date] = [];
-        grouped[item.date].push(item.region);
-    });
+                globalCart.forEach(item => {
+                    uniqueRegions.add(item.region);
+                    if (!grouped[item.date]) grouped[item.date] = [];
+                    grouped[item.date].push(item.region);
+                });
 
-    const uniqueRegionsCount = uniqueRegions.size;
+                const uniqueRegionsCount = uniqueRegions.size;
 
-    // Formatowanie etykiety: np. "1 rejon (2 terminy)" lub "2 rejony (3 terminy)"
-    let countLabel = "";
-    if (uniqueRegionsCount === 1) {
-        countLabel = totalTermsCount === 1 
-            ? `<strong>1</strong> rejon (1 termin)` 
-            : `<strong>1</strong> rejon (${totalTermsCount} terminy)`;
-    } else {
-        countLabel = `<strong>${uniqueRegionsCount}</strong> rejon(y) (${totalTermsCount} terminów)`;
-    }
+                let countLabel = "";
+                if (isPolish) {
+                    const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                    const terminyOdmiana = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                    countLabel = `${rejonyOdmiana} (${terminyOdmiana})`;
+                } else {
+                    countLabel = `${uniqueRegionsCount} area(s) (${totalTermsCount} dates)`;
+                }
 
-    cartCountEl.innerHTML = countLabel;
-    cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
+                cartCountEl.innerHTML = countLabel;
+                cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
 
-    if (totalTermsCount > 0) {
-        submitBtn.classList.remove('disabled');
-        submitBtn.removeAttribute('disabled');
+                if (totalTermsCount > 0) {
+                    submitBtn.classList.remove('disabled');
+                    submitBtn.removeAttribute('disabled');
 
-        let detailsText = "";
-        for (let date in grouped) {
-            detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
-        }
+                    let detailsText = "";
+                    for (let date in grouped) {
+                        detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
+                    }
 
-        if (isPolish) {
-            submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
-            let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejon(ów) | ${totalTermsCount} termin(ów).\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
-            submitBtn.onclick = function() {
-                window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
-            };
-        } else {
-            submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Bestellen' : (userLang === 'cs' ? 'Objednat' : 'Order')} (${totalCost} €)`;
-            let waBody = "";
-            if (userLang === 'de') {
-                waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
-            } else if (userLang === 'cs') {
-                waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${uniqueRegionsCount} oblasti (${totalTermsCount} termíny)\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK / IBAN). S pozdravem.`;
-            } else {
-                waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK / IBAN). Best regards.`;
+                    if (isPolish) {
+                        const rejonySms = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                        const terminySms = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+
+                        submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${rejonySms} | ${terminySms}.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                        submitBtn.onclick = function() {
+                            window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
+                        };
+                    } else {
+                        submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Bestellen' : (userLang === 'cs' ? 'Objednat' : 'Order')} (${totalCost} €)`;
+                        let waBody = "";
+                        if (userLang === 'de') {
+                            waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
+                        } else if (userLang === 'cs') {
+                            waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${uniqueRegionsCount} oblasti (${totalTermsCount} termíny)\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK / IBAN). S pozdravem.`;
+                        } else {
+                            waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK / IBAN). Best regards.`;
+                        }
+
+                        submitBtn.onclick = function() {
+                            window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
+                        };
+                    }
+                } else {
+                    submitBtn.classList.add('disabled');
+                    submitBtn.setAttribute('disabled', 'true');
+                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order';
+                    submitBtn.onclick = null;
+                }
             }
-
-            submitBtn.onclick = function() {
-                window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
-            };
-        }
-    } else {
-        submitBtn.classList.add('disabled');
-        submitBtn.setAttribute('disabled', 'true');
-        submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order';
-        submitBtn.onclick = null;
-    }
-}
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
