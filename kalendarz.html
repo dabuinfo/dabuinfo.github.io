@@ -116,9 +116,9 @@
             border-left: 4px solid transparent; 
             transition: all 0.2s ease; 
             display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            cursor: pointer;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
         }
         .zebra-row:nth-child(even) { background-color: #1a1a1a; }
         .zebra-row:hover { background-color: #2a2a2a; border-left-color: #2ecc71; }
@@ -131,6 +131,38 @@
             accent-color: #2ecc71;
             margin-top: 4px;
             flex-shrink: 0;
+        }
+
+        .region-desc {
+            color: #3498db;
+            font-size: 13px;
+            margin-top: 4px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .quick-add-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+            padding-left: 35px;
+        }
+        .btn-quick-add {
+            background: #252525;
+            border: 1px solid #444;
+            color: #2ecc71;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-quick-add:hover {
+            background: #2ecc71;
+            color: #000;
+            border-color: #2ecc71;
         }
 
         .summary-cart-bar {
@@ -216,6 +248,7 @@
             .summary-cart-bar { flex-direction: column; text-align: center; }
             .cart-info { text-align: center; }
             .direct-contact-btn { width: 100%; justify-content: center; }
+            .quick-add-container { padding-left: 0; }
         }
         @media (min-width: 769px) {
             .offer-wrapper { padding: 50px 45px; }
@@ -258,12 +291,12 @@
 
         <div class="seo-tags-container">
             <h3>🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
-            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec[cite: 1, 5]. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy[cite: 1, 5].</p>
+            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec[cite: 1]. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy[cite: 1].</p>
             <div class="seo-tags">
-                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech[cite: 1, 5].</p>
-                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne[cite: 1, 5].</p>
-                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates[cite: 1, 5].</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1, 5].</p>
+                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
             </div>
         </div>
 
@@ -402,6 +435,11 @@
             d.setUTCDate(d.getUTCDate() + 4 - dayNum);
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function formatDateDisplay(ymd) {
+            const p = ymd.split('-');
+            return `${p[2]}.${p[1]}.${p[0]}`;
         }
 
         function initApp() {
@@ -674,6 +712,9 @@
                                         regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
                                     }
 
+                                    let matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
+                                    let allAvailableDates = matchDates ? matchDates[1] : targetDateFormatted;
+
                                     const cartKey = `${displayDate}_${regionName}`;
                                     const isChecked = globalCart.has(cartKey) ? 'checked' : '';
 
@@ -686,10 +727,16 @@
                                         .trim();
 
                                     return `
-                                    <label class="zebra-row" for="reg-chk-${idx}">
-                                        <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${isChecked}>
-                                        <div style="flex:1;">${infoPart}</div>
-                                    </label>`;
+                                    <div class="zebra-row">
+                                        <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
+                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${isChecked}>
+                                            <div style="flex:1;">${infoPart}</div>
+                                        </label>
+                                        <div class="quick-add-container">
+                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dostępny dzień</button>
+                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały dostępny tydzień</button>
+                                        </div>
+                                    </div>`;
                                 }).join('');
 
                                 htmlZebra += `</div>`;
@@ -707,6 +754,54 @@
                                         } else {
                                             globalCart.delete(key);
                                         }
+                                        refreshCartUI();
+                                    });
+                                });
+
+                                resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        const curDate = this.getAttribute('data-current');
+                                        const availableDates = this.getAttribute('data-dates').split(',').sort();
+                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
+
+                                        globalCart.set(`${formatDateDisplay(curDate)}_${rName}`, { date: formatDateDisplay(curDate), region: rName });
+
+                                        const nextAvailable = availableDates.find(d => d > curDate);
+                                        if (nextAvailable) {
+                                            const nextDisp = formatDateDisplay(nextAvailable);
+                                            globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
+                                            alert(`✅ Dodano kolejny termin: ${nextDisp} dla rejonu ${rName}`);
+                                        } else {
+                                            alert(`ℹ️ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
+                                        }
+
+                                        const parentRow = this.closest('.zebra-row');
+                                        const chk = parentRow.querySelector('.region-checkbox');
+                                        if (chk) chk.checked = true;
+
+                                        refreshCartUI();
+                                    });
+                                });
+
+                                resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        const availableDates = this.getAttribute('data-dates').split(',').sort();
+                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
+
+                                        let addedCount = 0;
+                                        availableDates.forEach(dStr => {
+                                            const dDisp = formatDateDisplay(dStr);
+                                            globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
+                                            addedCount++;
+                                        });
+
+                                        const parentRow = this.closest('.zebra-row');
+                                        const chk = parentRow.querySelector('.region-checkbox');
+                                        if (chk) chk.checked = true;
+
+                                        alert(`✅ Dodano ${addedCount} termin(y) w tym tygodniu dla: ${rName}`);
                                         refreshCartUI();
                                     });
                                 });
