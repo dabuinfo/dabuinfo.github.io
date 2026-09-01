@@ -599,56 +599,72 @@
             const cartTotalEl = document.getElementById('cart-total');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            function refreshCartUI() {
-                const count = globalCart.size;
-                const totalCost = count * unitRate;
+function refreshCartUI() {
+    const totalTermsCount = globalCart.size;
+    const totalCost = totalTermsCount * unitRate;
 
-                cartCountEl.textContent = count;
-                cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
+    // Zliczanie unikalnych rejonów oraz grupowanie dat
+    const uniqueRegions = new Set();
+    const grouped = {};
 
-                if (count > 0) {
-                    submitBtn.classList.remove('disabled');
-                    submitBtn.removeAttribute('disabled');
+    globalCart.forEach(item => {
+        uniqueRegions.add(item.region);
+        if (!grouped[item.date]) grouped[item.date] = [];
+        grouped[item.date].push(item.region);
+    });
 
-                    const grouped = {};
-                    globalCart.forEach(item => {
-                        if (!grouped[item.date]) grouped[item.date] = [];
-                        grouped[item.date].push(item.region);
-                    });
+    const uniqueRegionsCount = uniqueRegions.size;
 
-                    let detailsText = "";
-                    for (let date in grouped) {
-                        detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
-                    }
+    // Formatowanie etykiety: np. "1 rejon (2 terminy)" lub "2 rejony (3 terminy)"
+    let countLabel = "";
+    if (uniqueRegionsCount === 1) {
+        countLabel = totalTermsCount === 1 
+            ? `<strong>1</strong> rejon (1 termin)` 
+            : `<strong>1</strong> rejon (${totalTermsCount} terminy)`;
+    } else {
+        countLabel = `<strong>${uniqueRegionsCount}</strong> rejon(y) (${totalTermsCount} terminów)`;
+    }
 
-                    if (isPolish) {
-                        submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie rejonów: ${count} szt.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
-                        submitBtn.onclick = function() {
-                            window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
-                        };
-                    } else {
-                        submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Bestellen' : (userLang === 'cs' ? 'Objednat' : 'Order')} (${totalCost} €)`;
-                        let waBody = "";
-                        if (userLang === 'de') {
-                            waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${count} Gebiete\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
-                        } else if (userLang === 'cs') {
-                            waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${count} oblastí\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK / IBAN). S pozdravem.`;
-                        } else {
-                            waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${count} areas\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK / IBAN). Best regards.`;
-                        }
+    cartCountEl.innerHTML = countLabel;
+    cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
 
-                        submitBtn.onclick = function() {
-                            window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
-                        };
-                    }
-                } else {
-                    submitBtn.classList.add('disabled');
-                    submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order';
-                    submitBtn.onclick = null;
-                }
+    if (totalTermsCount > 0) {
+        submitBtn.classList.remove('disabled');
+        submitBtn.removeAttribute('disabled');
+
+        let detailsText = "";
+        for (let date in grouped) {
+            detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
+        }
+
+        if (isPolish) {
+            submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
+            let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejon(ów) | ${totalTermsCount} termin(ów).\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+            submitBtn.onclick = function() {
+                window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
+            };
+        } else {
+            submitBtn.innerHTML = `💬 ${userLang === 'de' ? 'Bestellen' : (userLang === 'cs' ? 'Objednat' : 'Order')} (${totalCost} €)`;
+            let waBody = "";
+            if (userLang === 'de') {
+                waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
+            } else if (userLang === 'cs') {
+                waBody = `Dobrý den, objednávám přístup k vybraným oblastem [Objednávka: ${globalOrderId}]:\nCelkem: ${uniqueRegionsCount} oblasti (${totalTermsCount} termíny)\nTermíny:${detailsText}\nCelková cena: ${totalCost} € (BLIK / IBAN). S pozdravem.`;
+            } else {
+                waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nDates:${detailsText}\nTotal price: ${totalCost} € (BLIK / IBAN). Best regards.`;
             }
+
+            submitBtn.onclick = function() {
+                window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
+            };
+        }
+    } else {
+        submitBtn.classList.add('disabled');
+        submitBtn.setAttribute('disabled', 'true');
+        submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '💬 Select areas to order';
+        submitBtn.onclick = null;
+    }
+}
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
