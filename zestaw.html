@@ -1674,11 +1674,22 @@
             
             body += "\n\n--------------------------------------------------------\n" + localT.emailFooter + "\n";
             
-            const diacritics = {'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z','ä':'ae','ö':'oe','ü':'ue','ß':'ss'};
+            // Bezpieczne usuwanie diakrytyków (zarówno małe, jak i wielkie litery)
+            function removeDiacritics(str) {
+                const map = {
+                    'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
+                    'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
+                    'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
+                    'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
+                };
+                return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
+            }
+
             var subject = "[#" + nr + "] " + ((currentLang === 'pl') ? "ZAMÓWIENIE ZESTAWU" : "BESTELLUNG / ORDER");
-            subject = subject.replace(/[ąćęłńóśźżäöüß]/g, m => diacritics[m] || m);
+            var safeSubject = removeDiacritics(subject);
+            var safeBody = removeDiacritics(body);
             
-            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
         });
 
         function populateFreePreviewDropdown(matrix) {
