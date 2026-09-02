@@ -33,6 +33,7 @@
         .btn-order:active { transform: scale(0.98); }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
         .price-container { font-size: 1.1rem; }
+        .min-order-warning { font-size: 0.85rem; color: #e74c3c; margin-top: 4px; display: none; }
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
@@ -49,12 +50,12 @@
     <div class="service-info">
         ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie z serwerów firm sprzątających.
         <ul>
-            <li><b>Terminy roczne:</b> Cena za terminy do końca roku jest ustalana automatycznie na stronie <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu możesz wybrać rok (2026 / 2027) oraz zamówić więcej niż jeden rejon z wyceną indywidualną.</li>
+            <li><b>Terminy roczne:</b> Cena za terminy do końca roku jest ustalana automatycznie na stronie <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu możesz wybrać rok (2026 / 2027) oraz zamówić pakiet minimum 2 rejonów z wyceną indywidualną.</li>
         </ul>
         <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
-            💡 <b>Uwaga:</b> Zamawianie pojedynczych rejonów najwygodniej złożyć przez <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. <br>W tym miejscu zamawiamy pakiety wielu rejonów z wyceną indywidualną.
+            💡 <b>Uwaga:</b> Pojedyncze rejony zamawiaj przez <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. <br>W tym formularzu minimalna wielkość zamówienia to <b>2 rejony</b>.
         </div>
     </div>
     <div id="regionsContainer"></div>
@@ -64,8 +65,11 @@
     <div style="max-width: 1000px; margin: 0 auto;">
         <div class="price-container" style="margin-bottom: 10px;">
             Razem do zapłaty: <span id="totalPrice" style="color: #f1c40f; font-weight: bold;">Cena ustalana indywidualnie</span>
+            <div id="minOrderWarning" class="min-order-warning">
+                ⚠️ Wybierz co najmniej 2 rejony, aby złożyć zamówienie. Pojedynczy rejon zamówisz na <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>.
+            </div>
         </div>
-        <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie</button>
+        <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie (min. 2 rejony)</button>
     </div>
 </div>
 
@@ -79,7 +83,7 @@
                 price: 0,
                 type: "checkbox", 
                 hasYearSelect: true,
-                desc: "Wycena indywidualna przy zamówieniu wielu rejonów (automatyczna wycena 1 rejonu na dabu-info.com/zestaw.html)",
+                desc: "Wycena indywidualna przy zamówieniu pakietu rejonów (min. 2 rejony)",
                 items: {
                     "Rejony z dostępnymi terminami całorocznymi": [
                         "Altmarkkreis Salzwedel",
@@ -121,6 +125,7 @@
         const container = document.getElementById('regionsContainer');
         const priceDisplay = document.getElementById('totalPrice');
         const orderBtn = document.getElementById('submitOrderBtn');
+        const minOrderWarning = document.getElementById('minOrderWarning');
         
         let cart = {};
 
@@ -223,12 +228,31 @@
 
         function updateUI() {
             let itemCount = Object.keys(cart).length;
-            orderBtn.disabled = itemCount === 0;
+            
+            // Blokada zamówienia: minimum 2 rejony
+            if (itemCount >= 2) {
+                orderBtn.disabled = false;
+                orderBtn.textContent = `📱 Złóż zamówienie (${itemCount} rejony)`;
+                minOrderWarning.style.display = "none";
+            } else {
+                orderBtn.disabled = true;
+                if (itemCount === 1) {
+                    orderBtn.textContent = "📱 Złóż zamówienie (wymagane min. 2 rejony)";
+                    minOrderWarning.style.display = "block";
+                } else {
+                    orderBtn.textContent = "📱 Złóż zamówienie (min. 2 rejony)";
+                    minOrderWarning.style.display = "none";
+                }
+            }
+
             updateScrappersOptionStatus();
             priceDisplay.textContent = "Cena ustalana indywidualnie";
         }
 
         orderBtn.addEventListener('click', () => {
+            const roczneItems = Object.values(cart).map(item => item.name);
+            if (roczneItems.length < 2) return;
+
             const dzisiaj = new Date();
             const rrrr = dzisiaj.getFullYear();
             const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
@@ -236,7 +260,6 @@
             const dataString = `${rrrr}${mm}${dd}`;
 
             const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
-            const roczneItems = Object.values(cart).map(item => item.name);
 
             const mandatoryList = roczneItems.filter(region => onlyScrappersRegions.includes(region));
             const standardList = roczneItems.filter(region => !onlyScrappersRegions.includes(region));
