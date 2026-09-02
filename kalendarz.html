@@ -772,8 +772,14 @@
                                     let matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
                                     let allAvailableDates = matchDates ? matchDates[1] : targetDateFormatted;
 
-                                    const cartKey = `${displayDate}_${regionName}`;
-                                    const isChecked = globalCart.has(cartKey) ? 'checked' : '';
+                                    let isRegionSelected = false;
+                                    for (let cartItem of globalCart.values()) {
+                                        if (cartItem.region === regionName) {
+                                            isRegionSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    const checkedAttr = isRegionSelected ? 'checked' : '';
 
                                     let infoPart = cleanItem
                                         .replace(/\[(?:Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat|Zamów)\]\([^)]+\)/gi, '')
@@ -786,7 +792,7 @@
                                     return `
                                     <div class="zebra-row">
                                         <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
-                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${isChecked}>
+                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
                                             <div style="flex:1;">${infoPart}</div>
                                         </label>
                                         <div class="quick-add-container">
@@ -799,27 +805,25 @@
                                 htmlZebra += `</div>`;
                                 resultsContent.innerHTML = htmlZebra;
 
-const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
-checkboxes.forEach(chk => {
-    chk.addEventListener('change', function() {
-        const rDate = this.getAttribute('data-date');
-        const rName = decodeURIComponent(this.getAttribute('data-region'));
-        const key = `${rDate}_${rName}`;
+                                const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
+                                checkboxes.forEach(chk => {
+                                    chk.addEventListener('change', function() {
+                                        const rDate = this.getAttribute('data-date');
+                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
+                                        const key = `${rDate}_${rName}`;
 
-        if (this.checked) {
-            // Zaznaczenie pojedynczego terminu
-            globalCart.set(key, { date: rDate, region: rName });
-        } else {
-            // Całkowite wyczyszczenie tego rejonu ze wszystkich dni w koszyku
-            for (let cartKey of Array.from(globalCart.keys())) {
-                if (globalCart.get(cartKey).region === rName) {
-                    globalCart.delete(cartKey);
-                }
-            }
-        }
-        refreshCartUI();
-    });
-});
+                                        if (this.checked) {
+                                            globalCart.set(key, { date: rDate, region: rName });
+                                        } else {
+                                            for (let cartKey of Array.from(globalCart.keys())) {
+                                                if (globalCart.get(cartKey).region === rName) {
+                                                    globalCart.delete(cartKey);
+                                                }
+                                            }
+                                        }
+                                        refreshCartUI();
+                                    });
+                                });
 
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
