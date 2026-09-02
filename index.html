@@ -158,6 +158,8 @@
         .info-order-icon { font-size: 24px; line-height: 1; margin-top: 2px; }
         .info-order-text { color: #e0e0e0; font-size: 15px; line-height: 1.6; }
         .info-order-text strong { color: #fff; }
+        .info-order-text a { color: #2ecc71; text-decoration: underline; }
+        .info-order-text a:hover { color: #58d68d; }
 
         /* ========================================= */
         /* SEKCJA: RYZYKO, ZASADY & IMPORTERZY       */
@@ -248,12 +250,12 @@
             border-radius: 8px;
             font-family: 'Space Mono', monospace; 
             font-weight: bold;
-            font-size: 18px; 
+            font-size: 16px; 
             text-transform: uppercase;
             text-decoration: none;
             text-align: center;
             width: 100%;
-            max-width: 320px;
+            max-width: 275px;
             box-sizing: border-box;
             border: 2px dashed #ffffff; 
             transition: all 0.3s ease;
@@ -300,30 +302,11 @@
         #chat-user-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; outline: none; }
         .chat-send-button { margin-left: 10px; padding: 0 15px; background: var(--theme-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-        /* ========================================= */
-        /* STOPKA                                    */
-        /* ========================================= */
-        .dabu-footer {
-            background-color: #121212; border-top: 1px solid #333; color: #ccc;
-            padding: 50px 20px 20px; width: 100%; box-sizing: border-box; margin-top: 40px;
-        }
-        .dabu-footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-between; }
-        .dabu-footer-col { flex: 1; min-width: 280px; text-align: left; }
-        .dabu-footer-heading { color: #2ecc71; font-size: 1.3em; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; }
-        .dabu-footer-links, .dabu-footer-contact { list-style: none; padding: 0; margin: 0; font-size: 0.9em; line-height: 1.8; }
-        .dabu-footer-links li a, .dabu-footer-contact li a { color: #3498db; text-decoration: none; }
-        .dabu-footer-links li a:hover, .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
-        .dabu-footer-contact strong { color: #e0e0e0; }
-        .dabu-footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid #222; text-align: center; font-size: 0.85em; color: #777; }
-        .dabu-footer-bottom a { color: #2ecc71; text-decoration: none; font-weight: bold; }
-
         @media (max-width: 768px) {
             .offer-wrapper { padding: 25px 15px; }
             .offer-header { font-size: 1.8em; }
             .info-order-card { padding: 15px; gap: 15px; }
             .info-order-text { font-size: 13.5px; }
-            .dabu-footer-container { flex-direction: column; }
-            .dabu-footer-col { text-align: center; }
             #chat-main-window { bottom: 15px !important; left: 15px !important; right: 15px !important; width: auto !important; max-width: none !important; }
         }
         @media (min-width: 769px) {
@@ -353,34 +336,51 @@
 
         <div style="display: flex; flex-direction: column; gap: 25px; align-items: center; width: 100%; margin: 0 auto 30px auto;">
           
-          <!-- KARTY KORZYŚCI (OPIS) -->
+          <!-- KARTY KORZYŚCI (OPIS MOŻLIWOŚCI ZAMAWIANIA) -->
           <div class="info-order-card">
+            
+            <!-- NOWOŚĆ: KALENDARZ WYSTAWEK -->
+            <div class="info-order-row">
+              <span class="info-order-icon">📅</span>
+              <div class="info-order-text" id="info-calendar">
+                <strong>Interaktywny Kalendarz Wystawek (<a href="https://dabu-info.com/kalendarz.html" target="_blank">kalendarz.html</a>):</strong> Najwygodniejszy sposób na planowanie trasy zbiórek dzień po dniu!
+                <ul style="margin: 6px 0 0 18px; padding: 0;">
+                  <li><strong>Wybór po dacie:</strong> Kliknij konkretny dzień, by sprawdzić wszystkie dostępne w nim zbiórki gabarytów i złomu[cite: 1].</li>
+                  <li><strong>Błyskawiczne pakiety:</strong> Korzystaj z przycisków <em>➕ Następny dzień</em> oraz <em>📅 Cały tydzień</em>, które automatycznie dobierają terminy bez żmudnego szukania[cite: 1].</li>
+                  <li><strong>Przejrzysty koszt i wygoda:</strong> Prosta stawka (25 PLN / 6 € za rejon/dzień), dynamiczny koszyk i gotowe zamówienie jednym kliknięciem przez SMS lub WhatsApp[cite: 1]!</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- TERMINY NA ROK 2027 ORAZ ZAMÓWIENIA DUŻE -->
+            <div class="info-order-row">
+              <span class="info-order-icon">📝</span>
+              <div class="info-order-text" id="info-order-2027">
+                <strong>Zamówienia na cały rok 2027 (<a href="https://dabu-info.com/zamowienia.html" target="_blank">zamowienia.html</a>):</strong> Planujesz wyjazdy z dużym wyprzedzeniem? Oprócz bieżącego sezonu 2026 oferujemy możliwość składania zamówień na <strong>wybrane rejony na cały nadchodzący rok 2027</strong>! Zapewnij sobie stały dostęp do terminów na wyłączność z indywidualną wyceną pakietową i rabatami hurtowymi.
+              </div>
+            </div>
+
             <div class="info-order-row">
               <span class="info-order-icon">🚀</span>
               <div class="info-order-text" id="info-accuracy">
                 <strong>Najwyższa dokładność na rynku:</strong> Harmonogramy pobieramy automatycznie bezpośrednio z oficjalnych serwerów niemieckich firm sprzątających, co gwarantuje pewne i bezbłędne dane.
               </div>
             </div>
+
             <div class="info-order-row">
               <span class="info-order-icon">📱</span>
               <div class="info-order-text" id="info-options">
                 <strong>Elastyczne rozwiązania:</strong> Sprawdź aktualne zestawienie przez <strong>Terminy Wystawek</strong> lub zamów pełen dostęp dla wybranych rejonów Niemiec w wersji dostosowanej do smartfona.
               </div>
             </div>
-            <div class="info-order-row">
-              <span class="info-order-icon">📅</span>
-              <div class="info-order-text" id="info-generator">
-                <strong>Tygodniówki gotowe do końca roku:</strong> Wszystkie plany są już w bazie i podlegają stałym aktualizacjom. Zawsze pobierasz najbardziej aktualny stan dokumentu prosto z naszego serwera!
-              </div>
-            </div>
+
           </div>
 
-          <!-- PRZYCISKI / LINKI -->
-          <div style="display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; flex-wrap: wrap; margin: 10px 0;">
+          <!-- PRZYCISKI / LINKI GŁÓWNE -->
+          <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; margin: 10px 0;">
                <a href="https://dabu-info.com/zestaw.html" target="_blank" class="btn-spis" id="btn-set">TERMINY WYSTAWEK</a>
-               <!---<a href="https://dabu-info.com/mapa.html" target="_blank" class="btn-spis" id="btn-map">MAPA WYSTAWEK</a>
-               <a href="https://dabu-info.com/kalendarz.html" target="_blank" class="btn-spis" id="btn-cal">KALENDARZ WYSTAWEK</a>
-               <a href="https://dabu-info.com/zamowienia.html" target="_blank" class="btn-spis" id="btn-gen">ZAMÓW TERMINY</a> --->
+               <a href="https://dabu-info.com/kalendarz.html" target="_blank" class="btn-spis" id="btn-cal" style="border-color: #2ecc71; color: #2ecc71 !important;">KALENDARZ WYSTAWEK</a>
+               <a href="https://dabu-info.com/zamowienia.html" target="_blank" class="btn-spis" id="btn-gen" style="border-color: #e67e22; color: #e67e22 !important;">ZAMÓW NA 2027 ROK</a>
                <a href="https://dabu-info.com/data.html" target="_blank" class="btn-spis" id="btn-gs" style="border-color: #3498db; color: #3498db !important;">BAZY DLA IMPORTERÓW</a>
                <a href="https://dabu-info.com/gieldy.html" target="_blank" class="btn-spis" id="btn-base" style="border-color: #f39c12; color: #f39c12 !important;">WYSZUKIWARKA GIEŁD</a>
           </div>
@@ -432,13 +432,13 @@
                 🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania
             </h3>
             <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">
-                Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych i handlowych z całej Europy, ułatwiając codzienne wyszukiwanie terminów wystawek (<em>Sperrmüll Termine 2026</em>) oraz logistykę tras. 
+                Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych i handlowych z całej Europy, ułatwiając codzienne wyszukiwanie terminów wystawek (<em>Sperrmüll Termine 2026 / 2027</em>) oraz logistykę tras. 
             </p>
             <div class="seo-tags" style="font-size: 0.85em; color: #888; line-height: 1.8; border-top: 1px solid #262626; padding-top: 15px;">
-                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech oraz bazy firm dla importerów rzeczy używanych.</p>
-                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne, Sperrmüll Termine, Werkstatt-Datenbanken und Schrott-Abholung Online-Suche.</p>
-                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates, used goods importer databases, and weekly collection plans.</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоza крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
+                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, kalendarz zbiórek, rezerwacje na 2027 rok, rozpiski, plany wywozu gabarytów w Niemczech oraz bazy firm dla importerów rzeczy używanych.</p>
+                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne, Vorbestellungen für 2027, Sperrmüll Termine, Werkstatt-Datenbanken und Schrott-Abholung Online-Suche.</p>
+                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection calendar, schedules for 2027, scrap dates, used goods importer databases, and weekly collection plans Germany.</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
             </div>
         </div>
 
@@ -447,10 +447,11 @@
     <script>
         const tData = {
   "pl": { 
-    btnGen: "ZAMÓW TERMINY", btnSet: "Terminy Wystawek", btnBase: "WYSZUKIWARKA GIEŁD", btnPdf: "Generator PDF", btnMap: "Mapa wystawek", btnCal: "Kalendarz Wystawek", btnGs: "BAZY DLA IMPORTERÓW", btnContact: "Kontakt",
+    btnGen: "ZAMÓW NA 2027 ROK", btnSet: "Terminy Wystawek", btnBase: "WYSZUKIWARKA GIEŁD", btnCal: "Kalendarz Wystawek", btnGs: "BAZY DLA IMPORTERÓW",
+    infoCalendar: "<strong>Interaktywny Kalendarz Wystawek (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> Najwygodniejszy sposób na planowanie trasy zbiórek dzień po dniu!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Wybór po dacie:</strong> Kliknij konkretny dzień, by sprawdzić wszystkie dostępne w nim zbiórki gabarytów i złomu.</li><li><strong>Błyskawiczne pakiety:</strong> Korzystaj z przycisków <em>➕ Następny dzień</em> oraz <em>📅 Cały tydzień</em>, które automatycznie dobierają terminy bez żmudnego szukania.</li><li><strong>Przejrzysty koszt i wygoda:</strong> Prosta stawka (25 PLN / 6 € za rejon/dzień), dynamiczny koszyk i gotowe zamówienie jednym kliknięciem przez SMS lub WhatsApp!</li></ul>",
+    infoOrder2027: "<strong>Zamówienia na cały rok 2027 (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planujesz wyjazdy z dużym wyprzedzeniem? Oprócz bieżącego sezonu 2026 oferujemy możliwość składania zamówień na <strong>wybrane rejony na cały nadchodzący rok 2027</strong>! Zapewnij sobie stały dostęp do terminów na wyłączność z indywidualną wyceną pakietową i rabatami hurtowymi.",
     accuracy: "<strong>Najwyższa dokładność na rynku:</strong> Harmonogramy pobieramy automatycznie bezpośrednio z oficjalnych serwerów niemieckich firm sprzątających, co gwarantuje pewne i bezbłędne dane.",
     options: "<strong>Elastyczne rozwiązania:</strong> Sprawdź aktualne zestawienie przez <strong>Terminy Wystawek</strong> lub zamów pełen dostęp dla wybranych rejonów Niemiec w wersji dostosowanej do smartfona.",
-    generator: "<strong>Tygodniówki gotowe do końca roku:</strong> Wszystkie plany są już w bazie i podlegają stałym aktualizacjom. Zawsze pobierasz najbardziej aktualny stan dokumentu prosto z naszego serwera!",
     t_header: "Twój Nawigator po Wystawkach",
     t_subheader: "Precyzyjne plany, rozpiski i terminy wystawek Sperrmüll w Niemczech na rok 2026",
     t_desc1: "Celem serwisu <strong>dabu-info</strong> jest dostarczanie najdokładniejszych i stale aktualizowanych <strong>planów, rozpisek oraz terminów wystawek</strong> odpadów wielkogabarytowych na terenie całych Niemiec. W rejonach o zbiórkach powszechnych (gdzie wystawiają wszyscy mieszkańcy) nasze zestawienia pomagają precyzyjnie ułożyć trasę i ograniczyć niepotrzebne zużycie paliwa – z kolei w rejonach typu <em>auf Abruf</em> (na zgłoszenie) dostarczają wiedzy o oficjalnych terminach odbiorów.",
@@ -462,41 +463,43 @@
     t_importer_body: "<p style=\"margin-top:0;\">Oprócz terminów wystawek oferujemy <strong>dedykowane bazy danych i informacje branżowe</strong> dla osób oraz firm zajmujących się importem towaru z Niemiec.</p><p>Przygotowujemy zestawienia bezpośrednich kontaktów i lokalizacji:<ul style=\"margin: 5px 0 10px 20px; padding: 0;\"><li>Serwisy i warsztaty rowerowe</li><li>Punkty wymiany opon i warsztaty samochodowe</li><li>Serwisy sprzętu ogrodniczego, elektronarzędzi i maszyn</li><li>Punkty zbiórki i recyklingu (Wertstoffhöfe / Schrott)</li></ul></p><p style=\"margin-bottom:0;\">To doskonała i pewna alternatywa pozwalająca zapełnić auto towarem komercyjnym niezależnie od wystawek ulicznych.</p>"
   },
   "de": { 
-    btnGen: "TERMINE BESTELLEN", btnSet: "Sperrmülltermine", btnBase: "FLOHMÄRKTE SUCHE", btnPdf: "PDF-Generator", btnMap: "Sperrmüllkarte", btnCal: "Sperrmüllkalender", btnGs: "IMPORT-DATENBANKEN", btnContact: "Kontakt",
+    btnGen: "FÜR 2027 BESTELLEN", btnSet: "Sperrmülltermine", btnBase: "FLOHMÄRKTE SUCHE", btnCal: "Sperrmüllkalender", btnGs: "IMPORT-DATENBANKEN",
+    infoCalendar: "<strong>Interaktiver Sperrmüllkalender (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> Die bequemste Art, Ihre Sammelroute Tag für Tag zu planen!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Auswahl nach Datum:</strong> Klicken Sie auf einen Tag, um verfügbare Abholungen einzusehen.</li><li><strong>Schnellpakete:</strong> Nutzen Sie Schaltflächen für den nächsten Tag oder die ganze Woche.</li><li><strong>Transparente Preise:</strong> 25 PLN / 6 € pro Gebiet, direkter Warenkorb und Bestellung per SMS/WhatsApp.</li></ul>",
+    infoOrder2027: "<strong>Bestellungen für das gesamte Jahr 2027 (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planen Sie langfristig? Neben 2026 bieten wir Vorbestellungen für ausgewählte Gebiete für das gesamte Jahr 2027 mit individuellem Rabatt an.",
     accuracy: "<strong>Höchste Genauigkeit auf dem Markt:</strong> Wir laden die Termine automatisch direkt von den offiziellen Servern der deutschen Entsorgungsunternehmen herunter.",
     options: "<strong>Flexible Lösungen:</strong> Prüfen Sie die aktuelle Übersicht über <strong>Sperrmülltermine</strong> oder bestellen Sie den Zugang für ausgewählte Regionen.",
-    generator: "<strong>Wochenpläne bis Jahresende bereit:</strong> Alle Pläne sind bereits in der Datenbank und werden ständig aktualisiert. Sie laden immer den aktuellsten Dokumentenstatus direkt herunter!",
     t_header: "Ihr Navigator durch den Sperrmüll",
     t_subheader: "Präzise Pläne, Zeitpläne und Sperrmülltermine in Deutschland für 2026",
-    t_desc1: "Das Ziel von <strong>dabu-info</strong> ist es, die genauesten und ständig aktualisierten <strong>Pläne und Termine</strong> für die Sperrmüllabholung in ganz Deutschland bereitzustellen. In Gebieten mit regulärer Straßensammlung helfen unsere Pläne, Routen zu optimieren und Kraftstoff zu sparen – bei <em>auf Abruf</em>-Gebieten liefern sie das Wissen über offizielle Abfuhrtermine.",
-    t_desc2: "Unsere Datenbank für 2026 umfasst bereits <strong>viele sorgfältig ausgewählte deutsche Regionen</strong>! Die meisten funktionieren bereits automatisch.",
+    t_desc1: "Das Ziel von <strong>dabu-info</strong> ist es, die genauesten und ständig aktualisierten <strong>Pläne und Termine</strong> für die Sperrmüllabholung in ganz Deutschland bereitzustellen.",
+    t_desc2: "Unsere Datenbank für 2026 umfasst bereits <strong>viele sorgfältig ausgewählte deutsche Regionen</strong>!",
     t_notice_title: "⚠️ Wichtige Hinweise zu Fahrten und Haftung",
     t_risk_head: "<span>🛑</span> Reiserisiko und unsere Rolle",
-    t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong> – wir haben keinen Einfluss darauf, ob Anwohner Gegenstände rechtzeitig herausstellen.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten (Kraftstoff, Maut) sowie <strong>Bußgelder, Fahrzeugreparaturen</strong> und unvorhergesehene Ausgaben trägt stets und ausschließlich der Fahrer selbst.</p>",
+    t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>",
     t_importer_head: "<span>📦</span> Infos für Gebrauchtwaren-Importeure",
-    t_importer_body: "<p style=\"margin-top:0;\">Neben Sperrmüllterminen bieten wir <strong>spezifische Datenbanken</strong> für Gebrauchtwarenhändler und Importeure an.</p><p>Wir liefern strukturierte Adresslisten von:<ul style=\"margin: 5px 0 10px 20px; padding: 0;\"><li>Fahrradwerkstätten & Servicepunkten</li><li>Reifendiensten & Autowerkstätten</li><li>Gartengeräte- und Werkzeugservices</li><li>Wertstoffhöfen & Recyclingbetrieben</li></ul></p><p style=\"margin-bottom:0;\">Eine hervorragende gewerbliche Alternative zur Straßensammlung.</p>"
+    t_importer_body: "<p style=\"margin-top:0;\">Neben Sperrmüllterminen bieten wir <strong>spezifische Datenbanken</strong> für Gebrauchtwarenhändler und Importeure an.</p>"
   },
   "en": { 
-    btnGen: "ORDER SCHEDULES", btnSet: "Collection Schedules", btnBase: "FLEA MARKETS SEARCH", btnPdf: "PDF Generator", btnMap: "Bulk Waste Map", btnCal: "Bulk Waste Calendar", btnGs: "IMPORTER DATABASES", btnContact: "Contact",
+    btnGen: "ORDER FOR 2027", btnSet: "Collection Schedules", btnBase: "FLEA MARKETS SEARCH", btnCal: "Bulk Waste Calendar", btnGs: "IMPORTER DATABASES",
+    infoCalendar: "<strong>Interactive Collection Calendar (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> The easiest way to plan your collection route day by day!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Date selection:</strong> Click on any day to check all available pickups.</li><li><strong>Quick add:</strong> Fast add next day or full week collection dates.</li><li><strong>Simple pricing:</strong> 25 PLN / 6 € per area/day with instant cart ordering via SMS or WhatsApp.</li></ul>",
+    infoOrder2027: "<strong>Full Year 2027 Orders (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planning ahead? You can now pre-order selected collection regions for the entire year of 2027 with customized wholesale pricing!",
     accuracy: "<strong>Highest accuracy on the market:</strong> We automatically download schedules directly from the official servers of German waste management companies.",
     options: "<strong>Flexible solutions:</strong> Check the collection schedules via <strong>Collection Schedules</strong> or order access for selected regions of Germany.",
-    generator: "<strong>Weekly schedules ready until the end of the year:</strong> All plans are already in the database and are constantly updated. You always download the most up-to-date document!",
     t_header: "Your Bulk Waste Navigator",
     t_subheader: "Precise plans, schedules, and bulk waste (Sperrmüll) dates in Germany for 2026",
-    t_desc1: "The goal of <strong>dabu-info</strong> is to provide the most accurate and constantly updated <strong>plans and dates</strong> for bulk waste collection across Germany. In regular fixed-collection areas, our schedules help optimize routes and save fuel – while in <em>on-demand</em> areas, they provide essential knowledge about official pickup dates.",
-    t_desc2: "Our 2026 database already includes <strong>many carefully selected German regions</strong>! Most of them work automatically.",
+    t_desc1: "The goal of <strong>dabu-info</strong> is to provide the most accurate and constantly updated plans and dates for bulk waste collection across Germany.",
+    t_desc2: "Our 2026 database already includes many carefully selected German regions!",
     t_notice_title: "⚠️ Important Trip Information & Liability",
     t_risk_head: "<span>🛑</span> Trip Risk & Our Role",
-    t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>'Auf Abruf' (On-demand) regions:</strong> In on-demand regions, there is a natural <strong>risk of empty trips</strong> – we have no control over whether residents place bulk items outside in time.</p><p style=\"margin-bottom:0;\"><strong>Travel expenses:</strong> All travel expenses (fuel, tolls), as well as <strong>risks of fines, vehicle repairs</strong>, and unexpected costs are strictly borne by the person traveling.</p>",
+    t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>",
     t_importer_head: "<span>📦</span> Data for Second-Hand Goods Importers",
-    t_importer_body: "<p style=\"margin-top:0;\">In addition to bulk waste schedules, we provide <strong>specialized business databases</strong> for used goods traders and importers.</p><p>We compile verified directory datasets of:<ul style=\"margin: 5px 0 10px 20px; padding: 0;\"><li>Bicycle repair and service shops</li><li>Tire services and auto repair shops</li><li>Garden machinery & power tool workshops</li><li>Recycling yards (Wertstoffhöfe & Scrap)</li></ul></p><p style=\"margin-bottom:0;\">A reliable alternative to street collections for sourcing commercial goods.</p>"
+    t_importer_body: "<p style=\"margin-top:0;\">In addition to bulk waste schedules, we provide specialized business databases for used goods traders and importers.</p>"
   }
 };
 
         document.addEventListener('DOMContentLoaded', function() {
             const currentYear = new Date().getFullYear();
 
-            // 1. Automatyczna podmiana "2026" na bieżący rok w bazie tłumaczeń (tData)
+            // 1. Automatyczna podmiana roku w tłumaczeniach
             for (let lang in tData) {
                 for (let key in tData[lang]) {
                     if (typeof tData[lang][key] === 'string') {
@@ -505,7 +508,7 @@
                 }
             }
 
-            // 2. Automatyczna aktualizacja tytułu karty i meta-tagów SEO w locie
+            // 2. Aktualizacja meta-tagów
             document.title = document.title.replace(/2026/g, currentYear);
             ['description', 'keywords'].forEach(name => {
                 const meta = document.querySelector(`meta[name="${name}"]`);
@@ -516,31 +519,23 @@
                 if (meta) meta.content = meta.content.replace(/2026/g, currentYear);
             });
 
-            // 3. Automatyczna aktualizacja tekstu alternatywnego obrazka (alt)
             const bannerImg = document.querySelector('.main-banner');
             if (bannerImg) bannerImg.alt = bannerImg.alt.replace(/2026/g, currentYear);
-
-            // 4. Automatyczna aktualizacja opisów w stopce oraz sekcji tagów międzynarodowych
-            const footerText = document.querySelector('.dabu-footer-text');
-            if (footerText) footerText.innerHTML = footerText.innerHTML.replace(/2026/g, currentYear);
 
             const seoContainer = document.querySelector('.seo-tags-container');
             if (seoContainer) seoContainer.innerHTML = seoContainer.innerHTML.replace(/2026/g, currentYear);
 
-            // 5. Wstrzyknięcie roku do dedykowanego znacznika w stopce autorskiej
-            const dynYear = document.getElementById('dynamic-year');
-            if (dynYear) dynYear.textContent = currentYear;
-
-            // System wyboru języka użytkownika
+            // Wybór języka
             let lang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
             const supportedLangs = ['pl', 'de', 'en'];
             const t = supportedLangs.includes(lang) ? tData[lang] : tData['de']; 
             
             const mapping = {
-                'btn-gen': 'btnGen', 'btn-set': 'btnSet', 'btn-base': 'btnBase', 'btn-pdf': 'btnPdf',
-                'btn-map': 'btnMap', 'btn-cal': 'btnCal', 'btn-gs': 'btnGs', 'btn-contact': 'btnContact',
+                'btn-gen': 'btnGen', 'btn-set': 'btnSet', 'btn-base': 'btnBase', 
+                'btn-cal': 'btnCal', 'btn-gs': 'btnGs',
+                'info-calendar': 'infoCalendar',
+                'info-order-2027': 'infoOrder2027',
                 'info-accuracy': 'accuracy', 'info-options': 'options',
-                'info-generator': 'generator',
                 't_header': 't_header', 't_subheader': 't_subheader', 
                 't_desc1': 't_desc1', 't_desc2': 't_desc2',
                 't_notice_title': 't_notice_title',
@@ -596,72 +591,21 @@
                 placeholder: "Wpisz miejscowość lub adres...",
                 wyslij: "Wyślij",
                 ladowanie: "🤔 Szukam...",
-                blad: "❌ Błąd serwera.",
-                serviceMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #2ecc71; font-size: 14px;">🛠️ Baza Firm i Serwisów</strong><br><br>
-                        <span style="color: #f1c40f;">⚠️ <strong>Alternatywa dla darmowych wystawek</strong></span><br>
-                        Szukasz hurtowych ilości towaru? Generujemy na zamówienie bazy danych z niemieckich katalogów (np. warsztaty rowerowe, opony, sprzęt rolniczy, utylizacja).<br><br>
-                        <a href="https://dabu-info.com/data.html" target="_blank" style="display: block; background: #f39c12; color: #000; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">SKONFIGURUJ BAZĘ DANYCH</a>
-                    </div>
-                `,
-                contactMsg: `<strong>Dostępne formy kontaktu:</strong><br><br>👤 <strong>Dariusz</strong> (Zamówienia i realizacja):<br>📧 dariusz@dabu-info.com<br>📞 +48 600 812 820<br><br>👩‍💼 <strong>Ewa</strong> (Szefowa - zarządzanie):<br>📧 ewa@dabu-info.com`,
-                addressMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #3498db; font-size: 14px;">📍 Wyszukiwarka Giełd</strong><br><br>
-                        Chcesz sprawdzić terminy i lokalizacje giełd oraz targów staroci (Flohmärkte) w Niemczech?<br><br>
-                        Skorzystaj z naszej wyszukiwarki:<br>
-                        <a href="https://dabu-info.com/gieldy.html" target="_blank" style="display: block; background: #3498db; color: #fff; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">OTWÓRZ WYSZUKIWARKĘ GIEŁD</a>
-                    </div>
-                `
+                blad: "❌ Błąd serwera."
             },
             de: {
                 powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um verfügbare Termine zu prüfen.",
                 placeholder: "Stadt oder Adresse eingeben...",
                 wyslij: "Senden",
                 ladowanie: "🤔 Suche...",
-                blad: "❌ Serverfehler.",
-                serviceMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #2ecc71; font-size: 14px;">🛠️ Firmen- und Werkstattdatenbank</strong><br><br>
-                        <span style="color: #f1c40f;">⚠️ <strong>Alternative zu kostenlosen Sperrmüllabholungen</strong></span><br>
-                        Suchen Sie nach Großhandelsmengen an Waren? Wir erstellen auf Anfrage Datenbanken aus deutschen Katalogen (z. B. Fahrradwerkstätten, Reifen, Landmaschinen, Entsorgung).<br><br>
-                        <a href="https://dabu-info.com/data.html" target="_blank" style="display: block; background: #f39c12; color: #000; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">DATENBANK KONFIGURIEREN</a>
-                    </div>
-                `,
-                contactMsg: `<strong>Verfügbare Kontaktmöglichkeiten:</strong><br><br>👤 <strong>Dariusz</strong> (Bestellungen und Umsetzung):<br>📧 dariusz@dabu-info.com<br>📞 +48 600 812 820<br><br>👩‍💼 <strong>Ewa</strong> (Geschäftsführung):<br>📧 ewa@dabu-info.com`,
-                addressMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #3498db; font-size: 14px;">📍 Flohmärkte Suche</strong><br><br>
-                        Möchten Sie Termine und Standorte von Flohmärkten in Deutschland prüfen?<br><br>
-                        Nutzen Sie unsere spezielle Suchmaschine:<br>
-                        <a href="https://dabu-info.com/gieldy.html" target="_blank" style="display: block; background: #3498db; color: #fff; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">FLOHMÄRKTE SUCHE ÖFFNEN</a>
-                    </div>
-                `
+                blad: "❌ Serverfehler."
             },
             en: {
                 powitanie: "Hi! Enter the city name or address to check available dates.",
                 placeholder: "Enter city or address...",
                 wyslij: "Send",
                 ladowanie: "🤔 Searching...",
-                blad: "❌ Server error.",
-                serviceMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #2ecc71; font-size: 14px;">🛠️ Companies & Services Database</strong><br><br>
-                        <span style="color: #f1c40f;">⚠️ <strong>Alternative to free bulk waste collection</strong></span><br>
-                        Looking for wholesale quantities of goods? We generate custom databases from German directories (e.g. bicycle repair shops, tires, farm machinery, waste management).<br><br>
-                        <a href="https://dabu-info.com/data.html" target="_blank" style="display: block; background: #f39c12; color: #000; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">CONFIGURE DATABASE</a>
-                    </div>
-                `,
-                contactMsg: `<strong>Available contact methods:</strong><br><br>👤 <strong>Dariusz</strong> (Orders & Operations):<br>📧 dariusz@dabu-info.com<br>📞 +48 600 812 820<br><br>👩‍💼 <strong>Ewa</strong> (Management):<br>📧 ewa@dabu-info.com`,
-                addressMsg: `
-                    <div style="font-size: 13px; line-height: 1.5;">
-                        <strong style="color: #3498db; font-size: 14px;">📍 Flea Markets Search</strong><br><br>
-                        Would you like to search for flea market dates and locations in Germany?<br><br>
-                        Use our dedicated search tool:<br>
-                        <a href="https://dabu-info.com/gieldy.html" target="_blank" style="display: block; background: #3498db; color: #fff; text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">OPEN FLEA MARKETS SEARCH</a>
-                    </div>
-                `
+                blad: "❌ Server error."
             }
         };
 
@@ -701,57 +645,12 @@
             if (event.key === "Enter") { event.preventDefault(); sendBtn.click(); }
         });
 
-        let ostatnieWyszukiwanie = "";
-
         sendBtn.onclick = async function() {
             const text = userInput.value.trim();
             if (!text) return;
 
             appendMessage(text, 'sent');
             userInput.value = '';
-
-            const textLower = text.toLowerCase();
-
-            // Keywords detection
-            const serviceKeywords = ['serwis', 'serwisy', 'serwisów', 'rower', 'kosiark', 'części', 'asortyment', 'myjki', 'budowlane', 'werkstatt', 'service', 'fahrrad', 'teile', 'repair', 'importer'];
-            const isServiceRequest = serviceKeywords.some(keyword => textLower.includes(keyword));
-
-            const contactKeywords = ['kontakt', 'telefon', 'mail', 'kto', 'dariusz', 'ewa', 'szef', 'szefowa', 'zamówienia', 'pomoc', 'email', 'e-mail', 'numer', 'z kim', 'contact', 'phone', 'ansprechpartner'];
-            const isContactRequest = contactKeywords.some(keyword => textLower.includes(keyword));
-
-            const addressKeywords = ['gielda', 'giełda', 'gieldy', 'giełdy', 'flohmarkt', 'flohmaerkte', 'flohmärkte', 'targ', 'targi', 'flea', 'market', 'adres', 'baza', 'gieldy.html', 'plz', 'kod', 'ulica', 'lokalizacja', 'gdzie', 'mapa', 'adresse', 'street', 'location', 'zip', 'postleitzahl'];
-            const isAddressRequest = addressKeywords.some(keyword => textLower.includes(keyword));
-
-            function simulateAssistantReply(msg) {
-                const loadingId = 'loading-' + Date.now();
-                appendMessage(t.ladowanie, 'received', loadingId);
-                setTimeout(() => {
-                    const el = document.getElementById(loadingId);
-                    if(el) el.remove();
-                    appendMessage(msg, 'received');
-                }, 600);
-            }
-
-            if (isServiceRequest) {
-                simulateAssistantReply(t.serviceMsg);
-                return;
-            } else if (isContactRequest) {
-                simulateAssistantReply(t.contactMsg);
-                return;
-            } else if (isAddressRequest) {
-                simulateAssistantReply(t.addressMsg);
-                return;
-            }
-
-            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-            let zapytanieDoWyslania = text;
-
-            if (emailRegex.test(text) && ostatnieWyszukiwanie !== "") {
-                zapytanieDoWyslania = text + " (Rejon: " + ostatnieWyszukiwanie + ")";
-                ostatnieWyszukiwanie = ""; 
-            } else if (!emailRegex.test(text)) {
-                ostatnieWyszukiwanie = text;
-            }
 
             const loadingId = 'loading-' + Date.now();
             appendMessage(t.ladowanie, 'received', loadingId);
@@ -760,7 +659,7 @@
                 const resp = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: zapytanieDoWyslania, jezyk: currentLang })
+                    body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: currentLang })
                 });
                 const data = await resp.json();
                 
@@ -772,7 +671,6 @@
                 } else {
                     appendMessage(t.blad, 'received');
                 }
-
             } catch(e) {
                 const el = document.getElementById(loadingId);
                 if(el) el.remove();
