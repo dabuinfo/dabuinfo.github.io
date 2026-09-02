@@ -799,21 +799,27 @@
                                 htmlZebra += `</div>`;
                                 resultsContent.innerHTML = htmlZebra;
 
-                                const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
-                                checkboxes.forEach(chk => {
-                                    chk.addEventListener('change', function() {
-                                        const rDate = this.getAttribute('data-date');
-                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
-                                        const key = `${rDate}_${rName}`;
+const checkboxes = resultsContent.querySelectorAll('.region-checkbox');
+checkboxes.forEach(chk => {
+    chk.addEventListener('change', function() {
+        const rDate = this.getAttribute('data-date');
+        const rName = decodeURIComponent(this.getAttribute('data-region'));
+        const key = `${rDate}_${rName}`;
 
-                                        if (this.checked) {
-                                            globalCart.set(key, { date: rDate, region: rName });
-                                        } else {
-                                            globalCart.delete(key);
-                                        }
-                                        refreshCartUI();
-                                    });
-                                });
+        if (this.checked) {
+            // Zaznaczenie pojedynczego terminu
+            globalCart.set(key, { date: rDate, region: rName });
+        } else {
+            // Całkowite wyczyszczenie tego rejonu ze wszystkich dni w koszyku
+            for (let cartKey of Array.from(globalCart.keys())) {
+                if (globalCart.get(cartKey).region === rName) {
+                    globalCart.delete(cartKey);
+                }
+            }
+        }
+        refreshCartUI();
+    });
+});
 
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
