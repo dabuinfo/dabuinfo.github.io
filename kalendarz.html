@@ -312,12 +312,12 @@
 
         <div class="seo-tags-container">
             <h3>🌐 Międzynarodowy Zasięg i Obszar Wyszukiwania</h3>
-            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec[cite: 1]. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy[cite: 1].</p>
+            <p style="font-size: 0.95em; color: #bbb; line-height: 1.7; margin-bottom: 20px;">Platforma <strong>dabu-info</strong> dostarcza precyzyjne i regularnie aktualizowane harmonogramy wywozu odpadów wielkogabarytowych na terenie Niemiec. Nasz serwis jest stale optymalizowany pod kątem kierowców oraz firm transportowych z całej Europy.</p>
             <div class="seo-tags">
-                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech[cite: 1].</p>
-                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne[cite: 1].</p>
-                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates[cite: 1].</p>
-                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV)[cite: 1].</p>
+                <p style="margin: 5px 0;"><strong>PL:</strong> Terminy wystawek, rozpiski, plany wywozu gabarytów w Niemczech.</p>
+                <p style="margin: 5px 0;"><strong>DE:</strong> Sperrmüllkalender, Abfallkalender Deutschland Pläne.</p>
+                <p style="margin: 5px 0;"><strong>EN:</strong> Bulk waste collection schedules Germany, scrap dates.</p>
+                <p style="margin: 5px 0;"><strong>Europe Index:</strong> Dates de collecte des encombrants (FR) | Termíny svozu velkoobjemového odpadu Německo (CS) | Lomtalanítás időpontok és heti tervek (HU) | Calendar deșeuri volumose Germania (RO) | Kaba atık toplama tarihleri (TR) | Termini odvoza krupnog otpada Njemačka (BS/HR) | График вывоза крупногабаритного мусора (UK/RU) | Stambiagabaritinių atliekų surinkimo grafikai (LT/LV).</p>
             </div>
         </div>
 
@@ -854,11 +854,40 @@
                                 resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        const availableDates = this.getAttribute('data-dates').split(',').sort();
+                                        const curDateStr = this.getAttribute('data-current'); // format YYYY-MM-DD
+                                        const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
                                         const rName = decodeURIComponent(this.getAttribute('data-region'));
 
+                                        // Wyliczamy niedzielę (koniec tygodnia) dla klikniętej daty
+                                        const parts = curDateStr.split('-');
+                                        const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                                        const dayOfWeek = baseDate.getDay(); // 0: niedziela, 1: poniedziałek, ..., 6: sobota
+                                        const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
+
+                                        const sunday = new Date(baseDate);
+                                        sunday.setDate(baseDate.getDate() + diffToSunday);
+                                        sunday.setHours(23, 59, 59, 999);
+
+                                        // Dzisiejsza data z wyzerowaną godziną (blokada dat archiwalnych)
+                                        const today = new Date();
+                                        today.setHours(0, 0, 0, 0);
+
+                                        // Wybieramy tylko terminy:
+                                        // 1. Od dzisiaj w przód (odrzucamy archiwalne dni z przeszłości)
+                                        // 2. Do końca bieżącego tygodnia (niedziela)
+                                        const validDates = availableDates.filter(dStr => {
+                                            const dParts = dStr.split('-');
+                                            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
+                                            return d >= today && d <= sunday;
+                                        });
+
+                                        if (validDates.length === 0) {
+                                            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
+                                            return;
+                                        }
+
                                         let addedCount = 0;
-                                        availableDates.forEach(dStr => {
+                                        validDates.forEach(dStr => {
                                             const dDisp = formatDateDisplay(dStr);
                                             globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
                                             addedCount++;
@@ -868,7 +897,7 @@
                                         const chk = parentRow.querySelector('.region-checkbox');
                                         if (chk) chk.checked = true;
 
-                                        alert(`✅ Dodano ${addedCount} termin(y) w tym tygodniu dla: ${rName}`);
+                                        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
                                         refreshCartUI();
                                     });
                                 });
