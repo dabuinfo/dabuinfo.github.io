@@ -851,56 +851,57 @@
                                     });
                                 });
 
-                                resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
-                                    btn.addEventListener('click', function(e) {
-                                        e.preventDefault();
-                                        const curDateStr = this.getAttribute('data-current'); // format YYYY-MM-DD
-                                        const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
-                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
+resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const curDateStr = this.getAttribute('data-current'); // format YYYY-MM-DD
+        const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
+        const rName = decodeURIComponent(this.getAttribute('data-region'));
 
-                                        // Wyliczamy niedzielę (koniec tygodnia) dla klikniętej daty
-                                        const parts = curDateStr.split('-');
-                                        const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
-                                        const dayOfWeek = baseDate.getDay(); // 0: niedziela, 1: poniedziałek, ..., 6: sobota
-                                        const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
+        // Wyliczamy niedzielę (koniec tygodnia) dla aktualnie przeglądanego terminu
+        const parts = curDateStr.split('-');
+        const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
+        const dayOfWeek = baseDate.getDay(); // 0: niedziela, 1: poniedziałek, ..., 6: sobota
+        const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
 
-                                        const sunday = new Date(baseDate);
-                                        sunday.setDate(baseDate.getDate() + diffToSunday);
-                                        sunday.setHours(23, 59, 59, 999);
+        const sunday = new Date(baseDate);
+        sunday.setDate(baseDate.getDate() + diffToSunday);
+        sunday.setHours(23, 59, 59, 999);
 
-                                        // Dzisiejsza data z wyzerowaną godziną (blokada dat archiwalnych)
-                                        const today = new Date();
-                                        today.setHours(0, 0, 0, 0);
+        // Najwcześniejszy możliwy termin do zbierania to JUTRO (dzień dzisiejszy rano już posprzątany)
+        const earliestOrderDate = new Date();
+        earliestOrderDate.setDate(earliestOrderDate.getDate() + 1);
+        earliestOrderDate.setHours(0, 0, 0, 0);
 
-                                        // Wybieramy tylko terminy:
-                                        // 1. Od dzisiaj w przód (odrzucamy archiwalne dni z przeszłości)
-                                        // 2. Do końca bieżącego tygodnia (niedziela)
-                                        const validDates = availableDates.filter(dStr => {
-                                            const dParts = dStr.split('-');
-                                            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
-                                            return d >= today && d <= sunday;
-                                        });
+        // Wybieramy tylko terminy:
+        // 1. Od jutra w przód (odrzucamy dzisiejsze i wcześniejsze zbiórki)
+        // 2. Do końca bieżącego tygodnia (niedziela)
+        const validDates = availableDates.filter(dStr => {
+            const dParts = dStr.split('-');
+            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
+            return d >= earliestOrderDate && d <= sunday;
+        });
 
-                                        if (validDates.length === 0) {
-                                            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
-                                            return;
-                                        }
+        if (validDates.length === 0) {
+            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
+            return;
+        }
 
-                                        let addedCount = 0;
-                                        validDates.forEach(dStr => {
-                                            const dDisp = formatDateDisplay(dStr);
-                                            globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
-                                            addedCount++;
-                                        });
+        let addedCount = 0;
+        validDates.forEach(dStr => {
+            const dDisp = formatDateDisplay(dStr);
+            globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
+            addedCount++;
+        });
 
-                                        const parentRow = this.closest('.zebra-row');
-                                        const chk = parentRow.querySelector('.region-checkbox');
-                                        if (chk) chk.checked = true;
+        const parentRow = this.closest('.zebra-row');
+        const chk = parentRow.querySelector('.region-checkbox');
+        if (chk) chk.checked = true;
 
-                                        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
-                                        refreshCartUI();
-                                    });
-                                });
+        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
+        refreshCartUI();
+    });
+});
 
                             } else {
                                 resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
