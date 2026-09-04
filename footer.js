@@ -159,6 +159,8 @@
                     <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
                     <li><a href="https://dabu-info.com/mapa.html">Mapa Wystawek</a></li>
                     <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
+                    <li><a href="https://dabu-info.com/data.html">Adresy Serwisów</a></li>
+                    <li><a href="https://dabu-info.com/gieldy.html">Adresy Giełd</a></li>
                     <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
                     <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
                 </ul>
