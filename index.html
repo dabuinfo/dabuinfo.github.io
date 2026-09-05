@@ -59,10 +59,6 @@
             transition: padding-bottom 0.3s ease;
         }
 
-        body.cart-active {
-            padding-bottom: 130px;
-        }
-
         .offer-wrapper {
             background-color: #121212;
             color: #e0e0e0;
@@ -75,7 +71,7 @@
             line-height: 1.6;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin: 20px 0;
+            margin: 20px 0 10px 0;
             padding-bottom: 40px;
         }
 
@@ -269,11 +265,24 @@
             gap: 10px;
             box-shadow: 0 -8px 25px rgba(0,0,0,0.85);
             z-index: 1000;
-            transition: transform 0.3s ease;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
         }
 
         .summary-cart-bar.hidden-cart {
             display: none !important;
+        }
+
+        /* Po dotarciu do stopki – belka przestaje pływać i osiada nad stopką */
+        .summary-cart-bar.at-footer {
+            position: static !important;
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 10px;
+            border: 1px solid #2ecc71;
+            margin: 20px auto 10px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: auto;
         }
 
         .cart-info {
@@ -768,6 +777,29 @@
             };
         }
 
+        // =======================================================
+        // OBSERWATOR STOPKI: ODKLEJANIE BELKI ZAMÓWIENIA
+        // =======================================================
+        function initFooterObserver() {
+            const checkFooterInterval = setInterval(() => {
+                const footerEl = document.querySelector('.dabu-footer') || document.querySelector('footer');
+                const cartBar = document.getElementById('global-cart-bar');
+                if (footerEl && cartBar) {
+                    clearInterval(checkFooterInterval);
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                cartBar.classList.add('at-footer');
+                            } else {
+                                cartBar.classList.remove('at-footer');
+                            }
+                        });
+                    }, { threshold: 0.05 });
+                    observer.observe(footerEl);
+                }
+            }, 300);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const mapping = {
                 'info-calendar': 'infoCalendar',
@@ -788,6 +820,7 @@
             
             refreshCartUI();
             initFreePreview();
+            initFooterObserver();
         });
 
         // =======================================================
