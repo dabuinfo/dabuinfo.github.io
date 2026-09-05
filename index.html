@@ -33,7 +33,12 @@
         /* ========================================= */
         /* STYL GŁÓWNY WIZYTÓWKI (DARK MODE)         */
         /* ========================================= */
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap');
+
+        :root {
+            --font-main: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
 
         html, body {
             background-color: #0a0a0a !important;
@@ -48,9 +53,9 @@
             flex-direction: column; 
             align-items: center;    
             justify-content: flex-start;
-            padding: 20px 15px 0 15px; 
+            padding: 20px 15px 120px 15px; 
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-main);
         }
 
         .offer-wrapper {
@@ -66,12 +71,10 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             margin: 20px 0;
-            padding-bottom: 80px;
+            padding-bottom: 40px;
         }
 
-        /* ========================================= */
-        /* STYL BANERA GŁÓWNEGO I OPISU              */
-        /* ========================================= */
+        /* BANER GŁÓWNY */
         .banner-container {
             position: relative;
             width: 100%;
@@ -137,9 +140,7 @@
             text-align: left;
         }
 
-        /* ========================================= */
-        /* INFO CARDS (KORZYŚCI)                     */
-        /* ========================================= */
+        /* INFO CARDS */
         .info-order-card {
             background-color: #1a1a1a;
             border: 1px solid #333;
@@ -161,14 +162,12 @@
         .info-order-text a { color: #2ecc71; text-decoration: underline; }
         .info-order-text a:hover { color: #58d68d; }
 
-        /* ========================================= */
-        /* STYL DARMOWEGO PODGLĄDU TERMINÓW          */
-        /* ========================================= */
+        /* DARMOWY PODGLĄD Z KOSZYKIEM */
         .preview-card {
             background-color: #161616;
             border: 1px solid #2ecc71;
-            border-radius: 8px;
-            padding: 22px;
+            border-radius: 10px;
+            padding: 24px 20px;
             width: 100%;
             box-sizing: border-box;
             text-align: center;
@@ -176,7 +175,7 @@
 
         .preview-title {
             color: #2ecc71;
-            font-size: 1.25em;
+            font-size: 1.3em;
             font-weight: bold;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -198,37 +197,115 @@
             display: block;
         }
 
-        .btn-order-single {
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
-            color: #fff !important;
-            padding: 8px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85em;
-            display: inline-flex;
+        .zebra-row { 
+            background-color: #202020; 
+            padding: 14px 16px; 
+            color: #e2e8f0; 
+            border-left: 4px solid transparent; 
+            transition: all 0.2s ease; 
+            display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: space-between;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .zebra-row:nth-child(even) { background-color: #191919; }
+        .zebra-row:hover { background-color: #282828; border-left-color: #2ecc71; }
+
+        .region-checkbox {
+            width: 24px;
+            height: 24px;
             cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
-            white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        .btn-order-single:hover {
-            transform: scale(1.03);
-            filter: brightness(1.12);
-        }
-        .btn-order-single.disabled {
-            background: #444;
-            color: #888 !important;
-            cursor: not-allowed;
-            pointer-events: none;
-            box-shadow: none;
+            accent-color: #2ecc71;
+            flex-shrink: 0;
         }
 
-        /* ========================================= */
-        /* SEKCJA: RYZYKO I ZASADY                   */
-        /* ========================================= */
+        .price-badge-small {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        /* PŁYWAJĄCY PASEK ZAMÓWIENIA (KOSZYK) */
+        .summary-cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid #2ecc71;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 -8px 25px rgba(0,0,0,0.85);
+            z-index: 1000;
+        }
+
+        .cart-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #d1d5db;
+            line-height: 1.45;
+        }
+
+        .cart-total-badge {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2ecc71;
+        }
+
+        .cart-order-badge {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: #60a5fa;
+            background: #111;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .direct-contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: #000 !important;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .direct-contact-btn:hover {
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transform: scale(1.02);
+        }
+        .direct-contact-btn.disabled {
+            background: #333;
+            color: #777 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* SEKCJA RYZYKO */
         .notice-section {
             background-color: #161616;
             border: 1px solid #2a2a2a;
@@ -295,9 +372,7 @@
             color: #eee;
         }
 
-        /* ========================================= */
-        /* ASYSTENT CZATU I SEO                      */
-        /* ========================================= */
+        /* ASYSTENT CZATU I SEO */
         .seo-tags-container {
             margin-top: 30px; padding: 15px; background: #1a1a1a; 
             border-radius: 8px; border: 1px solid #262626; text-align: left;
@@ -306,17 +381,17 @@
 
         :root { --theme-color: #4CAF50; }
         .chat-button {
-            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            position: fixed; bottom: 85px; right: 20px; width: 55px; height: 55px;
             border-radius: 30px; background-color: var(--theme-color); color: white;
-            border: none; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: none; cursor: pointer; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
         }
-        .chat-button:hover { transform: scale(1.1); box-shadow: 0 6px 14px rgba(0,0,0,0.3); }
+        .chat-button:hover { transform: scale(1.1); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
         #chat-main-window {
-            position: fixed; bottom: 90px; right: 20px; width: 350px; max-width: 90vw;
-            height: 500px; max-height: 75vh; background: white; border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: none; flex-direction: column;
-            z-index: 1000; overflow: hidden; font-size: 14px; line-height: 1.4; color: #000;
+            position: fixed; bottom: 150px; right: 20px; width: 350px; max-width: 90vw;
+            height: 480px; max-height: 70vh; background: white; border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4); display: none; flex-direction: column;
+            z-index: 1001; overflow: hidden; font-size: 14px; line-height: 1.4; color: #000;
         }
         .chat-header { background: var(--theme-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         #chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #f5f5f5; display: flex; flex-direction: column; gap: 8px; }
@@ -331,15 +406,19 @@
             .offer-header { font-size: 1.8em; }
             .info-order-card { padding: 15px; gap: 15px; }
             .info-order-text { font-size: 13.5px; }
-            .preview-row-flex { flex-direction: column; align-items: flex-start; gap: 10px; }
-            #chat-main-window { bottom: 15px !important; left: 15px !important; right: 15px !important; width: auto !important; max-width: none !important; }
+            #chat-main-window { bottom: 85px !important; left: 15px !important; right: 15px !important; width: auto !important; max-width: none !important; }
         }
         @media (min-width: 769px) {
             .offer-wrapper { padding: 50px 45px; }
             .offer-header { font-size: 2.8em; }
             .description { font-size: 1.25em; }
             .main-banner { max-width: 650px; }
-            .preview-row-flex { display: flex; justify-content: space-between; align-items: center; }
+            .summary-cart-bar {
+                flex-direction: row;
+                padding: 14px 40px;
+            }
+            .cart-info { text-align: left; font-size: 0.95rem; }
+            .direct-contact-btn { width: auto; font-size: 1rem; }
         }
     </style>
 </head>
@@ -402,10 +481,10 @@
 
           </div>
 
-          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW Z DYNAMICZNĄ WYCENĄ OD JUTRA -->
+          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW Z DODAWANIEM WSZYSTKICH TERMINÓW OD JUTRA -->
           <div class="preview-card" id="freePreviewSection" style="display: none;">
               <div class="preview-title" id="freePreviewTitle">👀 Darmowy podgląd terminów w bazie</div>
-              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy lub zamówić aktywny rejon:</p>
+              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Zaznacz interesujące Cię rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):</p>
               
               <select id="freePreviewWeek" class="preview-select">
                   <option value="">-- Wybierz tydzień do podglądu --</option>
@@ -416,8 +495,8 @@
                       <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
                       <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
                   </div>
-                  <div style="max-height: 380px; overflow-y: auto; overflow-x: hidden;">
-                      <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em; text-align: left;"></table>
+                  <div style="max-height: 440px; overflow-y: auto; overflow-x: hidden;" id="regions-list-container">
+                      <!-- Wiersze rejonów -->
                   </div>
               </div>
           </div>
@@ -462,6 +541,17 @@
 
     </div>
 
+    <!-- PŁYWAJĄCY PASEK ZAMÓWIENIA (KOSZYK) -->
+    <div class="summary-cart-bar" id="global-cart-bar">
+        <div class="cart-info">
+            ID zamówienia: <span class="cart-order-badge" id="global-order-id">---</span><br>
+            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 PLN</span>
+        </div>
+        <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
+            📱 Wybierz rejony, aby zamówić
+        </button>
+    </div>
+
     <script>
         const tData = {
   "pl": { 
@@ -477,20 +567,17 @@
     t_risk_head: "<span>🛑</span> Ryzyko wyjazdu i rola serwisu",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Nasza rola:</strong> Odpowiadamy wyłącznie za pozyskanie i udostępnienie oficjalnych terminów wywozu gabarytów z niemieckich serwerów komunalnych.</p><p><strong>Rejony „auf Abruf” (na zgłoszenie):</strong> W rejonach działających na zgłoszenie istnieje naturalne <strong>ryzyko niepowodzenia</strong> – nie mamy żadnego wpływu na to, czy mieszkańcy wystawią gabaryty pod domem w wyznaczonym terminie odbioru.</p><p style=\"margin-bottom:0;\"><strong>Koszty wyjazdu:</strong> Wszelkie koszty organizacji wyjazdu (paliwo, opłaty drogowe), jak również <strong>ryzyko mandatów, naprawy pojazdu</strong> i inne nieprzewidziane wydatki na trasie ponosi zawsze i wyłącznie osoba wyjeżdżająca po gabaryty.</p>",
     previewTitle: "👀 Darmowy podgląd terminów w bazie",
-    previewSubtitle: "Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy lub szybko zamówić aktywny rejon:",
+    previewSubtitle: "Zaznacz interesujące Cię rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):",
     previewDefault: "-- Wybierz tydzień do podglądu --",
     weekLabel: "Tydzień",
     pdfReg: "Rejon",
     pdfDat: "Dni wywozu",
     pdfLegend: "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
     noRegMsg: "Brak widocznych rejonów dla tego tygodnia.",
-    btnOrderPrefix: "🛒 ZAMÓW TEN REJON – ",
-    btnExpired: "⌛ Terminy minęły",
+    cartSubmitPrefix: "📱 Zamów wybrane",
+    cartEmptyHint: "📱 Wybierz rejony, aby zamówić",
+    expiredLabel: "Terminy minęły",
     dayUnits: ["dzień", "dni", "dni"],
-    mailGreeting: "Dzień dobry,",
-    mailOrderText: "Chciałbym złożyć zamówienie na pojedynczy rejon:",
-    mailPaymentNote: "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\nProszę o potwierdzenie realizacji.",
-    mailSubject: "ZAMÓWIENIE REJONU",
     currency: "PLN",
     unitRate: 25.0
   },
@@ -507,20 +594,17 @@
     t_risk_head: "<span>🛑</span> Reiserisiko und unsere Rolle",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>",
     previewTitle: "👀 Kostenlose Terminvorschau",
-    previewSubtitle: "Wählen Sie eine Kalenderwoche, um die Termine unverbindlich einzusehen oder direkt zu bestellen:",
+    previewSubtitle: "Haken Sie Gebiete an – alle aktiven Termine ab morgen werden übernommen:",
     previewDefault: "-- Woche für Vorschau wählen --",
     weekLabel: "KW",
     pdfReg: "Region",
     pdfDat: "Abholtage",
     pdfLegend: "LEGENDE: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
     noRegMsg: "Keine sichtbaren Gebiete für diese Woche.",
-    btnOrderPrefix: "🛒 GEBIET BESTELLEN – ",
-    btnExpired: "⌛ Termine abgelaufen",
+    cartSubmitPrefix: "💬 Ausgewählte bestellen",
+    cartEmptyHint: "💬 Gebiete auswählen",
+    expiredLabel: "Termine abgelaufen",
     dayUnits: ["Tag", "Tage", "Tage"],
-    mailGreeting: "Hallo,",
-    mailOrderText: "Ich möchte ein einzelnes Gebiet bestellen:",
-    mailPaymentNote: "Zahlung: PayPal (ewabu74@gmail.com) oder IBAN: PL33 1020 5297 0000 1702 0290 9323\nBitte um Bestätigung.",
-    mailSubject: "BESTELLUNG GEBIET",
     currency: "€",
     unitRate: 6.0
   },
@@ -537,20 +621,17 @@
     t_risk_head: "<span>🛑</span> Trip Risk & Our Role",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>",
     previewTitle: "👀 Free Schedule Preview",
-    previewSubtitle: "Select a week from the list to preview available schedules or order directly:",
+    previewSubtitle: "Check the regions to add all upcoming active collection dates (from tomorrow):",
     previewDefault: "-- Select week --",
     weekLabel: "Week",
     pdfReg: "Region",
     pdfDat: "Collection days",
     pdfLegend: "LEGEND: [S] - Bulk Waste | [E] - Electric | [M] - Metal | [H] - Wood",
     noRegMsg: "No visible regions for this week.",
-    btnOrderPrefix: "🛒 ORDER REGION – ",
-    btnExpired: "⌛ Dates passed",
+    cartSubmitPrefix: "💬 Order selected",
+    cartEmptyHint: "💬 Select areas to order",
+    expiredLabel: "Dates passed",
     dayUnits: ["day", "days", "days"],
-    mailGreeting: "Hello,",
-    mailOrderText: "I would like to order a single region:",
-    mailPaymentNote: "Payment: PayPal (ewabu74@gmail.com) or IBAN: PL33 1020 5297 0000 1702 0290 9323\nAwaiting confirmation.",
-    mailSubject: "ORDER REGION",
     currency: "€",
     unitRate: 6.0
   }
@@ -559,6 +640,118 @@
         let currentLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
         const supportedLangs = ['pl', 'de', 'en'];
         const t = supportedLangs.includes(currentLang) ? tData[currentLang] : tData['de'];
+
+        // =======================================================
+        // KOSZYK ZAMÓWIENIA (GLOBAL CART)
+        // =======================================================
+        const globalCart = new Map(); // klucz: "data_rejon" -> { date: "YYYY-MM-DD", region: "Nazwa" }
+
+        const sessionNow = new Date();
+        const tY = sessionNow.getFullYear();
+        const tM = String(sessionNow.getMonth() + 1).padStart(2, '0');
+        const tD = String(sessionNow.getDate()).padStart(2, '0');
+        const globalOrderId = `${tY}${tM}${tD}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        function odmienSlowo(liczba, pojedyncza, kilka, wiele) {
+            const abs = Math.abs(liczba);
+            if (abs === 1) return `${liczba} ${pojedyncza}`;
+            const n10 = abs % 10;
+            const n100 = abs % 100;
+            if (n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) {
+                return `${liczba} ${kilka}`;
+            }
+            return `${liczba} ${wiele}`;
+        }
+
+        function removeDiacritics(str) {
+            const map = {
+                'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
+                'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
+                'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
+                'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
+            };
+            return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
+        }
+
+        function refreshCartUI() {
+            const cartCountEl = document.getElementById('cart-count');
+            const cartTotalEl = document.getElementById('cart-total');
+            const submitBtn = document.getElementById('cart-submit-btn');
+            const globalOrderBadge = document.getElementById('global-order-id');
+
+            if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
+
+            const totalTermsCount = globalCart.size;
+            const unitRate = t.unitRate || 25.0;
+            const currencyUnit = t.currency || 'PLN';
+            const totalCost = totalTermsCount * unitRate;
+
+            const regionCounts = {};
+            globalCart.forEach(item => {
+                regionCounts[item.region] = (regionCounts[item.region] || 0) + 1;
+            });
+
+            const uniqueRegionsList = Object.keys(regionCounts);
+            const uniqueRegionsCount = uniqueRegionsList.length;
+
+            let countLabel = "";
+            if (currentLang === 'pl') {
+                const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                const terminyOdmiana = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                countLabel = `${rejonyOdmiana} (${terminyOdmiana})`;
+            } else {
+                countLabel = `${uniqueRegionsCount} area(s) (${totalTermsCount} dates)`;
+            }
+
+            if (cartCountEl) cartCountEl.innerHTML = countLabel;
+            if (cartTotalEl) cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
+
+            if (totalTermsCount > 0) {
+                submitBtn.classList.remove('disabled');
+                submitBtn.removeAttribute('disabled');
+
+                let regionsSummaryText = "";
+                uniqueRegionsList.forEach(r => {
+                    let dCount = regionCounts[r];
+                    let dWord = odmienSlowo(dCount, "dzień", "dni", "dni");
+                    regionsSummaryText += `\n• ${r} (${dCount} ${dWord})`;
+                });
+
+                submitBtn.innerHTML = `${t.cartSubmitPrefix || "📱 Zamów wybrane"} (${totalCost} ${currencyUnit})`;
+
+                // Pobranie etykiety wybranego tygodnia
+                const weekSelect = document.getElementById('freePreviewWeek');
+                const selectedWeekLabel = (weekSelect && weekSelect.selectedIndex > 0) 
+                    ? weekSelect.options[weekSelect.selectedIndex].text 
+                    : "Wybrany okres";
+
+                // Obliczenie dokładnej daty początkowej (od jutra)
+                const nowD = new Date();
+                const tomD = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1);
+                const dd = String(tomD.getDate()).padStart(2, '0');
+                const mm = String(tomD.getMonth() + 1).padStart(2, '0');
+                const yyyy = tomD.getFullYear();
+                const fromDateFormatted = `${dd}.${mm}.${yyyy}`;
+
+                submitBtn.onclick = function() {
+                    if (currentLang === 'pl') {
+                        const rejonySms = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                        const terminySms = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                        let mailBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nOKRES: ${selectedWeekLabel}\nDOSTĘP OD: ${fromDateFormatted} (od jutra)\nŁącznie: ${rejonySms} | ${terminySms}.\n\nWybrane rejony:${regionsSummaryText}\n\nŁączna kwota: ${totalCost} PLN (BLIK na +48 733 035 301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                        let mailSubject = `[#${globalOrderId}] ZAMOWIENIE REJONOW (${selectedWeekLabel}) OD ${fromDateFormatted}`;
+                        window.location.href = `mailto:wystawki@gmail.com?subject=${encodeURIComponent(removeDiacritics(mailSubject))}&body=${encodeURIComponent(removeDiacritics(mailBody))}`;
+                    } else {
+                        let waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nPeriod: ${selectedWeekLabel}\nAccess from: ${fromDateFormatted}\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nSelected regions:${regionsSummaryText}\nTotal price: ${totalCost} € (BLIK / IBAN / PayPal). Best regards.`;
+                        window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
+                    }
+                };
+            } else {
+                submitBtn.classList.add('disabled');
+                submitBtn.setAttribute('disabled', 'true');
+                submitBtn.innerHTML = t.cartEmptyHint || "📱 Wybierz rejony, aby zamówić";
+                submitBtn.onclick = null;
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             const mapping = {
@@ -578,11 +771,12 @@
                 if (el && t[key]) el.innerHTML = t[key];
             }
             
+            refreshCartUI();
             initFreePreview();
         });
 
         // =======================================================
-        // OBSŁUGA DARMOWEGO PODGLĄDU NA STRONIE GŁÓWNEJ
+        // POBIERANIE I WYŚWIETLANIE LISTY REJONÓW W PODGLĄDZIE
         // =======================================================
         function getWeekNumber(d) { 
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -590,48 +784,6 @@
             var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
-
-        function getPluralDays(count, lang) {
-            let arr = t.dayUnits || ['dzień', 'dni', 'dni'];
-            if (lang === 'pl') {
-                if (count === 1) return arr[0];
-                if (count >= 2 && count <= 4) return arr[1];
-                return arr[2];
-            }
-            return count === 1 ? arr[0] : arr[1];
-        }
-
-        function removeDiacritics(str) {
-            const map = {
-                'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
-                'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
-                'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
-                'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
-            };
-            return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
-        }
-
-        window.orderSingleRegion = function(regionName, weekLabelText, daysText, activeDaysCount, totalPrice, currency) {
-            var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-            var subject = "[#" + nr + "] " + (t.mailSubject || "ZAMÓWIENIE REJONU") + " - " + regionName;
-            var dayUnitStr = getPluralDays(activeDaysCount, currentLang);
-            
-            var body = (t.mailGreeting || "Dzień dobry,") + "\n\n";
-            body += (t.mailOrderText || "Chciałbym złożyć zamówienie na pojedynczy rejon:") + "\n\n";
-            body += "REJON: " + regionName + "\n";
-            body += "OKRES / TYDZIEŃ: " + weekLabelText + "\n";
-            body += "DNI WYWOZU: " + daysText + "\n";
-            body += "AKTYWNE TERMINY (OD JUTRA): " + activeDaysCount + " " + dayUnitStr + "\n";
-            body += "KOSZT ZAMÓWIENIA: " + totalPrice + " " + currency + " (stawka: " + (t.unitRate || 25) + " " + currency + " / dzień)\n";
-            body += "IDENTYFIKATOR: #" + nr + "\n\n";
-            body += "--------------------------------------------------------\n";
-            body += (t.mailPaymentNote || "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\nProszę o potwierdzenie realizacji.") + "\n";
-
-            var safeSubject = removeDiacritics(subject);
-            var safeBody = removeDiacritics(body);
-
-            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
-        };
 
         let availabilityMatrixAll = {};
 
@@ -705,8 +857,7 @@
         document.getElementById('freePreviewWeek')?.addEventListener('change', function() {
             var w = this.value;
             var tableContainer = document.getElementById('freePreviewContainer');
-            var table = document.getElementById('freePreviewTable');
-            var selectedWeekLabel = this.options[this.selectedIndex] ? this.options[this.selectedIndex].text : w;
+            var listContainer = document.getElementById('regions-list-container');
             
             if(!w || !availabilityMatrixAll[w]) {
                 tableContainer.style.display = 'none';
@@ -746,7 +897,7 @@
                 let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
 
                 let uniqueDays = "-";
-                let activeDaysSet = new Set();
+                let activeDatesList = [];
 
                 if (dStr !== "-") {
                     let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
@@ -762,9 +913,9 @@
                             let dObj = new Date(match[1], match[2]-1, match[3]);
                             let dIdx = dObj.getDay();
                             
-                            // Wycena obejmuje tylko dni od jutra w przód (pomija dziś wstecz)
+                            // Aktywne dni wyłącznie od jutra w przód
                             if (dObj >= tomorrow) {
-                                activeDaysSet.add(match[0]);
+                                activeDatesList.push(match[0]);
                             }
 
                             let dayNames = (currentLang === 'pl') 
@@ -786,53 +937,82 @@
                     if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
                 }
                 
-                let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
-                let safeRegName = n.replace(/'/g, "\\'");
-                let safeWeekLabel = selectedWeekLabel.replace(/'/g, "\\'");
-                let safeDays = uniqueDays.replace(/'/g, "\\'");
+                let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 4px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
 
-                let activeDaysCount = activeDaysSet.size;
-                let rate = t.unitRate || 25.0;
-                let cur = t.currency || 'PLN';
-                let totalPrice = activeDaysCount * rate;
-                let dayUnitStr = getPluralDays(activeDaysCount, currentLang);
-
-                let orderBtnHtml = '';
-                if (activeDaysCount > 0) {
-                    let btnText = (t.btnOrderPrefix || "🛒 ZAMÓW TEN REJON – ") + totalPrice + " " + cur + " (" + activeDaysCount + " " + dayUnitStr + ")";
-                    orderBtnHtml = `<a href="javascript:void(0)" onclick="orderSingleRegion('${safeRegName}', '${safeWeekLabel}', '${safeDays}', ${activeDaysCount}, ${totalPrice}, '${cur}')" class="btn-order-single">${btnText}</a>`;
-                } else {
-                    orderBtnHtml = `<span class="btn-order-single disabled">${t.btnExpired || "⌛ Terminy minęły"}</span>`;
+                // Sprawdzamy czy rejon jest już w koszyku
+                let isRegionInCart = false;
+                for (let cartItem of globalCart.values()) {
+                    if (cartItem.region.toLowerCase() === n.toLowerCase()) {
+                        isRegionInCart = true;
+                        break;
+                    }
                 }
 
+                let activeCount = activeDatesList.length;
+                let unitRate = t.unitRate || 25.0;
+                let cur = t.currency || 'PLN';
+                let priceTotalForRegion = activeCount * unitRate;
+
+                let priceBadgeHtml = '';
+                if (activeCount > 0) {
+                    priceBadgeHtml = `<span class="price-badge-small">${priceTotalForRegion} ${cur} (${activeCount} ${odmienSlowo(activeCount, "dzień", "dni", "dni")})</span>`;
+                } else {
+                    priceBadgeHtml = `<span class="price-badge-small" style="color: #777; border-color: #444; background: #222;">${t.expiredLabel || "Terminy minęły"}</span>`;
+                }
+
+                const checkedAttr = isRegionInCart ? 'checked' : '';
+                const disabledAttr = (activeCount === 0) ? 'disabled style="opacity:0.35; cursor:not-allowed;"' : '';
+                const activeDatesAttr = activeDatesList.join(',');
+
                 html += `
-                <tr>
-                    <td style="padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <div class="preview-row-flex">
-                            <div>
-                                <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
-                                ${infoHtml}
-                                <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
-                                    <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
-                                </div>
+                <div class="zebra-row">
+                    <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%; text-align: left;">
+                        <input type="checkbox" class="region-checkbox" data-region="${encodeURIComponent(n)}" data-dates="${activeDatesAttr}" ${checkedAttr} ${disabledAttr}>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 3px;">
+                                <span style="font-weight: bold; color: #2ecc71; font-size: 1.05rem;">${n}</span>
+                                ${priceBadgeHtml}
                             </div>
-                            <div style="margin-top: 6px;">
-                                ${orderBtnHtml}
+                            ${infoHtml}
+                            <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
+                                <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
                             </div>
                         </div>
-                    </td>
-                </tr>`;
+                    </label>
+                </div>`;
             });
             
             if (html === '') {
-                html = `<tr><td style="padding: 12px; text-align: center; color: #e74c3c;">${t.noRegMsg || "Brak widocznych rejonów dla tego tygodnia."}</td></tr>`;
+                html = `<div style="padding: 20px; text-align: center; color: #e74c3c;">${t.noRegMsg || "Brak widocznych rejonów dla tego tygodnia."}</div>`;
             }
             
-            table.innerHTML = html;
+            listContainer.innerHTML = html;
             tableContainer.style.display = 'block';
+
+            // OBSŁUGA CHECKBOXÓW: Zaznaczenie dodaje WSZYSTKIE terminy od jutra w przód
+            listContainer.querySelectorAll('.region-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
+                    const rName = decodeURIComponent(this.getAttribute('data-region'));
+                    const dates = this.getAttribute('data-dates').split(',').filter(Boolean);
+
+                    if (this.checked) {
+                        dates.forEach(d => {
+                            globalCart.set(`${d}_${rName}`, { date: d, region: rName });
+                        });
+                    } else {
+                        for (let cartKey of Array.from(globalCart.keys())) {
+                            if (globalCart.get(cartKey).region.toLowerCase() === rName.toLowerCase()) {
+                                globalCart.delete(cartKey);
+                            }
+                        }
+                    }
+                    refreshCartUI();
+                });
+            });
         });
     </script>
 
+    <!-- ASYSTENT CZATU -->
     <script>
     (function() {
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
