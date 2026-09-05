@@ -167,7 +167,7 @@
         .info-order-text a { color: #2ecc71; text-decoration: underline; }
         .info-order-text a:hover { color: #58d68d; }
 
-        /* DARMOWY PODGLĄD Z KOSZYKIEM */
+        /* BOX ZAMÓWIEŃ ZESTAWU TYGODNIOWEGO */
         .preview-card {
             background-color: #161616;
             border: 1px solid #2ecc71;
@@ -176,6 +176,7 @@
             width: 100%;
             box-sizing: border-box;
             text-align: center;
+            box-shadow: 0 4px 20px rgba(46, 204, 113, 0.1);
         }
 
         .preview-title {
@@ -184,6 +185,7 @@
             font-weight: bold;
             margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .preview-select {
@@ -200,6 +202,18 @@
             cursor: pointer;
             outline: none;
             display: block;
+        }
+
+        .loader-box-inline {
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed #3498db;
+            border-radius: 6px;
+            padding: 14px;
+            max-width: 480px;
+            margin: 12px auto 18px auto;
+            color: #60a5fa;
+            font-size: 0.9em;
+            font-weight: 500;
         }
 
         .zebra-row { 
@@ -485,13 +499,19 @@
 
           </div>
 
-          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW Z DODAWANIEM WSZYSTKICH TERMINÓW OD JUTRA -->
-          <div class="preview-card" id="freePreviewSection" style="display: none;">
-              <div class="preview-title" id="freePreviewTitle">👀 Darmowy podgląd terminów w bazie</div>
-              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Zaznacz interesujące Cię rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):</p>
+          <!-- STAŁY BOX ZAMÓWIEŃ ZESTAWU TYGODNIOWEGO -->
+          <div class="preview-card" id="freePreviewSection">
+              <div class="preview-title" id="freePreviewTitle">📦 Szybkie zamówienie zestawu tygodniowego</div>
+              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Wybierz tydzień i zaznacz rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):</p>
               
-              <select id="freePreviewWeek" class="preview-select">
-                  <option value="">-- Wybierz tydzień do podglądu --</option>
+              <!-- Loader widoczny do momentu załadowania tygodni z bazy -->
+              <div id="weeksLoader" class="loader-box-inline">
+                  ⏳ Łączenie z bazą terminów... Zaraz pojawi się wybór tygodnia.
+              </div>
+
+              <!-- Lista tygodni pojawi się po pobraniu danych -->
+              <select id="freePreviewWeek" class="preview-select" style="display: none;">
+                  <option value="">-- Wybierz tydzień z bazy --</option>
               </select>
               
               <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.5); overflow: hidden; margin-top: 15px;">
@@ -570,9 +590,9 @@
     t_notice_title: "⚠️ Ważne informacje o wyjazdach i odpowiedzialności",
     t_risk_head: "<span>🛑</span> Ryzyko wyjazdu i rola serwisu",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Nasza rola:</strong> Odpowiadamy wyłącznie za pozyskanie i udostępnienie oficjalnych terminów wywozu gabarytów z niemieckich serwerów komunalnych.</p><p><strong>Rejony „auf Abruf” (na zgłoszenie):</strong> W rejonach działających na zgłoszenie istnieje naturalne <strong>ryzyko niepowodzenia</strong> – nie mamy żadnego wpływu na to, czy mieszkańcy wystawią gabaryty pod domem w wyznaczonym terminie odbioru.</p><p style=\"margin-bottom:0;\"><strong>Koszty wyjazdu:</strong> Wszelkie koszty organizacji wyjazdu (paliwo, opłaty drogowe), jak również <strong>ryzyko mandatów, naprawy pojazdu</strong> i inne nieprzewidziane wydatki na trasie ponosi zawsze i wyłącznie osoba wyjeżdżająca po gabaryty.</p>",
-    previewTitle: "👀 Darmowy podgląd terminów w bazie",
-    previewSubtitle: "Zaznacz interesujące Cię rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):",
-    previewDefault: "-- Wybierz tydzień do podglądu --",
+    previewTitle: "📦 Szybkie zamówienie zestawu tygodniowego",
+    previewSubtitle: "Wybierz tydzień i zaznacz rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):",
+    previewDefault: "-- Wybierz tydzień z bazy --",
     weekLabel: "Tydzień",
     pdfReg: "Rejon",
     pdfDat: "Dni wywozu",
@@ -580,7 +600,6 @@
     noRegMsg: "Brak widocznych rejonów dla tego tygodnia.",
     cartSubmitPrefix: "📱 Zamów wybrane",
     expiredLabel: "Terminy minęły",
-    dayUnits: ["dzień", "dni", "dni"],
     currency: "PLN",
     unitRate: 25.0
   },
@@ -596,9 +615,9 @@
     t_notice_title: "⚠️ Wichtige Hinweise zu Fahrten und Haftung",
     t_risk_head: "<span>🛑</span> Reiserisiko und unsere Rolle",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>",
-    previewTitle: "👀 Kostenlose Terminvorschau",
-    previewSubtitle: "Haken Sie Gebiete an – alle aktiven Termine ab morgen werden übernommen:",
-    previewDefault: "-- Woche für Vorschau wählen --",
+    previewTitle: "📦 Wochenpaket Schnellbestellung",
+    previewSubtitle: "Wählen Sie eine Kalenderwoche und haken Sie Gebiete an (aktive Termine ab morgen):",
+    previewDefault: "-- Woche aus Datenbank wählen --",
     weekLabel: "KW",
     pdfReg: "Region",
     pdfDat: "Abholtage",
@@ -606,7 +625,6 @@
     noRegMsg: "Keine sichtbaren Gebiete für diese Woche.",
     cartSubmitPrefix: "💬 Ausgewählte bestellen",
     expiredLabel: "Termine abgelaufen",
-    dayUnits: ["Tag", "Tage", "Tage"],
     currency: "€",
     unitRate: 6.0
   },
@@ -622,9 +640,9 @@
     t_notice_title: "⚠️ Important Trip Information & Liability",
     t_risk_head: "<span>🛑</span> Trip Risk & Our Role",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>",
-    previewTitle: "👀 Free Schedule Preview",
-    previewSubtitle: "Check the regions to add all upcoming active collection dates (from tomorrow):",
-    previewDefault: "-- Select week --",
+    previewTitle: "📦 Fast Weekly Package Order",
+    previewSubtitle: "Select a week and check regions to add all upcoming collection dates (from tomorrow):",
+    previewDefault: "-- Select week from database --",
     weekLabel: "Week",
     pdfReg: "Region",
     pdfDat: "Collection days",
@@ -632,7 +650,6 @@
     noRegMsg: "No visible regions for this week.",
     cartSubmitPrefix: "💬 Order selected",
     expiredLabel: "Dates passed",
-    dayUnits: ["day", "days", "days"],
     currency: "€",
     unitRate: 6.0
   }
@@ -645,7 +662,7 @@
         // =======================================================
         // KOSZYK ZAMÓWIENIA (GLOBAL CART)
         // =======================================================
-        const globalCart = new Map(); // klucz: "data_rejon" -> { date: "YYYY-MM-DD", region: "Nazwa" }
+        const globalCart = new Map(); 
 
         const sessionNow = new Date();
         const tY = sessionNow.getFullYear();
@@ -696,7 +713,6 @@
             const uniqueRegionsList = Object.keys(regionCounts);
             const uniqueRegionsCount = uniqueRegionsList.length;
 
-            // AKTYWACJA / DEZAKTYWACJA PŁYWAJĄCEJ BELKI
             if (totalTermsCount > 0) {
                 if (cartBar) cartBar.classList.remove('hidden-cart');
                 document.body.classList.add('cart-active');
@@ -720,20 +736,17 @@
 
             let regionsSummaryText = "";
             uniqueRegionsList.forEach(r => {
-                let dCount = regionCounts[r];
-                let dWord = odmienSlowo(dCount, "dzień", "dni", "dni");
+                let dWord = odmienSlowo(regionCounts[r], "dzień", "dni", "dni");
                 regionsSummaryText += `\n• ${r} (${dWord})`;
             });
 
             submitBtn.innerHTML = `${t.cartSubmitPrefix || "📱 Zamów wybrane"} (${totalCost} ${currencyUnit})`;
 
-            // Pobranie etykiety wybranego tygodnia
             const weekSelect = document.getElementById('freePreviewWeek');
             const selectedWeekLabel = (weekSelect && weekSelect.selectedIndex > 0) 
                 ? weekSelect.options[weekSelect.selectedIndex].text 
                 : "Wybrany okres";
 
-            // Obliczenie dokładnej daty początkowej (od jutra)
             const nowD = new Date();
             const tomD = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1);
             const dd = String(tomD.getDate()).padStart(2, '0');
@@ -815,15 +828,15 @@
                         populatePreviewDropdown(availabilityMatrixAll);
                     }
                 })
-                .catch(err => console.error("Błąd podglądu:", err));
+                .catch(err => console.error("Błąd pobierania:", err));
         }
 
         function populatePreviewDropdown(matrix) {
             const select = document.getElementById('freePreviewWeek');
-            const section = document.getElementById('freePreviewSection');
-            if (!select || !section) return;
+            const loader = document.getElementById('weeksLoader');
+            if (!select) return;
 
-            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień z bazy --') + '</option>';
 
             let today = new Date();
             let day = today.getDay();
@@ -846,13 +859,15 @@
 
             let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
             if (weeks.length > 0) {
-                section.style.display = 'block';
                 weeks.forEach(w => {
                     let opt = document.createElement('option');
                     opt.value = w;
                     opt.textContent = weekLabelsMap[w] || ((t.weekLabel || "Tydzień") + " " + w);
                     select.appendChild(opt);
                 });
+
+                if (loader) loader.style.display = 'none';
+                select.style.display = 'block';
             }
         }
 
@@ -941,7 +956,6 @@
                 
                 let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 4px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
 
-                // Sprawdzamy czy rejon jest już w koszyku
                 let isRegionInCart = false;
                 for (let cartItem of globalCart.values()) {
                     if (cartItem.region.toLowerCase() === n.toLowerCase()) {
@@ -991,7 +1005,6 @@
             listContainer.innerHTML = html;
             tableContainer.style.display = 'block';
 
-            // OBSŁUGA CHECKBOXÓW: Zaznaczenie dodaje WSZYSTKIE terminy od jutra w przód
             listContainer.querySelectorAll('.region-checkbox').forEach(chk => {
                 chk.addEventListener('change', function() {
                     const rName = decodeURIComponent(this.getAttribute('data-region'));
