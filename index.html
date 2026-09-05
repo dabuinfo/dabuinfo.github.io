@@ -53,9 +53,14 @@
             flex-direction: column; 
             align-items: center;    
             justify-content: flex-start;
-            padding: 20px 15px 120px 15px; 
+            padding: 20px 15px 40px 15px; 
             box-sizing: border-box;
             font-family: var(--font-main);
+            transition: padding-bottom 0.3s ease;
+        }
+
+        body.cart-active {
+            padding-bottom: 130px;
         }
 
         .offer-wrapper {
@@ -250,6 +255,11 @@
             gap: 10px;
             box-shadow: 0 -8px 25px rgba(0,0,0,0.85);
             z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-cart-bar.hidden-cart {
+            display: none !important;
         }
 
         .cart-info {
@@ -297,12 +307,6 @@
         .direct-contact-btn:hover {
             background: linear-gradient(90deg, #27ae60, #2ecc71);
             transform: scale(1.02);
-        }
-        .direct-contact-btn.disabled {
-            background: #333;
-            color: #777 !important;
-            cursor: not-allowed;
-            pointer-events: none;
         }
 
         /* SEKCJA RYZYKO */
@@ -541,14 +545,14 @@
 
     </div>
 
-    <!-- PŁYWAJĄCY PASEK ZAMÓWIENIA (KOSZYK) -->
-    <div class="summary-cart-bar" id="global-cart-bar">
+    <!-- PŁYWAJĄCY PASEK ZAMÓWIENIA (KOSZYK) - DOMYŚLNIE UKRYTY -->
+    <div class="summary-cart-bar hidden-cart" id="global-cart-bar">
         <div class="cart-info">
             ID zamówienia: <span class="cart-order-badge" id="global-order-id">---</span><br>
             Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 PLN</span>
         </div>
-        <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
-            📱 Wybierz rejony, aby zamówić
+        <button id="cart-submit-btn" class="direct-contact-btn">
+            📱 Zamów wybrane
         </button>
     </div>
 
@@ -575,7 +579,6 @@
     pdfLegend: "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
     noRegMsg: "Brak widocznych rejonów dla tego tygodnia.",
     cartSubmitPrefix: "📱 Zamów wybrane",
-    cartEmptyHint: "📱 Wybierz rejony, aby zamówić",
     expiredLabel: "Terminy minęły",
     dayUnits: ["dzień", "dni", "dni"],
     currency: "PLN",
@@ -602,7 +605,6 @@
     pdfLegend: "LEGENDE: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
     noRegMsg: "Keine sichtbaren Gebiete für diese Woche.",
     cartSubmitPrefix: "💬 Ausgewählte bestellen",
-    cartEmptyHint: "💬 Gebiete auswählen",
     expiredLabel: "Termine abgelaufen",
     dayUnits: ["Tag", "Tage", "Tage"],
     currency: "€",
@@ -629,7 +631,6 @@
     pdfLegend: "LEGEND: [S] - Bulk Waste | [E] - Electric | [M] - Metal | [H] - Wood",
     noRegMsg: "No visible regions for this week.",
     cartSubmitPrefix: "💬 Order selected",
-    cartEmptyHint: "💬 Select areas to order",
     expiredLabel: "Dates passed",
     dayUnits: ["day", "days", "days"],
     currency: "€",
@@ -674,6 +675,7 @@
         }
 
         function refreshCartUI() {
+            const cartBar = document.getElementById('global-cart-bar');
             const cartCountEl = document.getElementById('cart-count');
             const cartTotalEl = document.getElementById('cart-total');
             const submitBtn = document.getElementById('cart-submit-btn');
@@ -694,6 +696,16 @@
             const uniqueRegionsList = Object.keys(regionCounts);
             const uniqueRegionsCount = uniqueRegionsList.length;
 
+            // AKTYWACJA / DEZAKTYWACJA PŁYWAJĄCEJ BELKI
+            if (totalTermsCount > 0) {
+                if (cartBar) cartBar.classList.remove('hidden-cart');
+                document.body.classList.add('cart-active');
+            } else {
+                if (cartBar) cartBar.classList.add('hidden-cart');
+                document.body.classList.remove('cart-active');
+                return;
+            }
+
             let countLabel = "";
             if (currentLang === 'pl') {
                 const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
@@ -706,51 +718,41 @@
             if (cartCountEl) cartCountEl.innerHTML = countLabel;
             if (cartTotalEl) cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
 
-            if (totalTermsCount > 0) {
-                submitBtn.classList.remove('disabled');
-                submitBtn.removeAttribute('disabled');
+            let regionsSummaryText = "";
+            uniqueRegionsList.forEach(r => {
+                let dCount = regionCounts[r];
+                let dWord = odmienSlowo(dCount, "dzień", "dni", "dni");
+                regionsSummaryText += `\n• ${r} (${dWord})`;
+            });
 
-                let regionsSummaryText = "";
-                uniqueRegionsList.forEach(r => {
-                    let dCount = regionCounts[r];
-                    let dWord = odmienSlowo(dCount, "dzień", "dni", "dni");
-                    regionsSummaryText += `\n• ${r} (${dCount} ${dWord})`;
-                });
+            submitBtn.innerHTML = `${t.cartSubmitPrefix || "📱 Zamów wybrane"} (${totalCost} ${currencyUnit})`;
 
-                submitBtn.innerHTML = `${t.cartSubmitPrefix || "📱 Zamów wybrane"} (${totalCost} ${currencyUnit})`;
+            // Pobranie etykiety wybranego tygodnia
+            const weekSelect = document.getElementById('freePreviewWeek');
+            const selectedWeekLabel = (weekSelect && weekSelect.selectedIndex > 0) 
+                ? weekSelect.options[weekSelect.selectedIndex].text 
+                : "Wybrany okres";
 
-                // Pobranie etykiety wybranego tygodnia
-                const weekSelect = document.getElementById('freePreviewWeek');
-                const selectedWeekLabel = (weekSelect && weekSelect.selectedIndex > 0) 
-                    ? weekSelect.options[weekSelect.selectedIndex].text 
-                    : "Wybrany okres";
+            // Obliczenie dokładnej daty początkowej (od jutra)
+            const nowD = new Date();
+            const tomD = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1);
+            const dd = String(tomD.getDate()).padStart(2, '0');
+            const mm = String(tomD.getMonth() + 1).padStart(2, '0');
+            const yyyy = tomD.getFullYear();
+            const fromDateFormatted = `${dd}.${mm}.${yyyy}`;
 
-                // Obliczenie dokładnej daty początkowej (od jutra)
-                const nowD = new Date();
-                const tomD = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1);
-                const dd = String(tomD.getDate()).padStart(2, '0');
-                const mm = String(tomD.getMonth() + 1).padStart(2, '0');
-                const yyyy = tomD.getFullYear();
-                const fromDateFormatted = `${dd}.${mm}.${yyyy}`;
-
-                submitBtn.onclick = function() {
-                    if (currentLang === 'pl') {
-                        const rejonySms = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
-                        const terminySms = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
-                        let mailBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nOKRES: ${selectedWeekLabel}\nDOSTĘP OD: ${fromDateFormatted} (od jutra)\nŁącznie: ${rejonySms} | ${terminySms}.\n\nWybrane rejony:${regionsSummaryText}\n\nŁączna kwota: ${totalCost} PLN (BLIK na +48 733 035 301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
-                        let mailSubject = `[#${globalOrderId}] ZAMOWIENIE REJONOW (${selectedWeekLabel}) OD ${fromDateFormatted}`;
-                        window.location.href = `mailto:wystawki@gmail.com?subject=${encodeURIComponent(removeDiacritics(mailSubject))}&body=${encodeURIComponent(removeDiacritics(mailBody))}`;
-                    } else {
-                        let waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nPeriod: ${selectedWeekLabel}\nAccess from: ${fromDateFormatted}\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nSelected regions:${regionsSummaryText}\nTotal price: ${totalCost} € (BLIK / IBAN / PayPal). Best regards.`;
-                        window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
-                    }
-                };
-            } else {
-                submitBtn.classList.add('disabled');
-                submitBtn.setAttribute('disabled', 'true');
-                submitBtn.innerHTML = t.cartEmptyHint || "📱 Wybierz rejony, aby zamówić";
-                submitBtn.onclick = null;
-            }
+            submitBtn.onclick = function() {
+                if (currentLang === 'pl') {
+                    const rejonySms = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                    const terminySms = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                    let mailBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nOKRES: ${selectedWeekLabel}\nDOSTĘP OD: ${fromDateFormatted} (od jutra)\nŁącznie: ${rejonySms} | ${terminySms}.\n\nWybrane rejony:${regionsSummaryText}\n\nŁączna kwota: ${totalCost} PLN (BLIK na +48 733 035 301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                    let mailSubject = `[#${globalOrderId}] ZAMOWIENIE REJONOW (${selectedWeekLabel}) OD ${fromDateFormatted}`;
+                    window.location.href = `mailto:wystawki@gmail.com?subject=${encodeURIComponent(removeDiacritics(mailSubject))}&body=${encodeURIComponent(removeDiacritics(mailBody))}`;
+                } else {
+                    let waBody = `Hello, I would like to order access for [Order ID: ${globalOrderId}]:\nPeriod: ${selectedWeekLabel}\nAccess from: ${fromDateFormatted}\nTotal: ${uniqueRegionsCount} area(s) (${totalTermsCount} dates)\nSelected regions:${regionsSummaryText}\nTotal price: ${totalCost} € (BLIK / IBAN / PayPal). Best regards.`;
+                    window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
+                }
+            };
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -955,7 +957,7 @@
 
                 let priceBadgeHtml = '';
                 if (activeCount > 0) {
-                    priceBadgeHtml = `<span class="price-badge-small">${priceTotalForRegion} ${cur} (${activeCount} ${odmienSlowo(activeCount, "dzień", "dni", "dni")})</span>`;
+                    priceBadgeHtml = `<span class="price-badge-small">${priceTotalForRegion} ${cur} (${odmienSlowo(activeCount, "dzień", "dni", "dni")})</span>`;
                 } else {
                     priceBadgeHtml = `<span class="price-badge-small" style="color: #777; border-color: #444; background: #222;">${t.expiredLabel || "Terminy minęły"}</span>`;
                 }
