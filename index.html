@@ -198,6 +198,34 @@
             display: block;
         }
 
+        .btn-order-single {
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff !important;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .btn-order-single:hover {
+            transform: scale(1.03);
+            filter: brightness(1.12);
+        }
+        .btn-order-single.disabled {
+            background: #444;
+            color: #888 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
         /* ========================================= */
         /* SEKCJA: RYZYKO I ZASADY                   */
         /* ========================================= */
@@ -268,37 +296,6 @@
         }
 
         /* ========================================= */
-        /* PRZYCISKI DO PODSTRON                     */
-        /* ========================================= */
-        .btn-spis {
-            background-color: transparent; 
-            color: #ffffff !important; 
-            padding: 16px 20px;
-            border-radius: 8px;
-            font-family: 'Space Mono', monospace; 
-            font-weight: bold;
-            font-size: 16px; 
-            text-transform: uppercase;
-            text-decoration: none;
-            text-align: center;
-            flex: 1 1 0;
-            min-width: 220px;
-            box-sizing: border-box;
-            border: 2px dashed #ffffff; 
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-spis:hover {
-            background-color: rgba(255, 255, 255, 0.05); 
-            border-color: #2ecc71; 
-            color: #2ecc71 !important; 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.2);
-        }
-
-        /* ========================================= */
         /* ASYSTENT CZATU I SEO                      */
         /* ========================================= */
         .seo-tags-container {
@@ -334,6 +331,7 @@
             .offer-header { font-size: 1.8em; }
             .info-order-card { padding: 15px; gap: 15px; }
             .info-order-text { font-size: 13.5px; }
+            .preview-row-flex { flex-direction: column; align-items: flex-start; gap: 10px; }
             #chat-main-window { bottom: 15px !important; left: 15px !important; right: 15px !important; width: auto !important; max-width: none !important; }
         }
         @media (min-width: 769px) {
@@ -341,6 +339,7 @@
             .offer-header { font-size: 2.8em; }
             .description { font-size: 1.25em; }
             .main-banner { max-width: 650px; }
+            .preview-row-flex { display: flex; justify-content: space-between; align-items: center; }
         }
     </style>
 </head>
@@ -403,10 +402,10 @@
 
           </div>
 
-          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW (PRZENIESIONA ZE STRONY ZESTAW) -->
+          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW Z DYNAMICZNĄ WYCENĄ OD JUTRA -->
           <div class="preview-card" id="freePreviewSection" style="display: none;">
               <div class="preview-title" id="freePreviewTitle">👀 Darmowy podgląd terminów w bazie</div>
-              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy i dni wywozów:</p>
+              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy lub zamówić aktywny rejon:</p>
               
               <select id="freePreviewWeek" class="preview-select">
                   <option value="">-- Wybierz tydzień do podglądu --</option>
@@ -421,13 +420,6 @@
                       <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em; text-align: left;"></table>
                   </div>
               </div>
-          </div>
-
-          <!-- PRZYCISKI / LINKI GŁÓWNE -->
-          <div style="display: flex; flex-direction: row; gap: 15px; width: 100%; flex-wrap: wrap; margin: 10px 0;">
-               <a href="https://dabu-info.com/zestaw.html" target="_blank" class="btn-spis" id="btn-set">ZESTAW TYGODNIOWY</a>
-               <a href="https://dabu-info.com/kalendarz.html" target="_blank" class="btn-spis" id="btn-cal" style="border-color: #2ecc71; color: #2ecc71 !important;">KALENDARZ WYSTAWEK</a>
-               <a href="https://dabu-info.com/kontakt.html" target="_blank" class="btn-spis" id="btn-contact" style="border-color: #9b59b6; color: #9b59b6 !important;">KONTAKT</a>
           </div>
 
           <!-- SEKCJA: RYZYKO I ODPOWIEDZIALNOŚĆ -->
@@ -473,7 +465,6 @@
     <script>
         const tData = {
   "pl": { 
-    btnGen: "ZAMÓW NA 2027 ROK", btnSet: "Zestaw Tygodniowy", btnCal: "Kalendarz Wystawek", btnContact: "KONTAKT",
     infoCalendar: "<strong>Interaktywny Kalendarz Wystawek (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> Najwygodniejszy sposób na planowanie trasy zbiórek dzień po dniu!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Wybór po dacie wyjazdu:</strong> Klikasz dzień, w którym chcesz być na miejscu (np. w niedzielę wieczorem, gdy mieszkańcy wystawiają towar pod domy), a system automatycznie generuje i dopasowuje listę oficjalnych zbiórek na poranny wywóz następnego dnia (poniedziałek rano)!</li><li><strong>Błyskawiczne pakiety:</strong> Korzystaj z przycisków <em>➕ Następny dzień</em> oraz <em>📅 Cały tydzień</em>, które automatycznie dobierają terminy bez żmudnego szukania.</li><li><strong>Przejrzysty koszt i wygoda:</strong> Prosta stawka (25 PLN / 6 € za rejon/dzień), dynamiczny koszyk i gotowe zamówienie jednym kliknięciem przez SMS lub WhatsApp!</li></ul>",
     infoOrder2027: "<strong>Zamówienia na cały rok 2027 (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planujesz wyjazdy z dużym wyprzedzeniem? Oferujemy możliwość składania zamówień na <strong>wybrane rejony na cały nadchodzący rok 2027</strong>! Zapewnij sobie stały dostęp do terminów na wyłączność z indywidualną wyceną pakietową i rabatami hurtowymi.",
     accuracy: "<strong>Najwyższa dokładność na rynku:</strong> Harmonogramy pobieramy automatycznie bezpośrednio z oficjalnych serwerów niemieckich firm sprzątających, co gwarantuje pewne i bezbłędne dane.",
@@ -486,16 +477,24 @@
     t_risk_head: "<span>🛑</span> Ryzyko wyjazdu i rola serwisu",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Nasza rola:</strong> Odpowiadamy wyłącznie za pozyskanie i udostępnienie oficjalnych terminów wywozu gabarytów z niemieckich serwerów komunalnych.</p><p><strong>Rejony „auf Abruf” (na zgłoszenie):</strong> W rejonach działających na zgłoszenie istnieje naturalne <strong>ryzyko niepowodzenia</strong> – nie mamy żadnego wpływu na to, czy mieszkańcy wystawią gabaryty pod domem w wyznaczonym terminie odbioru.</p><p style=\"margin-bottom:0;\"><strong>Koszty wyjazdu:</strong> Wszelkie koszty organizacji wyjazdu (paliwo, opłaty drogowe), jak również <strong>ryzyko mandatów, naprawy pojazdu</strong> i inne nieprzewidziane wydatki na trasie ponosi zawsze i wyłącznie osoba wyjeżdżająca po gabaryty.</p>",
     previewTitle: "👀 Darmowy podgląd terminów w bazie",
-    previewSubtitle: "Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy i dni wywozów:",
+    previewSubtitle: "Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy lub szybko zamówić aktywny rejon:",
     previewDefault: "-- Wybierz tydzień do podglądu --",
     weekLabel: "Tydzień",
     pdfReg: "Rejon",
     pdfDat: "Dni wywozu",
     pdfLegend: "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
-    noRegMsg: "Brak widocznych rejonów dla tego tygodnia."
+    noRegMsg: "Brak widocznych rejonów dla tego tygodnia.",
+    btnOrderPrefix: "🛒 ZAMÓW TEN REJON – ",
+    btnExpired: "⌛ Terminy minęły",
+    dayUnits: ["dzień", "dni", "dni"],
+    mailGreeting: "Dzień dobry,",
+    mailOrderText: "Chciałbym złożyć zamówienie na pojedynczy rejon:",
+    mailPaymentNote: "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\nProszę o potwierdzenie realizacji.",
+    mailSubject: "ZAMÓWIENIE REJONU",
+    currency: "PLN",
+    unitRate: 25.0
   },
   "de": { 
-    btnGen: "FÜR 2027 BESTELLEN", btnSet: "Wochenübersicht", btnCal: "Sperrmüllkalender", btnContact: "KONTAKT",
     infoCalendar: "<strong>Interaktiver Sperrmüllkalender (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> Die bequemste Art, Ihre Sammelroute Tag für Tag zu planen!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Auswahl nach Anreisedatum:</strong> Klicken Sie auf den Tag der Bereitstellung (z. B. Sonntagabend), und das System generiert automatisch die Abholungen für den nächsten Morgen (Montag früh)!</li><li><strong>Schnellpakete:</strong> Nutzen Sie Schaltflächen für den nächsten Tag oder die ganze Woche.</li><li><strong>Transparente Preise:</strong> 25 PLN / 6 € pro Gebiet, direkter Warenkorb und Bestellung per SMS/WhatsApp.</li></ul>",
     infoOrder2027: "<strong>Bestellungen für das gesamte Jahr 2027 (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planen Sie langfristig? Wir bieten Vorbestellungen für ausgewählte Gebiete für das gesamte Jahr 2026 mit individuellem Rabatt an.",
     accuracy: "<strong>Höchste Genauigkeit auf dem Markt:</strong> Wir laden die Termine automatisch direkt von den offiziellen Servern der deutschen Entsorgungsunternehmen herunter.",
@@ -508,16 +507,24 @@
     t_risk_head: "<span>🛑</span> Reiserisiko und unsere Rolle",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>",
     previewTitle: "👀 Kostenlose Terminvorschau",
-    previewSubtitle: "Wählen Sie eine Kalenderwoche, um die Termine unverbindlich einzusehen:",
+    previewSubtitle: "Wählen Sie eine Kalenderwoche, um die Termine unverbindlich einzusehen oder direkt zu bestellen:",
     previewDefault: "-- Woche für Vorschau wählen --",
     weekLabel: "KW",
     pdfReg: "Region",
-    pdfDat: "Abholtiefen / Tage",
+    pdfDat: "Abholtage",
     pdfLegend: "LEGENDE: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
-    noRegMsg: "Keine sichtbaren Gebiete für diese Woche."
+    noRegMsg: "Keine sichtbaren Gebiete für diese Woche.",
+    btnOrderPrefix: "🛒 GEBIET BESTELLEN – ",
+    btnExpired: "⌛ Termine abgelaufen",
+    dayUnits: ["Tag", "Tage", "Tage"],
+    mailGreeting: "Hallo,",
+    mailOrderText: "Ich möchte ein einzelnes Gebiet bestellen:",
+    mailPaymentNote: "Zahlung: PayPal (ewabu74@gmail.com) oder IBAN: PL33 1020 5297 0000 1702 0290 9323\nBitte um Bestätigung.",
+    mailSubject: "BESTELLUNG GEBIET",
+    currency: "€",
+    unitRate: 6.0
   },
   "en": { 
-    btnGen: "ORDER FOR 2026", btnSet: "Weekly Overview", btnCal: "Bulk Waste Calendar", btnContact: "CONTACT",
     infoCalendar: "<strong>Interactive Collection Calendar (<a href=\"https://dabu-info.com/kalendarz.html\" target=\"_blank\">kalendarz.html</a>):</strong> The easiest way to plan your collection route day by day!<ul style=\"margin: 6px 0 0 18px; padding: 0;\"><li><strong>Departure-based selection:</strong> Click the day you want to arrive (e.g. Sunday evening when items are placed outside), and the system automatically matches the pickup schedules for next morning (Monday)!</li><li><strong>Quick add:</strong> Fast add next day or full week collection dates.</li><li><strong>Simple pricing:</strong> 25 PLN / 6 € per area/day with instant cart ordering via SMS or WhatsApp.</li></ul>",
     infoOrder2027: "<strong>Full Year 2027 Orders (<a href=\"https://dabu-info.com/zamowienia.html\" target=\"_blank\">zamowienia.html</a>):</strong> Planning ahead? You can now pre-order selected collection regions for the entire year of 2026 with customized wholesale pricing!",
     accuracy: "<strong>Highest accuracy on the market:</strong> We automatically download schedules directly from the official servers of German waste management companies.",
@@ -530,13 +537,22 @@
     t_risk_head: "<span>🛑</span> Trip Risk & Our Role",
     t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>",
     previewTitle: "👀 Free Schedule Preview",
-    previewSubtitle: "Select a week from the list to preview available schedules for free:",
+    previewSubtitle: "Select a week from the list to preview available schedules or order directly:",
     previewDefault: "-- Select week --",
     weekLabel: "Week",
     pdfReg: "Region",
     pdfDat: "Collection days",
     pdfLegend: "LEGEND: [S] - Bulk Waste | [E] - Electric | [M] - Metal | [H] - Wood",
-    noRegMsg: "No visible regions for this week."
+    noRegMsg: "No visible regions for this week.",
+    btnOrderPrefix: "🛒 ORDER REGION – ",
+    btnExpired: "⌛ Dates passed",
+    dayUnits: ["day", "days", "days"],
+    mailGreeting: "Hello,",
+    mailOrderText: "I would like to order a single region:",
+    mailPaymentNote: "Payment: PayPal (ewabu74@gmail.com) or IBAN: PL33 1020 5297 0000 1702 0290 9323\nAwaiting confirmation.",
+    mailSubject: "ORDER REGION",
+    currency: "€",
+    unitRate: 6.0
   }
 };
 
@@ -546,8 +562,6 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const mapping = {
-                'btn-gen': 'btnGen', 'btn-set': 'btnSet', 
-                'btn-cal': 'btnCal', 'btn-contact': 'btnContact',
                 'info-calendar': 'infoCalendar',
                 'info-order-2027': 'infoOrder2027',
                 'info-accuracy': 'accuracy', 'info-options': 'options',
@@ -576,6 +590,48 @@
             var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
+
+        function getPluralDays(count, lang) {
+            let arr = t.dayUnits || ['dzień', 'dni', 'dni'];
+            if (lang === 'pl') {
+                if (count === 1) return arr[0];
+                if (count >= 2 && count <= 4) return arr[1];
+                return arr[2];
+            }
+            return count === 1 ? arr[0] : arr[1];
+        }
+
+        function removeDiacritics(str) {
+            const map = {
+                'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
+                'Ą':'A', 'Ć':'C', 'Ę':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
+                'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
+                'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
+            };
+            return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
+        }
+
+        window.orderSingleRegion = function(regionName, weekLabelText, daysText, activeDaysCount, totalPrice, currency) {
+            var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
+            var subject = "[#" + nr + "] " + (t.mailSubject || "ZAMÓWIENIE REJONU") + " - " + regionName;
+            var dayUnitStr = getPluralDays(activeDaysCount, currentLang);
+            
+            var body = (t.mailGreeting || "Dzień dobry,") + "\n\n";
+            body += (t.mailOrderText || "Chciałbym złożyć zamówienie na pojedynczy rejon:") + "\n\n";
+            body += "REJON: " + regionName + "\n";
+            body += "OKRES / TYDZIEŃ: " + weekLabelText + "\n";
+            body += "DNI WYWOZU: " + daysText + "\n";
+            body += "AKTYWNE TERMINY (OD JUTRA): " + activeDaysCount + " " + dayUnitStr + "\n";
+            body += "KOSZT ZAMÓWIENIA: " + totalPrice + " " + currency + " (stawka: " + (t.unitRate || 25) + " " + currency + " / dzień)\n";
+            body += "IDENTYFIKATOR: #" + nr + "\n\n";
+            body += "--------------------------------------------------------\n";
+            body += (t.mailPaymentNote || "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\nProszę o potwierdzenie realizacji.") + "\n";
+
+            var safeSubject = removeDiacritics(subject);
+            var safeBody = removeDiacritics(body);
+
+            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+        };
 
         let availabilityMatrixAll = {};
 
@@ -650,11 +706,15 @@
             var w = this.value;
             var tableContainer = document.getElementById('freePreviewContainer');
             var table = document.getElementById('freePreviewTable');
+            var selectedWeekLabel = this.options[this.selectedIndex] ? this.options[this.selectedIndex].text : w;
             
             if(!w || !availabilityMatrixAll[w]) {
                 tableContainer.style.display = 'none';
                 return;
             }
+
+            var now = new Date();
+            var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
 
             var dataCopy = [...availabilityMatrixAll[w]];
             dataCopy.sort((a, b) => {
@@ -686,6 +746,7 @@
                 let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
 
                 let uniqueDays = "-";
+                let activeDaysSet = new Set();
 
                 if (dStr !== "-") {
                     let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
@@ -701,6 +762,11 @@
                             let dObj = new Date(match[1], match[2]-1, match[3]);
                             let dIdx = dObj.getDay();
                             
+                            // Wycena obejmuje tylko dni od jutra w przód (pomija dziś wstecz)
+                            if (dObj >= tomorrow) {
+                                activeDaysSet.add(match[0]);
+                            }
+
                             let dayNames = (currentLang === 'pl') 
                                 ? ['ND', 'PON', 'WT', 'SR', 'CZW', 'PT', 'SOB']
                                 : ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'];
@@ -721,13 +787,38 @@
                 }
                 
                 let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
+                let safeRegName = n.replace(/'/g, "\\'");
+                let safeWeekLabel = selectedWeekLabel.replace(/'/g, "\\'");
+                let safeDays = uniqueDays.replace(/'/g, "\\'");
+
+                let activeDaysCount = activeDaysSet.size;
+                let rate = t.unitRate || 25.0;
+                let cur = t.currency || 'PLN';
+                let totalPrice = activeDaysCount * rate;
+                let dayUnitStr = getPluralDays(activeDaysCount, currentLang);
+
+                let orderBtnHtml = '';
+                if (activeDaysCount > 0) {
+                    let btnText = (t.btnOrderPrefix || "🛒 ZAMÓW TEN REJON – ") + totalPrice + " " + cur + " (" + activeDaysCount + " " + dayUnitStr + ")";
+                    orderBtnHtml = `<a href="javascript:void(0)" onclick="orderSingleRegion('${safeRegName}', '${safeWeekLabel}', '${safeDays}', ${activeDaysCount}, ${totalPrice}, '${cur}')" class="btn-order-single">${btnText}</a>`;
+                } else {
+                    orderBtnHtml = `<span class="btn-order-single disabled">${t.btnExpired || "⌛ Terminy minęły"}</span>`;
+                }
+
                 html += `
                 <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
-                        ${infoHtml}
-                        <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
-                            <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
+                    <td style="padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div class="preview-row-flex">
+                            <div>
+                                <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
+                                ${infoHtml}
+                                <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
+                                    <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
+                                </div>
+                            </div>
+                            <div style="margin-top: 6px;">
+                                ${orderBtnHtml}
+                            </div>
                         </div>
                     </td>
                 </tr>`;
