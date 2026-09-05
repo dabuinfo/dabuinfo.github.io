@@ -59,6 +59,10 @@
             transition: padding-bottom 0.3s ease;
         }
 
+        body.cart-active {
+            padding-bottom: 130px;
+        }
+
         .offer-wrapper {
             background-color: #121212;
             color: #e0e0e0;
@@ -188,7 +192,7 @@
             width: 100%;
             max-width: 480px;
             padding: 12px;
-            margin: 10px auto 18px auto;
+            margin: 10px auto 14px auto;
             border-radius: 6px;
             border: 1px solid #3498db;
             font-weight: bold;
@@ -198,6 +202,27 @@
             cursor: pointer;
             outline: none;
             display: block;
+        }
+
+        .map-exclusive-hint {
+            background: rgba(52, 152, 219, 0.08);
+            border: 1px dashed #3498db;
+            border-radius: 6px;
+            padding: 10px 14px;
+            max-width: 650px;
+            margin: 12px auto 16px auto;
+            font-size: 0.85em;
+            color: #cfd8dc;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .map-exclusive-hint a {
+            color: #3498db;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .map-exclusive-hint a:hover {
+            color: #2ecc71;
         }
 
         .loader-box-inline {
@@ -522,6 +547,11 @@
               <select id="freePreviewWeek" class="preview-select" style="display: none;">
                   <option value="">-- Wybierz tydzień z bazy --</option>
               </select>
+
+              <!-- Informacja o rejonach z mapy na życzenie -->
+              <div class="map-exclusive-hint" id="mapExclusiveHint">
+                  🗺️ <strong>Więcej rejonów na mapie:</strong> Część rejonów jest widoczna wyłącznie na naszej <a href="https://dabu-info.com/mapa.html" target="_blank">interaktywnej Mapie Wystawek</a>. Terminy dla tych obszarów pozyskujemy na indywidualne zapytanie – jeśli interesuje Cię rejon z mapy, którego nie ma na liście poniżej, <a href="https://dabu-info.com/kontakt.html" target="_blank">skontaktuj się z nami bezpośrednio</a>.
+              </div>
               
               <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.5); overflow: hidden; margin-top: 15px;">
                   <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
@@ -602,6 +632,7 @@
     previewTitle: "📦 Szybkie zamówienie zestawu tygodniowego",
     previewSubtitle: "Wybierz tydzień i zaznacz rejony – do zamówienia trafią wszystkie ich aktywne terminy (od jutra w przód):",
     previewDefault: "-- Wybierz tydzień z bazy --",
+    mapExclusiveText: "🗺️ <strong>Więcej rejonów na mapie:</strong> Część rejonów jest widoczna wyłącznie na naszej <a href=\"https://dabu-info.com/mapa.html\" target=\"_blank\">interaktywnej Mapie Wystawek</a>. Terminy dla tych obszarów pozyskujemy na indywidualne zapytanie – jeśli interesuje Cię rejon z mapy, którego nie ma na liście poniżej, <a href=\"https://dabu-info.com/kontakt.html\" target=\"_blank\">skontaktuj się z nami bezpośrednio</a>.",
     weekLabel: "Tydzień",
     pdfReg: "Rejon",
     pdfDat: "Dni wywozu",
@@ -627,6 +658,7 @@
     previewTitle: "📦 Wochenpaket Schnellbestellung",
     previewSubtitle: "Wählen Sie eine Kalenderwoche und haken Sie Gebiete an (aktive Termine ab morgen):",
     previewDefault: "-- Woche aus Datenbank wählen --",
+    mapExclusiveText: "🗺️ <strong>Weitere Gebiete auf der Karte:</strong> Einige Gebiete sind nur auf unserer <a href=\"https://dabu-info.com/mapa.html\" target=\"_blank\">interaktiven Karte</a> sichtbar. Diese Termine erfassen wir auf Anfrage – bitte <a href=\"https://dabu-info.com/kontakt.html\" target=\"_blank\">kontaktieren Sie uns persönlich</a>.",
     weekLabel: "KW",
     pdfReg: "Region",
     pdfDat: "Abholtage",
@@ -652,6 +684,7 @@
     previewTitle: "📦 Fast Weekly Package Order",
     previewSubtitle: "Select a week and check regions to add all upcoming collection dates (from tomorrow):",
     previewDefault: "-- Select week from database --",
+    mapExclusiveText: "🗺️ <strong>More regions on the map:</strong> Some regions are only available on our <a href=\"https://dabu-info.com/mapa.html\" target=\"_blank\">interactive map</a>. These schedules are retrieved upon request – please <a href=\"https://dabu-info.com/kontakt.html\" target=\"_blank\">contact us directly</a>.",
     weekLabel: "Week",
     pdfReg: "Region",
     pdfDat: "Collection days",
@@ -810,7 +843,8 @@
                 't_notice_title': 't_notice_title',
                 't_risk_head': 't_risk_head', 't_risk_body': 't_risk_body',
                 'freePreviewTitle': 'previewTitle',
-                'freePreviewSubtitle': 'previewSubtitle'
+                'freePreviewSubtitle': 'previewSubtitle',
+                'mapExclusiveHint': 'mapExclusiveText'
             };
 
             for (const [id, key] of Object.entries(mapping)) {
