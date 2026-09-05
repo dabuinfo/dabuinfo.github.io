@@ -162,6 +162,43 @@
         .info-order-text a:hover { color: #58d68d; }
 
         /* ========================================= */
+        /* STYL DARMOWEGO PODGLĄDU TERMINÓW          */
+        /* ========================================= */
+        .preview-card {
+            background-color: #161616;
+            border: 1px solid #2ecc71;
+            border-radius: 8px;
+            padding: 22px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .preview-title {
+            color: #2ecc71;
+            font-size: 1.25em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .preview-select {
+            width: 100%;
+            max-width: 480px;
+            padding: 12px;
+            margin: 10px auto 18px auto;
+            border-radius: 6px;
+            border: 1px solid #3498db;
+            font-weight: bold;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.95);
+            color: #111;
+            cursor: pointer;
+            outline: none;
+            display: block;
+        }
+
+        /* ========================================= */
         /* SEKCJA: RYZYKO I ZASADY                   */
         /* ========================================= */
         .notice-section {
@@ -366,6 +403,26 @@
 
           </div>
 
+          <!-- SEKCJA: DARMOWY PODGLĄD TERMINÓW (PRZENIESIONA ZE STRONY ZESTAW) -->
+          <div class="preview-card" id="freePreviewSection" style="display: none;">
+              <div class="preview-title" id="freePreviewTitle">👀 Darmowy podgląd terminów w bazie</div>
+              <p style="font-size: 0.9em; color: #aaa; margin: 0 0 10px 0;" id="freePreviewSubtitle">Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy i dni wywozów:</p>
+              
+              <select id="freePreviewWeek" class="preview-select">
+                  <option value="">-- Wybierz tydzień do podglądu --</option>
+              </select>
+              
+              <div id="freePreviewContainer" style="display: none; border-radius: 8px; border: 1px solid #3498db; background: rgba(0,0,0,0.5); overflow: hidden; margin-top: 15px;">
+                  <div style="background: #3498db; color: #fff; padding: 12px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                      <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
+                      <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
+                  </div>
+                  <div style="max-height: 380px; overflow-y: auto; overflow-x: hidden;">
+                      <table id="freePreviewTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em; text-align: left;"></table>
+                  </div>
+              </div>
+          </div>
+
           <!-- PRZYCISKI / LINKI GŁÓWNE -->
           <div style="display: flex; flex-direction: row; gap: 15px; width: 100%; flex-wrap: wrap; margin: 10px 0;">
                <a href="https://dabu-info.com/zestaw.html" target="_blank" class="btn-spis" id="btn-set">ZESTAW TYGODNIOWY</a>
@@ -427,7 +484,15 @@
     t_desc2: "W naszej bazie na 2026 rok znajduje się <strong>wiele starannie wyselekcjonowanych niemieckich rejonów</strong>! Większość z nich aktualizowana jest automatycznie, co pozwala dotrzeć na miejsce w optymalnym momencie.",
     t_notice_title: "⚠️ Ważne informacje o wyjazdach i odpowiedzialności",
     t_risk_head: "<span>🛑</span> Ryzyko wyjazdu i rola serwisu",
-    t_risk_body: "<p style=\"margin-top:0;\"><strong>Nasza rola:</strong> Odpowiadamy wyłącznie za pozyskanie i udostępnienie oficjalnych terminów wywozu gabarytów z niemieckich serwerów komunalnych.</p><p><strong>Rejony „auf Abruf” (na zgłoszenie):</strong> W rejonach działających na zgłoszenie istnieje naturalne <strong>ryzyko niepowodzenia</strong> – nie mamy żadnego wpływu na to, czy mieszkańcy wystawią gabaryty pod domem w wyznaczonym terminie odbioru.</p><p style=\"margin-bottom:0;\"><strong>Koszty wyjazdu:</strong> Wszelkie koszty organizacji wyjazdu (paliwo, opłaty drogowe), jak również <strong>ryzyko mandatów, naprawy pojazdu</strong> i inne nieprzewidziane wydatki na trasie ponosi zawsze i wyłącznie osoba wyjeżdżająca po gabaryty.</p>"
+    t_risk_body: "<p style=\"margin-top:0;\"><strong>Nasza rola:</strong> Odpowiadamy wyłącznie za pozyskanie i udostępnienie oficjalnych terminów wywozu gabarytów z niemieckich serwerów komunalnych.</p><p><strong>Rejony „auf Abruf” (na zgłoszenie):</strong> W rejonach działających na zgłoszenie istnieje naturalne <strong>ryzyko niepowodzenia</strong> – nie mamy żadnego wpływu na to, czy mieszkańcy wystawią gabaryty pod domem w wyznaczonym terminie odbioru.</p><p style=\"margin-bottom:0;\"><strong>Koszty wyjazdu:</strong> Wszelkie koszty organizacji wyjazdu (paliwo, opłaty drogowe), jak również <strong>ryzyko mandatów, naprawy pojazdu</strong> i inne nieprzewidziane wydatki na trasie ponosi zawsze i wyłącznie osoba wyjeżdżająca po gabaryty.</p>",
+    previewTitle: "👀 Darmowy podgląd terminów w bazie",
+    previewSubtitle: "Wybierz tydzień z listy, aby bezpłatnie sprawdzić harmonogramy i dni wywozów:",
+    previewDefault: "-- Wybierz tydzień do podglądu --",
+    weekLabel: "Tydzień",
+    pdfReg: "Rejon",
+    pdfDat: "Dni wywozu",
+    pdfLegend: "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
+    noRegMsg: "Brak widocznych rejonów dla tego tygodnia."
   },
   "de": { 
     btnGen: "FÜR 2027 BESTELLEN", btnSet: "Wochenübersicht", btnCal: "Sperrmüllkalender", btnContact: "KONTAKT",
@@ -441,7 +506,15 @@
     t_desc2: "Unsere Datenbank für 2026 umfasst bereits <strong>viele sorgfältig ausgewählte deutsche Regionen</strong>!",
     t_notice_title: "⚠️ Wichtige Hinweise zu Fahrten und Haftung",
     t_risk_head: "<span>🛑</span> Reiserisiko und unsere Rolle",
-    t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>"
+    t_risk_body: "<p style=\"margin-top:0;\"><strong>Unsere Rolle:</strong> Wir sind ausschließlich für die Beschaffung und Bereitstellung offizieller Abholtermine von kommunalen Servern verantwortlich.</p><p><strong>Regionen „auf Abruf“:</strong> In Gebieten mit Abruf-System besteht ein natürliches <strong>Ausfallrisiko</strong>.</p><p style=\"margin-bottom:0;\"><strong>Fahrtkosten:</strong> Alle Reisekosten sowie Bußgelder und Reparaturen trägt stets der Fahrer.</p>",
+    previewTitle: "👀 Kostenlose Terminvorschau",
+    previewSubtitle: "Wählen Sie eine Kalenderwoche, um die Termine unverbindlich einzusehen:",
+    previewDefault: "-- Woche für Vorschau wählen --",
+    weekLabel: "KW",
+    pdfReg: "Region",
+    pdfDat: "Abholtiefen / Tage",
+    pdfLegend: "LEGENDE: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz",
+    noRegMsg: "Keine sichtbaren Gebiete für diese Woche."
   },
   "en": { 
     btnGen: "ORDER FOR 2026", btnSet: "Weekly Overview", btnCal: "Bulk Waste Calendar", btnContact: "CONTACT",
@@ -455,16 +528,23 @@
     t_desc2: "Our 2026 database already includes many carefully selected German regions!",
     t_notice_title: "⚠️ Important Trip Information & Liability",
     t_risk_head: "<span>🛑</span> Trip Risk & Our Role",
-    t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>"
+    t_risk_body: "<p style=\"margin-top:0;\"><strong>Our role:</strong> Our sole responsibility is obtaining and delivering official collection schedules from German municipal servers.</p><p><strong>Travel expenses:</strong> All travel expenses as well as vehicle risks are strictly borne by the traveler.</p>",
+    previewTitle: "👀 Free Schedule Preview",
+    previewSubtitle: "Select a week from the list to preview available schedules for free:",
+    previewDefault: "-- Select week --",
+    weekLabel: "Week",
+    pdfReg: "Region",
+    pdfDat: "Collection days",
+    pdfLegend: "LEGEND: [S] - Bulk Waste | [E] - Electric | [M] - Metal | [H] - Wood",
+    noRegMsg: "No visible regions for this week."
   }
 };
 
+        let currentLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+        const supportedLangs = ['pl', 'de', 'en'];
+        const t = supportedLangs.includes(currentLang) ? tData[currentLang] : tData['de'];
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Wybór języka
-            let lang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-            const supportedLangs = ['pl', 'de', 'en'];
-            const t = supportedLangs.includes(lang) ? tData[lang] : tData['de']; 
-            
             const mapping = {
                 'btn-gen': 'btnGen', 'btn-set': 'btnSet', 
                 'btn-cal': 'btnCal', 'btn-contact': 'btnContact',
@@ -474,13 +554,191 @@
                 't_header': 't_header', 't_subheader': 't_subheader', 
                 't_desc1': 't_desc1', 't_desc2': 't_desc2',
                 't_notice_title': 't_notice_title',
-                't_risk_head': 't_risk_head', 't_risk_body': 't_risk_body'
+                't_risk_head': 't_risk_head', 't_risk_body': 't_risk_body',
+                'freePreviewTitle': 'previewTitle',
+                'freePreviewSubtitle': 'previewSubtitle'
             };
 
             for (const [id, key] of Object.entries(mapping)) {
                 const el = document.getElementById(id);
                 if (el && t[key]) el.innerHTML = t[key];
             }
+            
+            initFreePreview();
+        });
+
+        // =======================================================
+        // OBSŁUGA DARMOWEGO PODGLĄDU NA STRONIE GŁÓWNEJ
+        // =======================================================
+        function getWeekNumber(d) { 
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); 
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        let availabilityMatrixAll = {};
+
+        function initFreePreview() {
+            const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
+            var d = new Date();
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var dzisiaj = d.getFullYear() + month + day;
+            var dynamicznyToken = "Dabu" + dzisiaj;
+
+            fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "OK" && data.data) {
+                        availabilityMatrixAll = data.data;
+
+                        var now = new Date();
+                        var currentDay = now.getDay();
+                        var currentHour = now.getHours();
+                        var currentWeek = getWeekNumber(now).toString();
+       
+                        if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
+                            delete availabilityMatrixAll[currentWeek];
+                        }
+
+                        populatePreviewDropdown(availabilityMatrixAll);
+                    }
+                })
+                .catch(err => console.error("Błąd podglądu:", err));
+        }
+
+        function populatePreviewDropdown(matrix) {
+            const select = document.getElementById('freePreviewWeek');
+            const section = document.getElementById('freePreviewSection');
+            if (!select || !section) return;
+
+            select.innerHTML = '<option value="">' + (t.previewDefault || '-- Wybierz tydzień do podglądu --') + '</option>';
+
+            let today = new Date();
+            let day = today.getDay();
+            let hour = today.getHours();
+            let diff = today.getDate() - day + (day == 0 ? -6 : 1);
+            if (day === 6 || day === 0 || (day === 5 && hour >= 18)) { diff += 7; }
+            let startPoint = new Date(today.getFullYear(), today.getMonth(), diff, 12, 0, 0);
+            let startYear = startPoint.getFullYear();
+
+            let weekLabelsMap = {};
+            for (let i = 0; i < 53; i++) {
+                let sW = new Date(startPoint);
+                sW.setDate(startPoint.getDate() + (i * 7));
+                if (sW.getFullYear() > startYear) break;
+                let weekNum = getWeekNumber(sW);
+                if (weekNum > 53) continue;
+                let eW = new Date(sW); eW.setDate(sW.getDate() + 4);
+                weekLabelsMap[weekNum] = (t.weekLabel || "Tydzień") + " " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
+            }
+
+            let weeks = Object.keys(matrix).sort((a,b) => parseInt(a) - parseInt(b));
+            if (weeks.length > 0) {
+                section.style.display = 'block';
+                weeks.forEach(w => {
+                    let opt = document.createElement('option');
+                    opt.value = w;
+                    opt.textContent = weekLabelsMap[w] || ((t.weekLabel || "Tydzień") + " " + w);
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        document.getElementById('freePreviewWeek')?.addEventListener('change', function() {
+            var w = this.value;
+            var tableContainer = document.getElementById('freePreviewContainer');
+            var table = document.getElementById('freePreviewTable');
+            
+            if(!w || !availabilityMatrixAll[w]) {
+                tableContainer.style.display = 'none';
+                return;
+            }
+
+            var dataCopy = [...availabilityMatrixAll[w]];
+            dataCopy.sort((a, b) => {
+                let nameA = typeof a === 'string' ? a : a.nazwa;
+                let nameB = typeof b === 'string' ? b : b.nazwa;
+                return nameA.localeCompare(nameB, 'pl');
+            });
+
+            let titleEl = document.getElementById('fpTitleText');
+            let legendEl = document.getElementById('fpLegendText');
+            if (titleEl) titleEl.innerText = "📍 " + (t.pdfReg || "Rejon") + " / 📅 " + (t.pdfDat || "Dni wywozu");
+            if (legendEl) legendEl.innerText = "" + (t.pdfLegend || "LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz");
+            
+            var html = ''; 
+            const EXCLUDED_PREVIEW_REGIONS = [
+                'usingen', 'wehrheim', 'gräfelfing', 'kirchheim', 
+                'neu-anspach', 'glashütte', 'glashütten', 'gründau', 
+                'walldorf-mörfelden', 'königstein (taunus)', 'eppstein'
+            ];
+
+            dataCopy.forEach(item => {
+                let n = typeof item === 'string' ? item : item.nazwa;
+                if (n && EXCLUDED_PREVIEW_REGIONS.includes(n.toLowerCase().trim())) {
+                    return; 
+                }
+                
+                let dStr = typeof item === 'string' ? "-" : (item.daty || "-");
+                let rStr = typeof item === 'string' ? "" : (item.rodzaj || "");
+                let infoStr = typeof item === 'string' ? "" : (item.info || item["Info o rejonie"] || "");
+
+                let uniqueDays = "-";
+
+                if (dStr !== "-") {
+                    let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                    let rodzajeArr = rStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+              
+                    let daysWithTags = [];
+                    for(let i = 0; i < datyArr.length; i++) {
+                        let d = datyArr[i];
+                        let r = (rodzajeArr[i] || "").toLowerCase();
+                        
+                        let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                        if(match) {
+                            let dObj = new Date(match[1], match[2]-1, match[3]);
+                            let dIdx = dObj.getDay();
+                            
+                            let dayNames = (currentLang === 'pl') 
+                                ? ['ND', 'PON', 'WT', 'SR', 'CZW', 'PT', 'SOB']
+                                : ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'];
+                            let dayName = dayNames[dIdx];
+                            
+                            let tags = new Set();
+                            if (/sperr|meble|gabaryt|rest/i.test(r)) tags.add("S");
+                            if (/elektro|kühl|agd|schrank/i.test(r)) tags.add("E");
+                            if (/schrott|złom|metal|eisen/i.test(r)) tags.add("M");
+                            if (/holz|drewno/i.test(r)) tags.add("H");
+                            
+                            if (tags.size === 0) tags.add("S");
+                            let tagStr = "[" + Array.from(tags).join("/") + "]";
+                            daysWithTags.push(`${dayName} ${tagStr}`);
+                        }
+                    }
+                    if (daysWithTags.length > 0) uniqueDays = [...new Set(daysWithTags)].join(', ');
+                }
+                
+                let infoHtml = infoStr ? `<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 6px; font-style: italic;">ℹ️ ${infoStr}</div>` : '';
+                html += `
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div style="font-weight: bold; color: #2ecc71; font-size: 1.05rem; margin-bottom: 4px;">${n}</div>
+                        ${infoHtml}
+                        <div style="color: #ddd; font-size: 0.85rem; line-height: 1.4;">
+                            <span style="color: #888;">${t.pdfDat || "Dni wywozu"}:</span> ${uniqueDays}
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            
+            if (html === '') {
+                html = `<tr><td style="padding: 12px; text-align: center; color: #e74c3c;">${t.noRegMsg || "Brak widocznych rejonów dla tego tygodnia."}</td></tr>`;
+            }
+            
+            table.innerHTML = html;
+            tableContainer.style.display = 'block';
         });
     </script>
 
@@ -544,8 +802,8 @@
         };
 
         let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-        let currentLang = slownik[browserLang] ? browserLang : 'de'; 
-        let t = slownik[currentLang];
+        let cLang = slownik[browserLang] ? browserLang : 'de'; 
+        let tChat = slownik[cLang];
 
         headerTitle.innerHTML = `
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -560,9 +818,9 @@
             <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 5px;">❌</span>
         `;
 
-        userInput.placeholder = t.placeholder;
-        sendBtn.innerText = t.wyslij;
-        messagesArea.innerHTML = `<div class="chat-bubble-received">${t.powitanie}</div>`;
+        userInput.placeholder = tChat.placeholder;
+        sendBtn.innerText = tChat.wyslij;
+        messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
 
         document.getElementById('close-chat-btn').onclick = () => chatMainWindow.style.display = 'none';
 
@@ -587,13 +845,13 @@
             userInput.value = '';
 
             const loadingId = 'loading-' + Date.now();
-            appendMessage(t.ladowanie, 'received', loadingId);
+            appendMessage(tChat.ladowanie, 'received', loadingId);
 
             try {
                 const resp = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: currentLang })
+                    body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: cLang })
                 });
                 const data = await resp.json();
                 
@@ -603,12 +861,12 @@
                 if (data && data.odpowiedz) {
                     appendMessage(data.odpowiedz, 'received');
                 } else {
-                    appendMessage(t.blad, 'received');
+                    appendMessage(tChat.blad, 'received');
                 }
             } catch(e) {
                 const el = document.getElementById(loadingId);
                 if(el) el.remove();
-                appendMessage(t.blad, 'received');
+                appendMessage(tChat.blad, 'received');
             }
         };
 
