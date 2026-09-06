@@ -276,6 +276,10 @@
             <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="Wyszukaj swój region..." onkeyup="filterDabuRegions()">
 
             <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="dabu-county-btn" style="background: #ff8c00; color: white; border-color: #ff8c00; font-weight: bold;"
+                onclick="selectSchonmackersRegions(event)">
+                    🟠 Schönmackers (7 powiatów / 40 miast)
+                </button>
                 <button class="dabu-county-btn" style="background: #28a745; color: white; border-color: #28a745; font-weight: bold;"
                 onclick="selectOnlyNormalRegions(event)">
                     🟢 Zaznacz tylko rejony "stałe"
@@ -495,6 +499,39 @@
         let countyPolygonsLayer = L.layerGroup();
         let cartRegions = [];
         let markerMapElements = {};
+
+        const schonmackersList = [
+            "Aldenhoven", "Alpen", "Bad Münstereifel", "Bedburg-Hau", "Blankenheim", 
+            "Dahlem", "Emmerich am Rhein", "Geldern", "Goch", "Grevenbroich", 
+            "Heinsberg", "Hellenthal", "Hückelhoven", "Issum", "Jüchen", "Jülich", 
+            "Jülich (E)", "Kaarst", "Kall", "Kerken", "Kevelaer", "Korschenbroich", 
+            "Mechernich", "Meerbusch", "Merzenich", "Neukirchen-Vluyn", "Rees", 
+            "Rheurdt", "Rommerskirchen", "Schleiden", "Selfkant", "Sonsbeck", 
+            "Straelen", "Uedem", "Viersen", "Voerde", "Weeze", "Weilerswist", 
+            "Xanten", "Zülpich", "Übach-Palenberg"
+        ];
+
+        function selectSchonmackersRegions(e) {
+            if (e) e.preventDefault();
+            currentFilteredLand = null;
+            let header = document.getElementById('selectedLandTitle');
+            header.style.display = 'block';
+            header.innerHTML = 'Obszar firmy <strong>Schönmackers</strong>: 7 powiatów, 40 miast/gmin (Nadrenia Północna-Westfalia)';
+
+            document.querySelectorAll('.region-chk').forEach(chk => {
+                let val = chk.value.trim();
+                let isSchon = schonmackersList.includes(val);
+                chk.checked = isSchon;
+                chk.closest('.region-label').style.display = isSchon ? 'flex' : 'none';
+            });
+
+            refreshMapState();
+
+            if (markersLayer.getLayers().length > 0) {
+                map.fitBounds(markersLayer.getBounds(), {padding: [30, 30], maxZoom: 9});
+            }
+            updateCountySuggestions();
+        }
 
         const regionToCountyMap = {
             "Augsburg": "Augsburg", "Augsburg Powiat": "Landkreis Augsburg",
