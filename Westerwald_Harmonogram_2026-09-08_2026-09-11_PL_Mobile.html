@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Westerwald – Harmonogram Wywozu Gabarytów</title>
+    <style>
+        :root {
+            --bg: #121212; --card: #1e1e1e; --border: #2d3748;
+            --accent: #38bdf8; --text: #f1f5f9; --sub: #94a3b8; --item: #262626;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 12px; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        header { text-align: center; padding: 10px 0 14px; border-bottom: 2px solid var(--accent); margin-bottom: 12px; }
+        h1 { font-size: 19px; margin: 0 0 4px; }
+        .sub { font-size: 13px; color: var(--sub); margin: 0; }
+        .search-box { position: sticky; top: 8px; z-index: 100; margin-bottom: 12px; }
+        .search-box input {
+            width: 100%; padding: 13px 16px; font-size: 16px; border: 1.5px solid var(--border);
+            border-radius: 12px; background: #1a1a1a; color: #fff; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .search-box input:focus { border-color: var(--accent); }
+        .days-nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; scrollbar-width: none; }
+        .days-nav::-webkit-scrollbar { display: none; }
+        .btn-day {
+            background: var(--card); color: var(--text); border: 1px solid var(--border);
+            border-radius: 20px; padding: 7px 13px; font-size: 12.5px; white-space: nowrap; cursor: pointer;
+        }
+        .btn-day.active { background: var(--accent); color: #0f172a; font-weight: bold; border-color: var(--accent); }
+        .day-group { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+        .day-title-bar { background: linear-gradient(90deg, #1e293b, #0f172a); padding: 12px 14px; border-left: 4px solid var(--accent); }
+        .day-title { font-size: 15px; font-weight: bold; color: var(--accent); display: flex; justify-content: space-between; }
+        .street-grid { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 10px; }
+        .street-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 13px; background: var(--item); border: 1px solid #333;
+            border-radius: 8px; color: #e2e8f0; text-decoration: none; font-size: 14px;
+        }
+        .street-row:active { background: #334155; border-color: var(--accent); }
+        .badge { background: rgba(56, 189, 248, 0.15); color: var(--accent); font-size: 11px; padding: 2px 7px; border-radius: 6px; }
+        footer { text-align: center; font-size: 11.5px; color: #64748b; padding: 15px 0 10px; }
+        .empty-alert { text-align: center; padding: 25px 10px; color: var(--sub); display: none; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Westerwald – Harmonogram Wywozu Gabarytów</h1>
+    <p class="sub">2026-09-08 – 2026-09-11</p>
+</header>
+<div class="search-box">
+    <input type="text" id="filterInput" placeholder="🔍 Szukaj miejscowości / ulicy...">
+</div>
+<div class="days-nav">
+    <button class="btn-day active" onclick="selectDay('all', this)">Wszystkie (104)</button>
+<button class="btn-day" onclick="selectDay('d-2026-09-08', this)">Wto (08.09)</button>
+<button class="btn-day" onclick="selectDay('d-2026-09-09', this)">Śro (09.09)</button>
+<button class="btn-day" onclick="selectDay('d-2026-09-10', this)">Czw (10.09)</button>
+<button class="btn-day" onclick="selectDay('d-2026-09-11', this)">Pią (11.09)</button>
+</div>
+<div id="noDataAlert" class="empty-alert">Brak wyników pasujących do zapytania.</div>
+
+    <section class="day-group" id="d-2026-09-08" data-day="d-2026-09-08">
+        <div class="day-title-bar">
+            <div class="day-title">
+                <span>📅 Wtorek, 08.09.2026</span>
+                <span class="badge">37 pozycji</span>
+            </div>
+        </div>
+        <div class="street-grid">
+    
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Alfred-Kamp-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - alfred-kamp-straße">
+                <span>Höhr-Grenzhausen - Alfred-Kamp-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Alten%20Bahnhof%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am alten bahnhof">
+                <span>Höhr-Grenzhausen - Am Alten Bahnhof</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Damm%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am damm">
+                <span>Höhr-Grenzhausen - Am Damm</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Gr%C3%BCbchen%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am grübchen">
+                <span>Höhr-Grenzhausen - Am Grübchen</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20V%C3%B6lker%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am völker">
+                <span>Höhr-Grenzhausen - Am Völker</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Anno-Kn%C3%BCtgen-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - anno-knütgen-straße">
+                <span>Höhr-Grenzhausen - Anno-Knütgen-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Auf%20dem%20Acker%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - auf dem acker">
+                <span>Höhr-Grenzhausen - Auf dem Acker</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Auf%20dem%20H%C3%A4hnchen%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - auf dem hähnchen">
+                <span>Höhr-Grenzhausen - Auf dem Hähnchen</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Auf%20der%20Haide%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - auf der haide">
+                <span>Höhr-Grenzhausen - Auf der Haide</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Auf%20der%20Insel%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - auf der insel">
+                <span>Höhr-Grenzhausen - Auf der Insel</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Bahnhofstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - bahnhofstraße">
+                <span>Höhr-Grenzhausen - Bahnhofstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Bergstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - bergstraße">
+                <span>Höhr-Grenzhausen - Bergstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Brextal%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - brextal">
+                <span>Höhr-Grenzhausen - Brextal</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Eduard-Berdel-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - eduard-berdel-straße">
+                <span>Höhr-Grenzhausen - Eduard-Berdel-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Gartenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - gartenstraße">
+                <span>Höhr-Grenzhausen - Gartenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Hubertushof%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - hubertushof">
+                <span>Höhr-Grenzhausen - Hubertushof</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Im%20Silbertal%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - im silbertal">
+                <span>Höhr-Grenzhausen - Im Silbertal</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20In%20den%20Baumg%C3%A4rten%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - in den baumgärten">
+                <span>Höhr-Grenzhausen - In den Baumgärten</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Jacques-Remy-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - jacques-remy-straße">
+                <span>Höhr-Grenzhausen - Jacques-Remy-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Johann-Kalb-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - johann-kalb-straße">
+                <span>Höhr-Grenzhausen - Johann-Kalb-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20L%C3%B6nsweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - lönsweg">
+                <span>Höhr-Grenzhausen - Lönsweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Marienweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - marienweg">
+                <span>Höhr-Grenzhausen - Marienweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Neum%C3%BChle%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - neumühle">
+                <span>Höhr-Grenzhausen - Neumühle</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Peter-D%C3%BCmler-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - peter-dümler-straße">
+                <span>Höhr-Grenzhausen - Peter-Dümler-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Rathausstra%C3%9Fe%201-57/2-42%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - rathausstraße 1-57/2-42">
+                <span>Höhr-Grenzhausen - Rathausstraße 1-57/2-42</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Reinhold-Hanke-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - reinhold-hanke-straße">
+                <span>Höhr-Grenzhausen - Reinhold-Hanke-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Reithalle%20Fl%C3%BCrchen%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - reithalle flürchen">
+                <span>Höhr-Grenzhausen - Reithalle Flürchen</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Ringstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - ringstraße">
+                <span>Höhr-Grenzhausen - Ringstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Rosenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - rosenweg">
+                <span>Höhr-Grenzhausen - Rosenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Rudolf-Diesel-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - rudolf-diesel-straße">
+                <span>Höhr-Grenzhausen - Rudolf-Diesel-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20R%C3%B6merberg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - römerberg">
+                <span>Höhr-Grenzhausen - Römerberg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Schillerplatz%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - schillerplatz">
+                <span>Höhr-Grenzhausen - Schillerplatz</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Schulstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - schulstraße">
+                <span>Höhr-Grenzhausen - Schulstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Theodor-Storm-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - theodor-storm-straße">
+                <span>Höhr-Grenzhausen - Theodor-Storm-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20T%C3%B6pferstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - töpferstraße">
+                <span>Höhr-Grenzhausen - Töpferstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Weiherstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - weiherstraße">
+                <span>Höhr-Grenzhausen - Weiherstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Wiesenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - wiesenstraße">
+                <span>Höhr-Grenzhausen - Wiesenstraße</span>
+                <span>📍</span>
+            </a>
+      </div></section>
+    <section class="day-group" id="d-2026-09-09" data-day="d-2026-09-09">
+        <div class="day-title-bar">
+            <div class="day-title">
+                <span>📅 Środa, 09.09.2026</span>
+                <span class="badge">61 pozycji</span>
+            </div>
+        </div>
+        <div class="street-grid">
+    
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Moorsberg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am moorsberg">
+                <span>Höhr-Grenzhausen - Am Moorsberg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Park%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am park">
+                <span>Höhr-Grenzhausen - Am Park</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Rathaus%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am rathaus">
+                <span>Höhr-Grenzhausen - Am Rathaus</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Scheidberg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am scheidberg">
+                <span>Höhr-Grenzhausen - Am Scheidberg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Sonnenhang%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am sonnenhang">
+                <span>Höhr-Grenzhausen - Am Sonnenhang</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Tonberg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am tonberg">
+                <span>Höhr-Grenzhausen - Am Tonberg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Am%20Zoll%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - am zoll">
+                <span>Höhr-Grenzhausen - Am Zoll</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Beethovenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - beethovenstraße">
+                <span>Höhr-Grenzhausen - Beethovenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Birkenflur%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - birkenflur">
+                <span>Höhr-Grenzhausen - Birkenflur</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Birkenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - birkenweg">
+                <span>Höhr-Grenzhausen - Birkenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Brunnenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - brunnenstraße">
+                <span>Höhr-Grenzhausen - Brunnenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Buchenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - buchenweg">
+                <span>Höhr-Grenzhausen - Buchenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Bunzlauer%20Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - bunzlauer straße">
+                <span>Höhr-Grenzhausen - Bunzlauer Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Burgstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - burgstraße">
+                <span>Höhr-Grenzhausen - Burgstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Dammsweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - dammsweg">
+                <span>Höhr-Grenzhausen - Dammsweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Eichendorffweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - eichendorffweg">
+                <span>Höhr-Grenzhausen - Eichendorffweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Erlenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - erlenweg">
+                <span>Höhr-Grenzhausen - Erlenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Eulerstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - eulerstraße">
+                <span>Höhr-Grenzhausen - Eulerstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Ferbachtal%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - ferbachtal">
+                <span>Höhr-Grenzhausen - Ferbachtal</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Friedrich-Corcilius-Weg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - friedrich-corcilius-weg">
+                <span>Höhr-Grenzhausen - Friedrich-Corcilius-Weg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Friedrich-Ebert-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - friedrich-ebert-straße">
+                <span>Höhr-Grenzhausen - Friedrich-Ebert-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Georg-Steuler-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - georg-steuler-straße">
+                <span>Höhr-Grenzhausen - Georg-Steuler-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Gerhart-Hauptmann-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - gerhart-hauptmann-straße">
+                <span>Höhr-Grenzhausen - Gerhart-Hauptmann-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Hainchenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - hainchenweg">
+                <span>Höhr-Grenzhausen - Hainchenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Haus%20Waldeck%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - haus waldeck">
+                <span>Höhr-Grenzhausen - Haus Waldeck</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Hermann-Geisen-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - hermann-geisen-straße">
+                <span>Höhr-Grenzhausen - Hermann-Geisen-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Hermannstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - hermannstraße">
+                <span>Höhr-Grenzhausen - Hermannstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20H%C3%A4ndelstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - händelstraße">
+                <span>Höhr-Grenzhausen - Händelstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20H%C3%B6henstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - höhenstraße">
+                <span>Höhr-Grenzhausen - Höhenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Im%20Sohr%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - im sohr">
+                <span>Höhr-Grenzhausen - Im Sohr</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Im%20Zipfen%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - im zipfen">
+                <span>Höhr-Grenzhausen - Im Zipfen</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20In%20der%20Trift%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - in der trift">
+                <span>Höhr-Grenzhausen - In der Trift</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Jahnplatz%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - jahnplatz">
+                <span>Höhr-Grenzhausen - Jahnplatz</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Kasinostra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - kasinostraße">
+                <span>Höhr-Grenzhausen - Kasinostraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Kastanienweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - kastanienweg">
+                <span>Höhr-Grenzhausen - Kastanienweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Katharinenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - katharinenstraße">
+                <span>Höhr-Grenzhausen - Katharinenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Kirchstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - kirchstraße">
+                <span>Höhr-Grenzhausen - Kirchstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Ladestra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - ladestraße">
+                <span>Höhr-Grenzhausen - Ladestraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Langeheck%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - langeheck">
+                <span>Höhr-Grenzhausen - Langeheck</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Luisenstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - luisenstraße">
+                <span>Höhr-Grenzhausen - Luisenstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Martin-Luther-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - martin-luther-straße">
+                <span>Höhr-Grenzhausen - Martin-Luther-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Meiersberg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - meiersberg">
+                <span>Höhr-Grenzhausen - Meiersberg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Moorsberg-Stadion%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - moorsberg-stadion">
+                <span>Höhr-Grenzhausen - Moorsberg-Stadion</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20M%C3%BChle%20Grenzau%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - mühle grenzau">
+                <span>Höhr-Grenzhausen - Mühle Grenzau</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Neue%20%C3%96rter%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - neue örter">
+                <span>Höhr-Grenzhausen - Neue Örter</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Parkstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - parkstraße">
+                <span>Höhr-Grenzhausen - Parkstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Paul-Viehmann-Allee%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - paul-viehmann-allee">
+                <span>Höhr-Grenzhausen - Paul-Viehmann-Allee</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Rastal-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - rastal-straße">
+                <span>Höhr-Grenzhausen - Rastal-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Rathausstra%C3%9Fe%2067-139/46-110%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - rathausstraße 67-139/46-110">
+                <span>Höhr-Grenzhausen - Rathausstraße 67-139/46-110</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Scheidstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - scheidstraße">
+                <span>Höhr-Grenzhausen - Scheidstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Schenkendorfplatz%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - schenkendorfplatz">
+                <span>Höhr-Grenzhausen - Schenkendorfplatz</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Schillerstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - schillerstraße">
+                <span>Höhr-Grenzhausen - Schillerstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Seiferwiese%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - seiferwiese">
+                <span>Höhr-Grenzhausen - Seiferwiese</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Sonnenhof%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - sonnenhof">
+                <span>Höhr-Grenzhausen - Sonnenhof</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Sonnenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - sonnenweg">
+                <span>Höhr-Grenzhausen - Sonnenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Stammsbitz%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - stammsbitz">
+                <span>Höhr-Grenzhausen - Stammsbitz</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Steinreuschweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - steinreuschweg">
+                <span>Höhr-Grenzhausen - Steinreuschweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Teplitz-Sch%C3%B6nauer-Stra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - teplitz-schönauer-straße">
+                <span>Höhr-Grenzhausen - Teplitz-Schönauer-Straße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Tiergartenwies%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - tiergartenwies">
+                <span>Höhr-Grenzhausen - Tiergartenwies</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Turnstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - turnstraße">
+                <span>Höhr-Grenzhausen - Turnstraße</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=H%C3%B6hr-Grenzhausen%20-%20Westerwaldstra%C3%9Fe%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="höhr-grenzhausen - westerwaldstraße">
+                <span>Höhr-Grenzhausen - Westerwaldstraße</span>
+                <span>📍</span>
+            </a>
+      </div></section>
+    <section class="day-group" id="d-2026-09-10" data-day="d-2026-09-10">
+        <div class="day-title-bar">
+            <div class="day-title">
+                <span>📅 Czwartek, 10.09.2026</span>
+                <span class="badge">3 pozycji</span>
+            </div>
+        </div>
+        <div class="street-grid">
+    
+            <a href="https://www.google.com/maps/search/?api=1&query=Dreikirchen%20-%20Am%20M%C3%BChlenweg%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="dreikirchen - am mühlenweg">
+                <span>Dreikirchen - Am Mühlenweg</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=Guckheim%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="guckheim">
+                <span>Guckheim</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=Steinefrenz%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="steinefrenz">
+                <span>Steinefrenz</span>
+                <span>📍</span>
+            </a>
+      </div></section>
+    <section class="day-group" id="d-2026-09-11" data-day="d-2026-09-11">
+        <div class="day-title-bar">
+            <div class="day-title">
+                <span>📅 Piątek, 11.09.2026</span>
+                <span class="badge">3 pozycji</span>
+            </div>
+        </div>
+        <div class="street-grid">
+    
+            <a href="https://www.google.com/maps/search/?api=1&query=Ebernhahn%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="ebernhahn">
+                <span>Ebernhahn</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=Mogendorf%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="mogendorf">
+                <span>Mogendorf</span>
+                <span>📍</span>
+            </a>
+      
+            <a href="https://www.google.com/maps/search/?api=1&query=Staudt%2C%20Westerwald%20%284%29%2C%20Germany" target="_blank" class="street-row" data-name="staudt">
+                <span>Staudt</span>
+                <span>📍</span>
+            </a>
+      </div></section>
+<footer>Dabu-Info © 2026 • Dabu-Info – Kliknij pozycję, aby otworzyć w Google Maps</footer>
+<script>
+    let currentDay = 'all';
+    function selectDay(dayId, btn) {
+        currentDay = dayId;
+        document.querySelectorAll('.btn-day').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterList();
+    }
+    const inp = document.getElementById('filterInput');
+    inp.addEventListener('input', filterList);
+    function filterList() {
+        const val = inp.value.trim().toLowerCase();
+        let anyVisible = 0;
+        document.querySelectorAll('.day-group').forEach(group => {
+            const matchesDay = (currentDay === 'all' || group.getAttribute('data-day') === currentDay);
+            if (!matchesDay) { group.style.display = 'none'; return; }
+            let countInGroup = 0;
+            group.querySelectorAll('.street-row').forEach(row => {
+                if (row.getAttribute('data-name').includes(val)) {
+                    row.style.display = 'flex';
+                    countInGroup++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            if (countInGroup > 0) { group.style.display = 'block'; anyVisible += countInGroup; }
+            else { group.style.display = 'none'; }
+        });
+        document.getElementById('noDataAlert').style.display = (anyVisible === 0) ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>
