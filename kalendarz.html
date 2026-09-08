@@ -814,6 +814,7 @@
                     const yyyy = tomorrow.getFullYear();
                     const targetDateFormatted = `${yyyy}-${mm}-${dd}`; 
                     const displayDate = `${dd}.${mm}.${yyyy}`;
+                    const weekNumber = getISOWeekNumber(tomorrow);
 
                     resultsBox.style.display = 'block';
                     resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -843,36 +844,97 @@
                                 let headerHint = "";
                                 if (isPolish) {
                                     headerHint = `
-                                        <div style="margin-bottom: 8px;">
-                                            <span style="color: #2ecc71; font-size: 16px; font-weight: bold;">
-                                                📋 Dostępne zbiórki na dzień ${displayDate} (${unitRate} PLN / rejon za dzień)
-                                            </span>
-                                        </div>
-                                        <div style="color: #ccc; font-size: 13px; line-height: 1.6; text-align: left; max-width: 650px; margin: 0 auto;">
-                                            • <strong>Zaznacz pole wyboru</strong>, aby dodać ten konkretny termin do zamówienia.<br>
-                                            • Użyj przycisku <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong>, aby automatycznie dodać kolejne zbiórki tego rejonu bez szukania w innych dniach.<br>
-                                            • Możesz łączyć dowolne miejscowości z różnych dni – podsumowanie zamówienia znajdziesz na pasku na dole ekranu.<br>
-                                            💳 <em>Płatność: <strong>BLIK na +48 733 035 301</strong> lub przelew tradycyjny (IBAN).</em>
+                                        <div style="
+                                            background: #141414;
+                                            border: 1px solid #2b2b2b;
+                                            border-radius: 10px;
+                                            padding: 16px 20px;
+                                            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+                                            text-align: left;
+                                        ">
+                                            <!-- Pasek górny: Tytuł + Badge z ceną -->
+                                            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #242424;">
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="font-size: 1.15rem;">📋</span>
+                                                    <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span style="color: #2ecc71;">${displayDate}</span></span>
+                                                </div>
+                                                <div style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
+                                                    ⚡ ${unitRate} PLN / rejon za dzień
+                                                </div>
+                                            </div>
+
+                                            <!-- 3 Szybkie kroki -->
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0;">
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #60a5fa; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">1. Wybierz</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Zaznacz <strong>pole wyboru</strong> przy wybranym rejonie, aby dodać termin.</div>
+                                                </div>
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. Przyspiesz</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Użyj <strong>➕ Dzień</strong> lub <strong>📅 Tydzień</strong>, aby dodać kolejne wywozy rejonu.</div>
+                                                </div>
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Zamów</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Łącz różne dni – gotowy zestaw zamówisz na pasku na dole.</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Stopka z płatnością -->
+                                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #aaa;">
+                                                <div>
+                                                    💳 Płatność: <strong style="color: #fff;">BLIK</strong> na <span style="color: #2ecc71; font-weight: 700; font-family: var(--font-mono); background: #1a1a1a; padding: 2px 6px; border-radius: 4px; border: 1px solid #333;">+48 733 035 301</span> lub przelew tradycyjny (IBAN)
+                                                </div>
+                                                <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
+                                            </div>
                                         </div>
                                     `;
                                 } else {
                                     headerHint = `
-                                        <div style="margin-bottom: 8px;">
-                                            <span style="color: #2ecc71; font-size: 16px; font-weight: bold;">
-                                                📋 Available collection areas for ${displayDate} (${unitRate} € / area per day)
-                                            </span>
-                                        </div>
-                                        <div style="color: #ccc; font-size: 13px; line-height: 1.6; text-align: left; max-width: 650px; margin: 0 auto;">
-                                            • <strong>Check the box</strong> to select this collection date.<br>
-                                            • Use <strong>➕ Next day</strong> or <strong>📅 Whole week</strong> to quickly add all available dates for this area.<br>
-                                            • You can combine areas from different dates – manage everything in the cart below.<br>
-                                            💳 <em>Payment: <strong>BLIK (+48 733 035 301)</strong> or IBAN bank transfer.</em>
+                                        <div style="
+                                            background: #141414;
+                                            border: 1px solid #2b2b2b;
+                                            border-radius: 10px;
+                                            padding: 16px 20px;
+                                            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+                                            text-align: left;
+                                        ">
+                                            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #242424;">
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="font-size: 1.15rem;">📋</span>
+                                                    <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Available collections: <span style="color: #2ecc71;">${displayDate}</span></span>
+                                                </div>
+                                                <div style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
+                                                    ⚡ ${unitRate} € / area per day
+                                                </div>
+                                            </div>
+
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0;">
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #60a5fa; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">1. Select</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Check the <strong>checkbox</strong> next to the area to add the date.</div>
+                                                </div>
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. Quick Add</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Use <strong>➕ Next day</strong> or <strong>📅 Whole week</strong> to add more dates.</div>
+                                                </div>
+                                                <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
+                                                    <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Order</div>
+                                                    <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Combine multiple dates – manage everything in the bar below.</div>
+                                                </div>
+                                            </div>
+
+                                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #aaa;">
+                                                <div>
+                                                    💳 Payment: <strong style="color: #fff;">BLIK (+48 733 035 301)</strong> or IBAN bank transfer
+                                                </div>
+                                                <span style="color: #666; font-size: 0.75rem;">Instant Access</span>
+                                            </div>
                                         </div>
                                     `;
                                 }
 
                                 let htmlZebra = `
-                                    <div style="padding: 16px 20px; background: #1a1a1a; border-bottom: 1px solid #333; text-align: center; border-left: 4px solid #2ecc71;">
+                                    <div style="padding: 14px 16px; background: #181818; border-bottom: 1px solid #282828;">
                                         ${headerHint}
                                     </div>
                                     <div id="regions-list-container">
@@ -912,65 +974,76 @@
                                         .replace(/<br\s*\/?>\s*$/gi, '')
                                         .trim();
 
-let landHeaderHtml = "";
-if (landName && landName !== currentLand) {
-    currentLand = landName;
-    landHeaderHtml = `
-        <div style="
-            background: linear-gradient(90deg, #1b263b 0%, #161b22 100%);
-            border-left: 4px solid #3b82f6;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            border-bottom: 1px solid rgba(0,0,0,0.4);
-            padding: 11px 18px;
-            margin: 18px 0 6px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-        ">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="
-                    background: rgba(59, 130, 246, 0.15);
-                    border: 1px solid rgba(59, 130, 246, 0.35);
-                    color: #60a5fa;
-                    padding: 4px 8px;
-                    border-radius: 6px;
-                    font-size: 0.8rem;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                ">🏛️ LAND</span>
-                <span style="
-                    color: #ffffff;
-                    font-size: 0.95rem;
-                    font-weight: 700;
-                    letter-spacing: 0.8px;
-                    text-transform: uppercase;
-                    font-family: var(--font-main);
-                ">${currentLand}</span>
-            </div>
-            <span style="
-                font-size: 0.72rem;
-                color: #8b949e;
-                letter-spacing: 0.5px;
-                text-transform: uppercase;
-                font-weight: 600;
-            ">Niemcy 2026</span>
-        </div>`;
-}
+                                    let landHeaderHtml = "";
+                                    if (landName && landName !== currentLand) {
+                                        currentLand = landName;
+                                        landHeaderHtml = `
+                                            <div style="
+                                                background: linear-gradient(90deg, #1b263b 0%, #161b22 100%);
+                                                border-left: 4px solid #3b82f6;
+                                                border-top: 1px solid rgba(255,255,255,0.06);
+                                                border-bottom: 1px solid rgba(0,0,0,0.4);
+                                                padding: 11px 18px;
+                                                margin: 18px 0 6px 0;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: space-between;
+                                                box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+                                            ">
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <span style="
+                                                        background: rgba(59, 130, 246, 0.15);
+                                                        border: 1px solid rgba(59, 130, 246, 0.35);
+                                                        color: #60a5fa;
+                                                        padding: 4px 8px;
+                                                        border-radius: 6px;
+                                                        font-size: 0.8rem;
+                                                        display: inline-flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                    ">🏛️ LAND</span>
+                                                    <span style="
+                                                        color: #ffffff;
+                                                        font-size: 0.95rem;
+                                                        font-weight: 700;
+                                                        letter-spacing: 0.8px;
+                                                        text-transform: uppercase;
+                                                        font-family: var(--font-main);
+                                                    ">${currentLand}</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <span style="
+                                                        font-size: 0.8rem;
+                                                        color: #93c5fd;
+                                                        font-weight: 600;
+                                                        font-family: var(--font-mono);
+                                                    ">${displayDate}</span>
+                                                    <span style="
+                                                        background: #21262d;
+                                                        border: 1px solid #30363d;
+                                                        color: #2ecc71;
+                                                        padding: 2px 7px;
+                                                        border-radius: 4px;
+                                                        font-size: 0.75rem;
+                                                        font-weight: 700;
+                                                        letter-spacing: 0.5px;
+                                                    ">W${weekNumber}</span>
+                                                </div>
+                                            </div>`;
+                                    }
 
-return `
-${landHeaderHtml}
-<div class="zebra-row">
-    <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
-        <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
-        <div style="flex:1;">${infoPart}</div>
-    </label>
-    <div class="quick-add-container">
-        <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
-        <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały tydzień</button>
-    </div>
-</div>`;
+                                    return `
+                                    ${landHeaderHtml}
+                                    <div class="zebra-row">
+                                        <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
+                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
+                                            <div style="flex:1;">${infoPart}</div>
+                                        </label>
+                                        <div class="quick-add-container">
+                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
+                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały tydzień</button>
+                                        </div>
+                                    </div>`;
                                 }).join('');
 
                                 htmlZebra += `</div>`;
