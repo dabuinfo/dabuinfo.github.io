@@ -224,6 +224,39 @@
             animation: spin 0.8s linear infinite; 
         }
 
+        .land-group-header {
+            background: linear-gradient(90deg, #111d2e 0%, #162235 100%);
+            border-left: 4px solid #3b82f6;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(0,0,0,0.4);
+            padding: 8px 12px;
+            margin: 12px -10px 6px -10px;
+            color: #ffffff;
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: sticky;
+            top: -10px;
+            z-index: 5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .land-group-header:first-of-type {
+            margin-top: -10px;
+        }
+        .land-tag-badge {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: bold;
+        }
+
         .region-label { display: block; padding: 5px;
             cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; font-size: 0.9em; transition: opacity 0.3s ease; }
         .region-label:hover { background: rgba(255,255,255,0.1); }
@@ -1201,6 +1234,61 @@
         let availabilityMatrixAll = {}; 
         let availabilityMatrixScrap = {};
         let availabilityMatrix = {};
+        let regionLandMap = {};
+
+        function rebuildRegionsCheckboxesWithLands(regionsData) {
+            const container = document.getElementById('regionsCheckboxes');
+            if (!container) return;
+
+            // Tworzymy mapę Landów dla każdego rejonu
+            for (let w in regionsData) {
+                regionsData[w].forEach(rObj => {
+                    let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
+                    let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
+                        ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
+                        : "";
+                    if (rName && rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE") {
+                        regionLandMap[rName.toLowerCase()] = rLand;
+                    }
+                });
+            }
+
+            // Pobieramy wszystkie istniejące etykiety rejonów z formularza
+            const labels = Array.from(container.querySelectorAll('.region-label'));
+            if (labels.length === 0) return;
+
+            const structuredRegions = labels.map(lbl => {
+                const chk = lbl.querySelector('.region-chk');
+                const val = chk ? chk.value.trim() : lbl.textContent.trim();
+                const land = regionLandMap[val.toLowerCase()] || "Pozostałe Landy";
+                return {
+                    labelNode: lbl,
+                    name: val,
+                    land: land
+                };
+            });
+
+            // Sortowanie dwupoziomowe: 1. Land (A-Z), 2. Nazwa rejonu (A-Z)
+            structuredRegions.sort((a, b) => {
+                let compLand = a.land.localeCompare(b.land, 'de', { sensitivity: 'base' });
+                if (compLand !== 0) return compLand;
+                return a.name.localeCompare(b.name, 'de', { sensitivity: 'base' });
+            });
+
+            container.innerHTML = '';
+            let currentLand = null;
+
+            structuredRegions.forEach(item => {
+                if (item.land !== currentLand) {
+                    currentLand = item.land;
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'land-group-header';
+                    headerDiv.innerHTML = `<span class="land-tag-badge">🏛️ LAND</span><span>${currentLand}</span>`;
+                    container.appendChild(headerDiv);
+                }
+                container.appendChild(item.labelNode);
+            });
+        }
         
         function fetchAvailableRegions() {
             var d = new Date();
@@ -1233,6 +1321,9 @@
                         
                         let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
                         availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
+
+                        // Budujemy grupy Landów w oknie wyboru rejonów
+                        rebuildRegionsCheckboxesWithLands(availabilityMatrixAll);
                         
                         updateMutualFiltering();
                     } else if (data.status === "ODMOWA_DOSTEPU") {
