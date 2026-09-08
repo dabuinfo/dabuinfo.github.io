@@ -494,16 +494,16 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg> Wersja PDF (dokument):
                             </p>
                             <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
-                                <li id="formatPdfLi1"><strong>Do druku:</strong> Jasne tło, oszczędza tusz w drukarce.</li>
-                                <li id="formatPdfLi2"><strong>Smartfon (Dark Mode):</strong> Ciemne tło, nie męczy oczu w nocy.</li>
-                                <li id="formatPdfLi3"><strong>Aktywne linki:</strong> W wersji mobilnej linki do map Google wciąż działają!</li>
+                                <li id="formatPdfLi1"><strong>Do druku:</strong> Idealna, jeśli wolisz pracować z papierem.</li>
+                                <li id="formatPdfLi2"><strong>Offline:</strong> Pobierz raz i korzystaj bez internetu.</li>
+                                <li id="formatPdfLi3"><strong>Aktywna nawigacja:</strong> Na telefonie linki do Google Maps wciąż działają!</li>
                             </ul>
                         </div>
                         <div class="format-col format-col-jpg">
                             <p style="color: #f39c12; font-weight: bold; margin: 0 0 10px 0; font-size: 1.05em;" id="formatJpgTitle">🖼️ Wersja JPG (zdjęcia):</p>
                             <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
                                 <li id="formatJpgLi1"><strong>Galeria:</strong> Łatwe przeglądanie bezpośrednio w telefonie.</li>
-                                <li id="formatJpgLi2"><strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym na WhatsApp czy Messengerze.</li>
+                                <li id="formatJpgLi2"><strong>Szybkie udostępnianie:</strong> Błyskawicznie prześlesz znajomym.</li>
                             </ul>
                         </div>
                         <div class="format-col format-col-online">
@@ -844,6 +844,223 @@
             'straelen', 'trier-stadt', 'tönisvorst', 'übach-palenberg', 'uedem', 'usingen', 'viersen', 'voerde', 
             'weeze', 'wehrheim', 'weilerswist', 'weilrod', 'werdohl', 'wülfrath', 'xanten', 'zülpich'
         ];
+
+        // SŁOWNIK NA STAŁE DLA REJONÓW SPECJALNYCH (I BRAKUJĄCYCH W BAZIE)
+        const SPECIAL_REGIONS_LAND_MAP = {
+            // Baden-Württemberg
+            'calw': 'Baden-Württemberg',
+            'freudenstadt': 'Baden-Württemberg',
+            'heidelberg': 'Baden-Württemberg',
+            'heilbronn': 'Baden-Württemberg',
+            'karlsruhe kreis': 'Baden-Württemberg',
+            'karlsruhe stadt': 'Baden-Württemberg',
+            'konstanz': 'Baden-Württemberg',
+            'ortenau': 'Baden-Württemberg',
+            'rhein-neckar-kreis': 'Baden-Württemberg',
+            'tuttlingen': 'Baden-Württemberg',
+            'zollernalb': 'Baden-Württemberg',
+
+            // Bayern
+            'augsburg kreis': 'Bayern',
+            'augsburg stadt': 'Bayern',
+            'amberg': 'Bayern',
+            'bamberg': 'Bayern',
+            'bayreuth': 'Bayern',
+            'fürth': 'Bayern',
+            'gräfelfing': 'Bayern',
+            'kirchheim': 'Bayern',
+            'kulmbach': 'Bayern',
+            'monachium-południowy wschód': 'Bayern',
+            'neustadt a.d. waldnaab': 'Bayern',
+            'regensburg': 'Bayern',
+            'straubing-bogen': 'Bayern',
+
+            // Berlin
+            'berlin': 'Berlin',
+
+            // Brandenburg
+            'barnim': 'Brandenburg',
+            'elbe-elster': 'Brandenburg',
+            'oder-spree': 'Brandenburg',
+            'schwedt/oder': 'Brandenburg',
+            'spree-neiße': 'Brandenburg',
+
+            // Hessen
+            'bad homburg': 'Hessen',
+            'bad orb': 'Hessen',
+            'bad soden-salmünster': 'Hessen',
+            'biebergemünd': 'Hessen',
+            'eppstein': 'Hessen',
+            'eschwege': 'Hessen',
+            'flörsbachtal': 'Hessen',
+            'flörsheim am main': 'Hessen',
+            'frankfurt': 'Hessen',
+            'freigericht': 'Hessen',
+            'friedrichsdorf': 'Hessen',
+            'fulda': 'Hessen',
+            'gelnhausen': 'Hessen',
+            'giessen': 'Hessen',
+            'giessen stadt': 'Hessen',
+            'glashütten': 'Hessen',
+            'grävenwiesbach': 'Hessen',
+            'gross-gerau': 'Hessen',
+            'gründau': 'Hessen',
+            'hasselroth': 'Hessen',
+            'hattersheim am main': 'Hessen',
+            'hersfeld-rotenburg': 'Hessen',
+            'hofheim am taunus': 'Hessen',
+            'jossgrund': 'Hessen',
+            'kelkheim (taunus)': 'Hessen',
+            'königstein (taunus)': 'Hessen',
+            'kronberg': 'Hessen',
+            'kronberg im taunus': 'Hessen',
+            'liederbach': 'Hessen',
+            'limburg-weilburg': 'Hessen',
+            'linsengericht': 'Hessen',
+            'neu-anspach': 'Hessen',
+            'nidderau': 'Hessen',
+            'oberursel (taunus)': 'Hessen',
+            'rheingau-taunus': 'Hessen',
+            'rodenbach': 'Hessen',
+            'ronneburg': 'Hessen',
+            'schlüchtern': 'Hessen',
+            'schmitten': 'Hessen',
+            'schmitten im taunus': 'Hessen',
+            'schwalbach': 'Hessen',
+            'sinntal': 'Hessen',
+            'steinbach': 'Hessen',
+            'usingen': 'Hessen',
+            'walldorf-mörfelden': 'Hessen',
+            'wehrheim': 'Hessen',
+            'weilrod': 'Hessen',
+            'werra-meissner': 'Hessen',
+            'wiesbaden-naurod': 'Hessen',
+
+            // Niedersachsen
+            'braunschweig': 'Niedersachsen',
+            'diepholz': 'Niedersachsen',
+            'emsland': 'Niedersachsen',
+            'gifhorn': 'Niedersachsen',
+            'göttingen': 'Niedersachsen',
+            'hannover': 'Niedersachsen',
+            'harburg': 'Niedersachsen',
+            'heidekreis': 'Niedersachsen',
+            'holzminden': 'Niedersachsen',
+            'lüneburg': 'Niedersachsen',
+            'osnabrück': 'Niedersachsen',
+            'stade': 'Niedersachsen',
+            'wolfsburg': 'Niedersachsen',
+
+            // Nordrhein-Westfalen (NRW)
+            'aldenhoven': 'Nordrhein-Westfalen',
+            'alpen': 'Nordrhein-Westfalen',
+            'altena': 'Nordrhein-Westfalen',
+            'bad münstereifel': 'Nordrhein-Westfalen',
+            'bad-munstereifel': 'Nordrhein-Westfalen',
+            'balve': 'Nordrhein-Westfalen',
+            'bedburg': 'Nordrhein-Westfalen',
+            'bedburg-hau': 'Nordrhein-Westfalen',
+            'blankenheim': 'Nordrhein-Westfalen',
+            'bonn': 'Nordrhein-Westfalen',
+            'breckerfeld': 'Nordrhein-Westfalen',
+            'brühl': 'Nordrhein-Westfalen',
+            'dahlem': 'Nordrhein-Westfalen',
+            'dormagen': 'Nordrhein-Westfalen',
+            'dortmund': 'Nordrhein-Westfalen',
+            'dülmen': 'Nordrhein-Westfalen',
+            'düsseldorf': 'Nordrhein-Westfalen',
+            'emmerich am rhein': 'Nordrhein-Westfalen',
+            'ennepetal': 'Nordrhein-Westfalen',
+            'erftstadt': 'Nordrhein-Westfalen',
+            'erkrath': 'Nordrhein-Westfalen',
+            'euskirchen': 'Nordrhein-Westfalen',
+            'geilenkirchen': 'Nordrhein-Westfalen',
+            'geldern': 'Nordrhein-Westfalen',
+            'goch': 'Nordrhein-Westfalen',
+            'grefrath': 'Nordrhein-Westfalen',
+            'grevenbroich': 'Nordrhein-Westfalen',
+            'haan': 'Nordrhein-Westfalen',
+            'heiligenhaus': 'Nordrhein-Westfalen',
+            'heinsberg': 'Nordrhein-Westfalen',
+            'hellenthal': 'Nordrhein-Westfalen',
+            'hückelhoven': 'Nordrhein-Westfalen',
+            'hürth': 'Nordrhein-Westfalen',
+            'iserlohn': 'Nordrhein-Westfalen',
+            'issum': 'Nordrhein-Westfalen',
+            'jüchen': 'Nordrhein-Westfalen',
+            'jülich': 'Nordrhein-Westfalen',
+            'kaarst': 'Nordrhein-Westfalen',
+            'kall': 'Nordrhein-Westfalen',
+            'kamp-lintfort': 'Nordrhein-Westfalen',
+            'kerken': 'Nordrhein-Westfalen',
+            'kevelaer': 'Nordrhein-Westfalen',
+            'korschenbroich': 'Nordrhein-Westfalen',
+            'köln': 'Nordrhein-Westfalen',
+            'krefeld': 'Nordrhein-Westfalen',
+            'leverkusen': 'Nordrhein-Westfalen',
+            'mechernich': 'Nordrhein-Westfalen',
+            'meerbusch': 'Nordrhein-Westfalen',
+            'menden': 'Nordrhein-Westfalen',
+            'merzenich': 'Nordrhein-Westfalen',
+            'monheim am rhein': 'Nordrhein-Westfalen',
+            'münster': 'Nordrhein-Westfalen',
+            'nachrodt-wiblingwerde': 'Nordrhein-Westfalen',
+            'nettetal': 'Nordrhein-Westfalen',
+            'neukirchen-vluyn': 'Nordrhein-Westfalen',
+            'neuss': 'Nordrhein-Westfalen',
+            'oberberg': 'Nordrhein-Westfalen',
+            'olpe': 'Nordrhein-Westfalen',
+            'plettenberg': 'Nordrhein-Westfalen',
+            'pulheim': 'Nordrhein-Westfalen',
+            'ratingen': 'Nordrhein-Westfalen',
+            'rees': 'Nordrhein-Westfalen',
+            'rhein-sieg': 'Nordrhein-Westfalen',
+            'rheinisch-bergischer': 'Nordrhein-Westfalen',
+            'rheurdt': 'Nordrhein-Westfalen',
+            'rommerskirchen': 'Nordrhein-Westfalen',
+            'schleiden': 'Nordrhein-Westfalen',
+            'selfkant': 'Nordrhein-Westfalen',
+            'solingen': 'Nordrhein-Westfalen',
+            'sonsbeck': 'Nordrhein-Westfalen',
+            'sprockhövel': 'Nordrhein-Westfalen',
+            'straelen': 'Nordrhein-Westfalen',
+            'tönisvorst': 'Nordrhein-Westfalen',
+            'übach-palenberg': 'Nordrhein-Westfalen',
+            'uedem': 'Nordrhein-Westfalen',
+            'viersen': 'Nordrhein-Westfalen',
+            'voerde': 'Nordrhein-Westfalen',
+            'weeze': 'Nordrhein-Westfalen',
+            'weilerswist': 'Nordrhein-Westfalen',
+            'werdohl': 'Nordrhein-Westfalen',
+            'wesseling': 'Nordrhein-Westfalen',
+            'wülfrath': 'Nordrhein-Westfalen',
+            'wuppertal': 'Nordrhein-Westfalen',
+            'xanten': 'Nordrhein-Westfalen',
+            'zülpich': 'Nordrhein-Westfalen',
+
+            // Rheinland-Pfalz
+            'alzey-worms': 'Rheinland-Pfalz',
+            'altenkirchen (westerwald)': 'Rheinland-Pfalz',
+            'bad-kreuznach': 'Rheinland-Pfalz',
+            'bernkastel-wittlich': 'Rheinland-Pfalz',
+            'cochem-zell': 'Rheinland-Pfalz',
+            'eifelkreis bitburg-prüm': 'Rheinland-Pfalz',
+            'mayen-koblenz': 'Rheinland-Pfalz',
+            'trier-saarburg': 'Rheinland-Pfalz',
+            'trier-stadt': 'Rheinland-Pfalz',
+            'vulkaneifel': 'Rheinland-Pfalz',
+            'westerwald': 'Rheinland-Pfalz',
+
+            // Sachsen & Sachsen-Anhalt
+            'altmarkkreis-salzwedel': 'Sachsen-Anhalt',
+            'burgenland': 'Sachsen-Anhalt',
+            'leipzig': 'Sachsen',
+            'nordsachsen': 'Sachsen',
+
+            // Schleswig-Holstein
+            'lübeck': 'Schleswig-Holstein',
+            'rendsburg-eckernförde': 'Schleswig-Holstein'
+        };
 
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
         const iconPdf = '<svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="#e74c3c" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 5px;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>';
@@ -1240,27 +1457,33 @@
             const container = document.getElementById('regionsCheckboxes');
             if (!container) return;
 
-            // Tworzymy mapę Landów dla każdego rejonu
+            // 1. Zasilamy mapę ze statycznego słownika dla rejonów specjalnych
+            for (let reg in SPECIAL_REGIONS_LAND_MAP) {
+                regionLandMap[reg.toLowerCase().trim()] = SPECIAL_REGIONS_LAND_MAP[reg];
+            }
+
+            // 2. Nadpisujemy/uzupełniamy danymi z bazy danych
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
                     let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
                     let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
                         ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
                         : "";
-                    if (rName && rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE") {
-                        regionLandMap[rName.toLowerCase()] = rLand;
+                    if (rName && rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE" && rLand !== "Pozostałe Landy") {
+                        regionLandMap[rName.toLowerCase().trim()] = rLand;
                     }
                 });
             }
 
-            // Pobieramy wszystkie istniejące etykiety rejonów z formularza
+            // 3. Pobieramy wszystkie istniejące etykiety rejonów z formularza
             const labels = Array.from(container.querySelectorAll('.region-label'));
             if (labels.length === 0) return;
 
             const structuredRegions = labels.map(lbl => {
                 const chk = lbl.querySelector('.region-chk');
                 const val = chk ? chk.value.trim() : lbl.textContent.trim();
-                const land = regionLandMap[val.toLowerCase()] || "Pozostałe Landy";
+                const cleanKey = val.toLowerCase().trim();
+                const land = regionLandMap[cleanKey] || SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Pozostałe Landy";
                 return {
                     labelNode: lbl,
                     name: val,
@@ -1268,7 +1491,7 @@
                 };
             });
 
-            // Sortowanie dwupoziomowe: 1. Land (A-Z), 2. Nazwa rejonu (A-Z)
+            // 4. Sortowanie dwupoziomowe: 1. Land (A-Z), 2. Nazwa rejonu (A-Z)
             structuredRegions.sort((a, b) => {
                 let compLand = a.land.localeCompare(b.land, 'de', { sensitivity: 'base' });
                 if (compLand !== 0) return compLand;
@@ -1332,6 +1555,8 @@
                 })
                 .catch(err => {
                     console.error("Błąd fetch:", err);
+                    // Nawet przy błędzie pobierania z bazy układamy listę według lokalnego słownika
+                    rebuildRegionsCheckboxesWithLands({});
                 })
                 .finally(() => {
                     let loaderOverlay = document.getElementById('regionsLoading');
@@ -1628,6 +1853,20 @@
                 label.style.opacity = isAvailable ? '1' : '0.3';
                 chk.disabled = !isAvailable;
                 if(!isAvailable && chk.checked) chk.checked = false;
+            });
+
+            // Ukrywamy puste nagłówki Landów, jeśli wszystkie ich rejony są wyszarzone
+            document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
+                let nextEl = header.nextElementSibling;
+                let hasVisible = false;
+                while (nextEl && nextEl.classList.contains('region-label')) {
+                    if (nextEl.style.opacity !== '0.3') {
+                        hasVisible = true;
+                        break;
+                    }
+                    nextEl = nextEl.nextElementSibling;
+                }
+                header.style.opacity = hasVisible ? '1' : '0.3';
             });
 
             updateDynamicOptions();
