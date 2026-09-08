@@ -912,27 +912,65 @@
                                         .replace(/<br\s*\/?>\s*$/gi, '')
                                         .trim();
 
-                                    let landHeaderHtml = "";
-                                    if (landName && landName !== currentLand) {
-                                        currentLand = landName;
-                                        landHeaderHtml = `
-                                            <div style="background: #111; border-top: 2px solid #2d2d2d; border-bottom: 1px solid #222; padding: 10px 16px; margin-top: 14px; margin-bottom: 4px; color: #3b82f6; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
-                                                🏛️ ${currentLand}
-                                            </div>`;
-                                    }
+let landHeaderHtml = "";
+if (landName && landName !== currentLand) {
+    currentLand = landName;
+    landHeaderHtml = `
+        <div style="
+            background: linear-gradient(90deg, #1b263b 0%, #161b22 100%);
+            border-left: 4px solid #3b82f6;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.4);
+            padding: 11px 18px;
+            margin: 18px 0 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        ">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="
+                    background: rgba(59, 130, 246, 0.15);
+                    border: 1px solid rgba(59, 130, 246, 0.35);
+                    color: #60a5fa;
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                ">🏛️ LAND</span>
+                <span style="
+                    color: #ffffff;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    font-family: var(--font-main);
+                ">${currentLand}</span>
+            </div>
+            <span style="
+                font-size: 0.72rem;
+                color: #8b949e;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                font-weight: 600;
+            ">Niemcy 2026</span>
+        </div>`;
+}
 
-                                    return `
-                                    ${landHeaderHtml}
-                                    <div class="zebra-row">
-                                        <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
-                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
-                                            <div style="flex:1;">${infoPart}</div>
-                                        </label>
-                                        <div class="quick-add-container">
-                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
-                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały tydzień</button>
-                                        </div>
-                                    </div>`;
+return `
+${landHeaderHtml}
+<div class="zebra-row">
+    <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
+        <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
+        <div style="flex:1;">${infoPart}</div>
+    </label>
+    <div class="quick-add-container">
+        <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
+        <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały tydzień</button>
+    </div>
+</div>`;
                                 }).join('');
 
                                 htmlZebra += `</div>`;
