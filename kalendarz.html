@@ -99,7 +99,7 @@
     }
 
     #cal-hint {
-        font-size: 0.875rem; /* 14px */
+        font-size: 0.875rem;
         color: #b0b0b0;
         margin-top: 10px;
         line-height: 1.6;
@@ -118,7 +118,7 @@
         width: 100%; 
         border-collapse: separate; 
         border-spacing: 3px; 
-        font-size: 0.8125rem; /* 13px */
+        font-size: 0.8125rem;
         background: #202020; 
         border-radius: 8px; 
         padding: 6px; 
@@ -133,11 +133,11 @@
         font-weight: 700; 
         text-transform: uppercase; 
         border-radius: 4px; 
-        font-size: 0.875rem; /* 14px */
+        font-size: 0.875rem; 
     }
     .current-month .month-title { background-color: #007bff; color: #fff; }
 
-    .month-table th { color: #9ca3af; padding: 6px 0; font-weight: 600; font-size: 0.75rem; /* 12px */ }
+    .month-table th { color: #9ca3af; padding: 6px 0; font-weight: 600; font-size: 0.75rem; }
     .month-table td { 
         background: #2a2a2a; 
         text-align: center; 
@@ -146,15 +146,15 @@
         position: relative; 
         cursor: default; 
         height: 32px; 
-        font-size: 0.875rem; /* 14px - czytelne cyfry */
+        font-size: 0.875rem;
         font-weight: 500;
     }
     
-    .week-header { color: #6b7280 !important; font-size: 0.6875rem !important; /* 11px */ }
+    .week-header { color: #6b7280 !important; font-size: 0.6875rem !important; }
     .week-number { 
         background: #1a1a1a !important; 
         color: #71717a !important; 
-        font-size: 0.75rem !important; /* 12px */
+        font-size: 0.75rem !important;
         font-weight: 700; 
         border-right: 1px solid #333; 
         cursor: not-allowed; 
@@ -175,7 +175,7 @@
         display: flex; 
         flex-wrap: wrap; 
         gap: 16px; 
-        font-size: 0.8125rem; /* 13px */
+        font-size: 0.8125rem;
         justify-content: center; 
         font-weight: 500;
     }
@@ -198,7 +198,7 @@
         background: #1c1c1c; 
         color: #3b82f6; 
         margin: 0; 
-        font-size: 1.05rem; /* ~17px */
+        font-size: 1.05rem; 
         padding: 14px 18px; 
         border-bottom: 1px solid #333; 
         font-weight: 700;
@@ -208,7 +208,7 @@
         background-color: #212121; 
         padding: 14px 16px; 
         color: #e2e8f0; 
-        font-size: 0.9375rem; /* 15px */
+        font-size: 0.9375rem; 
         line-height: 1.55; 
         border-left: 4px solid transparent; 
         transition: all 0.2s ease; 
@@ -231,7 +231,7 @@
 
     .region-desc {
         color: #60a5fa;
-        font-size: 0.8125rem; /* 13px */
+        font-size: 0.8125rem;
         margin-top: 4px;
         font-style: italic;
     }
@@ -249,9 +249,9 @@
         background: #242424;
         border: 1px solid #404040;
         color: #2ecc71;
-        font-size: 0.8125rem; /* 13px (zamiast 11px) */
+        font-size: 0.8125rem;
         font-weight: 600;
-        padding: 10px 8px; /* większy touch target pod kciuk */
+        padding: 10px 8px;
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -289,13 +289,13 @@
 
     .cart-info {
         text-align: center;
-        font-size: 0.875rem; /* 14px */
+        font-size: 0.875rem;
         color: #d1d5db;
         line-height: 1.45;
     }
 
     .cart-total-badge {
-        font-size: 1.125rem; /* 18px */
+        font-size: 1.125rem;
         font-weight: 700;
         color: #2ecc71;
     }
@@ -318,7 +318,7 @@
         background: linear-gradient(90deg, #2ecc71, #27ae60);
         color: #000 !important;
         font-weight: 700;
-        font-size: 0.9375rem; /* 15px */
+        font-size: 0.9375rem;
         padding: 12px 20px;
         border-radius: 8px;
         text-decoration: none;
@@ -878,6 +878,8 @@
                                     <div id="regions-list-container">
                                 `;
 
+                                let currentLand = null;
+
                                 htmlZebra += items.filter(i => i.trim() !== '' && i.includes('📍')).map((item, idx) => {
                                     let cleanItem = item.trim();
                                     
@@ -886,6 +888,9 @@
                                     if (matchPin && matchPin[1]) {
                                         regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
                                     }
+
+                                    let matchLand = cleanItem.match(/data-land=['"]([^'"]+)['"]/i);
+                                    let landName = matchLand ? matchLand[1].trim() : "";
 
                                     let matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
                                     let allAvailableDates = matchDates ? matchDates[1] : targetDateFormatted;
@@ -907,7 +912,17 @@
                                         .replace(/<br\s*\/?>\s*$/gi, '')
                                         .trim();
 
+                                    let landHeaderHtml = "";
+                                    if (landName && landName !== currentLand) {
+                                        currentLand = landName;
+                                        landHeaderHtml = `
+                                            <div style="background: #111; border-top: 2px solid #2d2d2d; border-bottom: 1px solid #222; padding: 10px 16px; margin-top: 14px; margin-bottom: 4px; color: #3b82f6; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                                                🏛️ ${currentLand}
+                                            </div>`;
+                                    }
+
                                     return `
+                                    ${landHeaderHtml}
                                     <div class="zebra-row">
                                         <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
                                             <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
@@ -969,57 +984,52 @@
                                     });
                                 });
 
-resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const curDateStr = this.getAttribute('data-current'); // format YYYY-MM-DD
-        const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
-        const rName = decodeURIComponent(this.getAttribute('data-region'));
+                                resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        const curDateStr = this.getAttribute('data-current');
+                                        const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
+                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
 
-        // Wyliczamy niedzielę (koniec tygodnia) dla aktualnie przeglądanego terminu
-        const parts = curDateStr.split('-');
-        const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
-        const dayOfWeek = baseDate.getDay(); // 0: niedziela, 1: poniedziałek, ..., 6: sobota
-        const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
+                                        const parts = curDateStr.split('-');
+                                        const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                                        const dayOfWeek = baseDate.getDay();
+                                        const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
 
-        const sunday = new Date(baseDate);
-        sunday.setDate(baseDate.getDate() + diffToSunday);
-        sunday.setHours(23, 59, 59, 999);
+                                        const sunday = new Date(baseDate);
+                                        sunday.setDate(baseDate.getDate() + diffToSunday);
+                                        sunday.setHours(23, 59, 59, 999);
 
-        // Najwcześniejszy możliwy termin do zbierania to JUTRO (dzień dzisiejszy rano już posprzątany)
-        const earliestOrderDate = new Date();
-        earliestOrderDate.setDate(earliestOrderDate.getDate() + 1);
-        earliestOrderDate.setHours(0, 0, 0, 0);
+                                        const earliestOrderDate = new Date();
+                                        earliestOrderDate.setDate(earliestOrderDate.getDate() + 1);
+                                        earliestOrderDate.setHours(0, 0, 0, 0);
 
-        // Wybieramy tylko terminy:
-        // 1. Od jutra w przód (odrzucamy dzisiejsze i wcześniejsze zbiórki)
-        // 2. Do końca bieżącego tygodnia (niedziela)
-        const validDates = availableDates.filter(dStr => {
-            const dParts = dStr.split('-');
-            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
-            return d >= earliestOrderDate && d <= sunday;
-        });
+                                        const validDates = availableDates.filter(dStr => {
+                                            const dParts = dStr.split('-');
+                                            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
+                                            return d >= earliestOrderDate && d <= sunday;
+                                        });
 
-        if (validDates.length === 0) {
-            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
-            return;
-        }
+                                        if (validDates.length === 0) {
+                                            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
+                                            return;
+                                        }
 
-        let addedCount = 0;
-        validDates.forEach(dStr => {
-            const dDisp = formatDateDisplay(dStr);
-            globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
-            addedCount++;
-        });
+                                        let addedCount = 0;
+                                        validDates.forEach(dStr => {
+                                            const dDisp = formatDateDisplay(dStr);
+                                            globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
+                                            addedCount++;
+                                        });
 
-        const parentRow = this.closest('.zebra-row');
-        const chk = parentRow.querySelector('.region-checkbox');
-        if (chk) chk.checked = true;
+                                        const parentRow = this.closest('.zebra-row');
+                                        const chk = parentRow.querySelector('.region-checkbox');
+                                        if (chk) chk.checked = true;
 
-        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
-        refreshCartUI();
-    });
-});
+                                        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
+                                        refreshCartUI();
+                                    });
+                                });
 
                             } else {
                                 resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
