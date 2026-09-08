@@ -298,7 +298,6 @@
             display: none !important;
         }
 
-        /* Po dotarciu do stopki – belka przestaje pływać i osiada nad stopką */
         .summary-cart-bar.at-footer {
             position: static !important;
             width: 100%;
@@ -558,8 +557,8 @@
                       <div style="font-size: 1.05rem; font-weight: bold;" id="fpTitleText">📍 Rejon / 📅 Dni wywozu</div>
                       <div style="font-size: 0.8rem; color: #e0f7fa; margin-top: 6px; font-weight: normal; letter-spacing: 0.5px;" id="fpLegendText">LEGENDA: [S] - Sperrmüll | [E] - Elektro | [M] - Metall | [H] - Holz</div>
                   </div>
-                  <div style="max-height: 440px; overflow-y: auto; overflow-x: hidden;" id="regions-list-container">
-                      <!-- Wiersze rejonów -->
+                  <div style="max-height: 520px; overflow-y: auto; overflow-x: hidden;" id="regions-list-container">
+                      <!-- Wiersze rejonów z podziałem na Landy -->
                   </div>
               </div>
           </div>
@@ -952,10 +951,26 @@
             var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
 
             var dataCopy = [...availabilityMatrixAll[w]];
-            dataCopy.sort((a, b) => {
-                let nameA = typeof a === 'string' ? a : a.nazwa;
-                let nameB = typeof b === 'string' ? b : b.nazwa;
-                return nameA.localeCompare(nameB, 'pl');
+
+            // Normalizacja i wyciąganie Landu dla każdego rejonu
+            let mappedData = dataCopy.map(item => {
+                let name = typeof item === 'string' ? item : (item.nazwa || "");
+                let land = (typeof item === 'object' && (item.land || item.Land || item["Nazwa Landu"])) ? String(item.land || item.Land || item["Nazwa Landu"]).trim() : "Pozostałe Landy";
+                if (!land || land.toUpperCase() === "TRUE" || land.toUpperCase() === "FALSE") {
+                    land = "Pozostałe Landy";
+                }
+                return {
+                    raw: item,
+                    nazwa: name,
+                    land: land
+                };
+            });
+
+            // Sortowanie dwupoziomowe: 1. Land (A-Z), 2. Nazwa rejonu (A-Z)
+            mappedData.sort((a, b) => {
+                let compLand = a.land.localeCompare(b.land, 'de', { sensitivity: 'base' });
+                if (compLand !== 0) return compLand;
+                return a.nazwa.localeCompare(b.nazwa, 'de', { sensitivity: 'base' });
             });
 
             let titleEl = document.getElementById('fpTitleText');
@@ -970,8 +985,13 @@
                 'walldorf-mörfelden', 'königstein (taunus)', 'eppstein'
             ];
 
-            dataCopy.forEach(item => {
-                let n = typeof item === 'string' ? item : item.nazwa;
+            let currentLand = null;
+
+            mappedData.forEach(entry => {
+                let item = entry.raw;
+                let n = entry.nazwa;
+                let landName = entry.land;
+
                 if (n && EXCLUDED_PREVIEW_REGIONS.includes(n.toLowerCase().trim())) {
                     return; 
                 }
@@ -1047,7 +1067,55 @@
                 const disabledAttr = (activeCount === 0) ? 'disabled style="opacity:0.35; cursor:not-allowed;"' : '';
                 const activeDatesAttr = activeDatesList.join(',');
 
+                // Nagłówek Landu
+                let landHeaderHtml = "";
+                if (landName && landName !== currentLand) {
+                    currentLand = landName;
+                    landHeaderHtml = `
+                        <div style="
+                            background: linear-gradient(90deg, #1b263b 0%, #161b22 100%);
+                            border-left: 4px solid #3b82f6;
+                            border-top: 1px solid rgba(255,255,255,0.08);
+                            border-bottom: 1px solid rgba(0,0,0,0.5);
+                            padding: 10px 16px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                        ">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="
+                                    background: rgba(59, 130, 246, 0.18);
+                                    border: 1px solid rgba(59, 130, 246, 0.35);
+                                    color: #60a5fa;
+                                    padding: 3px 7px;
+                                    border-radius: 5px;
+                                    font-size: 0.75rem;
+                                    font-weight: 700;
+                                ">🏛️ LAND</span>
+                                <span style="
+                                    color: #ffffff;
+                                    font-size: 0.92rem;
+                                    font-weight: 700;
+                                    letter-spacing: 0.8px;
+                                    text-transform: uppercase;
+                                ">${currentLand}</span>
+                            </div>
+                            <span style="
+                                background: #21262d;
+                                border: 1px solid #30363d;
+                                color: #2ecc71;
+                                padding: 2px 7px;
+                                border-radius: 4px;
+                                font-size: 0.72rem;
+                                font-weight: 700;
+                                letter-spacing: 0.5px;
+                            ">W${w}</span>
+                        </div>`;
+                }
+
                 html += `
+                ${landHeaderHtml}
                 <div class="zebra-row">
                     <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%; text-align: left;">
                         <input type="checkbox" class="region-checkbox" data-region="${encodeURIComponent(n)}" data-dates="${activeDatesAttr}" ${checkedAttr} ${disabledAttr}>
