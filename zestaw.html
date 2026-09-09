@@ -214,7 +214,6 @@
             width: 100%;
         }
 
-        /* Wyrównanie nagłówków w obu kolumnach */
         .selection-col-left .form-header,
         .selection-col-right .form-header {
             margin-top: 0 !important;
@@ -708,7 +707,7 @@
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Stadt" /> Karlsruhe Stadt</label>
-                                <label class="region-label"><input class="region-chk" name="regionyæ" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+                                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kerken" /> Kerken</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kevelaer" /> Kevelaer</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim" /> Kirchheim</label>
@@ -836,10 +835,10 @@
                 <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
                     
-                    <div class="option-box" id="dhlBox">
+                    <div class="option-box" id="dhlBox" style="display: none;">
                         <label class="region-label">
                             <input id="dhlOption" type="checkbox" /> 
-                            <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty / Automaty paczkowe)</span>
+                            <span id="dhlLabel">📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)</span>
                         </label>
                         
                         <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-subtle);">
@@ -1111,7 +1110,7 @@
                     step3Header: '📄 3. Format realizacji zamówienia:',
                     step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Inne',
-                    schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty / Automaty paczkowe)', pickupLabel: '🏪 Odbiór osobisty',
+                    schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)', pickupLabel: '🏪 Odbiór osobisty',
                     btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', btnOrderPrefix: '🛒 ZAMÓW PAKIET – ',
                     termsPlural: ['termin', 'terminy', 'terminów'], weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla',
                     emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację zamówienia zestawu:\n',
@@ -1643,6 +1642,26 @@
             let conf = config[calc.lang] || config['de'];
             let localT = conf.texts;
 
+            // --- KONTROLA WIDOCZNOŚCI PACZKOMATÓW (TYLKO PL I MINIMUM 5 DNI) ---
+            var dhlContainer = document.getElementById('dhlBox');
+            if (dhlContainer && userLang === 'pl') {
+                if (calc.totalDays >= 5) {
+                    dhlContainer.style.display = 'block';
+                } else {
+                    dhlContainer.style.display = 'none';
+                    var dhlChk = document.getElementById('dhlOption');
+                    if (dhlChk && dhlChk.checked) {
+                        dhlChk.checked = false;
+                        var paczSection = document.getElementById('paczkomatSection');
+                        if (paczSection) paczSection.style.display = 'none';
+                        var paczInput = document.getElementById('paczkomatInput');
+                        if (paczInput) paczInput.value = '';
+                        var paczInfo = document.getElementById('selectedPaczkomatInfo');
+                        if (paczInfo) paczInfo.innerText = '';
+                    }
+                }
+            }
+
             if (isSpecialMode) {
                 if (btn) btn.innerHTML = `${localT.btnSubmit} (${localT.priceInd})`;
                 if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? 'na zapytanie' : 'auf Anfrage';
@@ -1868,10 +1887,11 @@
             var telEl = document.getElementById('klientTelefon');
             var tel = telEl ? telEl.value : '';
 
-            if (document.getElementById('dhlOption')?.checked) {
+            // Warunek: Paczkomat dodajemy tylko, jeśli zaznaczony i zamówienie obejmuje min. 5 dni
+            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5) {
                 var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
                 var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
-                body += "WYSYŁKA WYDRUKU (AUTOMAT): TAK\n";
+                body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
                 body += "OPERATOR: " + selectedCarrier + "\n";
                 body += "PUNKT / ADRES: " + paczkomat + "\n";
             }
