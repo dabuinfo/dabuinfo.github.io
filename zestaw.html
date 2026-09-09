@@ -257,19 +257,19 @@
             font-weight: bold;
         }
 
-        /* UKŁAD WIERSZA REJONU (FLEXBOX) */
+        /* UKŁAD WIERSZA REJONU: KOLUMNOWY (GÓRA: CHECKBOX+NAZWA, DÓŁ: DNI) */
         .region-label { 
             display: flex; 
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 8px;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 7px 8px;
             cursor: pointer; 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
             color: #ddd; 
             font-size: 0.9em; 
             transition: background 0.2s ease, opacity 0.3s ease; 
             box-sizing: border-box;
-            gap: 10px;
+            gap: 4px;
         }
         .region-label:hover { background: rgba(255,255,255,0.08); }
         
@@ -277,8 +277,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            min-width: 0;
-            flex-shrink: 1;
+            width: 100%;
         }
 
         .region-label input[type="checkbox"], .region-label input[type="radio"] { 
@@ -289,24 +288,24 @@
             flex-shrink: 0;
         }
 
-        /* PASTYLKI TERMINÓW PO PRAWEJ STRONIE (POJAWIAJĄ SIĘ TYLKO GDY ZAZNACZONY REJON I TYDZIEŃ) */
+        /* PASTYLKI TERMINÓW POD NAZWĄ REJONU */
         .region-schedule-badges {
             display: none;
             align-items: center;
             gap: 5px;
-            flex-wrap: nowrap;
-            margin-left: auto;
-            flex-shrink: 0;
+            flex-wrap: wrap;
+            margin-left: 28px; /* Wcięcie dokładnie pod tekst nazwy */
+            margin-top: 3px;
         }
         .region-schedule-badges.is-visible {
             display: flex;
         }
         .schedule-pill {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.35);
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(59, 130, 246, 0.4);
             padding: 2px 6px;
             border-radius: 4px;
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             white-space: nowrap;
             line-height: 1.2;
         }
@@ -330,7 +329,7 @@
         .option-box { padding: 4px;
             margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .option-box:last-child { border-bottom: none; margin-bottom: 0; }
-        .extra-options-group .region-label { padding: 4px 5px; margin: 0; font-size: 0.88em; justify-content: flex-start; }
+        .extra-options-group .region-label { padding: 4px 5px; margin: 0; font-size: 0.88em; }
 
         .client-input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #4ca1af; background: rgba(255,255,255,0.9);
             color: #333; font-size: 1em; box-sizing: border-box; transition: all 0.3s ease; }
@@ -352,7 +351,7 @@
             .loader-text-section { padding: 8px 12px; }
             .loader-title-inline { font-size: 0.95em; }
             .loader-desc-inline { font-size: 0.75em; }
-            .schedule-pill { font-size: 0.7rem; padding: 1px 4px; }
+            .schedule-pill { font-size: 0.72rem; padding: 1px 5px; }
         }
 
         @media (min-width: 1024px) {
@@ -1185,17 +1184,18 @@
 
                 lbl.innerHTML = '';
                 
-                const leftDiv = document.createElement('span');
-                leftDiv.className = 'region-left-side';
-                leftDiv.appendChild(chk);
-                leftDiv.appendChild(document.createTextNode(val));
-                lbl.appendChild(leftDiv);
+                // Rząd 1: Checkbox + Nazwa Rejonu (na pełną szerokość)
+                const topDiv = document.createElement('div');
+                topDiv.className = 'region-left-side';
+                topDiv.appendChild(chk);
+                topDiv.appendChild(document.createTextNode(val));
+                lbl.appendChild(topDiv);
 
-                // Pusty kontener na pastylki – zasilany dopiero po wybraniu tygodnia!
-                const rightDiv = document.createElement('span');
-                rightDiv.className = 'region-schedule-badges';
-                rightDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
-                lbl.appendChild(rightDiv);
+                // Rząd 2: Kontener na pastylki POD nazwą (wcięty pod tekst)
+                const bottomDiv = document.createElement('div');
+                bottomDiv.className = 'region-schedule-badges';
+                bottomDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
+                lbl.appendChild(bottomDiv);
 
                 return {
                     labelNode: lbl,
@@ -1225,7 +1225,7 @@
             });
         }
         
-        // DYNAMICZNE WYPEŁNIANIE PASTYLEK TYLKO DLA ZAZNACZONYCH TYGODNI
+        // DYNAMICZNE WYPEŁNIANIE PASTYLEK POD NAZWĄ TYLKO DLA ZAZNACZONYCH TYGODNI
         function updateScheduleBadges() {
             let selectedWeeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
             let matrixToUse = availabilityMatrix;
@@ -1291,7 +1291,7 @@
                     badgeContainer.innerHTML = pills;
                     badgeContainer.classList.add('is-visible');
                 } else {
-                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak dat</b></span>`;
+                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak dat w tym tygodniu</b></span>`;
                     badgeContainer.classList.add('is-visible');
                 }
             });
@@ -1651,7 +1651,7 @@
             });
 
             updateDynamicOptions();
-            updateScheduleBadges(); // Przeliczamy i pokazujemy pastylki dla wybranego zestawu
+            updateScheduleBadges();
             updatePriceDisplay();
         }
 
