@@ -13,7 +13,7 @@
       gtag('config', 'G-YQTCG26T1B');
     </script>
 
-    <!-- INPOST GEOWIDGET v5 STYLES & SCRIPT -->
+    <!-- INPOST GEOWIDGET v5 -->
     <link rel="stylesheet" href="https://geowidget.inpost.pl/inpost-geowidget.css"/>
     <script src="https://geowidget.inpost.pl/inpost-geowidget.js" defer></script>
 
@@ -22,19 +22,34 @@
     <link rel="apple-touch-icon" href="favicon.png">
     
     <style>
-        /* --- ZABEZPIECZENIE PRZED KOPIOWANIEM I BAZOWE TŁO --- */
+        /* --- SYSTEM BAZOWY & RESET --- */
+        :root {
+            --bg-body: #0d1117;
+            --bg-card: rgba(22, 27, 34, 0.85);
+            --primary-accent: #2ecc71;
+            --primary-hover: #27ae60;
+            --border-subtle: rgba(76, 161, 175, 0.25);
+            --border-highlight: #3b82f6;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+        }
+
         body {
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 0 12px;
             -webkit-user-select: none;
             -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
         
         .main-content {
@@ -43,197 +58,195 @@
         }
 
         #pageWrapper {
-            opacity: 1;
-            pointer-events: auto;
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
         }
 
         input, textarea, select {
             -webkit-user-select: text !important;
-            -moz-user-select: text !important;
-            -ms-user-select: text !important;
             user-select: text !important;
-        }
-
-        /* STYLIZACJA KONTENERA (Dark Mode) */
-        .harmonogram-wrapper {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: transparent;
-            color: #e0e0e0;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            box-sizing: border-box;
+            font-family: inherit;
         }
 
         /* NAGŁÓWKI */
         .harmonogram-wrapper h2 {
-            color: #2ecc71;
-            border-bottom: 2px solid #27ae60;
-            padding-bottom: 5px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            font-size: 1.5em;
+            color: var(--primary-accent);
+            border-bottom: 2px solid var(--primary-hover);
+            padding-bottom: 8px;
+            margin: 24px 0 16px 0;
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
             text-transform: uppercase;
             font-weight: 800;
-            line-height: 1.3;
+            letter-spacing: 0.5px;
             text-align: center;
         }
 
-        .info-text { font-size: 0.95em; margin-bottom: 15px; color: #ccc; text-align: center; }
+        .info-text { 
+            font-size: clamp(0.9rem, 1.5vw, 1.02rem); 
+            margin-bottom: 15px; 
+            color: var(--text-muted); 
+            text-align: center; 
+        }
+
         .benefit-list { list-style: none !important; padding: 0 !important; margin: 0; }
-        .benefit-list li { margin-bottom: 10px; padding-left: 25px !important; position: relative; font-size: 0.95em; line-height: 1.4; }
-        .benefit-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #4ca1af; font-weight: bold; }
+        .benefit-list li { 
+            margin-bottom: 10px; 
+            padding-left: 26px !important; 
+            position: relative; 
+            font-size: clamp(0.88rem, 1.4vw, 0.98rem); 
+            line-height: 1.45; 
+        }
+        .benefit-list li::before { 
+            content: "\2714"; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            color: var(--primary-accent); 
+            font-weight: bold; 
+        }
+
+        /* KAFELEK STRATEGII */
+        .strategy-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+            justify-content: center; 
+            width: 100%; 
+        }
+        .strategy-card { 
+            flex: 1 1 100%; 
+            background: var(--bg-card); 
+            border-radius: var(--radius-md);
+            padding: clamp(16px, 3vw, 28px); 
+            border: 1px solid var(--border-subtle); 
+            border-top: 4px solid var(--primary-accent); 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35); 
+            box-sizing: border-box; 
+        }
+        .strategy-title { 
+            font-size: clamp(1.1rem, 2vw, 1.35rem); 
+            font-weight: 700; 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            text-align: center; 
+            color: #d1d5db; 
+        }
+        .price-tag-large { 
+            font-size: clamp(1.6rem, 3.5vw, 2.3rem); 
+            font-weight: 900; 
+            text-align: center; 
+            margin: 4px 0 8px 0; 
+            color: var(--primary-accent);
+            text-shadow: 0 0 16px rgba(46, 204, 113, 0.25); 
+        }
+        .price-subtitle-small { 
+            display: block; 
+            font-size: clamp(0.85rem, 1.5vw, 0.96rem); 
+            color: var(--text-muted);
+            text-align: center; 
+            margin-bottom: 18px; 
+        }
+
+        .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: clamp(0.88rem, 1.4vw, 0.98rem); }
+        .strategy-list li { margin-bottom: 10px; padding-left: 26px !important; position: relative; line-height: 1.45; }
+        .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: var(--primary-accent); }
+
+        /* FORMAT INFO BOX */
+        .format-columns { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin: 0 auto; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        .format-col { 
+            padding: 16px 20px; 
+            border-radius: var(--radius-sm); 
+            box-sizing: border-box; 
+            width: 100%; 
+            text-align: left; 
+        }
+        .format-col-pdf { 
+            border-left: 4px solid var(--primary-accent); 
+            background: rgba(46, 204, 113, 0.08); 
+        }
+
+        /* FORMULARZ ZAMÓWIENIA */
+        .form-wrapper { 
+            background: linear-gradient(145deg, #152238 0%, #1e293b 100%); 
+            padding: clamp(14px, 2.5vw, 26px);
+            border-radius: var(--radius-md); 
+            margin-top: 20px; 
+            border: 1px solid var(--border-subtle); 
+            box-shadow: 0 12px 32px rgba(0,0,0,0.45); 
+            box-sizing: border-box; 
+            width: 100%; 
+        }
+        .form-header { 
+            text-align: center; 
+            color: #fff; 
+            margin-bottom: 12px; 
+            margin-top: 22px; 
+            font-weight: 700; 
+            font-size: clamp(1rem, 2vw, 1.22rem);
+            border-top: 1px solid rgba(255,255,255,0.08); 
+            padding-top: 18px; 
+            letter-spacing: 0.3px;
+        }
+        .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+        
+        .regions-scroll-box { 
+            position: relative; 
+            min-height: 280px; 
+            max-height: 380px; 
+            overflow-y: scroll;
+            background: rgba(10, 14, 20, 0.65); 
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-sm); 
+            padding: 8px 12px; 
+            margin: 0 auto 15px auto; 
+            box-sizing: border-box; 
+            width: 100%; 
+        }
+        .regions-scroll-box.is-loading { overflow: hidden !important; touch-action: none; }
+        .regions-scroll-box::-webkit-scrollbar { width: 7px; }
+        .regions-scroll-box::-webkit-scrollbar-track { background: #0f172a; }
+        .regions-scroll-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        
+        /* LOADER NAKŁADKA */
+        .pro-loader-overlay { 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(13, 17, 23, 0.96); 
+            backdrop-filter: blur(4px); 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column; 
+            border-radius: var(--radius-sm); 
+            transition: opacity 0.3s ease; 
+        }
+        .loader-video-section { flex: 2; display: flex; align-items: center; justify-content: center; background: #000; padding: 6px; }
+        .loader-video-wrapper { aspect-ratio: 16/9; height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; }
+        .loader-video-wrapper img, .loader-video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
+        .loader-text-section { flex: 1; background: rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(46, 204, 113, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 10px; }
+        .loader-title-inline { color: var(--primary-accent); font-size: clamp(0.9rem, 1.8vw, 1.05rem); font-weight: 800; text-transform: uppercase; }
+        .loader-desc-inline { color: var(--text-muted); font-size: clamp(0.78rem, 1.4vw, 0.85rem); }
+        .pro-spinner { width: 26px; height: 26px; min-width: 26px; border: 3px solid rgba(46, 204, 113, 0.2); border-left-color: var(--primary-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* KAFELEK STRATEGII */
-        .strategy-container { display: flex;
-            flex-wrap: wrap; gap: 15px; margin-bottom: 30px; justify-content: center; align-items: stretch; width: 100%; }
-        .strategy-card { flex: 1 1 100%; max-width: 800px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;
-            padding: 25px; border: 1px solid #4ca1af; border-top: 4px solid #2ecc71; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); box-sizing: border-box; }
-        .strategy-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .strategy-title { font-size: 1.3em; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; text-align: center; color: #bbb; }
-        .price-tag-large { font-size: 1.8em; font-weight: 900; text-align: center; margin: 5px 0; color: #2ecc71;
-            text-shadow: 0 0 15px rgba(46, 204, 113, 0.2); }
-        .price-subtitle-small { display: block; font-size: 0.9em; color: #ccc;
-            font-style: italic; text-align: center; margin-bottom: 20px; }
-
-        .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: 0.95em; }
-        .strategy-list li { margin-bottom: 8px; padding-left: 25px !important; position: relative; line-height: 1.4; }
-        .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: #2ecc71; }
-
-        /* FORMAT INFO BOX */
-        .format-columns { display: flex; flex-direction: column; gap: 15px;
-            margin: 0 auto 20px auto; width: 100%; max-width: 800px; box-sizing: border-box; }
-        .format-col { background: rgba(0,0,0,0.2); padding: 15px 25px;
-            border-radius: 8px; box-sizing: border-box; width: 100%; word-break: break-word; text-align: left; }
-        .format-col-pdf { border-left: 4px solid #2ecc71; background: rgba(46, 204, 113, 0.06); }
-
-        /* FORMULARZ */
-        .form-wrapper { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px;
-            border-radius: 10px; margin-top: 20px; border: 1px solid #4ca1af; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .form-header { text-align: center; color: #fff; margin-bottom: 10px; margin-top: 20px; font-weight: bold; font-size: 1.1em;
-            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-        .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-        
-        .regions-scroll-box { position: relative; min-height: 280px; max-height: 380px; overflow-y: scroll;
-            background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
-            transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
-
-        .regions-scroll-box.is-loading {
-            overflow: hidden !important;
-            touch-action: none;
-        }
-
-        .regions-scroll-box::-webkit-scrollbar { width: 8px; }
-        .regions-scroll-box::-webkit-scrollbar-track { background: #1a1a1a; }
-        .regions-scroll-box::-webkit-scrollbar-thumb { background: #4ca1af; border-radius: 4px; }
-        
-        /* NAKŁADKA ANIMACJI W OKNIE REJONÓW */
-        .pro-loader-overlay { 
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(10, 14, 20, 0.96); 
-            backdrop-filter: blur(4px);
-            z-index: 10; 
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-radius: 4px;
-            box-sizing: border-box;
-            transition: opacity 0.4s ease, visibility 0.4s ease; 
-        }
-
-        .loader-video-section {
-            flex: 2;
-            min-height: 0;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .loader-video-wrapper {
-            position: relative;
-            aspect-ratio: 16 / 9;
-            height: 100%;
-            max-width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loader-video-wrapper img, 
-        .loader-video-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            border-radius: 6px;
-        }
-
-        .loader-text-section {
-            flex: 1;
-            min-height: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            border-top: 1px solid rgba(46, 204, 113, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 18px;
-            box-sizing: border-box;
-            gap: 15px;
-        }
-
-        .loader-bottom-text {
-            text-align: left;
-            flex: 1;
-        }
-
-        .loader-title-inline {
-            color: #2ecc71;
-            font-size: 1.05em;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-            text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
-        }
-
-        .loader-desc-inline {
-            color: #ddd;
-            font-size: 0.82em;
-            line-height: 1.3;
-        }
-
-        .pro-spinner { 
-            width: 28px; 
-            height: 28px; 
-            min-width: 28px;
-            border: 3px solid rgba(46, 204, 113, 0.2); 
-            border-left-color: #2ecc71;
-            border-radius: 50%; 
-            animation: spin 0.8s linear infinite; 
-        }
-
+        /* GRUPOWANIE LANDÓW */
         .land-group-header {
-            background: linear-gradient(90deg, #111d2e 0%, #162235 100%);
-            border-left: 4px solid #3b82f6;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 1px solid rgba(0,0,0,0.4);
-            padding: 8px 12px;
-            margin: 12px -10px 6px -10px;
+            background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
+            border-left: 4px solid var(--border-highlight);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 8px 10px;
+            margin: 10px -12px 4px -12px;
             color: #ffffff;
-            font-size: 0.85em;
+            font-size: clamp(0.78rem, 1.3vw, 0.86rem);
             font-weight: 700;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -241,51 +254,52 @@
             align-items: center;
             gap: 8px;
             position: sticky;
-            top: -10px;
+            top: -8px;
             z-index: 5;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
         }
-        .land-group-header:first-of-type {
-            margin-top: -10px;
-        }
+        .land-group-header:first-of-type { margin-top: -8px; }
         .land-tag-badge {
             background: rgba(59, 130, 246, 0.2);
             border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #60a5fa;
-            padding: 2px 6px;
+            color: #93c5fd;
+            padding: 2px 5px;
             border-radius: 4px;
             font-size: 0.72rem;
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        /* UKŁAD WIERSZA REJONU */
+        /* WIERSZ REJONU / TYGODNIA (Touch Target min 44px na telefonie) */
         .region-label { 
             display: flex; 
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 7px 8px;
+            flex-direction: column; 
+            align-items: flex-start; 
+            padding: 10px 6px; 
             cursor: pointer; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            color: #ddd; 
-            font-size: 0.9em; 
-            transition: background 0.2s ease, opacity 0.3s ease; 
-            box-sizing: border-box;
+            border-bottom: 1px solid rgba(255,255,255,0.04); 
+            color: #e2e8f0; 
+            font-size: clamp(0.88rem, 1.4vw, 0.98rem); 
+            transition: background 0.15s ease, opacity 0.2s ease; 
+            box-sizing: border-box; 
             gap: 4px;
+            min-height: 44px;
+            justify-content: center;
         }
-        .region-label:hover { background: rgba(255,255,255,0.08); }
+        .region-label:hover { background: rgba(255,255,255,0.05); }
         
         .region-left-side {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             width: 100%;
         }
 
         .region-label input[type="checkbox"], .region-label input[type="radio"] { 
             margin: 0;
-            transform: scale(1.15); 
+            width: 19px;
+            height: 19px;
             cursor: pointer;
-            accent-color: #2ecc71;
+            accent-color: var(--primary-accent);
             flex-shrink: 0;
         }
 
@@ -293,215 +307,147 @@
         .region-schedule-badges {
             display: none;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             flex-wrap: wrap;
-            margin-left: 28px;
-            margin-top: 3px;
+            margin-left: 31px;
+            margin-top: 4px;
         }
-        .region-schedule-badges.is-visible {
-            display: flex;
-        }
+        .region-schedule-badges.is-visible { display: flex; }
         .schedule-pill {
-            background: rgba(59, 130, 246, 0.18);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            padding: 2px 6px;
+            background: rgba(59, 130, 246, 0.16);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            padding: 2px 7px;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: clamp(0.72rem, 1.2vw, 0.8rem);
             white-space: nowrap;
-            line-height: 1.2;
+            line-height: 1.3;
         }
-        .schedule-pill b {
-            color: #60a5fa;
-            font-weight: 700;
-        }
-        .schedule-pill small {
-            color: #f59e0b;
-            font-weight: 800;
-            margin-left: 2px;
-        }
+        .schedule-pill b { color: #93c5fd; font-weight: 700; }
+        .schedule-pill small { color: #fbbf24; font-weight: 800; margin-left: 2px; }
         
-        .selection-tools { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px; font-size: 0.95em; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .selection-tools a { color: #4ca1af; text-decoration: none; cursor: pointer; padding: 5px; user-select: none; }
+        .selection-tools { 
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center; 
+            margin-bottom: 8px; 
+            font-size: clamp(0.8rem, 1.3vw, 0.9rem); 
+        }
+        .selection-tools a { color: #38bdf8; text-decoration: none; cursor: pointer; padding: 4px 6px; }
         .selection-tools a:hover { color: #fff; text-decoration: underline; }
 
-        /* OPCJE DODATKOWE & PŁATNOŚĆ */
-        .extra-options-group { background: rgba(0, 0, 0, 0.2);
-            border: 1px dashed #f1c40f; border-radius: 8px; padding: 5px; margin-bottom: 10px; box-sizing: border-box; }
-        .option-box { padding: 4px;
-            margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        /* OPCJE & KONTROLKI */
+        .extra-options-group { 
+            background: rgba(10, 14, 20, 0.45); 
+            border: 1px dashed var(--border-subtle); 
+            border-radius: var(--radius-sm); 
+            padding: 6px; 
+            margin-bottom: 12px; 
+            box-sizing: border-box; 
+        }
+        .option-box { padding: 4px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .option-box:last-child { border-bottom: none; margin-bottom: 0; }
-        .extra-options-group .region-label { padding: 4px 5px; margin: 0; font-size: 0.88em; }
 
-        .client-input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #4ca1af; background: rgba(255,255,255,0.9);
-            color: #333; font-size: 1em; box-sizing: border-box; transition: all 0.3s ease; }
+        .client-input { 
+            width: 100%; 
+            padding: 12px 14px; 
+            margin-bottom: 18px; 
+            border-radius: var(--radius-sm); 
+            border: 1px solid #334155; 
+            background: #ffffff; 
+            color: #0f172a; 
+            font-size: clamp(0.92rem, 1.5vw, 1.02rem); 
+            box-sizing: border-box; 
+            transition: border-color 0.2s; 
+        }
+        .client-input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+        }
 
-        .submit-btn { width: 100%;
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; transition: transform 0.3s; margin-top: 10px; box-sizing: border-box; }
-        .submit-btn:hover { transform: scale(1.02); }
-        
-        .hidden { display: none !important; }
+        /* PRZYCISK ZAMÓWIENIA */
+        .submit-btn { 
+            width: 100%; 
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); 
+            color: #ffffff; 
+            padding: clamp(14px, 2.5vw, 18px); 
+            border: none; 
+            border-radius: var(--radius-sm); 
+            font-size: clamp(1rem, 2.2vw, 1.25rem); 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: transform 0.15s ease, filter 0.2s ease; 
+            margin-top: 14px; 
+            box-sizing: border-box; 
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
+        }
+        .submit-btn:hover { 
+            transform: translateY(-2px); 
+            filter: brightness(1.08); 
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
 
-        /* MODAL INPOST */
+        /* MODAL */
         .inpost-modal-overlay {
             display: none; 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
+            top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.85); 
             z-index: 10000; 
             justify-content: center; 
             align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
         }
         .inpost-modal-content {
             background: #1e293b; 
             width: 95%; 
             max-width: 900px; 
             height: 85vh; 
-            border-radius: 10px; 
-            position: relative; 
+            border-radius: var(--radius-md); 
             display: flex; 
             flex-direction: column; 
             overflow: hidden;
-            border: 1px solid #4ca1af;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.6);
         }
 
-        /* RWD */
-        @media (max-width: 768px) {
-            .harmonogram-wrapper { font-size: 1.05em; }
-            .region-label { padding: 8px 6px; font-size: 0.95em; }
-            .submit-btn { padding: 18px; font-size: 1.2em; }
-            .format-columns { width: 100%; } 
-            .strategy-card { padding: 15px; } 
-            .loader-text-section { padding: 8px 12px; }
-            .loader-title-inline { font-size: 0.95em; }
-            .loader-desc-inline { font-size: 0.75em; }
-            .schedule-pill { font-size: 0.72rem; padding: 1px 5px; }
-        }
-
-        @media (min-width: 1024px) {
-            .harmonogram-wrapper { font-size: 1.15em; }
-            .strategy-title { font-size: 1.5em; }
-            .price-tag-large { font-size: 2.2em; }
-            .submit-btn { font-size: 1.3em; padding: 20px; letter-spacing: 1px; }
-            .form-header { font-size: 1.3em; margin-bottom: 15px; margin-top: 25px; }
-            .client-input { font-size: 1.1em; padding: 15px; }
-        }
+        .hidden { display: none !important; }
 
         /* STOPKA */
         .dabu-footer {
-            background-color: #121212;
-            border-top: 1px solid #333;
-            color: #ccc;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 50px 20px 20px;
+            border-top: 1px solid #1e293b;
+            color: var(--text-muted);
+            padding: 40px 16px 20px;
             width: 100%;
             box-sizing: border-box;
             margin-top: 40px;
+            font-size: clamp(0.82rem, 1.3vw, 0.92rem);
         }
-
         .dabu-footer-container {
-            max-width: 1200px;
+            max-width: 860px;
             margin: 0 auto;
             display: flex;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 25px;
             justify-content: space-between;
         }
-
-        .dabu-footer-col {
-            flex: 1;
-            min-width: 280px;
-            text-align: left;
-        }
-
-        .dabu-footer-heading {
-            color: #2ecc71;
-            font-size: 1.3em;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .dabu-footer-text {
-            font-size: 0.9em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .dabu-footer-links, .dabu-footer-contact {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9em;
-            line-height: 1.8;
-        }
-
-        .dabu-footer-links li a, .dabu-footer-contact li a {
-            color: #3498db;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .dabu-footer-links li a:hover, .dabu-footer-contact li a:hover {
-            color: #2ecc71;
-            text-decoration: underline;
-        }
-
-        .dabu-footer-contact li {
-            margin-bottom: 8px;
-            color: #aaa;
-        }
-
-        .dabu-footer-contact strong {
-            color: #e0e0e0;
-        }
-
-        .dabu-footer-bottom {
-            max-width: 1200px;
-            margin: 40px auto 0;
-            padding-top: 20px;
-            border-top: 1px solid #222;
-            text-align: center;
-            font-size: 0.85em;
-            color: #777;
-        }
-
-        .dabu-footer-bottom a {
-            color: #2ecc71;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .dabu-footer-bottom a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .dabu-footer {
-                padding: 40px 15px 15px;
-            }
-            .dabu-footer-container {
-                flex-direction: column;
-                gap: 30px;
-            }
-            .dabu-footer-col {
-                text-align: center;
-            }
-        }
+        .dabu-footer-col { flex: 1; min-width: 260px; }
+        .dabu-footer-heading { color: var(--primary-accent); font-size: 1.15em; margin-bottom: 14px; text-transform: uppercase; }
+        .dabu-footer-links, .dabu-footer-contact { list-style: none; padding: 0; margin: 0; line-height: 1.8; }
+        .dabu-footer-links a, .dabu-footer-contact a { color: #38bdf8; text-decoration: none; }
+        .dabu-footer-links a:hover { color: var(--primary-accent); text-decoration: underline; }
+        .dabu-footer-bottom { border-top: 1px solid #1e293b; margin-top: 25px; padding-top: 16px; text-align: center; color: #64748b; font-size: 0.85em; }
     </style>
 </head>
 <body>
 
     <div id="pageWrapper">
         <div class="main-content">
-            <div style="width: 100%; max-width: 800px; margin: 40px auto 20px auto;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); display: block;">
+            <div style="width: 100%; max-width: 860px; margin: 25px auto 15px auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); display: block;">
                   <defs>
                     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stop-color="#1e3c72" />
@@ -511,12 +457,11 @@
                       <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
                     </filter>
                   </defs>
+                  <rect width="800" height="400" rx="12" fill="url(#bg)" />
+                  <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#0f172a" />
+                  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
                   
-                  <rect width="800" height="400" rx="15" fill="url(#bg)" />
-                  <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#111" />
-                  <text x="400" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
-                  
-                  <rect x="40" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#3498db" stroke-width="2" filter="url(#shadow)" />
+                  <rect x="40" y="100" width="220" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#38bdf8" stroke-width="2" filter="url(#shadow)" />
                   <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
                   <g transform="translate(150, 180)">
                     <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
@@ -527,10 +472,10 @@
                   
                   <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
                   
-                  <rect x="320" y="100" width="220" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
+                  <rect x="320" y="100" width="220" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
                   <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
                   <g transform="translate(430, 180)">
-                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#3498db" />
+                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#38bdf8" />
                     <circle cx="0" cy="-5" r="8" fill="#fff" />
                     <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
                     <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
@@ -540,14 +485,14 @@
                   
                   <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
                   
-                  <rect x="600" y="100" width="160" height="200" rx="15" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
+                  <rect x="600" y="100" width="160" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
                   <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
                   <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
                   <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
                   <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
                   
-                  <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#000" />
-                  <text x="400" y="383" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
+                  <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#0f172a" />
+                  <text x="400" y="382" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
                 </svg>
             </div>
         </div>
@@ -556,10 +501,10 @@
             <h2 id="headerChoose">Skonfiguruj swój pakiet</h2>
 
             <div class="strategy-container">
-                <div class="strategy-card basic">
+                <div class="strategy-card">
                     <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice" style="text-align: center;">Wycena indywidualna</div>
-                    <span class="price-subtitle-small" id="configSubtitle" style="text-align: center;">Zaznacz opcje poniżej i wyślij zamówienie</span>
+                    <div class="price-tag-large" id="configPrice">Wycena indywidualna</div>
+                    <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
@@ -569,16 +514,16 @@
                         <li id="configLi6">Osobno oferujemy możliwość złożenia zamówienia na <b>wybrane rejony</b> na terminy <b>do końca 2026 roku</b> (wycena indywidualna) – <a href="https://dabu-info.com/zamowienia.html" target="_blank" style="color: #2ecc71; font-weight: bold; text-decoration: underline;">sprawdź szczegóły zamówień &raquo;</a></li>
                     </ul>
 
-                    <hr style="border: 0; border-top: 1px solid rgba(76, 161, 175, 0.3); margin: 0 0 20px 0;">
+                    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
 
-                    <p class="info-text" id="infoDesc" style="margin-bottom: 15px;"><b>Standard realizacji zamówienia:</b></p>
+                    <p class="info-text" id="infoDesc"><b>Standard realizacji zamówienia:</b></p>
                     
                     <div class="format-columns">
                         <div class="format-col format-col-pdf">
-                            <p style="color: #2ecc71; font-weight: bold; margin: 0 0 10px 0; font-size: 1.1em;" id="formatPdfTitle">
+                            <p style="color: #2ecc71; font-weight: bold; margin: 0 0 8px 0; font-size: clamp(1rem, 1.8vw, 1.15rem);" id="formatPdfTitle">
                                 📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)
                             </p>
-                            <ul class="benefit-list" style="margin-bottom: 0; font-size: 0.9em;">
+                            <ul class="benefit-list">
                                 <li id="formatPdfLi1"><strong>Aktywna nawigacja:</strong> Każda ulica w dokumencie to bezpośredni link do aplikacji Google Maps w telefonie.</li>
                                 <li id="formatPdfLi2"><strong>Podział logistyczny:</strong> Wykaz ulic pogrupowany według dni, miejscowości oraz dzielnic z łączną liczbą punktów.</li>
                                 <li id="formatPdfLi3"><strong>Offline & Druk:</strong> Plik działa bez zasięgu sieci i jest przygotowany do ekonomicznego wydruku na papierze.</li>
@@ -592,24 +537,23 @@
                 
                 <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
 
-                <div style="background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; line-height: 1.4;">
-                    <span id="searchEngineDesc" style="color: #ddd; font-size: 0.9em;">Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:</span><br>
-                    <a id="searchEngineLink" href="https://dabu-info.com/mapa.html" target="_blank" style="color: #3498db; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 1.05em;">
+                <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+                    <span id="searchEngineDesc" style="color: #cbd5e1; font-size: 0.9em;">Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:</span><br>
+                    <a id="searchEngineLink" href="https://dabu-info.com/mapa.html" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 6px; font-size: 1rem;">
                         🔍 WYSZUKIWARKA REJONÓW
                     </a>
                 </div>
 
                 <div class="selection-tools">
-                    <a href="javascript:void(0)" id="btnUnselectAll" style="opacity: 0.8;">[ Odznacz wszystko / Clear ]</a>
+                    <a href="javascript:void(0)" id="btnUnselectAll">[ Odznacz wszystko / Clear ]</a>
                 </div>
                 
-                <!-- LEGENDA SKRÓTÓW -->
-                <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85em; color: #ccc; line-height: 1.5;">
-                    <div style="font-weight: bold; color: #60a5fa; margin-bottom: 4px; text-transform: uppercase; font-size: 0.9em;">ℹ️ Jak czytać harmonogram:</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px 20px;">
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: clamp(0.78rem, 1.3vw, 0.88rem); color: #cbd5e1;">
+                    <div style="font-weight: bold; color: #93c5fd; margin-bottom: 4px; text-transform: uppercase; font-size: 0.9em;">ℹ️ Jak czytać harmonogram:</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px 18px;">
                         <span><b style="color: #fff;">08</b> – Dzień miesiąca (data odbioru)</span>
                         <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll (Gabaryty)</span>
-                        <span><b style="color: #f59e0b;">(M)</b> – Metall (Złom / Metal)</span>
+                        <span><b style="color: #fbbf24;">(M)</b> – Metall (Złom / Metal)</span>
                         <span><b style="color: #38bdf8;">(E)</b> – E-Schrott (Elektro)</span>
                     </div>
                 </div>
@@ -824,22 +768,22 @@
                     <div class="form-header" id="step2Header">📅 2. Wybierz Tygodnie:</div>
                     <div class="regions-scroll-box" id="weeksContainer"></div>
 
-                    <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
+                    <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
                         <span id="specialDateText">Przygotowanie najbliższego terminu</span>
                     </div>
                 </div>
 
                 <div class="form-header" id="step3Header">📄 3. Format realizacji zamówienia:</div>
-                <div class="extra-options-group" id="formatBox" style="background: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71;">
+                <div class="extra-options-group" id="formatBox" style="background: rgba(46, 204, 113, 0.08); border: 1px solid #2ecc71;">
                     <div class="option-box" style="border-bottom: none; padding: 10px 8px;">
                         <label class="region-label" style="border-bottom: none; margin: 0; cursor: default;">
-                            <div class="region-left-side" style="gap: 10px;">
+                            <div class="region-left-side">
                                 <input type="radio" name="format" value="Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)" checked readonly /> 
                                 <div>
-                                    <span id="formatReportTitle" style="color: #2ecc71; font-weight: bold; font-size: 1.05em;">
+                                    <span id="formatReportTitle" style="color: #2ecc71; font-weight: bold; font-size: clamp(0.95rem, 1.6vw, 1.08rem);">
                                         📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)
                                     </span>
-                                    <div id="formatReportDesc" style="font-size: 0.82em; color: #ccc; margin-top: 4px; line-height: 1.3;">
+                                    <div id="formatReportDesc" style="font-size: clamp(0.8rem, 1.3vw, 0.86rem); color: #94a3b8; margin-top: 4px; line-height: 1.35;">
                                         Wykaz ulic z podziałem na dzielnice, zliczone punkty odbioru oraz aktywne linki do nawigacji Google Maps.
                                     </div>
                                 </div>
@@ -851,52 +795,48 @@
                 <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
                     
-                    <!-- WYSYŁKA WYDRUKU / PUNKTY ODBIORU -->
                     <div class="option-box" id="dhlBox">
                         <label class="region-label">
                             <input id="dhlOption" type="checkbox" /> 
                             <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty / Automaty paczkowe)</span>
                         </label>
                         
-                        <!-- PANEL WYBORU OPERATORA AUTOMATU -->
-                        <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(76, 161, 175, 0.4);">
-                            <div style="font-size: 0.88em; color: #60a5fa; font-weight: bold; margin-bottom: 8px;">
+                        <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.9em; color: #93c5fd; font-weight: bold; margin-bottom: 10px;">
                                 🚚 Wybierz operatora i automat / punkt odbioru:
                             </div>
                             
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;">
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 14px;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
                                     <input type="radio" name="carrierOption" value="InPost" checked /> InPost Paczkomat
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
                                     <input type="radio" name="carrierOption" value="DPD" /> DPD Pickup
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
                                     <input type="radio" name="carrierOption" value="DHL" /> DHL BOX / POP
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
                                     <input type="radio" name="carrierOption" value="ORLEN" /> ORLEN Paczka
                                 </label>
                             </div>
 
-                            <!-- PRZYCISK MAPY INPOST -->
                             <div id="inpostMapTriggerBox" style="margin-bottom: 10px;">
-                                <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%); color: #111; font-weight: bold; border: none; padding: 10px 16px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9em;">
+                                <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border: none; padding: 11px 18px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);">
                                     📍 Wybierz Paczkomat na mapie InPost
                                 </button>
                             </div>
 
-                            <!-- PRZYCISKI WYSZUKIWAREK DLA POZOSTAŁYCH OPERATORÓW -->
                             <div id="externalMapTriggerBox" style="display: none; margin-bottom: 10px;">
-                                <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #34495e; color: #38bdf8; font-weight: bold; border: 1px solid #3498db; padding: 8px 14px; border-radius: 5px; text-decoration: none; display: inline-block; font-size: 0.85em;">
+                                <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 9px 15px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 0.88rem;">
                                     🔍 Znajdź punkt w wyszukiwarce operatora &raquo;
                                 </a>
-                                <div style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                                <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">
                                     Otwórz mapę w nowym oknie, odczytaj kod punktu i wklej go poniżej:
                                 </div>
                             </div>
 
-                            <input type="text" id="paczkomatInput" class="client-input" placeholder="Kod i adres wybranego punktu (np. KRA010M lub wpisz ręcznie)" style="margin-bottom: 5px; padding: 10px; font-size: 0.95em;">
+                            <input type="text" id="paczkomatInput" class="client-input" placeholder="Kod i adres wybranego punktu (np. KRA010M lub wpisz ręcznie)" style="margin-bottom: 6px;">
                             <div id="selectedPaczkomatInfo" style="font-size: 0.85em; color: #2ecc71; font-weight: bold; min-height: 1.2em;"></div>
                         </div>
                     </div>
@@ -933,7 +873,7 @@
 
     </div>
 
-    <!-- MODAL INPOST GEOWIDGET -->
+    <!-- MODAL INPOST -->
     <div id="inpostModal" class="inpost-modal-overlay">
         <div class="inpost-modal-content">
             <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
@@ -948,7 +888,6 @@
 
 <script>
 //<![CDATA[
-    // Globalny callback wywoływany przez InPost Geowidget
     window.onPaczkomatSelect = function(point) {
         if (!point) return;
         var kod = point.name || "";
@@ -1439,7 +1378,6 @@
                 });
         }
 
-        // --- OBSŁUGA SELEKTORA OPERATORÓW I MAPY AUTOMATÓW ---
         const carrierUrls = {
             'DPD': 'https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/',
             'DHL': 'https://dhl24.com.pl/mapa',
@@ -1485,7 +1423,6 @@
             });
         });
 
-        // Otwieranie / zamykanie modala InPost
         var btnOpenMap = document.getElementById('btnOpenInPostMap');
         var btnCloseMap = document.getElementById('btnCloseInPostModal');
         var inpostModal = document.getElementById('inpostModal');
@@ -1682,7 +1619,6 @@
             let hasSpecial = selectedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r));
             let hasRegular = selectedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
 
-            // Filtrowanie rejonów: dostępny jeśli jest w bazie dla conajmniej jednego wybranego tygodnia
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
                 if (!chk) return;
@@ -1718,7 +1654,6 @@
             selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
 
-            // Filtrowanie tygodni: dostępny jeśli ma terminy dla co najmniej jednego zaznaczonego rejonu
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
                 if (!chk) return;
@@ -1902,7 +1837,6 @@
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     }
   
-    // --- BLOKADA INSPEKTORA KODU I SKRÓTÓW KLAWISZOWYCH ---
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
     });
