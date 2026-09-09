@@ -206,23 +206,33 @@
         }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
-.selection-grid-container {
+        /* UKŁAD DWUKOLUMNOWY */
+        .selection-grid-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
             width: 100%;
         }
 
+        /* Wyrównanie nagłówków w obu kolumnach */
+        .selection-col-left .form-header,
+        .selection-col-right .form-header {
+            margin-top: 0 !important;
+            border-top: none !important;
+            padding-top: 0 !important;
+            margin-bottom: 12px !important;
+        }
+
         @media (min-width: 992px) {
             .selection-grid-container {
-                grid-template-columns: 1.25fr 1fr;
-                align-items: start; /* Wyrównuje kolumny od góry */
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
             }
             .regions-scroll-box {
                 min-height: 520px !important;
                 max-height: 520px !important;
+                margin: 0 !important;
             }
-            /* Wyrównanie prawej kolumny (tygodni), aby jej nagłówek idealnie pasował do lewej */
             .selection-col-right {
                 margin-top: 0px; 
             }
@@ -240,17 +250,6 @@
             margin: 0 auto 15px auto; 
             box-sizing: border-box; 
             width: 100%; 
-        }
-
-        @media (min-width: 992px) {
-            .selection-grid-container {
-                grid-template-columns: 1.25fr 1fr;
-                align-items: start;
-            }
-            .regions-scroll-box {
-                min-height: 520px !important;
-                max-height: 520px !important;
-            }
         }
 
         .regions-scroll-box.is-loading { overflow: hidden !important; touch-action: none; }
@@ -371,7 +370,6 @@
             display: flex; 
             justify-content: flex-end; 
             align-items: center; 
-            margin-bottom: 8px; 
             font-size: clamp(0.8rem, 1.3vw, 0.9rem); 
         }
         .selection-tools a { color: #38bdf8; text-decoration: none; cursor: pointer; padding: 4px 6px; }
@@ -576,34 +574,27 @@
 
             <div class="form-wrapper" id="formContent">
                 
-                <!-- SEKCJA DWUKOLUMNOWA: REJONY I TYGODNIE OBOK SIEBIE NA LAPTOPIE/DESKTOPIE -->
+                <!-- PASEK NARZĘDZIOWY Z LEGENDĄ I PRZYCISKIEM CZYSZCZENIA -->
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 0.82rem; color: #cbd5e1;">
+                        <span style="font-weight: bold; color: #93c5fd; text-transform: uppercase;">ℹ️ Legenda:</span>
+                        <span><b style="color: #fff;">08</b> – Dzień miesiąca</span>
+                        <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll</span>
+                        <span><b style="color: #fbbf24;">(M)</b> – Złom</span>
+                        <span><b style="color: #38bdf8;">(E)</b> – Elektro</span>
+                    </div>
+                    <div class="selection-tools">
+                        <a href="javascript:void(0)" id="btnUnselectAll">[ Odznacz wszystko / Clear ]</a>
+                    </div>
+                </div>
+
+                <!-- SEKCJA DWUKOLUMNOWA: IDEALNIE WYRÓWNANE LISTY -->
                 <div class="selection-grid-container">
                     
                     <!-- KOLUMNA LEWA: REJONY -->
                     <div class="selection-col-left">
-                        <div class="form-header" id="step1Header" style="margin-top: 0; border-top: none; padding-top: 0;">👇 1. Wybierz Rejony:</div>
+                        <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
 
-                        <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed #38bdf8; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
-                            <span id="searchEngineDesc" style="color: #cbd5e1; font-size: 0.88em;">Nie wiesz, gdzie leży dany rejon? Sprawdź mapę:</span><br>
-                            <a id="searchEngineLink" href="https://dabu-info.com/mapa.html" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 4px; font-size: 0.95rem;">
-                                🔍 WYSZUKIWARKA REJONÓW
-                            </a>
-                        </div>
-
-                        <div class="selection-tools">
-                            <a href="javascript:void(0)" id="btnUnselectAll">[ Odznacz wszystko / Clear ]</a>
-                        </div>
-                        
-                        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; font-size: 0.8rem; color: #cbd5e1;">
-                            <div style="font-weight: bold; color: #93c5fd; margin-bottom: 3px; text-transform: uppercase; font-size: 0.85em;">ℹ️ Jak czytać harmonogram:</div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 6px 14px;">
-                                <span><b style="color: #fff;">08</b> – Dzień miesiąca</span>
-                                <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll</span>
-                                <span><b style="color: #fbbf24;">(M)</b> – Złom</span>
-                                <span><b style="color: #38bdf8;">(E)</b> – Elektro</span>
-                            </div>
-                        </div>
-                        
                         <div class="regions-scroll-box is-loading" id="regionsContainer">
                             <div id="regionsLoading" class="pro-loader-overlay">
                                 <div class="loader-video-section">
@@ -717,7 +708,7 @@
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Stadt" /> Karlsruhe Stadt</label>
-                                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
+                                <label class="region-label"><input class="region-chk" name="regionyæ" type="checkbox" value="Kelkheim (Taunus)" /> Kelkheim (Taunus)</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kerken" /> Kerken</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kevelaer" /> Kevelaer</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Kirchheim" /> Kirchheim</label>
@@ -812,8 +803,8 @@
                     </div>
 
                     <!-- KOLUMNA PRAWA: TYGODNIE -->
-                    <div class="selection-col-right" id="step2Wrapper" style="margin-top: 0;">
-                        <div class="form-header" id="step2Header" style="margin-top: 0; border-top: none; padding-top: 0;">📅 2. Wybierz Tygodnie:</div>
+                    <div class="selection-col-right" id="step2Wrapper">
+                        <div class="form-header" id="step2Header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box" id="weeksContainer"></div>
 
                         <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
@@ -1116,7 +1107,6 @@
                     formatPdfLi1: '<strong>Aktywna nawigacja:</strong> Każda ulica w dokumencie to bezpośredni link do aplikacji Google Maps w telefonie.',
                     formatPdfLi2: '<strong>Podział logistyczny:</strong> Wykaz ulic pogrupowany według dni, miejscowości oraz dzielnic z łączną liczbą punktów.',
                     formatPdfLi3: '<strong>Offline & Druk:</strong> Plik działa bez zasięgu sieci i jest przygotowany do ekonomicznego wydruku na papierze.',
-                    searchDesc: 'Nie wiesz, gdzie leży dany rejon? Sprawdź jego położenie na mapie:', searchBtn: '🔍 WYSZUKIWARKA REJONÓW',
                     step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', btnUnselectAll: '[ Odznacz wszystko / Clear ]',
                     step3Header: '📄 3. Format realizacji zamówienia:',
                     step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:',
@@ -1142,7 +1132,6 @@
                     formatPdfLi1: '<strong>Navigation:</strong> Jede Straße ist ein aktiver Link zur Google Maps App.',
                     formatPdfLi2: '<strong>Logistische Aufteilung:</strong> Nach Tagen, Orten und Stadtteilen mit genauen Zählern.',
                     formatPdfLi3: '<strong>Offline & Druck:</strong> Funktioniert ohne Netz und ist druckoptimiert.',
-                    searchDesc: 'Wo liegt die Region? Karte ansehen:', searchBtn: '🔍 REGIONS-SUCHE',
                     step1Header: '👇 1. Gebiete auswählen:', step2Header: '📅 2. Wochen auswählen:', btnUnselectAll: '[ Alles abwählen / Clear ]',
                     step3Header: '📄 3. Lieferformat:',
                     step4Header: '💾 4. Zusatzoptionen:', step5Header: '💳 5. Zahlungsmethode:',
@@ -1167,7 +1156,6 @@
                     formatPdfLi1: '<strong>Active Navigation:</strong> Every street links directly to the Google Maps app.',
                     formatPdfLi2: '<strong>Logistical Grouping:</strong> Organized by day, city, and district with total point counters.',
                     formatPdfLi3: '<strong>Offline & Print:</strong> Fully functional offline and optimized for black & white printing.',
-                    searchDesc: 'Need region locations? Check map:', searchBtn: '🔍 REGION SEARCH',
                     step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', btnUnselectAll: '[ Deselect All / Clear ]',
                     step3Header: '📄 3. Order Format:',
                     step4Header: '💾 4. Options:', step5Header: '💳 5. Payment Method:', payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 Mobile Payment (+48 733 035 301)', payOther: '❓ Other',
@@ -1208,9 +1196,6 @@
         
         setText('step1Header', t.step1Header);
         setText('step2Header', t.step2Header);
-        
-        setHtml('searchEngineDesc', t.searchDesc);
-        setHtml('searchEngineLink', t.searchBtn);
         
         setText('btnUnselectAll', t.btnUnselectAll);
         
@@ -1344,11 +1329,10 @@
             });
         }
         
-function updateScheduleBadges() {
+        function updateScheduleBadges() {
             let selectedWeeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
             let matrixToUse = availabilityMatrix;
 
-            // Pobieramy dzisiejszą datę w formacie YYYY-MM-DD do porównania (bez czasu)
             let todayObj = new Date();
             let todayStr = todayObj.getFullYear() + "-" + 
                            String(todayObj.getMonth() + 1).padStart(2, '0') + "-" + 
@@ -1384,9 +1368,8 @@ function updateScheduleBadges() {
                             linieDat.forEach((linia, idx) => {
                                 let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
                                 if (m) {
-                                    let pelnaDataWpisu = m[0]; // np. "2026-09-10"
+                                    let pelnaDataWpisu = m[0];
 
-                                    // FILTR: Pomiń dni, które już minęły lub są dzisiaj (<= todayStr)
                                     if (pelnaDataWpisu <= todayStr) return;
 
                                     let samDzien = m[3];
