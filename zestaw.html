@@ -120,7 +120,6 @@
             background: rgba(0, 0, 0, 0.3); border: 1px solid #4ca1af; border-radius: 5px; padding: 10px; margin: 0 auto 15px auto; text-align: left;
             transition: opacity 0.3s ease; box-sizing: border-box; width: 100%; max-width: 800px; }
 
-        /* Blokada przewijania w czasie ładowania */
         .regions-scroll-box.is-loading {
             overflow: hidden !important;
             touch-action: none;
@@ -257,7 +256,7 @@
             font-weight: bold;
         }
 
-        /* UKŁAD WIERSZA REJONU: KOLUMNOWY (GÓRA: CHECKBOX+NAZWA, DÓŁ: DNI) */
+        /* UKŁAD WIERSZA REJONU */
         .region-label { 
             display: flex; 
             flex-direction: column;
@@ -288,13 +287,13 @@
             flex-shrink: 0;
         }
 
-        /* PASTYLKI TERMINÓW POD NAZWĄ REJONU */
+        /* PASTYLKI TERMINÓW */
         .region-schedule-badges {
             display: none;
             align-items: center;
             gap: 5px;
             flex-wrap: wrap;
-            margin-left: 28px; /* Wcięcie dokładnie pod tekst nazwy */
+            margin-left: 28px;
             margin-top: 3px;
         }
         .region-schedule-badges.is-visible {
@@ -1195,14 +1194,14 @@
 
                 lbl.innerHTML = '';
                 
-                // Rząd 1: Checkbox + Nazwa Rejonu (na pełną szerokość)
+                // Rząd 1: Checkbox + Nazwa Rejonu
                 const topDiv = document.createElement('div');
                 topDiv.className = 'region-left-side';
                 topDiv.appendChild(chk);
                 topDiv.appendChild(document.createTextNode(val));
                 lbl.appendChild(topDiv);
 
-                // Rząd 2: Kontener na pastylki POD nazwą (wcięty pod tekst)
+                // Rząd 2: Kontener na pastylki POD nazwą
                 const bottomDiv = document.createElement('div');
                 bottomDiv.className = 'region-schedule-badges';
                 bottomDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
@@ -1236,7 +1235,7 @@
             });
         }
         
-        // DYNAMICZNE WYPEŁNIANIE PASTYLEK POD NAZWĄ TYLKO DLA ZAZNACZONYCH TYGODNI
+        // DYNAMICZNE WYPEŁNIANIE PASTYLEK POD NAZWĄ DLA WYBRANYCH TYGODNI
         function updateScheduleBadges() {
             let selectedWeeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
             let matrixToUse = availabilityMatrix;
@@ -1246,7 +1245,6 @@
                 let badgeContainer = label.querySelector('.region-schedule-badges');
                 if (!chk || !badgeContainer) return;
 
-                // Jeśli rejon nie jest zaznaczony LUB żaden tydzień nie jest zaznaczony -> CHOWAMY PASTYLKI
                 if (!chk.checked || selectedWeeks.length === 0) {
                     badgeContainer.classList.remove('is-visible');
                     badgeContainer.innerHTML = '';
@@ -1272,7 +1270,7 @@
                             linieDat.forEach((linia, idx) => {
                                 let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
                                 if (m) {
-                                    let samDzien = m[3]; // Np. "07", "08", "10"
+                                    let samDzien = m[3];
                                     let rodzajWpisu = linieRodzaj[idx] || "";
 
                                     let tagi = [];
@@ -1302,7 +1300,7 @@
                     badgeContainer.innerHTML = pills;
                     badgeContainer.classList.add('is-visible');
                 } else {
-                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak dat w tym tygodniu</b></span>`;
+                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak dat w wybranym okresie</b></span>`;
                     badgeContainer.classList.add('is-visible');
                 }
             });
@@ -1543,7 +1541,8 @@
         }
 
         function updateMutualFiltering() {
-            if(Object.keys(availabilityMatrix).length === 0) return;
+            if (Object.keys(availabilityMatrix).length === 0) return;
+
             var dzisiaj = new Date();
             var obecnyTydzien = getWeekNumber(dzisiaj).toString();
             var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
@@ -1556,11 +1555,12 @@
                 }
             }
 
+            // Wszystkie rejony istniejące w bazie dla dowolnego tygodnia
             let allAvailableRegionsInDb = new Set();
-            for(let w in availabilityMatrix) {
+            for (let w in availabilityMatrix) {
                 availabilityMatrix[w].forEach(rObj => {
                     let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                    if(nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase());
+                    if (nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase().trim());
                 });
             }
 
@@ -1572,12 +1572,10 @@
             let hasSpecial = selectedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r));
             let hasRegular = selectedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
 
-            let limitToSingleRegion = selectedWeeks.length > 1;
-            let limitToSingleWeek = selectedRegions.length > 1;
-            
+            // 1. FILTROWANIE REJONÓW (Zezwala na multi-wybór bez blokady do 1 rejonu)
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
-                if(!chk) return;
+                if (!chk) return;
                 let rName = chk.value.trim().toLowerCase();
                 let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
                 let isAvailable = true;
@@ -1588,66 +1586,60 @@
                     isAvailable = false; 
                 } else if (hasRegular && isSpecial) {
                     isAvailable = false; 
-                } else if (limitToSingleRegion && !chk.checked) {
-                    isAvailable = false; 
                 } else if (!isSpecial && selectedWeeks.length > 0) {
-                    for(let i = 0; i < selectedWeeks.length; i++) {
-                        let w = selectedWeeks[i];
-                        if(!availabilityMatrix[w] ||
-                            !availabilityMatrix[w].some(item => {
-                                let n = typeof item === 'string' ? item : item.nazwa;
-                                return n.toLowerCase() === rName;
-                            })) {
-    
-                            isAvailable = false;
-                            break;
-                        }
-                    }
-                }
-
-                label.style.opacity = isAvailable ? '1' : '0.3';
-                chk.disabled = !isAvailable;
-                if(!isAvailable && chk.checked) {
-                    chk.checked = false;
-                }
-            });
-            
-            selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            limitToSingleWeek = selectedRegions.length > 1;
-            
-            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
-                let chk = label.querySelector('.week-chk');
-                if(!chk) return;
-                let wNum = chk.getAttribute('data-week');
-                let isAvailable = true;
-
-                if (limitToSingleWeek && !chk.checked && selectedWeeks.length >= 1) {
-                    isAvailable = false; 
-                } else if (selectedRegions.length > 0 && !hasSpecial) {
-                    let hasAtLeastOneRegion = false;
-                    for(let i = 0; i < selectedRegions.length; i++) {
-                        let r = selectedRegions[i];
-                        if (!GLOBAL_SPECIAL_REGIONS.includes(r)) { 
-                            if(availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
-                                let n = typeof item === 'string' ? item : item.nazwa;
-                                return n.toLowerCase() === r;
-                            })) {
-                                hasAtLeastOneRegion = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!hasAtLeastOneRegion) {
+                    // Rejon jest dostępny, jeśli występuje w PRZYNAJMNIEJ JEDNYM z zaznaczonych tygodni
+                    let presentInAnySelectedWeek = selectedWeeks.some(w => {
+                        return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
+                            let n = typeof item === 'string' ? item : item.nazwa;
+                            return (n || "").toLowerCase().trim() === rName;
+                        });
+                    });
+                    if (!presentInAnySelectedWeek) {
                         isAvailable = false;
                     }
                 }
 
                 label.style.opacity = isAvailable ? '1' : '0.3';
                 chk.disabled = !isAvailable;
-                if(!isAvailable && chk.checked) chk.checked = false;
+                if (!isAvailable && chk.checked) {
+                    chk.checked = false;
+                }
             });
 
+            // Ponowne pobranie zaznaczonych rejonów
+            selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+
+            // 2. FILTROWANIE TYGODNI (Zezwala na multi-wybór bez blokady do 1 tygodnia)
+            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
+                let chk = label.querySelector('.week-chk');
+                if (!chk) return;
+                let wNum = chk.getAttribute('data-week');
+                let isAvailable = true;
+
+                if (selectedRegions.length > 0 && !hasSpecial) {
+                    // Tydzień jest dostępny, jeśli zawiera chociaż jeden z zaznaczonych rejonów
+                    let hasMatchingRegion = selectedRegions.some(r => {
+                        if (GLOBAL_SPECIAL_REGIONS.includes(r)) return false;
+                        return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
+                            let n = typeof item === 'string' ? item : item.nazwa;
+                            return (n || "").toLowerCase().trim() === r;
+                        });
+                    });
+
+                    if (!hasMatchingRegion) {
+                        isAvailable = false;
+                    }
+                }
+
+                label.style.opacity = isAvailable ? '1' : '0.3';
+                chk.disabled = !isAvailable;
+                if (!isAvailable && chk.checked) {
+                    chk.checked = false;
+                }
+            });
+
+            // 3. Widoczność nagłówków Landów
             document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
                 let nextEl = header.nextElementSibling;
                 let hasVisible = false;
