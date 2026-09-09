@@ -13,6 +13,10 @@
       gtag('config', 'G-YQTCG26T1B');
     </script>
 
+    <!-- INPOST GEOWIDGET v5 STYLES & SCRIPT -->
+    <link rel="stylesheet" href="https://geowidget.inpost.pl/inpost-geowidget.css"/>
+    <script src="https://geowidget.inpost.pl/inpost-geowidget.js" defer></script>
+
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="favicon.png">
@@ -338,6 +342,34 @@
         
         .hidden { display: none !important; }
 
+        /* MODAL INPOST */
+        .inpost-modal-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 10000; 
+            justify-content: center; 
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .inpost-modal-content {
+            background: #1e293b; 
+            width: 95%; 
+            max-width: 900px; 
+            height: 85vh; 
+            border-radius: 10px; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            border: 1px solid #4ca1af;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
         /* RWD */
         @media (max-width: 768px) {
             .harmonogram-wrapper { font-size: 1.05em; }
@@ -645,7 +677,7 @@
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Emsland" /> Emsland</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Ennepetal" /> Ennepetal</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eppstein" /> Eppstein</label>
-                        <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Erftstadt" /> Erftstadt</label>
+                        <label class="region-label"><input class="region-chk" name="regiony<!-- cont -->" type="checkbox" value="Erftstadt" /> Erftstadt</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Erkrath" /> Erkrath</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eschwege" /> Eschwege</label>
                         <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Euskirchen" /> Euskirchen</label>
@@ -818,10 +850,57 @@
 
                 <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
-                     <div class="option-box" id="dhlBox">
-                         <label class="region-label"><input id="dhlOption" type="checkbox" /> <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty)</span></label>
-                         <input type="text" id="paczkomatInput" class="client-input" placeholder="Podaj kod Paczkomatu (np. WAW123A)" style="display:none; margin-top: 10px; width: 90%; margin-left: 5%; padding: 8px;">
+                    
+                    <!-- WYSYŁKA WYDRUKU / PUNKTY ODBIORU -->
+                    <div class="option-box" id="dhlBox">
+                        <label class="region-label">
+                            <input id="dhlOption" type="checkbox" /> 
+                            <span id="dhlLabel">📦 Wysyłka wydruku (Paczkomaty / Automaty paczkowe)</span>
+                        </label>
+                        
+                        <!-- PANEL WYBORU OPERATORA AUTOMATU -->
+                        <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(76, 161, 175, 0.4);">
+                            <div style="font-size: 0.88em; color: #60a5fa; font-weight: bold; margin-bottom: 8px;">
+                                🚚 Wybierz operatora i automat / punkt odbioru:
+                            </div>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                    <input type="radio" name="carrierOption" value="InPost" checked /> InPost Paczkomat
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                    <input type="radio" name="carrierOption" value="DPD" /> DPD Pickup
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                    <input type="radio" name="carrierOption" value="DHL" /> DHL BOX / POP
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; cursor: pointer;">
+                                    <input type="radio" name="carrierOption" value="ORLEN" /> ORLEN Paczka
+                                </label>
+                            </div>
+
+                            <!-- PRZYCISK MAPY INPOST -->
+                            <div id="inpostMapTriggerBox" style="margin-bottom: 10px;">
+                                <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%); color: #111; font-weight: bold; border: none; padding: 10px 16px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9em;">
+                                    📍 Wybierz Paczkomat na mapie InPost
+                                </button>
+                            </div>
+
+                            <!-- PRZYCISKI WYSZUKIWAREK DLA POZOSTAŁYCH OPERATORÓW -->
+                            <div id="externalMapTriggerBox" style="display: none; margin-bottom: 10px;">
+                                <a id="externalMapLink" href="https://www.dpd.com/pl/pl/odbierz-paczke/znajdz-punkt-odbioru/" target="_blank" style="background: #34495e; color: #38bdf8; font-weight: bold; border: 1px solid #3498db; padding: 8px 14px; border-radius: 5px; text-decoration: none; display: inline-block; font-size: 0.85em;">
+                                    🔍 Znajdź punkt w wyszukiwarce operatora &raquo;
+                                </a>
+                                <div style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                                    Otwórz mapę w nowym oknie, odczytaj kod punktu i wklej go poniżej:
+                                </div>
+                            </div>
+
+                            <input type="text" id="paczkomatInput" class="client-input" placeholder="Kod i adres wybranego punktu (np. KRA010M lub wpisz ręcznie)" style="margin-bottom: 5px; padding: 10px; font-size: 0.95em;">
+                            <div id="selectedPaczkomatInfo" style="font-size: 0.85em; color: #2ecc71; font-weight: bold; min-height: 1.2em;"></div>
+                        </div>
                     </div>
+
                     <div class="option-box" id="pickupBox">
                          <label class="region-label"><input id="pickupOption" type="checkbox" /> <span id="pickupLabel">🏪 Odbiór osobisty</span></label>
                     </div>
@@ -854,8 +933,40 @@
 
     </div>
 
+    <!-- MODAL INPOST GEOWIDGET -->
+    <div id="inpostModal" class="inpost-modal-overlay">
+        <div class="inpost-modal-content">
+            <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
+                <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
+                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <div style="flex: 1; width: 100%; height: 100%; position: relative;">
+                <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="prod-geowidget-token" language="pl" config="parcelCollect"></inpost-geowidget>
+            </div>
+        </div>
+    </div>
+
 <script>
 //<![CDATA[
+    // Globalny callback wywoływany przez InPost Geowidget
+    window.onPaczkomatSelect = function(point) {
+        if (!point) return;
+        var kod = point.name || "";
+        var addr = point.address ? (point.address.line1 + ", " + point.address.line2) : "";
+        var targetInput = document.getElementById('paczkomatInput');
+        var infoDiv = document.getElementById('selectedPaczkomatInfo');
+        
+        if (targetInput) {
+            targetInput.value = "[InPost] " + kod + " (" + addr + ")";
+        }
+        if (infoDiv) {
+            infoDiv.innerText = "✓ Wybrano: " + kod + " - " + addr;
+        }
+        
+        var modal = document.getElementById('inpostModal');
+        if (modal) modal.style.display = 'none';
+    };
+
     document.addEventListener("DOMContentLoaded", function() {
     
         const allRegions = document.querySelectorAll('#regionsCheckboxes .region-chk');
@@ -976,7 +1087,7 @@
                     step3Header: '📄 3. Format realizacji zamówienia:',
                     step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Inne',
-                    schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty)', pickupLabel: '🏪 Odbiór osobisty',
+                    schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Wysyłka wydruku (Paczkomaty / Automaty paczkowe)', pickupLabel: '🏪 Odbiór osobisty',
                     btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', btnOrderPrefix: '🛒 ZAMÓW PAKIET – ',
                     termsPlural: ['termin', 'terminy', 'terminów'], weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla',
                     emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację zamówienia zestawu:\n',
@@ -1328,11 +1439,65 @@
                 });
         }
 
+        // --- OBSŁUGA SELEKTORA OPERATORÓW I MAPY AUTOMATÓW ---
+        const carrierUrls = {
+            'DPD': 'https://www.dpd.com/pl/pl/odbierz-paczke/znajdz-punkt-odbioru/',
+            'DHL': 'https://www.dhl.com/pl-pl/home/nasze-dywizje/parcel/dla-ciebie/odbior/punkty-dhl-pop.html',
+            'ORLEN': 'https://www.orlenpaczka.pl/pokaz-punkty/'
+        };
+
         var dhlOpt = document.getElementById('dhlOption');
+        var paczSection = document.getElementById('paczkomatSection');
         if (dhlOpt) {
             dhlOpt.addEventListener('change', function() {
+                if (paczSection) {
+                    paczSection.style.display = this.checked ? 'block' : 'none';
+                }
+                if (!this.checked) {
+                    document.getElementById('paczkomatInput').value = '';
+                    document.getElementById('selectedPaczkomatInfo').innerText = '';
+                }
+            });
+        }
+
+        document.querySelectorAll('input[name="carrierOption"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                var selectedCarrier = this.value;
+                var inpostBtnBox = document.getElementById('inpostMapTriggerBox');
+                var extBox = document.getElementById('externalMapTriggerBox');
+                var extLink = document.getElementById('externalMapLink');
                 var paczInput = document.getElementById('paczkomatInput');
-                if(paczInput) paczInput.style.display = this.checked ? 'block' : 'none';
+                var infoDiv = document.getElementById('selectedPaczkomatInfo');
+
+                if (selectedCarrier === 'InPost') {
+                    inpostBtnBox.style.display = 'block';
+                    extBox.style.display = 'none';
+                    paczInput.placeholder = "Kod i adres Paczkomatu (np. KRA010M lub wybierz na mapie)";
+                } else {
+                    inpostBtnBox.style.display = 'none';
+                    extBox.style.display = 'block';
+                    extLink.href = carrierUrls[selectedCarrier] || '#';
+                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie &raquo;";
+                    paczInput.placeholder = "Wklej kod/adres punktu " + selectedCarrier + " (np. z mapy operatora)";
+                }
+                paczInput.value = '';
+                infoDiv.innerText = '';
+            });
+        });
+
+        // Otwieranie / zamykanie modala InPost
+        var btnOpenMap = document.getElementById('btnOpenInPostMap');
+        var btnCloseMap = document.getElementById('btnCloseInPostModal');
+        var inpostModal = document.getElementById('inpostModal');
+
+        if (btnOpenMap) {
+            btnOpenMap.addEventListener('click', function() {
+                if (inpostModal) inpostModal.style.display = 'flex';
+            });
+        }
+        if (btnCloseMap) {
+            btnCloseMap.addEventListener('click', function() {
+                if (inpostModal) inpostModal.style.display = 'none';
             });
         }
 
@@ -1681,7 +1846,10 @@
 
             if (document.getElementById('dhlOption')?.checked) {
                 var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
-                body += "WYSYŁKA DRUKOWANA (PACZKOMAT): TAK\nKOD PACZKOMATU: " + paczkomat + "\n";
+                var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
+                body += "WYSYŁKA WYDRUKU (AUTOMAT): TAK\n";
+                body += "OPERATOR: " + selectedCarrier + "\n";
+                body += "PUNKT / ADRES: " + paczkomat + "\n";
             }
 
             if (document.getElementById('pickupOption')?.checked) {
