@@ -888,22 +888,47 @@
 
 <script>
 //<![CDATA[
-    window.onPaczkomatSelect = function(point) {
-        if (!point) return;
-        var kod = point.name || "";
-        var addr = point.address ? (point.address.line1 + ", " + point.address.line2) : "";
+function handlePaczkomatSelection(data) {
+        if (!data) return;
+        // Obsługa zarówno bezpośredniego obiektu, jak i zdarzenia CustomEvent z detail
+        var point = data.detail || data;
+        
+        var kod = point.name || point.id || "";
+        var addr1 = (point.address && point.address.line1) ? point.address.line1 : "";
+        var addr2 = (point.address && point.address.line2) ? point.address.line2 : "";
+        var pelnyAdres = [addr1, addr2].filter(Boolean).join(', ');
+
         var targetInput = document.getElementById('paczkomatInput');
         var infoDiv = document.getElementById('selectedPaczkomatInfo');
         
         if (targetInput) {
-            targetInput.value = "[InPost] " + kod + " (" + addr + ")";
+            targetInput.value = "[InPost] " + kod + (pelnyAdres ? " (" + pelnyAdres + ")" : "");
         }
         if (infoDiv) {
-            infoDiv.innerText = "✓ Wybrano: " + kod + " - " + addr;
+            infoDiv.innerText = "✓ Wybrano: " + kod + (pelnyAdres ? " - " + pelnyAdres : "");
         }
         
         var modal = document.getElementById('inpostModal');
         if (modal) modal.style.display = 'none';
+    }
+
+    // 1. Oficjalny listener zdarzenia globalnego InPost Geowidget v5
+    document.addEventListener('inpost:geowidget:point:select', function(e) {
+        handlePaczkomatSelection(e);
+    });
+
+    // 2. Bezpośredni listener na instancji komponentu
+    document.addEventListener("DOMContentLoaded", function() {
+        var widgetEl = document.getElementById('inpostGeowidget');
+        if (widgetEl) {
+            widgetEl.addEventListener('pointselect', handlePaczkomatSelection);
+            widgetEl.addEventListener('inpost:geowidget:point:select', handlePaczkomatSelection);
+        }
+    });
+
+    // 3. Fallback pod wywołanie z atrybutu inline w HTML
+    window.onPaczkomatSelect = function(pointOrEvent) {
+        handlePaczkomatSelection(pointOrEvent);
     };
 
     document.addEventListener("DOMContentLoaded", function() {
