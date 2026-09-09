@@ -289,7 +289,7 @@
             flex-shrink: 0;
         }
 
-        /* PASTYLKI TERMINÓW PO PRAWEJ STRONIE (POJAWIAJĄ SIĘ PO KLIKNIĘCIU) */
+        /* PASTYLKI TERMINÓW PO PRAWEJ STRONIE (POJAWIAJĄ SIĘ TYLKO GDY ZAZNACZONY REJON I TYDZIEŃ) */
         .region-schedule-badges {
             display: none;
             align-items: center;
@@ -904,218 +904,66 @@
 
         // SŁOWNIK NA STAŁE DLA REJONÓW SPECJALNYCH (I BRAKUJĄCYCH W BAZIE)
         const SPECIAL_REGIONS_LAND_MAP = {
-            // Baden-Württemberg
-            'calw': 'Baden-Württemberg',
-            'freudenstadt': 'Baden-Württemberg',
-            'heidelberg': 'Baden-Württemberg',
-            'heilbronn': 'Baden-Württemberg',
-            'karlsruhe kreis': 'Baden-Württemberg',
-            'karlsruhe stadt': 'Baden-Württemberg',
-            'konstanz': 'Baden-Württemberg',
-            'ortenau': 'Baden-Württemberg',
-            'rhein-neckar-kreis': 'Baden-Württemberg',
-            'tuttlingen': 'Baden-Württemberg',
-            'zollernalb': 'Baden-Württemberg',
-
-            // Bayern
-            'augsburg kreis': 'Bayern',
-            'augsburg stadt': 'Bayern',
-            'amberg': 'Bayern',
-            'bamberg': 'Bayern',
-            'bayreuth': 'Bayern',
-            'fürth': 'Bayern',
-            'gräfelfing': 'Bayern',
-            'kirchheim': 'Bayern',
-            'kulmbach': 'Bayern',
-            'monachium-południowy wschód': 'Bayern',
-            'neustadt a.d. waldnaab': 'Bayern',
-            'regensburg': 'Bayern',
-            'straubing-bogen': 'Bayern',
-
-            // Berlin
-            'berlin': 'Berlin',
-
-            // Brandenburg
-            'barnim': 'Brandenburg',
-            'elbe-elster': 'Brandenburg',
-            'oder-spree': 'Brandenburg',
-            'schwedt/oder': 'Brandenburg',
-            'spree-neiße': 'Brandenburg',
-
-            // Hessen
-            'bad homburg': 'Hessen',
-            'bad orb': 'Hessen',
-            'bad soden-salmünster': 'Hessen',
-            'biebergemünd': 'Hessen',
-            'eppstein': 'Hessen',
-            'eschwege': 'Hessen',
-            'flörsbachtal': 'Hessen',
-            'flörsheim am main': 'Hessen',
-            'frankfurt': 'Hessen',
-            'freigericht': 'Hessen',
-            'friedrichsdorf': 'Hessen',
-            'fulda': 'Hessen',
-            'gelnhausen': 'Hessen',
-            'giessen': 'Hessen',
-            'giessen stadt': 'Hessen',
-            'glashütten': 'Hessen',
-            'grävenwiesbach': 'Hessen',
-            'gross-gerau': 'Hessen',
-            'gründau': 'Hessen',
-            'hasselroth': 'Hessen',
-            'hattersheim am main': 'Hessen',
-            'hersfeld-rotenburg': 'Hessen',
-            'hofheim am taunus': 'Hessen',
-            'jossgrund': 'Hessen',
-            'kelkheim (taunus)': 'Hessen',
-            'königstein (taunus)': 'Hessen',
-            'kronberg': 'Hessen',
-            'kronberg im taunus': 'Hessen',
-            'liederbach': 'Hessen',
-            'limburg-weilburg': 'Hessen',
-            'linsengericht': 'Hessen',
-            'neu-anspach': 'Hessen',
-            'nidderau': 'Hessen',
-            'oberursel (taunus)': 'Hessen',
-            'rheingau-taunus': 'Hessen',
-            'rodenbach': 'Hessen',
-            'ronneburg': 'Hessen',
-            'schlüchtern': 'Hessen',
-            'schmitten': 'Hessen',
-            'schmitten im taunus': 'Hessen',
-            'schwalbach': 'Hessen',
-            'sinntal': 'Hessen',
-            'steinbach': 'Hessen',
-            'usingen': 'Hessen',
-            'walldorf-mörfelden': 'Hessen',
-            'wehrheim': 'Hessen',
-            'weilrod': 'Hessen',
-            'werra-meissner': 'Hessen',
-            'wiesbaden-naurod': 'Hessen',
-
-            // Niedersachsen
-            'braunschweig': 'Niedersachsen',
-            'diepholz': 'Niedersachsen',
-            'emsland': 'Niedersachsen',
-            'gifhorn': 'Niedersachsen',
-            'göttingen': 'Niedersachsen',
-            'hannover': 'Niedersachsen',
-            'harburg': 'Niedersachsen',
-            'heidekreis': 'Niedersachsen',
-            'holzminden': 'Niedersachsen',
-            'lüneburg': 'Niedersachsen',
-            'osnabrück': 'Niedersachsen',
-            'stade': 'Niedersachsen',
-            'wolfsburg': 'Niedersachsen',
-
-            // Nordrhein-Westfalen (NRW)
-            'aldenhoven': 'Nordrhein-Westfalen',
-            'alpen': 'Nordrhein-Westfalen',
-            'altena': 'Nordrhein-Westfalen',
-            'bad münstereifel': 'Nordrhein-Westfalen',
-            'bad-munstereifel': 'Nordrhein-Westfalen',
-            'balve': 'Nordrhein-Westfalen',
-            'bedburg': 'Nordrhein-Westfalen',
-            'bedburg-hau': 'Nordrhein-Westfalen',
-            'blankenheim': 'Nordrhein-Westfalen',
-            'bonn': 'Nordrhein-Westfalen',
-            'breckerfeld': 'Nordrhein-Westfalen',
-            'brühl': 'Nordrhein-Westfalen',
-            'dahlem': 'Nordrhein-Westfalen',
-            'dormagen': 'Nordrhein-Westfalen',
-            'dortmund': 'Nordrhein-Westfalen',
-            'dülmen': 'Nordrhein-Westfalen',
-            'düsseldorf': 'Nordrhein-Westfalen',
-            'emmerich am rhein': 'Nordrhein-Westfalen',
-            'ennepetal': 'Nordrhein-Westfalen',
-            'erftstadt': 'Nordrhein-Westfalen',
-            'erkrath': 'Nordrhein-Westfalen',
-            'euskirchen': 'Nordrhein-Westfalen',
-            'geilenkirchen': 'Nordrhein-Westfalen',
-            'geldern': 'Nordrhein-Westfalen',
-            'goch': 'Nordrhein-Westfalen',
-            'grefrath': 'Nordrhein-Westfalen',
-            'grevenbroich': 'Nordrhein-Westfalen',
-            'haan': 'Nordrhein-Westfalen',
-            'heiligenhaus': 'Nordrhein-Westfalen',
-            'heinsberg': 'Nordrhein-Westfalen',
-            'hellenthal': 'Nordrhein-Westfalen',
-            'hückelhoven': 'Nordrhein-Westfalen',
-            'hürth': 'Nordrhein-Westfalen',
-            'iserlohn': 'Nordrhein-Westfalen',
-            'issum': 'Nordrhein-Westfalen',
-            'jüchen': 'Nordrhein-Westfalen',
-            'jülich': 'Nordrhein-Westfalen',
-            'kaarst': 'Nordrhein-Westfalen',
-            'kall': 'Nordrhein-Westfalen',
-            'kamp-lintfort': 'Nordrhein-Westfalen',
-            'kerken': 'Nordrhein-Westfalen',
-            'kevelaer': 'Nordrhein-Westfalen',
-            'korschenbroich': 'Nordrhein-Westfalen',
-            'köln': 'Nordrhein-Westfalen',
-            'krefeld': 'Nordrhein-Westfalen',
-            'leverkusen': 'Nordrhein-Westfalen',
-            'mechernich': 'Nordrhein-Westfalen',
-            'meerbusch': 'Nordrhein-Westfalen',
-            'menden': 'Nordrhein-Westfalen',
-            'merzenich': 'Nordrhein-Westfalen',
-            'monheim am rhein': 'Nordrhein-Westfalen',
-            'münster': 'Nordrhein-Westfalen',
-            'nachrodt-wiblingwerde': 'Nordrhein-Westfalen',
-            'nettetal': 'Nordrhein-Westfalen',
-            'neukirchen-vluyn': 'Nordrhein-Westfalen',
-            'neuss': 'Nordrhein-Westfalen',
-            'oberberg': 'Nordrhein-Westfalen',
-            'olpe': 'Nordrhein-Westfalen',
-            'plettenberg': 'Nordrhein-Westfalen',
-            'pulheim': 'Nordrhein-Westfalen',
-            'ratingen': 'Nordrhein-Westfalen',
-            'rees': 'Nordrhein-Westfalen',
-            'rhein-sieg': 'Nordrhein-Westfalen',
-            'rheinisch-bergischer': 'Nordrhein-Westfalen',
-            'rheurdt': 'Nordrhein-Westfalen',
-            'rommerskirchen': 'Nordrhein-Westfalen',
-            'schleiden': 'Nordrhein-Westfalen',
-            'selfkant': 'Nordrhein-Westfalen',
-            'solingen': 'Nordrhein-Westfalen',
-            'sonsbeck': 'Nordrhein-Westfalen',
-            'sprockhövel': 'Nordrhein-Westfalen',
-            'straelen': 'Nordrhein-Westfalen',
-            'tönisvorst': 'Nordrhein-Westfalen',
-            'übach-palenberg': 'Nordrhein-Westfalen',
-            'uedem': 'Nordrhein-Westfalen',
-            'viersen': 'Nordrhein-Westfalen',
-            'voerde': 'Nordrhein-Westfalen',
-            'weeze': 'Nordrhein-Westfalen',
-            'weilerswist': 'Nordrhein-Westfalen',
-            'werdohl': 'Nordrhein-Westfalen',
-            'wesseling': 'Nordrhein-Westfalen',
-            'wülfrath': 'Nordrhein-Westfalen',
-            'wuppertal': 'Nordrhein-Westfalen',
-            'xanten': 'Nordrhein-Westfalen',
-            'zülpich': 'Nordrhein-Westfalen',
-
-            // Rheinland-Pfalz
-            'alzey-worms': 'Rheinland-Pfalz',
-            'altenkirchen (westerwald)': 'Rheinland-Pfalz',
-            'bad-kreuznach': 'Rheinland-Pfalz',
-            'bernkastel-wittlich': 'Rheinland-Pfalz',
-            'cochem-zell': 'Rheinland-Pfalz',
-            'eifelkreis bitburg-prüm': 'Rheinland-Pfalz',
-            'mayen-koblenz': 'Rheinland-Pfalz',
-            'trier-saarburg': 'Rheinland-Pfalz',
-            'trier-stadt': 'Rheinland-Pfalz',
-            'vulkaneifel': 'Rheinland-Pfalz',
-            'westerwald': 'Rheinland-Pfalz',
-
-            // Sachsen & Sachsen-Anhalt
-            'altmarkkreis-salzwedel': 'Sachsen-Anhalt',
-            'burgenland': 'Sachsen-Anhalt',
-            'leipzig': 'Sachsen',
-            'nordsachsen': 'Sachsen',
-
-            // Schleswig-Holstein
-            'lübeck': 'Schleswig-Holstein',
+            'calw': 'Baden-Württemberg', 'freudenstadt': 'Baden-Württemberg', 'heidelberg': 'Baden-Württemberg',
+            'heilbronn': 'Baden-Württemberg', 'karlsruhe kreis': 'Baden-Württemberg', 'karlsruhe stadt': 'Baden-Württemberg',
+            'konstanz': 'Baden-Württemberg', 'ortenau': 'Baden-Württemberg', 'rhein-neckar-kreis': 'Baden-Württemberg',
+            'tuttlingen': 'Baden-Württemberg', 'zollernalb': 'Baden-Württemberg', 'augsburg kreis': 'Bayern',
+            'augsburg stadt': 'Bayern', 'amberg': 'Bayern', 'bamberg': 'Bayern', 'bayreuth': 'Bayern', 'fürth': 'Bayern',
+            'gräfelfing': 'Bayern', 'kirchheim': 'Bayern', 'kulmbach': 'Bayern', 'monachium-południowy wschód': 'Bayern',
+            'neustadt a.d. waldnaab': 'Bayern', 'regensburg': 'Bayern', 'straubing-bogen': 'Bayern', 'berlin': 'Berlin',
+            'barnim': 'Brandenburg', 'elbe-elster': 'Brandenburg', 'oder-spree': 'Brandenburg', 'schwedt/oder': 'Brandenburg',
+            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'bad orb': 'Hessen', 'bad soden-salmünster': 'Hessen',
+            'biebergemünd': 'Hessen', 'eppstein': 'Hessen', 'eschwege': 'Hessen', 'flörsbachtal': 'Hessen',
+            'flörsheim am main': 'Hessen', 'frankfurt': 'Hessen', 'freigericht': 'Hessen', 'friedrichsdorf': 'Hessen',
+            'fulda': 'Hessen', 'gelnhausen': 'Hessen', 'giessen': 'Hessen', 'giessen stadt': 'Hessen', 'glashütten': 'Hessen',
+            'grävenwiesbach': 'Hessen', 'gross-gerau': 'Hessen', 'gründau': 'Hessen', 'hasselroth': 'Hessen',
+            'hattersheim am main': 'Hessen', 'hersfeld-rotenburg': 'Hessen', 'hofheim am taunus': 'Hessen',
+            'jossgrund': 'Hessen', 'kelkheim (taunus)': 'Hessen', 'königstein (taunus)': 'Hessen', 'kronberg': 'Hessen',
+            'kronberg im taunus': 'Hessen', 'liederbach': 'Hessen', 'limburg-weilburg': 'Hessen', 'linsengericht': 'Hessen',
+            'neu-anspach': 'Hessen', 'nidderau': 'Hessen', 'oberursel (taunus)': 'Hessen', 'rheingau-taunus': 'Hessen',
+            'rodenbach': 'Hessen', 'ronneburg': 'Hessen', 'schlüchtern': 'Hessen', 'schmitten': 'Hessen',
+            'schmitten im taunus': 'Hessen', 'schwalbach': 'Hessen', 'sinntal': 'Hessen', 'steinbach': 'Hessen',
+            'usingen': 'Hessen', 'walldorf-mörfelden': 'Hessen', 'wehrheim': 'Hessen', 'weilrod': 'Hessen',
+            'werra-meissner': 'Hessen', 'wiesbaden-naurod': 'Hessen', 'braunschweig': 'Niedersachsen',
+            'diepholz': 'Niedersachsen', 'emsland': 'Niedersachsen', 'gifhorn': 'Niedersachsen', 'göttingen': 'Niedersachsen',
+            'hannover': 'Niedersachsen', 'harburg': 'Niedersachsen', 'heidekreis': 'Niedersachsen',
+            'holzminden': 'Niedersachsen', 'lüneburg': 'Niedersachsen', 'osnabrück': 'Niedersachsen', 'stade': 'Niedersachsen',
+            'wolfsburg': 'Niedersachsen', 'aldenhoven': 'Nordrhein-Westfalen', 'alpen': 'Nordrhein-Westfalen',
+            'altena': 'Nordrhein-Westfalen', 'bad münstereifel': 'Nordrhein-Westfalen', 'bad-munstereifel': 'Nordrhein-Westfalen',
+            'balve': 'Nordrhein-Westfalen', 'bedburg': 'Nordrhein-Westfalen', 'bedburg-hau': 'Nordrhein-Westfalen',
+            'blankenheim': 'Nordrhein-Westfalen', 'bonn': 'Nordrhein-Westfalen', 'breckerfeld': 'Nordrhein-Westfalen',
+            'brühl': 'Nordrhein-Westfalen', 'dahlem': 'Nordrhein-Westfalen', 'dormagen': 'Nordrhein-Westfalen',
+            'dortmund': 'Nordrhein-Westfalen', 'dülmen': 'Nordrhein-Westfalen', 'düsseldorf': 'Nordrhein-Westfalen',
+            'emmerich am rhein': 'Nordrhein-Westfalen', 'ennepetal': 'Nordrhein-Westfalen', 'erftstadt': 'Nordrhein-Westfalen',
+            'erkrath': 'Nordrhein-Westfalen', 'euskirchen': 'Nordrhein-Westfalen', 'geilenkirchen': 'Nordrhein-Westfalen',
+            'geldern': 'Nordrhein-Westfalen', 'goch': 'Nordrhein-Westfalen', 'grefrath': 'Nordrhein-Westfalen',
+            'grevenbroich': 'Nordrhein-Westfalen', 'haan': 'Nordrhein-Westfalen', 'heiligenhaus': 'Nordrhein-Westfalen',
+            'heinsberg': 'Nordrhein-Westfalen', 'hellenthal': 'Nordrhein-Westfalen', 'hückelhoven': 'Nordrhein-Westfalen',
+            'hürth': 'Nordrhein-Westfalen', 'iserlohn': 'Nordrhein-Westfalen', 'issum': 'Nordrhein-Westfalen',
+            'jüchen': 'Nordrhein-Westfalen', 'jülich': 'Nordrhein-Westfalen', 'kaarst': 'Nordrhein-Westfalen',
+            'kall': 'Nordrhein-Westfalen', 'kamp-lintfort': 'Nordrhein-Westfalen', 'kerken': 'Nordrhein-Westfalen',
+            'kevelaer': 'Nordrhein-Westfalen', 'korschenbroich': 'Nordrhein-Westfalen', 'köln': 'Nordrhein-Westfalen',
+            'krefeld': 'Nordrhein-Westfalen', 'leverkusen': 'Nordrhein-Westfalen', 'mechernich': 'Nordrhein-Westfalen',
+            'meerbusch': 'Nordrhein-Westfalen', 'menden': 'Nordrhein-Westfalen', 'merzenich': 'Nordrhein-Westfalen',
+            'monheim am rhein': 'Nordrhein-Westfalen', 'münster': 'Nordrhein-Westfalen',
+            'nachrodt-wiblingwerde': 'Nordrhein-Westfalen', 'nettetal': 'Nordrhein-Westfalen',
+            'neukirchen-vluyn': 'Nordrhein-Westfalen', 'neuss': 'Nordrhein-Westfalen', 'oberberg': 'Nordrhein-Westfalen',
+            'olpe': 'Nordrhein-Westfalen', 'plettenberg': 'Nordrhein-Westfalen', 'pulheim': 'Nordrhein-Westfalen',
+            'ratingen': 'Nordrhein-Westfalen', 'rees': 'Nordrhein-Westfalen', 'rhein-sieg': 'Nordrhein-Westfalen',
+            'rheinisch-bergischer': 'Nordrhein-Westfalen', 'rheurdt': 'Nordrhein-Westfalen',
+            'rommerskirchen': 'Nordrhein-Westfalen', 'schleiden': 'Nordrhein-Westfalen', 'selfkant': 'Nordrhein-Westfalen',
+            'solingen': 'Nordrhein-Westfalen', 'sonsbeck': 'Nordrhein-Westfalen', 'sprockhövel': 'Nordrhein-Westfalen',
+            'straelen': 'Nordrhein-Westfalen', 'tönisvorst': 'Nordrhein-Westfalen', 'übach-palenberg': 'Nordrhein-Westfalen',
+            'uedem': 'Nordrhein-Westfalen', 'viersen': 'Nordrhein-Westfalen', 'voerde': 'Nordrhein-Westfalen',
+            'weeze': 'Nordrhein-Westfalen', 'weilerswist': 'Nordrhein-Westfalen', 'werdohl': 'Nordrhein-Westfalen',
+            'wesseling': 'Nordrhein-Westfalen', 'wülfrath': 'Nordrhein-Westfalen', 'wuppertal': 'Nordrhein-Westfalen',
+            'xanten': 'Nordrhein-Westfalen', 'zülpich': 'Nordrhein-Westfalen', 'alzey-worms': 'Rheinland-Pfalz',
+            'altenkirchen (westerwald)': 'Rheinland-Pfalz', 'bad-kreuznach': 'Rheinland-Pfalz',
+            'bernkastel-wittlich': 'Rheinland-Pfalz', 'cochem-zell': 'Rheinland-Pfalz',
+            'eifelkreis bitburg-prüm': 'Rheinland-Pfalz', 'mayen-koblenz': 'Rheinland-Pfalz',
+            'trier-saarburg': 'Rheinland-Pfalz', 'trier-stadt': 'Rheinland-Pfalz', 'vulkaneifel': 'Rheinland-Pfalz',
+            'westerwald': 'Rheinland-Pfalz', 'altmarkkreis-salzwedel': 'Sachsen-Anhalt', 'burgenland': 'Sachsen-Anhalt',
+            'leipzig': 'Sachsen', 'nordsachsen': 'Sachsen', 'lübeck': 'Schleswig-Holstein',
             'rendsburg-eckernförde': 'Schleswig-Holstein'
         };
 
@@ -1306,21 +1154,13 @@
         let availabilityMatrix = {};
         let regionLandMap = {};
 
-        // Zbiór danych do pastylek terminów
-        let regionDatesMap = {};
-
         function rebuildRegionsCheckboxesWithLands(regionsData) {
             const container = document.getElementById('regionsCheckboxes');
             if (!container) return;
 
-            // 1. Zasilamy mapę ze statycznego słownika dla rejonów specjalnych
             for (let reg in SPECIAL_REGIONS_LAND_MAP) {
                 regionLandMap[reg.toLowerCase().trim()] = SPECIAL_REGIONS_LAND_MAP[reg];
             }
-
-            // 2. Pobieranie danych z kolumny B (Data) i C (Rodzaj)
-            regionDatesMap = {};
-            let dzisStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
@@ -1328,58 +1168,12 @@
                     let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
                         ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
                         : "";
-                    
-                    if (rName) {
-                        let cleanName = rName.toLowerCase().trim();
-                        if (rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE" && rLand !== "Pozostałe Landy") {
-                            regionLandMap[cleanName] = rLand;
-                        }
-
-                        if (!regionDatesMap[cleanName]) {
-                            regionDatesMap[cleanName] = [];
-                        }
-
-                        // Kolumna B: Daty, Kolumna C: Rodzaj
-                        let dStr = typeof rObj === 'string' ? "" : (rObj.daty || rObj["DATA (PN-SOB)"] || "");
-                        let rStr = typeof rObj === 'string' ? "" : (rObj.rodzaj || rObj["RODZAJ"] || "");
-
-                        if (dStr && dStr !== "-") {
-                            let linieDat = dStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
-                            let linieRodzaj = rStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
-
-                            linieDat.forEach((linia, idx) => {
-                                let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if (m) {
-                                    let pelnaData = m[0]; // YYYY-MM-DD
-                                    if (pelnaData >= dzisStr) {
-                                        let samDzien = m[3]; // Sam dzień: np. "07", "08", "10"
-                                        let rodzajWpisu = linieRodzaj[idx] || "";
-
-                                        // Zamiana frakcji na litery S / M / E
-                                        let tagi = [];
-                                        if (/sperrm/i.test(rodzajWpisu)) tagi.push("S");
-                                        if (/metall/i.test(rodzajWpisu)) tagi.push("M");
-                                        if (/e-schrott|elektro|kuhl|kühl/i.test(rodzajWpisu)) tagi.push("E");
-                                        
-                                        let frakcjaTekst = tagi.length > 0 ? tagi.join('/') : "S";
-
-                                        let juzJest = regionDatesMap[cleanName].some(x => x.pelnaData === pelnaData);
-                                        if (!juzJest) {
-                                            regionDatesMap[cleanName].push({
-                                                pelnaData: pelnaData,
-                                                dzien: samDzien,
-                                                frakcja: frakcjaTekst
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                    if (rName && rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE" && rLand !== "Pozostałe Landy") {
+                        regionLandMap[rName.toLowerCase().trim()] = rLand;
                     }
                 });
             }
 
-            // 3. Pobieramy wszystkie istniejące etykiety rejonów z formularza
             const labels = Array.from(container.querySelectorAll('.region-label'));
             if (labels.length === 0) return;
 
@@ -1389,7 +1183,6 @@
                 const cleanKey = val.toLowerCase().trim();
                 const land = regionLandMap[cleanKey] || SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Pozostałe Landy";
 
-                // Przebudowa struktury: lewa strona (checkbox + nazwa), prawa strona (pastylki)
                 lbl.innerHTML = '';
                 
                 const leftDiv = document.createElement('span');
@@ -1398,23 +1191,10 @@
                 leftDiv.appendChild(document.createTextNode(val));
                 lbl.appendChild(leftDiv);
 
-                // Prawa strona: pastylki (domyślnie ukryte)
+                // Pusty kontener na pastylki – zasilany dopiero po wybraniu tygodnia!
                 const rightDiv = document.createElement('span');
                 rightDiv.className = 'region-schedule-badges';
                 rightDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
-
-                let terminy = regionDatesMap[cleanKey] || [];
-                if (terminy.length > 0) {
-                    terminy.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
-                    // Pokazuje do 5 terminów w wierszu w formacie: 10 (S)
-                    let pills = terminy.slice(0, 5).map(item => 
-                        `<span class="schedule-pill"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`
-                    ).join('');
-                    rightDiv.innerHTML = pills;
-                } else {
-                    rightDiv.innerHTML = `<span class="schedule-pill"><b>Harmonogram</b></span>`;
-                }
-
                 lbl.appendChild(rightDiv);
 
                 return {
@@ -1424,7 +1204,6 @@
                 };
             });
 
-            // 4. Sortowanie dwupoziomowe: 1. Land (A-Z), 2. Nazwa rejonu (A-Z)
             structuredRegions.sort((a, b) => {
                 let compLand = a.land.localeCompare(b.land, 'de', { sensitivity: 'base' });
                 if (compLand !== 0) return compLand;
@@ -1446,6 +1225,78 @@
             });
         }
         
+        // DYNAMICZNE WYPEŁNIANIE PASTYLEK TYLKO DLA ZAZNACZONYCH TYGODNI
+        function updateScheduleBadges() {
+            let selectedWeeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
+            let matrixToUse = availabilityMatrix;
+
+            document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
+                let chk = label.querySelector('.region-chk');
+                let badgeContainer = label.querySelector('.region-schedule-badges');
+                if (!chk || !badgeContainer) return;
+
+                // Jeśli rejon nie jest zaznaczony LUB żaden tydzień nie jest zaznaczony -> CHOWAMY PASTYLKI
+                if (!chk.checked || selectedWeeks.length === 0) {
+                    badgeContainer.classList.remove('is-visible');
+                    badgeContainer.innerHTML = '';
+                    return;
+                }
+
+                let rName = chk.value.trim().toLowerCase();
+                let terminyDlaWybranychTygodni = [];
+
+                selectedWeeks.forEach(w => {
+                    if (!matrixToUse[w]) return;
+                    matrixToUse[w].forEach(item => {
+                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                        if (itemName !== rName) return;
+
+                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
+                        let rStr = typeof item === 'string' ? "" : (item.rodzaj || item["RODZAJ"] || "");
+
+                        if (dStr && dStr !== "-") {
+                            let linieDat = dStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+                            let linieRodzaj = rStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+
+                            linieDat.forEach((linia, idx) => {
+                                let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
+                                if (m) {
+                                    let samDzien = m[3]; // Np. "07", "08", "10"
+                                    let rodzajWpisu = linieRodzaj[idx] || "";
+
+                                    let tagi = [];
+                                    if (/sperrm/i.test(rodzajWpisu)) tagi.push("S");
+                                    if (/metall/i.test(rodzajWpisu)) tagi.push("M");
+                                    if (/e-schrott|elektro|kuhl|kühl/i.test(rodzajWpisu)) tagi.push("E");
+                                    let frakcjaTekst = tagi.length > 0 ? tagi.join('/') : "S";
+
+                                    if (!terminyDlaWybranychTygodni.some(x => x.pelnaData === m[0])) {
+                                        terminyDlaWybranychTygodni.push({
+                                            pelnaData: m[0],
+                                            dzien: samDzien,
+                                            frakcja: frakcjaTekst
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+
+                if (terminyDlaWybranychTygodni.length > 0) {
+                    terminyDlaWybranychTygodni.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
+                    let pills = terminyDlaWybranychTygodni.map(item => 
+                        `<span class="schedule-pill"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`
+                    ).join('');
+                    badgeContainer.innerHTML = pills;
+                    badgeContainer.classList.add('is-visible');
+                } else {
+                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak dat</b></span>`;
+                    badgeContainer.classList.add('is-visible');
+                }
+            });
+        }
+
         function fetchAvailableRegions() {
             var d = new Date();
             var month = String(d.getMonth() + 1).padStart(2, '0');
@@ -1478,9 +1329,7 @@
                         let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
                         availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
 
-                        // Budujemy grupy Landów w oknie wyboru rejonów
                         rebuildRegionsCheckboxesWithLands(availabilityMatrixAll);
-                        
                         updateMutualFiltering();
                     } else if (data.status === "ODMOWA_DOSTEPU") {
                         console.error("Błąd: ", data.message);
@@ -1503,7 +1352,6 @@
                             if (fallbackVideo) fallbackVideo.pause();
                         }, 400); 
                     }
-                    
                     updatePriceDisplay();
                 });
         }
@@ -1608,17 +1456,17 @@
             let ratePerDay;
 
             if (totalDays >= 200) {
-                ratePerDay = isPl ? 5.0 : 1.20;   // -80% (od 200 dni)
+                ratePerDay = isPl ? 5.0 : 1.20;
             } else if (totalDays >= 100) {
-                ratePerDay = isPl ? 10.0 : 2.40;  // -60% (100 - 199 dni)
+                ratePerDay = isPl ? 10.0 : 2.40;
             } else if (totalDays >= 61) {
-                ratePerDay = isPl ? 15.0 : 3.60;  // -40% (61 - 99 dni)
+                ratePerDay = isPl ? 15.0 : 3.60;
             } else if (totalDays >= 41) {
-                ratePerDay = isPl ? 17.5 : 4.20;  // -30% (41 - 60 dni)
+                ratePerDay = isPl ? 17.5 : 4.20;
             } else if (totalDays >= 6) {
-                ratePerDay = isPl ? 20.0 : 4.80;  // -20% (6 - 40 dni)
+                ratePerDay = isPl ? 20.0 : 4.80;
             } else {
-                ratePerDay = baseRate;            // 0% (1 - 5 dni bez rabatu)
+                ratePerDay = baseRate;
             }
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
@@ -1751,16 +1599,6 @@
                 if(!isAvailable && chk.checked) {
                     chk.checked = false;
                 }
-
-                // Odsłaniamy pastylki TYLKO jeśli checkbox jest fizycznie zaznaczony
-                let badgeContainer = label.querySelector('.region-schedule-badges');
-                if (badgeContainer) {
-                    if (chk.checked) {
-                        badgeContainer.classList.add('is-visible');
-                    } else {
-                        badgeContainer.classList.remove('is-visible');
-                    }
-                }
             });
             
             selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -1799,7 +1637,6 @@
                 if(!isAvailable && chk.checked) chk.checked = false;
             });
 
-            // Ukrywamy puste nagłówki Landów, jeśli wszystkie ich rejony są wyszarzone
             document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
                 let nextEl = header.nextElementSibling;
                 let hasVisible = false;
@@ -1814,6 +1651,7 @@
             });
 
             updateDynamicOptions();
+            updateScheduleBadges(); // Przeliczamy i pokazujemy pastylki dla wybranego zestawu
             updatePriceDisplay();
         }
 
@@ -1840,8 +1678,6 @@
 
         document.getElementById('btnUnselectAll').addEventListener('click', function() {
             document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
-            // Ukrywamy wszystkie odsłonięte pastylki
-            document.querySelectorAll('.region-schedule-badges').forEach(b => b.classList.remove('is-visible'));
             updateMutualFiltering();
         });
 
