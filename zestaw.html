@@ -69,6 +69,13 @@
             font-family: inherit;
         }
 
+        /* ODBLOKOWANIE INTERAKCJI DLA MODALA MAPY INPOST */
+        #inpostModal, #inpostModal * {
+            -webkit-user-select: auto !important;
+            user-select: auto !important;
+            pointer-events: auto !important;
+        }
+
         /* NAGŁÓWKI */
         .harmonogram-wrapper h2 {
             color: var(--primary-accent);
@@ -118,7 +125,7 @@
         .strategy-card { 
             flex: 1 1 100%; 
             background: var(--bg-card); 
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-md); 
             padding: clamp(16px, 3vw, 28px); 
             border: 1px solid var(--border-subtle); 
             border-top: 4px solid var(--primary-accent); 
@@ -138,13 +145,13 @@
             font-weight: 900; 
             text-align: center; 
             margin: 4px 0 8px 0; 
-            color: var(--primary-accent);
+            color: var(--primary-accent); 
             text-shadow: 0 0 16px rgba(46, 204, 113, 0.25); 
         }
         .price-subtitle-small { 
             display: block; 
             font-size: clamp(0.85rem, 1.5vw, 0.96rem); 
-            color: var(--text-muted);
+            color: var(--text-muted); 
             text-align: center; 
             margin-bottom: 18px; 
         }
@@ -177,7 +184,7 @@
         /* FORMULARZ ZAMÓWIENIA */
         .form-wrapper { 
             background: linear-gradient(145deg, #152238 0%, #1e293b 100%); 
-            padding: clamp(14px, 2.5vw, 26px);
+            padding: clamp(14px, 2.5vw, 26px); 
             border-radius: var(--radius-md); 
             margin-top: 20px; 
             border: 1px solid var(--border-subtle); 
@@ -191,10 +198,10 @@
             margin-bottom: 12px; 
             margin-top: 22px; 
             font-weight: 700; 
-            font-size: clamp(1rem, 2vw, 1.22rem);
+            font-size: clamp(1rem, 2vw, 1.22rem); 
             border-top: 1px solid rgba(255,255,255,0.08); 
             padding-top: 18px; 
-            letter-spacing: 0.3px;
+            letter-spacing: 0.3px; 
         }
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
@@ -202,7 +209,7 @@
             position: relative; 
             min-height: 280px; 
             max-height: 380px; 
-            overflow-y: scroll;
+            overflow-y: scroll; 
             background: rgba(10, 14, 20, 0.65); 
             border: 1px solid var(--border-subtle); 
             border-radius: var(--radius-sm); 
@@ -269,7 +276,7 @@
             font-weight: 700;
         }
 
-        /* WIERSZ REJONU / TYGODNIA (Touch Target min 44px na telefonie) */
+        /* WIERSZ REJONU / TYGODNIA */
         .region-label { 
             display: flex; 
             flex-direction: column; 
@@ -873,65 +880,85 @@
 
     </div>
 
-    <!-- MODAL INPOST -->
-<div id="inpostModal" class="inpost-modal-overlay">
-    <div class="inpost-modal-content">
-        <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
-            <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
-            <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
-        </div>
-        <div style="flex: 1; width: 100%; height: 100%; position: relative;">
-            <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIxMDQzMzU0OTcsImlhdCI6MTc4ODk3NTQ5NywianRpIjoiOTE3ZTZlNTAtMzM1NC00Yzg1LThlZjAtNjcyYzVkNzg1YzU2IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpZQXRHZkFJR2llTzA1b055TWtsdWxxeU1UZFF1Mnk1VXFjZHpJaGo2QTVBIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiMTE0MmY1MzUtZWJhZS00MTNjLWIzZGEtN2RmMzFmNjc1OTkzIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjExNDJmNTM1LWViYWUtNDEzYy1iM2RhLTdkZjMxZjY3NTk5MyIsImFsbG93ZWRfcmVmZXJyZXJzIjoiZGFidS1pbmZvLmNvbSIsInV1aWQiOiI0YjJkZjdmMi00MzYxLTRiODItODA1MC02ZDdhNTM3NTI3ZTYifQ.ggwtWyuokYjZ_HKl54jOADkIZ5i6cUxbY6CBDs3JwpC2OTIRYxxfVloLt6urXBgzHikNEg2stOXwYeUb6dIEYVpQuRC8GB-WhcAYzLr9c7bpQcj1175j9Gz1QHsdIijgrnR--dcsJv1nU_GrqGDCosrhMBHN94vfa6aHbYtCC0OvlPj7jZlqkGipT_ps8EWlCaMCWA3aelloZroy7yXNhrA_CIPGcoi-CZZVp7bqTuU1-yjJsXb6MOC1LqMdQlS9vySSQYvDouyGEIsYEPEl3pba47wVFvcBmHWOvncrprPkIMnugnRwE4U0kdd8nBFemXqwu3timNpEFpuJ_nj4Bw" language="pl" config="parcelCollect"></inpost-geowidget>
+    <!-- MODAL INPOST Z TOKENEM PRODUKCYJNYM -->
+    <div id="inpostModal" class="inpost-modal-overlay">
+        <div class="inpost-modal-content">
+            <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
+                <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
+                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <div style="flex: 1; width: 100%; height: 100%; position: relative;">
+                <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIxMDQzMzU0OTcsImlhdCI6MTc4ODk3NTQ5NywianRpIjoiOTE3ZTZlNTAtMzM1NC00Yzg1LThlZjAtNjcyYzVkNzg1YzU2IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpZQXRHZkFJR2llTzA1b055TWtsdWxxeU1UZFF1Mnk1VXFjZHpJaGo2QTVBIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiMTE0MmY1MzUtZWJhZS00MTNjLWIzZGEtN2RmMzFmNjc1OTkzIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjExNDJmNTM1LWViYWUtNDEzYy1iM2RhLTdkZjMxZjY3NTk5MyIsImFsbG93ZWRfcmVmZXJyZXJzIjoiZGFidS1pbmZvLmNvbSIsInV1aWQiOiI0YjJkZjdmMi00MzYxLTRiODItODA1MC02ZDdhNTM3NTI3ZTYifQ.ggwtWyuokYjZ_HKl54jOADkIZ5i6cUxbY6CBDs3JwpC2OTIRYxxfVloLt6urXBgzHikNEg2stOXwYeUb6dIEYVpQuRC8GB-WhcAYzLr9c7bpQcj1175j9Gz1QHsdIijgrnR--dcsJv1nU_GrqGDCosrhMBHN94vfa6aHbYtCC0OvlPj7jZlqkGipT_ps8EWlCaMCWA3aelloZroy7yXNhrA_CIPGcoi-CZZVp7bqTuU1-yjJsXb6MOC1LqMdQlS9vySSQYvDouyGEIsYEPEl3pba47wVFvcBmHWOvncrprPkIMnugnRwE4U0kdd8nBFemXqwu3timNpEFpuJ_nj4Bw" language="pl" config="parcelCollect"></inpost-geowidget>
+            </div>
         </div>
     </div>
-</div>
 
 <script>
 //<![CDATA[
-function handlePaczkomatSelection(data) {
-        if (!data) return;
-        // Obsługa zarówno bezpośredniego obiektu, jak i zdarzenia CustomEvent z detail
-        var point = data.detail || data;
-        
-        var kod = point.name || point.id || "";
-        var addr1 = (point.address && point.address.line1) ? point.address.line1 : "";
-        var addr2 = (point.address && point.address.line2) ? point.address.line2 : "";
-        var pelnyAdres = [addr1, addr2].filter(Boolean).join(', ');
+    // --- WIELOWARSTWOWA OBSŁUGA WYBORU PUNKTU INPOST GEOWIDGET v5 ---
+    function extractPointData(raw) {
+        if (!raw) return null;
+        var p = raw.detail || raw.point || raw.data || raw;
+        var name = p.name || p.id || (p.point && (p.point.name || p.point.id));
+        if (!name && typeof p === 'string' && /^[A-Z]{3,4}\d{2,5}[A-Z0-9]*$/i.test(p.trim())) {
+            name = p.trim();
+        }
+        if (!name) return null;
+
+        var addr = "";
+        if (p.address) {
+            addr = [p.address.line1, p.address.line2].filter(Boolean).join(', ');
+        } else if (p.address_details) {
+            addr = [p.address_details.street + " " + (p.address_details.building_number || ""), p.address_details.post_code + " " + p.address_details.city].filter(Boolean).join(', ');
+        }
+        return { code: name, address: addr };
+    }
+
+    function applySelectedPoint(parsed) {
+        if (!parsed || !parsed.code) return;
+        var fullText = "[InPost] " + parsed.code + (parsed.address ? " (" + parsed.address + ")" : "");
 
         var targetInput = document.getElementById('paczkomatInput');
         var infoDiv = document.getElementById('selectedPaczkomatInfo');
-        
-        if (targetInput) {
-            targetInput.value = "[InPost] " + kod + (pelnyAdres ? " (" + pelnyAdres + ")" : "");
-        }
-        if (infoDiv) {
-            infoDiv.innerText = "✓ Wybrano: " + kod + (pelnyAdres ? " - " + pelnyAdres : "");
-        }
-        
         var modal = document.getElementById('inpostModal');
+
+        if (targetInput) targetInput.value = fullText;
+        if (infoDiv) infoDiv.innerText = "✓ Wybrano: " + parsed.code + (parsed.address ? " - " + parsed.address : "");
         if (modal) modal.style.display = 'none';
     }
 
-    // 1. Oficjalny listener zdarzenia globalnego InPost Geowidget v5
-    document.addEventListener('inpost:geowidget:point:select', function(e) {
-        handlePaczkomatSelection(e);
+    window.addEventListener('message', function(event) {
+        if (!event.data) return;
+        var parsed = extractPointData(event.data);
+        if (parsed) applySelectedPoint(parsed);
     });
 
-    // 2. Bezpośredni listener na instancji komponentu
-    document.addEventListener("DOMContentLoaded", function() {
-        var widgetEl = document.getElementById('inpostGeowidget');
-        if (widgetEl) {
-            widgetEl.addEventListener('pointselect', handlePaczkomatSelection);
-            widgetEl.addEventListener('inpost:geowidget:point:select', handlePaczkomatSelection);
-        }
+    ['inpost:geowidget:point:select', 'pointselect', 'point:select', 'geowidget:point:select'].forEach(function(evtName) {
+        document.addEventListener(evtName, function(e) {
+            var parsed = extractPointData(e);
+            if (parsed) applySelectedPoint(parsed);
+        });
+        window.addEventListener(evtName, function(e) {
+            var parsed = extractPointData(e);
+            if (parsed) applySelectedPoint(parsed);
+        });
     });
 
-    // 3. Fallback pod wywołanie z atrybutu inline w HTML
-    window.onPaczkomatSelect = function(pointOrEvent) {
-        handlePaczkomatSelection(pointOrEvent);
+    window.onPaczkomatSelect = function(data) {
+        var parsed = extractPointData(data);
+        if (parsed) applySelectedPoint(parsed);
     };
 
     document.addEventListener("DOMContentLoaded", function() {
+        var w = document.getElementById('inpostGeowidget');
+        if (w) {
+            ['pointselect', 'inpost:geowidget:point:select', 'select'].forEach(function(evtName) {
+                w.addEventListener(evtName, function(e) {
+                    var parsed = extractPointData(e);
+                    if (parsed) applySelectedPoint(parsed);
+                });
+            });
+        }
     
         const allRegions = document.querySelectorAll('#regionsCheckboxes .region-chk');
         const countDisplay = document.getElementById('dynamicRegionCount');
