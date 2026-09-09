@@ -257,7 +257,7 @@
             font-weight: bold;
         }
 
-        /* UKŁAD WIERSZA REJONU (FLEX Z OBSŁUGĄ TERMINÓW PO PRAWEJ) */
+        /* UKŁAD WIERSZA REJONU (FLEXBOX) */
         .region-label { 
             display: flex; 
             align-items: center;
@@ -291,7 +291,7 @@
 
         /* PASTYLKI TERMINÓW PO PRAWEJ STRONIE (POJAWIAJĄ SIĘ PO KLIKNIĘCIU) */
         .region-schedule-badges {
-            display: none; /* Domyślnie schowane */
+            display: none;
             align-items: center;
             gap: 5px;
             flex-wrap: nowrap;
@@ -299,7 +299,7 @@
             flex-shrink: 0;
         }
         .region-schedule-badges.is-visible {
-            display: flex; /* Odsłaniane po kliknięciu checkboxa */
+            display: flex;
         }
         .schedule-pill {
             background: rgba(59, 130, 246, 0.15);
@@ -1306,7 +1306,7 @@
         let availabilityMatrix = {};
         let regionLandMap = {};
 
-        // Zbiór dat dla poszczególnych rejonów (do dynamicznych pastylek)
+        // Zbiór danych do pastylek terminów
         let regionDatesMap = {};
 
         function rebuildRegionsCheckboxesWithLands(regionsData) {
@@ -1318,8 +1318,10 @@
                 regionLandMap[reg.toLowerCase().trim()] = SPECIAL_REGIONS_LAND_MAP[reg];
             }
 
-            // 2. Nadpisujemy/uzupełniamy danymi z bazy danych oraz gromadzimy daty
+            // 2. Pobieranie danych z kolumny B (Data) i C (Rodzaj)
             regionDatesMap = {};
+            let dzisStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
                     let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
@@ -1333,16 +1335,43 @@
                             regionLandMap[cleanName] = rLand;
                         }
 
-                        // Ekstrakcja dat dla rejonu
                         if (!regionDatesMap[cleanName]) {
-                            regionDatesMap[cleanName] = new Set();
+                            regionDatesMap[cleanName] = [];
                         }
-                        let dStr = typeof rObj === 'string' ? "" : (rObj.daty || "");
+
+                        // Kolumna B: Daty, Kolumna C: Rodzaj
+                        let dStr = typeof rObj === 'string' ? "" : (rObj.daty || rObj["DATA (PN-SOB)"] || "");
+                        let rStr = typeof rObj === 'string' ? "" : (rObj.rodzaj || rObj["RODZAJ"] || "");
+
                         if (dStr && dStr !== "-") {
-                            dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x).forEach(d => {
-                                let m = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                            let linieDat = dStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+                            let linieRodzaj = rStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+
+                            linieDat.forEach((linia, idx) => {
+                                let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
                                 if (m) {
-                                    regionDatesMap[cleanName].add(m[2] + "." + m[3]); // format MM.DD
+                                    let pelnaData = m[0]; // YYYY-MM-DD
+                                    if (pelnaData >= dzisStr) {
+                                        let samDzien = m[3]; // Sam dzień: np. "07", "08", "10"
+                                        let rodzajWpisu = linieRodzaj[idx] || "";
+
+                                        // Zamiana frakcji na litery S / M / E
+                                        let tagi = [];
+                                        if (/sperrm/i.test(rodzajWpisu)) tagi.push("S");
+                                        if (/metall/i.test(rodzajWpisu)) tagi.push("M");
+                                        if (/e-schrott|elektro|kuhl|kühl/i.test(rodzajWpisu)) tagi.push("E");
+                                        
+                                        let frakcjaTekst = tagi.length > 0 ? tagi.join('/') : "S";
+
+                                        let juzJest = regionDatesMap[cleanName].some(x => x.pelnaData === pelnaData);
+                                        if (!juzJest) {
+                                            regionDatesMap[cleanName].push({
+                                                pelnaData: pelnaData,
+                                                dzien: samDzien,
+                                                frakcja: frakcjaTekst
+                                            });
+                                        }
+                                    }
                                 }
                             });
                         }
@@ -1360,7 +1389,7 @@
                 const cleanKey = val.toLowerCase().trim();
                 const land = regionLandMap[cleanKey] || SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Pozostałe Landy";
 
-                // Przebudowa struktury: lewa strona (checkbox + text), prawa strona (pastylki)
+                // Przebudowa struktury: lewa strona (checkbox + nazwa), prawa strona (pastylki)
                 lbl.innerHTML = '';
                 
                 const leftDiv = document.createElement('span');
@@ -1374,10 +1403,13 @@
                 rightDiv.className = 'region-schedule-badges';
                 rightDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
 
-                let dSet = regionDatesMap[cleanKey] ? Array.from(regionDatesMap[cleanKey]).sort() : [];
-                if (dSet.length > 0) {
-                    // Prezentujemy maksymalnie 3 najbliższe terminy
-                    let pills = dSet.slice(0, 3).map(dt => `<span class="schedule-pill"><b>${dt}</b> <small>(S)</small></span>`).join('');
+                let terminy = regionDatesMap[cleanKey] || [];
+                if (terminy.length > 0) {
+                    terminy.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
+                    // Pokazuje do 5 terminów w wierszu w formacie: 10 (S)
+                    let pills = terminy.slice(0, 5).map(item => 
+                        `<span class="schedule-pill"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`
+                    ).join('');
                     rightDiv.innerHTML = pills;
                 } else {
                     rightDiv.innerHTML = `<span class="schedule-pill"><b>Harmonogram</b></span>`;
