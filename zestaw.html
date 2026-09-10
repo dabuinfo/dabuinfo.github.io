@@ -1630,6 +1630,7 @@
             return count === 1 ? arr[0] : arr[1];
         }
 
+        // --- SILNIK WYCENY I RABATÓW BEZ AFISZOWANIA W OPISIE ---
         function calculateActiveDaysAndPrice() {
             let currentLang = getBrowserLang();
             let isPl = currentLang === 'pl';
@@ -1688,18 +1689,17 @@
             let baseRate = isPl ? 25.0 : 6.0;
             let ratePerDay;
 
-            if (totalDays >= 200) {
-                ratePerDay = isPl ? 5.0 : 1.20;
-            } else if (totalDays >= 100) {
-                ratePerDay = isPl ? 10.0 : 2.40;
-            } else if (totalDays >= 61) {
-                ratePerDay = isPl ? 15.0 : 3.60;
-            } else if (totalDays >= 41) {
-                ratePerDay = isPl ? 17.5 : 4.20;
+            // Progi rabatowe: 0% do 5 dni, 20% od 6 dni, 40% od 21 dni, 60% od 51 dni, 80% od 100 dni
+            if (totalDays >= 100) {
+                ratePerDay = isPl ? 5.0 : 1.20;       // Rabat 80%
+            } else if (totalDays >= 51) {
+                ratePerDay = isPl ? 10.0 : 2.40;      // Rabat 60%
+            } else if (totalDays >= 21) {
+                ratePerDay = isPl ? 15.0 : 3.60;      // Rabat 40%
             } else if (totalDays >= 6) {
-                ratePerDay = isPl ? 20.0 : 4.80;
+                ratePerDay = isPl ? 20.0 : 4.80;      // Rabat 20%
             } else {
-                ratePerDay = baseRate;
+                ratePerDay = baseRate;                 // Do 5 dni: bez rabatu (25 zł / 6 €)
             }
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
