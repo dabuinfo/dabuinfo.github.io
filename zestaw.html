@@ -1686,20 +1686,31 @@
                 totalDays += regionDates.size;
             });
 
-            let baseRate = isPl ? 25.0 : 6.0;
+let baseRate = isPl ? 25.0 : 6.0;
             let ratePerDay;
 
-            // Progi rabatowe: 0% do 5 dni, 20% od 6 dni, 40% od 21 dni, 60% od 51 dni, 80% od 100 dni
-            if (totalDays >= 100) {
-                ratePerDay = isPl ? 5.0 : 1.20;       // Rabat 80%
-            } else if (totalDays >= 51) {
-                ratePerDay = isPl ? 10.0 : 2.40;      // Rabat 60%
-            } else if (totalDays >= 21) {
-                ratePerDay = isPl ? 15.0 : 3.60;      // Rabat 40%
-            } else if (totalDays >= 6) {
-                ratePerDay = isPl ? 20.0 : 4.80;      // Rabat 20%
+            if (isPl) {
+                // Pełna drabinka dla polskich klientów (PLN):
+                if (totalDays >= 100) {
+                    ratePerDay = 5.0;   // 80% rabatu
+                } else if (totalDays >= 51) {
+                    ratePerDay = 10.0;  // 60% rabatu
+                } else if (totalDays >= 21) {
+                    ratePerDay = 15.0;  // 40% rabatu
+                } else if (totalDays >= 6) {
+                    ratePerDay = 20.0;  // 20% rabatu
+                } else {
+                    ratePerDay = 25.0;  // do 5 dni bez rabatu
+                }
             } else {
-                ratePerDay = baseRate;                 // Do 5 dni: bez rabatu (25 zł / 6 €)
+                // Klienci zagraniczni (€) – drabinka zatrzymana na maks. 40%:
+                if (totalDays >= 21) {
+                    ratePerDay = 3.60;  // 40% rabatu (baza 6,00 €)
+                } else if (totalDays >= 6) {
+                    ratePerDay = 4.80;  // 20% rabatu
+                } else {
+                    ratePerDay = 6.00;  // do 5 dni bez rabatu
+                }
             }
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
@@ -1882,7 +1893,7 @@
                     if (calc.savings > 0) {
                         configSubtitle.innerHTML = (calc.lang === 'pl')
                             ? `Oszczędzasz <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (Stawka: ${calc.ratePerDay} zł/dzień)`
-                            : `Sie sparen <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (${calc.ratePerDay} €/Tag)`;
+                            : `Sie sparen <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (${calc.ratePerDay.toFixed(2)} €/Tag)`;
                     } else {
                         configSubtitle.textContent = localT.configSubtitle;
                     }
