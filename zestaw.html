@@ -99,10 +99,10 @@
 
         .benefit-list { list-style: none !important; padding: 0 !important; margin: 0; }
         .benefit-list li { 
-            margin-bottom: 10px; 
-            padding-left: 26px !important; 
+            margin-bottom: 8px; 
+            padding-left: 24px !important; 
             position: relative; 
-            font-size: clamp(0.88rem, 1.4vw, 0.98rem); 
+            font-size: clamp(0.85rem, 1.3vw, 0.94rem); 
             line-height: 1.45; 
         }
         .benefit-list li::before { 
@@ -163,23 +163,37 @@
 
         /* FORMAT INFO BOX */
         .format-columns { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 14px; 
             margin: 0 auto; 
             width: 100%; 
             box-sizing: border-box; 
         }
+        @media (min-width: 860px) {
+            .format-columns {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
         .format-col { 
-            padding: 16px 20px; 
+            padding: 16px; 
             border-radius: var(--radius-sm); 
             box-sizing: border-box; 
             width: 100%; 
             text-align: left; 
+            border: 1px solid var(--border-subtle);
         }
-        .format-col-pdf { 
+        .format-col-pro { 
             border-left: 4px solid var(--primary-accent); 
             background: rgba(46, 204, 113, 0.08); 
+        }
+        .format-col-print { 
+            border-left: 4px solid #38bdf8; 
+            background: rgba(56, 189, 248, 0.08); 
+        }
+        .format-col-dark { 
+            border-left: 4px solid #a855f7; 
+            background: rgba(168, 85, 247, 0.08); 
         }
 
         /* FORMULARZ ZAMÓWIENIA */
@@ -383,7 +397,7 @@
             margin-bottom: 12px; 
             box-sizing: border-box; 
         }
-        .option-box { padding: 4px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .option-box { padding: 8px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .option-box:last-child { border-bottom: none; margin-bottom: 0; }
 
         .client-input { 
@@ -554,17 +568,39 @@
 
                     <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
 
-                    <p class="info-text" id="infoDesc"><b>Standard realizacji zamówienia:</b></p>
+                    <p class="info-text" id="infoDesc"><b>Dostępne formaty realizacji zamówienia:</b></p>
                     
                     <div class="format-columns">
-                        <div class="format-col format-col-pdf">
-                            <p style="color: #2ecc71; font-weight: bold; margin: 0 0 8px 0; font-size: clamp(1rem, 1.8vw, 1.15rem);" id="formatPdfTitle">
-                                📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)
+                        <div class="format-col format-col-pro">
+                            <p style="color: #2ecc71; font-weight: bold; margin: 0 0 8px 0; font-size: clamp(0.95rem, 1.4vw, 1.05rem);">
+                                📱 Raport PDF PRO (Nawigacja)
                             </p>
                             <ul class="benefit-list">
-                                <li id="formatPdfLi1"><strong>Aktywna nawigacja:</strong> Każda ulica w dokumencie to bezpośredni link do aplikacji Google Maps w telefonie.</li>
-                                <li id="formatPdfLi2"><strong>Podział logistyczny:</strong> Wykaz ulic pogrupowany według dni, miejscowości oraz dzielnic z łączną liczbą punktów.</li>
-                                <li id="formatPdfLi3"><strong>Offline & Druk:</strong> Plik działa bez zasięgu sieci i jest przygotowany do ekonomicznego wydruku na papierze.</li>
+                                <li><strong>Aktywne linki:</strong> Ulice podlinkowane bezpośrednio do nawigacji Google Maps.</li>
+                                <li><strong>Logistyka:</strong> Dzielnice, dni oraz zliczone punkty odbioru.</li>
+                                <li><strong>Offline:</strong> Działa w terenie bez zasięgu sieci.</li>
+                            </ul>
+                        </div>
+
+                        <div class="format-col format-col-print">
+                            <p style="color: #38bdf8; font-weight: bold; margin: 0 0 8px 0; font-size: clamp(0.95rem, 1.4vw, 1.05rem);">
+                                🖨️ PDF do Druku (Białe tło)
+                            </p>
+                            <ul class="benefit-list">
+                                <li><strong>Ekonomia:</strong> Czyste, białe tło oszczędzające toner i tusz.</li>
+                                <li><strong>Czytelność:</strong> Klasyczny układ tabelaryczny przygotowany na kartki A4.</li>
+                                <li><strong>Poręczność:</strong> Idealny do segregatora i notatek ołówkiem w aucie.</li>
+                            </ul>
+                        </div>
+
+                        <div class="format-col format-col-dark">
+                            <p style="color: #c084fc; font-weight: bold; margin: 0 0 8px 0; font-size: clamp(0.95rem, 1.4vw, 1.05rem);">
+                                🌙 PDF Dark Mode (Ciemny motyw)
+                            </p>
+                            <ul class="benefit-list">
+                                <li><strong>Ochrona oczu:</strong> Ciemne, kontrastowe tło nie męczy wzroku w nocy.</li>
+                                <li><strong>Bateria:</strong> Mniejsze zużycie energii na ekranach AMOLED/OLED.</li>
+                                <li><strong>Nocne trasy:</strong> Wygodne przeglądanie w aucie po zmroku.</li>
                             </ul>
                         </div>
                     </div>
@@ -807,24 +843,56 @@
                         <div class="regions-scroll-box" id="weeksContainer"></div>
 
                         <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
-                            <span id="specialDateText">Przygotowanie najbliższego terminu</span>
+                            <span id="specialDateText">System zbiórki na zgłoszenie (mieszkańcy zamawiają indywidualny termin)</span>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="form-header" id="step3Header">📄 3. Format realizacji zamówienia:</div>
-                <div class="extra-options-group" id="formatBox" style="background: rgba(46, 204, 113, 0.08); border: 1px solid #2ecc71;">
-                    <div class="option-box" style="border-bottom: none; padding: 10px 8px;">
-                        <label class="region-label" style="border-bottom: none; margin: 0; cursor: default;">
+                <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45);">
+                    <div class="option-box">
+                        <label class="region-label" style="margin: 0; cursor: pointer;">
                             <div class="region-left-side">
-                                <input type="radio" name="format" value="Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)" checked readonly /> 
+                                <input type="radio" name="format" value="Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)" checked /> 
                                 <div>
-                                    <span id="formatReportTitle" style="color: #2ecc71; font-weight: bold; font-size: clamp(0.95rem, 1.6vw, 1.08rem);">
-                                        📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)
+                                    <span style="color: #2ecc71; font-weight: bold; font-size: clamp(0.92rem, 1.5vw, 1.02rem);">
+                                        📱 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Dzielnice)
                                     </span>
-                                    <div id="formatReportDesc" style="font-size: clamp(0.8rem, 1.3vw, 0.86rem); color: #94a3b8; margin-top: 4px; line-height: 1.35;">
-                                        Wykaz ulic z podziałem na dzielnice, zliczone punkty odbioru oraz aktywne linki do nawigacji Google Maps.
+                                    <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 2px;">
+                                        Interaktywny raport do pracy w terenie na smartfonie. Aktywne linki nawigacji GPS do każdej ulicy.
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="option-box">
+                        <label class="region-label" style="margin: 0; cursor: pointer;">
+                            <div class="region-left-side">
+                                <input type="radio" name="format" value="PDF do Druku (Białe tło, układ tabelaryczny A4)" /> 
+                                <div>
+                                    <span style="color: #38bdf8; font-weight: bold; font-size: clamp(0.92rem, 1.5vw, 1.02rem);">
+                                        🖨️ PDF do Druku (Białe tło, ekonomiczny wydruk A4)
+                                    </span>
+                                    <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 2px;">
+                                        Białe tło, oszczędność tuszu i tonera. Wygodny układ tabel do segregatora i ręcznych notatek.
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="option-box" style="border-bottom: none;">
+                        <label class="region-label" style="margin: 0; cursor: pointer;">
+                            <div class="region-left-side">
+                                <input type="radio" name="format" value="PDF Dark Mode (Ciemny motyw, oszczędność baterii)" /> 
+                                <div>
+                                    <span style="color: #c084fc; font-weight: bold; font-size: clamp(0.92rem, 1.5vw, 1.02rem);">
+                                        🌙 PDF Dark Mode (Ciemny motyw, komfort w nocy)
+                                    </span>
+                                    <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 2px;">
+                                        Głęboka czerń, doskonały kontrast po zmroku. Oszczędza baterię w telefonach i tabletach OLED.
                                     </div>
                                 </div>
                             </div>
@@ -905,8 +973,6 @@
                     </div>
                 </div>
 
-                <input class="client-input hidden" id="klientTelefon" placeholder="Numer telefonu (opcjonalnie)" type="text" />
-
                 <!-- KAFEL PODGLĄDU ROZBICIA ZAMÓWIENIA NA DOLE -->
                 <div id="orderSummaryBreakdown" style="display: none; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; margin: 20px 0 10px 0; font-size: 0.9rem; color: #cbd5e1;">
                     <div style="font-weight: bold; color: #93c5fd; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; font-size: 0.95rem;">
@@ -936,6 +1002,43 @@
 
 <script>
 //<![CDATA[
+    // --- FUNKCJA PARSUJĄCA KOLUMNĘ D (SYSTEM & CZĘSTOTLIWOŚĆ) ---
+    function parseRegionInfo(rawInfo, lang) {
+        if (!rawInfo || typeof rawInfo !== 'string' || rawInfo.trim() === '-' || rawInfo.trim() === '') {
+            return null;
+        }
+        var str = rawInfo.trim();
+        var isPl = (lang === 'pl');
+
+        var isAbruf = /telefon|abruf/i.test(str);
+        var systemText = "";
+        if (isAbruf) {
+            systemText = isPl ? "Na zgłoszenie (Auf Abruf)" : "Auf Abruf";
+        } else if (/stałe|feste/i.test(str)) {
+            systemText = isPl ? "Harmonogram stały" : "Feste Termine";
+        } else {
+            systemText = isPl ? "Harmonogram" : "Termine";
+        }
+
+        var m = str.match(/\((.*?)\)/);
+        var inside = m ? m[1].trim() : str;
+
+        var freqPl = inside;
+        var freqDe = inside;
+        if (inside.indexOf('/') !== -1) {
+            var parts = inside.split('/');
+            freqPl = parts[0].trim();
+            freqDe = parts[1].trim();
+        }
+
+        var freqText = isPl ? freqPl : freqDe;
+
+        return {
+            system: systemText,
+            frequency: freqText
+        };
+    }
+
     // --- WIELOWARSTWOWA OBSŁUGA WYBORU PUNKTU INPOST GEOWIDGET v5 ---
     function extractPointData(raw) {
         if (!raw) return null;
@@ -1106,21 +1209,16 @@
                 texts: {
                     btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena indywidualna",
                     loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych... Pobieram opcje.',
-                    loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Standard realizacji zamówienia:</b>',
+                    loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Dostępne formaty realizacji zamówienia:</b>',
                     headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie',
-                    formatReportTitle: '📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)',
-                    formatReportDesc: 'Wykaz ulic z podziałem na dzielnice, zliczone punkty odbioru oraz aktywne linki do nawigacji Google Maps.',
-                    formatPdfTitle: '📋 Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)',
-                    formatPdfLi1: '<strong>Aktywna nawigacja:</strong> Każda ulica w dokumencie to bezpośredni link do aplikacji Google Maps w telefonie.',
-                    formatPdfLi2: '<strong>Podział logistyczny:</strong> Wykaz ulic pogrupowany według dni, miejscowości oraz dzielnic z łączną liczbą punktów.',
-                    formatPdfLi3: '<strong>Offline & Druk:</strong> Plik działa bez zasięgu sieci i jest przygotowany do ekonomicznego wydruku na papierze.',
                     step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', btnUnselectAll: '[ Odznacz wszystko / Clear ]',
                     step3Header: '📄 3. Format realizacji zamówienia:',
                     step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Inne',
                     schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)', pickupLabel: '🏪 Odbiór osobisty',
                     btnSubmit: '🛒 WYŚLIJ ZAMÓWIENIE', btnOrderPrefix: '🛒 ZAMÓW PAKIET – ',
-                    termsPlural: ['termin', 'terminy', 'terminów'], weekLabel: 'Tydzień', specialDateText: 'Przygotowanie najbliższego terminu dla',
+                    termsPlural: ['termin', 'terminy', 'terminów'], weekLabel: 'Tydzień', 
+                    specialDateText: 'System zbiórki na zgłoszenie (mieszkańcy zamawiają indywidualny termin)',
                     emailGreeting: 'Dzień dobry,', emailOrderSet: 'Przesyłam specyfikację zamówienia zestawu:\n',
                     emailDates: 'DATY / TYGODNIE', emailSelectedRegions: 'WYBRANE REJONY', paymentNote: 'Preferowana płatność / Identyfikator:',
                     emailFooter: 'Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\nCzekam na potwierdzenie i realizację.\n(Zamówienia w dni robocze realizujemy po godzinie 16:00).'
@@ -1131,21 +1229,16 @@
                 texts: {
                     btnOrderExact: '🛒 BESTELLUNG ABSENDEN', priceInd: "Individuelle Preisgestaltung",
                     loaderTitle: 'Datensynchronisierung', loaderDesc: 'Verbindung zur Datenbank...',
-                    loadingData: "⏳ Optionen werden geladen...", infoDesc: '<b>Standard-Lieferformat:</b>',
+                    loadingData: "⏳ Optionen werden geladen...", infoDesc: '<b>Verfügbare Formate:</b>',
                     headerChoose: 'Paket konfigurieren', configTitle: '🛠️ Eigenes Set zusammenstellen', configSubtitle: 'Optionen auswählen und bestellen',
-                    formatReportTitle: '📋 Operativer PDF-Bericht PRO (Google Maps Navigation + Stadtteile)',
-                    formatReportDesc: 'Straßenliste nach Stadtteilen sortiert, Abholpunkte und aktive Direktlinks zu Google Maps.',
-                    formatPdfTitle: '📋 Operativer PDF-Bericht PRO (Google Maps Navigation + Stadtteile)',
-                    formatPdfLi1: '<strong>Navigation:</strong> Jede Straße ist ein aktiver Link zur Google Maps App.',
-                    formatPdfLi2: '<strong>Logistische Aufteilung:</strong> Nach Tagen, Orten und Stadtteilen mit genauen Zählern.',
-                    formatPdfLi3: '<strong>Offline & Druck:</strong> Funktioniert ohne Netz und ist druckoptimiert.',
                     step1Header: '👇 1. Gebiete auswählen:', step2Header: '📅 2. Wochen auswählen:', btnUnselectAll: '[ Alles abwählen / Clear ]',
                     step3Header: '📄 3. Lieferformat:',
                     step4Header: '💾 4. Zusatzoptionen:', step5Header: '💳 5. Zahlungsmethode:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Sonstige',
                     schrottLabel: '🧲 E-Schrott, Metall & Elektro', dhlLabel: '📦 Postversand', pickupLabel: '🏪 Selbstabholung',
                     btnSubmit: '🛒 BESTELLUNG ABSENDEN', btnOrderPrefix: '🛒 PAKET BESTELLEN – ',
-                    termsPlural: ['Termin', 'Termine', 'Termine'], weekLabel: 'KW', specialDateText: 'Vorbereitung des nächsten Termins für',
+                    termsPlural: ['Termin', 'Termine', 'Termine'], weekLabel: 'KW', 
+                    specialDateText: 'Sperrmüll auf Abruf (Termine werden von Anwohnern beantragt)',
                     emailGreeting: 'Hallo,', emailOrderSet: 'Hier ist meine Bestellspezifikation für das Paket:\n',
                     emailDates: 'TERMINE / WOCHEN', emailSelectedRegions: 'GEWÄHLTE GEBIETE', paymentNote: 'Zahlungsart / Kennung:',
                     emailFooter: 'Zahlung: BLIK (+48 733 035 301) oder IBAN: PL33 1020 5297 0000 1702 0290 9323 / PayPal.\nIch warte auf die Bestätigung.\n(Bestellungen an Werktagen werden nach 16:00 Uhr bearbeitet).'
@@ -1156,19 +1249,14 @@
                 texts: {
                     btnOrderExact: '🛒 SUBMIT ORDER', priceInd: "Individual Pricing",
                     loaderTitle: 'Data Sync', loaderDesc: 'Connecting to database...', loadingData: "⏳ Loading options...",
-                    infoDesc: '<b>Fulfillment Standard:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Custom Set', configSubtitle: 'Select options and submit your order',
-                    formatReportTitle: '📋 Operational PDF Report PRO (Google Maps Navigation + Districts)',
-                    formatReportDesc: 'Street list sorted by districts, collection points counter, and active Google Maps navigation links.',
-                    formatPdfTitle: '📋 Operational PDF Report PRO (Google Maps Navigation + Districts)',
-                    formatPdfLi1: '<strong>Active Navigation:</strong> Every street links directly to the Google Maps app.',
-                    formatPdfLi2: '<strong>Logistical Grouping:</strong> Organized by day, city, and district with total point counters.',
-                    formatPdfLi3: '<strong>Offline & Print:</strong> Fully functional offline and optimized for black & white printing.',
+                    infoDesc: '<b>Fulfillment Standards:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Custom Set', configSubtitle: 'Select options and submit your order',
                     step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', btnUnselectAll: '[ Deselect All / Clear ]',
                     step3Header: '📄 3. Order Format:',
                     step4Header: '💾 4. Options:', step5Header: '💳 5. Payment Method:', payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 Mobile Payment (+48 733 035 301)', payOther: '❓ Other',
                     schrottLabel: '🧲 Scrap & Electronics (E-Schrott)', dhlLabel: '📦 Postal Delivery', pickupLabel: '🏪 Local Pickup',
                     btnSubmit: '🛒 SUBMIT ORDER', btnOrderPrefix: '🛒 ORDER PACKAGE – ',
-                    termsPlural: ['date', 'dates', 'dates'], weekLabel: 'Week', specialDateText: 'Preparing next schedule for',
+                    termsPlural: ['date', 'dates', 'dates'], weekLabel: 'Week', 
+                    specialDateText: 'On-demand collection system (residents request individual dates)',
                     emailGreeting: 'Hello,', emailOrderSet: 'Here is my order specification:\n',
                     emailDates: 'DATES / WEEKS', emailSelectedRegions: 'SELECTED REGIONS', paymentNote: 'Payment / ID:',
                     emailFooter: 'Payment: BLIK (+48 733 035 301) or IBAN: PL33 1020 5297 0000 1702 0290 9323.\nAwaiting confirmation.\n(Orders on business days are processed after 4:00 PM).'
@@ -1196,20 +1284,12 @@
         setHtml('configTitle', t.configTitle);
         setText('configSubtitle', t.configSubtitle);
         
-        setHtml('formatPdfTitle', t.formatPdfTitle);
-        setHtml('formatPdfLi1', t.formatPdfLi1);
-        setHtml('formatPdfLi2', t.formatPdfLi2);
-        setHtml('formatPdfLi3', t.formatPdfLi3);
-        
         setText('step1Header', t.step1Header);
         setText('step2Header', t.step2Header);
         
         setText('btnUnselectAll', t.btnUnselectAll);
         
         setText('step3Header', t.step3Header);
-        if(t.formatReportTitle) setHtml('formatReportTitle', t.formatReportTitle);
-        if(t.formatReportDesc) setHtml('formatReportDesc', t.formatReportDesc);
-        
         setText('step4Header', t.step4Header);
         setText('step5Header', t.step5Header);
         
@@ -1639,7 +1719,7 @@
             };
         }
 
-        // --- GENEROWANIE PODGLĄDU ZESTAWIENIA NA ŻYWO NA DOLE STRONY ---
+        // --- GENEROWANIE PODGLĄDU ZESTAWIENIA NA ŻYWO NA DOLE STRONY Z SYSTEMEM I CZĘSTOTLIWOŚCIĄ ---
         function renderOrderLiveBreakdown() {
             var box = document.getElementById('orderSummaryBreakdown');
             var details = document.getElementById('orderSummaryDetails');
@@ -1653,6 +1733,9 @@
                 details.innerHTML = '';
                 return;
             }
+
+            var currentLang = getBrowserLang();
+            var isPl = (currentLang === 'pl');
 
             var selectedWeeksArr = Array.from(selectedWeeks).map(cb => ({
                 num: cb.getAttribute('data-week'),
@@ -1671,6 +1754,7 @@
                 var rKey = rName.toLowerCase();
                 var rejonTotalDni = 0;
                 var weeksListHtml = '';
+                var rawInfoD = "";
 
                 selectedWeeksArr.forEach(wObj => {
                     var w = wObj.num;
@@ -1679,6 +1763,10 @@
                     matrixToUse[w].forEach(item => {
                         var itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
                         if (itemName !== rKey) return;
+
+                        if (typeof item === 'object' && !rawInfoD) {
+                            rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
+                        }
 
                         var dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         var datyWTygodniu = [];
@@ -1707,12 +1795,27 @@
                     });
                 });
 
+                var parsed = parseRegionInfo(rawInfoD, currentLang);
+                if (!parsed && GLOBAL_SPECIAL_REGIONS.includes(rKey)) {
+                    parsed = {
+                        system: isPl ? "Na zgłoszenie (Auf Abruf)" : "Auf Abruf",
+                        frequency: isPl ? "Terminy zamawiane przez mieszkańców" : "Termine auf Bestellung"
+                    };
+                }
+
                 html += '<div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 8px;">';
                 html += '<div style="font-weight: bold; color: #2ecc71; font-size: 0.95rem;">📍 ' + rName.toUpperCase() + '</div>';
 
+                if (parsed) {
+                    html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
+                        '<span style="color: #93c5fd; font-weight: bold;">System:</span> ' + parsed.system + ' | ' +
+                        '<span style="color: #fbbf24; font-weight: bold;">Częstotliwość:</span> ' + parsed.frequency +
+                    '</div>';
+                }
+
                 if (weeksListHtml !== '') {
                     html += weeksListHtml;
-                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #fbbf24; font-weight: bold; margin-left: 14px;">' +
+                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">' +
                         'Łącznie: ' + rejonTotalDni + ' dni zbiórki' +
                     '</div>';
                 } else {
@@ -1918,7 +2021,7 @@
                 if(localWeeksContainer) localWeeksContainer.style.display = 'none';
                 if(specialDateContainer) {
                     specialDateContainer.style.display = 'block';
-                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' ' + (t.specialDateText || "Przygotowanie najbliższego terminu") + ':<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
+                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' ' + (t.specialDateText || "System zbiórki na zgłoszenie (mieszkańcy zamawiają indywidualny termin)") + ':<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
                 }
             } else {
                 if(localWeeksContainer) localWeeksContainer.style.display = 'block';
@@ -1975,15 +2078,15 @@
             }
             
             body += localT.paymentNote + " " + nr + "\n\n";
-            body += "FORMAT: Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)\n";
+
+            // WYBRANY FORMAT REALIZACJI
+            var selectedFormat = document.querySelector('input[name="format"]:checked')?.value || "Raport Operacyjny PDF PRO (Nawigacja Google Maps + Podział na Dzielnice)";
+            body += "WYBRANY FORMAT: " + selectedFormat + "\n\n";
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
             if(selectedPaymentMethod) {
                 body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
             }
-
-            var telEl = document.getElementById('klientTelefon');
-            var tel = telEl ? telEl.value : '';
 
             // Warunek: Paczkomat dodajemy tylko, jeśli zaznaczony i zamówienie obejmuje min. 5 dni
             if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5) {
@@ -2001,9 +2104,6 @@
             if (document.getElementById('schrottOption')?.checked) {
                 body += "OPCJA: SCHROTT (Metal / Elektro)\n";
             }
-            if (!document.getElementById('dhlOption')?.checked && tel) {
-                body += "TELEFON: " + tel + "\n";
-            }
 
             // =========================================================================
             // SZCZEGÓŁOWE ROZBICIE KAŻDEGO REJONU NA JEGO KONKRETNE TYGODNIE I DATY
@@ -2016,7 +2116,7 @@
                 var specNames = Array.from(wR).filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase())).map(chk => chk.value);
                 specNames.forEach(name => {
                     body += "📍 " + name.toUpperCase() + "\n";
-                    body += "   -> Tryb: Najbliższy dostępny termin (indywidualna synchronizacja)\n\n";
+                    body += "   -> Tryb: Rejon na zgłoszenie (mieszkańcy zamawiają indywidualny termin odbioru – przygotowanie najbliższych dat)\n\n";
                 });
             } else {
                 let selectedWeeksArr = Array.from(wT).map(cb => ({
@@ -2036,6 +2136,7 @@
 
                     let rejonTotalDni = 0;
                     let dopasowaneTygodnie = [];
+                    let rawInfoD = "";
 
                     selectedWeeksArr.forEach(wObj => {
                         let w = wObj.num;
@@ -2044,6 +2145,10 @@
                         matrixToUse[w].forEach(item => {
                             let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
                             if (itemName !== rKey) return;
+
+                            if (typeof item === 'object' && !rawInfoD) {
+                                rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
+                            }
 
                             let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                             let datyWTygodniu = [];
@@ -2073,14 +2178,27 @@
                         });
                     });
 
+                    let parsed = parseRegionInfo(rawInfoD, currentLang);
+                    if (!parsed && GLOBAL_SPECIAL_REGIONS.includes(rKey)) {
+                        parsed = {
+                            system: (currentLang === 'pl') ? "Na zgłoszenie (Auf Abruf)" : "Auf Abruf",
+                            frequency: (currentLang === 'pl') ? "Terminy zamawiane przez mieszkańców" : "Termine auf Bestellung"
+                        };
+                    }
+
+                    if (parsed) {
+                        body += "   System: " + parsed.system + "\n";
+                        body += "   Czestotliwosc: " + parsed.frequency + "\n";
+                    }
+
                     if (dopasowaneTygodnie.length > 0) {
                         dopasowaneTygodnie.forEach(dw => {
                             body += "   • " + dw.tydzien + "\n";
-                            body += "     Dni zbiórki: " + dw.daty + "\n";
+                            body += "     Dni zbiorki: " + dw.daty + "\n";
                         });
-                        body += "   => Łącznie dla tego rejonu: " + rejonTotalDni + " dni zbiórki\n\n";
+                        body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " dni zbiorki\n\n";
                     } else {
-                        body += "   • Brak terminów zbiórki w wybranych tygodniach!\n\n";
+                        body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
                     }
                 });
             }
