@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zamówienie - Terminy roczne</title>
+    <title>Powiadomienie o dostępności - Terminy roczne</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -28,12 +28,12 @@
         .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
-        .cart-summary { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 2px solid #2ecc71; padding: 15px; box-sizing: border-box; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
-        .btn-order { display: block; width: 100%; background-color: #2ecc71; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+        .cart-summary { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 2px solid #3498db; padding: 15px; box-sizing: border-box; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+        .btn-order { display: block; width: 100%; background-color: #3498db; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s, background-color 0.2s; }
+        .btn-order:hover:not(:disabled) { background-color: #2980b9; }
         .btn-order:active { transform: scale(0.98); }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
-        .price-container { font-size: 1.1rem; }
-        .min-order-warning { font-size: 0.85rem; color: #e74c3c; margin-top: 4px; display: none; }
+        .status-container { font-size: 1rem; color: #ccc; }
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
@@ -46,16 +46,17 @@
 <body>
 
 <div class="order-module">
-    <h2>📦 Zamówienie terminów rocznych</h2>
+    <h2>🔔 Powiadomienie o dostępności terminów rocznych</h2>
     <div class="service-info">
-        ⚠️ <b>Opis usługi:</b> Terminy pobierane są automatycznie z serwerów firm sprzątających.
+        ℹ️ <b>Zarezerwuj bezpłatne powiadomienie:</b>
         <ul>
-            <li><b>Terminy roczne:</b> Cena za terminy do końca roku jest ustalana automatycznie na stronie <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. W tym miejscu możesz wybrać rok (2026 / 2027) oraz zamówić pakiet minimum 2 rejonów z wyceną indywidualną.</li>
+            <li>Wybierz rok (<b>2027 / 2028</b>) oraz interesujące Cię rejony. Prześlij zgłoszenie, a damy Ci znać SMS-em od razu, gdy terminy dla tych rejonów pojawią się w bazie.</li>
+            <li>Zgłoszenie jest niezobowiązujące – nie stanowi zamówienia ani nie wymaga natychmiastowej opłaty.</li>
         </ul>
-        <i>Ważne: Pamiętaj, aby zbierać wystawki dzień wcześniej!</i>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
-            💡 <b>Uwaga:</b> Pojedyncze rejony zamawiaj przez <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>. <br>W tym formularzu minimalna wielkość zamówienia to <b>2 rejony</b>.
+            🛒 <b>Chcesz zamówić aktualnie dostępne terminy i zestawy?</b><br>
+            Gotowe zestawy i aktualne wyceny sprawdzisz na: <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>.
         </div>
     </div>
     <div id="regionsContainer"></div>
@@ -63,29 +64,27 @@
 
 <div class="cart-summary">
     <div style="max-width: 1000px; margin: 0 auto;">
-        <div class="price-container" style="margin-bottom: 10px;">
-            Razem do zapłaty: <span id="totalPrice" style="color: #f1c40f; font-weight: bold;">Cena ustalana indywidualnie</span>
-            <div id="minOrderWarning" class="min-order-warning">
-                ⚠️ Wybierz co najmniej 2 rejony, aby złożyć zamówienie. Pojedynczy rejon zamówisz na <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>.
+        <div class="status-container" style="margin-bottom: 10px;">
+            Wybrane rejony do powiadomienia: <span id="selectedCount" style="color: #f1c40f; font-weight: bold;">0</span>
+            <div style="font-size: 0.85rem; color: #aaa; margin-top: 3px;">
+                Bezpośrednie zamówienia i aktualne zestawy: <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>
             </div>
         </div>
-        <button id="submitOrderBtn" class="btn-order" disabled>📱 Złóż zamówienie (min. 2 rejony)</button>
+        <button id="submitOrderBtn" class="btn-order" disabled>🔔 Zgłoś powiadomienie (wybierz rejon)</button>
     </div>
 </div>
 
 <script>
     (function() {
         const targetPhoneNumber = "+48600812820";
-        let selectedYear = "2026";
+        let selectedYear = "2027";
         
         const data = {
-            "Terminy roczne": {
-                price: 0,
-                type: "checkbox", 
+            "Rejony z terminami rocznymi": {
                 hasYearSelect: true,
-                desc: "Wycena indywidualna przy zamówieniu pakietu rejonów (min. 2 rejony)",
+                desc: "Zaznacz rejony, o których dostępności na wybrany rok chcesz otrzymać powiadomienie:",
                 items: {
-                    "Rejony z dostępnymi terminami całorocznymi": [
+                    "Wybierz powiat / miasto": [
                         "Altmarkkreis Salzwedel",
                         "Bonn",
                         "Bernkastel-Wittlich",
@@ -122,9 +121,8 @@
         };
 
         const container = document.getElementById('regionsContainer');
-        const priceDisplay = document.getElementById('totalPrice');
+        const countDisplay = document.getElementById('selectedCount');
         const orderBtn = document.getElementById('submitOrderBtn');
-        const minOrderWarning = document.getElementById('minOrderWarning');
         
         let cart = {};
 
@@ -138,7 +136,7 @@
             "Zollernalb"
         ];
 
-        // SEKCJA: Opcja dla złomiarzy
+        // SEKCJA: Preferencje typu odpadów
         const wasteOptions = document.createElement('div');
         wasteOptions.className = 'waste-type-selector';
         wasteOptions.style.marginTop = '10px';
@@ -149,17 +147,17 @@
         wasteOptions.style.borderRadius = '8px';
         wasteOptions.innerHTML = `
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <span style="color: #ffffff; font-weight: bold;">Ustawienia zamówienia:</span>
+                <span style="color: #ffffff; font-weight: bold;">Preferencje powiadomienia:</span>
                 <label style="cursor: pointer; font-weight: bold; color: #e67e22; display: flex; align-items: center; gap: 8px;">
                     <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy"> 
-                    🧲 Chcę zamawiać jako opcja dla złomiarzy
+                    🧲 Interesuje mnie opcja dla złomiarzy (Schrott)
                 </label>
                 <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
             </div>
         `;
         container.appendChild(wasteOptions);
 
-        // Generowanie regionów
+        // Generowanie listy rejonów
         Object.entries(data).forEach(([groupName, config]) => {
             const h = document.createElement('h3'); h.className = 'land-header'; h.textContent = `📍 ${groupName}`; container.appendChild(h);
             const desc = document.createElement('div'); desc.className = 'group-desc'; desc.textContent = config.desc; container.appendChild(desc);
@@ -168,9 +166,9 @@
                 const yearBox = document.createElement('div');
                 yearBox.className = 'year-selector-container';
                 yearBox.innerHTML = `
-                    <span style="color: #ffffff; font-size: 0.9rem;">Wybierz rok:</span>
-                    <label><input type="radio" name="orderYear" value="2026" checked> 2026</label>
-                    <label><input type="radio" name="orderYear" value="2027"> 2027</label>
+                    <span style="color: #ffffff; font-size: 0.9rem;">Dotyczy roku:</span>
+                    <label><input type="radio" name="orderYear" value="2027" checked> 2027</label>
+                    <label><input type="radio" name="orderYear" value="2028"> 2028</label>
                 `;
                 yearBox.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.addEventListener('change', (e) => {
@@ -189,7 +187,7 @@
                     const label = document.createElement('label'); label.className = 'region-checkbox-label';
                     const input = document.createElement('input'); input.type = 'checkbox';
                     input.addEventListener('change', (e) => {
-                        if (e.target.checked) cart[cartKey] = { name: r, qty: 1, price: config.price, sub: sub, group: groupName };
+                        if (e.target.checked) cart[cartKey] = { name: r, sub: sub, group: groupName };
                         else delete cart[cartKey];
                         updateUI();
                     });
@@ -210,13 +208,13 @@
             if (hasForbidden) {
                 scrappersFilter.checked = false;
                 scrappersFilter.disabled = true;
-                scrappersNote.textContent = "⚠️ Wybrany rejon nie posiada opcji dla złomiarzy.";
+                scrappersNote.textContent = "⚠️ W tym rejonie brak dedykowanej opcji dla złomiarzy.";
                 scrappersNote.style.color = "#e74c3c";
                 scrappersNote.style.display = "inline";
             } else if (hasMandatory) {
                 scrappersFilter.checked = true;
                 scrappersFilter.disabled = true;
-                scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy (brak Sperrmüll).";
+                scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy.";
                 scrappersNote.style.color = "#2ecc71";
                 scrappersNote.style.display = "inline";
             } else {
@@ -227,30 +225,22 @@
 
         function updateUI() {
             let itemCount = Object.keys(cart).length;
+            countDisplay.textContent = itemCount;
             
-            // Blokada zamówienia: minimum 2 rejony
-            if (itemCount >= 2) {
+            if (itemCount > 0) {
                 orderBtn.disabled = false;
-                orderBtn.textContent = `📱 Złóż zamówienie (${itemCount} rejony)`;
-                minOrderWarning.style.display = "none";
+                orderBtn.textContent = `🔔 Powiadom o dostępności (${itemCount})`;
             } else {
                 orderBtn.disabled = true;
-                if (itemCount === 1) {
-                    orderBtn.textContent = "📱 Złóż zamówienie (wymagane min. 2 rejony)";
-                    minOrderWarning.style.display = "block";
-                } else {
-                    orderBtn.textContent = "📱 Złóż zamówienie (min. 2 rejony)";
-                    minOrderWarning.style.display = "none";
-                }
+                orderBtn.textContent = "🔔 Zgłoś powiadomienie (wybierz rejon)";
             }
 
             updateScrappersOptionStatus();
-            priceDisplay.textContent = "Cena ustalana indywidualnie";
         }
 
         orderBtn.addEventListener('click', () => {
             const roczneItems = Object.values(cart).map(item => item.name);
-            if (roczneItems.length < 2) return;
+            if (roczneItems.length === 0) return;
 
             const dzisiaj = new Date();
             const rrrr = dzisiaj.getFullYear();
@@ -258,24 +248,24 @@
             const dd = String(dzisiaj.getDate()).padStart(2, '0');
             const dataString = `${rrrr}${mm}${dd}`;
 
-            const orderId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const alertId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
 
             const mandatoryList = roczneItems.filter(region => onlyScrappersRegions.includes(region));
             const standardList = roczneItems.filter(region => !onlyScrappersRegions.includes(region));
 
             const scrappersFilter = document.getElementById('scrappersFilter');
-            let selectedWasteType = "Wszystko (Domyślnie)"; 
+            let selectedWasteType = "Standard / Sperrmüll"; 
 
             if (mandatoryList.length > 0 && standardList.length > 0) {
                 selectedWasteType = `Standard + Złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
             } else if (mandatoryList.length > 0) {
-                selectedWasteType = `Opcja dla złomiarzy (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
+                selectedWasteType = `Tylko złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
             } else if (scrappersFilter && scrappersFilter.checked) {
                 selectedWasteType = "Opcja dla złomiarzy";
             }
 
-            const itemsList = `Terminy roczne [Rok ${selectedYear}]: ${roczneItems.join(', ')}`;
-            let msg = `Dzień dobry, zamówienie ${orderId} [Typ Extra: ${selectedWasteType}]: ${itemsList}. Cena ustalana indywidualnie.`;
+            const itemsList = `${roczneItems.join(', ')}`;
+            let msg = `Dzień dobry, zgłoszenie powiadomienia #${alertId}. Proszę o informację, gdy będą dostępne terminy na rok ${selectedYear} [Profil: ${selectedWasteType}] dla rejonów: ${itemsList}.`;
 
             window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
         });
