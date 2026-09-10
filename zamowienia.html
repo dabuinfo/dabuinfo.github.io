@@ -48,15 +48,15 @@
 <div class="order-module">
     <h2>🔔 Powiadomienie o dostępności terminów rocznych</h2>
     <div class="service-info">
-        ℹ️ <b>Zarezerwuj bezpłatne powiadomienie:</b>
+        ℹ️ <b>Zarezerwuj bezpłatne powiadomienie e-mail:</b>
         <ul>
-            <li>Wybierz rok (<b>2027 / 2028</b>) oraz interesujące Cię rejony. Prześlij zgłoszenie, a damy Ci znać SMS-em od razu, gdy terminy dla tych rejonów pojawią się w bazie.</li>
-            <li>Zgłoszenie jest niezobowiązujące – nie stanowi zamówienia ani nie wymaga natychmiastowej opłaty.</li>
+            <li>Wybierz rok (<b>2027 / 2028</b>) oraz interesujące Cię rejony. Po kliknięciu przycisku otworzy się Twój program pocztowy z gotową wiadomością zgłoszeniową na adres <b>wystawki@gmail.com</b>[cite: 1].</li>
+            <li>Zgłoszenie jest bezpłatne i niezobowiązujące – powiadomimy Cię, gdy tylko terminy dla wybranych rejonów zostaną zaktualizowane.</li>
         </ul>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
             🛒 <b>Chcesz zamówić aktualnie dostępne terminy i zestawy?</b><br>
-            Gotowe zestawy i aktualne wyceny sprawdzisz na: <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>.
+            Gotowe zestawy i aktualne wyceny sprawdzisz na: <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>[cite: 1].
         </div>
     </div>
     <div id="regionsContainer"></div>
@@ -67,16 +67,16 @@
         <div class="status-container" style="margin-bottom: 10px;">
             Wybrane rejony do powiadomienia: <span id="selectedCount" style="color: #f1c40f; font-weight: bold;">0</span>
             <div style="font-size: 0.85rem; color: #aaa; margin-top: 3px;">
-                Bezpośrednie zamówienia i aktualne zestawy: <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>
+                Bezpośrednie zamówienia i aktualne zestawy: <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>[cite: 1]
             </div>
         </div>
-        <button id="submitOrderBtn" class="btn-order" disabled>🔔 Zgłoś powiadomienie (wybierz rejon)</button>
+        <button id="submitOrderBtn" class="btn-order" disabled>✉️ Wyślij zgłoszenie e-mail (wybierz rejon)</button>
     </div>
 </div>
 
 <script>
     (function() {
-        const targetPhoneNumber = "+48600812820";
+        const targetEmail = "wystawki@gmail.com";
         let selectedYear = "2027";
         
         const data = {
@@ -136,7 +136,7 @@
             "Zollernalb"
         ];
 
-        // SEKCJA: Preferencje typu odpadów
+        // Preferencje powiadomienia
         const wasteOptions = document.createElement('div');
         wasteOptions.className = 'waste-type-selector';
         wasteOptions.style.marginTop = '10px';
@@ -229,10 +229,10 @@
             
             if (itemCount > 0) {
                 orderBtn.disabled = false;
-                orderBtn.textContent = `🔔 Powiadom o dostępności (${itemCount})`;
+                orderBtn.textContent = `✉️ Wyślij zgłoszenie e-mail (${itemCount})`;
             } else {
                 orderBtn.disabled = true;
-                orderBtn.textContent = "🔔 Zgłoś powiadomienie (wybierz rejon)";
+                orderBtn.textContent = "✉️ Wyślij zgłoszenie e-mail (wybierz rejon)";
             }
 
             updateScrappersOptionStatus();
@@ -264,10 +264,25 @@
                 selectedWasteType = "Opcja dla złomiarzy";
             }
 
-            const itemsList = `${roczneItems.join(', ')}`;
-            let msg = `Dzień dobry, zgłoszenie powiadomienia #${alertId}. Proszę o informację, gdy będą dostępne terminy na rok ${selectedYear} [Profil: ${selectedWasteType}] dla rejonów: ${itemsList}.`;
+            // Nagłówek ułatwiający filtrowanie w skrzynce pocztowej
+            const subject = `[POWIADOMIENIE-DOSTEPNOSC] Rok ${selectedYear} - ID: ${alertId}`;
+            
+            const body = 
+`Dzień dobry,
 
-            window.location.href = `sms:${targetPhoneNumber}?body=${encodeURIComponent(msg)}`;
+Zgłaszam prośbę o bezpłatne powiadomienie, gdy pojawią się terminy roczne:
+
+• Identyfikator: ${alertId}
+• Rok: ${selectedYear}
+• Profil odpadów: ${selectedWasteType}
+• Liczba rejonów: ${roczneItems.length}
+
+Wybrane rejony:
+${roczneItems.map(r => "- " + r).join('\n')}
+
+Pozdrawiam`;
+
+            window.location.href = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         });
     })();
 </script>
