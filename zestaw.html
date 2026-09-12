@@ -1526,7 +1526,20 @@
                     badgeContainer.innerHTML = pills;
                     badgeContainer.classList.add('is-visible');
                 } else {
-                    badgeContainer.innerHTML = `<span class="schedule-pill"><b>Brak przyszłych dat w wybranym okresie</b></span>`;
+                    let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
+                    let isPl = (getBrowserLang() === 'pl');
+
+                    if (isSpecial) {
+                        let textSpecial = isPl 
+                            ? "🔒 Rejon chroniony – terminy weryfikowane pod zamówienie" 
+                            : "🔒 Geschützter Bereich – Termine auf Anfrage";
+                        badgeContainer.innerHTML = `<span class="schedule-pill" style="border-color: rgba(46, 204, 113, 0.4); background: rgba(46, 204, 113, 0.15);"><b style="color: #2ecc71;">${textSpecial}</b></span>`;
+                    } else {
+                        let textEmpty = isPl 
+                            ? "Brak przyszłych dat w wybranym okresie" 
+                            : "Keine Termine im gewählten Zeitraum";
+                        badgeContainer.innerHTML = `<span class="schedule-pill"><b>${textEmpty}</b></span>`;
+                    }
                     badgeContainer.classList.add('is-visible');
                 }
             });
@@ -1885,7 +1898,7 @@
                 }
 
                 if (isSpecial) {
-                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #38bdf8;">Rejon na zgłoszenie — wycena i przygotowanie najbliższych terminów</div>';
+                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #38bdf8;">Rejon chroniony — wycena i przygotowanie najbliższych terminów</div>';
                 } else if (weeksListHtml !== '') {
                     html += weeksListHtml;
                     html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">' +
