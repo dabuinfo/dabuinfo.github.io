@@ -1691,21 +1691,50 @@ let baseRate = isPl ? 25.0 : 6.0;
 
 if (isPl) {
                 // Pełna drabinka dla polskich klientów (PLN):
-                if (totalDays >= 21) {
-                    ratePerDay = 15.0;  // 40% rabatu
+let baseRate = isPl ? 25.0 : 6.0;
+            let ratePerDay;
+
+            if (isPl) {
+                // Drabinka rabatowa dla Polski (PLN, baza 25 zł) - co 10% do 80%:
+                if (totalDays >= 250) {
+                    ratePerDay = 5.00;   // 80% rabatu
+                } else if (totalDays >= 181) {
+                    ratePerDay = 7.50;   // 70% rabatu
+                } else if (totalDays >= 121) {
+                    ratePerDay = 10.00;  // 60% rabatu
+                } else if (totalDays >= 81) {
+                    ratePerDay = 12.50;  // 50% rabatu
+                } else if (totalDays >= 51) {
+                    ratePerDay = 15.00;  // 40% rabatu
+                } else if (totalDays >= 31) {
+                    ratePerDay = 17.50;  // 30% rabatu
+                } else if (totalDays >= 16) {
+                    ratePerDay = 20.00;  // 20% rabatu
                 } else if (totalDays >= 6) {
-                    ratePerDay = 20.0;  // 20% rabatu
+                    ratePerDay = 22.50;  // 10% rabatu
                 } else {
-                    ratePerDay = 25.0;  // do 5 dni bez rabatu
+                    ratePerDay = 25.00;  // do 5 dni bez rabatu
                 }
             } else {
-                // Klienci zagraniczni (€) – drabinka zatrzymana na maks. 40%:
-                if (totalDays >= 21) {
-                    ratePerDay = 3.60;  // 40% rabatu (baza 6,00 €)
+                // Drabinka rabatowa dla klientów zagranicznych (€, baza 6,00 €) - co 10% do 80%:
+                if (totalDays >= 250) {
+                    ratePerDay = 1.20;   // 80% rabatu
+                } else if (totalDays >= 181) {
+                    ratePerDay = 1.80;   // 70% rabatu
+                } else if (totalDays >= 121) {
+                    ratePerDay = 2.40;   // 60% rabatu
+                } else if (totalDays >= 81) {
+                    ratePerDay = 3.00;   // 50% rabatu
+                } else if (totalDays >= 51) {
+                    ratePerDay = 3.60;   // 40% rabatu
+                } else if (totalDays >= 31) {
+                    ratePerDay = 4.20;   // 30% rabatu
+                } else if (totalDays >= 16) {
+                    ratePerDay = 4.80;   // 20% rabatu
                 } else if (totalDays >= 6) {
-                    ratePerDay = 4.80;  // 20% rabatu
+                    ratePerDay = 5.40;   // 10% rabatu
                 } else {
-                    ratePerDay = 6.00;  // do 5 dni bez rabatu
+                    ratePerDay = 6.00;   // do 5 dni bez rabatu
                 }
             }
 
