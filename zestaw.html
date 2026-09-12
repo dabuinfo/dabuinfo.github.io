@@ -683,7 +683,7 @@
 
                             <!-- PRZYKLEJONE POLE WYSZUKIWARKI WEWNĄTRZ LISTY -->
                             <div class="region-search-sticky-box">
-                                <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonu / Gebiet suchen..." autocomplete="off">
+                                <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonów (np. Konstanz, Freudenstadt)..." autocomplete="off">
                             </div>
 
                             <div id="regionsCheckboxes">
@@ -1974,24 +1974,31 @@
             renderOrderLiveBreakdown();
         }
 
-        // --- FILTROWANIE WYSZUKIWARKI REJONÓW ---
+        // --- FILTROWANIE WIELOKROTNE PO PRZECINKU ---
         function applyRegionSearchFilter() {
             var searchInput = document.getElementById('regionSearchInput');
             if (!searchInput) return;
-            var filterVal = searchInput.value.trim().toLowerCase();
+
+            var tokens = searchInput.value.split(',')
+                .map(function(t) { return t.trim().toLowerCase(); })
+                .filter(function(t) { return t.length > 0; });
 
             var labels = document.querySelectorAll('#regionsContainer .region-label');
             labels.forEach(function(lbl) {
                 var chk = lbl.querySelector('.region-chk');
-                var text = chk ? chk.value.toLowerCase() : lbl.textContent.toLowerCase();
-                if (!filterVal || text.indexOf(filterVal) !== -1) {
+                var text = (chk ? chk.value : lbl.textContent).toLowerCase();
+
+                if (tokens.length === 0) {
                     lbl.style.display = 'flex';
                 } else {
-                    lbl.style.display = 'none';
+                    var matchesAny = tokens.some(function(token) {
+                        return text.indexOf(token) !== -1;
+                    });
+                    lbl.style.display = matchesAny ? 'flex' : 'none';
                 }
             });
 
-            // Ukrywanie nagłówków landów, jeśli żaden rejon w danym landzie nie pasuje do wyszukiwania
+            // Ukrywanie nagłówków landów, jeśli żaden rejon w danym landzie nie pasuje do filtrów
             document.querySelectorAll('#regionsContainer .land-group-header').forEach(function(header) {
                 var nextEl = header.nextElementSibling;
                 var hasVisible = false;
