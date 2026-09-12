@@ -181,7 +181,7 @@
             box-sizing: border-box; 
             width: 100%; 
             text-align: left; 
-            border: 1px solid var(--border-subtle); 
+            border: 1px solid var(--border-subtle);
         }
         .format-col-pro { 
             border-left: 4px solid var(--primary-accent); 
@@ -433,7 +433,7 @@
             margin-top: 14px; 
             box-sizing: border-box; 
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4); 
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
         }
         .submit-btn:hover { 
             transform: translateY(-2px); 
@@ -477,7 +477,7 @@
             width: 100%;
             box-sizing: border-box;
             margin-top: 40px;
-            font-size: clamp(0.82rem, 1.3vw, 0.92rem); 
+            font-size: clamp(0.82rem, 1.3vw, 0.92rem);
         }
         .dabu-footer-container {
             max-width: 1180px;
@@ -600,6 +600,7 @@
                             <ul class="benefit-list">
                                 <li><strong>Ochrona oczu:</strong> Ciemne, kontrastowe tło nie męczy wzroku w nocy.</li>
                                 <li><strong>Bateria:</strong> Mniejsze zużycie energii na ekranach AMOLED/OLED.</li>
+                                <li><strong>Nocne trasy:</strong> Wygodne przeglądanie w aucie po zmroku.</li>
                             </ul>
                         </div>
                     </div>
@@ -1911,7 +1912,7 @@
                 if (configSubtitle) {
                     if (calc.savings > 0) {
                         configSubtitle.innerHTML = (calc.lang === 'pl')
-                            ? `Oszczędzasz <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (Stawka: ${calc.ratePerDay} zł/dzień)`
+                            ? `Oszczędzasz <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (Stawka: ${calc.ratePerDay.toFixed(2)} zł/dzień)`
                             : `Sie sparen <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (${calc.ratePerDay.toFixed(2)} €/Tag)`;
                     } else {
                         configSubtitle.textContent = localT.configSubtitle;
@@ -1961,11 +1962,12 @@
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
                 if (!chk) return;
-                let rName = chk.value.trim().toLowerCase();
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
+                let rName = chk.value.trim();
+                let rKey = rName.toLowerCase();
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rKey);
                 let isAvailable = true;
-    
-                if (!isSpecial && !allAvailableRegionsInDb.has(rName)) {
+
+                if (!isSpecial && !allAvailableRegionsInDb.has(rKey)) {
                     isAvailable = false; 
                 } else if (hasSpecial && !isSpecial) {
                     isAvailable = false; 
@@ -1975,7 +1977,7 @@
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
-                            return (n || "").toLowerCase().trim() === rName;
+                            return (n || "").toLowerCase().trim() === rKey;
                         });
                     });
                     if (!presentInAnySelectedWeek) {
@@ -1983,10 +1985,44 @@
                     }
                 }
 
-                label.style.opacity = isAvailable ? '1' : '0.3';
+                label.style.opacity = isAvailable ? '1' : '0.45';
                 chk.disabled = !isAvailable;
                 if (!isAvailable && chk.checked) {
                     chk.checked = false;
+                }
+
+                // --- OBSŁUGA ZAPYTANIA O NIEDOSTĘPNY REJON ---
+                let existingAskBtn = label.querySelector('.ask-region-btn');
+                if (!isAvailable) {
+                    if (!existingAskBtn) {
+                        let askBtn = document.createElement('a');
+                        askBtn.className = 'ask-region-btn';
+                        
+                        let isPl = (getBrowserLang() === 'pl');
+                        askBtn.innerText = isPl ? "🔔 Zapytaj o terminy" : "🔔 Termine anfragen";
+                        
+                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
+                        
+                        let mailSubject = encodeURIComponent(isPl ? `Zapytanie o rejon: ${rName}` : `Anfrage zu Gebiet: ${rName}`);
+                        let mailBody = encodeURIComponent(isPl 
+                            ? `Dzień dobry,\n\nChciałbym zapytać o dostępność i najbliższe terminy zbiórek dla rejonu: ${rName}.\nProszę o informację zwrotną po sprawdzeniu w bazie.\n` 
+                            : `Hallo,\n\nich möchte nach den aktuellen Abholterminen für das Gebiet fragen: ${rName}.\nBitte um Rückmeldung.\n`);
+                        
+                        askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+                        
+                        askBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(askBtn);
+                        }
+                    }
+                } else {
+                    if (existingAskBtn) {
+                        existingAskBtn.remove();
+                    }
                 }
             });
 
@@ -2024,7 +2060,7 @@
                 let nextEl = header.nextElementSibling;
                 let hasVisible = false;
                 while (nextEl && nextEl.classList.contains('region-label')) {
-                    if (nextEl.style.opacity !== '0.3') {
+                    if (nextEl.style.opacity !== '0.3' && nextEl.style.opacity !== '0.45') {
                         hasVisible = true;
                         break;
                     }
@@ -2098,7 +2134,7 @@
                 var termsUnit = getPluralTerm(calc.totalDays, currentLang);
                 body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + "\n";
                 body += "- Łączna liczba dni roboczych: " + calc.totalDays + " " + termsUnit + "\n";
-                body += "- Stawka: " + calc.ratePerDay + " " + calc.currency + " / dzień\n";
+                body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
                 if (calc.savings > 0) {
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings + " " + calc.currency + ")\n";
                 }
