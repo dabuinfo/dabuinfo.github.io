@@ -233,7 +233,29 @@
             margin-top: 0 !important;
             border-top: none !important;
             padding-top: 0 !important;
-            margin-bottom: 12px !important;
+            margin-bottom: 8px !important;
+        }
+
+        /* WYSZUKIWARKA REJONÓW */
+        .region-search-input {
+            width: 100%;
+            padding: 9px 12px;
+            margin-bottom: 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.7);
+            color: #f0f6fc;
+            font-size: 0.88rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .region-search-input:focus {
+            border-color: var(--primary-accent);
+            background: rgba(15, 23, 42, 0.95);
+        }
+        .region-search-input::placeholder {
+            color: #64748b;
         }
 
         @media (min-width: 992px) {
@@ -242,8 +264,8 @@
                 align-items: start;
             }
             .regions-scroll-box {
-                min-height: 520px !important;
-                max-height: 520px !important;
+                min-height: 480px !important;
+                max-height: 480px !important;
                 margin: 0 !important;
             }
             .selection-col-right {
@@ -626,9 +648,11 @@
                 <!-- SEKCJA DWUKOLUMNOWA: IDEALNIE WYRÓWNANE LISTY -->
                 <div class="selection-grid-container">
                     
-                    <!-- KOLUMNA LEWA: REJONY -->
+                    <!-- KOLUMNA LEWA: REJONY + WYSZUKIWARKA -->
                     <div class="selection-col-left">
                         <div class="form-header" id="step1Header">👇 1. Wybierz Rejony:</div>
+
+                        <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonu / Gebiet suchen..." autocomplete="off">
 
                         <div class="regions-scroll-box is-loading" id="regionsContainer">
                             <div id="regionsLoading" class="pro-loader-overlay">
@@ -1937,6 +1961,43 @@
             renderOrderLiveBreakdown();
         }
 
+        // --- FILTROWANIE WYSZUKIWARKI REJONÓW ---
+        function applyRegionSearchFilter() {
+            var searchInput = document.getElementById('regionSearchInput');
+            if (!searchInput) return;
+            var filterVal = searchInput.value.trim().toLowerCase();
+
+            var labels = document.querySelectorAll('#regionsContainer .region-label');
+            labels.forEach(function(lbl) {
+                var chk = lbl.querySelector('.region-chk');
+                var text = chk ? chk.value.toLowerCase() : lbl.textContent.toLowerCase();
+                if (!filterVal || text.indexOf(filterVal) !== -1) {
+                    lbl.style.display = 'flex';
+                } else {
+                    lbl.style.display = 'none';
+                }
+            });
+
+            // Ukrywanie nagłówków landów, jeśli żaden rejon w danym landzie nie pasuje do wyszukiwania
+            document.querySelectorAll('#regionsContainer .land-group-header').forEach(function(header) {
+                var nextEl = header.nextElementSibling;
+                var hasVisible = false;
+                while (nextEl && nextEl.classList.contains('region-label')) {
+                    if (nextEl.style.display !== 'none') {
+                        hasVisible = true;
+                        break;
+                    }
+                    nextEl = nextEl.nextElementSibling;
+                }
+                header.style.display = hasVisible ? 'flex' : 'none';
+            });
+        }
+
+        var searchBoxEl = document.getElementById('regionSearchInput');
+        if (searchBoxEl) {
+            searchBoxEl.addEventListener('input', applyRegionSearchFilter);
+        }
+
         // --- WARIANT 1: BRAK WZAJEMNEGO WYSZARZANIA (BEZKONFLIKTOWY WYBÓR OBU TYPÓW) ---
         function updateMutualFiltering() {
             if (Object.keys(availabilityMatrix).length === 0) return;
@@ -2072,6 +2133,7 @@
                 header.style.opacity = hasVisible ? '1' : '0.3';
             });
 
+            applyRegionSearchFilter();
             updateDynamicOptions();
             updateScheduleBadges();
             updatePriceDisplay();
@@ -2099,6 +2161,8 @@
 
         document.getElementById('btnUnselectAll').addEventListener('click', function() {
             document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
+            var sInput = document.getElementById('regionSearchInput');
+            if (sInput) { sInput.value = ''; }
             updateMutualFiltering();
         });
 
