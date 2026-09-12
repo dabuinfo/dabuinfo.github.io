@@ -842,7 +842,7 @@
                         <div class="form-header" id="step2Header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box" id="weeksContainer"></div>
 
-                        <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
+                        <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-top: 12px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
                             <span id="specialDateText">System zbiórki na zgłoszenie (mieszkańcy zamawiają indywidualny termin)</span>
                         </div>
                     </div>
@@ -1759,7 +1759,7 @@
             var selectedRegions = document.querySelectorAll('.region-chk:checked');
             var selectedWeeks = document.querySelectorAll('.week-chk:checked');
 
-            if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
+            if (selectedRegions.length === 0) {
                 box.style.display = 'none';
                 details.innerHTML = '';
                 return;
@@ -1783,51 +1783,54 @@
             selectedRegions.forEach(chkR => {
                 var rName = chkR.value.trim();
                 var rKey = rName.toLowerCase();
+                var isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rKey);
                 var rejonTotalDni = 0;
                 var weeksListHtml = '';
                 var rawInfoD = "";
 
-                selectedWeeksArr.forEach(wObj => {
-                    var w = wObj.num;
-                    if (!matrixToUse[w]) return;
+                if (!isSpecial) {
+                    selectedWeeksArr.forEach(wObj => {
+                        var w = wObj.num;
+                        if (!matrixToUse[w]) return;
 
-                    matrixToUse[w].forEach(item => {
-                        var itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
-                        if (itemName !== rKey) return;
+                        matrixToUse[w].forEach(item => {
+                            var itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                            if (itemName !== rKey) return;
 
-                        if (typeof item === 'object' && !rawInfoD) {
-                            rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
-                        }
+                            if (typeof item === 'object' && !rawInfoD) {
+                                rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
+                            }
 
-                        var dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                        var datyWTygodniu = [];
+                            var dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
+                            var datyWTygodniu = [];
 
-                        if (dStr && dStr !== "-") {
-                            var linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                            linieDat.forEach(d => {
-                                var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if (match) {
-                                    var dObj = new Date(match[1], match[2] - 1, match[3]);
-                                    if (w === currentWeekNum) {
-                                        if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                    } else {
-                                        datyWTygodniu.push(match[0]);
+                            if (dStr && dStr !== "-") {
+                                var linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                                linieDat.forEach(d => {
+                                    var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                                    if (match) {
+                                        var dObj = new Date(match[1], match[2] - 1, match[3]);
+                                        if (w === currentWeekNum) {
+                                            if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
+                                        } else {
+                                            datyWTygodniu.push(match[0]);
+                                        }
                                     }
-                                }
-                            });
-                        }
+                                });
+                            }
 
-                        if (datyWTygodniu.length > 0) {
-                            rejonTotalDni += datyWTygodniu.length;
-                            weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
-                                '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
-                            '</div>';
-                        }
+                            if (datyWTygodniu.length > 0) {
+                                rejonTotalDni += datyWTygodniu.length;
+                                weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
+                                    '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
+                                '</div>';
+                            }
+                        });
                     });
-                });
+                }
 
                 var parsed = parseRegionInfo(rawInfoD, currentLang);
-                if (!parsed && GLOBAL_SPECIAL_REGIONS.includes(rKey)) {
+                if (!parsed && isSpecial) {
                     parsed = {
                         system: isPl ? "Na zgłoszenie (Auf Abruf)" : "Auf Abruf",
                         frequency: isPl ? "Terminy zamawiane przez mieszkańców" : "Termine auf Bestellung"
@@ -1844,7 +1847,9 @@
                     '</div>';
                 }
 
-                if (weeksListHtml !== '') {
+                if (isSpecial) {
+                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #38bdf8;">Rejon na zgłoszenie — wycena i przygotowanie najbliższych terminów</div>';
+                } else if (weeksListHtml !== '') {
                     html += weeksListHtml;
                     html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">' +
                         'Łącznie: ' + rejonTotalDni + ' dni zbiórki' +
@@ -1866,7 +1871,10 @@
             let configPrice = document.getElementById('configPrice');
             let configSubtitle = document.getElementById('configSubtitle');
             
-            let isSpecialMode = (document.getElementById('specialDateContainer') && document.getElementById('specialDateContainer').style.display !== 'none');
+            let checkedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value.trim().toLowerCase());
+            let hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.includes(r));
+            let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
+
             let calc = calculateActiveDaysAndPrice();
             let conf = config[calc.lang] || config['de'];
             let localT = conf.texts;
@@ -1891,7 +1899,7 @@
                 }
             }
 
-            if (isSpecialMode) {
+            if (hasOnlySpecial) {
                 if (btn) btn.innerHTML = `${localT.btnSubmit} (${localT.priceInd})`;
                 if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? 'na zapytanie' : 'auf Anfrage';
                 if (configPrice) configPrice.textContent = localT.priceInd;
@@ -1904,10 +1912,11 @@
                 let termsWord = getPluralTerm(calc.totalDays, calc.lang);
                 let orderPrefix = localT.btnOrderPrefix || '🛒 ZAMÓW PAKIET – ';
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
+                let extraNotice = hasMixedSpecial ? ' + Abruf' : '';
 
-                if (btn) btn.innerHTML = `${orderPrefix}${calc.totalPrice} ${calc.currency}${discountBadge} (${calc.totalDays} ${termsWord})`;
-                if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}`;
-                if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}`;
+                if (btn) btn.innerHTML = `${orderPrefix}${calc.totalPrice} ${calc.currency}${discountBadge} (${calc.totalDays} ${termsWord}${extraNotice})`;
+                if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
+                if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
 
                 if (configSubtitle) {
                     if (calc.savings > 0) {
@@ -1928,6 +1937,7 @@
             renderOrderLiveBreakdown();
         }
 
+        // --- WARIANT 1: BRAK WZAJEMNEGO WYSZARZANIA (BEZKONFLIKTOWY WYBÓR OBU TYPÓW) ---
         function updateMutualFiltering() {
             if (Object.keys(availabilityMatrix).length === 0) return;
 
@@ -1952,12 +1962,7 @@
             }
 
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
-            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            
-            let hasSpecial = selectedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r));
-            let hasRegular = selectedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
 
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
@@ -1967,11 +1972,8 @@
                 let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rKey);
                 let isAvailable = true;
 
+                // Rejon specjalny jest zawsze dostępny. Rejony zwykłe filtrują się tylko po bazie i zaznaczonych tygodniach:
                 if (!isSpecial && !allAvailableRegionsInDb.has(rKey)) {
-                    isAvailable = false; 
-                } else if (hasSpecial && !isSpecial) {
-                    isAvailable = false; 
-                } else if (hasRegular && isSpecial) {
                     isAvailable = false; 
                 } else if (!isSpecial && selectedWeeks.length > 0) {
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
@@ -2026,8 +2028,9 @@
                 }
             });
 
-            selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
 
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
@@ -2035,9 +2038,9 @@
                 let wNum = chk.getAttribute('data-week');
                 let isAvailable = true;
 
-                if (selectedRegions.length > 0 && !hasSpecial) {
-                    let hasMatchingRegion = selectedRegions.some(r => {
-                        if (GLOBAL_SPECIAL_REGIONS.includes(r)) return false;
+                // Tygodnie filtrują się tylko według zaznaczonych rejonów standardowych:
+                if (selectedRegularRegions.length > 0) {
+                    let hasMatchingRegion = selectedRegularRegions.some(r => {
                         return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
                             return (n || "").toLowerCase().trim() === r;
@@ -2077,21 +2080,20 @@
         function updateDynamicOptions() {
             var checkedNodes = document.querySelectorAll('.region-chk:checked');
             var specialDateContainer = document.getElementById('specialDateContainer');
-            var localWeeksContainer = document.getElementById('weeksContainer');
             
             var selectedSpecialNames = Array.from(checkedNodes)
                 .filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase()))
                 .map(chk => chk.value)
                 .join(', ');
-            if (selectedSpecialNames.length > 0) {
-                if(localWeeksContainer) localWeeksContainer.style.display = 'none';
-                if(specialDateContainer) {
+            
+            // W Wariancie 1 lista tygodni pozostaje zawsze dostępna, a boks informacyjny wyświetla się równolegle
+            if (specialDateContainer) {
+                if (selectedSpecialNames.length > 0) {
                     specialDateContainer.style.display = 'block';
                     document.getElementById('specialDateText').innerHTML = iconHourglass + ' ' + (t.specialDateText || "System zbiórki na zgłoszenie (mieszkańcy zamawiają indywidualny termin)") + ':<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
+                } else {
+                    specialDateContainer.style.display = 'none';
                 }
-            } else {
-                if(localWeeksContainer) localWeeksContainer.style.display = 'block';
-                if(specialDateContainer) specialDateContainer.style.display = 'none';
             }
         }
 
@@ -2116,10 +2118,13 @@
 
             var wR = document.querySelectorAll('.region-chk:checked');
             var wT = document.querySelectorAll('.week-chk:checked');
-            var isSpecialMode = (document.getElementById('specialDateContainer').style.display !== 'none');
             
-            if (wR.length === 0 || (!isSpecialMode && wT.length === 0)) { 
-                alert((currentLang === 'pl') ? "[ UWAGA ] Wybierz rejony oraz tygodnie!" : "[ ACHTUNG ] Bitte Gebiete und Wochen auswählen!"); 
+            var checkedRegions = Array.from(wR).map(cb => cb.value.trim().toLowerCase());
+            var hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.includes(r));
+            var hasRegular = checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
+
+            if (wR.length === 0 || (hasRegular && wT.length === 0)) { 
+                alert((currentLang === 'pl') ? "[ UWAGA ] Wybierz rejony oraz co najmniej jeden tydzień z kalendarza!" : "[ ACHTUNG ] Bitte Gebiete und mindestens eine Woche auswählen!"); 
                 return; 
             }
                     
@@ -2130,13 +2135,16 @@
             body += "KONFIGURACJA PAKIETU (" + wR.length + " rejonów, " + wT.length + " zaznaczonych tygodni kalendarzowych)\n";
             
             var calc = calculateActiveDaysAndPrice();
-            if (!isSpecialMode && calc.totalDays > 0) {
+            if (!hasOnlySpecial && calc.totalDays > 0) {
                 var termsUnit = getPluralTerm(calc.totalDays, currentLang);
                 body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + "\n";
                 body += "- Łączna liczba dni roboczych: " + calc.totalDays + " " + termsUnit + "\n";
                 body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
                 if (calc.savings > 0) {
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings + " " + calc.currency + ")\n";
+                }
+                if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r))) {
+                    body += "- Dodatkowo w pakiecie znajdują się rejony na zgłoszenie (wyceniane osobno / przygotowanie terminów).\n";
                 }
                 body += "\n";
             } else {
@@ -2178,96 +2186,88 @@
             body += "\n📋 SZCZEGÓŁOWE ROZBICIE ZAMÓWIENIA WG REJONÓW:";
             body += "\n========================================================\n\n";
 
-            if (isSpecialMode) {
-                var specNames = Array.from(wR).filter(chk => GLOBAL_SPECIAL_REGIONS.includes(chk.value.trim().toLowerCase())).map(chk => chk.value);
-                specNames.forEach(name => {
-                    body += "📍 " + name.toUpperCase() + "\n";
+            let selectedWeeksArr = Array.from(wT).map(cb => ({
+                num: cb.getAttribute('data-week'),
+                label: cb.value.trim()
+            }));
+
+            let now = new Date();
+            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+            let currentWeekNum = getWeekNumber(now).toString();
+            let matrixToUse = availabilityMatrix;
+
+            wR.forEach(chkR => {
+                let rName = chkR.value.trim();
+                let rKey = rName.toLowerCase();
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rKey);
+
+                body += "📍 REJON: " + rName.toUpperCase() + "\n";
+
+                if (isSpecial) {
                     body += "   -> Tryb: Rejon na zgłoszenie (mieszkańcy zamawiają indywidualny termin odbioru – przygotowanie najbliższych dat)\n\n";
-                });
-            } else {
-                let selectedWeeksArr = Array.from(wT).map(cb => ({
-                    num: cb.getAttribute('data-week'),
-                    label: cb.value.trim()
-                }));
+                    return;
+                }
 
-                let now = new Date();
-                let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-                let currentWeekNum = getWeekNumber(now).toString();
-                let matrixToUse = availabilityMatrix;
+                let rejonTotalDni = 0;
+                let dopasowaneTygodnie = [];
+                let rawInfoD = "";
 
-                wR.forEach(chkR => {
-                    let rName = chkR.value.trim();
-                    let rKey = rName.toLowerCase();
-                    body += "📍 REJON: " + rName.toUpperCase() + "\n";
+                selectedWeeksArr.forEach(wObj => {
+                    let w = wObj.num;
+                    if (!matrixToUse[w]) return;
 
-                    let rejonTotalDni = 0;
-                    let dopasowaneTygodnie = [];
-                    let rawInfoD = "";
+                    matrixToUse[w].forEach(item => {
+                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                        if (itemName !== rKey) return;
 
-                    selectedWeeksArr.forEach(wObj => {
-                        let w = wObj.num;
-                        if (!matrixToUse[w]) return;
+                        if (typeof item === 'object' && !rawInfoD) {
+                            rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
+                        }
 
-                        matrixToUse[w].forEach(item => {
-                            let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
-                            if (itemName !== rKey) return;
+                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
+                        let datyWTygodniu = [];
 
-                            if (typeof item === 'object' && !rawInfoD) {
-                                rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
-                            }
-
-                            let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                            let datyWTygodniu = [];
-
-                            if (dStr && dStr !== "-") {
-                                let linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                                linieDat.forEach(d => {
-                                    let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                    if (match) {
-                                        let dObj = new Date(match[1], match[2] - 1, match[3]);
-                                        if (w === currentWeekNum) {
-                                            if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                        } else {
-                                            datyWTygodniu.push(match[0]);
-                                        }
+                        if (dStr && dStr !== "-") {
+                            let linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                            linieDat.forEach(d => {
+                                var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                                if (match) {
+                                    var dObj = new Date(match[1], match[2] - 1, match[3]);
+                                    if (w === currentWeekNum) {
+                                        if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
+                                    } else {
+                                        datyWTygodniu.push(match[0]);
                                     }
-                                });
-                            }
+                                }
+                            });
+                        }
 
-                            if (datyWTygodniu.length > 0) {
-                                rejonTotalDni += datyWTygodniu.length;
-                                dopasowaneTygodnie.push({
-                                    tydzien: wObj.label,
-                                    daty: datyWTygodniu.join(', ')
-                                });
-                            }
-                        });
+                        if (datyWTygodniu.length > 0) {
+                            rejonTotalDni += datyWTygodniu.length;
+                            dopasowaneTygodnie.push({
+                                tydzien: wObj.label,
+                                daty: datyWTygodniu.join(', ')
+                            });
+                        }
                     });
-
-                    let parsed = parseRegionInfo(rawInfoD, currentLang);
-                    if (!parsed && GLOBAL_SPECIAL_REGIONS.includes(rKey)) {
-                        parsed = {
-                            system: (currentLang === 'pl') ? "Na zgłoszenie (Auf Abruf)" : "Auf Abruf",
-                            frequency: (currentLang === 'pl') ? "Terminy zamawiane przez mieszkańców" : "Termine auf Bestellung"
-                        };
-                    }
-
-                    if (parsed) {
-                        body += "   System: " + parsed.system + "\n";
-                        body += "   Czestotliwosc: " + parsed.frequency + "\n";
-                    }
-
-                    if (dopasowaneTygodnie.length > 0) {
-                        dopasowaneTygodnie.forEach(dw => {
-                            body += "   • " + dw.tydzien + "\n";
-                            body += "     Dni zbiorki: " + dw.daty + "\n";
-                        });
-                        body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " dni zbiorki\n\n";
-                    } else {
-                        body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
-                    }
                 });
-            }
+
+                let parsed = parseRegionInfo(rawInfoD, currentLang);
+                if (parsed) {
+                    body += "   System: " + parsed.system + "\n";
+                    body += "   Czestotliwosc: " + parsed.frequency + "\n";
+                }
+
+                if (dopasowaneTygodnie.length > 0) {
+                    dopasowaneTygodnie.forEach(dw => {
+                        body += "   • " + dw.tydzien + "\n";
+                        body += "     Dni zbiorki: " + dw.daty + "\n";
+                    });
+                    body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " dni zbiorki\n\n";
+                } else {
+                    body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
+                }
+            });
             
             body += "--------------------------------------------------------\n" + localT.emailFooter + "\n";
             
