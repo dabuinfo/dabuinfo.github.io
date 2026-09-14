@@ -38,7 +38,7 @@
         #authMsg { margin-top: 10px; font-size: 12.5px; font-weight: 600; min-height: 18px; }
         #mainContent { display: none; }
 
-        /* Pasek górny z przyciskiem wylogowania / zmiany zamówienia */
+        /* Pasek górny */
         .top-bar {
             display: flex; justify-content: space-between; align-items: center;
             background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px;
@@ -46,14 +46,92 @@
         }
         .top-bar-info { color: var(--text-muted); font-weight: 600; }
         .top-bar-info span { color: var(--primary); font-weight: 800; }
-        .logout-btn {
-            background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;
+        .top-bar-actions { display: flex; gap: 8px; align-items: center; }
+
+        .btn-action {
             padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px;
-            cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 5px;
+            cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent;
+        }
+        .btn-print {
+            background: #f1f5f9; color: #0f172a; border-color: #cbd5e1;
+        }
+        .btn-print:hover { background: #e2e8f0; }
+
+        .logout-btn {
+            background: #fee2e2; color: #dc2626; border-color: #fecaca;
         }
         .logout-btn:hover { background: #fecaca; }
 
         footer { text-align: center; font-size: 11.5px; color: var(--text-muted); padding: 16px 0 10px; }
+
+        /* ============================================================ */
+        /* STYLE EKONOMICZNEGO DRUKOWANIA I ZAPISU DO PDF (BIAŁO-CZARNE) */
+        /* ============================================================ */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 11pt !important;
+            }
+            /* Ukrycie elementów nawigacyjnych */
+            #authOverlay, .top-bar, .search-box, .days-nav, footer, .btn-action {
+                display: none !important;
+            }
+            .wrapper {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* Zamiana ciemnych/kolorowych teł na czysty biały i ramki */
+            .day-group, .town-block, .village-card, .stat-card, .table-container {
+                background: #ffffff !important;
+                border: 1px solid #000000 !important;
+                box-shadow: none !important;
+                color: #000000 !important;
+                page-break-inside: avoid;
+                margin-bottom: 12px !important;
+            }
+            .day-title-bar, .main-header {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 2px solid #000000 !important;
+                box-shadow: none !important;
+                padding: 6px 0 !important;
+            }
+            h1, .day-title span, .town-title, .village-title {
+                color: #000000 !important;
+            }
+            /* Tagi ulic i linki czarne bez kolorów */
+            .street-tag, .street-item a {
+                background: transparent !important;
+                color: #000000 !important;
+                border: 1px solid #999999 !important;
+                text-decoration: none !important;
+            }
+            .badge, .village-pill {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+            }
+            /* Tabele czarno-białe */
+            table.order-table, table.order-table th, table.order-table td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000000 !important;
+            }
+            /* Pokazujemy wszystkie ukryte sekcje dni przy wydruku */
+            .day-group {
+                display: block !important;
+            }
+            .village-block {
+                display: block !important;
+            }
+            .street-tag {
+                display: inline-flex !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -73,7 +151,10 @@
 <div id="mainContent" class="wrapper">
     <div class="top-bar">
         <div class="top-bar-info">Aktywne zamówienie: <span id="currentOrderBadge">---</span></div>
-        <button class="logout-btn" onclick="wyloguj()">🔒 Zmień zamówienie / Wyloguj</button>
+        <div class="top-bar-actions">
+            <button class="btn-action btn-print" onclick="drukujRaport()">🖨️ Drukuj / Pobierz PDF</button>
+            <button class="btn-action logout-btn" onclick="wyloguj()">🔒 Wyloguj</button>
+        </div>
     </div>
     <div id="reportContainer"></div>
 </div>
@@ -122,7 +203,7 @@
                     report.innerHTML = data.content;
                     document.getElementById('mainContent').style.display = 'block';
 
-                    // Uruchomienie skryptów zawartych w pobranym raporcie
+                    // Uruchomienie skryptów z pobranego raportu
                     report.querySelectorAll('script').forEach(oldScript => {
                         const newScript = document.createElement('script');
                         Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
@@ -144,6 +225,10 @@
                 btn.disabled = false;
                 btn.innerText = "ODBLOKUJ HARMONOGRAM";
             });
+    }
+
+    function drukujRaport() {
+        window.print();
     }
 
     function wyloguj() {
