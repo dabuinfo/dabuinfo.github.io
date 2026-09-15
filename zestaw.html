@@ -576,7 +576,7 @@
             <div class="strategy-container">
                 <div class="strategy-card">
                     <div class="strategy-title" id="configTitle">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice">Wycena indywidualna</div>
+                    <div class="price-tag-large" id="configPrice">Wycena dynamiczna</div>
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
@@ -714,7 +714,7 @@
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Geldern" /> Geldern</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gelnhausen" /> Gelnhausen</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen" /> Giessen</label>
-                                <label class="region-label"><input class="region-chk" name="regionyFielfeld" type="checkbox" value="Giessen Stadt" /> Giessen Stadt</label>
+                                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Giessen Stadt" /> Giessen Stadt</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Gifhorn" /> Gifhorn</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Goch" /> Goch</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Göttingen" /> Göttingen</label>
@@ -977,7 +977,6 @@
 
 <script>
 //<![CDATA[
-    // --- FUNKCJA PARSUJĄCA KOLUMNĘ D (SYSTEM & CZĘSTOTLIWOŚĆ) ---
     function parseRegionInfo(rawInfo, lang) {
         if (!rawInfo || typeof rawInfo !== 'string' || rawInfo.trim() === '-' || rawInfo.trim() === '') {
             return null;
@@ -1014,7 +1013,6 @@
         };
     }
 
-    // --- WIELOWARSTWOWA OBSŁUGA WYBORU PUNKTU INPOST GEOWIDGET v5 ---
     function extractPointData(raw) {
         if (!raw) return null;
         var p = raw.detail || raw.point || raw.data || raw;
@@ -1182,7 +1180,7 @@
             'pl': {
                 currency: "PLN",
                 texts: {
-                    btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena indywidualna",
+                    btnOrderExact: '🛒 WYŚLIJ ZAMÓWIENIE', priceInd: "Wycena dynamiczna",
                     loaderTitle: 'Synchronizacja Danych', loaderDesc: 'Trwa łączenie z serwerem bazy danych... Pobieram opcje.',
                     loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Standard realizacji zamówienia:</b>',
                     headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie',
@@ -1202,7 +1200,7 @@
             'de': {
                 currency: "€",
                 texts: {
-                    btnOrderExact: '🛒 BESTELLUNG ABSENDEN', priceInd: "Individuelle Preisgestaltung",
+                    btnOrderExact: '🛒 BESTELLUNG ABSENDEN', priceInd: "Dynamische Preisgestaltung",
                     loaderTitle: 'Datensynchronisierung', loaderDesc: 'Verbindung zur Datenbank...',
                     loadingData: "⏳ Optionen werden geladen...", infoDesc: '<b>Lieferstandard:</b>',
                     headerChoose: 'Paket konfigurieren', configTitle: '🛠️ Eigenes Set zusammenstellen', configSubtitle: 'Optionen auswählen und bestellen',
@@ -1222,7 +1220,7 @@
             'en': {
                 currency: "€",
                 texts: {
-                    btnOrderExact: '🛒 SUBMIT ORDER', priceInd: "Individual Pricing",
+                    btnOrderExact: '🛒 SUBMIT ORDER', priceInd: "Dynamic Pricing",
                     loaderTitle: 'Data Sync', loaderDesc: 'Connecting to database...', loadingData: "⏳ Loading options...",
                     infoDesc: '<b>Fulfillment Standard:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Custom Set', configSubtitle: 'Select options and submit your order',
                     step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', btnUnselectAll: '[ Deselect All / Clear ]',
@@ -1618,7 +1616,7 @@
             return count === 1 ? arr[0] : arr[1];
         }
 
-        // --- SILNIK WYCENY I RABATÓW BEZ AFISZOWANIA W OPISIE ---
+        // --- SILNIK WYCENY I RABATÓW ---
         function calculateActiveDaysAndPrice() {
             let currentLang = getBrowserLang();
             let isPl = currentLang === 'pl';
@@ -1736,7 +1734,6 @@
             };
         }
 
-        // --- GENEROWANIE PODGLĄDU ZESTAWIENIA NA ŻYWO NA DOLE STRONY Z SYSTEMEM I CZĘSTOTLIWOŚCIĄ ---
         function renderOrderLiveBreakdown() {
             var box = document.getElementById('orderSummaryBreakdown');
             var details = document.getElementById('orderSummaryDetails');
@@ -1851,7 +1848,77 @@
             box.style.display = 'block';
         }
 
-        // --- FILTROWANIE WIELOKROTNE PO PRZECINKU ---
+        function updatePriceDisplay() {
+            let btn = document.getElementById('btnSubmit');
+            let svgPriceSub = document.getElementById('svgPriceSub');
+            let configPrice = document.getElementById('configPrice');
+            let configSubtitle = document.getElementById('configSubtitle');
+            
+            let checkedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value.trim().toLowerCase());
+            let hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.includes(r));
+            let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.includes(r));
+
+            let calc = calculateActiveDaysAndPrice();
+            let conf = config[calc.lang] || config['de'];
+            let localT = conf.texts;
+
+            var dhlContainer = document.getElementById('dhlBox');
+            if (dhlContainer && userLang === 'pl') {
+                if (calc.totalDays >= 5) {
+                    dhlContainer.style.display = 'block';
+                } else {
+                    dhlContainer.style.display = 'none';
+                    var dhlChk = document.getElementById('dhlOption');
+                    if (dhlChk && dhlChk.checked) {
+                        dhlChk.checked = false;
+                        var paczSection = document.getElementById('paczkomatSection');
+                        if (paczSection) paczSection.style.display = 'none';
+                        var paczInput = document.getElementById('paczkomatInput');
+                        if (paczInput) paczInput.value = '';
+                        var paczInfo = document.getElementById('selectedPaczkomatInfo');
+                        if (paczInfo) paczInfo.innerText = '';
+                    }
+                }
+            }
+
+            if (hasOnlySpecial) {
+                if (btn) btn.innerHTML = `${localT.btnSubmit} (${localT.priceInd})`;
+                if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? 'na zapytanie' : 'auf Anfrage';
+                if (configPrice) configPrice.textContent = localT.priceInd;
+                if (configSubtitle) configSubtitle.textContent = localT.configSubtitle;
+                renderOrderLiveBreakdown();
+                return;
+            }
+
+            if (calc.totalDays > 0) {
+                let termsWord = getPluralTerm(calc.totalDays, calc.lang);
+                let orderPrefix = localT.btnOrderPrefix || '🛒 ZAMÓW PAKIET – ';
+                let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
+                let extraNotice = hasMixedSpecial ? ' + Baza PRO' : '';
+
+                if (btn) btn.innerHTML = `${orderPrefix}${calc.totalPrice} ${calc.currency}${discountBadge} (${calc.totalDays} ${termsWord}${extraNotice})`;
+                if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
+                if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
+
+                if (configSubtitle) {
+                    if (calc.savings > 0) {
+                        configSubtitle.innerHTML = (calc.lang === 'pl')
+                            ? `Oszczędzasz <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (Stawka: ${calc.ratePerDay.toFixed(2)} zł/dzień)`
+                            : `Sie sparen <b style="color:#2ecc71;">${calc.savings} ${calc.currency}</b> (${calc.ratePerDay.toFixed(2)} €/Tag)`;
+                    } else {
+                        configSubtitle.textContent = localT.configSubtitle;
+                    }
+                }
+            } else {
+                if (btn) btn.innerHTML = localT.btnSubmit;
+                if (svgPriceSub) svgPriceSub.textContent = (calc.lang === 'pl') ? "na zapytanie" : "auf Anfrage";
+                if (configPrice) configPrice.textContent = localT.priceInd;
+                if (configSubtitle) configSubtitle.textContent = localT.configSubtitle;
+            }
+
+            renderOrderLiveBreakdown();
+        }
+
         function applyRegionSearchFilter() {
             var searchInput = document.getElementById('regionSearchInput');
             if (!searchInput) return;
@@ -2055,14 +2122,16 @@
             var sInput = document.getElementById('regionSearchInput');
             if (sInput) { sInput.value = ''; }
             updateMutualFiltering();
+            updatePriceDisplay();
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption')) {
                 if(e.target.id === 'schrottOption') { 
                     availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
                 }
                 updateMutualFiltering();
+                updatePriceDisplay();
             }
         });
 
@@ -2108,8 +2177,8 @@
             
             body += localT.paymentNote + " " + nr + "\n\n";
 
-            // WYBRANY FORMAT REALIZACJI
-            var selectedFormat = document.querySelector('input[name="format"]')?.value || "Raport Operacyjny PRO (Pakiet Pełny)";
+            var formatEl = document.querySelector('input[name="format"]');
+            var selectedFormat = formatEl ? formatEl.value : "Raport Operacyjny PRO (Pakiet Pełny)";
             body += "WYBRANY FORMAT: " + selectedFormat + "\n\n";
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
