@@ -691,7 +691,7 @@
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Diepholz" /> Diepholz</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dormagen" /> Dormagen</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dortmund" /> Dortmund</label>
-                                <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Dülmen" /> Dülmen</label>
+                                <label class="region-label"><input class="region-chk" name="regiony<!-- spacer -->[]" type="checkbox" value="Dülmen" /> Dülmen</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Düsseldorf" /> Düsseldorf</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Eifelkreis Bitburg-Prüm" /> Eifelkreis Bitburg-Prüm</label>
                                 <label class="region-label"><input class="region-chk" name="regiony[]" type="checkbox" value="Elbe-Elster" /> Elbe-Elster</label>
@@ -862,13 +862,25 @@
                             <div class="region-left-side" style="gap: 14px;">
                                 <input type="hidden" name="format" value="Raport Operacyjny PRO (Nawigacja Google Maps + Podział na Dzielnice + Druk A4)" />
                                 <span style="font-size: 1.6rem; line-height: 1;">📱</span>
-                                <div>
+                                <div style="width: 100%;">
                                     <span style="color: #2ecc71; font-weight: 800; font-size: clamp(0.95rem, 1.5vw, 1.05rem);">
                                         Raport Operacyjny PRO (Pakiet Pełny)
                                     </span>
                                     <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 3px; line-height: 1.4;">
                                         Wielofunkcyjny harmonogram: aktywna nawigacja Google Maps dla każdej ulicy, wyszukiwarka mobilna oraz możliwość oszczędnego wydruku A4.
                                     </div>
+
+                                    <!-- WYBÓR MOTYWU PRO: DARK / LIGHT MODE -->
+                                    <div style="margin-top: 10px; padding: 8px 10px; background: rgba(15, 23, 42, 0.6); border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;">
+                                        <span style="font-size: 0.82rem; color: #93c5fd; font-weight: bold; text-transform: uppercase;">🎨 Motyw raportu:</span>
+                                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; color: #e2e8f0; cursor: pointer;">
+                                            <input type="radio" name="reportTheme" value="Dark Mode" checked style="accent-color: #2ecc71; margin: 0; width: 16px; height: 16px;"> 🌙 Dark Mode (Ciemny)
+                                        </label>
+                                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; color: #e2e8f0; cursor: pointer;">
+                                            <input type="radio" name="reportTheme" value="Light Mode" style="accent-color: #2ecc71; margin: 0; width: 16px; height: 16px;"> ☀️ Light Mode (Jasny)
+                                        </label>
+                                    </div>
+
                                 </div>
                             </div>
                         </label>
@@ -2126,7 +2138,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.name === 'reportTheme')) {
                 if(e.target.id === 'schrottOption') { 
                     availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
                 }
@@ -2179,7 +2191,10 @@
 
             var formatEl = document.querySelector('input[name="format"]');
             var selectedFormat = formatEl ? formatEl.value : "Raport Operacyjny PRO (Pakiet Pełny)";
-            body += "WYBRANY FORMAT: " + selectedFormat + "\n\n";
+            var selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
+            var selectedTheme = selectedThemeEl ? selectedThemeEl.value : "Dark Mode";
+            
+            body += "WYBRANY FORMAT: " + selectedFormat + " [" + selectedTheme + "]\n\n";
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
             if(selectedPaymentMethod) {
