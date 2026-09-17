@@ -27,10 +27,11 @@
             --border-color: #ccc;
             --info-bg: #f8f9fa;
             --info-border: #adb5bd;
-            --hq-color: #f39c12;      /* Husqvarna */
-            --karcher-color: #ffcc00; /* Kärcher */
+            --hq-color: #f39c12;        /* Husqvarna */
+            --karcher-color: #ffcc00;   /* Kärcher */
             --karcher-btn-text: #111;
-            --bike-color: #0077b6;    /* Rowery: Bosch + Shimano */
+            --bike-color: #0077b6;      /* Rowery: Bosch + Shimano */
+            --kringloop-color: #27ae60; /* Kringloopwinkel Holandia */
         }
 
         /* Dark Mode */
@@ -60,7 +61,7 @@
 
         .main-container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             padding: 30px 20px 20px 20px;
             box-sizing: border-box;
             flex: 1;
@@ -81,7 +82,7 @@
         h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; font-size: 1.8rem; }
         .subtitle { text-align: center; font-size: 1rem; color: #888; margin-bottom: 30px; }
 
-        /* Układ kafelków na dużych ekranach */
+        /* Układ kafelków */
         .packages-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -89,9 +90,15 @@
             margin-bottom: 25px;
         }
 
-        @media (min-width: 992px) {
+        @media (min-width: 768px) and (max-width: 1199px) {
             .packages-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .packages-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
@@ -122,6 +129,12 @@
             background-color: rgba(243, 156, 18, 0.08);
             border: 1px solid var(--hq-color);
             border-left: 5px solid var(--hq-color);
+        }
+
+        .kringloop-box {
+            background-color: rgba(39, 174, 96, 0.08);
+            border: 1px solid var(--kringloop-color);
+            border-left: 5px solid var(--kringloop-color);
         }
 
         .divider {
@@ -203,6 +216,7 @@
         button.bike-btn { background: var(--bike-color); color: #fff; }
         button.karcher-btn { background: var(--karcher-color); color: var(--karcher-btn-text); }
         button.hq-btn { background: var(--hq-color); color: #fff; }
+        button.kringloop-btn { background: var(--kringloop-color); color: #fff; }
 
         button:active { opacity: 0.8; transform: scale(0.98); }
 
@@ -422,6 +436,33 @@
                     <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
                 </div>
 
+                <!-- NOWOŚĆ: KRINGLOOP / VINTAGE HOLANDIA -->
+                <div class="package-card kringloop-box">
+                    <div>
+                        <strong style="color: var(--kringloop-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏺 Kringloop & Vintage (Holandia)</strong>
+                        <p style="margin: 0 0 12px 0;">Baza sklepów z rzeczami używanymi, brocante i vintage. Adresy fizyczne pod nawigację i trasy.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="kringloopRegion">
+                                <option value="">-- Wybierz obszar (Holandia) --</option>
+                                <option value="Cała Holandia">Cała Holandia (2000+ sklepów)</option>
+                                <option value="Overijssel">Prowincja Overijssel (przygraniczna)</option>
+                                <option value="Gelderland">Prowincja Gelderland (przygraniczna)</option>
+                                <option value="Drenthe">Prowincja Drenthe (przygraniczna)</option>
+                                <option value="Limburg">Prowincja Limburg (południe)</option>
+                                <option value="Noord-Brabant">Prowincja Noord-Brabant</option>
+                                <option value="Noord-Holland">Prowincja Noord-Holland</option>
+                                <option value="Zuid-Holland">Prowincja Zuid-Holland</option>
+                                <option value="Utrecht">Prowincja Utrecht</option>
+                                <option value="Groningen">Prowincja Groningen</option>
+                                <option value="Friesland">Prowincja Friesland</option>
+                                <option value="Flevoland">Prowincja Flevoland</option>
+                                <option value="Zeeland">Prowincja Zeeland</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="kringloop-btn" onclick="generujZamowienieKringloop()">Zamów bazę Kringloop</button>
+                </div>
+
             </div>
 
             <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
@@ -553,6 +594,28 @@
             
             const nr = `HQ-${rok}${miesiac}${dzien}-${losowy}`;
             const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Husqvarna Dilerzy\nKraj: ${pelnyTekst}`;
+            
+            przygotujSMS(nr, trescSms);
+        }
+
+        function generujZamowienieKringloop() {
+            const select = document.getElementById('kringloopRegion');
+            const wartosc = select.value;
+            const pelnyTekst = select.options[select.selectedIndex].text;
+
+            if(!wartosc) { 
+                alert('Proszę wybrać obszar z listy dla bazy Kringloop!'); 
+                return; 
+            }
+
+            const now = new Date();
+            const rok = now.getFullYear().toString().slice(-2);
+            const miesiac = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dzien = now.getDate().toString().padStart(2, '0');
+            const losowy = Math.floor(1000 + Math.random() * 9000);
+            
+            const nr = `KRING-${rok}${miesiac}${dzien}-${losowy}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kringloop & Vintage Holandia\nRegion: ${pelnyTekst}`;
             
             przygotujSMS(nr, trescSms);
         }
