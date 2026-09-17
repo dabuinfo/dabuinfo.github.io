@@ -82,7 +82,7 @@
         h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; font-size: 1.8rem; }
         .subtitle { text-align: center; font-size: 1rem; color: #888; margin-bottom: 30px; }
 
-        /* Siatka 4 kafelków */
+        /* Siatka pakietów */
         .packages-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -347,37 +347,21 @@
                     <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
                 </div>
 
-                <!-- KRINGLOOP & VINTAGE: HOLANDIA + BELGIA -->
+                <!-- KRINGLOOP & VINTAGE: CAŁY KRAJ (BENELUX) -->
                 <div class="package-card kringloop-box">
                     <div>
                         <strong style="color: var(--kringloop-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏺 Kringloop & Vintage (Benelux)</strong>
-                        <p style="margin: 0 0 12px 0;">Sklepy z używanymi rzeczami, Kringwinkels, Brocante i starocie z Holandii i Belgii (GPS, trasy).</p>
+                        <p style="margin: 0 0 12px 0;">Kompletne bazy sklepów z rzeczami używanymi, Kringwinkels, Brocante i staroci pod nawigację i trasy.</p>
                         <div class="form-group" style="margin-bottom: 12px;">
                             <select id="kringloopRegion">
-                                <option value="">-- Wybierz obszar --</option>
-                                <optgroup label="Pakiety Całościowe">
-                                    <option value="Holandia + Belgia">Holandia + Belgia (Komplet 3 000+)</option>
-                                    <option value="Cała Holandia">Cała Holandia (2 000+)</option>
-                                    <option value="Cała Belgia">Cała Belgia (1 028)</option>
-                                </optgroup>
-                                <optgroup label="Belgia (Główne Regiony)">
-                                    <option value="Belgia - Flandria">Flandria / Region flamandzki (Kringwinkels)</option>
-                                    <option value="Belgia - Walonia">Walonia / Region francuski (Ressourceries)</option>
-                                    <option value="Belgia - Bruksela">Region Stołeczny Bruksela</option>
-                                </optgroup>
-                                <optgroup label="Holandia (Wybrane Prowincje)">
-                                    <option value="Holandia - Overijssel">Overijssel (przygraniczna)</option>
-                                    <option value="Holandia - Gelderland">Gelderland (przygraniczna)</option>
-                                    <option value="Holandia - Drenthe">Drenthe (przygraniczna)</option>
-                                    <option value="Holandia - Limburg">Limburg (południe)</option>
-                                    <option value="Holandia - Noord-Brabant">Noord-Brabant</option>
-                                    <option value="Holandia - Noord-Holland">Noord-Holland</option>
-                                    <option value="Holandia - Zuid-Holland">Zuid-Holland</option>
-                                </optgroup>
+                                <option value="">-- Wybierz raport krajowy --</option>
+                                <option value="Holandia - Cały Kraj">Holandia (Pełny Raport: 2 000+ sklepów)</option>
+                                <option value="Belgia - Cały Kraj">Belgia (Pełny Raport: Kringwinkels & Vintage)</option>
+                                <option value="Holandia + Belgia - Komplet">Holandia + Belgia (Pakiet Kompletny Benelux)</option>
                             </select>
                         </div>
                     </div>
-                    <button class="kringloop-btn" onclick="generujZamowienieKringloop()">Zamów bazę Vintage</button>
+                    <button class="kringloop-btn" onclick="generujZamowienieKringloop()">Zamów bazę Krajową</button>
                 </div>
 
             </div>
@@ -475,9 +459,9 @@
 
         function generujZamowienieKringloop() {
             const select = document.getElementById('kringloopRegion');
-            if(!select.value) { alert('Proszę wybrać obszar dla bazy Kringloop / Vintage!'); return; }
+            if(!select.value) { alert('Proszę wybrać raport krajowy z listy!'); return; }
             const nr = `KRING-${pobierzKluczCzasu()}`;
-            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kringloop & Vintage (Benelux)\nObszar: ${select.options[select.selectedIndex].text}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kringloop & Vintage (Benelux)\nWybrany pakiet: ${select.options[select.selectedIndex].text}`;
             przygotujSMS(nr, trescSms);
         }
 
