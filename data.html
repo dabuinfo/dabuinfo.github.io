@@ -32,6 +32,7 @@
             --karcher-btn-text: #111;
             --bike-color: #0077b6;      /* Rowery: Bosch + Shimano */
             --kringloop-color: #27ae60; /* Kringloop / Vintage Benelux */
+            --wacker-color: #d97706;    /* Wacker Neuson */
         }
 
         /* Dark Mode */
@@ -98,7 +99,7 @@
 
         @media (min-width: 1200px) {
             .packages-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             }
         }
 
@@ -135,6 +136,12 @@
             background-color: rgba(39, 174, 96, 0.08);
             border: 1px solid var(--kringloop-color);
             border-left: 5px solid var(--kringloop-color);
+        }
+
+        .wacker-box {
+            background-color: rgba(217, 119, 6, 0.08);
+            border: 1px solid var(--wacker-color);
+            border-left: 5px solid var(--wacker-color);
         }
 
         .divider {
@@ -216,6 +223,7 @@
         button.karcher-btn { background: var(--karcher-color); color: var(--karcher-btn-text); }
         button.hq-btn { background: var(--hq-color); color: #fff; }
         button.kringloop-btn { background: var(--kringloop-color); color: #fff; }
+        button.wacker-btn { background: var(--wacker-color); color: #fff; }
 
         button:active { opacity: 0.8; transform: scale(0.98); }
 
@@ -347,6 +355,48 @@
                     <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
                 </div>
 
+                <!-- WACKER NEUSON -->
+                <div class="package-card wacker-box">
+                    <div>
+                        <strong style="color: var(--wacker-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🚜 Maszyny Wacker Neuson</strong>
+                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy, oddziały i dilerzy maszyn budowlanych z pełnymi kontaktami.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="wackerKraj">
+                                <option value="">-- Wybierz pakiet (Wacker Neuson) --</option>
+                                <option value="Cała Europa">Cała Europa (476 placówek)</option>
+                                <option value="Niemcy">Niemcy (109)</option>
+                                <option value="Włochy">Włochy (72)</option>
+                                <option value="Francja">Francja (57)</option>
+                                <option value="Wielka Brytania">Wielka Brytania (36)</option>
+                                <option value="Polska">Polska (35)</option>
+                                <option value="Norwegia">Norwegia (28)</option>
+                                <option value="Rumunia">Rumunia (25)</option>
+                                <option value="Szwajcaria">Szwajcaria (15)</option>
+                                <option value="Holandia">Holandia (15)</option>
+                                <option value="Austria">Austria (12)</option>
+                                <option value="Szwecja">Szwecja (12)</option>
+                                <option value="Czechy">Czechy (11)</option>
+                                <option value="Finlandia">Finlandia (10)</option>
+                                <option value="Bułgaria">Bułgaria (9)</option>
+                                <option value="Dania">Dania (5)</option>
+                                <option value="Irlandia">Irlandia (4)</option>
+                                <option value="Słowenia">Słowenia (3)</option>
+                                <option value="Chorwacja">Chorwacja (3)</option>
+                                <option value="Słowacja">Słowacja (2)</option>
+                                <option value="Węgry">Węgry (2)</option>
+                                <option value="Estonia">Estonia (2)</option>
+                                <option value="Łotwa">Łotwa (2)</option>
+                                <option value="Litwa">Litwa (2)</option>
+                                <option value="Belgia">Belgia (2)</option>
+                                <option value="Hiszpania">Hiszpania (1)</option>
+                                <option value="Portugalia">Portugalia (1)</option>
+                                <option value="Grecja">Grecja (1)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="wacker-btn" onclick="generujZamowienieWacker()">Zamów bazę Wacker Neuson</button>
+                </div>
+
                 <!-- KRINGLOOP & VINTAGE: CAŁY KRAJ (BENELUX) -->
                 <div class="package-card kringloop-box">
                     <div>
@@ -454,6 +504,14 @@
             if(!select.value) { alert('Proszę wybrać państwo z listy dla bazy Husqvarna!'); return; }
             const nr = `HQ-${pobierzKluczCzasu()}`;
             const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Husqvarna Dilerzy\nKraj: ${select.options[select.selectedIndex].text}`;
+            przygotujSMS(nr, trescSms);
+        }
+
+        function generujZamowienieWacker() {
+            const select = document.getElementById('wackerKraj');
+            if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Wacker Neuson!'); return; }
+            const nr = `WN-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Wacker Neuson Serwisy & Dilerzy\nPakiet: ${select.options[select.selectedIndex].text}`;
             przygotujSMS(nr, trescSms);
         }
 
