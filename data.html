@@ -303,6 +303,35 @@
                     <button class="atv-btn" onclick="generujZamowienieAtv()">Zamów bazę i mapę Quady</button>
                 </div>
 
+                <!-- HUSQVARNA -->
+                <div class="package-card hq-box">
+                    <div>
+                        <strong style="color: var(--hq-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🔥 Dilerzy Husqvarna</strong>
+                        <p style="margin: 0 0 12px 0;">Kompletne zestawienia punktów sprzedaży i autoryzowanych serwisów maszyn ogrodowych.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="husqvarnaKraj">
+                                <option value="">-- Wybierz pakiet (Husqvarna) --</option>
+                                <option value="Cała Europa - Baza + Mapa HTML">Cała Europa (8 718 punktów + Interaktywna Mapa)</option>
+                                <option value="Niemcy">Niemcy (1 496)</option>
+                                <option value="Francja">Francja (1 172)</option>
+                                <option value="Włochy">Włochy (868)</option>
+                                <option value="Austria">Austria (722)</option>
+                                <option value="Szwajcaria">Szwajcaria (448)</option>
+                                <option value="Polska">Polska (343)</option>
+                                <option value="Szwecja">Szwecja (355)</option>
+                                <option value="Norwegia">Norwegia (342)</option>
+                                <option value="Wielka Brytania">Wielka Brytania (409)</option>
+                                <option value="Holandia">Holandia (173)</option>
+                                <option value="Czechy">Czechy (156)</option>
+                                <option value="Belgia">Belgia (149)</option>
+                                <option value="Dania">Dania (124)</option>
+                                <option value="Hiszpania">Hiszpania (457)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę i mapę Husqvarna</button>
+                </div>
+
                 <!-- ROWERY -->
                 <div class="package-card bike-box">
                     <div>
@@ -357,32 +386,6 @@
                         </div>
                     </div>
                     <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę Kärcher</button>
-                </div>
-
-                <!-- HUSQVARNA -->
-                <div class="package-card hq-box">
-                    <div>
-                        <strong style="color: var(--hq-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🔥 Dilerzy Husqvarna</strong>
-                        <p style="margin: 0 0 12px 0;">Kompletne zestawienia punktów sprzedaży i autoryzowanych serwisów maszyn ogrodowych.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="husqvarnaKraj">
-                                <option value="">-- Wybierz państwo (Husqvarna) --</option>
-                                <option value="Austria">Austria (722)</option>
-                                <option value="Belgia">Belgia (149)</option>
-                                <option value="Czechy">Czechy (156)</option>
-                                <option value="Dania">Dania (123)</option>
-                                <option value="Francja">Francja (1 172)</option>
-                                <option value="Holandia">Holandia (173)</option>
-                                <option value="Niemcy">Niemcy (1 496)</option>
-                                <option value="Norwegia">Norwegia (342)</option>
-                                <option value="Polska">Polska (342)</option>
-                                <option value="Szwajcaria">Szwajcaria (447)</option>
-                                <option value="Szwecja">Szwecja (355)</option>
-                                <option value="Włochy">Włochy (868)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę Husqvarna</button>
                 </div>
 
                 <!-- WACKER NEUSON -->
@@ -521,6 +524,14 @@
             przygotujSMS(nr, trescSms);
         }
 
+        function generujZamowienieHusqvarna() {
+            const select = document.getElementById('husqvarnaKraj');
+            if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Husqvarna!'); return; }
+            const nr = `HQ-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Husqvarna Dilerzy i Serwisy\nPakiet: ${select.options[select.selectedIndex].text}`;
+            przygotujSMS(nr, trescSms);
+        }
+
         function generujZamowienieBike() {
             const select = document.getElementById('bikeKraj');
             if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Rowerowej!'); return; }
@@ -534,14 +545,6 @@
             if(!select.value) { alert('Proszę wybrać państwo z listy dla bazy Kärcher!'); return; }
             const nr = `KAR-${pobierzKluczCzasu()}`;
             const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kärcher Dilerzy i Serwisy\nKraj: ${select.options[select.selectedIndex].text}`;
-            przygotujSMS(nr, trescSms);
-        }
-
-        function generujZamowienieHusqvarna() {
-            const select = document.getElementById('husqvarnaKraj');
-            if(!select.value) { alert('Proszę wybrać państwo z listy dla bazy Husqvarna!'); return; }
-            const nr = `HQ-${pobierzKluczCzasu()}`;
-            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Husqvarna Dilerzy\nKraj: ${select.options[select.selectedIndex].text}`;
             przygotujSMS(nr, trescSms);
         }
 
