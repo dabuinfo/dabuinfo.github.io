@@ -29,8 +29,8 @@
             --info-border: #adb5bd;
             --atv-color: #c0392b;        /* Quady / ATV / UTV Multibrand */
             --hq-color: #f39c12;        /* Husqvarna */
-            --karcher-color: #ffcc00;   /* Kärcher */
-            --karcher-btn-text: #111;
+            --karcher-color: #e67e22;   /* Kärcher */
+            --karcher-btn-text: #fff;
             --bike-color: #0077b6;      /* Rowery: Bosch + Shimano */
             --kringloop-color: #27ae60; /* Kringloop / Vintage Benelux */
             --wacker-color: #d97706;    /* Wacker Neuson */
@@ -128,7 +128,7 @@
         }
 
         .karcher-box {
-            background-color: rgba(255, 204, 0, 0.12);
+            background-color: rgba(230, 126, 34, 0.08);
             border: 1px solid var(--karcher-color);
             border-left: 5px solid var(--karcher-color);
         }
@@ -332,6 +332,34 @@
                     <button class="hq-btn" onclick="generujZamowienieHusqvarna()">Zamów bazę i mapę Husqvarna</button>
                 </div>
 
+                <!-- KÄRCHER -->
+                <div class="package-card karcher-box">
+                    <div>
+                        <strong style="color: var(--karcher-color); font-size: 1.05em; display: block; margin-bottom: 8px;">⚡ Serwisy i Salony Kärcher</strong>
+                        <p style="margin: 0 0 12px 0;">Kompletna baza punktów Kärcher w Europie (Centra, Serwisy i Sklepy).</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="karcherKraj">
+                                <option value="">-- Wybierz pakiet (Kärcher) --</option>
+                                <option value="Cała Europa - Baza + Mapa HTML">Cała Europa (7 647 punktów + Interaktywna Mapa)</option>
+                                <option value="Niemcy">Niemcy (3 314)</option>
+                                <option value="Polska">Polska (1 642)</option>
+                                <option value="Norwegia">Norwegia (854)</option>
+                                <option value="Holandia">Holandia (767)</option>
+                                <option value="Dania">Dania (370)</option>
+                                <option value="Hiszpania">Hiszpania (256)</option>
+                                <option value="Szwajcaria">Szwajcaria (145)</option>
+                                <option value="Włochy">Włochy (87)</option>
+                                <option value="Czechy">Czechy (68)</option>
+                                <option value="Belgia">Belgia (54)</option>
+                                <option value="Austria">Austria (54)</option>
+                                <option value="Wielka Brytania">Wielka Brytania (24)</option>
+                                <option value="Francja">Francja (12)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę i mapę Kärcher</button>
+                </div>
+
                 <!-- WACKER NEUSON -->
                 <div class="package-card wacker-box">
                     <div>
@@ -401,33 +429,6 @@
                         </div>
                     </div>
                     <button class="bike-btn" onclick="generujZamowienieBike()">Zamów bazę Rowerową</button>
-                </div>
-
-                <!-- KÄRCHER -->
-                <div class="package-card karcher-box">
-                    <div>
-                        <strong style="color: #b8860b; font-size: 1.05em; display: block; margin-bottom: 8px;">⚡ Serwisy Kärcher</strong>
-                        <p style="margin: 0 0 12px 0;">Zestawienia oficjalnych salonów, dilerów i centrów serwisowych myjek ciśnieniowych.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="karcherKraj">
-                                <option value="">-- Wybierz państwo (Kärcher) --</option>
-                                <option value="Niemcy">Niemcy (3 314)</option>
-                                <option value="Polska">Polska (1 642)</option>
-                                <option value="Norwegia">Norwegia (854)</option>
-                                <option value="Hiszpania">Hiszpania (256)</option>
-                                <option value="Szwajcaria">Szwajcaria (145)</option>
-                                <option value="Włochy">Włochy (87)</option>
-                                <option value="Czechy">Czechy (68)</option>
-                                <option value="Dania">Dania (62)</option>
-                                <option value="Austria">Austria (54)</option>
-                                <option value="Belgia">Belgia (54)</option>
-                                <option value="Wielka Brytania">Wielka Brytania (24)</option>
-                                <option value="Francja">Francja (Centra serwisowe)</option>
-                                <option value="Holandia">Holandia (Pełna baza)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="karcher-btn" onclick="generujZamowienieKarcher()">Zamów bazę Kärcher</button>
                 </div>
 
                 <!-- KRINGLOOP & VINTAGE: CAŁY KRAJ (BENELUX) -->
@@ -532,6 +533,14 @@
             przygotujSMS(nr, trescSms);
         }
 
+        function generujZamowienieKarcher() {
+            const select = document.getElementById('karcherKraj');
+            if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Kärcher!'); return; }
+            const nr = `KAR-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kärcher Serwisy i Salony\nPakiet: ${select.options[select.selectedIndex].text}`;
+            przygotujSMS(nr, trescSms);
+        }
+
         function generujZamowienieWacker() {
             const select = document.getElementById('wackerKraj');
             if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Wacker Neuson!'); return; }
@@ -545,14 +554,6 @@
             if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Rowerowej!'); return; }
             const nr = `BIKE-${pobierzKluczCzasu()}`;
             const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Bosch eBike & Shimano SSC\nPakiet: ${select.options[select.selectedIndex].text}`;
-            przygotujSMS(nr, trescSms);
-        }
-
-        function generujZamowienieKarcher() {
-            const select = document.getElementById('karcherKraj');
-            if(!select.value) { alert('Proszę wybrać państwo z listy dla bazy Kärcher!'); return; }
-            const nr = `KAR-${pobierzKluczCzasu()}`;
-            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kärcher Dilerzy i Serwisy\nKraj: ${select.options[select.selectedIndex].text}`;
             przygotujSMS(nr, trescSms);
         }
 
