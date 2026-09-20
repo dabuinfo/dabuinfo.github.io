@@ -281,6 +281,23 @@
             <!-- SIATKA GOTOWYCH PAKIETÓW -->
             <div class="packages-grid">
                 
+                <!-- KRINGLOOP, VINTAGE & BROCANTE (BENELUX) -->
+                <div class="package-card kringloop-box">
+                    <div>
+                        <strong style="color: var(--kringloop-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏺 Kringloop & Vintage (Benelux)</strong>
+                        <p style="margin: 0 0 12px 0;">Sklepy z rzeczami używanymi, Kringwinkels, Brocante i hale meblowe pod nawigację i trasy handlowe.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="kringloopRegion">
+                                <option value="">-- Wybierz raport (Benelux) --</option>
+                                <option value="Holandia + Belgia - Komplet Baza + Mapa HTML">Holandia + Belgia (Pakiet Kompletny: 3 085 placówek + Interaktywna Mapa)</option>
+                                <option value="Holandia - Cały Kraj">Holandia (2 057 sklepów Kringloop & Vintage)</option>
+                                <option value="Belgia - Cały Kraj">Belgia (1 028 sklepów Kringwinkels, Antiques & Brocante)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="kringloop-btn" onclick="generujZamowienieKringloop()">Zamów bazę i mapę Kringloop</button>
+                </div>
+
                 <!-- ROWERY: BOSCH EBIKE -->
                 <div class="package-card bike-box">
                     <div>
@@ -431,23 +448,6 @@
                     <button class="atv-btn" onclick="generujZamowienieAtv()">Zamów bazę i mapę Quady</button>
                 </div>
 
-                <!-- KRINGLOOP & VINTAGE: CAŁY KRAJ (BENELUX) -->
-                <div class="package-card kringloop-box">
-                    <div>
-                        <strong style="color: var(--kringloop-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏺 Kringloop & Vintage (Benelux)</strong>
-                        <p style="margin: 0 0 12px 0;">Kompletne bazy sklepów z rzeczami używanymi, Kringwinkels, Brocante i staroci pod nawigację i trasy.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="kringloopRegion">
-                                <option value="">-- Wybierz raport krajowy --</option>
-                                <option value="Holandia - Cały Kraj">Holandia (Pełny Raport: 2 000+ sklepów)</option>
-                                <option value="Belgia - Cały Kraj">Belgia (Pełny Raport: Kringwinkels & Vintage)</option>
-                                <option value="Holandia + Belgia - Komplet">Holandia + Belgia (Pakiet Kompletny Benelux)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="kringloop-btn" onclick="generujZamowienieKringloop()">Zamów bazę Krajową</button>
-                </div>
-
             </div>
 
             <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
@@ -517,6 +517,14 @@
             return `${rok}${miesiac}${dzien}-${losowy}`;
         }
 
+        function generujZamowienieKringloop() {
+            const select = document.getElementById('kringloopRegion');
+            if(!select.value) { alert('Proszę wybrać raport z listy dla bazy Kringloop!'); return; }
+            const nr = `KRING-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kringloop, Vintage & Brocante (Benelux)\nPakiet: ${select.options[select.selectedIndex].text}`;
+            przygotujSMS(nr, trescSms);
+        }
+
         function generujZamowienieBike() {
             const select = document.getElementById('bikeKraj');
             if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Bosch eBike!'); return; }
@@ -554,14 +562,6 @@
             if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Quadów / UTV!'); return; }
             const nr = `ATV-${pobierzKluczCzasu()}`;
             const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Quady & UTV Multibrand (Yamaha, Can-Am, Polaris, CFMOTO)\nPakiet: ${select.options[select.selectedIndex].text}`;
-            przygotujSMS(nr, trescSms);
-        }
-
-        function generujZamowienieKringloop() {
-            const select = document.getElementById('kringloopRegion');
-            if(!select.value) { alert('Proszę wybrać raport krajowy z listy!'); return; }
-            const nr = `KRING-${pobierzKluczCzasu()}`;
-            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Kringloop & Vintage (Benelux)\nWybrany pakiet: ${select.options[select.selectedIndex].text}`;
             przygotujSMS(nr, trescSms);
         }
 
