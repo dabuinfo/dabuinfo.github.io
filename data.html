@@ -27,6 +27,7 @@
             --border-color: #ccc;
             --info-bg: #f8f9fa;
             --info-border: #adb5bd;
+            --atv-color: #c0392b;        /* Quady / ATV / UTV Multibrand */
             --hq-color: #f39c12;        /* Husqvarna */
             --karcher-color: #ffcc00;   /* Kärcher */
             --karcher-btn-text: #111;
@@ -112,6 +113,12 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+
+        .atv-box {
+            background-color: rgba(192, 57, 43, 0.08);
+            border: 1px solid var(--atv-color);
+            border-left: 5px solid var(--atv-color);
         }
 
         .bike-box {
@@ -219,6 +226,7 @@
             margin-top: 10px;
         }
 
+        button.atv-btn { background: var(--atv-color); color: #fff; }
         button.bike-btn { background: var(--bike-color); color: #fff; }
         button.karcher-btn { background: var(--karcher-color); color: var(--karcher-btn-text); }
         button.hq-btn { background: var(--hq-color); color: #fff; }
@@ -273,6 +281,28 @@
             <!-- SIATKA GOTOWYCH PAKIETÓW -->
             <div class="packages-grid">
                 
+                <!-- QUADY / ATV / SIDE-BY-SIDE MULTIBRAND -->
+                <div class="package-card atv-box">
+                    <div>
+                        <strong style="color: var(--atv-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏍️ Quady & UTV Multibrand</strong>
+                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i salony Yamaha, Can-Am (BRP), Polaris, CFMOTO oraz Segway/TGB.</p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <select id="atvKraj">
+                                <option value="">-- Wybierz pakiet (Quady / UTV) --</option>
+                                <option value="Cała Europa - Baza + Mapa HTML">Cała Europa (1 560 punktów + Interaktywna Mapa)</option>
+                                <option value="Polska - Multibrand">Polska (194 autoryzowane serwisy)</option>
+                                <option value="Niemcy - Multibrand">Niemcy (450+ autoryzowanych punktów)</option>
+                                <option value="Francja - Multibrand">Francja (450+ autoryzowanych punktów)</option>
+                                <option value="Austria + Szwajcaria">Austria i Szwajcaria (Pakiet Alpejski)</option>
+                                <option value="Kraje Beneluksu">Benelux (Belgia, Holandia, Luksemburg)</option>
+                                <option value="Skandynawia">Skandynawia (Szwecja, Norwegia, Finlandia)</option>
+                                <option value="Czechy i Słowacja">Czechy i Słowacja (ASP Group / Dilerzy)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="atv-btn" onclick="generujZamowienieAtv()">Zamów bazę i mapę Quady</button>
+                </div>
+
                 <!-- ROWERY -->
                 <div class="package-card bike-box">
                     <div>
@@ -481,6 +511,14 @@
             const dzien = now.getDate().toString().padStart(2, '0');
             const losowy = Math.floor(1000 + Math.random() * 9000);
             return `${rok}${miesiac}${dzien}-${losowy}`;
+        }
+
+        function generujZamowienieAtv() {
+            const select = document.getElementById('atvKraj');
+            if(!select.value) { alert('Proszę wybrać pakiet z listy dla bazy Quadów / UTV!'); return; }
+            const nr = `ATV-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: Quady & UTV Multibrand (Yamaha, Can-Am, Polaris, CFMOTO)\nPakiet: ${select.options[select.selectedIndex].text}`;
+            przygotujSMS(nr, trescSms);
         }
 
         function generujZamowienieBike() {
