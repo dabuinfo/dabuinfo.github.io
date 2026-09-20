@@ -407,7 +407,7 @@
         .option-box { padding: 8px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .option-box:last-child { border-bottom: none; margin-bottom: 0; }
 
-        /* NOWE STYLE WYBORU FORMATU RAPORTU (3 KAFELKI) */
+        /* KAFELKI WYBORU FORMATU RAPORTU (3 OPCJE) */
         .report-format-options-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -612,7 +612,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li id="configLi2">Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (automatyczne rabaty przy większych pakietach!).</li>
+                        <li id="configLi2">Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (automatyczne rabaty przy większych pakietach!). Dla mapy online obowiązuje stała cena jednostkowa.</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                     </ul>
@@ -912,7 +912,7 @@
                             </div>
                         </div>
 
-                        <!-- OPCJA 3: INTERAKTYWNA MAPA ONLINE -->
+                        <!-- OPCJA 3: INTERAKTYWNA MAPA ONLINE (BEZ RABATÓW ILOŚCIOWYCH) -->
                         <div class="format-card-radio" onclick="wybierzFormat('Interactive Map', this)">
                             <div class="format-card-header">
                                 <input type="radio" name="reportTheme" value="Interactive Map" style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
@@ -1032,6 +1032,11 @@
         if (el) el.classList.add('active');
         var radio = el.querySelector('input[type="radio"]');
         if (radio) radio.checked = true;
+        
+        // Natychmiastowe przeliczenie cen po zmianie formatu (wyłączenie lub włączenie rabatów)
+        if (typeof updatePriceDisplay === 'function') {
+            updatePriceDisplay();
+        }
     }
 
     function parseRegionInfo(rawInfo, lang) {
@@ -1242,7 +1247,7 @@
                     loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Standard realizacji zamówienia:</b>',
                     headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie',
                     configLi1: 'Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).',
-                    configLi2: 'Dla każdego zamówienia obowiązuje <b>wycena dynamiczna</b> (automatyczne rabaty przy większych pakietach!).',
+                    configLi2: 'Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dla mapy online obowiązuje stała cena jednostkowa.',
                     configLi3: 'Gwarantujemy elastyczne podejście do każdego zlecenia.',
                     configLi5: 'Baza zawiera obecnie <b>{count} rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!',
                     boxProHeading: '📱 Raport Operacyjny PRO & Interaktywna Mapa GPS',
@@ -1251,6 +1256,7 @@
                     boxProLi3: '<strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo.',
                     boxProLi4: '<strong>Gotowość do druku A4:</strong> Zintegrowana funkcja ekonomicznego wydruku (czysty tekst na białym tle).',
                     savingsText: 'Oszczędzasz <b style="color:#2ecc71;">{savings} {currency}</b> (Stawka: {rate} zł/dzień)',
+                    mapStandardText: 'Standardowa wycena mapy online: <b style="color:#38bdf8;">{rate} zł/dzień</b> (bez rabatów)',
                     summaryHeader: '📋 Twoje zestawienie wg rejonów i tygodni:',
                     summarySystem: 'System:', summaryFrequency: 'Częstotliwość:', summaryDays: 'Dni:',
                     summaryTotalRegion: 'Łącznie: {count} dni zbiórki',
@@ -1284,7 +1290,7 @@
                     loadingData: "⏳ Optionen werden geladen...", infoDesc: '<b>Lieferstandard:</b>',
                     headerChoose: 'Paket konfigurieren', configTitle: '🛠️ Eigenes Set zusammenstellen', configSubtitle: 'Optionen auswählen und bestellen',
                     configLi1: 'Wählen Sie die gewünschten <b>Gebiete</b> und <b>Wochen</b> (beliebige Kombinationen).',
-                    configLi2: 'Für jede Bestellung gilt eine <b>dynamische Preisgestaltung</b> (automatische Mengenrabatte!).',
+                    configLi2: 'Für Textberichte gilt eine <b>dynamische Preisgestaltung</b>. Für die Online-Karte gilt ein fester Einzelpreis.',
                     configLi3: 'Wir garantieren einen flexiblen Ansatz für jeden Auftrag.',
                     configLi5: 'Die Datenbank enthält derzeit <b>{count} Gebiete</b> zur Auswahl. Die meisten werden von Bots durchsucht – einige nur auf Anfrage!',
                     boxProHeading: '📱 PRO Einsatzbericht & Interaktive GPS-Karte',
@@ -1293,6 +1299,7 @@
                     boxProLi3: '<strong>Interaktive Online-Karte:</strong> Volle räumliche Visualisierung mit Tagesfiltern und Topo-Karten.',
                     boxProLi4: '<strong>A4-Druck optimiert:</strong> Integrierte sparsame Druckfunktion (reiner Text auf weißem Hintergrund).',
                     savingsText: 'Sie sparen <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/Tag)',
+                    mapStandardText: 'Standardpreis Online-Karte: <b style="color:#38bdf8;">{rate} €/Tag</b> (keine Mengenrabatte)',
                     summaryHeader: '📋 Ihre Zusammenstellung nach Gebieten und Wochen:',
                     summarySystem: 'System:', summaryFrequency: 'Häufigkeit:', summaryDays: 'Tage:',
                     summaryTotalRegion: 'Gesamt: {count} Abholtage',
@@ -1325,7 +1332,7 @@
                     loaderTitle: 'Data Sync', loaderDesc: 'Connecting to database...', loadingData: "⏳ Loading options...",
                     infoDesc: '<b>Fulfillment Standard:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Custom Set', configSubtitle: 'Select options and submit your order',
                     configLi1: 'Select your preferred <b>regions</b> and <b>weeks</b> (any combination).',
-                    configLi2: 'Every order features <b>dynamic pricing</b> (automatic volume discounts!).',
+                    configLi2: 'For text reports, <b>dynamic pricing</b> applies. For online maps, a fixed unit price applies.',
                     configLi3: 'We guarantee a flexible approach to every order.',
                     configLi5: 'Database currently contains <b>{count} regions</b>. Most are scanned automatically by bots – some exclusively on request!',
                     boxProHeading: '📱 PRO Operational Report & Interactive GPS Map',
@@ -1334,6 +1341,7 @@
                     boxProLi3: '<strong>Interactive Online Map:</strong> Full spatial mapping with day filters, clusters, and Topo layers.',
                     boxProLi4: '<strong>A4 Print Ready:</strong> Clean, economical printer-friendly output.',
                     savingsText: 'You save <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/day)',
+                    mapStandardText: 'Online map regular price: <b style="color:#38bdf8;">{rate} €/day</b> (no volume discounts)',
                     summaryHeader: '📋 Summary by regions and weeks:',
                     summarySystem: 'System:', summaryFrequency: 'Frequency:', summaryDays: 'Days:',
                     summaryTotalRegion: 'Total: {count} collection days',
@@ -1772,8 +1780,12 @@
 
             let currencySymbol = isPl ? 'PLN' : '€';
 
+            // Sprawdzamy czy zaznaczono mapę online
+            let selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
+            let isInteractiveMap = selectedThemeEl && selectedThemeEl.value === 'Interactive Map';
+
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
-                return { totalDays: 0, totalPrice: 0, regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, lang: currentLang };
+                return { totalDays: 0, totalPrice: 0, regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, lang: currentLang, isInteractiveMap: isInteractiveMap };
             }
 
             let now = new Date();
@@ -1819,52 +1831,57 @@
             let baseRate = isPl ? 25.0 : 6.0;
             let ratePerDay;
 
-            if (isPl) {
-                if (totalDays >= 250) {
-                    ratePerDay = 5.00;
-                } else if (totalDays >= 181) {
-                    ratePerDay = 7.50;
-                } else if (totalDays >= 121) {
-                    ratePerDay = 10.00;
-                } else if (totalDays >= 81) {
-                    ratePerDay = 12.50;
-                } else if (totalDays >= 51) {
-                    ratePerDay = 15.00;
-                } else if (totalDays >= 31) {
-                    ratePerDay = 17.50;
-                } else if (totalDays >= 16) {
-                    ratePerDay = 20.00;
-                } else if (totalDays >= 6) {
-                    ratePerDay = 22.50;
-                } else {
-                    ratePerDay = 25.00;
-                }
+            // WYŁĄCZENIE RABATÓW DLA MAPY ONLINE:
+            if (isInteractiveMap) {
+                ratePerDay = baseRate; // Stała stawka bazowa bez względu na liczbę dni
             } else {
-                if (totalDays >= 250) {
-                    ratePerDay = 1.20;
-                } else if (totalDays >= 181) {
-                    ratePerDay = 1.80;
-                } else if (totalDays >= 121) {
-                    ratePerDay = 2.40;
-                } else if (totalDays >= 81) {
-                    ratePerDay = 3.00;
-                } else if (totalDays >= 51) {
-                    ratePerDay = 3.60;
-                } else if (totalDays >= 31) {
-                    ratePerDay = 4.20;
-                } else if (totalDays >= 16) {
-                    ratePerDay = 4.80;
-                } else if (totalDays >= 6) {
-                    ratePerDay = 5.40;
+                if (isPl) {
+                    if (totalDays >= 250) {
+                        ratePerDay = 5.00;
+                    } else if (totalDays >= 181) {
+                        ratePerDay = 7.50;
+                    } else if (totalDays >= 121) {
+                        ratePerDay = 10.00;
+                    } else if (totalDays >= 81) {
+                        ratePerDay = 12.50;
+                    } else if (totalDays >= 51) {
+                        ratePerDay = 15.00;
+                    } else if (totalDays >= 31) {
+                        ratePerDay = 17.50;
+                    } else if (totalDays >= 16) {
+                        ratePerDay = 20.00;
+                    } else if (totalDays >= 6) {
+                        ratePerDay = 22.50;
+                    } else {
+                        ratePerDay = 25.00;
+                    }
                 } else {
-                    ratePerDay = 6.00;
+                    if (totalDays >= 250) {
+                        ratePerDay = 1.20;
+                    } else if (totalDays >= 181) {
+                        ratePerDay = 1.80;
+                    } else if (totalDays >= 121) {
+                        ratePerDay = 2.40;
+                    } else if (totalDays >= 81) {
+                        ratePerDay = 3.00;
+                    } else if (totalDays >= 51) {
+                        ratePerDay = 3.60;
+                    } else if (totalDays >= 31) {
+                        ratePerDay = 4.20;
+                    } else if (totalDays >= 16) {
+                        ratePerDay = 4.80;
+                    } else if (totalDays >= 6) {
+                        ratePerDay = 5.40;
+                    } else {
+                        ratePerDay = 6.00;
+                    }
                 }
             }
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
             let totalPrice = Math.round((totalDays * ratePerDay) * 100) / 100;
-            let savings = Math.round((regularPrice - totalPrice) * 100) / 100;
-            let discountPercent = regularPrice > 0 ? Math.round((savings / regularPrice) * 100) : 0;
+            let savings = isInteractiveMap ? 0 : Math.round((regularPrice - totalPrice) * 100) / 100;
+            let discountPercent = (isInteractiveMap || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
             return {
                 totalDays: totalDays,
@@ -1874,7 +1891,8 @@
                 savings: savings,
                 ratePerDay: ratePerDay,
                 currency: currencySymbol,
-                lang: currentLang
+                lang: currentLang,
+                isInteractiveMap: isInteractiveMap
             };
         }
 
@@ -2015,7 +2033,7 @@
 
             var dhlContainer = document.getElementById('dhlBox');
             if (dhlContainer && userLang === 'pl') {
-                if (calc.totalDays >= 5) {
+                if (calc.totalDays >= 5 && !calc.isInteractiveMap) {
                     dhlContainer.style.display = 'block';
                 } else {
                     dhlContainer.style.display = 'none';
@@ -2052,7 +2070,10 @@
                 if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
 
                 if (configSubtitle) {
-                    if (calc.savings > 0) {
+                    if (calc.isInteractiveMap) {
+                        let mapNotice = localT.mapStandardText || "Standardowa wycena mapy online: <b style=\"color:#38bdf8;\">{rate} zł/dzień</b> (bez rabatów)";
+                        configSubtitle.innerHTML = mapNotice.replace('{rate}', calc.ratePerDay.toFixed(2));
+                    } else if (calc.savings > 0) {
                         let savingsTemplate = localT.savingsText || "Sie sparen <b style=\"color:#2ecc71;\">{savings} {currency}</b> ({rate} €/Tag)";
                         configSubtitle.innerHTML = savingsTemplate
                             .replace('{savings}', calc.savings)
@@ -2317,7 +2338,9 @@
                 body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + "\n";
                 body += "- Łączna liczba dni roboczych: " + calc.totalDays + " " + termsUnit + "\n";
                 body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
-                if (calc.savings > 0) {
+                if (calc.isInteractiveMap) {
+                    body += "- Format: Interaktywna Mapa Online (stawka standardowa bez rabatów ilościowych)\n";
+                } else if (calc.savings > 0) {
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings + " " + calc.currency + ")\n";
                 }
                 if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r))) {
@@ -2344,7 +2367,7 @@
                 body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
             }
 
-            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5) {
+            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5 && !calc.isInteractiveMap) {
                 var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
                 var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
                 body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
