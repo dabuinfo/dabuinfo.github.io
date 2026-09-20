@@ -612,7 +612,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li id="configLi2">Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (automatyczne rabaty przy większych pakietach!). Dla mapy online obowiązuje stała cena jednostkowa.</li>
+                        <li id="configLi2">Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dla mapy online obowiązuje stała cena jednostkowa.</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                     </ul>
@@ -1031,9 +1031,12 @@
         document.querySelectorAll('.format-card-radio').forEach(c => c.classList.remove('active'));
         if (el) el.classList.add('active');
         var radio = el.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
+        if (radio) {
+            radio.checked = true;
+            var event = new Event('change', { bubbles: true });
+            radio.dispatchEvent(event);
+        }
         
-        // Natychmiastowe przeliczenie cen po zmianie formatu (wyłączenie lub włączenie rabatów)
         if (typeof updatePriceDisplay === 'function') {
             updatePriceDisplay();
         }
@@ -1249,7 +1252,7 @@
                     configLi1: 'Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).',
                     configLi2: 'Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dla mapy online obowiązuje stała cena jednostkowa.',
                     configLi3: 'Gwarantujemy elastyczne podejście do każdego zlecenia.',
-                    configLi5: 'Baza zawiera obecnie <b>{count} rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!',
+                    configLi5: 'Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!',
                     boxProHeading: '📱 Raport Operacyjny PRO & Interaktywna Mapa GPS',
                     boxProLi1: '<strong>Aktywne linki GPS:</strong> Ulice podlinkowane bezpośrednio do nawigacji Google Maps na smartfonie.',
                     boxProLi2: '<strong>Podział logistyczny:</strong> Wykaz podzielony na gminy, dzielnice, sołectwa oraz zliczone punkty odbioru.',
