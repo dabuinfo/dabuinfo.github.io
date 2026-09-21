@@ -400,23 +400,23 @@
             background: rgba(10, 14, 20, 0.45); 
             border: 1px dashed var(--border-subtle); 
             border-radius: var(--radius-sm); 
-            padding: 6px; 
+            padding: 8px; 
             margin-bottom: 12px; 
             box-sizing: border-box; 
         }
         .option-box { padding: 8px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .option-box:last-child { border-bottom: none; margin-bottom: 0; }
 
-        /* KAFELKI WYBORU FORMATU RAPORTU (3 OPCJE) */
+        /* KAFELKI WYBORU MOTYWU RAPORTU (2 OPCJE) */
         .report-format-options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-top: 10px;
         }
         @media (min-width: 768px) {
             .report-format-options-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: 1fr 1fr;
             }
         }
         .format-card-radio {
@@ -424,7 +424,7 @@
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 12px 14px;
+            padding: 14px 16px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -445,11 +445,11 @@
             align-items: center;
             gap: 8px;
             font-weight: 700;
-            font-size: 0.92rem;
+            font-size: 0.94rem;
             color: #f8fafc;
         }
         .format-card-desc {
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             line-height: 1.4;
         }
@@ -612,7 +612,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li id="configLi1">Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li id="configLi2">Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dla mapy online obowiązuje stała cena jednostkowa.</li>
+                        <li id="configLi2">Dla raportów tekstowych PRO obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
                         <li id="configLi3">Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li id="configLi5">Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                     </ul>
@@ -631,7 +631,7 @@
                                 <li id="boxProLi2"><strong>Podział logistyczny:</strong> Wykaz podzielony na gminy, dzielnice, sołectwa oraz zliczone punkty odbioru.</li>
                             </ul>
                             <ul class="benefit-list">
-                                <li id="boxProLi3"><strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo.</li>
+                                <li id="boxProLi3"><strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo (opcja dodatkowa).</li>
                                 <li id="boxProLi4"><strong>Gotowość do druku A4:</strong> Zintegrowana funkcja ekonomicznego wydruku (czysty tekst na białym tle).</li>
                             </ul>
                         </div>
@@ -881,11 +881,11 @@
 
                 </div>
 
-                <!-- KROK 3: WYBÓR FORMATU RAPORTU / MAPY (3 OKIENKA) -->
+                <!-- KROK 3: WYBÓR MOTYWU RAPORTU PRO -->
                 <div class="form-header" id="step3Header">📄 3. Standard realizacji zamówienia:</div>
                 <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 12px;">
                     <div style="font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; line-height: 1.4;" id="formatSub">
-                        Wybierz preferowaną formę zestawienia danych do pracy w terenie:
+                        Wybierz preferowany motyw graficzny Raportu Operacyjnego PRO:
                     </div>
 
                     <div class="report-format-options-grid">
@@ -912,23 +912,28 @@
                             </div>
                         </div>
 
-                        <!-- OPCJA 3: INTERAKTYWNA MAPA ONLINE (BEZ RABATÓW ILOŚCIOWYCH) -->
-                        <div class="format-card-radio" onclick="wybierzFormat('Interactive Map', this)">
-                            <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Interactive Map" style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
-                                <span style="color: #38bdf8;" id="themeMap">🗺️ Mapa Online (Punkty GPS)</span>
-                            </div>
-                            <div class="format-card-desc" id="themeMapDesc">
-                                Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni, klastrami oraz nawigacją do Google Maps.
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
+                <!-- KROK 4: OPCJE DODATKOWE -->
                 <div class="form-header" id="step4Header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
                     
+                    <!-- DODATEK: INTERAKTYWNA MAPA ONLINE GPS -->
+                    <div class="option-box" id="mapAddonBox" style="background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 8px; margin-bottom: 6px;">
+                        <label class="region-label" style="min-height: auto; padding: 0;">
+                            <div class="region-left-side">
+                                <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" /> 
+                                <span id="mapOnlineLabel" style="color: #38bdf8; font-weight: bold;">
+                                    🗺️ Dołącz Interaktywną Mapę Online GPS (+dodatkowa wycena bez rabatu)
+                                </span>
+                            </div>
+                        </label>
+                        <div id="mapOnlineDesc" style="font-size: 0.82rem; color: #94a3b8; margin-left: 31px; margin-top: 4px; line-height: 1.4;">
+                            Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia, klastrami oraz szybką nawigacją Google Maps.
+                        </div>
+                    </div>
+
                     <div class="option-box" id="dhlBox" style="display: none;">
                         <label class="region-label">
                             <input id="dhlOption" type="checkbox" /> 
@@ -1232,10 +1237,12 @@
 
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
 
+        // AUTOMATYCZNE WYKRYWANIE JĘZYKA PRZEGLĄDARKI
         function getBrowserLang() {
             var nLang = navigator.language || (navigator.languages && navigator.languages[0]) || navigator.userLanguage || 'de';
             var shortLang = nLang.substr(0, 2).toLowerCase();
-            const supported = ['pl', 'de', 'cs', 'sk', 'hu', 'ro', 'bg', 'tr', 'bs', 'uk', 'ru', 'lt', 'en'];
+            const supported = ['pl', 'de', 'ro', 'bg', 'uk', 'ru', 'hu', 'cs', 'sk', 'tr', 'en'];
+            if (shortLang === 'sk') return 'cs'; // Czeski i słowacki są wzajemnie zrozumiałe
             return supported.includes(shortLang) ? shortLang : 'de';
         }
 
@@ -1250,16 +1257,16 @@
                     loadingData: "⏳ Pobieranie dostępnych opcji...", infoDesc: '<b>Standard realizacji zamówienia:</b>',
                     headerChoose: 'Skonfiguruj swój pakiet', configTitle: '🛠️ Twój własny zestaw', configSubtitle: 'Zaznacz opcje poniżej i wyślij zamówienie',
                     configLi1: 'Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).',
-                    configLi2: 'Dla raportów tekstowych obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dla mapy online obowiązuje stała cena jednostkowa.',
+                    configLi2: 'Dla raportów tekstowych PRO obowiązuje <b>wycena dynamiczna</b> (rabaty ilościowe). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.',
                     configLi3: 'Gwarantujemy elastyczne podejście do każdego zlecenia.',
                     configLi5: 'Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!',
                     boxProHeading: '📱 Raport Operacyjny PRO & Interaktywna Mapa GPS',
                     boxProLi1: '<strong>Aktywne linki GPS:</strong> Ulice podlinkowane bezpośrednio do nawigacji Google Maps na smartfonie.',
                     boxProLi2: '<strong>Podział logistyczny:</strong> Wykaz podzielony na gminy, dzielnice, sołectwa oraz zliczone punkty odbioru.',
-                    boxProLi3: '<strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo.',
+                    boxProLi3: '<strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo (opcja dodatkowa).',
                     boxProLi4: '<strong>Gotowość do druku A4:</strong> Zintegrowana funkcja ekonomicznego wydruku (czysty tekst na białym tle).',
                     savingsText: 'Oszczędzasz <b style="color:#2ecc71;">{savings} {currency}</b> (Stawka: {rate} zł/dzień)',
-                    mapStandardText: 'Standardowa wycena mapy online: <b style="color:#38bdf8;">{rate} zł/dzień</b> (bez rabatów)',
+                    mapAddonNotice: 'Pakiet z dodatkiem Mapy Online: <b style="color:#38bdf8;">{rate} zł/dzień</b> (bez rabatu ilościowego)',
                     summaryHeader: '📋 Twoje zestawienie wg rejonów i tygodni:',
                     summarySystem: 'System:', summaryFrequency: 'Częstotliwość:', summaryDays: 'Dni:',
                     summaryTotalRegion: 'Łącznie: {count} dni zbiórki',
@@ -1267,13 +1274,13 @@
                     summarySpecial: 'Harmonogram zastrzeżony — pełne terminy generowane bezpośrednio do raportu PRO',
                     step1Header: '👇 1. Wybierz Rejony:', step2Header: '📅 2. Wybierz Tygodnie:', btnUnselectAll: '[ Odznacz wszystko / Clear ]',
                     step3Header: '📄 3. Standard realizacji zamówienia:',
-                    formatSub: 'Wybierz preferowaną formę zestawienia danych do pracy w terenie:',
+                    formatSub: 'Wybierz preferowany motyw graficzny Raportu Operacyjnego PRO:',
                     themeLight: '☀️ Raport Jasny (A4 Druk)',
                     themeLightDesc: 'Czysty, biały podkład zoptymalizowany pod wydruk na kartkach A4 oraz czytanie w pełnym słońcu w szoferce.',
                     themeDark: '🌙 Raport Ciemny (OLED)',
                     themeDarkDesc: 'Nowoczesny ciemny motyw oszczędzający baterię telefonu i wzrok podczas planowania tras wieczorem i nocą.',
-                    themeMap: '🗺️ Mapa Online (Punkty GPS)',
-                    themeMapDesc: 'Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni, klastrami oraz nawigacją do Google Maps.',
+                    mapOnlineLabel: '🗺️ Dołącz Interaktywną Mapę Online GPS (+dodatkowa wycena bez rabatu)',
+                    mapOnlineDesc: 'Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia, klastrami oraz szybką nawigacją Google Maps.',
                     step4Header: '💾 4. Opcje dodatkowe:', step5Header: '💳 5. Preferowana forma płatności:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Inne',
                     schrottLabel: '🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)', dhlLabel: '📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)', pickupLabel: '🏪 Odbiór osobisty',
@@ -1289,20 +1296,20 @@
                 currency: "€",
                 texts: {
                     btnOrderExact: '🛒 BESTELLUNG ABSENDEN', priceInd: "Dynamische Preisgestaltung",
-                    loaderTitle: 'Datensynchronisierung', loaderDesc: 'Verbindung zur Datenbank...',
+                    loaderTitle: 'Datensynchronisierung', loaderDesc: 'Verbindung zur Datenbank... Optionen werden geladen.',
                     loadingData: "⏳ Optionen werden geladen...", infoDesc: '<b>Lieferstandard:</b>',
                     headerChoose: 'Paket konfigurieren', configTitle: '🛠️ Eigenes Set zusammenstellen', configSubtitle: 'Optionen auswählen und bestellen',
                     configLi1: 'Wählen Sie die gewünschten <b>Gebiete</b> und <b>Wochen</b> (beliebige Kombinationen).',
-                    configLi2: 'Für Textberichte gilt eine <b>dynamische Preisgestaltung</b>. Für die Online-Karte gilt ein fester Einzelpreis.',
+                    configLi2: 'Für Textberichte gilt eine <b>dynamische Preisgestaltung</b>. Das Add-on der Online-Karte ist eine zusätzliche Einzelbepreisung ohne Rabatt.',
                     configLi3: 'Wir garantieren einen flexiblen Ansatz für jeden Auftrag.',
                     configLi5: 'Die Datenbank enthält derzeit <b>{count} Gebiete</b> zur Auswahl. Die meisten werden von Bots durchsucht – einige nur auf Anfrage!',
                     boxProHeading: '📱 PRO Einsatzbericht & Interaktive GPS-Karte',
                     boxProLi1: '<strong>Aktive GPS-Links:</strong> Straßen direkt mit Google Maps Navigation auf dem Smartphone verknüpft.',
                     boxProLi2: '<strong>Logistische Aufteilung:</strong> Aufgeteilt nach Gemeinden, Stadtteilen und gezählten Abholpunkten.',
-                    boxProLi3: '<strong>Interaktive Online-Karte:</strong> Volle räumliche Visualisierung mit Tagesfiltern und Topo-Karten.',
+                    boxProLi3: '<strong>Interaktive Online-Karte:</strong> Volle räumliche Visualisierung mit Tagesfiltern und Topo-Karten (Zusatzoption).',
                     boxProLi4: '<strong>A4-Druck optimiert:</strong> Integrierte sparsame Druckfunktion (reiner Text auf weißem Hintergrund).',
                     savingsText: 'Sie sparen <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/Tag)',
-                    mapStandardText: 'Standardpreis Online-Karte: <b style="color:#38bdf8;">{rate} €/Tag</b> (keine Mengenrabatte)',
+                    mapAddonNotice: 'Paket mit Online-Karte Add-on: <b style="color:#38bdf8;">{rate} €/Tag</b> (keine Mengenrabatte)',
                     summaryHeader: '📋 Ihre Zusammenstellung nach Gebieten und Wochen:',
                     summarySystem: 'System:', summaryFrequency: 'Häufigkeit:', summaryDays: 'Tage:',
                     summaryTotalRegion: 'Gesamt: {count} Abholtage',
@@ -1310,13 +1317,13 @@
                     summarySpecial: 'Geschützter Bereich — Termine werden direkt im PRO-Bericht bereitgestellt',
                     step1Header: '👇 1. Gebiete auswählen:', step2Header: '📅 2. Wochen auswählen:', btnUnselectAll: '[ Alles abwählen / Clear ]',
                     step3Header: '📄 3. Lieferstandard:',
-                    formatSub: 'Wählen Sie das bevorzugte Berichtsformat für Ihren Einsatz:',
+                    formatSub: 'Wählen Sie das bevorzugte Design für den PRO Einsatzbericht:',
                     themeLight: '☀️ Bericht Hell (A4 Druck)',
                     themeLightDesc: 'Weißes, druckfreundliches Design, perfekt für A4-Ausdrucke und Sonnenlicht in der Fahrerkabine.',
                     themeDark: '🌙 Bericht Dunkel (OLED)',
                     themeDarkDesc: 'Augenschonender Dark Mode zur Schonung des Handy-Akkus bei der Routenplanung am Abend.',
-                    themeMap: '🗺️ Online-Karte (GPS-Punkte)',
-                    themeMapDesc: 'Interaktive HTML-Karte fürs Smartphone mit eingezeichneten Straßenpunkten, Tagesfiltern und Google Maps Navigation.',
+                    mapOnlineLabel: '🗺️ Interaktive Online-Karte GPS (+Aufpreis ohne Rabatt)',
+                    mapOnlineDesc: 'Interaktive HTML-Karte fürs Smartphone mit Straßenpunkten, Tagesfiltern, Clustern und 1-Klick Google Maps Navigation.',
                     step4Header: '💾 4. Zusatzoptionen:', step5Header: '💳 5. Zahlungsmethode:',
                     payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Sonstige',
                     schrottLabel: '🧲 E-Schrott, Metall & Elektro', dhlLabel: '📦 Postversand', pickupLabel: '🏪 Selbstabholung',
@@ -1328,37 +1335,338 @@
                     emailFooter: 'Zahlung: BLIK (+48 733 035 301) oder IBAN: PL33 1020 5297 0000 1702 0290 9323 / PayPal.\nIch warte auf die Bestätigung.\n(Bestellungen an Werktagen werden nach 16:00 Uhr bearbeitet).'
                 }
             },
+            'ro': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 TRIMITE COMANDA', priceInd: "Preț dinamic",
+                    loaderTitle: 'Sincronizare Date', loaderDesc: 'Conectare la baza de date... Se încarcă opțiunile.',
+                    loadingData: "⏳ Se încarcă opțiunile...", infoDesc: '<b>Standard de livrare:</b>',
+                    headerChoose: 'Configurează pachetul tău', configTitle: '🛠️ Setul tău personalizat', configSubtitle: 'Selectează opțiunile și trimite comanda',
+                    configLi1: 'Alege <b>regiunile</b> și <b>săptămânile</b> dorite (orice combinație).',
+                    configLi2: 'Pentru rapoartele text PRO se aplică <b>reducere de cantitate</b>. Harta Online este o opțiune suplimentară cu preț fix fără reducere.',
+                    configLi3: 'Garantăm o abordare flexibilă pentru fiecare comandă.',
+                    configLi5: 'Baza de date conține în prezent <b>{count} regiuni</b>. Majoritatea sunt scanate automat de roboți!',
+                    boxProHeading: '📱 Raport PRO & Hartă Interactivă GPS',
+                    boxProLi1: '<strong>Linkuri active GPS:</strong> Străzi conectate direct la navigația Google Maps pe telefon.',
+                    boxProLi2: '<strong>Organizare pe traseu:</strong> Date grupate pe comune, cartiere și puncte exacte de colectare.',
+                    boxProLi3: '<strong>Hartă Online Interactivă:</strong> Vizualizare completă pe hartă cu filtre pe zile (opțiune extra).',
+                    boxProLi4: '<strong>Format optimizat A4:</strong> Paginare curată pentru imprimare rapidă pe hârtie.',
+                    savingsText: 'Economisiți <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/zi)',
+                    mapAddonNotice: 'Pachet cu Hartă Online GPS: <b style="color:#38bdf8;">{rate} €/zi</b> (fără reducere)',
+                    summaryHeader: '📋 Sumarul tău pe regiuni și săptămâni:',
+                    summarySystem: 'Sistem:', summaryFrequency: 'Frecvență:', summaryDays: 'Zile:',
+                    summaryTotalRegion: 'Total: {count} zile de colectare',
+                    summaryNoDates: 'Nu există colectări în săptămânile selectate',
+                    summarySpecial: 'Zonă protejată — datele sunt furnizate direct în raportul PRO',
+                    step1Header: '👇 1. Alege Regiunile:', step2Header: '📅 2. Alege Săptămânile:', btnUnselectAll: '[ Debifează tot / Clear ]',
+                    step3Header: '📄 3. Formatul Raportului PRO:',
+                    formatSub: 'Alege tema vizuală pentru Raportul Operativ PRO:',
+                    themeLight: '☀️ Raport Luminos (Print A4)',
+                    themeLightDesc: 'Fundal alb curat, ideal pentru imprimat pe foi A4 și citit la soare în cabină.',
+                    themeDark: '🌙 Raport Întunecat (OLED)',
+                    themeDarkDesc: 'Mod întunecat care protejează bateria telefonului și ochii la planificarea pe noapte.',
+                    mapOnlineLabel: '🗺️ Include Harta Online Interactivă GPS (+preț separat fără reducere)',
+                    mapOnlineDesc: 'Hartă HTML pe telefon cu pini GPS, filtre pe zile și navigație directă în Google Maps.',
+                    step4Header: '💾 4. Opțiuni Suplimentare:', step5Header: '💳 5. Metoda de plată:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Altele',
+                    schrottLabel: '🧲 Fier Vechi & Electronice (E-Schrott)', dhlLabel: '📦 Livrare prin poștă', pickupLabel: '🏪 Ridicare personală',
+                    btnSubmit: '🛒 TRIMITE COMANDA', btnOrderPrefix: '🛒 COMANDĂ PACHET – ',
+                    termsPlural: ['zi', 'zile', 'zile'], weekLabel: 'Săpt.', 
+                    specialDateText: 'Program rezervat – datele complete sunt incluse direct în raportul PRO',
+                    emailGreeting: 'Bună ziua,', emailOrderSet: 'Vă trimit specificația comenzii mele:\n',
+                    emailDates: 'DATE / SĂPTĂMÂNI', emailSelectedRegions: 'REGIUNI SELECTATE', paymentNote: 'Metodă de plată / ID:',
+                    emailFooter: 'Plată: PayPal (ewabu74@gmail.com) sau IBAN: PL33 1020 5297 0000 1702 0290 9323.\nAștept confirmarea comenzii.'
+                }
+            },
+            'bg': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 ИЗПРАТИ ПОРЪЧКА', priceInd: "Динамична цена",
+                    loaderTitle: 'Синхронизация на данни', loaderDesc: 'Свързване с базата данни... Зареждане.',
+                    loadingData: "⏳ Зареждане на опции...", infoDesc: '<b>Стандарт на изпълнение:</b>',
+                    headerChoose: 'Конфигурирайте вашия пакет', configTitle: '🛠️ Ваш собствен комплект', configSubtitle: 'Изберете опции и изпратете поръчката',
+                    configLi1: 'Изберете <b>райони</b> и <b>седмици</b> (всякакви комбинации).',
+                    configLi2: 'За PRO текстови отчети важи <b>отстъпка за количество</b>. Онлайн картата е отделна добавка без отстъпка.',
+                    configLi3: 'Гарантираме гъвкав подход към всяка поръчка.',
+                    configLi5: 'Базата данни съдържа <b>{count} района</b> за избор. Повечето се сканират автоматично от ботове!',
+                    boxProHeading: '📱 PRO Оперативен Отчет & GPS Карта',
+                    boxProLi1: '<strong>Активни GPS връзки:</strong> Улици с директна навигация към Google Maps.',
+                    boxProLi2: '<strong>Логистично разделение:</strong> Списък по общини, квартали и преброени точки.',
+                    boxProLi3: '<strong>Интерактивна онлайн карта:</strong> Пълна визуализация с филтри по дни (допълнителна опция).',
+                    boxProLi4: '<strong>Готов за печат A4:</strong> Чист текст за икономично разпечатване.',
+                    savingsText: 'Спестявате <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/ден)',
+                    mapAddonNotice: 'Пакет с онлайн карта: <b style="color:#38bdf8;">{rate} €/ден</b> (без отстъпка за количество)',
+                    summaryHeader: '📋 Обобщение по райони и седмици:',
+                    summarySystem: 'Система:', summaryFrequency: 'Честота:', summaryDays: 'Дни:',
+                    summaryTotalRegion: 'Общо: {count} дни събиране',
+                    summaryNoDates: 'Няма дати в избраните седмици',
+                    summarySpecial: 'Защитен график — пълните дати са директно в PRO отчета',
+                    step1Header: '👇 1. Изберете Райони:', step2Header: '📅 2. Изберете Седмици:', btnUnselectAll: '[ Изчисти всичко / Clear ]',
+                    step3Header: '📄 3. Формат на PRO отчета:',
+                    formatSub: 'Изберете изглед за вашия PRO оперативен отчет:',
+                    themeLight: '☀️ Светъл отчет (A4 печат)',
+                    themeLightDesc: 'Бял фон за печат на A4 и четене при ярка слънчева светлина в камиона.',
+                    themeDark: '🌙 Тъмен отчет (OLED)',
+                    themeDarkDesc: 'Тъмна тема за пестене на батерия и комфорт на очите вечер.',
+                    mapOnlineLabel: '🗺️ Добави Интерактивна Онлайн GPS Карта (+отделна цена без отстъпка)',
+                    mapOnlineDesc: 'HTML карта за телефон с GPS точки, филтри по дни и навигация към Google Maps.',
+                    step4Header: '💾 4. Допълнителни опции:', step5Header: '💳 5. Начин на плащане:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Друго',
+                    schrottLabel: '🧲 Метал и Електронен скрап (E-Schrott)', dhlLabel: '📦 Доставка по пощата', pickupLabel: '🏪 Лично вземане',
+                    btnSubmit: '🛒 ИЗПРАТИ ПОРЪЧКА', btnOrderPrefix: '🛒 ПОРЪЧАЙ ПАКЕТ – ',
+                    termsPlural: ['ден', 'дни', 'дни'], weekLabel: 'Седмица', 
+                    specialDateText: 'Защитен график – пълните дати се подготвят директно в PRO отчета',
+                    emailGreeting: 'Здравейте,', emailOrderSet: 'Изпращам спецификация на поръчката:\n',
+                    emailDates: 'ДАТИ / СЕДМИЦИ', emailSelectedRegions: 'ИЗБРАНИ РАЙОНИ', paymentNote: 'Плащане / ID:',
+                    emailFooter: 'Плащане: PayPal (ewabu74@gmail.com) или IBAN: PL33 1020 5297 0000 1702 0290 9323.\nОчаквам потвърждение.'
+                }
+            },
+            'uk': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 НАДІСЛАТИ ЗАМОВЛЕННЯ', priceInd: "Динамічна ціна",
+                    loaderTitle: 'Синхронізація даних', loaderDesc: 'Підключення до бази даних... Завантаження.',
+                    loadingData: "⏳ Завантаження доступних опцій...", infoDesc: '<b>Стандарт виконання замовлення:</b>',
+                    headerChoose: 'Налаштуйте свій пакет', configTitle: '🛠️ Ваш власний набір', configSubtitle: 'Оберіть опції нижче та надішліть замовлення',
+                    configLi1: 'Оберіть <b>райони</b> та <b>тижні</b> (будь-яка комбінація).',
+                    configLi2: 'Для текстових звітів PRO діють <b>знижки від обсягу</b>. Онлайн-карта — це додаткова опція за фіксованим тарифом без знижки.',
+                    configLi3: 'Гарантуємо гнучкий підхід до кожного замовлення.',
+                    configLi5: 'База містить <b>{count} районів</b> на вибір. Більшість з них скануються роботами щодня!',
+                    boxProHeading: '📱 Оперативний Звіт PRO & GPS Карта',
+                    boxProLi1: '<strong>Активні GPS посилання:</strong> Вулиці підключені напряму до Google Maps навігації на смартфоні.',
+                    boxProLi2: '<strong>Логістичний поділ:</strong> Список поділений на громади, райони та точну кількість адрес.',
+                    boxProLi3: '<strong>Інтерактивна онлайн-карта:</strong> Візуалізація з фільтрами за днями тижня (додаткова опція).',
+                    boxProLi4: '<strong>Готовність до друку А4:</strong> Чистий чорний текст на білому фоні для економного друку.',
+                    savingsText: 'Ви заощаджуєте <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/день)',
+                    mapAddonNotice: 'Пакет з онлайн-картою: <b style="color:#38bdf8;">{rate} €/день</b> (без оптової знижки)',
+                    summaryHeader: '📋 Ваше зведення за районами та тижнями:',
+                    summarySystem: 'Система:', summaryFrequency: 'Періодичність:', summaryDays: 'Дні:',
+                    summaryTotalRegion: 'Разом: {count} днів збору',
+                    summaryNoDates: 'Немає дат у вибраних тижнях',
+                    summarySpecial: 'Захищений графік — повні дати генеруються безпосередньо у звіті PRO',
+                    step1Header: '👇 1. Оберіть Райони:', step2Header: '📅 2. Оберіть Тижні:', btnUnselectAll: '[ Зняти все / Clear ]',
+                    step3Header: '📄 3. Тема оформлення звіту PRO:',
+                    formatSub: 'Оберіть зручну тему оформлення оперативного звіту:',
+                    themeLight: '☀️ Світлий звіт (A4 Друк)',
+                    themeLightDesc: 'Чистий білий фон, оптимізований для друку та читання при яскравому сонці.',
+                    themeDark: '🌙 Темний звіт (OLED)',
+                    themeDarkDesc: 'Темна тема, яка заощаджує заряд телефону та береже очі при вечірньому плануванні.',
+                    mapOnlineLabel: '🗺️ Додати Інтерактивну Онлайн GPS Карту (+окрема ціна без знижки)',
+                    mapOnlineDesc: 'HTML-карта для смартфона з точками збору, фільтрами по днях та швидкою навігацією.',
+                    step4Header: '💾 4. Додаткові опції:', step5Header: '💳 5. Спосіб оплати:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Інше',
+                    schrottLabel: '🧲 Метал та Електроніка (E-Schrott)', dhlLabel: '📦 Доставка поштою', pickupLabel: '🏪 Самовивіз',
+                    btnSubmit: '🛒 НАДІСЛАТИ ЗАМОВЛЕННЯ', btnOrderPrefix: '🛒 ЗАМОВИТИ ПАКЕТ – ',
+                    termsPlural: ['день', 'дні', 'днів'], weekLabel: 'Тиждень', 
+                    specialDateText: 'Спеціальний графік – підготовка точних дат безпосередньо у звіт PRO',
+                    emailGreeting: 'Доброго дня,', emailOrderSet: 'Надсилаю специфікацію замовлення:\n',
+                    emailDates: 'ДАТИ / ТИЖНІ', emailSelectedRegions: 'ОБРАНІ РАЙОНИ', paymentNote: 'Оплата / ID:',
+                    emailFooter: 'Оплата: PayPal (ewabu74@gmail.com) або IBAN: PL33 1020 5297 0000 1702 0290 9323.\nОчікую на підтвердження.'
+                }
+            },
+            'ru': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 ОТПРАВИТЬ ЗАКАЗ', priceInd: "Динамическая цена",
+                    loaderTitle: 'Синхронизация данных', loaderDesc: 'Подключение к базе данных... Загрузка.',
+                    loadingData: "⏳ Загрузка доступных опций...", infoDesc: '<b>Стандарт выполнения:</b>',
+                    headerChoose: 'Сконфигурируйте ваш пакет', configTitle: '🛠️ Ваш собственный комплект', configSubtitle: 'Выберите опции ниже и отправьте заказ',
+                    configLi1: 'Выберите <b>районы</b> и <b>недели</b> (любые комбинации).',
+                    configLi2: 'Для текстовых PRO отчетов действуют <b>скидки от объема</b>. Онлайн-карта — это дополнительная опция по базовому тарифу без скидки.',
+                    configLi3: 'Гарантируем гибкий подход к каждому заказу.',
+                    configLi5: 'База содержит <b>{count} районов</b>. Большинство сканируются ботами автоматически!',
+                    boxProHeading: '📱 Оперативный Отчет PRO & GPS Карта',
+                    boxProLi1: '<strong>Активные GPS ссылки:</strong> Улицы открываются прямо в Google Maps на смартфоне.',
+                    boxProLi2: '<strong>Логистическое деление:</strong> Разделение по округам, районам и количеству точек сбора.',
+                    boxProLi3: '<strong>Интерактивная онлайн-карта:</strong> Визуализация с фильтрами по дням недели (дополнительная опция).',
+                    boxProLi4: '<strong>Готовность к печати A4:</strong> Чистый текст для удобной распечатки на принтере.',
+                    savingsText: 'Вы экономите <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/день)',
+                    mapAddonNotice: 'Пакет с онлайн-картой: <b style="color:#38bdf8;">{rate} €/день</b> (без оптовой скидки)',
+                    summaryHeader: '📋 Ваша сводка по районам и неделям:',
+                    summarySystem: 'Система:', summaryFrequency: 'Частота:', summaryDays: 'Дни:',
+                    summaryTotalRegion: 'Всего: {count} дней сбора',
+                    summaryNoDates: 'В выбранных неделях нет дат сбора',
+                    summarySpecial: 'Защищенный график — даты формируются напрямую в отчете PRO',
+                    step1Header: '👇 1. Выберите Районы:', step2Header: '📅 2. Выберите Недели:', btnUnselectAll: '[ Снять все / Clear ]',
+                    step3Header: '📄 3. Оформление PRO отчета:',
+                    formatSub: 'Выберите визуальный стиль отчета PRO:',
+                    themeLight: '☀️ Светлый отчет (Печать A4)',
+                    themeLightDesc: 'Белый фон, оптимизированный для печати и чтения на солнце в кабине.',
+                    themeDark: '🌙 Темный отчет (OLED)',
+                    themeDarkDesc: 'Темная тема для экономии батареи смартфона и комфорта глаз вечером.',
+                    mapOnlineLabel: '🗺️ Добавить Интерактивную Онлайн GPS Карту (+отдельная цена без скидки)',
+                    mapOnlineDesc: 'HTML-карта для телефона с GPS точками, фильтрами по дням и навигацией в Google Maps.',
+                    step4Header: '💾 4. Дополнительные опции:', step5Header: '💳 5. Способ оплаты:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Другое',
+                    schrottLabel: '🧲 Металлолом и Электроника (E-Schrott)', dhlLabel: '📦 Почтовая доставка', pickupLabel: '🏪 Самовывоз',
+                    btnSubmit: '🛒 ОТПРАВИТЬ ЗАКАЗ', btnOrderPrefix: '🛒 ЗАКАЗАТЬ ПАКЕТ – ',
+                    termsPlural: ['день', 'дня', 'дней'], weekLabel: 'Неделя', 
+                    specialDateText: 'Специальный график – полные даты готовятся напрямую в отчете PRO',
+                    emailGreeting: 'Здравствуйте,', emailOrderSet: 'Отправляю спецификацию заказа:\n',
+                    emailDates: 'ДАТЫ / НЕДЕЛИ', emailSelectedRegions: 'ВЫБРАННЫЕ РАЙОНЫ', paymentNote: 'Оплата / ID:',
+                    emailFooter: 'Оплата: PayPal (ewabu74@gmail.com) или IBAN: PL33 1020 5297 0000 1702 0290 9323.\nЖду подтверждения заказа.'
+                }
+            },
+            'hu': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 MEGRENDELÉS ELKÜLDÉSE', priceInd: "Dinamikus árazás",
+                    loaderTitle: 'Adatszinkronizáció', loaderDesc: 'Kapcsolódás az adatbázishoz... Betöltés.',
+                    loadingData: "⏳ Opciók betöltése...", infoDesc: '<b>Szolgáltatási szabvány:</b>',
+                    headerChoose: 'Csomag konfigurálása', configTitle: '🛠️ Saját egyedi csomag', configSubtitle: 'Válassza ki az opciókat és küldje el a rendelést',
+                    configLi1: 'Válassza ki a kívánt <b>régiókat</b> és <b>heteket</b> (tetszőleges kombinációban).',
+                    configLi2: 'A PRO szöveges jelentésekre <b>mennyiségi kedvezmény</b> érvényes. Az online térkép külön feláras kiegészítő kedvezmény nélkül.',
+                    configLi3: 'Rugalmas megközelítést biztosítunk minden megrendeléshez.',
+                    configLi5: 'Az adatbázis jelenleg <b>{count} régiót</b> tartalmaz. A legtöbbet botok ellenőrzik automatikusan!',
+                    boxProHeading: '📱 PRO Műveleti Jelentés & GPS Térkép',
+                    boxProLi1: '<strong>Aktív GPS linkek:</strong> Az utcák közvetlenül a Google Maps navigációhoz vannak linkelve.',
+                    boxProLi2: '<strong>Logisztikai felosztás:</strong> Települések, kerületek és gyűjtőpontok szerint csoportosítva.',
+                    boxProLi3: '<strong>Interaktív Online Térkép:</strong> Teljes vizualizáció napi szűrőkkel (extra opció).',
+                    boxProLi4: '<strong>A4 nyomtatásra kész:</strong> Tiszta szöveg gazdaságos nyomtatáshoz fehér alapon.',
+                    savingsText: 'Megtakarítás: <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/nap)',
+                    mapAddonNotice: 'Csomag online térképpel: <b style="color:#38bdf8;">{rate} €/nap</b> (mennyiségi kedvezmény nélkül)',
+                    summaryHeader: '📋 Összegzés régiók és hetek szerint:',
+                    summarySystem: 'Rendszer:', summaryFrequency: 'Gyakoriság:', summaryDays: 'Napok:',
+                    summaryTotalRegion: 'Összesen: {count} gyűjtési nap',
+                    summaryNoDates: 'Nincsenek időpontok a kiválasztott hetekben',
+                    summarySpecial: 'Védett terület — az időpontok közvetlenül a PRO jelentésben lesznek',
+                    step1Header: '👇 1. Válasszon Régiókat:', step2Header: '📅 2. Válasszon Heteket:', btnUnselectAll: '[ Kijelölések törlése / Clear ]',
+                    step3Header: '📄 3. A PRO jelentés kinézete:',
+                    formatSub: 'Válassza ki a kívánt vizuális stílust:',
+                    themeLight: '☀️ Világos Jelentés (A4 Nyomtatás)',
+                    themeLightDesc: 'Tiszta fehér háttér A4-es papírra nyomtatáshoz és erős napsütésben való olvasáshoz.',
+                    themeDark: '🌙 Sötét Jelentés (OLED)',
+                    themeDarkDesc: 'Akkukímélő sötét mód az éjszakai útvonaltervezéshez.',
+                    mapOnlineLabel: '🗺️ Interaktív Online GPS Térkép hozzáadása (+külön felár kedvezmény nélkül)',
+                    mapOnlineDesc: 'HTML térkép okostelefonra gyűjtőpontokkal, napi szűrőkkel és Google Maps navigációval.',
+                    step4Header: '💾 4. További opciók:', step5Header: '💳 5. Fizetési mód:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Egyéb',
+                    schrottLabel: '🧲 Fémhulladék és Elektronika (E-Schrott)', dhlLabel: '📦 Postai kézbesítés', pickupLabel: '🏪 Személyes átvétel',
+                    btnSubmit: '🛒 MEGRENDELÉS ELKÜLDÉSE', btnOrderPrefix: '🛒 CSOMAG MEGRENDELÉSE – ',
+                    termsPlural: ['nap', 'nap', 'nap'], weekLabel: 'Hét', 
+                    specialDateText: 'Védett beosztás – a teljes dátumok a PRO jelentésben érhetők el',
+                    emailGreeting: 'Jó napot,', emailOrderSet: 'Küldöm a rendelési specifikációt:\n',
+                    emailDates: 'DÁTUMOK / HETEK', emailSelectedRegions: 'KIVÁLASZTOTT RÉGIÓK', paymentNote: 'Fizetés / Azonosító:',
+                    emailFooter: 'Fizetés: PayPal (ewabu74@gmail.com) vagy IBAN: PL33 1020 5297 0000 1702 0290 9323.\nVárom a visszaigazolást.'
+                }
+            },
+            'cs': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 ODESLAT OBJEDNÁVKU', priceInd: "Dynamická cena",
+                    loaderTitle: 'Synchronizace dat', loaderDesc: 'Připojování k databázi... Načítání.',
+                    loadingData: "⏳ Načítání dostupných možností...", infoDesc: '<b>Standard realizace:</b>',
+                    headerChoose: 'Nakonfigurujte svůj balíček', configTitle: '🛠️ Váš vlastní balíček', configSubtitle: 'Vyberte možnosti níže a odešlete objednávku',
+                    configLi1: 'Vyberte požadované <b>oblasti</b> a <b>týdny</b> (libovolná kombinace).',
+                    configLi2: 'Pro textové zprávy PRO platí <b>množstevní slevy</b>. Online mapa je samostatný doplněk za pevnou sazbu bez slevy.',
+                    configLi3: 'Garantujeme flexibilní přístup ke každé objednávce.',
+                    configLi5: 'Databáze nyní obsahuje <b>{count} oblastí</b>. Většina je skenována automaticky roboty!',
+                    boxProHeading: '📱 PRO Operativní Zpráva & GPS Mapa',
+                    boxProLi1: '<strong>Aktivní GPS odkazy:</strong> Ulice propojené přímo s navigací Google Maps na telefonu.',
+                    boxProLi2: '<strong>Logistické členění:</strong> Rozděleno podle obcí, čtvrtí a sečtených odběrných míst.',
+                    boxProLi3: '<strong>Interaktivní Online Mapa:</strong> Kompletní mapa s filtry podle dnů v týdnu (doplňková možnost).',
+                    boxProLi4: '<strong>Připraveno pro tisk A4:</strong> Čistý text pro úsporný tisk na bílém podkladu.',
+                    savingsText: 'Ušetříte <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/den)',
+                    mapAddonNotice: 'Balíček s Online mapou: <b style="color:#38bdf8;">{rate} €/den</b> (bez množstevní slevy)',
+                    summaryHeader: '📋 Vaše shrnutí podle oblastí a týdnů:',
+                    summarySystem: 'Systém:', summaryFrequency: 'Frekvence:', summaryDays: 'Dny:',
+                    summaryTotalRegion: 'Celkem: {count} svozových dnů',
+                    summaryNoDates: 'Ve vybraných týdnech nejsou žádné termíny',
+                    summarySpecial: 'Chráněná oblast — termíny budou vygenerovány přímo do PRO zprávy',
+                    step1Header: '👇 1. Vyberte Oblasti:', step2Header: '📅 2. Vyberte Týdny:', btnUnselectAll: '[ Zrušit výběr / Clear ]',
+                    step3Header: '📄 3. Vzhled PRO zprávy:',
+                    formatSub: 'Vyberte preferovaný vizuální styl:',
+                    themeLight: '☀️ Světlý formát (A4 tisk)',
+                    themeLightDesc: 'Bílý podklad optimalizovaný pro tisk a čtení na přímém slunci v kabině.',
+                    themeDark: '🌙 Tmavý formát (OLED)',
+                    themeDarkDesc: 'Tmavý režim šetřící baterii telefonu při večerním plánování tras.',
+                    mapOnlineLabel: '🗺️ Připojit Interaktivní Online GPS Mapu (+příplatek bez slevy)',
+                    mapOnlineDesc: 'Mobilní HTML mapa s vyznačenými body svozu, filtry dnů a navigací v Google Maps.',
+                    step4Header: '💾 4. Další možnosti:', step5Header: '💳 5. Způsob platby:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Jiné',
+                    schrottLabel: '🧲 Kovošrot a Elektroodpad (E-Schrott)', dhlLabel: '📦 Poštovní doručení', pickupLabel: '🏪 Osobní odběr',
+                    btnSubmit: '🛒 ODESLAT OBJEDNÁVKU', btnOrderPrefix: '🛒 OBJEDNAT BALÍČEK – ',
+                    termsPlural: ['termín', 'termíny', 'termínů'], weekLabel: 'Týden', 
+                    specialDateText: 'Vyhrazený harmonogram – termíny budou zpracovány přímo do PRO zprávy',
+                    emailGreeting: 'Dobrý den,', emailOrderSet: 'Zasílám specifikaci objednávky balíčku:\n',
+                    emailDates: 'DATUMY / TÝDNY', emailSelectedRegions: 'VYBRANÉ OBLASTI', paymentNote: 'Platba / Identifikátor:',
+                    emailFooter: 'Platba: PayPal (ewabu74@gmail.com) nebo IBAN: PL33 1020 5297 0000 1702 0290 9323.\nČekám na potvrzení objednávky.'
+                }
+            },
+            'tr': {
+                currency: "€",
+                texts: {
+                    btnOrderExact: '🛒 SİPARİŞİ GÖNDER', priceInd: "Dinamik Fiyatlandırma",
+                    loaderTitle: 'Veri Senkronizasyonu', loaderDesc: 'Veritabanına bağlanılıyor... Yükleniyor.',
+                    loadingData: "⏳ Seçenekler yükleniyor...", infoDesc: '<b>Teslimat Standardı:</b>',
+                    headerChoose: 'Paketinizi Oluşturun', configTitle: '🛠️ Size Özel Paket', configSubtitle: 'Aşağıdan seçimlerinizi yapın ve sipariş verin',
+                    configLi1: 'İstediğiniz <b>bölgeleri</b> ve <b>haftaları</b> seçin.',
+                    configLi2: 'PRO metin raporlarında <b>toplu alım indirimi</b> uygulanır. Online Harita eklentisi indirimsiz sabit fiyattır.',
+                    configLi3: 'Her siparişe esnek yaklaşım garantisi veriyoruz.',
+                    configLi5: 'Veritabanında şu an <b>{count} bölge</b> bulunmaktadır. Çoğu botlar tarafından taranmaktadır!',
+                    boxProHeading: '📱 PRO Operasyonel Rapor & GPS Harita',
+                    boxProLi1: '<strong>Aktif GPS Bağlantıları:</strong> Doğrudan Google Maps navigasyonuna bağlı sokaklar.',
+                    boxProLi2: '<strong>Lojistik Ayrım:</strong> Belediyelere ve toplama noktalarına göre düzenlenmiş liste.',
+                    boxProLi3: '<strong>İnteraktif Online Harita:</strong> Günlük filtrelerle tam görsel harita (ekstra seçenek).',
+                    boxProLi4: '<strong>A4 Baskıya Hazır:</strong> Kolay ve ekonomik yazdırma için beyaz zemin.',
+                    savingsText: 'Kazancınız: <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/gün)',
+                    mapAddonNotice: 'Online Harita eklentili paket: <b style="color:#38bdf8;">{rate} €/gün</b> (miktar indirimi yok)',
+                    summaryHeader: '📋 Bölge ve hafta özetiniz:',
+                    summarySystem: 'Sistem:', summaryFrequency: 'Sıklık:', summaryDays: 'Günler:',
+                    summaryTotalRegion: 'Toplam: {count} toplama günü',
+                    summaryNoDates: 'Seçilen haftalarda tarih bulunamadı',
+                    summarySpecial: 'Korumalı bölge — tarihler doğrudan PRO raporuna eklenecektir',
+                    step1Header: '👇 1. Bölgeleri Seçin:', step2Header: '📅 2. Haftaları Seçin:', btnUnselectAll: '[ Tümünü Temizle / Clear ]',
+                    step3Header: '📄 3. PRO Rapor Görünümü:',
+                    formatSub: 'PRO raporunuz için görsel temayı seçin:',
+                    themeLight: '☀️ Açık Tema (A4 Baskı)',
+                    themeLightDesc: 'A4 kağıda baskı ve araç içinde parlak güneşte okumak için beyaz zemin.',
+                    themeDark: '🌙 Koyu Tema (OLED)',
+                    themeDarkDesc: 'Gece rota planlarken gözü yormayan ve şarj tasarrufu sağlayan koyu tema.',
+                    mapOnlineLabel: '🗺️ İnteraktif Online GPS Haritasını Ekle (+indirimsiz ek ücret)',
+                    mapOnlineDesc: 'Akıllı telefon için toplama noktaları, gün filtreleri ve Google Maps navigasyonu olan HTML harita.',
+                    step4Header: '💾 4. Ek Seçenekler:', step5Header: '💳 5. Ödeme Yöntemi:',
+                    payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 BLIK (+48 733 035 301)', payOther: '❓ Diğer',
+                    schrottLabel: '🧲 Hurda ve Elektronik Atık (E-Schrott)', dhlLabel: '📦 Posta ile Gönderim', pickupLabel: '🏪 Elden Teslim',
+                    btnSubmit: '🛒 SİPARİŞİ GÖNDER', btnOrderPrefix: '🛒 PAKETİ SİPARİŞ ET – ',
+                    termsPlural: ['gün', 'gün', 'gün'], weekLabel: 'Hafta', 
+                    specialDateText: 'Özel takvim – tam tarihler doğrudan PRO raporunda sunulacaktır',
+                    emailGreeting: 'Merhaba,', emailOrderSet: 'Paket sipariş detaylarımı gönderiyorum:\n',
+                    emailDates: 'TARİHLER / HAFTALAR', emailSelectedRegions: 'SEÇİLEN BÖLGELER', paymentNote: 'Ödeme / Sipariş No:',
+                    emailFooter: 'Ödeme: PayPal (ewabu74@gmail.com) veya IBAN: PL33 1020 5297 0000 1702 0290 9323.\nOnay bekliyorum.'
+                }
+            },
             'en': {
                 currency: "€",
                 texts: {
                     btnOrderExact: '🛒 SUBMIT ORDER', priceInd: "Dynamic Pricing",
-                    loaderTitle: 'Data Sync', loaderDesc: 'Connecting to database...', loadingData: "⏳ Loading options...",
+                    loaderTitle: 'Data Sync', loaderDesc: 'Connecting to database... Loading options.', loadingData: "⏳ Loading options...",
                     infoDesc: '<b>Fulfillment Standard:</b>', headerChoose: 'Configure your package', configTitle: '🛠️ Custom Set', configSubtitle: 'Select options and submit your order',
                     configLi1: 'Select your preferred <b>regions</b> and <b>weeks</b> (any combination).',
-                    configLi2: 'For text reports, <b>dynamic pricing</b> applies. For online maps, a fixed unit price applies.',
+                    configLi2: 'For PRO text reports, <b>dynamic pricing</b> applies. The Online Map add-on is a separate fixed surcharge without quantity discounts.',
                     configLi3: 'We guarantee a flexible approach to every order.',
                     configLi5: 'Database currently contains <b>{count} regions</b>. Most are scanned automatically by bots – some exclusively on request!',
                     boxProHeading: '📱 PRO Operational Report & Interactive GPS Map',
                     boxProLi1: '<strong>Active GPS links:</strong> Streets linked directly to Google Maps navigation on your phone.',
                     boxProLi2: '<strong>Logistical division:</strong> Grouped by municipalities, districts, and counted collection points.',
-                    boxProLi3: '<strong>Interactive Online Map:</strong> Full spatial mapping with day filters, clusters, and Topo layers.',
+                    boxProLi3: '<strong>Interactive Online Map:</strong> Full spatial mapping with day filters, clusters, and Topo layers (extra option).',
                     boxProLi4: '<strong>A4 Print Ready:</strong> Clean, economical printer-friendly output.',
                     savingsText: 'You save <b style="color:#2ecc71;">{savings} {currency}</b> ({rate} €/day)',
-                    mapStandardText: 'Online map regular price: <b style="color:#38bdf8;">{rate} €/day</b> (no volume discounts)',
+                    mapAddonNotice: 'Package with Online Map Add-on: <b style="color:#38bdf8;">{rate} €/day</b> (no volume discount)',
                     summaryHeader: '📋 Summary by regions and weeks:',
                     summarySystem: 'System:', summaryFrequency: 'Frequency:', summaryDays: 'Days:',
                     summaryTotalRegion: 'Total: {count} collection days',
                     summaryNoDates: 'No collection dates in selected weeks',
                     summarySpecial: 'Protected schedule — dates generated directly in PRO report',
                     step1Header: '👇 1. Select Regions:', step2Header: '📅 2. Select Weeks:', btnUnselectAll: '[ Deselect All / Clear ]',
-                    step3Header: '📄 3. Order Standard:',
-                    formatSub: 'Select your preferred report format for field work:',
+                    step3Header: '📄 3. PRO Report Layout:',
+                    formatSub: 'Select your preferred layout theme for the PRO Operational Report:',
                     themeLight: '☀️ Light Report (A4 Print)',
                     themeLightDesc: 'Clean, white layout optimized for A4 printing and direct reading under full sunlight in the cab.',
                     themeDark: '🌙 Dark Report (OLED)',
                     themeDarkDesc: 'Battery-saving dark theme that reduces eye strain when planning routes at night.',
-                    themeMap: '🗺️ Online Map (GPS Pins)',
-                    themeMapDesc: 'Interactive HTML map with mapped collection pins, weekday filters, clusters, and 1-click Google Maps navigation.',
+                    mapOnlineLabel: '🗺️ Include Interactive Online GPS Map (+extra quote without discount)',
+                    mapOnlineDesc: 'Interactive mobile HTML map with mapped collection pins, weekday filters, clusters, and 1-click Google Maps navigation.',
                     step4Header: '💾 4. Options:', step5Header: '💳 5. Payment Method:', payIban: '🏦 IBAN (PL33 1020 5297 0000 1702 0290 9323)', payPaypal: '🅿️ PayPal (ewabu74@gmail.com)', payBlik: '📱 Mobile Payment (+48 733 035 301)', payOther: '❓ Other',
                     schrottLabel: '🧲 Scrap & Electronics (E-Schrott)', dhlLabel: '📦 Postal Delivery', pickupLabel: '🏪 Local Pickup',
                     btnSubmit: '🛒 SUBMIT ORDER', btnOrderPrefix: '🛒 ORDER PACKAGE – ',
@@ -1416,10 +1724,11 @@
         if (t.themeDarkDesc) setText('themeDarkDesc', t.themeDarkDesc);
         if (t.themeLight) setText('themeLight', t.themeLight);
         if (t.themeLightDesc) setText('themeLightDesc', t.themeLightDesc);
-        if (t.themeMap) setText('themeMap', t.themeMap);
-        if (t.themeMapDesc) setText('themeMapDesc', t.themeMapDesc);
 
         setText('step4Header', t.step4Header);
+        if (t.mapOnlineLabel) setHtml('mapOnlineLabel', t.mapOnlineLabel);
+        if (t.mapOnlineDesc) setText('mapOnlineDesc', t.mapOnlineDesc);
+
         setText('step5Header', t.step5Header);
         
         setHtml('payIban', t.payIban);
@@ -1619,7 +1928,7 @@
                     badgeContainer.classList.add('is-visible');
                 } else {
                     let isSpecial = GLOBAL_SPECIAL_REGIONS.includes(rName);
-                    let isPl = (getBrowserLang() === 'pl');
+                    let isPl = (userLang === 'pl');
 
                     if (isSpecial) {
                         let textSpecial = isPl 
@@ -1764,16 +2073,11 @@
                 if (count >= 2 && count <= 4) return arr[1];
                 return arr[2];
             }
-            if (lang === 'lt') {
-                if (count % 10 === 1 && count % 100 !== 11) return arr[0];
-                if (count % 10 >= 2 && (count % 100 < 10 || count % 100 >= 20)) return arr[1];
-                return arr[2];
-            }
             return count === 1 ? arr[0] : arr[1];
         }
 
         function calculateActiveDaysAndPrice() {
-            let currentLang = getBrowserLang();
+            let currentLang = userLang;
             let isPl = currentLang === 'pl';
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1783,12 +2087,15 @@
 
             let currencySymbol = isPl ? 'PLN' : '€';
 
-            // Sprawdzamy czy zaznaczono mapę online
-            let selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
-            let isInteractiveMap = selectedThemeEl && selectedThemeEl.value === 'Interactive Map';
+            let mapAddonChk = document.getElementById('mapOnlineOption');
+            let isMapAddonChecked = mapAddonChk ? mapAddonChk.checked : false;
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
-                return { totalDays: 0, totalPrice: 0, regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, lang: currentLang, isInteractiveMap: isInteractiveMap };
+                return { 
+                    totalDays: 0, totalPrice: 0, regularPrice: 0, discountPercent: 0, 
+                    savings: 0, ratePerDay: 0, currency: currencySymbol, lang: currentLang, 
+                    isMapAddonChecked: isMapAddonChecked 
+                };
             }
 
             let now = new Date();
@@ -1834,9 +2141,9 @@
             let baseRate = isPl ? 25.0 : 6.0;
             let ratePerDay;
 
-            // WYŁĄCZENIE RABATÓW DLA MAPY ONLINE:
-            if (isInteractiveMap) {
-                ratePerDay = baseRate; // Stała stawka bazowa bez względu na liczbę dni
+            // JEŚLI ZAZNACZONO DODATEK MAPY ONLINE -> BRAK RABATU ILOŚCIOWEGO
+            if (isMapAddonChecked) {
+                ratePerDay = baseRate;
             } else {
                 if (isPl) {
                     if (totalDays >= 250) {
@@ -1883,8 +2190,8 @@
 
             let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
             let totalPrice = Math.round((totalDays * ratePerDay) * 100) / 100;
-            let savings = isInteractiveMap ? 0 : Math.round((regularPrice - totalPrice) * 100) / 100;
-            let discountPercent = (isInteractiveMap || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
+            let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPrice) * 100) / 100;
+            let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
             return {
                 totalDays: totalDays,
@@ -1895,7 +2202,7 @@
                 ratePerDay: ratePerDay,
                 currency: currencySymbol,
                 lang: currentLang,
-                isInteractiveMap: isInteractiveMap
+                isMapAddonChecked: isMapAddonChecked
             };
         }
 
@@ -1914,7 +2221,7 @@
                 return;
             }
 
-            var currentLang = getBrowserLang();
+            var currentLang = userLang;
             var conf = config[currentLang] || config['de'];
             var localT = conf.texts;
 
@@ -2036,7 +2343,7 @@
 
             var dhlContainer = document.getElementById('dhlBox');
             if (dhlContainer && userLang === 'pl') {
-                if (calc.totalDays >= 5 && !calc.isInteractiveMap) {
+                if (calc.totalDays >= 5) {
                     dhlContainer.style.display = 'block';
                 } else {
                     dhlContainer.style.display = 'none';
@@ -2073,8 +2380,8 @@
                 if (configPrice) configPrice.textContent = `${calc.totalPrice} ${calc.currency}${extraNotice}`;
 
                 if (configSubtitle) {
-                    if (calc.isInteractiveMap) {
-                        let mapNotice = localT.mapStandardText || "Standardowa wycena mapy online: <b style=\"color:#38bdf8;\">{rate} zł/dzień</b> (bez rabatów)";
+                    if (calc.isMapAddonChecked) {
+                        let mapNotice = localT.mapAddonNotice || "Pakiet z dodatkiem Mapy Online: <b style=\"color:#38bdf8;\">{rate} zł/dzień</b> (bez rabatu ilościowego)";
                         configSubtitle.innerHTML = mapNotice.replace('{rate}', calc.ratePerDay.toFixed(2));
                     } else if (calc.savings > 0) {
                         let savingsTemplate = localT.savingsText || "Sie sparen <b style=\"color:#2ecc71;\">{savings} {currency}</b> ({rate} €/Tag)";
@@ -2198,7 +2505,7 @@
                         let askBtn = document.createElement('a');
                         askBtn.className = 'ask-region-btn';
                         
-                        let isPl = (getBrowserLang() === 'pl');
+                        let isPl = (userLang === 'pl');
                         askBtn.innerText = isPl ? "🔔 Zapytaj o terminy" : "🔔 Termine anfragen";
                         
                         askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
@@ -2303,7 +2610,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.name === 'reportTheme')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'mapOnlineOption' || e.target.name === 'reportTheme')) {
                 if(e.target.id === 'schrottOption') { 
                     availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
                 }
@@ -2313,7 +2620,7 @@
         });
 
         document.getElementById('btnSubmit').addEventListener('click', function() {
-            var currentLang = getBrowserLang();
+            var currentLang = userLang;
             var currentConf = config[currentLang] || config['de'];
             var localT = currentConf.texts;
 
@@ -2341,8 +2648,8 @@
                 body += "PODSUMOWANIE CENY: " + calc.totalPrice + " " + calc.currency + "\n";
                 body += "- Łączna liczba dni roboczych: " + calc.totalDays + " " + termsUnit + "\n";
                 body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
-                if (calc.isInteractiveMap) {
-                    body += "- Format: Interaktywna Mapa Online (stawka standardowa bez rabatów ilościowych)\n";
+                if (calc.isMapAddonChecked) {
+                    body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
                 } else if (calc.savings > 0) {
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings + " " + calc.currency + ")\n";
                 }
@@ -2359,18 +2666,22 @@
             var selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
             var selectedThemeVal = selectedThemeEl ? selectedThemeEl.value : "Light Mode";
             var formatTekst = "Raport Operacyjny PRO [" + selectedThemeVal + "]";
-            if (selectedThemeVal === 'Interactive Map') {
-                formatTekst = "Interaktywna Mapa Online (Punkty GPS & Nawigacja)";
-            }
             
-            body += "WYBRANY FORMAT: " + formatTekst + "\n\n";
+            body += "WYBRANY MOTYW RAPORTU: " + formatTekst + "\n";
+
+            if (document.getElementById('mapOnlineOption')?.checked) {
+                body += "DODATEK: TAK – Dołączona Interaktywna Mapa Online GPS (Punkty GPS & Nawigacja na żywo)\n";
+            } else {
+                body += "DODATEK: Samodzielny Raport Operacyjny PRO (bez Mapy Online)\n";
+            }
+            body += "\n";
 
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
             if(selectedPaymentMethod) {
                 body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
             }
 
-            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5 && !calc.isInteractiveMap) {
+            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5) {
                 var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
                 var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
                 body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
