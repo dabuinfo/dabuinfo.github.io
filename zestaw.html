@@ -857,7 +857,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE - NORMALNIE TŁUMACZALNE -->
+                    <!-- 2. WYBIERZ TYGODNIE - DATY ZABEZPIECZONE PRZED ROZWIJANIEM NA SŁOWA -->
                     <div class="selection-col-right" id="step2Wrapper">
                         <div class="form-header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box" id="weeksContainer"></div>
@@ -1214,6 +1214,7 @@
 
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
 
+        /* --- GENEROWANIE TYGODNI: ZABEZPIECZENIE DAT PRZED TŁUMACZENIEM --- */
         var weeksContainer = document.getElementById('weeksContainer');
         if (weeksContainer) {
             weeksContainer.innerHTML = '';
@@ -1234,17 +1235,33 @@
                 if (weekNum > 53) continue;
                 var eW = new Date(sW); eW.setDate(sW.getDate() + 4);
                 
-                var label = document.createElement('label'); label.className = "region-label";
+                var label = document.createElement('label'); 
+                label.className = "region-label";
+                
                 var input = document.createElement('input');
-                input.type = "checkbox"; input.className = "week-chk"; input.name = "tygodnie[]";
+                input.type = "checkbox"; 
+                input.className = "week-chk"; 
+                input.name = "tygodnie[]";
                 input.setAttribute('data-week', weekNum);
-                var labelText = "Tydzień " + weekNum + " (" + sW.getDate() + "." + (sW.getMonth()+1) + " - " + eW.getDate() + "." + (eW.getMonth()+1) + ")";
-                input.value = labelText;
+                
+                var dateRangeFormatted = "(" + String(sW.getDate()).padStart(2, '0') + "." + String(sW.getMonth()+1).padStart(2, '0') + " - " + String(eW.getDate()).padStart(2, '0') + "." + String(eW.getMonth()+1).padStart(2, '0') + ")";
+                input.value = "Tydzień " + weekNum + " " + dateRangeFormatted;
                 
                 var leftSpan = document.createElement('span');
                 leftSpan.className = "region-left-side";
                 leftSpan.appendChild(input);
-                leftSpan.appendChild(document.createTextNode(" " + input.value));
+                
+                // Tekst "Tydzień X" może być tłumaczony na "Woche X" / "Week X"
+                var weekTextSpan = document.createElement('span');
+                weekTextSpan.textContent = " Tydzień " + weekNum + " ";
+                leftSpan.appendChild(weekTextSpan);
+
+                // Sama data w nawiasie zostaje nienaruszona (bez zamiany na nazwy miesięcy)
+                var dateSpan = document.createElement('span');
+                dateSpan.className = "notranslate";
+                dateSpan.setAttribute('translate', 'no');
+                dateSpan.textContent = dateRangeFormatted;
+                leftSpan.appendChild(dateSpan);
 
                 label.appendChild(leftSpan);
                 weeksContainer.appendChild(label);
@@ -1548,7 +1565,6 @@
             let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
 
-            // Sprawdzamy język przeglądarki klienta
             var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
             let isEuro = (userLang !== 'pl');
             let currencySymbol = isEuro ? 'EUR' : 'PLN';
@@ -1721,7 +1737,7 @@
                             if (datyWTygodniu.length > 0) {
                                 rejonTotalDni += datyWTygodniu.length;
                                 weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
-                                    '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
+                                    '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span class="notranslate" translate="no" style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
                                 '</div>';
                             }
                         });
