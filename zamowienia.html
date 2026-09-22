@@ -5,12 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powiadomienie o dostępności - Terminy roczne</title>
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-YQTCG26T1B');
+    </script>
+
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="favicon.png">
     
     <style>
-        body { background-color: #121212; margin: 0; padding: 0; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; }
+        body { 
+            background-color: #121212; 
+            margin: 0; 
+            padding: 0; 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', sans-serif; 
+            top: 0 !important;
+        }
         .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 220px; }
         .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.95rem; line-height: 1.5; }
         .service-info ul { margin: 5px 0 0 0; padding-left: 20px; }
@@ -34,6 +49,16 @@
         .btn-order:active { transform: scale(0.98); }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
         .status-container { font-size: 1rem; color: #ccc; }
+
+        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-icon,
+        #goog-gt-tt,
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+        body { top: 0px !important; }
+        .skiptranslate { display: none !important; }
 
         @media (max-width: 600px) {
             .order-module { padding: 10px; padding-bottom: 200px; }
@@ -73,6 +98,9 @@
         <button id="submitOrderBtn" class="btn-order" disabled>✉️ Wyślij zgłoszenie e-mail (wybierz rejon)</button>
     </div>
 </div>
+
+<!-- NIEWIDOCZNY KONTENER DLA GOOGLE TRANSLATE -->
+<div id="google_translate_element" style="display:none;"></div>
 
 <script>
     (function() {
@@ -264,7 +292,6 @@
                 selectedWasteType = "Opcja dla złomiarzy";
             }
 
-            // Nagłówek ułatwiający filtrowanie w skrzynce pocztowej
             const subject = `[POWIADOMIENIE-DOSTEPNOSC] Rok ${selectedYear} - ID: ${alertId}`;
             
             const body = 
@@ -286,8 +313,38 @@ Pozdrawiam`;
         });
     })();
 </script>
+
+<!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA GOOGLE W TLE -->
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'pl',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+
+    (function() {
+        var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
+
+        if (userLang === 'pl') return;
+
+        var matchCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
+        var currentTrans = matchCookie ? matchCookie[2] : null;
+        var targetTrans = '/pl/' + userLang;
+
+        if (currentTrans !== targetTrans) {
+            var domain = window.location.hostname;
+            document.cookie = "googtrans=" + targetTrans + "; path=/; domain=" + domain;
+            document.cookie = "googtrans=" + targetTrans + "; path=/;";
+        }
+
+        var gtScript = document.createElement('script');
+        gtScript.type = 'text/javascript';
+        gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.head.appendChild(gtScript);
+    })();
+</script>
     
-    <script src="translator.js"></script>
-    <script src="/footer.js"></script>
+<script src="/footer.js"></script>
 </body>
 </html>
