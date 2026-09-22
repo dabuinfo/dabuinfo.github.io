@@ -529,7 +529,7 @@
 
     </div>
 
-    <!-- Stały pasek zamówień na dole strony -->
+    <!-- Stały pasek zamówień na dole strony z dynamiczną walutą -->
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
             ID zamówienia: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span><br>
@@ -613,6 +613,7 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
+            // PRZELICZNIK 25 PLN / 6 EUR
             const unitRate = isPolish ? 25 : 6;
             const currencyUnit = isPolish ? "PLN" : "€";
             const phoneOrder = "+48600812820";
@@ -736,10 +737,15 @@
                 });
 
                 const uniqueRegionsCount = uniqueRegions.size;
-                const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
-                const terminyOdmiana = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                
+                if (isPolish) {
+                    const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
+                    const terminyOdmiana = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                    cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana})`;
+                } else {
+                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)`;
+                }
 
-                cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana})`;
                 cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
 
                 if (totalTermsCount > 0) {
@@ -753,12 +759,12 @@
 
                     if (isPolish) {
                         submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${rejonyOdmiana} | ${terminyOdmiana}.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${totalTermsCount} terminów.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
                     } else {
-                        submitBtn.innerHTML = `💬 Zamów (${totalCost} €)`;
+                        submitBtn.innerHTML = `💬 Bestellen (${totalCost} €)`;
                         let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
@@ -767,7 +773,7 @@
                 } else {
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = '📱 Wybierz rejony, aby zamówić';
+                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '📱 Gebiete auswählen';
                     submitBtn.onclick = null;
                 }
             }
