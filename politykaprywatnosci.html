@@ -19,7 +19,8 @@
     
     <style>
 /* <![CDATA[ */
-        body {
+        html, body {
+            top: 0px !important;
             background-color: #0d0d0d;
             margin: 0;
             padding: 20px 0 0 0;
@@ -135,6 +136,17 @@
             text-decoration: none;
             font-weight: bold;
         }
+
+        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-icon,
+        #goog-gt-tt,
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+        body { top: 0px !important; }
+        .skiptranslate { display: none !important; }
+
         @media (max-width: 768px) {
             .dabu-footer-container {
                 flex-direction: column;
@@ -185,10 +197,12 @@
     <p data-i18n="sec5_desc">Twoje dane są bezpiecznie przechowywane na serwerach Google (Arkusz Google). Nie udostępniam ich, nie sprzedaję ani nie przekazuję agencjom marketingowym.</p>
 </div>
 
+<!-- NIEWIDOCZNY KONTENER DLA GOOGLE TRANSLATE -->
+<div id="google_translate_element" style="display:none;"></div>
+
 <script>
 // <![CDATA[
 (function() {
-    // Dynamiczny rok w stopce
     const dynYear = document.getElementById('dynamic-year');
     if (dynYear) {
         dynYear.textContent = new Date().getFullYear();
@@ -245,7 +259,7 @@
             right_4: "Einschränkung der Verarbeitung,",
             right_5: "Datenübertragbarkeit,",
             right_6: "Widerruf der Einwilligung jederzeit.",
-            sec4_outro: "Um Ihr Konto zu löschen oder Ihre Rechte auszuüben, schreiben Sie mir einfach eine E-Mail.",
+            sec4_outro: "Um Ihr Konto zu löschen lub Ihre Rechte auszuüben, schreiben Sie mir einfach eine E-Mail.",
             sec5_title: "5. Datensicherheit",
             sec5_desc: "Ihre Daten werden sicher auf Google-Servern (Google Tabellen) gespeichert. Ich gebe sie nicht weiter, verkaufe sie nicht und übermittle sie nicht an Marketingagenturen."
         },
@@ -291,14 +305,14 @@
             right_6: "odvolanie súhlasu kedykoľvek.",
             sec4_outro: "Ak chcete účet zmazať alebo uplatniť svoje práva, jednoducho mi napíšte e-mail.",
             sec5_title: "5. Zabezpečenie údajov",
-            sec5_desc: "Vaše údaje sú bezpečne uložené na serveroch Google (Google Tabuľky). Nezdieľam ich, nepredávam ani neodovzdávam marketingovým agentúram."
+            sec5_desc: "Vaše údaje sú bezpečně uložené na serveroch Google (Google Tabuľky). Nezdieľam ich, nepredávam ani neodovzdávam marketingovým agentúram."
         },
         hu: {
             welcome_title: "Adatvédelmi irányelvek és GDPR",
             intro: "Szeretném, ha biztonságban érezné magát itt, ezért az alábbiakban elmagyarázom, hogyan kezelem személyes adatait.",
             sec1_title: "1. Adatkezelő",
             sec1_desc: "Személyes adatainak kezelője én vagyok,",
-            sec1_contact: "Az adatokkal kapcsolatos minden ügyben az alábbi címen léphet velem kapcsolatba:",
+            sec1_contact: "Az adatokkal kapcsolatos minden ügyben az alábbi címen léphetek velem kapcsolatba:",
             sec2_title: "2. Milyen adatokat gyűjtök?",
             sec2_desc: "Csak az eszköz működéséhez feltétlenül szükséges minimumot gyűjtöm: az Ön e-mail címét és az Ön által megadott hozzáférési PIN-kódot.",
             sec3_title: "3. Milyen célból gyűjtök adatokat?",
@@ -421,6 +435,38 @@
 })();
 // ]]>
 </script>
+
+<!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA GOOGLE W TLE -->
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'pl',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+
+    (function() {
+        var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
+
+        if (userLang === 'pl') return;
+
+        var matchCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
+        var currentTrans = matchCookie ? matchCookie : null;
+        var targetTrans = '/pl/' + userLang;
+
+        if (currentTrans !== targetTrans) {
+            var domain = window.location.hostname;
+            document.cookie = "googtrans=" + targetTrans + "; path=/; domain=" + domain;
+            document.cookie = "googtrans=" + targetTrans + "; path=/;";
+        }
+
+        var gtScript = document.createElement('script');
+        gtScript.type = 'text/javascript';
+        gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.head.appendChild(gtScript);
+    })();
+</script>
+
 <script src="/footer.js"></script>
 </body>
 </html>
