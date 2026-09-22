@@ -109,10 +109,45 @@
                 .chat-bubble-received a { color: #16a34a !important; font-weight: bold !important; text-decoration: underline !important; }
                 .chat-bubble-received strong { color: #0f172a !important; }
 
-                .chat-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; background: white; align-items: stretch; }
-                #chat-user-input { flex: 1; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
-                #chat-user-input:focus { border-color: var(--theme-color); }
-                .chat-send-button { margin-left: 10px; padding: 0 16px; background: var(--theme-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+                /* ODPORNOŚĆ NA STYLE PODSTRON (np. data.html) */
+                .chat-input-area { 
+                    display: flex !important; 
+                    padding: 10px !important; 
+                    border-top: 1px solid #ddd !important; 
+                    background: #ffffff !important; 
+                    align-items: stretch !important; 
+                    box-sizing: border-box !important;
+                }
+                #chat-user-input { 
+                    flex: 1 1 auto !important; 
+                    width: 100% !important;
+                    min-width: 0 !important;
+                    background: #ffffff !important; 
+                    color: #0f172a !important; 
+                    padding: 10px 12px !important; 
+                    border: 1px solid #cbd5e1 !important; 
+                    border-radius: 6px !important; 
+                    font-size: 14px !important; 
+                    outline: none !important; 
+                    box-sizing: border-box !important;
+                }
+                #chat-user-input:focus { 
+                    border-color: var(--theme-color) !important; 
+                }
+                #chat-user-input::placeholder {
+                    color: #94a3b8 !important;
+                }
+                .chat-send-button { 
+                    margin-left: 10px !important; 
+                    padding: 0 16px !important; 
+                    background: var(--theme-color) !important; 
+                    color: white !important; 
+                    border: none !important; 
+                    border-radius: 6px !important; 
+                    cursor: pointer !important; 
+                    font-weight: bold !important; 
+                    flex-shrink: 0 !important;
+                }
 
                 @media (max-width: 768px) {
                     .dabu-footer { padding: 35px 15px 15px; }
