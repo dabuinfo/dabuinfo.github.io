@@ -177,8 +177,10 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA
-        if (!document.getElementById('chat-toggle-btn')) {
+        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html)
+        const isKalendarzPage = window.location.pathname.toLowerCase().includes('kalendarz');
+
+        if (!isKalendarzPage && !document.getElementById('chat-toggle-btn')) {
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
             const chatWrapper = document.createElement('div');
@@ -216,7 +218,7 @@
             // Wykrywanie języka przeglądarki użytkownika
             let browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
 
-            // Domyślne wartości lokalne dla najpopularniejszych języków (natychmiastowe ładowanie bez czekania na sieć)
+            // Domyślne wartości lokalne dla najpopularniejszych języków
             const fallbackLang = {
                 pl: { powitanie: "Cześć! Wpisz nazwę miejscowości lub adres, aby sprawdzić dostępne terminy.", placeholder: "Wpisz miejscowość lub adres...", wyslij: "Wyślij", ladowanie: "🤔 Szukam...", blad: "❌ Błąd serwera." },
                 de: { powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um Termine zu prüfen.", placeholder: "Stadt oder Adresse eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche...", blad: "❌ Serverfehler." },
@@ -242,7 +244,6 @@
             sendBtn.innerText = tChat.wyslij;
             messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
 
-            // Jeśli język to np. ro, hu, cs, bg, tr itp., pobieramy automatycznie przetłumaczone powitanie z backendu Google Translate
             if (!fallbackLang[browserLang]) {
                 fetch(SCRIPT_URL, {
                     method: 'POST',
