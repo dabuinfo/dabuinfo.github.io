@@ -1,10 +1,10 @@
-// footer.js - Centralna stopka oraz asystent dla dabu-info
+// footer.js - Centralna stopka oraz wielojęzyczny asystent dla dabu-info
 (function() {
     function initFooterAndAssistant() {
         // Zabezpieczenie przed podwójnym dodaniem elementów
         if (document.querySelector('.dabu-footer')) return;
 
-        // 1. Dodanie stylów CSS dla stopki i asystenta
+        // 1. Style CSS dla stopki i pływającego asystenta
         const style = document.createElement('style');
         style.textContent = `
             .dabu-footer {
@@ -146,7 +146,7 @@
         `;
         document.head.appendChild(style);
 
-        // 2. Tworzenie elementu stopki
+        // 2. Struktura HTML Stopki
         const currentYear = new Date().getFullYear();
         const footerElement = document.createElement('footer');
         footerElement.className = 'dabu-footer';
@@ -176,7 +176,6 @@
                 </div>
             </div>
 
-            <!-- Boxy z linkami na dole -->
             <div class="dabu-footer-nav">
                 <ul class="dabu-footer-boxes">
                     <li><a href="https://dabu-info.com/">Strona Główna</a></li>
@@ -196,7 +195,7 @@
         `;
         document.body.appendChild(footerElement);
 
-        // 3. Tworzenie i inicjalizacja widżetu asystenta
+        // 3. Widżet Asystenta AI / Wyszukiwarki
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
         const chatWrapper = document.createElement('div');
@@ -230,14 +229,8 @@
         const sendBtn = document.getElementById('chat-send-btn');
         const headerTitle = document.getElementById('chat-header-title');
 
+        // Baza językowa tras i zbiórek odpadów wielkogabarytowych
         const slownik = {
-            pl: {
-                powitanie: "Cześć! Wpisz nazwę miejscowości, numer tygodnia lub adres, aby sprawdzić dostępne terminy.",
-                placeholder: "Wpisz miejscowość lub adres...",
-                wyslij: "Wyślij",
-                ladowanie: "🤔 Szukam...",
-                blad: "❌ Błąd serwera."
-            },
             de: {
                 powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um verfügbare Termine zu prüfen.",
                 placeholder: "Stadt oder Adresse eingeben...",
@@ -245,12 +238,89 @@
                 ladowanie: "🤔 Suche...",
                 blad: "❌ Serverfehler."
             },
+            pl: {
+                powitanie: "Cześć! Wpisz nazwę miejscowości, numer tygodnia lub adres, aby sprawdzić dostępne terminy.",
+                placeholder: "Wpisz miejscowość lub adres...",
+                wyslij: "Wyślij",
+                ladowanie: "🤔 Szukam...",
+                blad: "❌ Błąd serwera."
+            },
             en: {
                 powitanie: "Hi! Enter the city name or address to check available dates.",
                 placeholder: "Enter city or address...",
                 wyslij: "Send",
                 ladowanie: "🤔 Searching...",
                 blad: "❌ Server error."
+            },
+            ro: {
+                powitanie: "Salut! Introduceți numele orașului sau adresa pentru a verifica datele disponibile de colectare.",
+                placeholder: "Introduceți orașul sau adresa...",
+                wyslij: "Trimite",
+                ladowanie: "🤔 Se caută...",
+                blad: "❌ Eroare de server."
+            },
+            bg: {
+                powitanie: "Здравейте! Въведете име на град или адрес, за да проверите свободните дати за извозване.",
+                placeholder: "Въведете град или адрес...",
+                wyslij: "Изпрати",
+                ladowanie: "🤔 Търсене...",
+                blad: "❌ Сървърна грешка."
+            },
+            hu: {
+                powitanie: "Szia! Add meg a település nevét vagy a címet az elérhető lomtalanítási időpontok ellenőrzéséhez.",
+                placeholder: "Település vagy cím...",
+                wyslij: "Küldés",
+                ladowanie: "🤔 Keresés...",
+                blad: "❌ Szerverhiba."
+            },
+            cs: {
+                powitanie: "Ahoj! Zadejte název obce nebo adresu pro kontrolu dostupných termínů svozu.",
+                placeholder: "Zadejte město nebo adresu...",
+                wyslij: "Odeslat",
+                ladowanie: "🤔 Hledám...",
+                blad: "❌ Chyba serveru."
+            },
+            sk: {
+                powitanie: "Ahoj! Zadajte názov obce alebo adresu pre kontrolu dostupných termínov zberu.",
+                placeholder: "Zadajte mesto alebo adresu...",
+                wyslij: "Odoslať",
+                ladowanie: "🤔 Hľadám...",
+                blad: "❌ Chyba servera."
+            },
+            bs: {
+                powitanie: "Pozdrav! Unesite naziv mjesta ili adresu kako biste provjerili dostupne termine odvoza.",
+                placeholder: "Unesite grad ili adresu...",
+                wyslij: "Pošalji",
+                ladowanie: "🤔 Tražim...",
+                blad: "❌ Greška na serveru."
+            },
+            hr: {
+                powitanie: "Pozdrav! Unesite naziv mjesta ili adresu kako biste provjerili dostupne termine odvoza.",
+                placeholder: "Unesite grad ili adresu...",
+                wyslij: "Pošalji",
+                ladowanie: "🤔 Tražim...",
+                blad: "❌ Greška na serveru."
+            },
+            uk: {
+                powitanie: "Вітаємо! Введіть назву населеного пункту або адресу, щоб перевірити графік вивозу великогабаритного сміття.",
+                placeholder: "Введіть місто або адресу...",
+                wyslij: "Надіслати",
+                ladowanie: "🤔 Пошук...",
+                blad: "❌ Помилка сервера."
+            },
+            ru: {
+                powitanie: "Здравствуйте! Введите название города или адрес, чтобы узнать доступные даты вывоза крупногабаритного мусора.",
+                placeholder: "Введите город или адрес...",
+                wyslij: "Отправить",
+                ladowanie: "🤔 Поиск...",
+                blad: "❌ Ошибка сервера."
+            },
+            tr: {
+                powitanie: "Merhaba! Mevcut kaba atık toplama tarihlerini öğrenmek için şehir adı veya adres girin.",
+                placeholder: "Şehir veya adres girin...",
+                wyslij: "Gönder",
+                ladowanie: "🤔 Aranıyor...",
+                blad: "❌ Sunucu hatası."
             }
         };
 
@@ -336,7 +406,6 @@
         }
     }
 
-    // Bezpieczny mechanizm uruchomienia:
     if (document.body) {
         initFooterAndAssistant();
     } else {
