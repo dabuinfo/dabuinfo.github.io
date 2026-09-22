@@ -403,7 +403,6 @@
         margin-top: 24px; 
         padding: 16px; 
         background: #202020; 
-        border-radius: 8px; 
         border-left: 4px solid #007bff; 
         font-size: 0.84rem; 
         text-align: left; 
@@ -477,7 +476,7 @@
                         <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek</h2>
-                    <span class="year-badge">DE 2026</span>
+                    <span class="year-badge notranslate" translate="no">DE 2026</span>
                 </div>
                 
                 <div class="hero-features-grid" id="cal-hint">
@@ -496,7 +495,8 @@
                 </div>
             </div>
             
-            <div id="calendar-grid"></div>
+            <!-- SIATKA KALENDARZA - ZABEZPIECZONA PRZED AUTOMATYCZNYM TŁUMACZENIEM -->
+            <div id="calendar-grid" class="notranslate" translate="no"></div>
             
             <div class="calendar-legend">
                 <div><span class="legend-box holiday-national"></span> <span id="leg-nat">Święta Narodowe</span></div>
@@ -504,6 +504,7 @@
                 <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Bieżący miesiąc</span></div>
             </div>
 
+            <!-- WYNIKI WYSZUKIWANIA ZBIÓREK - ZABEZPIECZONE PRZED TŁUMACZENIEM NAZW -->
             <div id="calendar-results">
                 <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
                 <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
@@ -531,8 +532,8 @@
     <!-- Stały pasek zamówień na dole strony -->
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
-            ID zamówienia: <span class="cart-order-badge" id="global-order-id">---</span><br>
-            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge" id="cart-total">0 PLN</span>
+            ID zamówienia: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span><br>
+            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
         </div>
         <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
             📱 Wybierz rejony, aby zamówić
@@ -630,32 +631,33 @@
 
             for (let m = currentMonthIdx; m <= 11; m++) {
                 let table = document.createElement('table');
-                table.className = 'month-table' + (m === currentMonthIdx ? ' current-month' : '');
+                table.className = 'month-table notranslate' + (m === currentMonthIdx ? ' current-month' : '');
+                table.setAttribute('translate', 'no');
                 
-                let header = `<thead>
-                    <tr><th colspan="8" class="month-title">${calData.m[m]}</th></tr>
-                    <tr><th class="week-header">${calData.wk}</th>${calData.d.map(d => `<th>${d}</th>`).join('')}</tr>
+                let header = `<thead class="notranslate" translate="no">
+                    <tr><th colspan="8" class="month-title notranslate" translate="no">${calData.m[m]}</th></tr>
+                    <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
                 </thead>`;
                 
                 let firstDay = new Date(year, m, 1).getDay();
                 let daysInMonth = new Date(year, m + 1, 0).getDate();
                 let startingDay = firstDay === 0 ? 6 : firstDay - 1; 
                 
-                let body = '<tbody><tr>';
+                let body = '<tbody class="notranslate" translate="no"><tr class="notranslate" translate="no">';
                 let firstDateForWeek = new Date(year, m, 1);
                 
                 let wNum = getISOWeekNumber(firstDateForWeek);
-                body += `<td class="week-number" data-week="${wNum}">${wNum}</td>`;
+                body += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
                 
                 let dayCount = 0;
-                for (let i = 0; i < startingDay; i++) { body += '<td style="background:transparent;"></td>'; dayCount++; }
+                for (let i = 0; i < startingDay; i++) { body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; dayCount++; }
                 
                 for (let d = 1; d <= daysInMonth; d++) {
                     if (dayCount % 7 === 0 && dayCount !== 0) {
-                        body += '</tr><tr>';
+                        body += '</tr><tr class="notranslate" translate="no">';
                         let currentDayForWeek = new Date(year, m, d);
                         let wNumRow = getISOWeekNumber(currentDayForWeek);
-                        body += `<td class="week-number" data-week="${wNumRow}">${wNumRow}</td>`;
+                        body += `<td class="week-number notranslate" translate="no" data-week="${wNumRow}">${wNumRow}</td>`;
                     }
                     
                     let key = `${m}-${d}`;
@@ -668,10 +670,10 @@
                     let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
                     let mStr = String(m + 1).padStart(2, '0');
                     let dStr = String(d).padStart(2, '0');
-                    body += `<td class="${hClass} ${isToday} clickable-day" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}">${d}</td>`;
+                    body += `<td class="${hClass} ${isToday} clickable-day notranslate" translate="no" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}">${d}</td>`;
                     dayCount++;
                 }
-                while (dayCount % 7 !== 0) { body += '<td style="background:transparent;"></td>'; dayCount++; }
+                while (dayCount % 7 !== 0) { body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; dayCount++; }
                 body += '</tr></tbody>';
                 table.innerHTML = header + body;
                 grid.appendChild(table);
@@ -795,7 +797,7 @@
                     resultsBox.style.display = 'block';
                     resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-                    resultsTitle.innerHTML = `📅 Dostępne rejony na dzień: ${displayDate}`;
+                    resultsTitle.innerHTML = `📅 Dostępne rejony na dzień: <span class="notranslate" translate="no">${displayDate}</span>`;
                     resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Wczytywanie rejonów...</div>`;
                     
                     document.querySelectorAll('.clickable-day').forEach(td => td.style.outline = 'none');
@@ -829,9 +831,9 @@
                                         <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #242424;">
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 1.15rem;">📋</span>
-                                                <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span style="color: #2ecc71;">${displayDate}</span></span>
+                                                <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
-                                            <div style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
+                                            <div class="notranslate" translate="no" style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
                                                 ⚡ ${unitRate} ${currencyUnit} / rejon za dzień
                                             </div>
                                         </div>
@@ -853,7 +855,7 @@
 
                                         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #aaa;">
                                             <div>
-                                                💳 Płatność: <strong style="color: #fff;">BLIK (+48 733 035 301)</strong> lub przelew tradycyjny (IBAN / PayPal)
+                                                💳 Płatność: <strong class="notranslate" translate="no" style="color: #fff;">BLIK (+48 733 035 301)</strong> lub przelew tradycyjny (IBAN / PayPal)
                                             </div>
                                             <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
                                         </div>
@@ -905,7 +907,7 @@
                                     if (landName && landName !== currentLand) {
                                         currentLand = landName;
                                         landHeaderHtml = `
-                                            <div style="
+                                            <div class="notranslate" translate="no" style="
                                                 background: linear-gradient(90deg, #1b263b 0%, #161b22 100%);
                                                 border-left: 4px solid #3b82f6;
                                                 border-top: 1px solid rgba(255,255,255,0.06);
@@ -917,8 +919,8 @@
                                                 justify-content: space-between;
                                                 box-shadow: 0 4px 12px rgba(0,0,0,0.35);
                                             ">
-                                                <div style="display: flex; align-items: center; gap: 10px;">
-                                                    <span style="
+                                                <div class="notranslate" translate="no" style="display: flex; align-items: center; gap: 10px;">
+                                                    <span class="notranslate" translate="no" style="
                                                         background: rgba(59, 130, 246, 0.15);
                                                         border: 1px solid rgba(59, 130, 246, 0.35);
                                                         color: #60a5fa;
@@ -929,7 +931,7 @@
                                                         align-items: center;
                                                         justify-content: center;
                                                     ">🏛️ LAND</span>
-                                                    <span style="
+                                                    <span class="notranslate" translate="no" style="
                                                         color: #ffffff;
                                                         font-size: 0.95rem;
                                                         font-weight: 700;
@@ -938,14 +940,14 @@
                                                         font-family: var(--font-main);
                                                     ">${currentLand}</span>
                                                 </div>
-                                                <div style="display: flex; align-items: center; gap: 6px;">
-                                                    <span style="
+                                                <div class="notranslate" translate="no" style="display: flex; align-items: center; gap: 6px;">
+                                                    <span class="notranslate" translate="no" style="
                                                         font-size: 0.8rem;
                                                         color: #93c5fd;
                                                         font-weight: 600;
                                                         font-family: var(--font-mono);
                                                     ">${displayDate}</span>
-                                                    <span style="
+                                                    <span class="notranslate" translate="no" style="
                                                         background: #21262d;
                                                         border: 1px solid #30363d;
                                                         color: #2ecc71;
@@ -964,7 +966,7 @@
                                     <div class="zebra-row">
                                         <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
                                             <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
-                                            <div style="flex:1;">${infoPart}</div>
+                                            <div class="notranslate" translate="no" style="flex:1;">${infoPart}</div>
                                         </label>
                                         <div class="quick-add-container">
                                             <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
@@ -1070,7 +1072,7 @@
                                 });
 
                             } else {
-                                resultsContent.innerHTML = `<div style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
+                                resultsContent.innerHTML = `<div class="notranslate" translate="no" style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
                             }
                         } else {
                             resultsContent.innerHTML = `<div style="padding: 20px; color:#ff5555;">❌ Brak zaplanowanych zbiórek na ten dzień.</div>`;
