@@ -1,4 +1,4 @@
-// footer.js - Centralna stopka oraz wielojęzyczny asystent dla dabu-info
+// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google
 (function() {
     function initFooterAndAssistant() {
         // 1. STYLE CSS
@@ -95,25 +95,31 @@
                 }
                 .chat-button:hover { transform: scale(1.1); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
                 #chat-main-window {
-                    position: fixed !important; bottom: 90px !important; right: 20px !important; width: 350px !important; max-width: 90vw !important;
-                    height: 480px !important; max-height: 70vh !important; background: white !important; border-radius: 10px !important;
-                    box-shadow: 0 5px 25px rgba(0,0,0,0.4) !important; display: none; flex-direction: column !important;
+                    position: fixed !important; bottom: 90px !important; right: 20px !important; width: 360px !important; max-width: 92vw !important;
+                    height: 520px !important; max-height: 75vh !important; background: white !important; border-radius: 12px !important;
+                    box-shadow: 0 8px 30px rgba(0,0,0,0.35) !important; display: none; flex-direction: column !important;
                     z-index: 100000 !important; overflow: hidden !important; font-size: 14px !important; line-height: 1.4 !important; color: #000 !important;
                 }
-                .chat-header { background: var(--theme-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-                #chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #f5f5f5; display: flex; flex-direction: column; gap: 8px; }
-                .chat-bubble-sent { background: var(--theme-color); color: white; padding: 10px 14px; border-radius: 15px 15px 2px 15px; max-width: 85%; align-self: flex-end; text-align: left; word-wrap: break-word; }
-                .chat-bubble-received { background: #e0e0e0; color: black; padding: 10px 14px; border-radius: 15px 15px 15px 2px; max-width: 85%; align-self: flex-start; word-wrap: break-word; }
+                .chat-header { background: var(--theme-color); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+                #chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+                .chat-bubble-sent { background: var(--theme-color); color: white; padding: 10px 14px; border-radius: 15px 15px 2px 15px; max-width: 85%; align-self: flex-end; text-align: left; word-wrap: break-word; font-size: 14px; }
+                .chat-bubble-received { background: #ffffff; color: #1e293b; padding: 12px 14px; border-radius: 15px 15px 15px 2px; max-width: 90%; align-self: flex-start; word-wrap: break-word; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13.5px; }
+                
+                /* Wymuszenie czytelności linków i formatowania w dymkach bota */
+                .chat-bubble-received a { color: #16a34a !important; font-weight: bold !important; text-decoration: underline !important; }
+                .chat-bubble-received strong { color: #0f172a !important; }
+
                 .chat-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; background: white; align-items: stretch; }
-                #chat-user-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; outline: none; }
-                .chat-send-button { margin-left: 10px; padding: 0 15px; background: var(--theme-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                #chat-user-input { flex: 1; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+                #chat-user-input:focus { border-color: var(--theme-color); }
+                .chat-send-button { margin-left: 10px; padding: 0 16px; background: var(--theme-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
                 @media (max-width: 768px) {
                     .dabu-footer { padding: 35px 15px 15px; }
                     .dabu-footer-container { flex-direction: column; gap: 25px; text-align: center; }
                     .dabu-footer-boxes { gap: 8px; }
                     .dabu-footer-boxes li a { font-size: 0.8em; padding: 7px 12px; }
-                    #chat-main-window { bottom: 85px !important; left: 15px !important; right: 15px !important; width: auto !important; max-width: none !important; }
+                    #chat-main-window { bottom: 85px !important; left: 12px !important; right: 12px !important; width: auto !important; max-width: none !important; }
                 }
             `;
             document.head.appendChild(style);
@@ -121,7 +127,7 @@
 
         const currentYear = new Date().getFullYear();
 
-        // 2. TWORZENIE STOPKI (jeśli nie istnieje)
+        // 2. TWORZENIE STOPKI
         if (!document.querySelector('.dabu-footer')) {
             const footerElement = document.createElement('footer');
             footerElement.className = 'dabu-footer';
@@ -171,7 +177,7 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA (niezależne sprawdzenie)
+        // 3. TWORZENIE ASYSTENTA
         if (!document.getElementById('chat-toggle-btn')) {
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
@@ -193,7 +199,7 @@
                         <input type="text" id="chat-user-input" placeholder="..." />
                         <button class="chat-send-button" id="chat-send-btn">Wyślij</button>
                     </div>
-                    <div style="text-align: center; color: #b0b0b0; font-family: sans-serif; padding: 10px 0 15px 0; background: white; font-size: 12px; letter-spacing: 1px; opacity: 0.6;">
+                    <div style="text-align: center; color: #94a3b8; font-family: sans-serif; padding: 8px 0 12px 0; background: white; font-size: 11.5px; letter-spacing: 0.5px;">
                         © ${currentYear} dabu-info
                     </div>
                 </div>
@@ -207,103 +213,17 @@
             const sendBtn = document.getElementById('chat-send-btn');
             const headerTitle = document.getElementById('chat-header-title');
 
-            const slownik = {
-                de: {
-                    powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um verfügbare Termine zu prüfen.",
-                    placeholder: "Stadt oder Adresse eingeben...",
-                    wyslij: "Senden",
-                    ladowanie: "🤔 Suche...",
-                    blad: "❌ Serverfehler."
-                },
-                pl: {
-                    powitanie: "Cześć! Wpisz nazwę miejscowości, numer tygodnia lub adres, aby sprawdzić dostępne terminy.",
-                    placeholder: "Wpisz miejscowość lub adres...",
-                    wyslij: "Wyślij",
-                    ladowanie: "🤔 Szukam...",
-                    blad: "❌ Błąd serwera."
-                },
-                en: {
-                    powitanie: "Hi! Enter the city name or address to check available dates.",
-                    placeholder: "Enter city or address...",
-                    wyslij: "Send",
-                    ladowanie: "🤔 Searching...",
-                    blad: "❌ Server error."
-                },
-                ro: {
-                    powitanie: "Salut! Introduceți numele orașului sau adresa pentru a verifica datele disponibile de colectare.",
-                    placeholder: "Introduceți orașul sau adresa...",
-                    wyslij: "Trimite",
-                    ladowanie: "🤔 Se caută...",
-                    blad: "❌ Eroare de server."
-                },
-                bg: {
-                    powitanie: "Здравейте! Въведете име на град или адрес, за да проверите свободните дати за извозване.",
-                    placeholder: "Въведете град или адрес...",
-                    wyslij: "Изпрати",
-                    ladowanie: "🤔 Търсене...",
-                    blad: "❌ Сървърна грешка."
-                },
-                hu: {
-                    powitanie: "Szia! Add meg a település nevét vagy a címet az elérhető lomtalanítási időpontok ellenőrzéséhez.",
-                    placeholder: "Település vagy cím...",
-                    wyslij: "Küldés",
-                    ladowanie: "🤔 Keresés...",
-                    blad: "❌ Szerverhiba."
-                },
-                cs: {
-                    powitanie: "Ahoj! Zadejte název obce nebo adresu pro kontrolu dostupných termínů svozu.",
-                    placeholder: "Zadejte město nebo adresu...",
-                    wyslij: "Odeslat",
-                    ladowanie: "🤔 Hledám...",
-                    blad: "❌ Chyba serveru."
-                },
-                sk: {
-                    powitanie: "Ahoj! Zadajte názov obce alebo adresu pre kontrolu dostupných termínov zberu.",
-                    placeholder: "Zadajte mesto alebo adresu...",
-                    wyslij: "Odoslať",
-                    ladowanie: "🤔 Hľadám...",
-                    blad: "❌ Chyba servera."
-                },
-                bs: {
-                    powitanie: "Pozdrav! Unesite naziv mjesta ili adresu kako biste provjerili dostupne termine odvoza.",
-                    placeholder: "Unesite grad ili adresu...",
-                    wyslij: "Pošalji",
-                    ladowanie: "🤔 Tražim...",
-                    blad: "❌ Greška na serveru."
-                },
-                hr: {
-                    powitanie: "Pozdrav! Unesite naziv mjesta ili adresu kako biste provjerili dostupne termine odvoza.",
-                    placeholder: "Unesite grad ili adresu...",
-                    wyslij: "Pošalji",
-                    ladowanie: "🤔 Tražim...",
-                    blad: "❌ Greška na serveru."
-                },
-                uk: {
-                    powitanie: "Вітаємо! Введіть назву населеного пункту або адресу, щоб перевірити графік вивозу великогабаритного сміття.",
-                    placeholder: "Введіть місто або адресу...",
-                    wyslij: "Надіслати",
-                    ladowanie: "🤔 Пошук...",
-                    blad: "❌ Помилка сервера."
-                },
-                ru: {
-                    powitanie: "Здравствуйте! Введите название города или адрес, чтобы узнать доступные даты вывоза крупногабаритного мусора.",
-                    placeholder: "Введите город или адрес...",
-                    wyslij: "Отправить",
-                    ladowanie: "🤔 Поиск...",
-                    blad: "❌ Ошибка сервера."
-                },
-                tr: {
-                    powitanie: "Merhaba! Mevcut kaba atık toplama tarihlerini öğrenmek için şehir adı veya adres girin.",
-                    placeholder: "Şehir veya adres girin...",
-                    wyslij: "Gönder",
-                    ladowanie: "🤔 Aranıyor...",
-                    blad: "❌ Sunucu hatası."
-                }
+            // Wykrywanie języka przeglądarki użytkownika
+            let browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
+
+            // Domyślne wartości lokalne dla najpopularniejszych języków (natychmiastowe ładowanie bez czekania na sieć)
+            const fallbackLang = {
+                pl: { powitanie: "Cześć! Wpisz nazwę miejscowości lub adres, aby sprawdzić dostępne terminy.", placeholder: "Wpisz miejscowość lub adres...", wyslij: "Wyślij", ladowanie: "🤔 Szukam...", blad: "❌ Błąd serwera." },
+                de: { powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um Termine zu prüfen.", placeholder: "Stadt oder Adresse eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche...", blad: "❌ Serverfehler." },
+                en: { powitanie: "Hi! Enter the city name or address to check available dates.", placeholder: "Enter city or address...", wyslij: "Send", ladowanie: "🤔 Searching...", blad: "❌ Server error." }
             };
 
-            let browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-            let cLang = slownik[browserLang] ? browserLang : 'de'; 
-            let tChat = slownik[cLang];
+            let tChat = fallbackLang[browserLang] || fallbackLang['de'];
 
             headerTitle.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -313,14 +233,37 @@
                         <line x1="8" y1="2" x2="8" y2="6"></line>
                         <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
-                    <span style="font-family:Arial Black; font-size:16px;">DABU-INFO ASYSTENT</span>
+                    <span style="font-family:Arial Black, sans-serif; font-size:15px; letter-spacing:0.5px;">DABU-INFO ASYSTENT</span>
                 </div>
-                <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 5px;">❌</span>
+                <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 4px;">❌</span>
             `;
 
             userInput.placeholder = tChat.placeholder;
             sendBtn.innerText = tChat.wyslij;
             messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
+
+            // Jeśli język to np. ro, hu, cs, bg, tr itp., pobieramy automatycznie przetłumaczone powitanie z backendu Google Translate
+            if (!fallbackLang[browserLang]) {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+                    body: JSON.stringify({ akcja: 'pobierz_powitanie', jezyk: browserLang })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d && d.powitanie) {
+                        tChat.powitanie = d.powitanie;
+                        tChat.placeholder = d.placeholder || tChat.placeholder;
+                        tChat.wyslij = d.wyslij || tChat.wyslij;
+                        tChat.ladowanie = d.ladowanie || tChat.ladowanie;
+                        
+                        userInput.placeholder = tChat.placeholder;
+                        sendBtn.innerText = tChat.wyslij;
+                        messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
+                    }
+                })
+                .catch(() => {});
+            }
 
             document.getElementById('close-chat-btn').onclick = () => chatMainWindow.style.display = 'none';
 
@@ -351,7 +294,7 @@
                     const resp = await fetch(SCRIPT_URL, {
                         method: 'POST',
                         headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                        body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: cLang })
+                        body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: browserLang })
                     });
                     const data = await resp.json();
                     
