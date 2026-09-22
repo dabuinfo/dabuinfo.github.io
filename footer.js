@@ -109,7 +109,7 @@
                 .chat-bubble-received a { color: #16a34a !important; font-weight: bold !important; text-decoration: underline !important; }
                 .chat-bubble-received strong { color: #0f172a !important; }
 
-                /* ODPORNOŚĆ NA STYLE PODSTRON (np. data.html) */
+                /* ODPORNOŚĆ NA STYLE PODSTRON */
                 .chat-input-area { 
                     display: flex !important; 
                     padding: 10px !important; 
@@ -212,10 +212,13 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html)
-        const isKalendarzPage = window.location.pathname.toLowerCase().includes('kalendarz');
+        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html oraz data.html)
+        const currentPath = window.location.pathname.toLowerCase();
+        const isExcludedPage = currentPath.includes('kalendarz') || 
+                               currentPath.includes('gieldy') || 
+                               currentPath.includes('data');
 
-        if (!isKalendarzPage && !document.getElementById('chat-toggle-btn')) {
+        if (!isExcludedPage && !document.getElementById('chat-toggle-btn')) {
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
 
             const chatWrapper = document.createElement('div');
