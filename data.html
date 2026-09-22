@@ -49,6 +49,10 @@
             }
         }
 
+        html, body {
+            top: 0px !important;
+        }
+
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--bg-color);
@@ -260,6 +264,16 @@
         }
         
         .sms-btn:active { background-color: #f0f0f0; }
+
+        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-icon,
+        #goog-gt-tt,
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+        body { top: 0px !important; }
+        .skiptranslate { display: none !important; }
 
         @media (max-width: 768px) {
             .box { padding: 25px 15px; }
@@ -490,6 +504,9 @@
         </div>
     </div>
 
+    <!-- NIEWIDOCZNY KONTENER DLA GOOGLE TRANSLATE -->
+    <div id="google_translate_element" style="display:none;"></div>
+
     <script>
         function przygotujSMS(nr, trescSms) {
             const numerTelefonu = "+48600812820";
@@ -574,7 +591,38 @@
             przygotujSMS(nr, trescSms);
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA GOOGLE W TLE -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        (function() {
+            var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
+
+            if (userLang === 'pl') return;
+
+            var matchCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
+            var currentTrans = matchCookie ? matchCookie[2] : null;
+            var targetTrans = '/pl/' + userLang;
+
+            if (currentTrans !== targetTrans) {
+                var domain = window.location.hostname;
+                document.cookie = "googtrans=" + targetTrans + "; path=/; domain=" + domain;
+                document.cookie = "googtrans=" + targetTrans + "; path=/;";
+            }
+
+            var gtScript = document.createElement('script');
+            gtScript.type = 'text/javascript';
+            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(gtScript);
+        })();
+    </script>
+
     <script src="/footer.js"></script>
 </body>
 </html>
