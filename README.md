@@ -17,7 +17,7 @@ Wszystkie aktualne informacje, rozpiski oraz konfigurator zamówień znajdziesz 
 ### 📌 O projekcie
 * 🗺️ **Obszar działania:** Niemcy (wybrane landy i powiaty)
 * ⚡ **Aktualizacja:** Terminy wywozu gabarytów, elektroodpadów oraz metalu synchronizowane na bieżąco
-* 🛠️ **Formaty:** Raport PDF PRO z aktywną nawigacją, PDF do ekonomicznego druku lub PDF Dark Mode
+* 🛠️ **Formaty:** Raport PRO z aktywną nawigacją, do ekonomicznego druku lub Dark Mode
 
 ---
 
