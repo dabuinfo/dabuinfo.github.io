@@ -63,6 +63,20 @@
         .service-info ul { margin: 6px 0 0 0; padding-left: 20px; }
         .service-info a { color: var(--primary-accent); text-decoration: underline; font-weight: bold; }
 
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(241, 196, 15, 0.15);
+            border: 1px solid #f1c40f;
+            color: #f1c40f;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.88rem;
+            margin-top: 8px;
+        }
+
         h2.main-title {
             color: var(--primary-accent);
             border-bottom: 2px solid var(--primary-hover);
@@ -168,6 +182,7 @@
             flex-shrink: 0;
         }
 
+        /* SEKCJA ZAMÓWIENIA */
         .cart-summary { 
             display: none; 
             position: relative; 
@@ -270,6 +285,9 @@
             <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji.</li>
             <li>Podaj swój adres e-mail poniżej – w odpowiedzi <b>otrzymasz gotowy raport z wyceną</b>.</li>
         </ul>
+        <div class="time-badge">
+            ⏱️ Czas realizacji i przesłania raportu: do 72 godzin
+        </div>
     </div>
 
     <!-- PREFERENCJE ODPADÓW -->
@@ -291,9 +309,13 @@
 
     <!-- SEKCJA ZAMÓWIENIA -->
     <div id="orderSection" class="cart-summary">
-        <div style="font-size: 1rem; color: #cbd5e1; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <div style="font-size: 1rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
             <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.15rem;">0</b> z 183</span>
             <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
+        </div>
+
+        <div style="font-size: 0.84rem; color: #f1c40f; margin-bottom: 12px;">
+            ℹ️ Czas oczekiwania na raport z wyceną: <b>do 72 godzin</b>
         </div>
 
         <div id="emailStepBox">
@@ -562,7 +584,7 @@
                         wasteType: scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny",
                         regionsCount: regionsArray.length,
                         regions: regionsArray,
-                        notes: "Zlecenie zweryfikowane kodem PIN."
+                        notes: "Zlecenie zweryfikowane kodem PIN. Czas realizacji: do 72h."
                     })
                 });
 
@@ -576,7 +598,7 @@
                     return;
                 }
 
-                alert(`✅ Adres e-mail potwierdzony pomyślnie!\nZgłoszenie (${alertId}) zostało przyjęte. Raport z wyceną wyślemy na adres: ${email}`);
+                alert(`✅ Adres e-mail potwierdzony pomyślnie!\nZgłoszenie (${alertId}) zostało przyjęte.\nRaport z wyceną prześlemy na adres ${email} w czasie do 72 godzin.`);
 
                 selectedRegions.clear();
                 emailInput.value = '';
