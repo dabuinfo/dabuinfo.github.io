@@ -326,7 +326,7 @@
     <div class="service-info">
         ℹ️ <b>Wybierz rejony do przygotowania oferty:</b>
         <ul>
-            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy).</li>
+            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy (limit do 3 rejonów w zapytaniu)).</li>
             <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji.</li>
             <li>W odpowiedzi <b>otrzymasz gotowy raport logistyczny z wyceną</b>.</li>
         </ul>
@@ -366,28 +366,28 @@
         <!-- BLOK OPŁATY WERYFIKACYJNEJ / ZADATKU -->
         <div class="deposit-box">
             <div class="deposit-title">
-                🛡️ Opłata przygotowawcza / Zadatek: 40 PLN (lub 10 €)
+                🛡️ Opłata przygotowawcza: <span id="depositTotalPln" style="color: #f1c40f;">20</span> PLN (lub <span id="depositTotalEur" style="color: #f1c40f;">5</span> €)
             </div>
             <div class="deposit-desc">
-                Opłata przygotowawcza (40 zł / 10 €) pokrywa koszty analizy skrapera i przygotowania raportu. 
-                <b style="color: #2ecc71;">W przypadku realizacji zamówienia pełnego zestawu kwota ta w 100% pomniejsza cenę końcową.</b> 
-                W przypadku rezygnacji opłata nie podlega zwrotowi (stanowi wynagrodzenie za wykonaną analizę danych).
+                Stawka zadatku wynosi <b>20 zł / 5 € za każdy wybrany rejon</b> (limit do 3 rejonów w zapytaniu). Pokrywa ona koszty analizy skrapera i przygotowania raportu logistycznego. 
+                <b style="color: #2ecc71;">W przypadku realizacji pełnego zestawu kwota ta w 100% pomniejsza cenę końcową.</b> 
+                W przypadku rezygnacji opłata nie podlega zwrotowi (wynagrodzenie za wykonaną analizę danych).
             </div>
             
-            <div style="font-size: 0.85rem; color: #93c5fd; font-weight: bold;">
-                Twój identyfikator do wpłaty: <span id="depositIdText" style="color: #f1c40f; font-family: monospace; font-size: 1rem;"></span>
+            <div style="font-size: 0.88rem; color: #93c5fd; font-weight: bold; margin-bottom: 8px;">
+                Kwota do wpłaty: <span id="depositSummaryText" style="color: #2ecc71; font-size: 1.05rem;">20 PLN (5 €)</span> | Identyfikator: <span id="depositIdText" style="color: #f1c40f; font-family: monospace; font-size: 1rem;"></span>
             </div>
 
             <div class="payment-methods-grid">
                 <div class="pay-card">
                     <strong>📱 BLIK na telefon:</strong><br>
                     <span>+48 733 035 301</span><br>
-                    <small style="color: #8b949e;">W tytule wpisz powyższy ID</small>
+                    <small style="color: #8b949e;">W tytule wpisz wygenerowany ID</small>
                 </div>
                 <div class="pay-card">
                     <strong>🅿️ PayPal:</strong><br>
                     <span>ewabu74@gmail.com</span><br>
-                    <small style="color: #8b949e;">W tytule wpisz powyższy ID</small>
+                    <small style="color: #8b949e;">W tytule wpisz wygenerowany ID</small>
                 </div>
             </div>
         </div>
@@ -508,10 +508,18 @@
     const clearBtn = document.getElementById('btnClearAll');
     const scrappersFilter = document.getElementById('scrappersFilter');
 
+    const MAX_REGIONS = 3;
+    const PRICE_PLN_PER_REGION = 20;
+    const PRICE_EUR_PER_REGION = 5;
+
     let selectedRegions = new Set();
     let currentAlertId = '';
     let currentStep = 'need_pin';
     let userHasSeenOrderSection = false;
+
+    const depositTotalPln = document.getElementById('depositTotalPln');
+    const depositTotalEur = document.getElementById('depositTotalEur');
+    const depositSummaryText = document.getElementById('depositSummaryText');
 
     function generateOrderAlertId() {
         const d = new Date();
@@ -539,8 +547,16 @@
             chk.value = regionName;
 
             chk.addEventListener('change', (e) => {
-                if (e.target.checked) selectedRegions.add(regionName);
-                else selectedRegions.delete(regionName);
+                if (e.target.checked) {
+                    if (selectedRegions.size >= MAX_REGIONS) {
+                        e.target.checked = false;
+                        alert(`Maksymalna liczba rejonów w jednym zapytaniu wynosi ${MAX_REGIONS}. Aby wycenić większą liczbę rejonów, prosimy o kontakt telefoniczny.`);
+                        return;
+                    }
+                    selectedRegions.add(regionName);
+                } else {
+                    selectedRegions.delete(regionName);
+                }
                 updateUI();
             });
 
@@ -562,13 +578,20 @@
                 depositIdText.textContent = currentAlertId;
             }
 
+            const totalPln = count * PRICE_PLN_PER_REGION;
+            const totalEur = count * PRICE_EUR_PER_REGION;
+
+            if (depositTotalPln) depositTotalPln.textContent = totalPln;
+            if (depositTotalEur) depositTotalEur.textContent = totalEur;
+            if (depositSummaryText) depositSummaryText.textContent = `${totalPln} PLN (${totalEur} €)`;
+
             orderSection.style.display = 'block';
             orderBtn.disabled = false;
             
             if (currentStep === 'need_pin') {
-                orderBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rejonów)`;
+                orderBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rejonów - ${totalPln} zł)`;
             } else {
-                orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${count} rejonów)`;
+                orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${count} rejonów - ${totalPln} zł)`;
             }
 
             if (!userHasSeenOrderSection) {
@@ -629,8 +652,11 @@
         }
 
         const phoneVal = phoneInput.value.trim();
+        const totalPln = selectedRegions.size * PRICE_PLN_PER_REGION;
+        const totalEur = selectedRegions.size * PRICE_EUR_PER_REGION;
+
         if (!phoneVal || phoneVal.length < 7) {
-            alert("Proszę podać poprawny numer telefonu, abyśmy mogli powiązać wpłatę BLIK 40 zł.");
+            alert(`Proszę podać poprawny numer telefonu, abyśmy mogli powiązać wpłatę zadatku ${totalPln} zł.`);
             phoneInput.focus();
             return;
         }
@@ -692,7 +718,7 @@
                         wasteType: wasteType,
                         regionsCount: regionsArray.length,
                         regions: regionsArray,
-                        notes: `Zadatek 40 zł. Tel wpłaty: ${phoneVal}. Tytuł: ${currentAlertId}. Czas: do 72h.`
+                        notes: `Zadatek ${totalPln} PLN (${totalEur} EUR) za ${regionsArray.length} rejonów. Tel wpłaty: ${phoneVal}. Tytuł: ${currentAlertId}. Czas: do 72h.`
                     })
                 });
 
@@ -709,7 +735,10 @@
                 alert(`✅ E-mail zweryfikowany pomyślnie!
 Zgłoszenie (${currentAlertId}) zostało zapisane.
 
-Po zaksięgowaniu wpłaty 40 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
+Wybrano rejonów: ${regionsArray.length}.
+Kwota zadatku do wpłaty: ${totalPln} PLN (lub ${totalEur} €).
+
+Po zaksięgowaniu zadatku (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
 Gotowy raport z wyceną prześlemy na adres: ${email} w czasie do 72 godzin.`);
 
                 selectedRegions.clear();
