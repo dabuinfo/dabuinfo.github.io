@@ -17,7 +17,7 @@
         html, body, #map {
             width: 100%; height: 100%; margin: 0; padding: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden; background: #0b0f19;
+            overflow: hidden; background: #121212;
         }
 
         .top-nav-panel {
@@ -44,7 +44,7 @@
         .select-week {
             width: 100%; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #f3f4f6;
             background: #242424; border: 1px solid #404040; border-radius: 8px; outline: none;
-            margin-bottom: 8px; cursor: pointer; max-height: 200px;
+            margin-bottom: 8px; cursor: pointer;
         }
 
         .days-filter-row {
@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        <!-- Lista tygodni 1-53 z zakresem Poniedziałek - Sobota -->
+        <!-- Lista generowana automatycznie wyłącznie dla tygodni posiadających dane -->
         <select id="weekSelect" class="select-week" onchange="zmienTydzien()"></select>
 
         <div class="days-filter-row">
@@ -202,7 +202,7 @@
         const DNI_PL = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
         const aktywneDni = { 0: true, 1: true, 2: true, 3: true, 4: true, 5: true };
 
-        // Generator opcji tygodni od 1 do 53 (poniedziałek - sobota)
+        // Generowanie opcji TYLKO DLA TYGODNI POSIADAJĄCYCH DANE
         function generujOpcjeTygodni() {
             const selectEl = document.getElementById('weekSelect');
             selectEl.innerHTML = '';
@@ -218,10 +218,12 @@
                 return ISOweekStart;
             }
 
-            for (let w = 1; w <= 53; w++) {
+            const dostepneTygodnie = Object.keys(HARMONOGRAM_TYGODNI).map(Number).sort((a,b) => a - b);
+
+            dostepneTygodnie.forEach(w => {
                 const monday = getMondayOfISOWeek(w, 2026);
                 const saturday = new Date(monday);
-                saturday.setDate(monday.getDate() + 5); // +5 dni = Sobota
+                saturday.setDate(monday.getDate() + 5);
 
                 const mD = String(monday.getDate()).padStart(2, '0');
                 const mM = String(monday.getMonth() + 1).padStart(2, '0');
@@ -231,14 +233,15 @@
 
                 const opt = document.createElement('option');
                 opt.value = w;
-                opt.textContent = `Tydzień ${String(w).padStart(2, '0')} (${mD}.${mM} - ${sD}.${sM}.${sY})`;
+                opt.textContent = `Tydzień ${String(w).padStart(2, '0')} (${mD}.${mM} - ${sD}.${sM}.${sY}) — ${HARMONOGRAM_TYGODNI[w].length} rejonów`;
                 if (w === 39) opt.selected = true;
                 selectEl.appendChild(opt);
-            }
+            });
         }
 
         generujOpcjeTygodni();
 
+        // Inicjalizacja mapy Leaflet
         const map = L.map('map', {
             center: [50.8, 9.5],
             zoom: 6.5, zoomControl: false, fullscreenControl: false
@@ -250,20 +253,21 @@
             try { L.control.fullscreen({ position: 'bottomright' }).addTo(map); } catch(e) {}
         }
 
-        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: 'CartoDB Dark', maxZoom: 19 }).addTo(map);
-        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 });
+        // Stabilne podkłady bez wymogu kluczy API
+        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
         const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap', maxZoom: 19 });
 
         L.control.layers({
-            "Ciemna PRO (Dabu-Info)": darkLayer,
             "Kolorowa (Ulice Esri)": streetLayer,
+            "Standardowa (OpenStreetMap)": osmLayer,
             "Topograficzna (Teren)": topoLayer
         }, null, { position: 'bottomright' }).addTo(map);
 
         const clusterGroup = L.markerClusterGroup({ maxClusterRadius: 30, disableClusteringAtZoom: 9, chunkedLoading: true });
         map.addLayer(clusterGroup);
 
-        let aktualnyTydzien = 39;
+        let aktualnyTydzien = parseInt(document.getElementById('weekSelect').value) || 39;
 
         function odswiezMape() {
             clusterGroup.clearLayers();
