@@ -168,7 +168,7 @@
             flex-shrink: 0;
         }
 
-        /* SEKCJA ZAMÓWIENIA WSTAWIONA NATURALNIE POD LISTĄ */
+        /* SEKCJA ZAMÓWIENIA */
         .cart-summary { 
             display: none; 
             position: relative; 
@@ -202,6 +202,30 @@
         }
         .email-field-input:focus { border-color: var(--primary-accent); }
 
+        .pin-box-container {
+            display: none;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed var(--primary-accent);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+        }
+
+        .pin-input {
+            width: 160px;
+            text-align: center;
+            letter-spacing: 6px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--primary-accent);
+            background: #0d1117;
+            color: #f1c40f;
+            outline: none;
+            margin-top: 6px;
+        }
+
         .btn-order { 
             display: block; 
             width: 100%; 
@@ -220,7 +244,6 @@
         .btn-order:active { transform: scale(0.99); }
         .btn-order:disabled { background-color: #334155; color: #8b949e; cursor: not-allowed; }
 
-        /* STOPKA ZAWSZE NATURALNIE NA SAMYM DOLE */
         footer, .site-footer, #footer, #footer-container {
             position: relative;
             margin-top: 40px;
@@ -244,9 +267,9 @@
     <div class="service-info">
         ℹ️ <b>Wybierz rejony do przygotowania oferty:</b>
         <ul>
-            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy).</li>
-            <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji.</li>
-            <li>Podaj swój adres e-mail poniżej – w odpowiedzi <b>otrzymasz gotowy raport z wyceną</b>.</li>
+            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy)[cite: 6].</li>
+            <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji[cite: 6].</li>
+            <li>Podaj swój adres e-mail poniżej – w odpowiedzi <b>otrzymasz gotowy raport z wyceną</b>[cite: 6].</li>
         </ul>
     </div>
 
@@ -254,7 +277,7 @@
     <div style="background: #1e293b; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;">
         <label style="cursor: pointer; font-weight: bold; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" id="scrappersFilter" style="accent-color: #f59e0b; width: 18px; height: 18px; cursor: pointer;"> 
-            🧲 Przygotuj raport z uwzględnieniem opcji dla złomiarzy (Schrott / E-Złom)
+            🧲 Przygotuj raport z uwzględnieniem opcji dla złomiarzy (Schrott / E-Złom)[cite: 6]
         </label>
     </div>
 
@@ -267,16 +290,32 @@
         <div id="regionsCheckboxesContainer"></div>
     </div>
 
-    <!-- SEKCJA ZAMÓWIENIA POKAZUJE SIĘ POD LISTĄ PO WYBORZE REJONU -->
+    <!-- SEKCJA ZAMÓWIENIA -->
     <div id="orderSection" class="cart-summary">
         <div style="font-size: 1rem; color: #cbd5e1; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
-            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.15rem;">0</b> z 183</span>
-            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
+            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.15rem;">0</b> z 183</span>[cite: 6]
+            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>[cite: 6]
         </div>
 
-        <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail, na który prześlemy raport z wyceną..." required>
+        <div id="emailStepBox">
+            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail, na który prześlemy kod weryfikacyjny..." required>
+        </div>
 
-        <button id="submitOrderBtn" class="btn-order">📋 Zamów raport z wyceną</button>
+        <!-- KROK 2: KOD PIN -->
+        <div id="pinStepBox" class="pin-box-container">
+            <div style="font-size: 0.9rem; color: #2ecc71; font-weight: bold;">
+                ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail.
+            </div>
+            <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
+                Sprawdź skrzynkę (także folder Spam/Oferty) i wpisz kod poniżej:
+            </div>
+            <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+                <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.82rem; text-decoration: underline;">Zmień adres e-mail</a>
+            </div>
+        </div>
+
+        <button id="submitOrderBtn" class="btn-order">📩 Wyślij kod weryfikacyjny PIN</button>
     </div>
 </div>
 
@@ -355,14 +394,18 @@
     const countDisplay = document.getElementById('selectedCount');
     const orderBtn = document.getElementById('submitOrderBtn');
     const emailInput = document.getElementById('clientEmailInput');
+    const pinBox = document.getElementById('pinStepBox');
+    const pinInput = document.getElementById('pinInput');
+    const btnChangeEmail = document.getElementById('btnChangeEmail');
     const searchInput = document.getElementById('regionSearchInput');
     const clearBtn = document.getElementById('btnClearAll');
     const scrappersFilter = document.getElementById('scrappersFilter');
 
     let selectedRegions = new Set();
+    let currentStep = 'need_pin'; // 'need_pin' lub 'verify_pin'
     let userHasSeenOrderSection = false;
 
-    // Generowanie widoku
+    // Generowanie widoku rejonów
     Object.keys(REGIONS_DATABASE).sort().forEach(land => {
         const header = document.createElement('div');
         header.className = 'land-group-header';
@@ -381,11 +424,8 @@
             chk.value = regionName;
 
             chk.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    selectedRegions.add(regionName);
-                } else {
-                    selectedRegions.delete(regionName);
-                }
+                if (e.target.checked) selectedRegions.add(regionName);
+                else selectedRegions.delete(regionName);
                 updateUI();
             });
 
@@ -404,9 +444,12 @@
         if (count > 0) {
             orderSection.style.display = 'block';
             orderBtn.disabled = false;
-            orderBtn.textContent = `📋 Zamów raport z wyceną (${count} rejonów)`;
+            if (currentStep === 'need_pin') {
+                orderBtn.textContent = `📩 Wyślij kod weryfikacyjny PIN (${count} rejonów)`;
+            } else {
+                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${count} rejonów)`;
+            }
 
-            // Płynne przewinięcie do formularza przy pierwszym zaznaczeniu
             if (!userHasSeenOrderSection) {
                 userHasSeenOrderSection = true;
                 setTimeout(() => {
@@ -422,8 +465,7 @@
     searchInput.addEventListener('input', function(e) {
         const q = e.target.value.toLowerCase().trim();
         document.querySelectorAll('.region-label').forEach(lbl => {
-            const txt = lbl.textContent.toLowerCase();
-            lbl.style.display = txt.includes(q) ? 'flex' : 'none';
+            lbl.style.display = lbl.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
         });
 
         document.querySelectorAll('.land-group-header').forEach(hdr => {
@@ -445,60 +487,119 @@
         updateUI();
     });
 
+    btnChangeEmail.addEventListener('click', () => {
+        currentStep = 'need_pin';
+        pinBox.style.display = 'none';
+        emailInput.disabled = false;
+        pinInput.value = '';
+        updateUI();
+    });
+
+    // Obsługa przycisku (Wysłanie PINu lub Złożenie zamówienia)
     orderBtn.addEventListener('click', async () => {
         if (selectedRegions.size === 0) return;
 
-        const email = emailInput.value.trim();
+        const email = emailInput.value.trim().toLowerCase();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
-            alert("Proszę wpisać poprawny adres e-mail, abyśmy mogli przesłać raport z wyceną.");
+            alert("Proszę wpisać poprawny adres e-mail.");
             emailInput.focus();
             return;
         }
 
-        const regionsArray = Array.from(selectedRegions);
-        const dzisiaj = new Date();
-        const rrrr = dzisiaj.getFullYear();
-        const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-        const dd = String(dzisiaj.getDate()).padStart(2, '0');
-        const alertId = `WYCENA-${rrrr}${mm}${dd}-${Math.floor(1000 + Math.random() * 9000)}`;
+        // KROK 1: WYSYŁKA PIN-u
+        if (currentStep === 'need_pin') {
+            orderBtn.disabled = true;
+            orderBtn.textContent = "⏳ Wysyłanie kodu PIN...";
 
-        const wasteType = scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny";
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'sendPin', clientEmail: email })
+                });
 
-        orderBtn.disabled = true;
-        const originalText = orderBtn.textContent;
-        orderBtn.textContent = "⏳ Wysyłanie zapytania o raport...";
+                currentStep = 'verify_pin';
+                emailInput.disabled = true;
+                pinBox.style.display = 'block';
+                pinInput.focus();
+                orderBtn.disabled = false;
+                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
 
-        const payload = {
-            alertId: alertId,
-            clientEmail: email,
-            year: "Najbliższe dostępne (skraper)",
-            wasteType: wasteType,
-            regionsCount: regionsArray.length,
-            regions: regionsArray,
-            notes: "Zlecenie przygotowania raportu z wyceną dla najbliższych terminów."
-        };
+            } catch (err) {
+                console.error(err);
+                alert("Wystąpił problem z wysyłką kodu. Spróbuj ponownie za chwilę.");
+                orderBtn.disabled = false;
+                updateUI();
+            }
+            return;
+        }
 
-        try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            });
+        // KROK 2: WERYFIKACJA PIN-u I ZAPIS
+        if (currentStep === 'verify_pin') {
+            const pinVal = pinInput.value.trim();
+            if (pinVal.length !== 4) {
+                alert("Wpisz poprawny 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
+                pinInput.focus();
+                return;
+            }
 
-            alert(`✅ Dziękujemy! Zapytanie (${alertId}) zostało przyjęte.\nPrzygotujemy raport z wyceną dla najbliższych terminów i prześlemy na adres: ${email}`);
+            const regionsArray = Array.from(selectedRegions);
+            const dzisiaj = new Date();
+            const rrrr = dzisiaj.getFullYear();
+            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dzisiaj.getDate()).padStart(2, '0');
+            const alertId = `WYCENA-${rrrr}${mm}${dd}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            selectedRegions.clear();
-            emailInput.value = '';
-            document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
-            updateUI();
+            orderBtn.disabled = true;
+            orderBtn.textContent = "⏳ Weryfikacja kodu i zapis...";
 
-        } catch (err) {
-            console.error("Błąd wysyłki:", err);
-            alert("Wystąpił problem z połączeniem. Spróbuj ponownie za chwilę.");
-            orderBtn.disabled = false;
-            orderBtn.textContent = originalText;
+            try {
+                // Apps Script odsyła status weryfikacji
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'verifyAndSubmit',
+                        alertId: alertId,
+                        clientEmail: email,
+                        pin: pinVal,
+                        year: "Najbliższe dostępne (skraper)",
+                        wasteType: scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny",
+                        regionsCount: regionsArray.length,
+                        regions: regionsArray,
+                        notes: "Zlecenie zweryfikowane kodem PIN."
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "invalid_pin") {
+                    alert("❌ Wprowadzony kod PIN jest nieprawidłowy lub wygasł. Sprawdź e-mail i spróbuj ponownie.");
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
+                    pinInput.focus();
+                    return;
+                }
+
+                alert(`✅ Adres e-mail potwierdzony pomyślnie!\nZgłoszenie (${alertId}) zostało przyjęte. Raport z wyceną wyślemy na adres: ${email}`);
+
+                // Reset po udanym zamówieniu
+                selectedRegions.clear();
+                emailInput.value = '';
+                emailInput.disabled = false;
+                pinInput.value = '';
+                pinBox.style.display = 'none';
+                currentStep = 'need_pin';
+                document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
+                updateUI();
+
+            } catch (err) {
+                console.error(err);
+                alert("Wystąpił problem z połączeniem. Spróbuj ponownie.");
+                orderBtn.disabled = false;
+                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
+            }
         }
     });
 })();
