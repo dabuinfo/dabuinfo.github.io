@@ -182,6 +182,7 @@
             flex-shrink: 0;
         }
 
+        /* SEKCJA ZAMÓWIENIA */
         .cart-summary { 
             display: none; 
             position: relative; 
@@ -260,6 +261,30 @@
         }
         .client-field-input:focus { border-color: var(--primary-accent); }
 
+        .pin-box-container {
+            display: none;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed var(--primary-accent);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 14px;
+        }
+
+        .pin-input {
+            width: 160px;
+            text-align: center;
+            letter-spacing: 6px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--primary-accent);
+            background: #0d1117;
+            color: #f1c40f;
+            outline: none;
+            margin-top: 6px;
+        }
+
         .btn-order { 
             display: block; 
             width: 100%; 
@@ -331,7 +356,7 @@
     <div id="orderSection" class="cart-summary">
         <div style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
             <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.2rem;">0</b> z 183</span>
-            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy wystawek</span>
+            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
         </div>
 
         <div style="font-size: 0.84rem; color: #f1c40f; margin-bottom: 16px;">
@@ -368,19 +393,33 @@
 
         <div>
             <label style="display:block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
-                Twój adres e-mail (na który prześlemy gotowy raport):
+                Twój adres e-mail (do weryfikacji kodem PIN i odbioru wyceny):
             </label>
             <input type="email" id="clientEmailInput" class="client-field-input" placeholder="np. twoj-email@gmail.com" required>
         </div>
 
         <div>
             <label style="display:block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
-                Imię i nazwisko nadawcy przelewu BLIK / PayPal (do potwierdzenia wpłaty 20 zł):
+                Imię i nazwisko nadawcy przelewu BLIK / PayPal (do weryfikacji wpłaty 20 zł):
             </label>
             <input type="text" id="clientSenderNameInput" class="client-field-input" placeholder="np. Jan Kowalski" required>
         </div>
 
-        <button id="submitOrderBtn" class="btn-order">📋 Zleć przygotowanie raportu z wyceną</button>
+        <!-- POLE WPROWADZENIA KODU PIN -->
+        <div id="pinStepBox" class="pin-box-container">
+            <div style="font-size: 0.9rem; color: #2ecc71; font-weight: bold;">
+                ✉️ Wysłaliśmy 4-cyfrowy kod PIN na podany adres e-mail!
+            </div>
+            <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
+                Sprawdź skrzynkę (również folder Spam/Oferty) i wpisz kod poniżej:
+            </div>
+            <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+                <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.82rem; text-decoration: underline;">Zmień adres e-mail</a>
+            </div>
+        </div>
+
+        <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN na e-mail</button>
     </div>
 </div>
 
@@ -461,12 +500,16 @@
     const emailInput = document.getElementById('clientEmailInput');
     const senderNameInput = document.getElementById('clientSenderNameInput');
     const depositIdText = document.getElementById('depositIdText');
+    const pinBox = document.getElementById('pinStepBox');
+    const pinInput = document.getElementById('pinInput');
+    const btnChangeEmail = document.getElementById('btnChangeEmail');
     const searchInput = document.getElementById('regionSearchInput');
     const clearBtn = document.getElementById('btnClearAll');
     const scrappersFilter = document.getElementById('scrappersFilter');
 
     let selectedRegions = new Set();
     let currentAlertId = '';
+    let currentStep = 'need_pin';
     let userHasSeenOrderSection = false;
 
     function generateOrderAlertId() {
@@ -520,7 +563,12 @@
 
             orderSection.style.display = 'block';
             orderBtn.disabled = false;
-            orderBtn.textContent = `📋 Zleć przygotowanie raportu (${count} rejonów)`;
+            
+            if (currentStep === 'need_pin') {
+                orderBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rejonów)`;
+            } else {
+                orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${count} rejonów)`;
+            }
 
             if (!userHasSeenOrderSection) {
                 userHasSeenOrderSection = true;
@@ -560,6 +608,14 @@
         updateUI();
     });
 
+    btnChangeEmail.addEventListener('click', () => {
+        currentStep = 'need_pin';
+        pinBox.style.display = 'none';
+        emailInput.disabled = false;
+        pinInput.value = '';
+        updateUI();
+    });
+
     orderBtn.addEventListener('click', async () => {
         if (selectedRegions.size === 0) return;
 
@@ -573,53 +629,105 @@
 
         const senderName = senderNameInput.value.trim();
         if (!senderName || senderName.length < 3) {
-            alert("Proszę podać imię i nazwisko nadawcy wpłaty BLIK lub PayPal, abyśmy mogli zidentyfikować zadatek 20 zł.");
+            alert("Proszę podać imię i nazwisko nadawcy wpłaty BLIK lub PayPal, abyśmy mogli powiązać wpłatę 20 zł.");
             senderNameInput.focus();
             return;
         }
 
-        const regionsArray = Array.from(selectedRegions);
-        const wasteType = scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny";
+        // KROK 1: WYSYŁKA PIN
+        if (currentStep === 'need_pin') {
+            orderBtn.disabled = true;
+            orderBtn.textContent = "⏳ Wysyłanie kodu PIN na e-mail...";
 
-        orderBtn.disabled = true;
-        const originalText = orderBtn.textContent;
-        orderBtn.textContent = "⏳ Rejestrowanie zlecenia w systemie...";
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'sendPin', clientEmail: email })
+                });
 
-        const payload = {
-            alertId: currentAlertId,
-            clientEmail: email,
-            year: "Najbliższe dostępne (skraper)",
-            wasteType: wasteType,
-            regionsCount: regionsArray.length,
-            regions: regionsArray,
-            notes: `Zadatek 20 zł. Nadawca wpłaty: ${senderName}. Tytuł: ${currentAlertId}. Czas: do 72h.`
-        };
+                currentStep = 'verify_pin';
+                emailInput.disabled = true;
+                pinBox.style.display = 'block';
+                pinInput.focus();
+                orderBtn.disabled = false;
+                orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${selectedRegions.size} rejonów)`;
 
-        try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            });
+            } catch (err) {
+                console.error(err);
+                alert("Wystąpił problem z wysyłką kodu. Upewnij się, że skrypt Google Apps Script jest poprawnie wdrożony.");
+                orderBtn.disabled = false;
+                updateUI();
+            }
+            return;
+        }
 
-            alert(`✅ Zgłoszenie (${currentAlertId}) zostało zapisane!
+        // KROK 2: WERYFIKACJA PIN I ZAPIS ZLECENIA W ARKUSZU
+        if (currentStep === 'verify_pin') {
+            const pinVal = pinInput.value.trim();
+            if (pinVal.length !== 4) {
+                alert("Wpisz poprawny 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
+                pinInput.focus();
+                return;
+            }
 
-Po zaksięgowaniu zadatku 20 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
-Gotowe zestawienie prześlemy na adres: ${email} w czasie do 72 godzin.`);
+            const regionsArray = Array.from(selectedRegions);
+            const wasteType = scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny";
 
-            selectedRegions.clear();
-            emailInput.value = '';
-            senderNameInput.value = '';
-            currentAlertId = '';
-            document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
-            updateUI();
+            orderBtn.disabled = true;
+            orderBtn.textContent = "⏳ Weryfikacja PIN i zapis w arkuszu...";
 
-        } catch (err) {
-            console.error("Błąd wysyłki:", err);
-            alert("Wystąpił problem z połączeniem. Spróbuj ponownie za chwilę.");
-            orderBtn.disabled = false;
-            orderBtn.textContent = originalText;
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'verifyAndSubmit',
+                        alertId: currentAlertId,
+                        clientEmail: email,
+                        senderName: senderName,
+                        pin: pinVal,
+                        year: "Najbliższe dostępne (skraper)",
+                        wasteType: wasteType,
+                        regionsCount: regionsArray.length,
+                        regions: regionsArray,
+                        notes: `Zadatek 20 zł. Tytuł wpłaty: ${currentAlertId}. Czas: do 72h.`
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "invalid_pin") {
+                    alert("❌ Wprowadzony kod PIN jest nieprawidłowy lub wygasł. Sprawdź wiadomość na poczcie i spróbuj ponownie.");
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${selectedRegions.size} rejonów)`;
+                    pinInput.focus();
+                    return;
+                }
+
+                alert(`✅ E-mail zweryfikowany pomyślnie!
+Zgłoszenie (${currentAlertId}) zostało zapisane.
+
+Po zaksięgowaniu wpłaty 20 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
+Gotowy raport z wyceną prześlemy na adres: ${email} w czasie do 72 godzin.`);
+
+                selectedRegions.clear();
+                emailInput.value = '';
+                emailInput.disabled = false;
+                senderNameInput.value = '';
+                pinInput.value = '';
+                pinBox.style.display = 'none';
+                currentStep = 'need_pin';
+                currentAlertId = '';
+                document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
+                updateUI();
+
+            } catch (err) {
+                console.error(err);
+                alert("Wystąpił problem z połączeniem. Spróbuj ponownie za chwilę.");
+                orderBtn.disabled = false;
+                orderBtn.textContent = `📋 2. Potwierdź PIN i zleć raport (${selectedRegions.size} rejonów)`;
+            }
         }
     });
 })();
