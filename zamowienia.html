@@ -156,6 +156,17 @@
             <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
         </div>
 
+        <div>
+            <label style="display:block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
+                Numer telefonu (oddzwonimy w celu potwierdzenia rezerwacji):
+            </label>
+            <input type="tel" id="clientPhoneInput" class="email-field-input" placeholder="np. +48 733 035 301 lub 500 123 456" required>
+        </div>
+
+        <div style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.86rem; color: #cbd5e1;">
+            📞 <b>Brak opłaty zadatku:</b> Rezerwacja terminów rocznych jest bezpłatna. Przed publikacją harmonogramu skontaktujemy się z Tobą telefonicznie w celu ostatecznego potwierdzenia.
+        </div>
+
         <!-- BLOK WPROWADZENIA KODU PIN -->
         <div id="pinStepBox" class="pin-box-container">
             <div style="font-size: 0.9rem; color: #3498db; font-weight: bold;">
@@ -228,6 +239,7 @@
         const countDisplay = document.getElementById('selectedCount');
         const orderBtn = document.getElementById('submitOrderBtn');
         const emailInput = document.getElementById('clientEmailInput');
+        const phoneInput = document.getElementById('clientPhoneInput');
         const pinBox = document.getElementById('pinStepBox');
         const pinInput = document.getElementById('pinInput');
         const btnChangeEmail = document.getElementById('btnChangeEmail');
@@ -380,6 +392,13 @@
                 return;
             }
 
+            const clientPhone = (phoneInput.value || '').trim();
+            if (!clientPhone || clientPhone.length < 7) {
+                alert("Proszę podać poprawny numer telefonu do kontaktu.");
+                phoneInput.focus();
+                return;
+            }
+
             // KROK 1: WYSYŁKA PIN-u
             if (currentStep === 'need_pin') {
                 orderBtn.disabled = true;
@@ -444,12 +463,13 @@
                     action: 'verifyAndSubmit',
                     alertId: alertId,
                     clientEmail: clientEmail,
+                    phone: clientPhone,
                     pin: pinVal,
                     year: selectedYear,
                     wasteType: selectedWasteType,
                     regionsCount: roczneItems.length,
                     regions: roczneItems,
-                    notes: `Powiadomienie o dostępności na rok ${selectedYear}.`
+                    notes: `Terminy roczne (${selectedYear}). Tel: ${clientPhone} - potwierdzić rozmową telefoniczną.`
                 };
 
                 try {
