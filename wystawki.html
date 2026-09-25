@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zamówienie najbliższych terminów - DABU-INFO</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-YQTCG26T1B');
+    </script>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    
+    <style>
+        :root {
+            --bg-body: #0d1117;
+            --bg-card: rgba(22, 27, 34, 0.9);
+            --primary-accent: #2ecc71;
+            --primary-hover: #27ae60;
+            --border-subtle: rgba(76, 161, 175, 0.25);
+            --border-highlight: #3b82f6;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+        }
+
+        html, body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0 12px;
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            top: 0 !important;
+        }
+
+        #pageWrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: 220px;
+        }
+
+        .service-info { 
+            background: rgba(66, 165, 245, 0.1); 
+            border: 1px solid #42a5f5; 
+            padding: 16px 20px; 
+            border-radius: var(--radius-md); 
+            margin: 20px 0; 
+            color: #e0e0e0; 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+        }
+        .service-info ul { margin: 6px 0 0 0; padding-left: 20px; }
+        .service-info a { color: var(--primary-accent); text-decoration: underline; font-weight: bold; }
+
+        h2.main-title {
+            color: var(--primary-accent);
+            border-bottom: 2px solid var(--primary-hover);
+            padding-bottom: 8px;
+            margin: 24px 0 16px 0;
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .regions-scroll-box { 
+            position: relative; 
+            background: rgba(10, 14, 20, 0.65); 
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-sm); 
+            padding: 12px; 
+            box-sizing: border-box; 
+            width: 100%; 
+        }
+
+        .region-search-sticky-box {
+            position: sticky;
+            top: 0px;
+            z-index: 6;
+            background: #0f172a;
+            padding: 10px;
+            margin: -12px -12px 10px -12px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .region-search-input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.9);
+            color: #f0f6fc;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .region-search-input:focus { border-color: var(--primary-accent); }
+
+        .btn-clear {
+            color: #38bdf8;
+            background: transparent;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-clear:hover { background: rgba(56, 189, 248, 0.15); color: #fff; }
+
+        .land-group-header {
+            background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
+            border-left: 4px solid var(--border-highlight);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 9px 12px;
+            margin: 16px -12px 6px -12px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .land-group-header:first-of-type { margin-top: 0; }
+
+        .regions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .region-label { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            background: #1e293b;
+            padding: 10px 12px; 
+            border-radius: var(--radius-sm);
+            cursor: pointer; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            color: #e2e8f0; 
+            font-size: 0.92rem; 
+            transition: background 0.15s, border-color 0.15s; 
+        }
+        .region-label:hover { background: #24344d; border-color: rgba(46, 204, 113, 0.4); }
+        
+        .region-label input[type="checkbox"] { 
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-accent);
+            flex-shrink: 0;
+        }
+
+        .cart-summary { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: #161b22; 
+            border-top: 2px solid var(--primary-accent); 
+            padding: 16px; 
+            box-sizing: border-box; 
+            z-index: 1000; 
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.6); 
+        }
+
+        .email-field-input { 
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 12px 14px; 
+            border-radius: var(--radius-sm); 
+            border: 1px solid #444; 
+            background: #0d1117; 
+            color: #fff; 
+            font-size: 0.95rem; 
+            outline: none; 
+            margin-bottom: 10px;
+        }
+        .email-field-input:focus { border-color: var(--primary-accent); }
+
+        .btn-order { 
+            display: block; 
+            width: 100%; 
+            background-color: var(--primary-accent); 
+            color: #0d1117; 
+            border: none; 
+            padding: 15px; 
+            font-weight: 800; 
+            font-size: 1.05rem;
+            border-radius: var(--radius-sm); 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: background-color 0.2s, transform 0.1s; 
+        }
+        .btn-order:hover:not(:disabled) { background-color: var(--primary-hover); color: #fff; }
+        .btn-order:active { transform: scale(0.99); }
+        .btn-order:disabled { background-color: #334155; color: #8b949e; cursor: not-allowed; }
+
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0px !important; }
+        .skiptranslate { display: none !important; }
+
+        @media (max-width: 600px) {
+            .regions-grid { grid-template-columns: 1fr; }
+            #pageWrapper { padding-bottom: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="pageWrapper">
+    <h2 class="main-title">📍 Przygotowanie najbliższych terminów zbiórek</h2>
+    
+    <div class="service-info">
+        ℹ️ <b>Wybierz rejony do przygotowania zestawu:</b>
+        <ul>
+            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> podzielonych na Landy).</li>
+            <li>System automatycznie wygeneruje zlecenie na przygotowanie <b>najbliższych aktualnych terminów</b> pozyskanych przez nasz skraper.</li>
+            <li>Podaj swój adres e-mail poniżej – otrzymasz zestawienie terminów bezpośrednio na skrzynkę pocztową.</li>
+        </ul>
+    </div>
+
+    <!-- PREFERENCJE ODPADÓW -->
+    <div style="background: #1e293b; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;">
+        <label style="cursor: pointer; font-weight: bold; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="scrappersFilter" style="accent-color: #f59e0b; width: 18px; height: 18px; cursor: pointer;"> 
+            🧲 Przygotuj zestawienie z uwzględnieniem opcji dla złomiarzy (Schrott / E-Złom)
+        </label>
+    </div>
+
+    <div class="regions-scroll-box">
+        <div class="region-search-sticky-box">
+            <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonu (np. Köln, Calw, Bonn, Hannover)..." autocomplete="off">
+            <button type="button" class="btn-clear" id="btnClearAll">Odznacz wszystko</button>
+        </div>
+
+        <div id="regionsCheckboxesContainer"></div>
+    </div>
+</div>
+
+<div class="cart-summary">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between;">
+            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.1rem;">0</b> z 183</span>
+            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
+        </div>
+
+        <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail do przesłania terminów..." required>
+
+        <button id="submitOrderBtn" class="btn-order" disabled>Wybierz rejon, aby wysłać zgłoszenie</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7r_MzcGJSfQbnBFM5jNeQLRYFXRHe4T5XoX466dvzMmmnE4LufptzAgB0IC7lHLHJCA/exec";
+
+    // Pełna baza 183 rejonów w podziale na 11 Landów
+    const REGIONS_DATABASE = {
+        "Baden-Württemberg": [
+            "Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Kreis", 
+            "Karlsruhe Stadt", "Konstanz", "Ortenau", "Rhein-Neckar-Kreis", "Tuttlingen", "Zollernalb"
+        ],
+        "Bayern": [
+            "Amberg", "Augsburg Kreis", "Augsburg Stadt", "Bamberg", "Bayreuth", 
+            "Fürth", "Gräfelfing", "Kirchheim", "Kulmbach", "Monachium-Południowy Wschód", 
+            "Neustadt a.d. Waldnaab", "Regensburg", "Straubing-Bogen"
+        ],
+        "Berlin": [
+            "Berlin"
+        ],
+        "Brandenburg": [
+            "Barnim", "Elbe-Elster", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"
+        ],
+        "Hessen": [
+            "Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebergemünd", "Eppstein", 
+            "Eschwege", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", 
+            "Fulda", "Gelnhausen", "Giessen", "Giessen Stadt", "Gross-Gerau", 
+            "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Hofheim am Taunus", 
+            "Jossgrund", "Kelkheim am Taunus", "Königstein (Taunus)", "Liederbach", "Limburg-Weilburg", 
+            "Linsengericht", "Nidderau", "Oberursel (Taunus)", "Rheingau-Taunus", "Rodenbach", 
+            "Ronneburg", "Schlüchtern", "Schwalbach", "Sinntal", "Walldorf-Mörfelden", 
+            "Wehrheim", "Weilrod", "Werra-Meissner", "Wiesbaden-Naurod"
+        ],
+        "Niedersachsen": [
+            "Braunschweig", "Diepholz", "Emsland", "Gifhorn", "Göttingen", 
+            "Hannover", "Harburg", "Heidekreis", "Holzminden", "Lüneburg", 
+            "Osnabrück", "Stade", "Wolfsburg"
+        ],
+        "Nordrhein-Westfalen": [
+            "Aldenhoven", "Alpen", "Altena", "Bad Münstereifel", "Balve", 
+            "Bedburg", "Bedburg-Hau", "Blankenheim", "Bonn", "Breckerfeld", 
+            "Brühl", "Dahlem", "Dormagen", "Dortmund", "Dülmen", 
+            "Düsseldorf", "Emmerich am Rhein", "Ennepetal", "Erftstadt", "Erkrath", 
+            "Euskirchen", "Geilenkirchen", "Geldern", "Goch", "Grefrath", 
+            "Grevenbroich", "Haan", "Heiligenhaus", "Heinsberg", "Hellenthal", 
+            "Hückelhoven", "Hürth", "Iserlohn", "Issum", "Jüchen", 
+            "Jülich", "Kaarst", "Kall", "Kamp-Lintfort", "Kerken", 
+            "Kevelaer", "Korschenbroich", "Krefeld", "Köln", "Leverkusen", 
+            "Mechernich", "Meerbusch", "Menden", "Merzenich", "Monheim am Rhein", 
+            "Münster", "Nachrodt-Wiblingwerde", "Nettetal", "Neukirchen-Vluyn", "Neuss", 
+            "Oberberg", "Olpe", "Plettenberg", "Pulheim", "Ratingen", 
+            "Rees", "Rhein-Sieg", "Rheinisch-Bergischer", "Rheurdt", "Rommerskirchen", 
+            "Schleiden", "Selfkant", "Solingen", "Sonsbeck", "Sprockhövel", 
+            "Straelen", "Tönisvorst", "Uedem", "Viersen", "Voerde", 
+            "Weeze", "Weilerswist", "Werdohl", "Wesseling", "Wuppertal", 
+            "Wülfrath", "Xanten", "Zülpich", "Übach-Palenberg"
+        ],
+        "Rheinland-Pfalz": [
+            "Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Cochem-Zell", 
+            "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier-Saarburg", "Trier-Stadt", "Vulkaneifel", 
+            "Westerwald"
+        ],
+        "Sachsen": [
+            "Leipzig", "Nordsachsen"
+        ],
+        "Sachsen-Anhalt": [
+            "Altmarkkreis-Salzwedel", "Burgenland"
+        ],
+        "Schleswig-Holstein": [
+            "Lübeck", "Rendsburg-Eckernförde"
+        ]
+    };
+
+    const container = document.getElementById('regionsCheckboxesContainer');
+    const countDisplay = document.getElementById('selectedCount');
+    const orderBtn = document.getElementById('submitOrderBtn');
+    const emailInput = document.getElementById('clientEmailInput');
+    const searchInput = document.getElementById('regionSearchInput');
+    const clearBtn = document.getElementById('btnClearAll');
+    const scrappersFilter = document.getElementById('scrappersFilter');
+
+    let selectedRegions = new Set();
+
+    // Generowanie widoku pogrupowanego w Landy
+    Object.keys(REGIONS_DATABASE).sort().forEach(land => {
+        const header = document.createElement('div');
+        header.className = 'land-group-header';
+        header.innerHTML = `<span>🏛️ ${land}</span><span style="font-size: 0.78rem; color: #93c5fd;">${REGIONS_DATABASE[land].length} rejonów</span>`;
+        container.appendChild(header);
+
+        const grid = document.createElement('div');
+        grid.className = 'regions-grid';
+
+        REGIONS_DATABASE[land].sort().forEach(regionName => {
+            const label = document.createElement('label');
+            label.className = 'region-label';
+
+            const chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.value = regionName;
+
+            chk.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    selectedRegions.add(regionName);
+                } else {
+                    selectedRegions.delete(regionName);
+                }
+                updateUI();
+            });
+
+            label.appendChild(chk);
+            label.appendChild(document.createTextNode(regionName));
+            grid.appendChild(label);
+        });
+
+        container.appendChild(grid);
+    });
+
+    function updateUI() {
+        const count = selectedRegions.size;
+        countDisplay.textContent = count;
+
+        if (count > 0) {
+            orderBtn.disabled = false;
+            orderBtn.textContent = `🚀 Przygotuj najbliższe terminy (${count})`;
+        } else {
+            orderBtn.disabled = true;
+            orderBtn.textContent = "Wybierz rejon, aby wysłać zgłoszenie";
+        }
+    }
+
+    // Wyszukiwarka
+    searchInput.addEventListener('input', function(e) {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.region-label').forEach(lbl => {
+            const txt = lbl.textContent.toLowerCase();
+            lbl.style.display = txt.includes(q) ? 'flex' : 'none';
+        });
+
+        document.querySelectorAll('.land-group-header').forEach(hdr => {
+            const grid = hdr.nextElementSibling;
+            if (grid && grid.classList.contains('regions-grid')) {
+                const hasVisible = Array.from(grid.querySelectorAll('.region-label')).some(l => l.style.display !== 'none');
+                hdr.style.display = hasVisible ? 'flex' : 'none';
+                grid.style.display = hasVisible ? 'grid' : 'none';
+            }
+        });
+    });
+
+    // Odznacz wszystko
+    clearBtn.addEventListener('click', () => {
+        selectedRegions.clear();
+        document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
+        searchInput.value = '';
+        document.querySelectorAll('.region-label').forEach(l => l.style.display = 'flex');
+        document.querySelectorAll('.land-group-header, .regions-grid').forEach(el => el.style.display = '');
+        updateUI();
+    });
+
+    // Wysłanie zapytania
+    orderBtn.addEventListener('click', async () => {
+        if (selectedRegions.size === 0) return;
+
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            alert("Proszę wpisać poprawny adres e-mail, abyśmy mogli przesłać przygotowane terminy.");
+            emailInput.focus();
+            return;
+        }
+
+        const regionsArray = Array.from(selectedRegions);
+        const dzisiaj = new Date();
+        const rrrr = dzisiaj.getFullYear();
+        const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+        const dd = String(dzisiaj.getDate()).padStart(2, '0');
+        const alertId = `TERM-${rrrr}${mm}${dd}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        const wasteType = scrappersFilter.checked ? "Najbliższe terminy: Złom / Schrott" : "Najbliższe terminy: Standard / Pełne";
+
+        orderBtn.disabled = true;
+        const originalText = orderBtn.textContent;
+        orderBtn.textContent = "⏳ Wysyłanie zapytania do systemu...";
+
+        const payload = {
+            alertId: alertId,
+            clientEmail: email,
+            year: "Najbliższe dostępne (skraper)",
+            wasteType: wasteType,
+            regionsCount: regionsArray.length,
+            regions: regionsArray,
+            notes: "Zlecenie przygotowania najbliższych terminów bez ograniczenia czasowego."
+        };
+
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+
+            alert(`✅ Dziękujemy! Zgłoszenie (${alertId}) zostało przyjęte.\nPrzygotujemy najbliższe terminy ze skrapera i prześlemy na adres: ${email}`);
+
+            // Reset
+            selectedRegions.clear();
+            emailInput.value = '';
+            document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
+            updateUI();
+
+        } catch (err) {
+            console.error("Błąd wysyłki:", err);
+            alert("Wystąpił problem z połączeniem. Spróbuj ponownie za chwilę.");
+            orderBtn.disabled = false;
+            orderBtn.textContent = originalText;
+        }
+    });
+})();
+</script>
+
+<script src="/footer.js"></script>
+</body>
+</html>
