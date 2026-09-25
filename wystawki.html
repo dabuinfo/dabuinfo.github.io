@@ -366,11 +366,12 @@
         <!-- BLOK OPŁATY WERYFIKACYJNEJ / ZADATKU -->
         <div class="deposit-box">
             <div class="deposit-title">
-                🛡️ Opłata weryfikacyjna / Zadatek: 20 zł (lub 5 €)
+                🛡️ Opłata przygotowawcza / Zadatek: 40 PLN (lub 10 €)
             </div>
             <div class="deposit-desc">
-                Aby chronić czas naszej pracy przed fałszywymi zgłoszeniami, przygotowanie raportu z wyceną wymaga symbolicznego zadatku. 
-                <b style="color: #2ecc71;">Kwota 20 zł jest w 100% odliczana od ceny końcowej</b> przy zamówieniu pełnego zestawu terminów!
+                Opłata przygotowawcza (40 zł / 10 €) pokrywa koszty analizy skrapera i przygotowania raportu. 
+                <b style="color: #2ecc71;">W przypadku realizacji zamówienia pełnego zestawu kwota ta w 100% pomniejsza cenę końcową.</b> 
+                W przypadku rezygnacji opłata nie podlega zwrotowi (stanowi wynagrodzenie za wykonaną analizę danych).
             </div>
             
             <div style="font-size: 0.85rem; color: #93c5fd; font-weight: bold;">
@@ -400,9 +401,9 @@
 
         <div>
             <label style="display:block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
-                Imię i nazwisko nadawcy przelewu BLIK / PayPal (do weryfikacji wpłaty 20 zł):
+                Numer telefonu (do weryfikacji wpłaty BLIK / kontaktu):
             </label>
-            <input type="text" id="clientSenderNameInput" class="client-field-input" placeholder="np. Jan Kowalski" required>
+            <input type="tel" id="clientPhoneInput" class="client-field-input" placeholder="np. +48 733 035 301 lub 500 123 456" required>
         </div>
 
         <!-- POLE WPROWADZENIA KODU PIN -->
@@ -498,7 +499,7 @@
     const countDisplay = document.getElementById('selectedCount');
     const orderBtn = document.getElementById('submitOrderBtn');
     const emailInput = document.getElementById('clientEmailInput');
-    const senderNameInput = document.getElementById('clientSenderNameInput');
+    const phoneInput = document.getElementById('clientPhoneInput');
     const depositIdText = document.getElementById('depositIdText');
     const pinBox = document.getElementById('pinStepBox');
     const pinInput = document.getElementById('pinInput');
@@ -627,10 +628,10 @@
             return;
         }
 
-        const senderName = senderNameInput.value.trim();
-        if (!senderName || senderName.length < 3) {
-            alert("Proszę podać imię i nazwisko nadawcy wpłaty BLIK lub PayPal, abyśmy mogli powiązać wpłatę 20 zł.");
-            senderNameInput.focus();
+        const phoneVal = phoneInput.value.trim();
+        if (!phoneVal || phoneVal.length < 7) {
+            alert("Proszę podać poprawny numer telefonu, abyśmy mogli powiązać wpłatę BLIK 40 zł.");
+            phoneInput.focus();
             return;
         }
 
@@ -685,13 +686,13 @@
                         action: 'verifyAndSubmit',
                         alertId: currentAlertId,
                         clientEmail: email,
-                        senderName: senderName,
+                        phone: phoneVal,
                         pin: pinVal,
                         year: "Najbliższe dostępne (skraper)",
                         wasteType: wasteType,
                         regionsCount: regionsArray.length,
                         regions: regionsArray,
-                        notes: `Zadatek 20 zł. Tytuł wpłaty: ${currentAlertId}. Czas: do 72h.`
+                        notes: `Zadatek 40 zł. Tel wpłaty: ${phoneVal}. Tytuł: ${currentAlertId}. Czas: do 72h.`
                     })
                 });
 
@@ -708,13 +709,13 @@
                 alert(`✅ E-mail zweryfikowany pomyślnie!
 Zgłoszenie (${currentAlertId}) zostało zapisane.
 
-Po zaksięgowaniu wpłaty 20 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
+Po zaksięgowaniu wpłaty 40 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.
 Gotowy raport z wyceną prześlemy na adres: ${email} w czasie do 72 godzin.`);
 
                 selectedRegions.clear();
                 emailInput.value = '';
                 emailInput.disabled = false;
-                senderNameInput.value = '';
+                phoneInput.value = '';
                 pinInput.value = '';
                 pinBox.style.display = 'none';
                 currentStep = 'need_pin';
