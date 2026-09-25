@@ -91,6 +91,17 @@
         }
         .btn-day-single:hover { background: #2f2f2f; }
 
+        .info-rejon-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 3px solid #fbbf24;
+            padding: 6px 10px;
+            margin: 6px 0;
+            border-radius: 4px;
+            font-size: 11.5px;
+            color: #cbd5e1;
+            line-height: 1.35;
+        }
+
         .bottom-summary-box {
             position: absolute; bottom: 25px; left: 10px; z-index: 1000;
             background: rgba(18, 24, 38, 0.94); backdrop-filter: blur(8px);
@@ -204,7 +215,6 @@
             'rendsburg-eckernförde': 'Schleswig-Holstein'
         };
 
-        // KOMPLETNA BAZA WSPÓŁRZĘDNYCH DLA WSZYSTKICH REJONÓW Z LISTY
         const KOORDYNATY_CENTRA = {
             "aldenhoven": [50.8953, 6.2825], "alpen": [51.5750, 6.5122], "altena": [51.2981, 7.6719],
             "altenkirchen (westerwald)": [50.6868, 7.6496], "altmarkkreis-salzwedel": [52.8536, 11.1558],
@@ -234,52 +244,51 @@
             "gründau": [50.2333, 9.1333], "haan": [51.1931, 7.0131], "hannover": [52.3759, 9.7320],
             "harburg": [53.3333, 9.9667], "hasselroth": [50.1667, 9.1000], "hattersheim": [50.0706, 8.4864],
             "hattersheim am main": [50.0706, 8.4864], "heidekreis": [52.9500, 9.7500], "heidelberg": [49.3988, 8.6724],
-            "heilbronn": [49.1403, 9.2200], "heiligenehaus": [51.3267, 6.9733], "heiligenhaus": [51.3267, 6.9733],
-            "heinsberg": [51.0633, 6.0967], "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
-            "hochtaunuskreis": [50.2833, 8.5333], "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478],
-            "hückelhoven": [51.0608, 6.2208], "hürth": [50.8750, 6.8706], "iserlohn": [51.3842, 7.6833],
-            "issum": [51.5369, 6.4264], "jossgrund": [50.1833, 9.4500], "jüchen": [51.1000, 6.5000],
-            "jülich": [50.9222, 6.3606], "kaarst": [51.2269, 6.6214], "kall": [50.5408, 6.5511],
-            "kamp-lintfort": [51.5036, 6.5408], "karlsruhe kreis": [49.0069, 8.5200], "karlsruhe stadt": [49.0069, 8.4037],
-            "kelkheim (taunus)": [50.1378, 8.4528], "kelkheim am taunus": [50.1378, 8.4528], "kerken": [51.4667, 6.3833],
-            "kevelaer": [51.5833, 6.2500], "kirchheim": [48.1764, 11.7553], "konstanz": [47.6779, 9.1732],
-            "korschenbroich": [51.1906, 6.5133], "köln": [50.9375, 6.9603], "königstein (taunus)": [50.1831, 8.4644],
-            "krefeld": [51.3388, 6.5853], "kronberg": [50.1808, 8.5086], "kronberg im taunus": [50.1808, 8.5086],
-            "kulmbach": [50.1075, 11.4553], "leipzig": [51.3397, 12.3731], "leverkusen": [51.0459, 7.0192],
-            "liederbach": [50.1167, 8.5167], "limburg-weilburg": [50.3833, 8.1833], "linsengericht": [50.1833, 9.2167],
-            "lübeck": [53.8655, 10.6866], "ludwigsburg": [48.8974, 9.1918], "lüneburg": [53.2464, 10.4116],
-            "main-taunus-kreis": [50.0833, 8.4500], "märkischer kreis": [51.2167, 7.7333], "mayen-koblenz": [50.3569, 7.3789],
-            "mechernich": [50.5953, 6.6528], "meerbusch": [51.2647, 6.6694], "menden": [51.4367, 7.7944],
-            "merzenich": [50.8283, 6.5261], "mettmann": [51.2500, 6.9667], "monachium-południowy wschód": [48.0667, 11.6833],
-            "monheim am rhein": [51.0917, 6.8917], "münster": [51.9607, 7.6261], "nachrodt-wiblingwerde": [51.3333, 7.6333],
-            "nettetal": [51.3167, 6.2833], "neu-anspach": [50.3000, 8.5167], "neukirchen-vluyn": [51.4428, 6.5583],
-            "neuss": [51.2003, 6.6939], "neustadt a.d. waldnaab": [49.7303, 12.1725], "nidderau": [50.2442, 8.9056],
-            "nordsachsen": [51.4833, 12.8333], "oberberg": [51.0333, 7.5500], "oberursel (taunus)": [50.2014, 8.5772],
-            "oder-spree": [52.2333, 14.2500], "olpe": [51.0289, 7.8447], "ortenau": [48.4688, 7.9427],
-            "osnabrück": [52.2799, 8.0472], "plettenberg": [51.2167, 7.8667], "pulheim": [50.9997, 6.8047],
-            "ratingen": [51.2967, 6.8481], "rees": [51.7619, 6.3986], "regensburg": [49.0134, 12.1016],
-            "rendsburg-eckernförde": [54.3000, 9.6667], "rhein-erft-kreis": [50.9167, 6.6333], "rhein-kreis neuss": [51.1500, 6.6167],
-            "rhein-neckar-kreis": [49.3333, 8.7000], "rhein-sieg": [50.7833, 7.2167], "rhein-sieg-kreis": [50.7833, 7.2167],
-            "rheingau-taunus": [50.1500, 8.0833], "rheinisch-bergischer": [51.0167, 7.2167], "rheurdt": [51.4667, 6.4667],
-            "rodenbach": [50.1469, 9.0278], "rommerskirchen": [51.0347, 6.6875], "ronneburg": [50.2289, 9.0578],
-            "schleiden": [50.5289, 6.4739], "schlüchtern": [50.3478, 9.5256], "schmitten": [50.2667, 8.4500],
-            "schmitten im taunus": [50.2667, 8.4500], "schwalbach": [50.1517, 8.5342], "schwalm-eder-kreis": [51.0500, 9.3500],
-            "schwedt/oder": [53.0633, 14.2828], "selfkant": [51.0167, 5.9167], "sinntal": [50.2833, 9.6333],
-            "solingen": [51.1714, 7.0847], "sonsbeck": [51.6108, 6.3683], "spree-neiße": [51.7167, 14.5000],
-            "sprockhövel": [51.3689, 7.2514], "stade": [53.6008, 9.4756], "steinbach": [50.1686, 8.5714],
-            "straelen": [51.4447, 6.2625], "straubing-bogen": [48.8833, 12.5667], "tönisvorst": [51.3208, 6.4931],
-            "trier-saarburg": [49.6456, 6.5750], "trier-stadt": [49.7567, 6.6414], "tübingen": [48.5216, 9.0576],
-            "tuttlingen": [47.9844, 8.8189], "übach-palenberg": [50.9197, 6.1186], "uedem": [51.6667, 6.2833],
-            "usingen": [50.3344, 8.5367], "viersen": [51.2558, 6.3917], "voerde": [51.5989, 6.6853],
-            "vulkaneifel": [50.2500, 6.8333], "walldorf-mörfelden": [49.9889, 8.5708], "weeze": [51.6264, 6.1956],
-            "wehrheim": [50.3033, 8.5722], "weilerswist": [50.7606, 6.8367], "weilrod": [50.3167, 8.4167],
-            "werdohl": [51.2589, 7.7619], "werra-meissner": [51.2167, 9.9333], "wesseling": [50.8258, 6.9744],
-            "westerwald": [50.4350, 7.8286], "wiesbaden-naurod": [50.1306, 8.3039], "wolfsburg": [52.4227, 10.7865],
-            "wülfrath": [51.2825, 7.0375], "wuppertal": [51.2562, 7.1508], "xanten": [51.6617, 6.4528],
-            "zollernalb": [48.2725, 8.9567], "zülpich": [50.6908, 6.6492]
+            "heilbronn": [49.1403, 9.2200], "heiligenhaus": [51.3267, 6.9733], "heinsberg": [51.0633, 6.0967],
+            "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167], "hochtaunuskreis": [50.2833, 8.5333],
+            "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478], "hückelhoven": [51.0608, 6.2208],
+            "hürth": [50.8750, 6.8706], "iserlohn": [51.3842, 7.6833], "issum": [51.5369, 6.4264],
+            "jossgrund": [50.1833, 9.4500], "jüchen": [51.1000, 6.5000], "jülich": [50.9222, 6.3606],
+            "kaarst": [51.2269, 6.6214], "kall": [50.5408, 6.5511], "kamp-lintfort": [51.5036, 6.5408],
+            "karlsruhe kreis": [49.0069, 8.5200], "karlsruhe stadt": [49.0069, 8.4037], "kelkheim (taunus)": [50.1378, 8.4528],
+            "kelkheim am taunus": [50.1378, 8.4528], "kerken": [51.4667, 6.3833], "kevelaer": [51.5833, 6.2500],
+            "kirchheim": [48.1764, 11.7553], "konstanz": [47.6779, 9.1732], "korschenbroich": [51.1906, 6.5133],
+            "köln": [50.9375, 6.9603], "königstein (taunus)": [50.1831, 8.4644], "krefeld": [51.3388, 6.5853],
+            "kronberg": [50.1808, 8.5086], "kronberg im taunus": [50.1808, 8.5086], "kulmbach": [50.1075, 11.4553],
+            "leipzig": [51.3397, 12.3731], "leverkusen": [51.0459, 7.0192], "liederbach": [50.1167, 8.5167],
+            "limburg-weilburg": [50.3833, 8.1833], "linsengericht": [50.1833, 9.2167], "lübeck": [53.8655, 10.6866],
+            "ludwigsburg": [48.8974, 9.1918], "lüneburg": [53.2464, 10.4116], "main-taunus-kreis": [50.0833, 8.4500],
+            "märkischer kreis": [51.2167, 7.7333], "mayen-koblenz": [50.3569, 7.3789], "mechernich": [50.5953, 6.6528],
+            "meerbusch": [51.2647, 6.6694], "menden": [51.4367, 7.7944], "merzenich": [50.8283, 6.5261],
+            "mettmann": [51.2500, 6.9667], "monachium-południowy wschód": [48.0667, 11.6833], "monheim am rhein": [51.0917, 6.8917],
+            "münster": [51.9607, 7.6261], "nachrodt-wiblingwerde": [51.3333, 7.6333], "nettetal": [51.3167, 6.2833],
+            "neu-anspach": [50.3000, 8.5167], "neukirchen-vluyn": [51.4428, 6.5583], "neuss": [51.2003, 6.6939],
+            "neustadt a.d. waldnaab": [49.7303, 12.1725], "nidderau": [50.2442, 8.9056], "nordsachsen": [51.4833, 12.8333],
+            "oberberg": [51.0333, 7.5500], "oberursel (taunus)": [50.2014, 8.5772], "oder-spree": [52.2333, 14.2500],
+            "olpe": [51.0289, 7.8447], "ortenau": [48.4688, 7.9427], "osnabrück": [52.2799, 8.0472],
+            "plettenberg": [51.2167, 7.8667], "pulheim": [50.9997, 6.8047], "ratingen": [51.2967, 6.8481],
+            "rees": [51.7619, 6.3986], "regensburg": [49.0134, 12.1016], "rendsburg-eckernförde": [54.3000, 9.6667],
+            "rhein-erft-kreis": [50.9167, 6.6333], "rhein-kreis neuss": [51.1500, 6.6167], "rhein-neckar-kreis": [49.3333, 8.7000],
+            "rhein-sieg": [50.7833, 7.2167], "rhein-sieg-kreis": [50.7833, 7.2167], "rheingau-taunus": [50.1500, 8.0833],
+            "rheinisch-bergischer": [51.0167, 7.2167], "rheurdt": [51.4667, 6.4667], "rodenbach": [50.1469, 9.0278],
+            "rommerskirchen": [51.0347, 6.6875], "ronneburg": [50.2289, 9.0578], "schleiden": [50.5289, 6.4739],
+            "schlüchtern": [50.3478, 9.5256], "schmitten": [50.2667, 8.4500], "schmitten im taunus": [50.2667, 8.4500],
+            "schwalbach": [50.1517, 8.5342], "schwalm-eder-kreis": [51.0500, 9.3500], "schwedt/oder": [53.0633, 14.2828],
+            "selfkant": [51.0167, 5.9167], "sinntal": [50.2833, 9.6333], "solingen": [51.1714, 7.0847],
+            "sonsbeck": [51.6108, 6.3683], "spree-neiße": [51.7167, 14.5000], "sprockhövel": [51.3689, 7.2514],
+            "stade": [53.6008, 9.4756], "steinbach": [50.1686, 8.5714], "straelen": [51.4447, 6.2625],
+            "straubing-bogen": [48.8833, 12.5667], "tönisvorst": [51.3208, 6.4931], "trier-saarburg": [49.6456, 6.5750],
+            "trier-stadt": [49.7567, 6.6414], "tübingen": [48.5216, 9.0576], "tuttlingen": [47.9844, 8.8189],
+            "übach-palenberg": [50.9197, 6.1186], "uedem": [51.6667, 6.2833], "usingen": [50.3344, 8.5367],
+            "viersen": [51.2558, 6.3917], "voerde": [51.5989, 6.6853], "vulkaneifel": [50.2500, 6.8333],
+            "walldorf-mörfelden": [49.9889, 8.5708], "weeze": [51.6264, 6.1956], "wehrheim": [50.3033, 8.5722],
+            "weilerswist": [50.7606, 6.8367], "weilrod": [50.3167, 8.4167], "werdohl": [51.2589, 7.7619],
+            "werra-meissner": [51.2167, 9.9333], "wesseling": [50.8258, 6.9744], "westerwald": [50.4350, 7.8286],
+            "wiesbaden-naurod": [50.1306, 8.3039], "wolfsburg": [52.4227, 10.7865], "wülfrath": [51.2825, 7.0375],
+            "wuppertal": [51.2562, 7.1508], "xanten": [51.6617, 6.4528], "zollernalb": [48.2725, 8.9567],
+            "zülpich": [50.6908, 6.6492]
         };
 
-        // CENTROIDY LANDÓW JAKO INTELIGENTNY FALLBACK (ŻADNYCH LOSOWYCH PUNKTÓW)
         const CENTROIDY_LANDOW = {
             'Baden-Württemberg': [48.6616, 9.3501],
             'Bayern': [48.7904, 11.4979],
@@ -303,6 +312,50 @@
 
         let daneTygodni = {};
         let aktualnyTydzien = null;
+
+        // Funkcja parsująca kolumnę D ("INFO O REJONIE")
+        function parseRegionInfo(rawInfo) {
+            if (!rawInfo || typeof rawInfo !== 'string' || rawInfo.trim() === '-' || rawInfo.trim() === '') {
+                return null;
+            }
+            var str = rawInfo.trim();
+            var isAbruf = /telefon|abruf|zgłoszen/i.test(str);
+            var systemText = isAbruf ? "📞 Na telefon / zgłoszenie (Auf Abruf)" : (/stałe|feste/i.test(str) ? "📅 Harmonogram stały" : "📅 Harmonogram stały");
+
+            var m = str.match(/\((.*?)\)/);
+            var inside = m ? m[1].trim() : str;
+            var freqPl = inside;
+            if (inside.indexOf('/') !== -1) {
+                freqPl = inside.split('/')[0].trim();
+            }
+
+            return {
+                system: systemText,
+                frequency: freqPl
+            };
+        }
+
+        // Funkcja usuwająca duplikaty frakcji
+        function oczyscFrakcje(rawStr) {
+            if (!rawStr) return "Sperrmüll";
+            var tokens = rawStr.split(/[\r\n\t,; ]+/).filter(Boolean);
+            var unikalne = [];
+            tokens.forEach(t => {
+                var clean = t.trim().toLowerCase();
+                if (clean.length > 1 && !unikalne.includes(clean)) {
+                    unikalne.push(clean);
+                }
+            });
+
+            if (unikalne.length === 0) return "Sperrmüll";
+            
+            return unikalne.map(u => {
+                if (u.includes("sperr")) return "Sperrmüll";
+                if (u.includes("metall")) return "Metall";
+                if (u.includes("schrott") || u.includes("elektro")) return "E-Schrott";
+                return u.charAt(0).toUpperCase() + u.slice(1);
+            }).filter((v, i, a) => a.indexOf(v) === i).join(' + ');
+        }
 
         const map = L.map('map', {
             center: [51.1657, 10.4515], zoom: 6.5, zoomControl: false, fullscreenControl: false
@@ -381,7 +434,14 @@
                         : (SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Niemcy");
 
                     let datyStr = (typeof item === 'object' && (item.daty || item["DATA (PN-SOB)"])) ? (item.daty || item["DATA (PN-SOB)"]) : "";
-                    let frakcjaStr = (typeof item === 'object' && (item.rodzaj || item["RODZAJ"])) ? (item.rodzaj || item["RODZAJ"]) : "Sperrmüll";
+                    
+                    // Odczyt kolumny D ("INFO O REJONIE")
+                    let rawInfoD = (typeof item === 'object') ? (item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "") : "";
+                    let parsedInfo = parseRegionInfo(rawInfoD);
+
+                    // Oczyszczanie zdublowanych frakcji
+                    let rawFrakcja = (typeof item === 'object' && (item.rodzaj || item["RODZAJ"])) ? (item.rodzaj || item["RODZAJ"]) : "Sperrmüll";
+                    let frakcjaStr = oczyscFrakcje(rawFrakcja);
 
                     let dniSet = new Set();
                     if (datyStr && datyStr !== "-") {
@@ -400,7 +460,6 @@
                         [0, 1, 2, 3, 4].forEach(d => dniSet.add(d));
                     }
 
-                    // Prawidłowe pobieranie koordynatów z bazy lub fallback do Landu
                     let coords = KOORDYNATY_CENTRA[cleanKey];
                     if (!coords) {
                         coords = CENTROIDY_LANDOW[land] || [51.1657, 10.4515];
@@ -411,6 +470,7 @@
                         land: land,
                         daty: datyStr,
                         frakcje: frakcjaStr,
+                        infoRejon: parsedInfo,
                         dni: Array.from(dniSet).sort(),
                         lat: coords[0],
                         lon: coords[1]
@@ -477,6 +537,17 @@
 
                 const aktywneDniTekst = item.dni.map(d => `<span style="background:${KOLORY_DNI[d]}; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; margin-right:3px;">${DNI_PL[d]}</span>`).join('');
 
+                // Budowanie bloku informacyjnego z kolumny D
+                let infoRejonHtml = "";
+                if (item.infoRejon) {
+                    infoRejonHtml = `
+                        <div class="info-rejon-box">
+                            <div><strong style="color: #fbbf24;">Tryb:</strong> ${item.infoRejon.system}</div>
+                            <div><strong style="color: #60a5fa;">Częstotliwość:</strong> ${item.infoRejon.frequency}</div>
+                        </div>
+                    `;
+                }
+
                 const icon = L.divIcon({
                     html: '<i class="fa-solid fa-truck"></i>',
                     className: 'region-pin',
@@ -497,7 +568,9 @@
                                 <div style="margin-top: 4px;">${aktywneDniTekst}</div>
                             </div>
                             <p style="margin: 6px 0 3px 0;"><strong>Dostępne terminy:</strong><br><span style="color:#60a5fa; font-weight:600;">${item.daty ? item.daty.replace(/\n/g, ', ') : 'Weryfikowane pod zamówienie'}</span></p>
-                            <p style="margin: 6px 0;"><strong>Frakcja:</strong> ${item.frakcje}</p>
+                            <p style="margin: 6px 0 4px 0;"><strong>Frakcja:</strong> ${item.frakcje}</p>
+                            
+                            ${infoRejonHtml}
                             
                             <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid #333; display: flex; flex-direction: column; gap: 8px;">
                                 <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-week-pack">
