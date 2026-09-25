@@ -105,11 +105,9 @@
                 .chat-bubble-sent { background: var(--theme-color); color: white; padding: 10px 14px; border-radius: 15px 15px 2px 15px; max-width: 85%; align-self: flex-end; text-align: left; word-wrap: break-word; font-size: 14px; }
                 .chat-bubble-received { background: #ffffff; color: #1e293b; padding: 12px 14px; border-radius: 15px 15px 15px 2px; max-width: 90%; align-self: flex-start; word-wrap: break-word; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13.5px; }
                 
-                /* Wymuszenie czytelności linków i formatowania w dymkach bota */
                 .chat-bubble-received a { color: #16a34a !important; font-weight: bold !important; text-decoration: underline !important; }
                 .chat-bubble-received strong { color: #0f172a !important; }
 
-                /* ODPORNOŚĆ NA STYLE PODSTRON */
                 .chat-input-area { 
                     display: flex !important; 
                     padding: 10px !important; 
@@ -196,7 +194,7 @@
                     <ul class="dabu-footer-boxes">
                         <li><a href="https://dabu-info.com/">Strona Główna</a></li>
                         <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
-                        <li><a href="https://dabu-info.com/mapa.html">Mapa Wystawek</a></li>
+                        <li><a href="https://dabu-info.com/mapa2026.html">Mapa Wystawek 2026</a></li>
                         <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
                         <li><a href="https://dabu-info.com/data.html">Bazy Danych</a></li>
                         <li><a href="https://dabu-info.com/gieldy.html">Adresy Giełd</a></li>
@@ -212,10 +210,11 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html oraz data.html)
+        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html, data.html oraz mapa2026.html)
         const currentPath = window.location.pathname.toLowerCase();
         const isExcludedPage = currentPath.includes('kalendarz') || 
                                currentPath.includes('gieldy') || 
+                               currentPath.includes('mapa2026') || 
                                currentPath.includes('data');
 
         if (!isExcludedPage && !document.getElementById('chat-toggle-btn')) {
@@ -253,10 +252,8 @@
             const sendBtn = document.getElementById('chat-send-btn');
             const headerTitle = document.getElementById('chat-header-title');
 
-            // Wykrywanie języka przeglądarki użytkownika
             let browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
 
-            // Domyślne wartości lokalne dla najpopularniejszych języków
             const fallbackLang = {
                 pl: { powitanie: "Cześć! Wpisz nazwę miejscowości lub adres, aby sprawdzić dostępne terminy.", placeholder: "Wpisz miejscowość lub adres...", wyslij: "Wyślij", ladowanie: "🤔 Szukam...", blad: "❌ Błąd serwera." },
                 de: { powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um Termine zu prüfen.", placeholder: "Stadt oder Adresse eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche...", blad: "❌ Serverfehler." },
