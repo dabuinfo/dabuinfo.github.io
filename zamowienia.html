@@ -26,7 +26,7 @@
             font-family: 'Segoe UI', sans-serif; 
             top: 0 !important;
         }
-        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 220px; }
+        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 260px; }
         .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.95rem; line-height: 1.5; }
         .service-info ul { margin: 5px 0 0 0; padding-left: 20px; }
         .service-info a { color: #2ecc71; text-decoration: underline; font-weight: bold; }
@@ -44,6 +44,9 @@
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
         .cart-summary { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 2px solid #3498db; padding: 15px; box-sizing: border-box; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+        .email-field-container { margin-bottom: 10px; }
+        .email-field-input { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #252525; color: #fff; font-size: 0.95rem; outline: none; }
+        .email-field-input:focus { border-color: #3498db; }
         .btn-order { display: block; width: 100%; background-color: #3498db; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s, background-color 0.2s; }
         .btn-order:hover:not(:disabled) { background-color: #2980b9; }
         .btn-order:active { transform: scale(0.98); }
@@ -61,7 +64,7 @@
         .skiptranslate { display: none !important; }
 
         @media (max-width: 600px) {
-            .order-module { padding: 10px; padding-bottom: 200px; }
+            .order-module { padding: 10px; padding-bottom: 250px; }
             .regions-grid { grid-template-columns: 1fr; margin-left: 0; }
             .powiat-sub-header { margin-left: 10px; }
             .year-selector-container { margin-left: 0; width: 100%; box-sizing: border-box; }
@@ -75,8 +78,8 @@
     <div class="service-info">
         ℹ️ <b>Zarezerwuj bezpłatne powiadomienie e-mail:</b>
         <ul>
-            <li>Wybierz rok (<b>2027 / 2028</b>) oraz interesujące Cię rejony. Po kliknięciu przycisku otworzy się Twój program pocztowy z gotową wiadomością zgłoszeniową na adres <b>wystawki@gmail.com</b>.</li>
-            <li>Zgłoszenie jest bezpłatne i niezobowiązujące – powiadomimy Cię, gdy tylko terminy dla wybranych rejonów zostaną zaktualizowane.</li>
+            <li>Wybierz rok (<b>2027 / 2028</b>), interesujące Cię rejony oraz podaj swój adres e-mail poniżej.</li>
+            <li>Zgłoszenie jest bezpłatne i niezobowiązujące – powiadomimy Cię bezpośrednio na podany e-mail, gdy tylko terminy dla wybranych rejonów zostaną opublikowane.</li>
         </ul>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
@@ -95,7 +98,12 @@
                 Bezpośrednie zamówienia i aktualne zestawy: <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>
             </div>
         </div>
-        <button id="submitOrderBtn" class="btn-order" disabled>✉️ Wyślij zgłoszenie e-mail (wybierz rejon)</button>
+
+        <div class="email-field-container">
+            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail do kontaktu..." required>
+        </div>
+
+        <button id="submitOrderBtn" class="btn-order" disabled>✉️ Wyślij zgłoszenie (wybierz rejon)</button>
     </div>
 </div>
 
@@ -104,7 +112,7 @@
 
 <script>
     (function() {
-        const targetEmail = "wystawki@gmail.com";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7r_MzcGJSfQbnBFM5jNeQLRYFXRHe4T5XoX466dvzMmmnE4LufptzAgB0IC7lHLHJCA/exec";
         let selectedYear = "2027";
         
         const data = {
@@ -151,6 +159,7 @@
         const container = document.getElementById('regionsContainer');
         const countDisplay = document.getElementById('selectedCount');
         const orderBtn = document.getElementById('submitOrderBtn');
+        const emailInput = document.getElementById('clientEmailInput');
         
         let cart = {};
 
@@ -257,18 +266,26 @@
             
             if (itemCount > 0) {
                 orderBtn.disabled = false;
-                orderBtn.textContent = `✉️ Wyślij zgłoszenie e-mail (${itemCount})`;
+                orderBtn.textContent = `✉️ Wyślij zgłoszenie (${itemCount})`;
             } else {
                 orderBtn.disabled = true;
-                orderBtn.textContent = "✉️ Wyślij zgłoszenie e-mail (wybierz rejon)";
+                orderBtn.textContent = "✉️ Wyślij zgłoszenie (wybierz rejon)";
             }
 
             updateScrappersOptionStatus();
         }
 
-        orderBtn.addEventListener('click', () => {
+        orderBtn.addEventListener('click', async () => {
             const roczneItems = Object.values(cart).map(item => item.name);
             if (roczneItems.length === 0) return;
+
+            const clientEmail = (emailInput.value || '').trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!clientEmail || !emailRegex.test(clientEmail)) {
+                alert("Proszę podać poprawny adres e-mail, abyśmy mogli przesłać powiadomienie.");
+                emailInput.focus();
+                return;
+            }
 
             const dzisiaj = new Date();
             const rrrr = dzisiaj.getFullYear();
@@ -292,24 +309,43 @@
                 selectedWasteType = "Opcja dla złomiarzy";
             }
 
-            const subject = `[POWIADOMIENIE-DOSTEPNOSC] Rok ${selectedYear} - ID: ${alertId}`;
-            
-            const body = 
-`Dzień dobry,
+            orderBtn.disabled = true;
+            const originalText = orderBtn.textContent;
+            orderBtn.textContent = "⏳ Wysyłanie zgłoszenia...";
 
-Zgłaszam prośbę o bezpłatne powiadomienie, gdy pojawią się terminy roczne:
+            const payload = {
+                alertId: alertId,
+                clientEmail: clientEmail,
+                year: selectedYear,
+                wasteType: selectedWasteType,
+                regionsCount: roczneItems.length,
+                regions: roczneItems
+            };
 
-• Identyfikator: ${alertId}
-• Rok: ${selectedYear}
-• Profil odpadów: ${selectedWasteType}
-• Liczba rejonów: ${roczneItems.length}
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-Wybrane rejony:
-${roczneItems.map(r => "- " + r).join('\n')}
+                alert(`✅ Dziękujemy! Zgłoszenie (ID: ${alertId}) zostało przyjęte.\nNa adres ${clientEmail} prześlemy powiadomienie, gdy tylko pojawią się terminy.`);
 
-Pozdrawiam`;
+                // Czyszczenie formularza po wysłaniu
+                cart = {};
+                emailInput.value = '';
+                document.querySelectorAll('.region-checkbox-label input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updateUI();
 
-            window.location.href = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            } catch (err) {
+                console.error("Błąd podczas wysyłania:", err);
+                alert("Wystąpił błąd podczas wysyłania zgłoszenia. Spróbuj ponownie za chwilę.");
+                orderBtn.disabled = false;
+                orderBtn.textContent = originalText;
+            }
         });
     })();
 </script>
