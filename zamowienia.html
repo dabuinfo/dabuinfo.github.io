@@ -26,7 +26,7 @@
             font-family: 'Segoe UI', sans-serif; 
             top: 0 !important;
         }
-        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 260px; }
+        .order-module { padding: 20px; max-width: 1000px; margin: 0 auto; padding-bottom: 40px; }
         .service-info { background: rgba(66, 165, 245, 0.1); border: 1px solid #42a5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #e0e0e0; font-size: 0.95rem; line-height: 1.5; }
         .service-info ul { margin: 5px 0 0 0; padding-left: 20px; }
         .service-info a { color: #2ecc71; text-decoration: underline; font-weight: bold; }
@@ -40,18 +40,68 @@
         .year-selector-container input[type="radio"] { accent-color: #2ecc71; width: 16px; height: 16px; cursor: pointer; }
 
         .regions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 5px 0 20px 20px; }
-        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; }
+        .region-checkbox-label { display: flex; align-items: center; background: #252525; padding: 10px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #333; font-size: 0.9rem; transition: background 0.15s, border-color 0.15s; }
+        .region-checkbox-label:hover { background: #2e2e2e; border-color: rgba(46, 204, 113, 0.4); }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: #2ecc71; }
         
-        .cart-summary { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 2px solid #3498db; padding: 15px; box-sizing: border-box; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
-        .email-field-container { margin-bottom: 10px; }
-        .email-field-input { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #252525; color: #fff; font-size: 0.95rem; outline: none; }
+        /* SEKCJA ZGŁOSZENIA NATURALNIE POD LISTĄ */
+        .cart-summary { 
+            display: none;
+            position: relative; 
+            width: 100%; 
+            background: #1a1a1a; 
+            border: 2px solid #3498db; 
+            border-radius: 8px;
+            padding: 20px; 
+            box-sizing: border-box; 
+            margin-top: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-container { font-size: 1rem; color: #ccc; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; }
+        .email-field-input { width: 100%; box-sizing: border-box; padding: 14px; border-radius: 6px; border: 1px solid #444; background: #252525; color: #fff; font-size: 0.95rem; outline: none; margin-bottom: 12px; }
         .email-field-input:focus { border-color: #3498db; }
-        .btn-order { display: block; width: 100%; background-color: #3498db; color: #fff; border: none; padding: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s, background-color 0.2s; }
+
+        .pin-box-container {
+            display: none;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px dashed #3498db;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+
+        .pin-input {
+            width: 160px;
+            text-align: center;
+            letter-spacing: 6px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 6px;
+            border: 2px solid #3498db;
+            background: #121212;
+            color: #f1c40f;
+            outline: none;
+            margin-top: 6px;
+        }
+
+        .btn-order { display: block; width: 100%; background-color: #3498db; color: #fff; border: none; padding: 16px; font-weight: bold; font-size: 1.05rem; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s, background-color 0.2s; }
         .btn-order:hover:not(:disabled) { background-color: #2980b9; }
         .btn-order:active { transform: scale(0.98); }
         .btn-order:disabled { background-color: #555; cursor: not-allowed; transform: none; }
-        .status-container { font-size: 1rem; color: #ccc; }
+
+        footer, .site-footer, #footer, #footer-container {
+            position: relative;
+            margin-top: 40px;
+            clear: both;
+        }
 
         /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
@@ -64,7 +114,7 @@
         .skiptranslate { display: none !important; }
 
         @media (max-width: 600px) {
-            .order-module { padding: 10px; padding-bottom: 250px; }
+            .order-module { padding: 10px; padding-bottom: 30px; }
             .regions-grid { grid-template-columns: 1fr; margin-left: 0; }
             .powiat-sub-header { margin-left: 10px; }
             .year-selector-container { margin-left: 0; width: 100%; box-sizing: border-box; }
@@ -78,8 +128,8 @@
     <div class="service-info">
         ℹ️ <b>Zarezerwuj bezpłatne powiadomienie e-mail:</b>
         <ul>
-            <li>Wybierz rok (<b>2027 / 2028</b>), interesujące Cię rejony oraz podaj swój adres e-mail poniżej.</li>
-            <li>Zgłoszenie jest bezpłatne i niezobowiązujące – powiadomimy Cię bezpośrednio na podany e-mail, gdy tylko terminy dla wybranych rejonów zostaną opublikowane.</li>
+            <li>Wybierz rok (<b>2027 / 2028</b>), interesujące Cię rejony oraz potwierdź swój adres e-mail jednorazowym kodem PIN.</li>
+            <li>Zgłoszenie jest bezpłatne i niezobowiązujące – powiadomimy Cię bezpośrednio na zweryfikowany e-mail, gdy tylko terminy dla wybranych rejonów zostaną opublikowane.</li>
         </ul>
         
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(66, 165, 245, 0.5);">
@@ -87,23 +137,40 @@
             Gotowe zestawy i aktualne wyceny sprawdzisz na: <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer">https://dabu-info.com/zestaw.html</a>.
         </div>
     </div>
+    
     <div id="regionsContainer"></div>
-</div>
 
-<div class="cart-summary">
-    <div style="max-width: 1000px; margin: 0 auto;">
-        <div class="status-container" style="margin-bottom: 10px;">
-            Wybrane rejony do powiadomienia: <span id="selectedCount" style="color: #f1c40f; font-weight: bold;">0</span>
+    <!-- SEKCJA ZGŁOSZENIA UMIESZCZONA NATURALNIE POD LISTĄ -->
+    <div id="orderSection" class="cart-summary">
+        <div class="status-container">
+            Wybrane rejony do powiadomienia: <span id="selectedCount" style="color: #f1c40f; font-weight: bold; font-size: 1.15rem;">0</span>
             <div style="font-size: 0.85rem; color: #aaa; margin-top: 3px;">
                 Bezpośrednie zamówienia i aktualne zestawy: <a href="https://dabu-info.com/zestaw.html" style="color: #2ecc71; text-decoration: underline;">dabu-info.com/zestaw.html</a>
             </div>
         </div>
 
-        <div class="email-field-container">
-            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail do kontaktu..." required>
+        <div>
+            <label style="display:block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
+                Twój adres e-mail (do przesłania kodu PIN i powiadomień):
+            </label>
+            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
         </div>
 
-        <button id="submitOrderBtn" class="btn-order" disabled>✉️ Wyślij zgłoszenie (wybierz rejon)</button>
+        <!-- BLOK WPROWADZENIA KODU PIN -->
+        <div id="pinStepBox" class="pin-box-container">
+            <div style="font-size: 0.9rem; color: #3498db; font-weight: bold;">
+                ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail!
+            </div>
+            <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
+                Sprawdź skrzynkę (również folder Spam/Oferty) i wpisz kod poniżej:
+            </div>
+            <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+                <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.82rem; text-decoration: underline;">Zmień adres e-mail</a>
+            </div>
+        </div>
+
+        <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN na e-mail</button>
     </div>
 </div>
 
@@ -157,11 +224,17 @@
         };
 
         const container = document.getElementById('regionsContainer');
+        const orderSection = document.getElementById('orderSection');
         const countDisplay = document.getElementById('selectedCount');
         const orderBtn = document.getElementById('submitOrderBtn');
         const emailInput = document.getElementById('clientEmailInput');
+        const pinBox = document.getElementById('pinStepBox');
+        const pinInput = document.getElementById('pinInput');
+        const btnChangeEmail = document.getElementById('btnChangeEmail');
         
         let cart = {};
+        let currentStep = 'need_pin';
+        let userHasSeenOrderSection = false;
 
         const noScrappersRegions = [
             "Rhein-Neckar",
@@ -265,86 +338,160 @@
             countDisplay.textContent = itemCount;
             
             if (itemCount > 0) {
+                orderSection.style.display = 'block';
                 orderBtn.disabled = false;
-                orderBtn.textContent = `✉️ Wyślij zgłoszenie (${itemCount})`;
+                if (currentStep === 'need_pin') {
+                    orderBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${itemCount})`;
+                } else {
+                    orderBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zgłoszenie (${itemCount})`;
+                }
+
+                if (!userHasSeenOrderSection) {
+                    userHasSeenOrderSection = true;
+                    setTimeout(() => {
+                        orderSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
             } else {
-                orderBtn.disabled = true;
-                orderBtn.textContent = "✉️ Wyślij zgłoszenie (wybierz rejon)";
+                orderSection.style.display = 'none';
+                userHasSeenOrderSection = false;
             }
 
             updateScrappersOptionStatus();
         }
 
+        btnChangeEmail.addEventListener('click', () => {
+            currentStep = 'need_pin';
+            pinBox.style.display = 'none';
+            emailInput.disabled = false;
+            pinInput.value = '';
+            updateUI();
+        });
+
         orderBtn.addEventListener('click', async () => {
             const roczneItems = Object.values(cart).map(item => item.name);
             if (roczneItems.length === 0) return;
 
-            const clientEmail = (emailInput.value || '').trim();
+            const clientEmail = (emailInput.value || '').trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!clientEmail || !emailRegex.test(clientEmail)) {
-                alert("Proszę podać poprawny adres e-mail, abyśmy mogli przesłać powiadomienie.");
+                alert("Proszę podać poprawny adres e-mail.");
                 emailInput.focus();
                 return;
             }
 
-            const dzisiaj = new Date();
-            const rrrr = dzisiaj.getFullYear();
-            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dzisiaj.getDate()).padStart(2, '0');
-            const dataString = `${rrrr}${mm}${dd}`;
+            // KROK 1: WYSYŁKA PIN-u
+            if (currentStep === 'need_pin') {
+                orderBtn.disabled = true;
+                orderBtn.textContent = "⏳ Wysyłanie kodu PIN na e-mail...";
 
-            const alertId = `${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'sendPin', clientEmail: clientEmail })
+                    });
 
-            const mandatoryList = roczneItems.filter(region => onlyScrappersRegions.includes(region));
-            const standardList = roczneItems.filter(region => !onlyScrappersRegions.includes(region));
+                    currentStep = 'verify_pin';
+                    emailInput.disabled = true;
+                    pinBox.style.display = 'block';
+                    pinInput.focus();
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zgłoszenie (${roczneItems.length})`;
 
-            const scrappersFilter = document.getElementById('scrappersFilter');
-            let selectedWasteType = "Standard / Sperrmüll"; 
-
-            if (mandatoryList.length > 0 && standardList.length > 0) {
-                selectedWasteType = `Standard + Złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
-            } else if (mandatoryList.length > 0) {
-                selectedWasteType = `Tylko złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
-            } else if (scrappersFilter && scrappersFilter.checked) {
-                selectedWasteType = "Opcja dla złomiarzy";
+                } catch (err) {
+                    console.error("Błąd wysyłki PIN:", err);
+                    alert("Wystąpił problem z wysyłką kodu. Spróbuj ponownie za chwilę.");
+                    orderBtn.disabled = false;
+                    updateUI();
+                }
+                return;
             }
 
-            orderBtn.disabled = true;
-            const originalText = orderBtn.textContent;
-            orderBtn.textContent = "⏳ Wysyłanie zgłoszenia...";
+            // KROK 2: WERYFIKACJA PIN-u I ZAPIS ZGŁOSZENIA
+            if (currentStep === 'verify_pin') {
+                const pinVal = pinInput.value.trim();
+                if (pinVal.length !== 4) {
+                    alert("Wpisz poprawny 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
+                    pinInput.focus();
+                    return;
+                }
 
-            const payload = {
-                alertId: alertId,
-                clientEmail: clientEmail,
-                year: selectedYear,
-                wasteType: selectedWasteType,
-                regionsCount: roczneItems.length,
-                regions: roczneItems
-            };
+                const dzisiaj = new Date();
+                const rrrr = dzisiaj.getFullYear();
+                const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dzisiaj.getDate()).padStart(2, '0');
+                const dataString = `${rrrr}${mm}${dd}`;
+                const alertId = `ROCZNE-${dataString}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
-                    body: JSON.stringify(payload)
-                });
+                const mandatoryList = roczneItems.filter(region => onlyScrappersRegions.includes(region));
+                const standardList = roczneItems.filter(region => !onlyScrappersRegions.includes(region));
+                const scrappersFilter = document.getElementById('scrappersFilter');
+                
+                let selectedWasteType = "Standard / Sperrmüll"; 
+                if (mandatoryList.length > 0 && standardList.length > 0) {
+                    selectedWasteType = `Standard + Złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
+                } else if (mandatoryList.length > 0) {
+                    selectedWasteType = `Tylko złomiarze (dotyczy: ${[...new Set(mandatoryList)].join(', ')})`;
+                } else if (scrappersFilter && scrappersFilter.checked) {
+                    selectedWasteType = "Opcja dla złomiarzy";
+                }
 
-                alert(`✅ Dziękujemy! Zgłoszenie (ID: ${alertId}) zostało przyjęte.\nNa adres ${clientEmail} prześlemy powiadomienie, gdy tylko pojawią się terminy.`);
+                orderBtn.disabled = true;
+                orderBtn.textContent = "⏳ Weryfikacja PIN i rejestrowanie zgłoszenia...";
 
-                // Czyszczenie formularza po wysłaniu
-                cart = {};
-                emailInput.value = '';
-                document.querySelectorAll('.region-checkbox-label input[type="checkbox"]').forEach(cb => cb.checked = false);
-                updateUI();
+                const payload = {
+                    action: 'verifyAndSubmit',
+                    alertId: alertId,
+                    clientEmail: clientEmail,
+                    pin: pinVal,
+                    year: selectedYear,
+                    wasteType: selectedWasteType,
+                    regionsCount: roczneItems.length,
+                    regions: roczneItems,
+                    notes: `Powiadomienie o dostępności na rok ${selectedYear}.`
+                };
 
-            } catch (err) {
-                console.error("Błąd podczas wysyłania:", err);
-                alert("Wystąpił błąd podczas wysyłania zgłoszenia. Spróbuj ponownie za chwilę.");
-                orderBtn.disabled = false;
-                orderBtn.textContent = originalText;
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === "invalid_pin") {
+                        alert("❌ Wprowadzony kod PIN jest nieprawidłowy lub wygasł. Sprawdź e-mail i spróbuj ponownie.");
+                        orderBtn.disabled = false;
+                        orderBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zgłoszenie (${roczneItems.length})`;
+                        pinInput.focus();
+                        return;
+                    }
+
+                    alert(`✅ E-mail zweryfikowany pomyślnie!
+Zgłoszenie (${alertId}) na rok ${selectedYear} zostało zapisane.
+
+Powiadomimy Cię na adres: ${clientEmail}, gdy tylko terminy zostaną opublikowane.`);
+
+                    // Reset
+                    cart = {};
+                    emailInput.value = '';
+                    emailInput.disabled = false;
+                    pinInput.value = '';
+                    pinBox.style.display = 'none';
+                    currentStep = 'need_pin';
+                    document.querySelectorAll('.region-checkbox-label input[type="checkbox"]').forEach(cb => cb.checked = false);
+                    updateUI();
+
+                } catch (err) {
+                    console.error("Błąd podczas wysyłania:", err);
+                    alert("Wystąpił błąd podczas wysyłania zgłoszenia. Spróbuj ponownie za chwilę.");
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zgłoszenie (${roczneItems.length})`;
+                }
             }
         });
     })();
