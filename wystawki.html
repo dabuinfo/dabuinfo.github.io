@@ -47,7 +47,7 @@
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
         }
 
         .service-info { 
@@ -168,31 +168,37 @@
             flex-shrink: 0;
         }
 
-        /* PASEK ZAMÓWIENIA NA DOLE */
+        /* SEKCJA ZAMÓWIENIA WSTAWIONA NATURALNIE POD LISTĄ */
         .cart-summary { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
+            display: none; /* Domyślnie ukryte, pojawia się po wybraniu rejonu */
+            position: relative; 
             width: 100%; 
             background: #161b22; 
-            border-top: 2px solid var(--primary-accent); 
-            padding: 16px; 
+            border: 2px solid var(--primary-accent); 
+            border-radius: var(--radius-md);
+            padding: 20px; 
             box-sizing: border-box; 
-            z-index: 1000; 
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.6); 
+            margin-top: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .email-field-input { 
             width: 100%; 
             box-sizing: border-box; 
-            padding: 12px 14px; 
+            padding: 14px; 
             border-radius: var(--radius-sm); 
             border: 1px solid #444; 
             background: #0d1117; 
             color: #fff; 
             font-size: 0.95rem; 
             outline: none; 
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .email-field-input:focus { border-color: var(--primary-accent); }
 
@@ -214,21 +220,11 @@
         .btn-order:active { transform: scale(0.99); }
         .btn-order:disabled { background-color: #334155; color: #8b949e; cursor: not-allowed; }
 
-        /* BLOKADA ROZCIĄGANIA STOPKI I NATURALNY UKŁAD */
+        /* STOPKA ZAWSZE NATURALNIE NA SAMYM DOLE */
         footer, .site-footer, #footer, #footer-container {
-            position: relative !important;
-            height: auto !important;
-            min-height: unset !important;
-            margin-bottom: 0 !important;
-            padding-top: 20px !important;
-            padding-bottom: 20px !important;
-        }
-
-        /* DYSTANS POD STOPKĄ, BY NIE BYŁA ZASŁANIANA PRZEZ DOLNY PASEK */
-        .footer-spacer {
-            height: 180px;
-            width: 100%;
-            display: block;
+            position: relative;
+            margin-top: 40px;
+            clear: both;
         }
 
         .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
@@ -237,7 +233,6 @@
 
         @media (max-width: 600px) {
             .regions-grid { grid-template-columns: 1fr; }
-            .footer-spacer { height: 230px; }
         }
     </style>
 </head>
@@ -271,18 +266,17 @@
 
         <div id="regionsCheckboxesContainer"></div>
     </div>
-</div>
 
-<div class="cart-summary">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between;">
-            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.1rem;">0</b> z 183</span>[cite: 3, 4]
+    <!-- SEKCJA ZAMÓWIENIA POKAZUJE SIĘ POD LISTĄ PO WYBORZE REJONU -->
+    <div id="orderSection" class="cart-summary">
+        <div style="font-size: 1rem; color: #cbd5e1; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.15rem;">0</b> z 183</span>[cite: 3, 4]
             <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>[cite: 3, 4]
         </div>
 
         <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail do przesłania terminów..." required>
 
-        <button id="submitOrderBtn" class="btn-order" disabled>Wybierz rejon, aby wysłać zgłoszenie</button>
+        <button id="submitOrderBtn" class="btn-order">🚀 Wyślij zapytanie o terminy</button>
     </div>
 </div>
 
@@ -357,6 +351,7 @@
     };
 
     const container = document.getElementById('regionsCheckboxesContainer');
+    const orderSection = document.getElementById('orderSection');
     const countDisplay = document.getElementById('selectedCount');
     const orderBtn = document.getElementById('submitOrderBtn');
     const emailInput = document.getElementById('clientEmailInput');
@@ -365,7 +360,9 @@
     const scrappersFilter = document.getElementById('scrappersFilter');
 
     let selectedRegions = new Set();
+    let userHasSeenOrderSection = false;
 
+    // Generowanie widoku
     Object.keys(REGIONS_DATABASE).sort().forEach(land => {
         const header = document.createElement('div');
         header.className = 'land-group-header';
@@ -405,11 +402,20 @@
         countDisplay.textContent = count;
 
         if (count > 0) {
+            orderSection.style.display = 'block';
             orderBtn.disabled = false;
             orderBtn.textContent = `🚀 Przygotuj najbliższe terminy (${count})`;
+
+            // Płynne przewinięcie do formularza przy pierwszym zaznaczeniu
+            if (!userHasSeenOrderSection) {
+                userHasSeenOrderSection = true;
+                setTimeout(() => {
+                    orderSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
         } else {
-            orderBtn.disabled = true;
-            orderBtn.textContent = "Wybierz rejon, aby wysłać zgłoszenie";
+            orderSection.style.display = 'none';
+            userHasSeenOrderSection = false;
         }
     }
 
@@ -499,7 +505,5 @@
 </script>
 
 <script src="/footer.js"></script>
-<!-- Niezależny bufor pod stopką, który zapobiega jej zasłonięciu przez fixed bar -->
-<div class="footer-spacer"></div>
 </body>
 </html>
