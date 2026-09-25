@@ -47,7 +47,7 @@
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
-            padding-bottom: 40px;
+            padding-bottom: 20px;
         }
 
         .service-info { 
@@ -214,13 +214,21 @@
         .btn-order:active { transform: scale(0.99); }
         .btn-order:disabled { background-color: #334155; color: #8b949e; cursor: not-allowed; }
 
-        /* ZAPEWNIENIE PEŁNEJ WIDOCZNOŚCI STOPKI NAD PASKIEM ZAMÓWIENIA */
-        footer, .site-footer, #footer, #footer-container, [id*="footer"], [class*="footer"] {
-            position: relative;
-            z-index: 10;
-            margin-bottom: 220px !important;
+        /* BLOKADA ROZCIĄGANIA STOPKI I NATURALNY UKŁAD */
+        footer, .site-footer, #footer, #footer-container {
+            position: relative !important;
+            height: auto !important;
+            min-height: unset !important;
+            margin-bottom: 0 !important;
+            padding-top: 20px !important;
             padding-bottom: 20px !important;
-            clear: both;
+        }
+
+        /* DYSTANS POD STOPKĄ, BY NIE BYŁA ZASŁANIANA PRZEZ DOLNY PASEK */
+        .footer-spacer {
+            height: 180px;
+            width: 100%;
+            display: block;
         }
 
         .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
@@ -229,9 +237,7 @@
 
         @media (max-width: 600px) {
             .regions-grid { grid-template-columns: 1fr; }
-            footer, .site-footer, #footer, #footer-container, [id*="footer"], [class*="footer"] {
-                margin-bottom: 260px !important;
-            }
+            .footer-spacer { height: 230px; }
         }
     </style>
 </head>
@@ -270,8 +276,8 @@
 <div class="cart-summary">
     <div style="max-width: 900px; margin: 0 auto;">
         <div style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between;">
-            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.1rem;">0</b> z 183</span>
-            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
+            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.1rem;">0</b> z 183</span>[cite: 3, 4]
+            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>[cite: 3, 4]
         </div>
 
         <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail do przesłania terminów..." required>
@@ -284,7 +290,6 @@
 (function() {
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7r_MzcGJSfQbnBFM5jNeQLRYFXRHe4T5XoX466dvzMmmnE4LufptzAgB0IC7lHLHJCA/exec";
 
-    // Pełna baza 183 rejonów w podziale na 11 Landów
     const REGIONS_DATABASE = {
         "Baden-Württemberg": [
             "Calw", "Freudenstadt", "Heidelberg", "Heilbronn", "Karlsruhe Kreis", 
@@ -361,7 +366,6 @@
 
     let selectedRegions = new Set();
 
-    // Generowanie widoku pogrupowanego w Landy
     Object.keys(REGIONS_DATABASE).sort().forEach(land => {
         const header = document.createElement('div');
         header.className = 'land-group-header';
@@ -409,7 +413,6 @@
         }
     }
 
-    // Wyszukiwarka
     searchInput.addEventListener('input', function(e) {
         const q = e.target.value.toLowerCase().trim();
         document.querySelectorAll('.region-label').forEach(lbl => {
@@ -427,7 +430,6 @@
         });
     });
 
-    // Odznacz wszystko
     clearBtn.addEventListener('click', () => {
         selectedRegions.clear();
         document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
@@ -437,7 +439,6 @@
         updateUI();
     });
 
-    // Wysłanie zapytania
     orderBtn.addEventListener('click', async () => {
         if (selectedRegions.size === 0) return;
 
@@ -482,7 +483,6 @@
 
             alert(`✅ Dziękujemy! Zgłoszenie (${alertId}) zostało przyjęte.\nPrzygotujemy najbliższe terminy ze skrapera i prześlemy na adres: ${email}`);
 
-            // Reset
             selectedRegions.clear();
             emailInput.value = '';
             document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
@@ -499,5 +499,7 @@
 </script>
 
 <script src="/footer.js"></script>
+<!-- Niezależny bufor pod stopką, który zapobiega jej zasłonięciu przez fixed bar -->
+<div class="footer-spacer"></div>
 </body>
 </html>
