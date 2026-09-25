@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Niemcy – Mapa Dostępnych Rejonów wg Tygodni</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@700&display=swap');
+
+        html, body, #map {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden; background: #0b0f19;
+        }
+
+        .top-nav-panel {
+            position: absolute; top: 12px; left: 10px; right: 10px; max-width: 540px; margin: 0 auto; z-index: 2000;
+            background: rgba(18, 18, 18, 0.96); backdrop-filter: blur(10px);
+            padding: 10px 14px; border-radius: 12px; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.65);
+            border: 1px solid #2d2d2d; box-sizing: border-box;
+        }
+
+        .header-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+        }
+
+        .header-title {
+            color: #ffffff; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 8px;
+        }
+
+        .badge-de {
+            background: rgba(0, 123, 255, 0.2); border: 1px solid rgba(0, 123, 255, 0.5);
+            color: #60a5fa; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .select-week {
+            width: 100%; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #f3f4f6;
+            background: #242424; border: 1px solid #404040; border-radius: 8px; outline: none;
+            margin-bottom: 8px; cursor: pointer; max-height: 200px;
+        }
+
+        .days-filter-row {
+            display: flex; gap: 5px; justify-content: space-between;
+        }
+
+        .day-btn {
+            flex: 1; padding: 6px 2px; font-size: 11px; font-weight: 700; text-align: center;
+            border: none; border-radius: 6px; color: white; cursor: pointer; user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .day-btn.inactive { background: #374151 !important; color: #9ca3af; opacity: 0.45; }
+
+        .region-pin {
+            border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px;
+            color: #ffffff; font-size: 13px; font-weight: 800; box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            border: 2px solid #ffffff; transition: transform 0.2s ease; cursor: pointer;
+        }
+        .region-pin:hover { transform: scale(1.15); }
+
+        .leaflet-popup-content-wrapper {
+            background: #181818 !important; color: #e2e8f0 !important;
+            padding: 0; overflow: hidden; border-radius: 10px; border: 1px solid #333;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+        .leaflet-popup-content { margin: 0 !important; line-height: 1.4; }
+
+        .bottom-summary-box {
+            position: absolute; bottom: 25px; left: 10px; z-index: 1000;
+            background: rgba(18, 18, 18, 0.94); backdrop-filter: blur(8px);
+            padding: 8px 14px; border-radius: 8px; border: 1px solid #333;
+            color: #cbd5e1; font-size: 12px; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav-panel">
+        <div class="header-row">
+            <div class="header-title">
+                <span>🇩🇪 Mapa Wystawek w Niemczech</span>
+                <span class="badge-de">2026</span>
+            </div>
+            <div id="statusCounter" style="color: #2ecc71; font-size: 12px; font-weight: 700;">
+                0 rejonów
+            </div>
+        </div>
+
+        <!-- Lista tygodni 1-53 z zakresem Poniedziałek - Sobota -->
+        <select id="weekSelect" class="select-week" onchange="zmienTydzien()"></select>
+
+        <div class="days-filter-row">
+            <button id="btn-0" class="day-btn" style="background:#2563eb;" onclick="toggleDzien(0)">Pon</button>
+            <button id="btn-1" class="day-btn" style="background:#16a34a;" onclick="toggleDzien(1)">Wt</button>
+            <button id="btn-2" class="day-btn" style="background:#ea580c;" onclick="toggleDzien(2)">Śr</button>
+            <button id="btn-3" class="day-btn" style="background:#9333ea;" onclick="toggleDzien(3)">Czw</button>
+            <button id="btn-4" class="day-btn" style="background:#dc2626;" onclick="toggleDzien(4)">Pt</button>
+            <button id="btn-5" class="day-btn" style="background:#059669;" onclick="toggleDzien(5)">Sob</button>
+        </div>
+    </div>
+
+    <div class="bottom-summary-box">
+        <span>📍 Aktywne rejony w tym widoku: <strong id="activeCount" style="color:#2ecc71;">0</strong></span>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+
+    <script>
+        const WSPOLRZEDNE_REJONOW = {
+            "Altenkirchen (Westerwald)": { lat: 50.6868, lon: 7.6496, land: "Rheinland-Pfalz" },
+            "Karlsruhe (Powiat)": { lat: 49.0069, lon: 8.5200, land: "Baden-Württemberg" },
+            "Augsburg (Powiat)": { lat: 48.4000, lon: 10.6500, land: "Bayern" },
+            "Rhein-Neckar-Kreis": { lat: 49.3333, lon: 8.7000, land: "Baden-Württemberg" },
+            "Enzkreis": { lat: 48.9167, lon: 8.7500, land: "Baden-Württemberg" },
+            "Ludwigsburg": { lat: 48.8974, lon: 9.1918, land: "Baden-Württemberg" },
+            "Esslingen": { lat: 48.7408, lon: 9.3242, land: "Baden-Württemberg" },
+            "Böblingen": { lat: 48.6853, lon: 9.0134, land: "Baden-Württemberg" },
+            "Tübingen": { lat: 48.5216, lon: 9.0576, land: "Baden-Württemberg" },
+            "Rhein-Sieg-Kreis": { lat: 50.7833, lon: 7.2167, land: "Nordrhein-Westfalen" },
+            "Rhein-Erft-Kreis": { lat: 50.9167, lon: 6.6333, land: "Nordrhein-Westfalen" },
+            "Mettmann": { lat: 51.2500, lon: 6.9667, land: "Nordrhein-Westfalen" },
+            "Märkischer Kreis": { lat: 51.2167, lon: 7.7333, land: "Nordrhein-Westfalen" },
+            "Rhein-Kreis Neuss": { lat: 51.1500, lon: 6.6167, land: "Nordrhein-Westfalen" },
+            "Main-Taunus-Kreis": { lat: 50.0833, lon: 8.4500, land: "Hessen" },
+            "Hochtaunuskreis": { lat: 50.2833, lon: 8.5333, land: "Hessen" },
+            "Wetteraukreis": { lat: 50.3500, lon: 8.8500, land: "Hessen" },
+            "Bergstraße": { lat: 49.6333, lon: 8.6500, land: "Hessen" },
+            "Schwalm-Eder-Kreis": { lat: 51.0500, lon: 9.3500, land: "Hessen" }
+        };
+
+        const HARMONOGRAM_TYGODNI = {
+            38: [
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "14.09 - 18.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "14.09, 15.09, 17.09.2026", dni: [0, 1, 3], frakcje: "Sperrmüll, E-Schrott" },
+                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "14.09 - 18.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Main-Taunus-Kreis", land: "Hessen", daty: "15.09, 16.09.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "19.09.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
+            ],
+            39: [
+                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty), E-Schrott (Elektro)" },
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Augsburg (Powiat)", land: "Bayern", daty: "22.09.2026 (11 gmin / 1016 pkt)", dni: [1], frakcje: "Sperrmüll (Wywóz bezpośredni)" },
+                { rejon: "Rhein-Neckar-Kreis", land: "Baden-Württemberg", daty: "21.09, 23.09, 25.09.2026", dni: [0, 2, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Enzkreis", land: "Baden-Württemberg", daty: "22.09, 24.09.2026", dni: [1, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Märkischer Kreis", land: "Nordrhein-Westfalen", daty: "21.09, 23.09, 24.09.2026", dni: [0, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Wetteraukreis", land: "Hessen", daty: "21.09, 22.09, 25.09.2026", dni: [0, 1, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Main-Taunus-Kreis", land: "Hessen", daty: "22.09, 23.09.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "26.09.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
+            ],
+            40: [
+                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll, E-Schrott" },
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Ludwigsburg", land: "Baden-Württemberg", daty: "28.09 - 01.10.2026", dni: [0, 1, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Esslingen", land: "Baden-Württemberg", daty: "29.09, 30.09, 02.10.2026", dni: [1, 2, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Rhein-Erft-Kreis", land: "Nordrhein-Westfalen", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Mettmann", land: "Nordrhein-Westfalen", daty: "29.09, 01.10.2026", dni: [1, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Bergstraße", land: "Hessen", daty: "28.09, 30.09, 01.10.2026", dni: [0, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "03.10.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
+            ],
+            41: [
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "05.10 - 09.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Augsburg (Powiat)", land: "Bayern", daty: "06.10, 07.10.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Böblingen", land: "Baden-Württemberg", daty: "05.10 - 08.10.2026", dni: [0, 1, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Tübingen", land: "Baden-Württemberg", daty: "07.10, 08.10, 09.10.2026", dni: [2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Hochtaunuskreis", land: "Hessen", daty: "05.10, 06.10, 08.10.2026", dni: [0, 1, 3], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Rhein-Kreis Neuss", land: "Nordrhein-Westfalen", daty: "05.10 - 09.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "10.10.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
+            ],
+            52: [
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "21.12 - 23.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "21.12.2026", dni: [0], frakcje: "Sperrmüll (Gabaryty)" }
+            ],
+            53: [
+                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "28.12 - 30.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" },
+                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "28.12 - 30.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" }
+            ]
+        };
+
+        const KOLORY_DNI = {
+            0: "#2563eb", // Poniedziałek
+            1: "#16a34a", // Wtorek
+            2: "#ea580c", // Środa
+            3: "#9333ea", // Czwartek
+            4: "#dc2626", // Piątek
+            5: "#059669"  // Sobota
+        };
+
+        const DNI_PL = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+        const aktywneDni = { 0: true, 1: true, 2: true, 3: true, 4: true, 5: true };
+
+        // Generator opcji tygodni od 1 do 53 (poniedziałek - sobota)
+        function generujOpcjeTygodni() {
+            const selectEl = document.getElementById('weekSelect');
+            selectEl.innerHTML = '';
+
+            function getMondayOfISOWeek(w, y) {
+                const simple = new Date(y, 0, 1 + (w - 1) * 7);
+                const dow = simple.getDay();
+                const ISOweekStart = simple;
+                if (dow <= 4)
+                    ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+                else
+                    ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+                return ISOweekStart;
+            }
+
+            for (let w = 1; w <= 53; w++) {
+                const monday = getMondayOfISOWeek(w, 2026);
+                const saturday = new Date(monday);
+                saturday.setDate(monday.getDate() + 5); // +5 dni = Sobota
+
+                const mD = String(monday.getDate()).padStart(2, '0');
+                const mM = String(monday.getMonth() + 1).padStart(2, '0');
+                const sD = String(saturday.getDate()).padStart(2, '0');
+                const sM = String(saturday.getMonth() + 1).padStart(2, '0');
+                const sY = saturday.getFullYear();
+
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = `Tydzień ${String(w).padStart(2, '0')} (${mD}.${mM} - ${sD}.${sM}.${sY})`;
+                if (w === 39) opt.selected = true;
+                selectEl.appendChild(opt);
+            }
+        }
+
+        generujOpcjeTygodni();
+
+        const map = L.map('map', {
+            center: [50.8, 9.5],
+            zoom: 6.5, zoomControl: false, fullscreenControl: false
+        });
+
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+            try { L.control.fullscreen({ position: 'bottomright' }).addTo(map); } catch(e) {}
+        }
+
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: 'CartoDB Dark', maxZoom: 19 }).addTo(map);
+        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 });
+        const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
+
+        L.control.layers({
+            "Ciemna PRO (Dabu-Info)": darkLayer,
+            "Kolorowa (Ulice Esri)": streetLayer,
+            "Topograficzna (Teren)": topoLayer
+        }, null, { position: 'bottomright' }).addTo(map);
+
+        const clusterGroup = L.markerClusterGroup({ maxClusterRadius: 30, disableClusteringAtZoom: 9, chunkedLoading: true });
+        map.addLayer(clusterGroup);
+
+        let aktualnyTydzien = 39;
+
+        function odswiezMape() {
+            clusterGroup.clearLayers();
+            const listaRejonow = HARMONOGRAM_TYGODNI[aktualnyTydzien] || [];
+            const aktywneMarkery = [];
+            let liczbaWidocznych = 0;
+
+            listaRejonow.forEach(item => {
+                const czyDzienAktywny = item.dni.some(d => aktywneDni[d]);
+                if (!czyDzienAktywny) return;
+
+                const geo = WSPOLRZEDNE_REJONOW[item.rejon];
+                if (!geo) return;
+
+                liczbaWidocznych++;
+                const pierwszyDzien = item.dni.find(d => aktywneDni[d]) || item.dni[0];
+                const markerColor = KOLORY_DNI[pierwszyDzien] || "#2563eb";
+                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=&destination=${geo.lat},${geo.lon}&travelmode=driving`;
+
+                const aktywneDniTekst = item.dni.map(d => `<span style="background:${KOLORY_DNI[d]}; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; margin-right:3px;">${DNI_PL[d]}</span>`).join('');
+
+                const icon = L.divIcon({
+                    html: '<i class="fa-solid fa-truck"></i>',
+                    className: 'region-pin',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16],
+                    popupAnchor: [0, -12]
+                });
+
+                const popupHtml = `
+                    <div translate="no" class="notranslate" style="font-family: Arial, sans-serif; min-width: 270px; font-size: 13px;">
+                        <div style="background-color: ${markerColor}; color: white; padding: 10px 14px;">
+                            <strong style="font-size: 15px;">${item.rejon}</strong><br>
+                            <span style="font-size: 11px; opacity: 0.95;">Land: ${geo.land} &bull; Tydzień ${aktualnyTydzien}</span>
+                        </div>
+                        <div style="padding: 12px 14px; background: #1c1c1c; color: #f3f4f6;">
+                            <div style="margin-bottom: 8px;">
+                                <span style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Dni zbiórek w tygodniu:</span><br>
+                                <div style="margin-top: 4px;">${aktywneDniTekst}</div>
+                            </div>
+                            <p style="margin: 6px 0 3px 0;"><strong>Dostępne terminy:</strong><br><span style="color:#60a5fa; font-weight:600;">${item.daty}</span></p>
+                            <p style="margin: 6px 0;"><strong>Frakcja:</strong> ${item.frakcje}</p>
+                            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #333;">
+                                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; background-color: ${markerColor}; color: white; padding: 8px 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px;">Nawiguj do rejonu (Google Maps)</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const marker = L.marker([geo.lat, geo.lon], { icon: icon });
+                marker.bindPopup(popupHtml, { maxWidth: 320 });
+                marker.bindTooltip(`<strong>${item.rejon}</strong> (${geo.land})`, { sticky: true });
+
+                marker.on('add', function() {
+                    const el = marker.getElement();
+                    if (el) el.style.backgroundColor = markerColor;
+                });
+
+                clusterGroup.addLayer(marker);
+                aktywneMarkery.push(marker);
+            });
+
+            document.getElementById('activeCount').textContent = liczbaWidocznych;
+            document.getElementById('statusCounter').textContent = `${liczbaWidocznych} rejonów`;
+
+            if (aktywneMarkery.length > 0) {
+                const groupBounds = L.featureGroup(aktywneMarkery).getBounds();
+                map.fitBounds(groupBounds, { padding: [85, 35], maxZoom: 10 });
+            }
+        }
+
+        function zmienTydzien() {
+            aktualnyTydzien = parseInt(document.getElementById('weekSelect').value);
+            odswiezMape();
+        }
+
+        function toggleDzien(dayIdx) {
+            aktywneDni[dayIdx] = !aktywneDni[dayIdx];
+            const btn = document.getElementById(`btn-${dayIdx}`);
+            if (aktywneDni[dayIdx]) {
+                btn.classList.remove('inactive');
+            } else {
+                btn.classList.add('inactive');
+            }
+            odswiezMape();
+        }
+
+        odswiezMape();
+    </script>
+</body>
+</html>
