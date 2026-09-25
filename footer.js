@@ -194,7 +194,7 @@
                     <ul class="dabu-footer-boxes">
                         <li><a href="https://dabu-info.com/">Strona Główna</a></li>
                         <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
-                        <li><a href="https://dabu-info.com/mapa2026.html">Mapa Wystawek 2026</a></li>
+                        <li><a href="https://dabu-info.com/mapa2026.html">Mapa Wystawek</a></li>
                         <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
                         <li><a href="https://dabu-info.com/data.html">Bazy Danych</a></li>
                         <li><a href="https://dabu-info.com/gieldy.html">Adresy Giełd</a></li>
