@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Niemcy – Mapa Dostępnych Rejonów wg Tygodni</title>
+    <title>Mapa Wystawek w Niemczech – Dabu-Info</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
@@ -17,14 +17,14 @@
         html, body, #map {
             width: 100%; height: 100%; margin: 0; padding: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden; background: #121212;
+            overflow: hidden; background: #0d1117;
         }
 
         .top-nav-panel {
             position: absolute; top: 12px; left: 10px; right: 10px; max-width: 540px; margin: 0 auto; z-index: 2000;
-            background: rgba(18, 18, 18, 0.96); backdrop-filter: blur(10px);
+            background: rgba(18, 24, 38, 0.96); backdrop-filter: blur(10px);
             padding: 10px 14px; border-radius: 12px; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.65);
-            border: 1px solid #2d2d2d; box-sizing: border-box;
+            border: 1px solid #2d3748; box-sizing: border-box;
         }
 
         .header-row {
@@ -36,14 +36,14 @@
         }
 
         .badge-de {
-            background: rgba(0, 123, 255, 0.2); border: 1px solid rgba(0, 123, 255, 0.5);
-            color: #60a5fa; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+            background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.4);
+            color: #2ecc71; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
             font-family: 'Space Mono', monospace;
         }
 
         .select-week {
             width: 100%; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #f3f4f6;
-            background: #242424; border: 1px solid #404040; border-radius: 8px; outline: none;
+            background: #1e293b; border: 1px solid #475569; border-radius: 8px; outline: none;
             margin-bottom: 8px; cursor: pointer;
         }
 
@@ -75,10 +75,10 @@
 
         .bottom-summary-box {
             position: absolute; bottom: 25px; left: 10px; z-index: 1000;
-            background: rgba(18, 18, 18, 0.94); backdrop-filter: blur(8px);
-            padding: 8px 14px; border-radius: 8px; border: 1px solid #333;
+            background: rgba(18, 24, 38, 0.94); backdrop-filter: blur(8px);
+            padding: 8px 14px; border-radius: 8px; border: 1px solid #2d3748;
             color: #cbd5e1; font-size: 12px; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
     </style>
 </head>
@@ -88,15 +88,16 @@
         <div class="header-row">
             <div class="header-title">
                 <span>🇩🇪 Mapa Wystawek w Niemczech</span>
-                <span class="badge-de">2026</span>
+                <span class="badge-de">LIVE</span>
             </div>
             <div id="statusCounter" style="color: #2ecc71; font-size: 12px; font-weight: 700;">
-                0 rejonów
+                Wczytywanie...
             </div>
         </div>
 
-        <!-- Lista generowana automatycznie wyłącznie dla tygodni posiadających dane -->
-        <select id="weekSelect" class="select-week" onchange="zmienTydzien()"></select>
+        <select id="weekSelect" class="select-week" onchange="zmienTydzien()">
+            <option value="">⏳ Ładowanie dostępnych tygodni...</option>
+        </select>
 
         <div class="days-filter-row">
             <button id="btn-0" class="day-btn" style="background:#2563eb;" onclick="toggleDzien(0)">Pon</button>
@@ -119,108 +120,249 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
 
     <script>
-        const WSPOLRZEDNE_REJONOW = {
-            "Altenkirchen (Westerwald)": { lat: 50.6868, lon: 7.6496, land: "Rheinland-Pfalz" },
-            "Karlsruhe (Powiat)": { lat: 49.0069, lon: 8.5200, land: "Baden-Württemberg" },
-            "Augsburg (Powiat)": { lat: 48.4000, lon: 10.6500, land: "Bayern" },
-            "Rhein-Neckar-Kreis": { lat: 49.3333, lon: 8.7000, land: "Baden-Württemberg" },
-            "Enzkreis": { lat: 48.9167, lon: 8.7500, land: "Baden-Württemberg" },
-            "Ludwigsburg": { lat: 48.8974, lon: 9.1918, land: "Baden-Württemberg" },
-            "Esslingen": { lat: 48.7408, lon: 9.3242, land: "Baden-Württemberg" },
-            "Böblingen": { lat: 48.6853, lon: 9.0134, land: "Baden-Württemberg" },
-            "Tübingen": { lat: 48.5216, lon: 9.0576, land: "Baden-Württemberg" },
-            "Rhein-Sieg-Kreis": { lat: 50.7833, lon: 7.2167, land: "Nordrhein-Westfalen" },
-            "Rhein-Erft-Kreis": { lat: 50.9167, lon: 6.6333, land: "Nordrhein-Westfalen" },
-            "Mettmann": { lat: 51.2500, lon: 6.9667, land: "Nordrhein-Westfalen" },
-            "Märkischer Kreis": { lat: 51.2167, lon: 7.7333, land: "Nordrhein-Westfalen" },
-            "Rhein-Kreis Neuss": { lat: 51.1500, lon: 6.6167, land: "Nordrhein-Westfalen" },
-            "Main-Taunus-Kreis": { lat: 50.0833, lon: 8.4500, land: "Hessen" },
-            "Hochtaunuskreis": { lat: 50.2833, lon: 8.5333, land: "Hessen" },
-            "Wetteraukreis": { lat: 50.3500, lon: 8.8500, land: "Hessen" },
-            "Bergstraße": { lat: 49.6333, lon: 8.6500, land: "Hessen" },
-            "Schwalm-Eder-Kreis": { lat: 51.0500, lon: 9.3500, land: "Hessen" }
+        const API_URL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec";
+
+        // Baza przypisania Landów skopiowana z Twojego konfiguratora zestawu
+        const SPECIAL_REGIONS_LAND_MAP = {
+            'calw': 'Baden-Württemberg', 'freudenstadt': 'Baden-Württemberg', 'heidelberg': 'Baden-Württemberg',
+            'heilbronn': 'Baden-Württemberg', 'karlsruhe kreis': 'Baden-Württemberg', 'karlsruhe stadt': 'Baden-Württemberg',
+            'konstanz': 'Baden-Württemberg', 'ortenau': 'Baden-Württemberg', 'rhein-neckar-kreis': 'Baden-Württemberg',
+            'tuttlingen': 'Baden-Württemberg', 'zollernalb': 'Baden-Württemberg', 'augsburg kreis': 'Bayern',
+            'augsburg stadt': 'Bayern', 'amberg': 'Bayern', 'bamberg': 'Bayern', 'bayreuth': 'Bayern', 'fürth': 'Bayern',
+            'gräfelfing': 'Bayern', 'kirchheim': 'Bayern', 'kulmbach': 'Bayern', 'monachium-południowy wschód': 'Bayern',
+            'neustadt a.d. waldnaab': 'Bayern', 'regensburg': 'Bayern', 'straubing-bogen': 'Bayern', 'berlin': 'Berlin',
+            'barnim': 'Brandenburg', 'elbe-elster': 'Brandenburg', 'oder-spree': 'Brandenburg', 'schwedt/oder': 'Brandenburg',
+            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'bad orb': 'Hessen', 'bad soden-salmünster': 'Hessen',
+            'biebergemünd': 'Hessen', 'eppstein': 'Hessen', 'eschwege': 'Hessen', 'flörsbachtal': 'Hessen',
+            'flörsheim am main': 'Hessen', 'frankfurt': 'Hessen', 'freigericht': 'Hessen', 'friedrichsdorf': 'Hessen',
+            'fulda': 'Hessen', 'gelnhausen': 'Hessen', 'giessen': 'Hessen', 'giessen stadt': 'Hessen', 'glashütten': 'Hessen',
+            'grävenwiesbach': 'Hessen', 'gross-gerau': 'Hessen', 'gründau': 'Hessen', 'hasselroth': 'Hessen',
+            'hattersheim': 'Hessen', 'hattersheim am main': 'Hessen', 'hersfeld-rotenburg': 'Hessen', 'hofheim am taunus': 'Hessen',
+            'jossgrund': 'Hessen', 'kelkheim (taunus)': 'Hessen', 'kelkheim am taunus': 'Hessen', 'königstein (taunus)': 'Hessen', 'kronberg': 'Hessen',
+            'kronberg im taunus': 'Hessen', 'liederbach': 'Hessen', 'limburg-weilburg': 'Hessen', 'linsengericht': 'Hessen',
+            'neu-anspach': 'Hessen', 'nidderau': 'Hessen', 'oberursel (taunus)': 'Hessen', 'rheingau-taunus': 'Hessen',
+            'rodenbach': 'Hessen', 'ronneburg': 'Hessen', 'schlüchtern': 'Hessen', 'schmitten': 'Hessen',
+            'schmitten im taunus': 'Hessen', 'schwalbach': 'Hessen', 'sinntal': 'Hessen', 'steinbach': 'Hessen',
+            'usingen': 'Hessen', 'walldorf-mörfelden': 'Hessen', 'wehrheim': 'Hessen', 'weilrod': 'Hessen',
+            'werra-meissner': 'Hessen', 'wiesbaden-naurod': 'Hessen', 'braunschweig': 'Niedersachsen',
+            'diepholz': 'Niedersachsen', 'emsland': 'Niedersachsen', 'gifhorn': 'Niedersachsen', 'göttingen': 'Niedersachsen',
+            'hannover': 'Niedersachsen', 'harburg': 'Niedersachsen', 'heidekreis': 'Niedersachsen',
+            'holzminden': 'Niedersachsen', 'lüneburg': 'Niedersachsen', 'osnabrück': 'Niedersachsen', 'stade': 'Niedersachsen',
+            'wolfsburg': 'Niedersachsen', 'aldenhoven': 'Nordrhein-Westfalen', 'alpen': 'Nordrhein-Westfalen',
+            'altena': 'Nordrhein-Westfalen', 'bad münstereifel': 'Nordrhein-Westfalen', 'bad-munstereifel': 'Nordrhein-Westfalen',
+            'balve': 'Nordrhein-Westfalen', 'bedburg': 'Nordrhein-Westfalen', 'bedburg-hau': 'Nordrhein-Westfalen',
+            'blankenheim': 'Nordrhein-Westfalen', 'bonn': 'Nordrhein-Westfalen', 'breckerfeld': 'Nordrhein-Westfalen',
+            'brühl': 'Nordrhein-Westfalen', 'dahlem': 'Nordrhein-Westfalen', 'dormagen': 'Nordrhein-Westfalen',
+            'dortmund': 'Nordrhein-Westfalen', 'dülmen': 'Nordrhein-Westfalen', 'düsseldorf': 'Nordrhein-Westfalen',
+            'emmerich am rhein': 'Nordrhein-Westfalen', 'ennepetal': 'Nordrhein-Westfalen', 'erftstadt': 'Nordrhein-Westfalen',
+            'erkrath': 'Nordrhein-Westfalen', 'euskirchen': 'Nordrhein-Westfalen', 'geilenkirchen': 'Nordrhein-Westfalen',
+            'geldern': 'Nordrhein-Westfalen', 'goch': 'Nordrhein-Westfalen', 'grefrath': 'Nordrhein-Westfalen',
+            'grevenbroich': 'Nordrhein-Westfalen', 'haan': 'Nordrhein-Westfalen', 'heiligenhaus': 'Nordrhein-Westfalen',
+            'heinsberg': 'Nordrhein-Westfalen', 'hellenthal': 'Nordrhein-Westfalen', 'hückelhoven': 'Nordrhein-Westfalen',
+            'hürth': 'Nordrhein-Westfalen', 'iserlohn': 'Nordrhein-Westfalen', 'issum': 'Nordrhein-Westfalen',
+            'jüchen': 'Nordrhein-Westfalen', 'jülich': 'Nordrhein-Westfalen', 'kaarst': 'Nordrhein-Westfalen',
+            'kall': 'Nordrhein-Westfalen', 'kamp-lintfort': 'Nordrhein-Westfalen', 'kerken': 'Nordrhein-Westfalen',
+            'kevelaer': 'Nordrhein-Westfalen', 'korschenbroich': 'Nordrhein-Westfalen', 'köln': 'Nordrhein-Westfalen',
+            'krefeld': 'Nordrhein-Westfalen', 'leverkusen': 'Nordrhein-Westfalen', 'mechernich': 'Nordrhein-Westfalen',
+            'meerbusch': 'Nordrhein-Westfalen', 'menden': 'Nordrhein-Westfalen', 'merzenich': 'Nordrhein-Westfalen',
+            'monheim am rhein': 'Nordrhein-Westfalen', 'münster': 'Nordrhein-Westfalen',
+            'nachrodt-wiblingwerde': 'Nordrhein-Westfalen', 'nettetal': 'Nordrhein-Westfalen',
+            'neukirchen-vluyn': 'Nordrhein-Westfalen', 'neuss': 'Nordrhein-Westfalen', 'oberberg': 'Nordrhein-Westfalen',
+            'olpe': 'Nordrhein-Westfalen', 'plettenberg': 'Nordrhein-Westfalen', 'pulheim': 'Nordrhein-Westfalen',
+            'ratingen': 'Nordrhein-Westfalen', 'rees': 'Nordrhein-Westfalen', 'rhein-sieg': 'Nordrhein-Westfalen',
+            'rheinisch-bergischer': 'Nordrhein-Westfalen', 'rheurdt': 'Nordrhein-Westfalen',
+            'rommerskirchen': 'Nordrhein-Westfalen', 'schleiden': 'Nordrhein-Westfalen', 'selfkant': 'Nordrhein-Westfalen',
+            'solingen': 'Nordrhein-Westfalen', 'sonsbeck': 'Nordrhein-Westfalen', 'sprockhövel': 'Nordrhein-Westfalen',
+            'straelen': 'Nordrhein-Westfalen', 'tönisvorst': 'Nordrhein-Westfalen', 'übach-palenberg': 'Nordrhein-Westfalen',
+            'uedem': 'Nordrhein-Westfalen', 'viersen': 'Nordrhein-Westfalen', 'voerde': 'Nordrhein-Westfalen',
+            'weeze': 'Nordrhein-Westfalen', 'weilerswist': 'Nordrhein-Westfalen', 'werdohl': 'Nordrhein-Westfalen',
+            'wesseling': 'Nordrhein-Westfalen', 'wülfrath': 'Nordrhein-Westfalen', 'wuppertal': 'Nordrhein-Westfalen',
+            'xanten': 'Nordrhein-Westfalen', 'zülpich': 'Nordrhein-Westfalen', 'alzey-worms': 'Rheinland-Pfalz',
+            'altenkirchen (westerwald)': 'Rheinland-Pfalz', 'bad-kreuznach': 'Rheinland-Pfalz',
+            'bernkastel-wittlich': 'Rheinland-Pfalz', 'cochem-zell': 'Rheinland-Pfalz',
+            'eifelkreis bitburg-prüm': 'Rheinland-Pfalz', 'mayen-koblenz': 'Rheinland-Pfalz',
+            'trier-saarburg': 'Rheinland-Pfalz', 'trier-stadt': 'Rheinland-Pfalz', 'vulkaneifel': 'Rheinland-Pfalz',
+            'westerwald': 'Rheinland-Pfalz', 'altmarkkreis-salzwedel': 'Sachsen-Anhalt', 'burgenland': 'Sachsen-Anhalt',
+            'leipzig': 'Sachsen', 'nordsachsen': 'Sachsen', 'lübeck': 'Schleswig-Holstein',
+            'rendsburg-eckernförde': 'Schleswig-Holstein'
         };
 
-        const HARMONOGRAM_TYGODNI = {
-            38: [
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "14.09 - 18.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "14.09, 15.09, 17.09.2026", dni: [0, 1, 3], frakcje: "Sperrmüll, E-Schrott" },
-                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "14.09 - 18.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Main-Taunus-Kreis", land: "Hessen", daty: "15.09, 16.09.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "19.09.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
-            ],
-            39: [
-                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty), E-Schrott (Elektro)" },
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Augsburg (Powiat)", land: "Bayern", daty: "22.09.2026 (11 gmin / 1016 pkt)", dni: [1], frakcje: "Sperrmüll (Wywóz bezpośredni)" },
-                { rejon: "Rhein-Neckar-Kreis", land: "Baden-Württemberg", daty: "21.09, 23.09, 25.09.2026", dni: [0, 2, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Enzkreis", land: "Baden-Württemberg", daty: "22.09, 24.09.2026", dni: [1, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "21.09 - 25.09.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Märkischer Kreis", land: "Nordrhein-Westfalen", daty: "21.09, 23.09, 24.09.2026", dni: [0, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Wetteraukreis", land: "Hessen", daty: "21.09, 22.09, 25.09.2026", dni: [0, 1, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Main-Taunus-Kreis", land: "Hessen", daty: "22.09, 23.09.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "26.09.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
-            ],
-            40: [
-                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll, E-Schrott" },
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Ludwigsburg", land: "Baden-Württemberg", daty: "28.09 - 01.10.2026", dni: [0, 1, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Esslingen", land: "Baden-Württemberg", daty: "29.09, 30.09, 02.10.2026", dni: [1, 2, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Rhein-Erft-Kreis", land: "Nordrhein-Westfalen", daty: "28.09 - 02.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Mettmann", land: "Nordrhein-Westfalen", daty: "29.09, 01.10.2026", dni: [1, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Bergstraße", land: "Hessen", daty: "28.09, 30.09, 01.10.2026", dni: [0, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "03.10.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
-            ],
-            41: [
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "05.10 - 09.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Augsburg (Powiat)", land: "Bayern", daty: "06.10, 07.10.2026", dni: [1, 2], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Böblingen", land: "Baden-Württemberg", daty: "05.10 - 08.10.2026", dni: [0, 1, 2, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Tübingen", land: "Baden-Württemberg", daty: "07.10, 08.10, 09.10.2026", dni: [2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Hochtaunuskreis", land: "Hessen", daty: "05.10, 06.10, 08.10.2026", dni: [0, 1, 3], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Rhein-Kreis Neuss", land: "Nordrhein-Westfalen", daty: "05.10 - 09.10.2026", dni: [0, 1, 2, 3, 4], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Schwalm-Eder-Kreis", land: "Hessen", daty: "10.10.2026 (Sobota)", dni: [5], frakcje: "Sperrmüll (Zbiórka weekendowa)" }
-            ],
-            52: [
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "21.12 - 23.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Altenkirchen (Westerwald)", land: "Rheinland-Pfalz", daty: "21.12.2026", dni: [0], frakcje: "Sperrmüll (Gabaryty)" }
-            ],
-            53: [
-                { rejon: "Karlsruhe (Powiat)", land: "Baden-Württemberg", daty: "28.12 - 30.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" },
-                { rejon: "Rhein-Sieg-Kreis", land: "Nordrhein-Westfalen", daty: "28.12 - 30.12.2026", dni: [0, 1, 2], frakcje: "Sperrmüll (Gabaryty)" }
-            ]
+        // Współrzędne centroidów dla powiatów i miast
+        const KOORDYNATY_CENTRA = {
+            "altenkirchen (westerwald)": [50.6868, 7.6496], "karlsruhe kreis": [49.0069, 8.5200],
+            "karlsruhe stadt": [49.0069, 8.4037], "augsburg kreis": [48.4000, 10.6500],
+            "augsburg stadt": [48.3705, 10.8978], "rhein-neckar-kreis": [49.3333, 8.7000],
+            "enzkreis": [48.9167, 8.7500], "ludwigsburg": [48.8974, 9.1918],
+            "esslingen": [48.7408, 9.3242], "böblingen": [48.6853, 9.0134],
+            "tübingen": [48.5216, 9.0576], "rhein-sieg": [50.7833, 7.2167],
+            "rhein-sieg-kreis": [50.7833, 7.2167], "rhein-erft-kreis": [50.9167, 6.6333],
+            "mettmann": [51.2500, 6.9667], "märkischer kreis": [51.2167, 7.7333],
+            "rhein-kreis neuss": [51.1500, 6.6167], "main-taunus-kreis": [50.0833, 8.4500],
+            "hochtaunuskreis": [50.2833, 8.5333], "wetteraukreis": [50.3500, 8.8500],
+            "bergstraße": [49.6333, 8.6500], "freudenstadt": [48.4633, 8.4116],
+            "konstanz": [47.6779, 9.1732], "calw": [48.7144, 8.7403],
+            "heidelberg": [49.3988, 8.6724], "heilbronn": [49.1403, 9.2200],
+            "ortenau": [48.4688, 7.9427], "tuttlingen": [47.9844, 8.8189],
+            "zollernalb": [48.2725, 8.9567], "frankfurt": [50.1109, 8.6821],
+            "dortmund": [51.5136, 7.4653], "köln": [50.9375, 6.9603],
+            "düsseldorf": [51.2277, 6.7735], "bonn": [50.7374, 7.0982],
+            "essen": [51.4556, 7.0116], "wuppertal": [51.2562, 7.1508],
+            "münster": [51.9607, 7.6261], "aachen": [50.7753, 6.0839],
+            "trier-stadt": [49.7567, 6.6414], "trier-saarburg": [49.6456, 6.5750],
+            "mayen-koblenz": [50.3569, 7.3789], "cochem-zell": [50.1472, 7.1667],
+            "bernkastel-wittlich": [49.9833, 6.8833], "bad-kreuznach": [49.8456, 7.8653],
+            "westerwald": [50.4350, 7.8286], "schwalm-eder-kreis": [51.0500, 9.3500]
         };
 
         const KOLORY_DNI = {
-            0: "#2563eb", // Poniedziałek
-            1: "#16a34a", // Wtorek
-            2: "#ea580c", // Środa
-            3: "#9333ea", // Czwartek
-            4: "#dc2626", // Piątek
-            5: "#059669"  // Sobota
+            0: "#2563eb", // Pon
+            1: "#16a34a", // Wt
+            2: "#ea580c", // Śr
+            3: "#9333ea", // Czw
+            4: "#dc2626", // Pt
+            5: "#059669"  // Sob
         };
 
         const DNI_PL = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
         const aktywneDni = { 0: true, 1: true, 2: true, 3: true, 4: true, 5: true };
 
-        // Generowanie opcji TYLKO DLA TYGODNI POSIADAJĄCYCH DANE
+        let daneTygodni = {};
+        let aktualnyTydzien = null;
+
+        // Inicjalizacja Leaflet (z bezpłatnym podkładem Esri / OSM bez błędu klucza API)
+        const map = L.map('map', {
+            center: [50.8, 9.5], zoom: 6.5, zoomControl: false, fullscreenControl: false
+        });
+
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+            try { L.control.fullscreen({ position: 'bottomright' }).addTo(map); } catch(e) {}
+        }
+
+        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap', maxZoom: 19 });
+        const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
+
+        L.control.layers({
+            "Kolorowa (Esri Street)": streetLayer,
+            "Standardowa (OpenStreetMap)": osmLayer,
+            "Topograficzna (Teren)": topoLayer
+        }, null, { position: 'bottomright' }).addTo(map);
+
+        const clusterGroup = L.markerClusterGroup({ maxClusterRadius: 30, disableClusteringAtZoom: 9, chunkedLoading: true });
+        map.addLayer(clusterGroup);
+
+        function getMondayOfISOWeek(w, y) {
+            const simple = new Date(y, 0, 1 + (w - 1) * 7);
+            const dow = simple.getDay();
+            const ISOweekStart = simple;
+            if (dow <= 4)
+                ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+            else
+                ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+            return ISOweekStart;
+        }
+
+        // Pobieranie na żywo z Twojego endpointu Apps Script
+        function pobierzDaneZeSpisu() {
+            var d = new Date();
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var dzisiaj = d.getFullYear() + month + day;
+            var dynamicznyToken = "Dabu" + dzisiaj;
+
+            fetch(API_URL + "?action=getAllAvailability&token=" + dynamicznyToken)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "OK" && data.data) {
+                        przetworzOdpowiedz(data.data);
+                    } else {
+                        console.warn("Brak danych w odpowiedzi API.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Błąd pobierania bazy:", err);
+                });
+        }
+
+        function przetworzOdpowiedz(rawMatrix) {
+            daneTygodni = {};
+
+            for (let w in rawMatrix) {
+                let tydzienArr = rawMatrix[w];
+                if (!tydzienArr || tydzienArr.length === 0) continue;
+
+                let wNum = parseInt(w);
+                if (isNaN(wNum)) continue;
+
+                daneTygodni[wNum] = [];
+
+                tydzienArr.forEach(item => {
+                    let rName = typeof item === 'string' ? item : item.nazwa;
+                    if (!rName) return;
+
+                    let cleanKey = rName.toLowerCase().trim();
+                    let land = (typeof item === 'object' && (item.land || item.Land)) 
+                        ? item.land 
+                        : (SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Niemcy");
+
+                    let datyStr = (typeof item === 'object' && (item.daty || item["DATA (PN-SOB)"])) ? (item.daty || item["DATA (PN-SOB)"]) : "";
+                    let frakcjaStr = (typeof item === 'object' && (item.rodzaj || item["RODZAJ"])) ? (item.rodzaj || item["RODZAJ"]) : "Sperrmüll";
+
+                    // Wyliczanie dni tygodnia (0=Pon, ..., 5=Sob)
+                    let dniSet = new Set();
+                    if (datyStr && datyStr !== "-") {
+                        let matches = datyStr.match(/\d{4}-\d{2}-\d{2}/g);
+                        if (matches) {
+                            matches.forEach(dStr => {
+                                let parts = dStr.split('-');
+                                let dObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                                let dayOfWeek = dObj.getDay(); // 0=Nd, 1=Pn, ..., 6=Sb
+                                let idx = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 0=Pn, ..., 5=Sb
+                                if (idx <= 5) dniSet.add(idx);
+                            });
+                        }
+                    }
+                    if (dniSet.size === 0) {
+                        [0, 1, 2, 3, 4].forEach(d => dniSet.add(d));
+                    }
+
+                    // Koordynaty rejonu
+                    let coords = KOORDYNATY_CENTRA[cleanKey];
+                    if (!coords) {
+                        coords = [50.8 + (Math.random() - 0.5) * 2.5, 9.5 + (Math.random() - 0.5) * 3.5];
+                    }
+
+                    daneTygodni[wNum].push({
+                        rejon: rName,
+                        land: land,
+                        daty: datyStr,
+                        frakcje: frakcjaStr,
+                        dni: Array.from(dniSet).sort(),
+                        lat: coords[0],
+                        lon: coords[1]
+                    });
+                });
+            }
+
+            generujOpcjeTygodni();
+            odswiezMape();
+        }
+
+        // Generowanie opcji TYLKO DLA TYGODNI POSIADAJĄCYCH DANE (Poniedziałek - Sobota)
         function generujOpcjeTygodni() {
             const selectEl = document.getElementById('weekSelect');
             selectEl.innerHTML = '';
 
-            function getMondayOfISOWeek(w, y) {
-                const simple = new Date(y, 0, 1 + (w - 1) * 7);
-                const dow = simple.getDay();
-                const ISOweekStart = simple;
-                if (dow <= 4)
-                    ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-                else
-                    ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-                return ISOweekStart;
+            const dostepneTygodnie = Object.keys(daneTygodni).map(Number).sort((a,b) => a - b);
+
+            if (dostepneTygodnie.length === 0) {
+                selectEl.innerHTML = '<option value="">Brak zaplanowanych zbiórek w bazie</option>';
+                return;
             }
 
-            const dostepneTygodnie = Object.keys(HARMONOGRAM_TYGODNI).map(Number).sort((a,b) => a - b);
-
-            dostepneTygodnie.forEach(w => {
+            dostepneTygodnie.forEach((w, idx) => {
                 const monday = getMondayOfISOWeek(w, 2026);
                 const saturday = new Date(monday);
                 saturday.setDate(monday.getDate() + 5);
@@ -233,45 +375,24 @@
 
                 const opt = document.createElement('option');
                 opt.value = w;
-                opt.textContent = `Tydzień ${String(w).padStart(2, '0')} (${mD}.${mM} - ${sD}.${sM}.${sY}) — ${HARMONOGRAM_TYGODNI[w].length} rejonów`;
-                if (w === 39) opt.selected = true;
+                opt.textContent = `Tydzień ${String(w).padStart(2, '0')} (${mD}.${mM} - ${sD}.${sM}.${sY}) — ${daneTygodni[w].length} rejonów`;
+                
+                if (idx === 0) opt.selected = true;
                 selectEl.appendChild(opt);
             });
+
+            aktualnyTydzien = dostepneTygodnie[0];
         }
-
-        generujOpcjeTygodni();
-
-        // Inicjalizacja mapy Leaflet
-        const map = L.map('map', {
-            center: [50.8, 9.5],
-            zoom: 6.5, zoomControl: false, fullscreenControl: false
-        });
-
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
-            try { L.control.fullscreen({ position: 'bottomright' }).addTo(map); } catch(e) {}
-        }
-
-        // Stabilne podkłady bez wymogu kluczy API
-        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
-        const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
-        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap', maxZoom: 19 });
-
-        L.control.layers({
-            "Kolorowa (Ulice Esri)": streetLayer,
-            "Standardowa (OpenStreetMap)": osmLayer,
-            "Topograficzna (Teren)": topoLayer
-        }, null, { position: 'bottomright' }).addTo(map);
-
-        const clusterGroup = L.markerClusterGroup({ maxClusterRadius: 30, disableClusteringAtZoom: 9, chunkedLoading: true });
-        map.addLayer(clusterGroup);
-
-        let aktualnyTydzien = parseInt(document.getElementById('weekSelect').value) || 39;
 
         function odswiezMape() {
             clusterGroup.clearLayers();
-            const listaRejonow = HARMONOGRAM_TYGODNI[aktualnyTydzien] || [];
+            if (!aktualnyTydzien || !daneTygodni[aktualnyTydzien]) {
+                document.getElementById('activeCount').textContent = "0";
+                document.getElementById('statusCounter').textContent = "0 rejonów";
+                return;
+            }
+
+            const listaRejonow = daneTygodni[aktualnyTydzien];
             const aktywneMarkery = [];
             let liczbaWidocznych = 0;
 
@@ -279,13 +400,10 @@
                 const czyDzienAktywny = item.dni.some(d => aktywneDni[d]);
                 if (!czyDzienAktywny) return;
 
-                const geo = WSPOLRZEDNE_REJONOW[item.rejon];
-                if (!geo) return;
-
                 liczbaWidocznych++;
-                const pierwszyDzien = item.dni.find(d => aktywneDni[d]) || item.dni[0];
+                const pierwszyDzien = item.dni.find(d => aktywneDni[d]) !== undefined ? item.dni.find(d => aktywneDni[d]) : item.dni[0];
                 const markerColor = KOLORY_DNI[pierwszyDzien] || "#2563eb";
-                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=&destination=${geo.lat},${geo.lon}&travelmode=driving`;
+                const navUrl = `https://www.google.com/maps/dir/?api=1&origin=&destination=${item.lat},${item.lon}&travelmode=driving`;
 
                 const aktywneDniTekst = item.dni.map(d => `<span style="background:${KOLORY_DNI[d]}; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; margin-right:3px;">${DNI_PL[d]}</span>`).join('');
 
@@ -301,14 +419,14 @@
                     <div translate="no" class="notranslate" style="font-family: Arial, sans-serif; min-width: 270px; font-size: 13px;">
                         <div style="background-color: ${markerColor}; color: white; padding: 10px 14px;">
                             <strong style="font-size: 15px;">${item.rejon}</strong><br>
-                            <span style="font-size: 11px; opacity: 0.95;">Land: ${geo.land} &bull; Tydzień ${aktualnyTydzien}</span>
+                            <span style="font-size: 11px; opacity: 0.95;">Land: ${item.land} &bull; Tydzień ${aktualnyTydzien}</span>
                         </div>
                         <div style="padding: 12px 14px; background: #1c1c1c; color: #f3f4f6;">
                             <div style="margin-bottom: 8px;">
                                 <span style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Dni zbiórek w tygodniu:</span><br>
                                 <div style="margin-top: 4px;">${aktywneDniTekst}</div>
                             </div>
-                            <p style="margin: 6px 0 3px 0;"><strong>Dostępne terminy:</strong><br><span style="color:#60a5fa; font-weight:600;">${item.daty}</span></p>
+                            <p style="margin: 6px 0 3px 0;"><strong>Dostępne terminy:</strong><br><span style="color:#60a5fa; font-weight:600;">${item.daty ? item.daty.replace(/\n/g, ', ') : 'Weryfikowane pod zamówienie'}</span></p>
                             <p style="margin: 6px 0;"><strong>Frakcja:</strong> ${item.frakcje}</p>
                             <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #333;">
                                 <a href="${navUrl}" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; background-color: ${markerColor}; color: white; padding: 8px 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px;">Nawiguj do rejonu (Google Maps)</a>
@@ -317,9 +435,9 @@
                     </div>
                 `;
 
-                const marker = L.marker([geo.lat, geo.lon], { icon: icon });
+                const marker = L.marker([item.lat, item.lon], { icon: icon });
                 marker.bindPopup(popupHtml, { maxWidth: 320 });
-                marker.bindTooltip(`<strong>${item.rejon}</strong> (${geo.land})`, { sticky: true });
+                marker.bindTooltip(`<strong>${item.rejon}</strong> (${item.land})`, { sticky: true });
 
                 marker.on('add', function() {
                     const el = marker.getElement();
@@ -355,7 +473,7 @@
             odswiezMape();
         }
 
-        odswiezMape();
+        pobierzDaneZeSpisu();
     </script>
 </body>
 </html>
