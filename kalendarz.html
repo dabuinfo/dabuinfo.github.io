@@ -67,7 +67,7 @@
         color: #e0e0e0;
         width: 100%;
         max-width: 1200px;
-        padding: 24px 16px 100px 16px;
+        padding: 24px 16px 140px 16px;
         box-sizing: border-box;
         border-radius: 12px;
         border: 1px solid #2d2d2d;
@@ -89,7 +89,6 @@
         border: 1px solid #2d2d2d; 
     }
 
-    /* Hero Header */
     .calendar-header-hero {
         background: linear-gradient(180deg, #1f1f1f 0%, #151515 100%);
         border: 1px solid #2e2e2e;
@@ -291,14 +290,6 @@
         flex-shrink: 0;
     }
 
-    .region-desc {
-        color: #60a5fa;
-        font-size: 0.8125rem;
-        margin-top: 4px;
-        font-style: italic;
-    }
-
-    /* Przyciski dodawania dni */
     .quick-add-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -337,28 +328,28 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(20, 20, 20, 0.97);
-        backdrop-filter: blur(10px);
+        background: rgba(20, 20, 20, 0.98);
+        backdrop-filter: blur(12px);
         border-top: 2px solid #2ecc71;
-        padding: 12px 16px;
+        padding: 10px 14px;
         display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
-        box-shadow: 0 -8px 25px rgba(0,0,0,0.8);
+        box-shadow: 0 -8px 25px rgba(0,0,0,0.85);
         z-index: 1000;
     }
 
     .cart-info {
         text-align: center;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         color: #d1d5db;
-        line-height: 1.45;
+        line-height: 1.4;
     }
 
     .cart-total-badge {
-        font-size: 1.125rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 800;
         color: #2ecc71;
     }
 
@@ -370,6 +361,34 @@
         padding: 2px 6px;
         border-radius: 4px;
         border: 1px solid #333;
+    }
+
+    /* Wybór metody płatności w belce */
+    .payment-select-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        background: #141414;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #2d2d2d;
+        font-size: 0.8125rem;
+    }
+
+    .payment-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        color: #cbd5e1;
+    }
+
+    .payment-label input[type="radio"] {
+        accent-color: #2ecc71;
+        margin: 0;
+        cursor: pointer;
     }
 
     .direct-contact-btn {
@@ -418,7 +437,6 @@
         text-align: left; 
     }
     .seo-tags-container h3 { color: #fff; font-size: 1rem; margin-top: 0; margin-bottom: 12px; }
-    .seo-tags { font-size: 0.8125rem; color: #888; line-height: 1.8; border-top: 1px solid #292929; padding-top: 14px; }
 
     /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
     .goog-te-banner-frame.skiptranslate,
@@ -433,7 +451,7 @@
     /* Desktop & Tablety (od 769px wzwyż) */
     @media (min-width: 769px) {
         body { padding: 24px 20px 0 20px; }
-        .offer-wrapper { padding: 45px 35px 100px 35px; margin: 20px 0; }
+        .offer-wrapper { padding: 45px 35px 120px 35px; margin: 20px 0; }
         #calendar-wrapper { padding: 25px; }
         
         .month-table { font-size: 0.875rem; padding: 8px; }
@@ -455,11 +473,12 @@
         .summary-cart-bar {
             flex-direction: row;
             justify-content: space-between;
-            padding: 14px 30px;
+            align-items: center;
+            padding: 12px 30px;
         }
 
-        .cart-info { text-align: left; font-size: 0.9375rem; }
-        .direct-contact-btn { width: auto; font-size: 1rem; padding: 11px 28px; border-radius: 25px; }
+        .cart-info { text-align: left; font-size: 0.9rem; }
+        .direct-contact-btn { width: auto; font-size: 0.95rem; padding: 11px 26px; border-radius: 25px; }
     }
 </style>
 </head>
@@ -495,7 +514,7 @@
                 </div>
             </div>
             
-            <!-- SIATKA KALENDARZA - ZABEZPIECZONA PRZED AUTOMATYCZNYM TŁUMACZENIEM -->
+            <!-- SIATKA KALENDARZA -->
             <div id="calendar-grid" class="notranslate" translate="no"></div>
             
             <div class="calendar-legend">
@@ -504,7 +523,7 @@
                 <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Bieżący miesiąc</span></div>
             </div>
 
-            <!-- WYNIKI WYSZUKIWANIA ZBIÓREK - ZABEZPIECZONE PRZED TŁUMACZENIEM NAZW -->
+            <!-- WYNIKI WYSZUKIWANIA ZBIÓREK -->
             <div id="calendar-results">
                 <h3 id="cal-res-title">Wyniki wyszukiwania</h3>
                 <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
@@ -512,7 +531,6 @@
             </div>
         </div>
 
-        <!-- UPROSZCZONA SEKCJA LOGISTYKI I ZASIĘGU (SEO FRIENDLY) -->
         <div class="seo-tags-container">
             <h3 style="color: #fff; font-size: 1.1em; margin-top: 0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
                 🇪🇺 Zasięg logistyczny i obsługa tras
@@ -529,12 +547,29 @@
 
     </div>
 
-    <!-- Stały pasek zamówień na dole strony z dynamiczną walutą -->
+    <!-- Stały pasek zamówień na dole strony z wyborem płatności i obsługą PayPal Gross-up -->
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
-            ID zamówienia: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span><br>
-            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong> | Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
+            ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
+            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
+            Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
+            <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
         </div>
+
+        <!-- WYBÓR METODY PŁATNOŚCI -->
+        <div class="payment-select-group">
+            <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
+            <label class="payment-label">
+                <input type="radio" name="cartPaymentMethod" value="BLIK" checked> BLIK
+            </label>
+            <label class="payment-label">
+                <input type="radio" name="cartPaymentMethod" value="IBAN"> Przelew (IBAN)
+            </label>
+            <label class="payment-label">
+                <input type="radio" name="cartPaymentMethod" value="PAYPAL"> PayPal
+            </label>
+        </div>
+
         <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
             📱 Wybierz rejony, aby zamówić
         </button>
@@ -613,8 +648,8 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
-            // PRZELICZNIK 40 PLN / 10 EUR
-            const unitRate = isPolish ? 40 : 10;
+            // CENNIK BAZOWY NETTO: 40 PLN / 10 EUR
+            const unitRateNetto = isPolish ? 40.00 : 10.00;
             const currencyUnit = isPolish ? "PLN" : "€";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -721,11 +756,38 @@
             const resultsTitle = document.getElementById('cal-res-title');
             const cartCountEl = document.getElementById('cart-count');
             const cartTotalEl = document.getElementById('cart-total');
+            const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            function refreshCartUI() {
+            function calculateTotals() {
                 const totalTermsCount = globalCart.size;
-                const totalCost = totalTermsCount * unitRate;
+                const totalNetto = Math.round((totalTermsCount * unitRateNetto) * 100) / 100;
+
+                const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || "BLIK";
+                const isPaypal = (selectedPayment === "PAYPAL");
+
+                let finalAmount = totalNetto;
+                let paypalFee = 0;
+
+                if (isPaypal && totalNetto > 0) {
+                    const paypalFixed = isPolish ? 1.35 : 0.35;
+                    const paypalPercent = 0.029;
+                    finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
+                    paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
+                }
+
+                return {
+                    termsCount: totalTermsCount,
+                    totalNetto: totalNetto,
+                    finalAmount: finalAmount,
+                    paypalFee: paypalFee,
+                    isPaypal: isPaypal,
+                    paymentMethod: selectedPayment
+                };
+            }
+
+            function refreshCartUI() {
+                const calc = calculateTotals();
 
                 const uniqueRegions = new Set();
                 const grouped = {};
@@ -740,15 +802,23 @@
                 
                 if (isPolish) {
                     const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
-                    const terminyOdmiana = odmienSlowo(totalTermsCount, "termin", "terminy", "terminów");
+                    const terminyOdmiana = odmienSlowo(calc.termsCount, "termin", "terminy", "terminów");
                     cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana})`;
                 } else {
-                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)`;
+                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)`;
                 }
 
-                cartTotalEl.textContent = `${totalCost} ${currencyUnit}`;
+                if (calc.isPaypal && calc.paypalFee > 0) {
+                    cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}`;
+                    cartFeeNoteEl.style.display = "inline";
+                    cartFeeNoteEl.textContent = `(netto: ${calc.totalNetto.toFixed(2)} ${currencyUnit} + opłata PayPal: ${calc.paypalFee.toFixed(2)} ${currencyUnit})`;
+                } else {
+                    cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}`;
+                    cartFeeNoteEl.style.display = "none";
+                    cartFeeNoteEl.textContent = "";
+                }
 
-                if (totalTermsCount > 0) {
+                if (calc.termsCount > 0) {
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
@@ -758,14 +828,32 @@
                     }
 
                     if (isPolish) {
-                        submitBtn.innerHTML = `📱 Zamów wybrane (${totalCost} PLN)`;
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${totalTermsCount} terminów.\nWybrane terminy:${detailsText}\nŁączna kwota: ${totalCost} PLN (BLIK na 733035301 / IBAN: PL33 1020 5297 0000 1702 0290 9323).\nPozdrawiam.`;
+                        submitBtn.innerHTML = `📱 Zamów wybrane (${calc.finalAmount.toFixed(2)} PLN)`;
+                        
+                        let paymentInfoText = `Forma płatności: ${calc.paymentMethod}`;
+                        if (calc.isPaypal) {
+                            paymentInfoText += ` (Łącznie z prowizją PayPal: ${calc.finalAmount.toFixed(2)} PLN, kwota netto: ${calc.totalNetto.toFixed(2)} PLN). PayPal: ewabu74@gmail.com`;
+                        } else if (calc.paymentMethod === 'BLIK') {
+                            paymentInfoText += ` na nr 733035301`;
+                        } else {
+                            paymentInfoText += ` IBAN: PL33 1020 5297 0000 1702 0290 9323`;
+                        }
+
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nWybrane terminy:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
                     } else {
-                        submitBtn.innerHTML = `💬 Bestellen (${totalCost} €)`;
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${totalTermsCount} Termine)\nTermine:${detailsText}\nGesamtbetrag: ${totalCost} € (Zahlung: BLIK +48733035301 oder IBAN/PayPal). Danke!`;
+                        submitBtn.innerHTML = `💬 Bestellen (${calc.finalAmount.toFixed(2)} €)`;
+
+                        let paymentInfoText = `Zahlung: ${calc.paymentMethod}`;
+                        if (calc.isPaypal) {
+                            paymentInfoText += ` (Inkl. PayPal-Gebühr: ${calc.finalAmount.toFixed(2)} €, Netto: ${calc.totalNetto.toFixed(2)} €). PayPal: ewabu74@gmail.com`;
+                        } else {
+                            paymentInfoText += ` IBAN: PL33 1020 5297 0000 1702 0290 9323`;
+                        }
+
+                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
                         };
@@ -777,6 +865,10 @@
                     submitBtn.onclick = null;
                 }
             }
+
+            document.querySelectorAll('input[name="cartPaymentMethod"]').forEach(r => {
+                r.addEventListener('change', refreshCartUI);
+            });
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
@@ -840,7 +932,7 @@
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
                                             <div class="notranslate" translate="no" style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
-                                                ⚡ ${unitRate} ${currencyUnit} / rejon za dzień
+                                                ⚡ ${unitRateNetto} ${currencyUnit} netto / rejon za dzień
                                             </div>
                                         </div>
 
@@ -855,13 +947,13 @@
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Zamów</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Łącz dni bez ograniczeń – podsumowanie znajdziesz na dole ekranu.</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Wybierz dogodną płatność (BLIK, IBAN lub PayPal z prowizją) na dolnym pasku.</div>
                                             </div>
                                         </div>
 
                                         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #aaa;">
                                             <div>
-                                                💳 Płatność: <strong class="notranslate" translate="no" style="color: #fff;">BLIK (+48 733 035 301)</strong> lub przelew tradycyjny (IBAN / PayPal)
+                                                💳 Opcje wpłaty: <strong class="notranslate" translate="no" style="color: #fff;">BLIK (+48 733 035 301)</strong>, przelew <strong>IBAN</strong> lub <strong>PayPal</strong>
                                             </div>
                                             <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
                                         </div>
