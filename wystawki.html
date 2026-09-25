@@ -190,7 +190,7 @@
             background: #161b22; 
             border: 2px solid var(--primary-accent); 
             border-radius: var(--radius-md);
-            padding: 20px; 
+            padding: 22px; 
             box-sizing: border-box; 
             margin-top: 25px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
@@ -202,10 +202,55 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .email-field-input { 
+        .deposit-box {
+            background: rgba(46, 204, 113, 0.08);
+            border: 1px solid rgba(46, 204, 113, 0.35);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .deposit-title {
+            color: #2ecc71;
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .deposit-desc {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            .payment-methods-grid { grid-template-columns: 1fr; }
+        }
+
+        .pay-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            font-size: 0.84rem;
+        }
+        .pay-card strong { color: #f8fafc; font-size: 0.9rem; }
+        .pay-card span { color: #f1c40f; font-weight: bold; }
+
+        .client-field-input { 
             width: 100%; 
             box-sizing: border-box; 
-            padding: 14px; 
+            padding: 13px 14px; 
             border-radius: var(--radius-sm); 
             border: 1px solid #444; 
             background: #0d1117; 
@@ -214,31 +259,7 @@
             outline: none; 
             margin-bottom: 12px;
         }
-        .email-field-input:focus { border-color: var(--primary-accent); }
-
-        .pin-box-container {
-            display: none;
-            background: rgba(46, 204, 113, 0.1);
-            border: 1px dashed var(--primary-accent);
-            padding: 15px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 12px;
-        }
-
-        .pin-input {
-            width: 160px;
-            text-align: center;
-            letter-spacing: 6px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            border: 2px solid var(--primary-accent);
-            background: #0d1117;
-            color: #f1c40f;
-            outline: none;
-            margin-top: 6px;
-        }
+        .client-field-input:focus { border-color: var(--primary-accent); }
 
         .btn-order { 
             display: block; 
@@ -246,7 +267,7 @@
             background-color: var(--primary-accent); 
             color: #0d1117; 
             border: none; 
-            padding: 15px; 
+            padding: 16px; 
             font-weight: 800; 
             font-size: 1.05rem;
             border-radius: var(--radius-sm); 
@@ -281,9 +302,9 @@
     <div class="service-info">
         ℹ️ <b>Wybierz rejony do przygotowania oferty:</b>
         <ul>
-            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy).</li>
-            <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji.</li>
-            <li>Podaj swój adres e-mail poniżej – w odpowiedzi <b>otrzymasz gotowy raport z wyceną</b>.</li>
+            <li>Zaznacz interesujące Cię powiaty i miasta (baza <b>183 rejonów</b> w podziale na Landy)[cite: 2].</li>
+            <li>System sprawdzi w skraperze <b>najbliższe aktualne terminy</b> dla wybranych lokalizacji[cite: 6].</li>
+            <li>W odpowiedzi <b>otrzymasz gotowy raport logistyczny z wyceną</b>[cite: 6].</li>
         </ul>
         <div class="time-badge">
             ⏱️ Czas realizacji i przesłania raportu: do 72 godzin
@@ -294,7 +315,7 @@
     <div style="background: #1e293b; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;">
         <label style="cursor: pointer; font-weight: bold; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" id="scrappersFilter" style="accent-color: #f59e0b; width: 18px; height: 18px; cursor: pointer;"> 
-            🧲 Przygotuj raport z uwzględnieniem opcji dla złomiarzy (Schrott / E-Złom)
+            🧲 Przygotuj raport z uwzględnieniem opcji dla złomiarzy (Schrott / E-Złom)[cite: 6]
         </label>
     </div>
 
@@ -309,34 +330,58 @@
 
     <!-- SEKCJA ZAMÓWIENIA -->
     <div id="orderSection" class="cart-summary">
-        <div style="font-size: 1rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
-            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.15rem;">0</b> z 183</span>
-            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>
+        <div style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+            <span>Wybrane rejony: <b id="selectedCount" style="color: var(--primary-accent); font-size: 1.2rem;">0</b> z 183</span>[cite: 6]
+            <span style="font-size: 0.85rem; color: #8b949e;">Najbliższe terminy skrapera</span>[cite: 6]
         </div>
 
-        <div style="font-size: 0.84rem; color: #f1c40f; margin-bottom: 12px;">
-            ℹ️ Czas oczekiwania na raport z wyceną: <b>do 72 godzin</b>
+        <div style="font-size: 0.84rem; color: #f1c40f; margin-bottom: 16px;">
+            ⏱️ Czas oczekiwania na przygotowanie raportu: <b>do 72 godzin</b>
         </div>
 
-        <div id="emailStepBox">
-            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail, na który prześlemy kod weryfikacyjny..." required>
-        </div>
-
-        <!-- KROK 2: KOD PIN -->
-        <div id="pinStepBox" class="pin-box-container">
-            <div style="font-size: 0.9rem; color: #2ecc71; font-weight: bold;">
-                ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail.
+        <!-- BLOK OPŁATY WERYFIKACYJNEJ / ZADATKU -->
+        <div class="deposit-box">
+            <div class="deposit-title">
+                🛡️ Opłata weryfikacyjna / Zadatek: 20 zł (lub 5 €)
             </div>
-            <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 4px;">
-                Sprawdź skrzynkę (także folder Spam/Oferty) i wpisz kod poniżej:
+            <div class="deposit-desc">
+                Aby chronić czas naszej pracy przed fałszywymi zgłoszeniami, przygotowanie raportu z wyceną wymaga symbolicznego zadatku. 
+                <b style="color: #2ecc71;">Kwota 20 zł jest w 100% odliczana od ceny końcowej</b> przy zamówieniu pełnego zestawu terminów!
             </div>
-            <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
-                <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
-                <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.82rem; text-decoration: underline;">Zmień adres e-mail</a>
+            
+            <div style="font-size: 0.85rem; color: #93c5fd; font-weight: bold;">
+                Twój identyfikator do wpłaty: <span id="depositIdText" style="color: #f1c40f; font-family: monospace; font-size: 1rem;"></span>
+            </div>
+
+            <div class="payment-methods-grid">
+                <div class="pay-card">
+                    <strong>📱 BLIK na telefon:</strong><br>
+                    <span>+48 733 035 301</span>[cite: 2]<br>
+                    <small style="color: #8b949e;">W tytule wpisz powyższy ID</small>
+                </div>
+                <div class="pay-card">
+                    <strong>🅿️ PayPal:</strong><br>
+                    <span>ewabu74@gmail.com</span>[cite: 2]<br>
+                    <small style="color: #8b949e;">W tytule wpisz powyższy ID</small>
+                </div>
             </div>
         </div>
 
-        <button id="submitOrderBtn" class="btn-order">📩 Wyślij kod weryfikacyjny PIN</button>
+        <div>
+            <label style="display:block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
+                Twój adres e-mail (na który prześlemy gotowy raport):
+            </label>
+            <input type="email" id="clientEmailInput" class="client-field-input" placeholder="np. twoj-email@gmail.com" required>
+        </div>
+
+        <div>
+            <label style="display:block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 4px; font-weight: bold;">
+                Imię i nazwisko nadawcy przelewu BLIK / PayPal (do potwierdzenia wpłaty 20 zł):
+            </label>
+            <input type="text" id="clientSenderNameInput" class="client-field-input" placeholder="np. Jan Kowalski" required>
+        </div>
+
+        <button id="submitOrderBtn" class="btn-order">📋 Zleć przygotowanie raportu z wyceną</button>
     </div>
 </div>
 
@@ -415,17 +460,25 @@
     const countDisplay = document.getElementById('selectedCount');
     const orderBtn = document.getElementById('submitOrderBtn');
     const emailInput = document.getElementById('clientEmailInput');
-    const pinBox = document.getElementById('pinStepBox');
-    const pinInput = document.getElementById('pinInput');
-    const btnChangeEmail = document.getElementById('btnChangeEmail');
+    const senderNameInput = document.getElementById('clientSenderNameInput');
+    const depositIdText = document.getElementById('depositIdText');
     const searchInput = document.getElementById('regionSearchInput');
     const clearBtn = document.getElementById('btnClearAll');
     const scrappersFilter = document.getElementById('scrappersFilter');
 
     let selectedRegions = new Set();
-    let currentStep = 'need_pin';
+    let currentAlertId = '';
     let userHasSeenOrderSection = false;
 
+    function generateOrderAlertId() {
+        const d = new Date();
+        const rrrr = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `WYCENA-${rrrr}${mm}${dd}-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+
+    // Generowanie widoku
     Object.keys(REGIONS_DATABASE).sort().forEach(land => {
         const header = document.createElement('div');
         header.className = 'land-group-header';
@@ -462,13 +515,14 @@
         countDisplay.textContent = count;
 
         if (count > 0) {
+            if (!currentAlertId) {
+                currentAlertId = generateOrderAlertId();
+                depositIdText.textContent = currentAlertId;
+            }
+
             orderSection.style.display = 'block';
             orderBtn.disabled = false;
-            if (currentStep === 'need_pin') {
-                orderBtn.textContent = `📩 Wyślij kod weryfikacyjny PIN (${count} rejonów)`;
-            } else {
-                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${count} rejonów)`;
-            }
+            orderBtn.textContent = `📋 Zleć przygotowanie raportu (${count} rejonów)`;
 
             if (!userHasSeenOrderSection) {
                 userHasSeenOrderSection = true;
@@ -479,6 +533,7 @@
         } else {
             orderSection.style.display = 'none';
             userHasSeenOrderSection = false;
+            currentAlertId = '';
         }
     }
 
@@ -507,14 +562,6 @@
         updateUI();
     });
 
-    btnChangeEmail.addEventListener('click', () => {
-        currentStep = 'need_pin';
-        pinBox.style.display = 'none';
-        emailInput.disabled = false;
-        pinInput.value = '';
-        updateUI();
-    });
-
     orderBtn.addEventListener('click', async () => {
         if (selectedRegions.size === 0) return;
 
@@ -526,95 +573,53 @@
             return;
         }
 
-        if (currentStep === 'need_pin') {
-            orderBtn.disabled = true;
-            orderBtn.textContent = "⏳ Wysyłanie kodu PIN...";
-
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'sendPin', clientEmail: email })
-                });
-
-                currentStep = 'verify_pin';
-                emailInput.disabled = true;
-                pinBox.style.display = 'block';
-                pinInput.focus();
-                orderBtn.disabled = false;
-                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
-
-            } catch (err) {
-                console.error(err);
-                alert("Wystąpił problem z wysyłką kodu. Spróbuj ponownie za chwilę.");
-                orderBtn.disabled = false;
-                updateUI();
-            }
+        const senderName = senderNameInput.value.trim();
+        if (!senderName || senderName.length < 3) {
+            alert("Proszę podać imię i nazwisko nadawcy wpłaty BLIK lub PayPal, abyśmy mogli zidentyfikować zadatek 20 zł.");
+            senderNameInput.focus();
             return;
         }
 
-        if (currentStep === 'verify_pin') {
-            const pinVal = pinInput.value.trim();
-            if (pinVal.length !== 4) {
-                alert("Wpisz poprawny 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
-                pinInput.focus();
-                return;
-            }
+        const regionsArray = Array.from(selectedRegions);
+        const wasteType = scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny";
 
-            const regionsArray = Array.from(selectedRegions);
-            const dzisiaj = new Date();
-            const rrrr = dzisiaj.getFullYear();
-            const mm = String(dzisiaj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dzisiaj.getDate()).padStart(2, '0');
-            const alertId = `WYCENA-${rrrr}${mm}${dd}-${Math.floor(1000 + Math.random() * 9000)}`;
+        orderBtn.disabled = true;
+        const originalText = orderBtn.textContent;
+        orderBtn.textContent = "⏳ Rejestrowanie zlecenia w systemie...";
 
-            orderBtn.disabled = true;
-            orderBtn.textContent = "⏳ Weryfikacja kodu i zapis...";
+        const payload = {
+            alertId: currentAlertId,
+            clientEmail: email,
+            year: "Najbliższe dostępne (skraper)",
+            wasteType: wasteType,
+            regionsCount: regionsArray.length,
+            regions: regionsArray,
+            notes: `Zadatek 20 zł. Nadawca wpłaty: ${senderName}. Tytuł: ${currentAlertId}. Czas: do 72h.`
+        };
 
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'verifyAndSubmit',
-                        alertId: alertId,
-                        clientEmail: email,
-                        pin: pinVal,
-                        year: "Najbliższe dostępne (skraper)",
-                        wasteType: scrappersFilter.checked ? "Raport: Złom / Schrott" : "Raport: Standard / Pełny",
-                        regionsCount: regionsArray.length,
-                        regions: regionsArray,
-                        notes: "Zlecenie zweryfikowane kodem PIN. Czas realizacji: do 72h."
-                    })
-                });
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
 
-                const result = await response.json();
+            alert(`✅ Zgłoszenie (${currentAlertId}) zostało zapisane!\n\nPo zaksięgowaniu zadatku 20 zł (BLIK / PayPal) rozpoczynamy przygotowanie raportu.\nGotowe zestawienie prześlemy na adres: ${email} w czasie do 72 godzin.`);
 
-                if (result.status === "invalid_pin") {
-                    alert("❌ Wprowadzony kod PIN jest nieprawidłowy lub wygasł. Sprawdź e-mail i spróbuj ponownie.");
-                    orderBtn.disabled = false;
-                    orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
-                    pinInput.focus();
-                    return;
-                }
+            // Reset formularza
+            selectedRegions.clear();
+            emailInput.value = '';
+            senderNameInput.value = '';
+            currentAlertId = '';
+            document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
+            updateUI();
 
-                alert(`✅ Adres e-mail potwierdzony pomyślnie!\nZgłoszenie (${alertId}) zostało przyjęte.\nRaport z wyceną prześlemy na adres ${email} w czasie do 72 godzin.`);
-
-                selectedRegions.clear();
-                emailInput.value = '';
-                emailInput.disabled = false;
-                pinInput.value = '';
-                pinBox.style.display = 'none';
-                currentStep = 'need_pin';
-                document.querySelectorAll('.region-label input[type="checkbox"]').forEach(c => c.checked = false);
-                updateUI();
-
-            } catch (err) {
-                console.error(err);
-                alert("Wystąpił problem z połączeniem. Spróbuj ponownie.");
-                orderBtn.disabled = false;
-                orderBtn.textContent = `📋 Potwierdź i zamów raport z wyceną (${selectedRegions.size} rejonów)`;
-            }
+        } catch (err) {
+            console.error("Błąd wysyłki:", err);
+            alert("Wystąpił problem z połączeniem. Spróbuj ponownie za chwilę.");
+            orderBtn.disabled = false;
+            orderBtn.textContent = originalText;
         }
     });
 })();
