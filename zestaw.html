@@ -598,7 +598,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji)[cite: 3].</li>
-                        <li>Prosta, stała stawka dzienna[cite: 1, 2]. Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu[cite: 3].</li>
+                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni, tym niższa stawka)[cite: 3]. Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu[cite: 3].</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia[cite: 3].</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru[cite: 3]. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie[cite: 3]!</li>
                     </ul>
@@ -1301,7 +1301,7 @@
                     const chk = lbl.querySelector('.region-chk');
                     const val = chk ? (chk.value || '').trim() : (lbl.textContent || '').trim();
                     
-                    // Odrzucenie pustych pozycji oraz śmieci ze zepsutych znaczników
+                    // Odrzucenie pustych pozycji oraz ewentualnych śmieci ze zepsutych znaczników
                     if (!val || val.length === 0 || val === 'undefined' || val.startsWith('<!--')) {
                         lbl.remove();
                         return null;
@@ -1565,7 +1565,7 @@
             });
         }
 
-        /* --- DYNAMICZNY PRZELICZNIK: 10 EUR / 40 PLN NETTO + GROSS-UP PAYPAL --- */
+        /* --- DYNAMICZNY PRZELICZNIK: RABATY SCHODKOWE + GROSS-UP PAYPAL --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1627,11 +1627,44 @@
                 totalDays += regionDates.size;
             });
 
-            // 1. USTALENIE STAWKI DZIENNEJ NETTO
-            let ratePerDay = isEuro ? 10.00 : 40.00;
-            let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+            // 1. PROGI RABATOWE (BAZA 10 € / 40 PLN)
+            let baseRate = isEuro ? 10.00 : 40.00;
+            let ratePerDay;
 
-            // 2. KALKULACJA GROSS-UP DLA PAYPAL (2.9% + 0.35 EUR / 1.35 PLN)
+            if (isMapAddonChecked) {
+                ratePerDay = baseRate;
+            } else {
+                if (isEuro) {
+                    // Cennik EUR schodkowy
+                    if (totalDays >= 250) ratePerDay = 2.00;
+                    else if (totalDays >= 181) ratePerDay = 3.00;
+                    else if (totalDays >= 121) ratePerDay = 4.00;
+                    else if (totalDays >= 81)  ratePerDay = 5.00;
+                    else if (totalDays >= 51)  ratePerDay = 6.00;
+                    else if (totalDays >= 31)  ratePerDay = 7.00;
+                    else if (totalDays >= 16)  ratePerDay = 8.00;
+                    else if (totalDays >= 6)   ratePerDay = 9.00;
+                    else                       ratePerDay = 10.00;
+                } else {
+                    // Cennik PLN schodkowy
+                    if (totalDays >= 250) ratePerDay = 8.00;
+                    else if (totalDays >= 181) ratePerDay = 12.00;
+                    else if (totalDays >= 121) ratePerDay = 16.00;
+                    else if (totalDays >= 81)  ratePerDay = 20.00;
+                    else if (totalDays >= 51)  ratePerDay = 24.00;
+                    else if (totalDays >= 31)  ratePerDay = 28.00;
+                    else if (totalDays >= 16)  ratePerDay = 32.00;
+                    else if (totalDays >= 6)   ratePerDay = 36.00;
+                    else                       ratePerDay = 40.00;
+                }
+            }
+
+            let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
+            let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+            let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
+            let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
+
+            // 2. GROSS-UP DLA PAYPAL (2.9% + 0.35 EUR / 1.35 PLN)
             let selectedPayment = document.querySelector('input[name="payment"]:checked')?.value || "";
             let isPaypal = selectedPayment.toUpperCase().includes("PAYPAL");
 
@@ -1648,9 +1681,12 @@
 
             return {
                 totalDays: totalDays,
-                totalPrice: totalPriceNetto,        // Kwota netto dla Ciebie
-                finalPrice: finalPayAmount,         // Kwota brutto do zapłaty
-                paypalFee: paypalFee,               // Prowizja operatora
+                totalPrice: totalPriceNetto,        // Kwota netto dla Ciebie po rabacie
+                finalPrice: finalPayAmount,         // Kwota pobierana od klienta
+                regularPrice: regularPrice,
+                discountPercent: discountPercent,
+                savings: savings,
+                paypalFee: paypalFee,
                 isPaypal: isPaypal,
                 ratePerDay: ratePerDay,
                 currency: currencySymbol,
@@ -1808,18 +1844,25 @@
             }
 
             if (calc.totalDays > 0) {
+                let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Baza PRO' : '';
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency} (${calc.totalDays} dni${extraNotice})`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge} (${calc.totalDays} dni${extraNotice})`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Wartość: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata transakcyjna PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b>`;
+                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})`;
                 } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency} (${calc.totalDays} dni${extraNotice})`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge} (${calc.totalDays} dni${extraNotice})`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Stawka: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}/dzień</b>`;
+                    if (configSubtitle) {
+                        if (calc.savings > 0) {
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka: ${calc.ratePerDay.toFixed(2)} ${calc.currency}/dzień)`;
+                        } else {
+                            configSubtitle.innerHTML = `Stawka: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}/dzień</b>`;
+                        }
+                    }
                 }
             } else {
                 if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
@@ -2065,12 +2108,17 @@
             if (!hasOnlySpecial && calc.totalDays > 0) {
                 if (calc.isPaypal && calc.paypalFee > 0) {
                     body += "PODSUMOWANIE CENY: " + calc.finalPrice.toFixed(2) + " " + calc.currency + " (w tym opłata transakcyjna PayPal: +" + calc.paypalFee.toFixed(2) + " " + calc.currency + ")\n";
-                    body += "- Wartość zamówienia: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
+                    body += "- Wartość zamówienia po rabacie: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 } else {
                     body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 }
                 body += "- Łączna liczba dni roboczych: " + calc.totalDays + " dni\n";
                 body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
+                if (calc.isMapAddonChecked) {
+                    body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
+                } else if (calc.savings > 0) {
+                    body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
+                }
                 if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.includes(r))) {
                     body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (pełne terminy w generowanym raporcie PRO).\n";
                 }
