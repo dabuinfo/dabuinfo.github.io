@@ -210,7 +210,7 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html, data.html oraz mapa2026.html)[cite: 1]
+        // 3. TWORZENIE ASYSTENTA[cite: 1]
         const currentPath = window.location.pathname.toLowerCase();
         const isExcludedPage = currentPath.includes('kalendarz') || 
                                currentPath.includes('gieldy') || 
@@ -338,6 +338,7 @@
                     if(el) el.remove();
                     
                     if (data && data.odpowiedz) {
+                        // Przekazujemy odpowiedź oraz infoRejon z kolumny D
                         appendMessage(data.odpowiedz, 'received', null, data.infoRejon);
                     } else {
                         appendMessage(tChat.blad, 'received');
@@ -357,33 +358,33 @@
                 let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-                // Generowanie rozwijanego bloku informacji z kolumny D
+                // Obsługa rozwijania informacji o rejonie z kolumny D
                 if (infoRejon && infoRejon.trim() !== '') {
-                    const boxId = 'info-box-' + Math.random().toString(36).substr(2, 9);
-                    const infoWrapper = document.createElement('div');
-                    infoWrapper.style.marginTop = '10px';
-                    infoWrapper.style.paddingTop = '8px';
-                    infoWrapper.style.borderTop = '1px dashed #cbd5e1';
+                    const uniqueId = 'info-' + Math.random().toString(36).substring(2, 9);
+                    const infoBlock = document.createElement('div');
+                    infoBlock.style.marginTop = '10px';
+                    infoBlock.style.paddingTop = '8px';
+                    infoBlock.style.borderTop = '1px dashed #cbd5e1';
 
-                    infoWrapper.innerHTML = `
-                        <a href="javascript:void(0)" id="toggle-${boxId}" style="color: #16a34a; font-weight: bold; text-decoration: underline; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
-                            ℹ️ Więcej o tym rejonie
+                    infoBlock.innerHTML = `
+                        <a href="javascript:void(0)" id="btn-${uniqueId}" style="color: #16a34a; font-weight: bold; text-decoration: underline; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
+                            ℹ️ Pokaż informację o tym rejonie
                         </a>
-                        <div id="${boxId}" style="display: none; margin-top: 8px; padding: 10px; background: #f8fafc; border-left: 3px solid #16a34a; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #334155; word-break: break-word;">
+                        <div id="content-${uniqueId}" style="display: none; margin-top: 8px; padding: 10px; background: #f1f5f9; border-left: 3px solid #16a34a; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #1e293b;">
                             ${infoRejon.replace(/\n/g, '<br>')}
                         </div>
                     `;
 
-                    bubble.appendChild(infoWrapper);
+                    bubble.appendChild(infoBlock);
 
-                    const toggleLink = infoWrapper.querySelector(`#toggle-${boxId}`);
-                    const detailsBox = infoWrapper.querySelector(`#${boxId}`);
+                    const btn = infoBlock.querySelector(`#btn-${uniqueId}`);
+                    const content = infoBlock.querySelector(`#content-${uniqueId}`);
 
-                    toggleLink.addEventListener('click', function(e) {
+                    btn.addEventListener('click', function(e) {
                         e.preventDefault();
-                        const isVisible = detailsBox.style.display === 'block';
-                        detailsBox.style.display = isVisible ? 'none' : 'block';
-                        toggleLink.innerHTML = isVisible ? 'ℹ️ Więcej o tym rejonie' : '🔼 Ukryj informację o rejonie';
+                        const isOpen = content.style.display === 'block';
+                        content.style.display = isOpen ? 'none' : 'block';
+                        btn.innerHTML = isOpen ? 'ℹ️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
                         messagesArea.scrollTop = messagesArea.scrollHeight;
                     });
                 }
