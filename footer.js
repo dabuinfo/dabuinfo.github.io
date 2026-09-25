@@ -1,7 +1,7 @@
-// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google
+// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google[cite: 1]
 (function() {
     function initFooterAndAssistant() {
-        // 1. STYLE CSS
+        // 1. STYLE CSS[cite: 1]
         if (!document.getElementById('dabu-footer-styles')) {
             const style = document.createElement('style');
             style.id = 'dabu-footer-styles';
@@ -160,7 +160,7 @@
 
         const currentYear = new Date().getFullYear();
 
-        // 2. TWORZENIE STOPKI
+        // 2. TWORZENIE STOPKI[cite: 1]
         if (!document.querySelector('.dabu-footer')) {
             const footerElement = document.createElement('footer');
             footerElement.className = 'dabu-footer';
@@ -210,7 +210,7 @@
             document.body.appendChild(footerElement);
         }
 
-        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html, data.html oraz mapa2026.html)
+        // 3. TWORZENIE ASYSTENTA (wyłączony na kalendarz.html, gieldy.html, data.html oraz mapa2026.html)[cite: 1]
         const currentPath = window.location.pathname.toLowerCase();
         const isExcludedPage = currentPath.includes('kalendarz') || 
                                currentPath.includes('gieldy') || 
@@ -338,7 +338,7 @@
                     if(el) el.remove();
                     
                     if (data && data.odpowiedz) {
-                        appendMessage(data.odpowiedz, 'received');
+                        appendMessage(data.odpowiedz, 'received', null, data.infoRejon);
                     } else {
                         appendMessage(tChat.blad, 'received');
                     }
@@ -349,13 +349,44 @@
                 }
             };
 
-            function appendMessage(text, type, id = null) {
+            function appendMessage(text, type, id = null, infoRejon = null) {
                 const bubble = document.createElement('div');
                 bubble.className = type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-received';
                 if(id) bubble.id = id;
                 
                 let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
+
+                // Generowanie rozwijanego bloku informacji z kolumny D
+                if (infoRejon && infoRejon.trim() !== '') {
+                    const boxId = 'info-box-' + Math.random().toString(36).substr(2, 9);
+                    const infoWrapper = document.createElement('div');
+                    infoWrapper.style.marginTop = '10px';
+                    infoWrapper.style.paddingTop = '8px';
+                    infoWrapper.style.borderTop = '1px dashed #cbd5e1';
+
+                    infoWrapper.innerHTML = `
+                        <a href="javascript:void(0)" id="toggle-${boxId}" style="color: #16a34a; font-weight: bold; text-decoration: underline; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
+                            ℹ️ Więcej o tym rejonie
+                        </a>
+                        <div id="${boxId}" style="display: none; margin-top: 8px; padding: 10px; background: #f8fafc; border-left: 3px solid #16a34a; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #334155; word-break: break-word;">
+                            ${infoRejon.replace(/\n/g, '<br>')}
+                        </div>
+                    `;
+
+                    bubble.appendChild(infoWrapper);
+
+                    const toggleLink = infoWrapper.querySelector(`#toggle-${boxId}`);
+                    const detailsBox = infoWrapper.querySelector(`#${boxId}`);
+
+                    toggleLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const isVisible = detailsBox.style.display === 'block';
+                        detailsBox.style.display = isVisible ? 'none' : 'block';
+                        toggleLink.innerHTML = isVisible ? 'ℹ️ Więcej o tym rejonie' : '🔼 Ukryj informację o rejonie';
+                        messagesArea.scrollTop = messagesArea.scrollHeight;
+                    });
+                }
                 
                 messagesArea.appendChild(bubble);
                 messagesArea.scrollTop = messagesArea.scrollHeight;
