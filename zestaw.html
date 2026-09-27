@@ -179,6 +179,17 @@
             }
         }
 
+        .promo-banner {
+            background: linear-gradient(90deg, rgba(46, 204, 113, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid var(--primary-accent);
+            border-radius: var(--radius-sm);
+            padding: 12px 18px;
+            margin: 20px 0 10px 0;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(46, 204, 113, 0.2);
+        }
+
         .form-wrapper { 
             background: linear-gradient(145deg, #152238 0%, #1e293b 100%); 
             padding: clamp(16px, 2.5vw, 30px); 
@@ -587,6 +598,13 @@
             </div>
         </div>
 
+        <div class="promo-banner">
+            <span style="font-size: 1.05rem; font-weight: 800; color: #2ecc71; text-transform: uppercase;">🔥 Promocja do końca roku:</span>
+            <span style="font-size: 0.94rem; margin-left: 6px;">
+                Stawka za dzień zbiórki wynosi maksymalnie <b>25 PLN / 6 €</b> (zamiast standardowych 40 PLN / 10 €)!
+            </span>
+        </div>
+
         <div class="harmonogram-wrapper">
             <h2>Skonfiguruj swój pakiet</h2>
 
@@ -758,7 +776,7 @@
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Jossgrund" /> Jossgrund</label>
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Jüchen" /> Jüchen</label>
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Jülich" /> Jülich</label>
-                                <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Kaarst" /> Kaarst</label>
+                                <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony<!-- spacer -->" name="regiony[]" type="checkbox" value="Kaarst" /> Kaarst</label>
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Kall" /> Kall</label>
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Kamp-Lintfort" /> Kamp-Lintfort</label>
                                 <label class="region-label notranslate" translate="no"><input class="region-chk" name="regiony[]" type="checkbox" value="Karlsruhe Kreis" /> Karlsruhe Kreis</label>
@@ -1295,13 +1313,11 @@
             const labels = Array.from(container.querySelectorAll('.region-label'));
             if (labels.length === 0) return;
 
-            // Zabezpieczenie przed pustymi i uszkodzonymi elementami
             const structuredRegions = labels
                 .map(lbl => {
                     const chk = lbl.querySelector('.region-chk');
                     const val = chk ? (chk.value || '').trim() : (lbl.textContent || '').trim();
                     
-                    // Odrzucenie pustych pozycji oraz ewentualnych śmieci ze zepsutych znaczników
                     if (!val || val.length === 0 || val === 'undefined' || val.startsWith('<!--')) {
                         lbl.remove();
                         return null;
@@ -1627,39 +1643,45 @@
                 totalDays += regionDates.size;
             });
 
-            // 1. PROGI RABATOWE (BAZA 10 € / 40 PLN)
-            let baseRate = isEuro ? 10.00 : 40.00;
+            // 1. PROGI RABATOWE Z PROMOCJĄ DO KOŃCA ROKU (MAX 25 PLN / 6 EUR)
+            let nowTime = new Date();
+            let promoDeadline = new Date(nowTime.getFullYear(), 11, 31, 23, 59, 59);
+            let isPromoActive = (nowTime <= promoDeadline);
+
+            let baseRate = isPromoActive 
+                ? (isEuro ? 6.00 : 25.00) 
+                : (isEuro ? 10.00 : 40.00);
+
             let ratePerDay;
 
             if (isMapAddonChecked) {
                 ratePerDay = baseRate;
             } else {
                 if (isEuro) {
-                    // Cennik EUR schodkowy
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
                     else if (totalDays >= 121) ratePerDay = 4.00;
                     else if (totalDays >= 81)  ratePerDay = 5.00;
                     else if (totalDays >= 51)  ratePerDay = 6.00;
-                    else if (totalDays >= 31)  ratePerDay = 7.00;
-                    else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;
-                    else                       ratePerDay = 10.00;
+                    else if (totalDays >= 31)  ratePerDay = isPromoActive ? 6.00 : 7.00;
+                    else if (totalDays >= 16)  ratePerDay = isPromoActive ? 6.00 : 8.00;
+                    else if (totalDays >= 6)   ratePerDay = isPromoActive ? 6.00 : 9.00;
+                    else                       ratePerDay = isPromoActive ? 6.00 : 10.00;
                 } else {
-                    // Cennik PLN schodkowy
                     if (totalDays >= 250) ratePerDay = 8.00;
                     else if (totalDays >= 181) ratePerDay = 12.00;
                     else if (totalDays >= 121) ratePerDay = 16.00;
                     else if (totalDays >= 81)  ratePerDay = 20.00;
                     else if (totalDays >= 51)  ratePerDay = 24.00;
-                    else if (totalDays >= 31)  ratePerDay = 28.00;
-                    else if (totalDays >= 16)  ratePerDay = 32.00;
-                    else if (totalDays >= 6)   ratePerDay = 36.00;
-                    else                       ratePerDay = 40.00;
+                    else if (totalDays >= 31)  ratePerDay = isPromoActive ? 25.00 : 28.00;
+                    else if (totalDays >= 16)  ratePerDay = isPromoActive ? 25.00 : 32.00;
+                    else if (totalDays >= 6)   ratePerDay = isPromoActive ? 25.00 : 36.00;
+                    else                       ratePerDay = isPromoActive ? 25.00 : 40.00;
                 }
             }
 
-            let regularPrice = Math.round((totalDays * baseRate) * 100) / 100;
+            let regularBaseReference = isEuro ? 10.00 : 40.00;
+            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
             let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
@@ -1681,8 +1703,8 @@
 
             return {
                 totalDays: totalDays,
-                totalPrice: totalPriceNetto,        // Kwota netto dla Ciebie po rabacie
-                finalPrice: finalPayAmount,         // Kwota pobierana od klienta
+                totalPrice: totalPriceNetto,
+                finalPrice: finalPayAmount,
                 regularPrice: regularPrice,
                 discountPercent: discountPercent,
                 savings: savings,
