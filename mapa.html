@@ -50,6 +50,16 @@
             outline: none !important;
         }
 
+        /* --- EFEKTY 3D I POŚWIATA GRANIC LANDÓW --- */
+        .land-boundary-3d {
+            filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.75)) drop-shadow(0px 0px 4px rgba(0, 255, 127, 0.35));
+            transition: all 0.25s ease-out;
+            cursor: pointer;
+        }
+        .land-boundary-3d:hover {
+            filter: drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.9)) drop-shadow(0px 0px 10px rgba(0, 255, 127, 0.75));
+        }
+
         .dabu-regions-widget { 
             background: rgba(0, 0, 0, 0.3);
             padding: 15px; 
@@ -820,23 +830,74 @@
             if (visibleEl) visibleEl.innerText = visible;
         }
 
+        // WARSTWY DLA EFEKTU 3D
+        let landShadowLayer = L.layerGroup().addTo(map);
+        let landFrontLayer = L.layerGroup().addTo(map);
+
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
+               // 1. Warstwa Cienia 3D (Drop shadow extrusion)
+               L.geoJSON(geoData, {
+                  interactive: false,
+                  style: function() {
+                      return {
+                          color: '#05070a',
+                          weight: 4,
+                          fillColor: '#000000',
+                          fillOpacity: 0.22,
+                          className: 'land-shadow-path'
+                      };
+                  }
+               }).addTo(landShadowLayer);
+
+               // 2. Warstwa Właściwa (Uniesione landy z neonową poświatą)
                L.geoJSON(geoData, {
                   style: function(feature) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
                       let active = landMap[name] && landMap[name].length > 0;
-                      let regionColor = landColors[name] || "#ffd700"; 
-                      return { color: active ? regionColor : "#777", weight: active ? 2 : 1, fillColor: active ? regionColor : "#777", fillOpacity: active ? 0.05 : 0.02 };
+                      let regionColor = landColors[name] || "#00FF7F"; 
+                      return { 
+                          color: active ? regionColor : "#444a57", 
+                          weight: active ? 2.5 : 1, 
+                          dashArray: active ? null : '3, 4',
+                          fillColor: active ? regionColor : "#2a313d", 
+                          fillOpacity: active ? 0.08 : 0.02,
+                          className: active ? 'land-boundary-3d' : ''
+                      };
                   },
                   onEachFeature: function (feature, layer) {
                       let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
                       let count = landMap[name] ? landMap[name].length : 0;
+                      let regionColor = landColors[name] || "#00FF7F";
+
                       layer.bindTooltip("<b>"+name+"</b><br>"+(count > 0 ? "Rejony: "+count : "Brak rejonów"), {sticky: true, className: 'custom-leaflet-tooltip'});
+                      
+                      layer.on('mouseover', function(e) {
+                          if (landMap[name] && landMap[name].length > 0) {
+                              this.setStyle({
+                                  weight: 4,
+                                  fillOpacity: 0.22,
+                                  color: '#ffffff'
+                              });
+                              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                  this.bringToFront();
+                              }
+                          }
+                      });
+
+                      layer.on('mouseout', function(e) {
+                          let active = landMap[name] && landMap[name].length > 0;
+                          this.setStyle({
+                              color: active ? regionColor : "#444a57",
+                              weight: active ? 2.5 : 1,
+                              fillOpacity: active ? 0.08 : 0.02
+                          });
+                      });
+
                       layer.on('click', () => selectLand(name));
                   }
-               }).addTo(map);
+               }).addTo(landFrontLayer);
             });
 
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
