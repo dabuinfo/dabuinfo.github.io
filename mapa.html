@@ -53,14 +53,14 @@
             outline: none !important;
         }
 
-        /* --- PŁYWAJĄCY GÓRNY PANEL --- */
+        /* --- GÓRNY PANEL --- */
         .floating-search-hub {
             position: absolute;
             top: 12px;
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 24px);
-            max-width: 500px;
+            max-width: 520px;
             z-index: 1100;
             display: flex;
             flex-direction: column;
@@ -100,6 +100,20 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .dabu-land-select {
+            background: #111827;
+            border: 1px solid rgba(0, 255, 127, 0.4);
+            color: #00FF7F;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            flex-grow: 1;
         }
 
         .dabu-county-btn { 
@@ -118,14 +132,14 @@
             color: #000;
         }
 
-        /* --- ROZWIJANA LISTA WYSZUKIWANIA POWIATÓW --- */
+        /* --- LISTA POWIATÓW PODZIELONA NA LANDY --- */
         .counties-search-list {
             max-height: 0;
             opacity: 0;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             background: rgba(18, 24, 38, 0.98);
             backdrop-filter: blur(14px);
             border-radius: 10px;
@@ -136,14 +150,26 @@
         }
 
         .counties-search-list.is-open {
-            max-height: 250px;
+            max-height: 320px;
             opacity: 1;
             padding: 8px 10px;
             border-color: rgba(0, 255, 127, 0.4);
         }
 
+        .land-group-header {
+            font-size: 11.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #ffd700;
+            padding: 4px 8px;
+            margin-top: 6px;
+            border-radius: 3px;
+        }
+
         .county-search-item {
-            padding: 8px 12px;
+            padding: 7px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13.5px;
@@ -158,7 +184,7 @@
             color: #00FF7F;
         }
 
-        /* --- OKNO POBRANYCH W LOCIE GMIN --- */
+        /* --- OKNO GMIN W LOCIE --- */
         .county-details-modal {
             position: absolute;
             top: 50%;
@@ -196,7 +222,7 @@
 
         .modal-header h3 {
             margin: 0;
-            font-size: 16px;
+            font-size: 15.5px;
             color: #00FF7F;
             display: flex;
             align-items: center;
@@ -302,7 +328,6 @@
             white-space: nowrap;
         }
 
-        /* STYLE KONTURÓW */
         .county-boundary {
             filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8)) drop-shadow(0px 0px 4px rgba(0, 255, 127, 0.35));
             cursor: pointer;
@@ -330,18 +355,6 @@
             box-shadow: 0 0 12px #00c3ff;
             position: relative;
         }
-        .user-loc-pin::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: -6px; right: -6px; bottom: -6px;
-            border-radius: 50%;
-            border: 2px solid #00c3ff;
-            animation: user-loc-pulse 1.6s infinite ease-out;
-        }
-        @keyframes user-loc-pulse {
-            0% { transform: scale(0.6); opacity: 1; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -353,13 +366,32 @@
 
     <div id="dabuOSMMap"></div>
 
-    <!-- PŁYWAJĄCY HUB WYSZUKIWANIA POWIATÓW -->
+    <!-- PŁYWAJĄCY PANEL WYSZUKIWARKI -->
     <div class="floating-search-hub">
         <div class="search-box-wrapper">
-            <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="🔍 Szukaj powiatu (np. Borken, Olpe, Stade, Düren)..." onkeyup="filterCounties()" onfocus="openCountiesList()">
+            <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="🔍 Szukaj powiatu (np. Borken, Göttingen, Stade)..." onkeyup="filterCounties()" onfocus="openCountiesList()">
             
             <div class="filters-quick-row">
-                <button class="dabu-county-btn" onclick="zoomGermany()">🇩🇪 Całe Niemcy</button>
+                <select id="landSelectFilter" class="dabu-land-select" onchange="onLandFilterChange()">
+                    <option value="">Wszystkie Landy (16)</option>
+                    <option value="Baden-Württemberg">Baden-Württemberg</option>
+                    <option value="Bayern">Bayern</option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Brandenburg">Brandenburg</option>
+                    <option value="Bremen">Bremen</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Hessen">Hessen</option>
+                    <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
+                    <option value="Niedersachsen">Niedersachsen</option>
+                    <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+                    <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+                    <option value="Saarland">Saarland</option>
+                    <option value="Sachsen">Sachsen</option>
+                    <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
+                    <option value="Schleswig-Holstein">Schleswig-Holstein</option>
+                    <option value="Thüringen">Thüringen</option>
+                </select>
+                <button class="dabu-county-btn" onclick="zoomGermany()">🇩🇪 Reset mapy</button>
                 <button class="dabu-county-btn" style="background:#dc3545; color:#fff; border-color:#dc3545;" onclick="clearAllSelections()">🗑️ Wyczyść</button>
             </div>
         </div>
@@ -367,7 +399,7 @@
         <div class="counties-search-list" id="countiesSearchList"></div>
     </div>
 
-    <!-- MODAL POBRANYCH W LOCIE GMIN DLA POWIATU -->
+    <!-- MODAL GMIN W LOCIE -->
     <div class="county-details-modal" id="countyDetailsModal">
         <div class="modal-header">
             <h3 id="modalCountyTitle">📍 Powiat</h3>
@@ -380,7 +412,7 @@
         </div>
     </div>
 
-    <!-- DOLNY LICZNIK KOSZYKA -->
+    <!-- DOLNY LICZNIK -->
     <div class="bottom-counter-container">
         <div class="map-counter-box">
             <span>Wybrane gminy do zapytania: <strong id="totalCartCount" style="color:#00FF7F;">0</strong></span>
@@ -391,6 +423,15 @@
         let selectedMunicipalities = [];
         let allCountiesGeoList = [];
         let userLocationMarker = null;
+        let kreisGeoLayer = null;
+
+        // MAPA PREFIKSÓW REGIONALNYCH DLA LANDÓW
+        const AGS_LAND_MAP = {
+            "01": "Schleswig-Holstein", "02": "Hamburg", "03": "Niedersachsen", "04": "Bremen",
+            "05": "Nordrhein-Westfalen", "06": "Hessen", "07": "Rheinland-Pfalz", "08": "Baden-Württemberg",
+            "09": "Bayern", "10": "Saarland", "11": "Berlin", "12": "Brandenburg",
+            "13": "Mecklenburg-Vorpommern", "14": "Sachsen", "15": "Sachsen-Anhalt", "16": "Thüringen"
+        };
 
         const map = L.map('dabuOSMMap', { zoomControl: false }).setView([51.1657, 10.4515], 6);
         L.control.zoom({ position: 'topleft' }).addTo(map);
@@ -423,11 +464,11 @@
         };
         customControls.addTo(map);
 
-        // WCZYTANIE POWIATÓW NIEMIEC (4_kreise)
+        // WCZYTANIE POWIATÓW Z PRZYPISANIEM DO LANDÓW
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
-                const kreisLayer = L.geoJSON(geoData, {
+                kreisGeoLayer = L.geoJSON(geoData, {
                     style: function () {
                         return {
                             color: "#00FF7F",
@@ -440,10 +481,24 @@
                     onEachFeature: function (feature, layer) {
                         const p = feature.properties || {};
                         const name = p.GEN || p.name || p.NAME_3 || p.NAME_2 || "Powiat";
+                        
+                        // Wyciągamy Land po kluczu AGS (pierwsze 2 cyfry) lub atrybutach
+                        let land = "Inny";
+                        const ags = p.AGS || p.CCA_2 || "";
+                        if (ags && ags.length >= 2) {
+                            land = AGS_LAND_MAP[ags.substring(0, 2)] || "Inny";
+                        } else if (p.NAME_1) {
+                            land = p.NAME_1;
+                        }
 
-                        allCountiesGeoList.push({ name: name, layer: layer, bounds: layer.getBounds() });
+                        allCountiesGeoList.push({ 
+                            name: name, 
+                            land: land, 
+                            layer: layer, 
+                            bounds: layer.getBounds() 
+                        });
 
-                        layer.bindTooltip(`<b>${name}</b><br><small>Kliknij, aby pobrać gminy w locie</small>`, { sticky: true, className: 'custom-leaflet-tooltip' });
+                        layer.bindTooltip(`<b>${name}</b><br><small>Land: ${land}</small>`, { sticky: true, className: 'custom-leaflet-tooltip' });
                         
                         layer.on('mouseover', function () {
                             this.setStyle({ weight: 3, fillOpacity: 0.15, color: '#ffffff' });
@@ -453,24 +508,24 @@
                         });
                         layer.on('click', function () {
                             map.fitBounds(layer.getBounds(), { padding: [60, 60] });
-                            fetchMunicipalitiesInFlight(name);
+                            fetchMunicipalitiesInFlight(name, land, layer);
                         });
                     }
                 }).addTo(map);
 
                 let isMobile = window.innerWidth <= 600;
-                map.fitBounds(kreisLayer.getBounds(), {
+                map.fitBounds(kreisGeoLayer.getBounds(), {
                     paddingTopLeft: [0, isMobile ? 120 : 90],
                     paddingBottomRight: [0, isMobile ? 40 : 30]
                 });
             });
 
-        // POBIERANIE GMIN W LOCIE Z OPENSTREETMAP (OVERPASS API)
-        async function fetchMunicipalitiesInFlight(countyName) {
+        // POBIERANIE GMIN W LOCIE Z OVERPASS API
+        async function fetchMunicipalitiesInFlight(countyName, landName, layer) {
             const modalTitle = document.getElementById('modalCountyTitle');
             const container = document.getElementById('modalMunicipalitiesList');
             
-            modalTitle.innerHTML = `📍 ${countyName}`;
+            modalTitle.innerHTML = `📍 ${countyName} <small style="font-size:12px; color:#94a3b8; font-weight:normal;">(${landName})</small>`;
             container.innerHTML = `
                 <div style="text-align:center; padding: 30px; color: #00FF7F;">
                     <div style="font-size: 26px; animation: spin 1s infinite linear; display: inline-block;">⏳</div>
@@ -479,15 +534,18 @@
             `;
             document.getElementById('countyDetailsModal').classList.add('is-active');
 
-            // Zapytanie Overpass: admin_level=8 (miasta i gminy) wewnątrz obszaru danego powiatu
-            const overpassQuery = `
-                [out:json][timeout:15];
-                area["name"~"${countyName.replace(/"/g, '')}"]["boundary"="administrative"]->.searchArea;
-                (
-                  relation["boundary"="administrative"]["admin_level"="8"](area.searchArea);
-                );
-                out tags;
-            `;
+            // Bounding box powiatu
+            let bbox = "";
+            if (layer && layer.getBounds) {
+                const b = layer.getBounds();
+                bbox = `${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
+            }
+
+            const cleanName = countyName.replace(/^(Landkreis|Kreis|Stadt)\s+/i, '').trim();
+
+            let overpassQuery = bbox 
+                ? `[out:json][timeout:20];(relation["boundary"="administrative"]["admin_level"="8"](${bbox});relation["boundary"="administrative"]["admin_level"="7"](${bbox}););out tags;`
+                : `[out:json][timeout:20];area["name"~"${cleanName}"]["boundary"="administrative"]->.searchArea;(relation["boundary"="administrative"]["admin_level"="8"](area.searchArea););out tags;`;
 
             const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(overpassQuery);
 
@@ -499,24 +557,18 @@
                 if (data.elements) {
                     data.elements.forEach(el => {
                         if (el.tags && el.tags.name) {
-                            municipalities.push(el.tags.name);
+                            const n = el.tags.name.trim();
+                            if (!n.toLowerCase().startsWith("landkreis") && 
+                                !n.toLowerCase().startsWith("kreis ") &&
+                                n !== countyName) {
+                                municipalities.push(n);
+                            }
                         }
                     });
                 }
 
+                municipalities.push(cleanName);
                 municipalities = [...new Set(municipalities)].sort((a, b) => a.localeCompare(b, 'de'));
-
-                if (municipalities.length === 0) {
-                    container.innerHTML = `
-                        <p style="color: #94a3b8; text-align: center; padding: 25px; line-height: 1.5;">
-                            Nie znaleziono wyodrębnionych gmin lub jest to miasto na prawach powiatu (kreisfreie Stadt).<br><br>
-                            <button class="add-mun-btn" onclick="toggleMunicipality('${countyName.replace(/'/g, "\\'")}', this)">
-                                + Dodaj cały powiat "${countyName}" do zapytania
-                            </button>
-                        </p>
-                    `;
-                    return;
-                }
 
                 container.innerHTML = '';
                 municipalities.forEach(mun => {
@@ -537,9 +589,9 @@
                 console.error("Błąd zapytania Overpass:", err);
                 container.innerHTML = `
                     <div style="text-align: center; padding: 20px;">
-                        <p style="color: #ff4444; font-size: 13px;">Chwilowy problem z pobraniem spisu gmin.</p>
-                        <button class="add-mun-btn" onclick="toggleMunicipality('${countyName.replace(/'/g, "\\'")}', this)">
-                            + Dodaj cały powiat "${countyName}" do zapytania
+                        <p style="color: #cbd5e1; font-size: 13px;">Nie udało się pobrać szczegółowej listy gmin.</p>
+                        <button class="add-mun-btn" onclick="toggleMunicipality('${cleanName.replace(/'/g, "\\'")}', this)">
+                            + Dodaj cały powiat "${cleanName}" do zapytania
                         </button>
                     </div>
                 `;
@@ -568,7 +620,7 @@
             document.getElementById('modalSelectedCounter').innerText = `Wybrano gmin: ${selectedMunicipalities.length}`;
         }
 
-        // WYSZUKIWARKA POWIATÓW
+        // WYSZUKIWARKA Z PODZIAŁEM NA LANDY
         function openCountiesList() {
             document.getElementById('countiesSearchList').classList.add('is-open');
             filterCounties();
@@ -576,30 +628,70 @@
 
         function filterCounties() {
             const query = document.getElementById('dabuRegionSearch').value.toLowerCase().trim();
+            const selectedLand = document.getElementById('landSelectFilter').value;
             const list = document.getElementById('countiesSearchList');
             list.innerHTML = '';
 
-            const matched = allCountiesGeoList.filter(c => c.name.toLowerCase().includes(query)).slice(0, 15);
-
-            matched.forEach(c => {
-                const item = document.createElement('div');
-                item.className = 'county-search-item';
-                item.innerHTML = `
-                    <span>📍 <strong>${c.name}</strong></span>
-                    <span style="font-size:11.5px; color:#00FF7F;">Wybierz ›</span>
-                `;
-                item.onclick = () => {
-                    list.classList.remove('is-open');
-                    map.fitBounds(c.bounds, { padding: [60, 60] });
-                    fetchMunicipalitiesInFlight(c.name);
-                };
-                list.appendChild(item);
+            let filtered = allCountiesGeoList.filter(c => {
+                const matchesQuery = c.name.toLowerCase().includes(query) || c.land.toLowerCase().includes(query);
+                const matchesLand = !selectedLand || c.land === selectedLand;
+                return matchesQuery && matchesLand;
             });
+
+            // Grupowanie według Landu
+            const groupedByLand = {};
+            filtered.forEach(c => {
+                if (!groupedByLand[c.land]) groupedByLand[c.land] = [];
+                groupedByLand[c.land].push(c);
+            });
+
+            const sortedLands = Object.keys(groupedByLand).sort();
+
+            if (sortedLands.length === 0) {
+                list.innerHTML = `<div style="padding: 10px; color: #94a3b8; font-size: 13px; text-align: center;">Brak pasujących powiatów</div>`;
+                return;
+            }
+
+            sortedLands.forEach(land => {
+                const header = document.createElement('div');
+                header.className = 'land-group-header';
+                header.innerText = `${land} (${groupedByLand[land].length})`;
+                list.appendChild(header);
+
+                groupedByLand[land].sort((a,b) => a.name.localeCompare(b.name, 'de')).forEach(c => {
+                    const item = document.createElement('div');
+                    item.className = 'county-search-item';
+                    item.innerHTML = `
+                        <span>📍 <strong>${c.name}</strong></span>
+                        <span style="font-size:11.5px; color:#00FF7F;">Wybierz ›</span>
+                    `;
+                    item.onclick = () => {
+                        list.classList.remove('is-open');
+                        map.fitBounds(c.bounds, { padding: [60, 60] });
+                        fetchMunicipalitiesInFlight(c.name, c.land, c.layer);
+                    };
+                    list.appendChild(item);
+                });
+            });
+        }
+
+        function onLandFilterChange() {
+            const selectedLand = document.getElementById('landSelectFilter').value;
+            filterCounties();
+
+            if (selectedLand && allCountiesGeoList.length > 0) {
+                const landCounties = allCountiesGeoList.filter(c => c.land === selectedLand);
+                if (landCounties.length > 0) {
+                    const group = L.featureGroup(landCounties.map(c => c.layer));
+                    map.fitBounds(group.getBounds(), { padding: [40, 40] });
+                }
+            }
         }
 
         function clearAllSelections() {
             selectedMunicipalities = [];
             document.getElementById('dabuRegionSearch').value = '';
+            document.getElementById('landSelectFilter').value = '';
             document.getElementById('countiesSearchList').classList.remove('is-open');
             closeCountyModal();
             updateCartDisplays();
@@ -607,6 +699,7 @@
         }
 
         function zoomGermany() {
+            document.getElementById('landSelectFilter').value = '';
             map.flyTo([51.1657, 10.4515], 6, { duration: 1 });
         }
 
@@ -614,7 +707,6 @@
             document.getElementById('countiesSearchList').classList.remove('is-open');
         });
 
-        // WYSYŁANIE WIADOMOŚCI SMS
         function sendSmsQuote() {
             if (selectedMunicipalities.length === 0) {
                 alert("Wybierz przynajmniej jedną gminę z listy.");
