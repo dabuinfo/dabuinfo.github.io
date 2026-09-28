@@ -463,17 +463,23 @@
         };
         customControls.addTo(map);
 
+// --- NOWOŚĆ: TWORZENIE WARSTWY ZAWSZE NA WIERZCHU DLA LANDÓW ---
+        map.createPane('landBordersPane');
+        map.getPane('landBordersPane').style.zIndex = 450; // Powyżej standardowych warstw (400)
+        map.getPane('landBordersPane').style.pointerEvents = 'none'; // Przepuszcza kliknięcia w dół do powiatów
+
         // WCZYTANIE GRANIC LANDÓW (BUNDESLÄNDER)
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
                 L.geoJSON(geoData, {
+                    pane: 'landBordersPane', // Przypisanie do wyższej warstwy
+                    interactive: false,
                     style: {
-                        color: "#ffd700",
-                        weight: 2.5,
-                        opacity: 0.8,
-                        fillOpacity: 0,
-                        interactive: false
+                        color: "#ffd700",      // Złoty kolor
+                        weight: 3.5,           // Zwiększona grubość, żeby wybić się nad powiaty
+                        opacity: 1,            // Pełna nieprzezroczystość linii
+                        fillOpacity: 0
                     }
                 }).addTo(map);
             })
