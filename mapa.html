@@ -20,7 +20,7 @@
     
     <link rel="stylesheet" href="style.css">
 
-    <!-- Biblioteki Leaflet -->
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -53,14 +53,14 @@
             outline: none !important;
         }
 
-        /* --- PŁYWAJĄCY GÓRNY PANEL --- */
+        /* --- OBERES SUCH-PANEL --- */
         .floating-search-hub {
             position: absolute;
             top: 12px;
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 24px);
-            max-width: 520px;
+            max-width: 500px;
             z-index: 1100;
             display: flex;
             flex-direction: column;
@@ -118,14 +118,14 @@
             color: #000;
         }
 
-        /* --- ROZWIJANA LISTA REGIONÓW --- */
-        .regions-scroll-box { 
+        /* --- KREIS-SUCHLISTE --- */
+        .counties-search-list {
             max-height: 0;
             opacity: 0;
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 2px; 
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             background: rgba(18, 24, 38, 0.98);
             backdrop-filter: blur(14px);
             border-radius: 10px;
@@ -135,103 +135,153 @@
             padding: 0 10px;
         }
 
-        .regions-scroll-box.is-open {
-            max-height: min(48vh, 360px);
+        .counties-search-list.is-open {
+            max-height: 250px;
             opacity: 1;
-            padding: 10px;
+            padding: 8px 10px;
             border-color: rgba(0, 255, 127, 0.4);
         }
 
-        .regions-scroll-box::-webkit-scrollbar { width: 6px; }
-        .regions-scroll-box::-webkit-scrollbar-thumb { background: #00FF7F; border-radius: 4px; }
-
-        .region-label { 
-            display: flex; 
-            align-items: center; 
-            color: #cbd5e1; 
+        .county-search-item {
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            padding: 6px 10px; 
-            border-radius: 6px; 
-            font-size: 13.5px; 
+            font-size: 13.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #e2e8f0;
             transition: background 0.15s;
         }
-        .region-label:hover { 
-            background: rgba(0, 255, 127, 0.15); 
-            color: #fff;
-        }
-        .region-chk { 
-            appearance: none; 
-            width: 18px; 
-            height: 18px; 
-            border: 2px solid #555;
-            border-radius: 4px; 
-            margin-right: 10px; 
-            background: #222; 
-            position: relative; 
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .region-chk:checked { 
-            background-color: #00FF7F; 
-            border-color: #00FF7F;
-        }
-        .region-chk:checked::after { 
-            content: ''; 
-            position: absolute; 
-            left: 5px; 
-            top: 2px; 
-            width: 4px;
-            height: 8px; 
-            border: solid #000; 
-            border-width: 0 2px 2px 0; 
-            transform: rotate(45deg);
-        }
-        .add-list-btn {
+        .county-search-item:hover {
             background: rgba(0, 255, 127, 0.15);
             color: #00FF7F;
-            border: 1px solid #00FF7F;
-            padding: 2px 7px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            margin-left: auto;
-            transition: all 0.2s;
-        }
-        .add-list-btn:hover {
-            background: #00FF7F;
-            color: #000;
         }
 
-        /* --- BLOK ZAPYTANIA SMS NA DOLE ROZWIJANEJ LISTY --- */
-        .list-sms-dock {
-            margin-top: 8px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        /* --- MODALES FENSTER FÜR GEMEINDEN NACH KREIS-KLICK --- */
+        .county-details-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 90%;
+            max-width: 480px;
+            max-height: 80vh;
+            background: rgba(18, 24, 38, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid #00FF7F;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease-out;
+        }
+
+        .county-details-modal.is-active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #00FF7F;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .close-modal-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .close-modal-btn:hover { color: #fff; }
+
+        .modal-body {
+            padding: 12px 16px;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-thumb { background: #00FF7F; border-radius: 4px; }
+
+        .municipality-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            background: rgba(11, 15, 25, 0.85);
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 127, 0.3);
+            padding: 7px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .list-sms-dock-btn {
+        .municipality-row:hover {
+            background: rgba(0, 255, 127, 0.08);
+            border-color: rgba(0, 255, 127, 0.2);
+        }
+
+        .add-mun-btn {
+            background: rgba(0, 255, 127, 0.15);
+            color: #00FF7F;
+            border: 1px solid #00FF7F;
+            padding: 4px 9px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .add-mun-btn:hover {
+            background: #00FF7F;
+            color: #000;
+        }
+        .add-mun-btn.added {
+            background: #ffd700;
+            color: #000;
+            border-color: #ffd700;
+        }
+
+        .modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 15, 25, 0.6);
+        }
+
+        .modal-sms-btn {
             background: #00FF7F;
             color: #000;
             font-weight: bold;
             border: none;
-            padding: 7px 14px;
+            padding: 9px 15px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12.5px;
-            white-space: nowrap;
-            transition: background 0.2s;
+            font-size: 13px;
         }
-        .list-sms-dock-btn:hover { background: #00cc66; }
+        .modal-sms-btn:hover { background: #00cc66; }
 
-        /* --- LICZNIK NA DOLE EKRANU --- */
+        /* --- UNTERE LEISTE --- */
         .bottom-counter-container {
             position: absolute;
             bottom: 15px;
@@ -252,41 +302,13 @@
             white-space: nowrap;
         }
 
-        /* --- KONTURY LANDÓW --- */
+        /* 3D STILE */
         .land-boundary-3d {
             filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8)) drop-shadow(0px 0px 5px rgba(0, 255, 127, 0.45));
-            transition: stroke-width 0.2s, stroke 0.2s;
             cursor: pointer;
         }
         .land-boundary-3d:hover {
             filter: drop-shadow(0px 0px 6px rgba(0, 0, 0, 0.9)) drop-shadow(0px 0px 10px rgba(0, 255, 127, 0.9));
-        }
-
-        .custom-leaflet-tooltip { 
-            background: #111; 
-            color: #fff; 
-            border: 1px solid #00FF7F; 
-            border-radius: 6px;
-            padding: 8px; 
-            font-size: 13.5px; 
-        }
-
-        .treasure-pin {
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            border: 2px solid #ffffff;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            width: 24px;
-            height: 24px;
-            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .treasure-pin::after {
-            content: '💎';
-            font-size: 12px;
-            transform: rotate(45deg);
         }
 
         .user-loc-pin {
@@ -298,791 +320,312 @@
             box-shadow: 0 0 12px #00c3ff;
             position: relative;
         }
-        .user-loc-pin::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: -6px; right: -6px; bottom: -6px;
-            border-radius: 50%;
-            border: 2px solid #00c3ff;
-            animation: user-loc-pulse 1.6s infinite ease-out;
-        }
-        @keyframes user-loc-pulse {
-            0% { transform: scale(0.6); opacity: 1; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
-
-        .pulse-treasure { position: relative; }
-        .pulse-treasure::before {
-            content: '';
-            position: absolute;
-            top: -8px; left: -8px; right: -8px; bottom: -8px;
-            border: 2px solid #ffd700;
-            border-radius: 50% 50% 50% 0;
-            animation: pulse-ring 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        .dabu-order-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: rgba(0, 255, 127, 0.95);
-            color: #000;
-            padding: 16px 30px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 255, 127, 0.6);
-            z-index: 999999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.25s ease-out;
-        }
-        .dabu-order-popup.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
     </style>
 </head>
 <body>
 
-    <!-- MAPA -->
     <div id="dabuOSMMap"></div>
 
-    <!-- PŁYWAJĄCY HUB WYSZUKIWANIA I ROZWIJANA LISTA -->
+    <!-- OBERES PANEL -->
     <div class="floating-search-hub">
         <div class="search-box-wrapper">
-            <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="🔍 Szukaj rejonu lub powiatu (np. Stade, Harburg, Lüneburg, Salzwedel)..." onkeyup="filterDabuRegions()" onfocus="openRegionsList()">
+            <input type="text" id="dabuRegionSearch" class="dabu-search-input" placeholder="🔍 Szukaj powiatu (np. Borken, Olpe, Gießen, Stade)..." onkeyup="filterCounties()" onfocus="openCountiesList()">
             
             <div class="filters-quick-row">
-                <button class="dabu-county-btn" style="background:#28a745; color:#fff; border-color:#28a745;" onclick="selectOnlyNormalRegions(event)">
-                    🟢 Rejony stałe
-                </button>
-                <button class="dabu-county-btn" style="background:#dc3545; color:#fff; border-color:#dc3545;" onclick="clearAllFilters(event)">
-                    🗑️ Wyczyść
-                </button>
+                <button class="dabu-county-btn" onclick="zoomGermany()">🇩🇪 Całe Niemcy</button>
+                <button class="dabu-county-btn" style="background:#dc3545; color:#fff; border-color:#dc3545;" onclick="clearAllSelections()">🗑️ Wyczyść</button>
             </div>
-            <div id="countySuggestions" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
         </div>
 
-        <h3 id="selectedLandTitle" style="font-family: sans-serif; margin: 0; font-size: 13px; display: none; padding: 7px 12px; border-radius: 6px; background: rgba(18,24,38,0.95); color: #00FF7F; border: 1px solid rgba(0,255,127,0.4);"></h3>
+        <div class="counties-search-list" id="countiesSearchList"></div>
+    </div>
 
-        <!-- ROZWIJANA LISTA REGIONÓW -->
-        <div class="regions-scroll-box" id="regionsContainer">
-            <div id="regionsListItems"></div>
-
-            <!-- DOK ZAPYTANIA SMS W OKNIE LISTY -->
-            <div class="list-sms-dock">
-                <div id="selectedRegionsSummary" style="font-size: 12px; color: #00FF7F; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">Wybrane: brak</div>
-                <button class="list-sms-dock-btn" onclick="sendSmsQuote()">💬 Wyślij zapytanie</button>
-            </div>
+    <!-- MODALES FENSTER FÜR GEMEINDEN NACH KREIS-KLICK -->
+    <div class="county-details-modal" id="countyDetailsModal">
+        <div class="modal-header">
+            <h3 id="modalCountyTitle">📍 Powiat</h3>
+            <button class="close-modal-btn" onclick="closeCountyModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalMunicipalitiesList"></div>
+        <div class="modal-footer">
+            <div id="modalSelectedCounter" style="font-size: 12px; color: #00FF7F;">Wybrano: 0</div>
+            <button class="modal-sms-btn" onclick="sendSmsQuote()">💬 Wyślij zapytanie</button>
         </div>
     </div>
 
-    <!-- DYSKRETNY LICZNIK NA DOLE EKRANU -->
+    <!-- ZÄHLER -->
     <div class="bottom-counter-container">
         <div class="map-counter-box">
-            📍 Aktywne na mapie: <strong id="visibleRegionCount" style="color:#00FF7F;">0</strong> / Wszystkich: <strong id="totalRegionCount" style="color:#ffd700;">0</strong>
-        </div>
-    </div>
-
-    <!-- POPUP DODANIA DO ZAPYTANIA -->
-    <div id="dabuOrderPopup" class="dabu-order-popup">
-        <div class="popup-content">
-            ✅ Dodano: <strong id="dabuOrderPopupText"></strong>
+            <span>Wybrane gminy do zapytania: <strong id="totalCartCount" style="color:#00FF7F;">0</strong></span>
         </div>
     </div>
 
     <script>
-        let currentFilteredLand = null;
-        let kreiseLayer = null;
-        let countyPolygonsLayer = L.layerGroup();
-        let cartRegions = [];
-        let markerMapElements = {};
+        // BAZA DANYCH POWIATÓW I ICH GMIN
+        const countyDatabase = {
+            "Kreis Borken": {
+                land: "Nordrhein-Westfalen",
+                center: [51.8439, 6.8583],
+                municipalities: ["Ahaus", "Bocholt", "Borken", "Gescher", "Gronau", "Heek", "Heiden", "Isselburg", "Legden", "Raesfeld", "Reken", "Rhede", "Schöppingen", "Stadtlohn", "Südlohn", "Velen", "Vreden"]
+            },
+            "Kreis Düren": {
+                land: "Nordrhein-Westfalen",
+                center: [50.8000, 6.4833],
+                municipalities: ["Aldenhoven", "Düren", "Heimbach", "Hürtgenwald", "Inden", "Jülich", "Kreuzau", "Langerwehe", "Linnich", "Merzenich", "Nideggen", "Niederzier", "Nörvenich", "Titz", "Vettweiß"]
+            },
+            "Kreis Wesel": {
+                land: "Nordrhein-Westfalen",
+                center: [51.6583, 6.6167],
+                municipalities: ["Alpen", "Dinslaken", "Hamminkeln", "Hünxe", "Kamp-Lintfort", "Moers", "Neukirchen-Vluyn", "Rheinberg", "Schermbeck", "Sonsbeck", "Voerde", "Wesel", "Xanten"]
+            },
+            "Kreis Euskirchen": {
+                land: "Nordrhein-Westfalen",
+                center: [50.6606, 6.7865],
+                municipalities: ["Bad Münstereifel", "Blankenheim", "Dahlem", "Euskirchen", "Hellenthal", "Kall", "Mechernich", "Nettersheim", "Schleiden", "Weilerswist", "Zülpich"]
+            },
+            "Kreis Kleve": {
+                land: "Nordrhein-Westfalen",
+                center: [51.7889, 6.1389],
+                municipalities: ["Bedburg-Hau", "Emmerich am Rhein", "Geldern", "Goch", "Issum", "Kalkar", "Kerken", "Kevelaer", "Kleve", "Kranenburg", "Rees", "Rheurdt", "Straelen", "Uedem", "Wachtendonk", "Weeze"]
+            },
+            "Rhein-Kreis Neuss": {
+                land: "Nordrhein-Westfalen",
+                center: [51.1500, 6.6167],
+                municipalities: ["Dormagen", "Grevenbroich", "Jüchen", "Kaarst", "Korschenbroich", "Meerbusch", "Neuss", "Rommerskirchen"]
+            },
+            "Kreis Heinsberg": {
+                land: "Nordrhein-Westfalen",
+                center: [51.0640, 6.1000],
+                municipalities: ["Erkelenz", "Gangelt", "Geilenkirchen", "Heinsberg", "Hückelhoven", "Selfkant", "Übach-Palenberg", "Waldfeucht", "Wassenberg", "Wegberg"]
+            },
+            "Kreis Viersen": {
+                land: "Nordrhein-Westfalen",
+                center: [51.2558, 6.3917],
+                municipalities: ["Brüggen", "Grefrath", "Kempen", "Nettetal", "Niederkrüchten", "Schwalmtal", "Tönisvorst", "Viersen", "Willich"]
+            },
+            "Kreis Olpe": {
+                land: "Nordrhein-Westfalen",
+                center: [51.0298, 7.8458],
+                municipalities: ["Attendorn", "Drolshagen", "Finnentrop", "Kirchhundem", "Lennestadt", "Olpe", "Wenden"]
+            },
+            "Landkreis Gießen": {
+                land: "Hessen",
+                center: [50.5841, 8.6784],
+                municipalities: ["Allendorf (Lumda)", "Biebertal", "Buseck", "Fernwald", "Gießen", "Grünberg", "Heuchelheim an der Lahn", "Hungen", "Langgöns", "Laubach", "Lich", "Linden", "Lollar", "Pohlheim", "Rabenau", "Reiskirchen", "Staufenberg", "Wettenberg"]
+            },
+            "Landkreis Konstanz": {
+                land: "Baden-Württemberg",
+                center: [47.8000, 8.9333],
+                municipalities: ["Aach", "Allensbach", "Bodman-Ludwigshafen", "Büsingen am Hochrhein", "Eigeltingen", "Engen", "Gaienhofen", "Gailingen am Hochrhein", "Hilzingen", "Hohenfels", "Konstanz", "Moos", "Mühlhausen-Ehingen", "Mühlingen", "Öhningen", "Orsingen-Nenzingen", "Radolfzell am Bodensee", "Reichenau", "Rielasingen-Worblingen", "Singen (Hohentwiel)", "Steißlingen", "Stockach", "Tengen", "Volkertshausen"]
+            },
+            "Landkreis Nordsachsen": {
+                land: "Sachsen",
+                center: [51.4833, 12.8333],
+                municipalities: ["Arzberg", "Bad Düben", "Beilrode", "Belgern-Schildau", "Cavertitz", "Dahlen", "Delitzsch", "Doberschütz", "Dommitzsch", "Dreiheide", "Eilenburg", "Elsnig", "Jesewitz", "Krostitz", "Laußig", "Liebschützberg", "Löbnitz", "Mockrehna", "Mügeln", "Naundorf", "Oschatz", "Rackwitz", "Schkeuditz", "Schönwölkau", "Taucha", "Torgau", "Trossin", "Wermsdorf", "Wiedemar", "Zschepplin"]
+            },
+            "Burgenlandkreis": {
+                land: "Sachsen-Anhalt",
+                center: [51.1500, 11.8333],
+                municipalities: ["An der Poststraße", "Bad Bibra", "Balgstädt", "Droyßig", "Eckartsberga", "Elsteraue", "Finne", "Finneland", "Freyburg (Unstrut)", "Gleina", "Goseck", "Gutenborn", "Hohenmölsen", "Kaiserpfalz", "Karsdorf", "Kretzschau", "Lanitz-Hassel-Tal", "Laucha an der Unstrut", "Lützen", "Meineweh", "Mertendorf", "Molauer Land", "Naumburg (Saale)", "Nebra (Unstrut)", "Osterfeld", "Schnaudertal", "Schönburg", "Stößen", "Teuchern", "Weißenfels", "Wethau", "Wetterzeube", "Zeitz"]
+            },
+            "Altmarkkreis Salzwedel": {
+                land: "Sachsen-Anhalt",
+                center: [52.8494, 11.1506],
+                municipalities: ["Apenburg-Winterfeld", "Arendsee (Altmark)", "Beetzendorf", "Dähre", "Diesdorf", "Gardelegen", "Jübar", "Kalbe (Milde)", "Klötze", "Kuhfelde", "Rohrberg", "Salzwedel", "Wallstawe"]
+            },
+            "Landkreis Lüneburg": {
+                land: "Niedersachsen",
+                center: [53.2452, 10.4089],
+                municipalities: ["Adendorf", "Amelinghausen", "Amt Neuhaus", "Artlenburg", "Barendorf", "Bardowick", "Barnstedt", "Barum", "Betzendorf", "Bleckede", "Boitze", "Brietlingen", "Dahlem", "Dahlenburg", "Deutsch Evern", "Echem", "Embsen", "Handorf", "Hittbergen", "Hohnstorf (Elbe)", "Kirchgellersen", "Lüdersburg", "Lüneburg", "Mechtersen", "Melbeck", "Nahrendorf", "Neetze", "Oldendorf (Luhe)", "Radbruch", "Rehlingen", "Reinstorf", "Reppenstedt", "Rullstorf", "Scharnebeck", "Soderstorf", "Südergellersen", "Thomasburg", "Tosterglope", "Vastorf", "Vögelsen", "Wendisch Evern", "Westergellersen", "Wittorf"]
+            },
+            "Landkreis Harburg": {
+                land: "Niedersachsen",
+                center: [53.3333, 9.9667],
+                municipalities: ["Appel", "Asendorf", "Bendestorf", "Brackel", "Buchholz in der Nordheide", "Dohren", "Drage", "Drestedt", "Egestorf", "Eyendorf", "Garlstorf", "Garstedt", "Gödenstorf", "Halvesbostel", "Handeloh", "Hanstedt", "Harmstorf", "Heidenau", "Hollenstedt", "Jesteburg", "Kakenstorf", "Königsmoor", "Marschacht", "Marxen", "Neu Wulmstorf", "Otter", "Regesbostel", "Rosengarten", "Salzhausen", "Seevetal", "Tespe", "Toppenstedt", "Tostedt", "Undeloh", "Vierhöfen", "Welle", "Wenzendorf", "Winsen (Luhe)", "Wistedt", "Wulfsen"]
+            },
+            "Landkreis Stade": {
+                land: "Niedersachsen",
+                center: [53.6006, 9.4759],
+                municipalities: ["Agathenburg", "Ahlerstedt", "Balje", "Bargstedt", "Bliedersdorf", "Brest", "Burweg", "Buxtehude", "Deinste", "Dollern", "Drochtersen", "Düdenbüttel", "Engelschoff", "Estorf", "Fredenbeck", "Freiburg (Elbe)", "Großenwörden", "Grünendeich", "Guderhandviertel", "Hammah", "Harsefeld", "Heinbockel", "Himmelpforten", "Hollern-Twielenfleth", "Horneburg", "Jork", "Kranenburg", "Krummendeich", "Kutenholz", "Mittelnkirchen", "Neuenkirchen", "Nottensdorf", "Oederquart", "Oldendorf", "Sauensiek", "Stade", "Steinkirchen", "Wischhafen"]
+            }
+        };
+
+        let selectedMunicipalities = [];
+        let currentCountyLayer = null;
         let userLocationMarker = null;
 
-        // MAPOWANIE REGIONÓW DO POWIATÓW (W TYM SALZWEDEL, LÜNEBURG, HARBURG, STADE)
-        const regionToCountyMap = {
-            // Altmarkkreis Salzwedel
-            "Apenburg-Winterfeld": "Altmarkkreis Salzwedel", "Arendsee (Altmark)": "Altmarkkreis Salzwedel", 
-            "Beetzendorf": "Altmarkkreis Salzwedel", "Dähre": "Altmarkkreis Salzwedel", "Diesdorf": "Altmarkkreis Salzwedel", 
-            "Gardelegen": "Altmarkkreis Salzwedel", "Jübar": "Altmarkkreis Salzwedel", "Kalbe (Milde)": "Altmarkkreis Salzwedel", 
-            "Klötze": "Altmarkkreis Salzwedel", "Kuhfelde": "Altmarkkreis Salzwedel", "Rohrberg": "Altmarkkreis Salzwedel", 
-            "Salzwedel": "Altmarkkreis Salzwedel", "Wallstawe": "Altmarkkreis Salzwedel",
-
-            // Landkreis Lüneburg
-            "Adendorf": "Landkreis Lüneburg", "Amelinghausen": "Landkreis Lüneburg", "Amt Neuhaus": "Landkreis Lüneburg", 
-            "Artlenburg": "Landkreis Lüneburg", "Barendorf": "Landkreis Lüneburg", "Bardowick": "Landkreis Lüneburg", 
-            "Barnstedt": "Landkreis Lüneburg", "Barum": "Landkreis Lüneburg", "Betzendorf": "Landkreis Lüneburg", 
-            "Bleckede": "Landkreis Lüneburg", "Boitze": "Landkreis Lüneburg", "Brietlingen": "Landkreis Lüneburg", 
-            "Dahlem (Lüneburg)": "Landkreis Lüneburg", "Dahlenburg": "Landkreis Lüneburg", "Deutsch Evern": "Landkreis Lüneburg", 
-            "Echem": "Landkreis Lüneburg", "Embsen": "Landkreis Lüneburg", "Handorf": "Landkreis Lüneburg", 
-            "Hittbergen": "Landkreis Lüneburg", "Hohnstorf (Elbe)": "Landkreis Lüneburg", "Kirchgellersen": "Landkreis Lüneburg", 
-            "Lüdersburg": "Landkreis Lüneburg", "Lüneburg": "Landkreis Lüneburg", "Lüneburg Powiat": "Landkreis Lüneburg",
-            "Mechtersen": "Landkreis Lüneburg", "Melbeck": "Landkreis Lüneburg", "Nahrendorf": "Landkreis Lüneburg", 
-            "Neetze": "Landkreis Lüneburg", "Oldendorf (Luhe)": "Landkreis Lüneburg", "Radbruch": "Landkreis Lüneburg", 
-            "Rehlingen": "Landkreis Lüneburg", "Reinstorf": "Landkreis Lüneburg", "Reppenstedt": "Landkreis Lüneburg", 
-            "Rullstorf": "Landkreis Lüneburg", "Scharnebeck": "Landkreis Lüneburg", "Soderstorf": "Landkreis Lüneburg", 
-            "Südergellersen": "Landkreis Lüneburg", "Thomasburg": "Landkreis Lüneburg", "Tosterglope": "Landkreis Lüneburg", 
-            "Vastorf": "Landkreis Lüneburg", "Vögelsen": "Landkreis Lüneburg", "Wendisch Evern": "Landkreis Lüneburg", 
-            "Westergellersen": "Landkreis Lüneburg", "Wittorf": "Landkreis Lüneburg",
-
-            // Landkreis Harburg
-            "Appel": "Landkreis Harburg", "Asendorf": "Landkreis Harburg", "Bendestorf": "Landkreis Harburg", 
-            "Brackel": "Landkreis Harburg", "Buchholz in der Nordheide": "Landkreis Harburg", "Dohren": "Landkreis Harburg", 
-            "Drage": "Landkreis Harburg", "Drestedt": "Landkreis Harburg", "Egestorf": "Landkreis Harburg", 
-            "Eyendorf": "Landkreis Harburg", "Garlstorf": "Landkreis Harburg", "Garstedt": "Landkreis Harburg", 
-            "Gödenstorf": "Landkreis Harburg", "Halvesbostel": "Landkreis Harburg", "Handeloh": "Landkreis Harburg", 
-            "Hanstedt": "Landkreis Harburg", "Harmstorf": "Landkreis Harburg", "Heidenau": "Landkreis Harburg", 
-            "Hollenstedt": "Landkreis Harburg", "Jesteburg": "Landkreis Harburg", "Kakenstorf": "Landkreis Harburg", 
-            "Königsmoor": "Landkreis Harburg", "Marschacht": "Landkreis Harburg", "Marxen": "Landkreis Harburg", 
-            "Neu Wulmstorf": "Landkreis Harburg", "Otter": "Landkreis Harburg", "Regesbostel": "Landkreis Harburg", 
-            "Rosengarten": "Landkreis Harburg", "Salzhausen": "Landkreis Harburg", "Seevetal": "Landkreis Harburg", 
-            "Tespe": "Landkreis Harburg", "Toppenstedt": "Landkreis Harburg", "Tostedt": "Landkreis Harburg", 
-            "Undeloh": "Landkreis Harburg", "Vierhöfen": "Landkreis Harburg", "Welle": "Landkreis Harburg", 
-            "Wenzendorf": "Landkreis Harburg", "Winsen (Luhe)": "Landkreis Harburg", "Wistedt": "Landkreis Harburg", 
-            "Wulfsen": "Landkreis Harburg", "Harburg": "Landkreis Harburg",
-
-            // Landkreis Stade
-            "Agathenburg": "Landkreis Stade", "Ahlerstedt": "Landkreis Stade", "Balje": "Landkreis Stade", 
-            "Bargstedt": "Landkreis Stade", "Bliedersdorf": "Landkreis Stade", "Brest": "Landkreis Stade", 
-            "Burweg": "Landkreis Stade", "Buxtehude": "Landkreis Stade", "Deinste": "Landkreis Stade", 
-            "Dollern": "Landkreis Stade", "Drochtersen": "Landkreis Stade", "Düdenbüttel": "Landkreis Stade", 
-            "Engelschoff": "Landkreis Stade", "Estorf (Stade)": "Landkreis Stade", "Fredenbeck": "Landkreis Stade", 
-            "Freiburg (Elbe)": "Landkreis Stade", "Großenwörden": "Landkreis Stade", "Grünendeich": "Landkreis Stade", 
-            "Guderhandviertel": "Landkreis Stade", "Hammah": "Landkreis Stade", "Harsefeld": "Landkreis Stade", 
-            "Heinbockel": "Landkreis Stade", "Himmelpforten": "Landkreis Stade", "Hollern-Twielenfleth": "Landkreis Stade", 
-            "Horneburg": "Landkreis Stade", "Jork": "Landkreis Stade", "Kranenburg": "Landkreis Stade", 
-            "Krummendeich": "Landkreis Stade", "Kutenholz": "Landkreis Stade", "Mittelnkirchen": "Landkreis Stade", 
-            "Neuenkirchen (Altes Land)": "Landkreis Stade", "Nottensdorf": "Landkreis Stade", "Oederquart": "Landkreis Stade", 
-            "Oldendorf (Stade)": "Landkreis Stade", "Sauensiek": "Landkreis Stade", "Stade": "Landkreis Stade", 
-            "Steinkirchen": "Landkreis Stade", "Wischhafen": "Landkreis Stade",
-
-            // Pozostałe wcześniej dodane powiaty i miasta
-            "Arzberg": "Landkreis Nordsachsen", "Bad Düben": "Landkreis Nordsachsen", "Beilrode": "Landkreis Nordsachsen", "Belgern-Schildau": "Landkreis Nordsachsen", "Cavertitz": "Landkreis Nordsachsen", "Dahlen": "Landkreis Nordsachsen", "Delitzsch": "Landkreis Nordsachsen", "Doberschütz": "Landkreis Nordsachsen", "Dommitzsch": "Landkreis Nordsachsen", "Dreiheide": "Landkreis Nordsachsen", "Eilenburg": "Landkreis Nordsachsen", "Elsnig": "Landkreis Nordsachsen", "Jesewitz": "Landkreis Nordsachsen", "Krostitz": "Landkreis Nordsachsen", "Laußig": "Landkreis Nordsachsen", "Liebschützberg": "Landkreis Nordsachsen", "Löbnitz": "Landkreis Nordsachsen", "Mockrehna": "Landkreis Nordsachsen", "Mügeln": "Landkreis Nordsachsen", "Naundorf": "Landkreis Nordsachsen", "Oschatz": "Landkreis Nordsachsen", "Rackwitz": "Landkreis Nordsachsen", "Schkeuditz": "Landkreis Nordsachsen", "Schönwölkau": "Landkreis Nordsachsen", "Taucha": "Landkreis Nordsachsen", "Torgau": "Landkreis Nordsachsen", "Trossin": "Landkreis Nordsachsen", "Wermsdorf": "Landkreis Nordsachsen", "Wiedemar": "Landkreis Nordsachsen", "Zschepplin": "Landkreis Nordsachsen",
-            "An der Poststraße": "Burgenlandkreis", "Bad Bibra": "Burgenlandkreis", "Balgstädt": "Burgenlandkreis", "Droyßig": "Burgenlandkreis", "Eckartsberga": "Burgenlandkreis", "Elsteraue": "Burgenlandkreis", "Finne": "Burgenlandkreis", "Finneland": "Burgenlandkreis", "Freyburg (Unstrut)": "Burgenlandkreis", "Gleina": "Burgenlandkreis", "Goseck": "Burgenlandkreis", "Gutenborn": "Burgenlandkreis", "Hohenmölsen": "Burgenlandkreis", "Kaiserpfalz": "Burgenlandkreis", "Karsdorf": "Burgenlandkreis", "Kretzschau": "Burgenlandkreis", "Lanitz-Hassel-Tal": "Burgenlandkreis", "Laucha an der Unstrut": "Burgenlandkreis", "Lützen": "Burgenlandkreis", "Meineweh": "Burgenlandkreis", "Mertendorf": "Burgenlandkreis", "Molauer Land": "Burgenlandkreis", "Naumburg (Saale)": "Burgenlandkreis", "Nebra (Unstrut)": "Burgenlandkreis", "Osterfeld": "Burgenlandkreis", "Schnaudertal": "Burgenlandkreis", "Schönburg": "Burgenlandkreis", "Stößen": "Burgenlandkreis", "Teuchern": "Burgenlandkreis", "Weißenfels": "Burgenlandkreis", "Wethau": "Burgenlandkreis", "Wetterzeube": "Burgenlandkreis", "Zeitz": "Burgenlandkreis",
-            "Attendorn": "Kreis Olpe", "Drolshagen": "Kreis Olpe", "Finnentrop": "Kreis Olpe", "Kirchhundem": "Kreis Olpe", "Lennestadt": "Kreis Olpe", "Olpe": "Kreis Olpe", "Wenden": "Kreis Olpe",
-            "Allendorf (Lumda)": "Landkreis Gießen", "Buseck": "Landkreis Gießen", "Fernwald": "Landkreis Gießen", "Gießen": "Landkreis Gießen", "Giessen": "Landkreis Gießen", "Giessen Powiat": "Landkreis Gießen", "Grünberg": "Landkreis Gießen", "Heuchelheim an der Lahn": "Landkreis Gießen", "Hungen": "Landkreis Gießen", "Langgöns": "Landkreis Gießen", "Laubach": "Landkreis Gießen", "Lich": "Landkreis Gießen", "Linden": "Landkreis Gießen", "Lollar": "Landkreis Gießen", "Pohlheim": "Landkreis Gießen", "Rabenau": "Landkreis Gießen", "Reiskirchen": "Landkreis Gießen", "Staufenberg": "Landkreis Gießen", "Wettenberg": "Landkreis Gießen", "Biebertal": "Landkreis Gießen",
-            "Aldenhoven": "Kreis Düren", "Merzenich": "Kreis Düren", "Jülich": "Kreis Düren", "Jülich (E)": "Kreis Düren",
-            "Alpen": "Kreis Wesel", "Sonsbeck": "Kreis Wesel", "Voerde": "Kreis Wesel", "Xanten": "Kreis Wesel", "Kamp-Lintfort": "Kreis Wesel", "Neukirchen-Vluyn": "Kreis Wesel",
-            "Bad Münstereifel": "Kreis Euskirchen", "Blankenheim": "Kreis Euskirchen", "Dahlem": "Kreis Euskirchen", "Euskirchen": "Kreis Euskirchen", "Hellenthal": "Kreis Euskirchen", "Kall": "Kreis Euskirchen", "Mechernich": "Kreis Euskirchen", "Schleiden": "Kreis Euskirchen", "Weilerswist": "Kreis Euskirchen", "Zülpich": "Kreis Euskirchen",
-            "Bedburg-Hau": "Kreis Kleve", "Emmerich am Rhein": "Kreis Kleve", "Geldern": "Kreis Kleve", "Goch": "Kreis Kleve", "Issum": "Kreis Kleve", "Kerken": "Kreis Kleve", "Kevelaer": "Kreis Kleve", "Rees": "Kreis Kleve", "Rheurdt": "Kreis Kleve", "Straelen": "Kreis Kleve", "Uedem": "Kreis Kleve", "Weeze": "Kreis Kleve",
-            "Grevenbroich": "Rhein-Kreis Neuss", "Jüchen": "Rhein-Kreis Neuss", "Kaarst": "Rhein-Kreis Neuss", "Korschenbroich": "Rhein-Kreis Neuss", "Meerbusch": "Rhein-Kreis Neuss", "Rommerskirchen": "Rhein-Kreis Neuss", "Neuss": "Rhein-Kreis Neuss", "Dormagen": "Rhein-Kreis Neuss",
-            "Heinsberg": "Kreis Heinsberg", "Hückelhoven": "Kreis Heinsberg", "Selfkant": "Kreis Heinsberg", "Übach-Palenberg": "Kreis Heinsberg", "Gangelt": "Kreis Heinsberg", "Geilenkirchen": "Kreis Heinsberg",
-            "Viersen": "Kreis Viersen", "Grefrath": "Kreis Viersen", "Nettetal": "Kreis Viersen", "Tönisvorst": "Kreis Viersen",
-            "Heek": "Kreis Borken", "Isselburg": "Kreis Borken", "Legden": "Kreis Borken",
-            "Aach": "Landkreis Konstanz", "Bodman-Ludwigshafen": "Landkreis Konstanz", "Büsingen am Hochrhein": "Landkreis Konstanz", "Eigeltingen": "Landkreis Konstanz", "Hohenfels": "Landkreis Konstanz", "Mühlhausen-Ehingen": "Landkreis Konstanz", "Öhningen": "Landkreis Konstanz", "Orsingen-Nenzingen": "Landkreis Konstanz", "Reichenau": "Landkreis Konstanz", "Steißlingen": "Landkreis Konstanz", "Stockach": "Landkreis Konstanz", "Tengen": "Landkreis Konstanz", "Volkertshausen": "Landkreis Konstanz",
-            "Augsburg": "Augsburg", "Augsburg Powiat": "Landkreis Augsburg", "Elbe-Elster": "Elbe-Elster", "Oder-Spree": "Oder-Spree", "Bad Orb": "Main-Kinzig-Kreis", "Bad Soden-Salmünster": "Main-Kinzig-Kreis", "Biebergemünd": "Main-Kinzig-Kreis", "Flörsbachtal": "Main-Kinzig-Kreis", "Freigericht": "Main-Kinzig-Kreis", "Gelnhausen": "Main-Kinzig-Kreis", "Gründau": "Main-Kinzig-Kreis", "Hasselroth": "Main-Kinzig-Kreis", "Jossgrund": "Main-Kinzig-Kreis", "Linsengericht": "Main-Kinzig-Kreis", "Nidderau": "Main-Kinzig-Kreis", "Rodenbach": "Main-Kinzig-Kreis", "Ronneburg": "Main-Kinzig-Kreis", "Schlüchtern": "Main-Kinzig-Kreis", "Sinntal": "Main-Kinzig-Kreis",
-            "Bad Homburg": "Hochtaunuskreis", "Friedrichsdorf": "Hochtaunuskreis", "Königstein (Taunus)": "Hochtaunuskreis", "Kronberg im Taunus": "Hochtaunuskreis", "Oberursel (Taunus)": "Hochtaunuskreis", "Steinbach": "Hochtaunuskreis",
-            "Eppstein": "Main-Taunus-Kreis", "Flörsheim am Main": "Main-Taunus-Kreis", "Hattersheim am Main": "Main-Taunus-Kreis", "Hofheim am Taunus": "Main-Taunus-Kreis", "Kelkheim (Taunus)": "Main-Taunus-Kreis", "Schwalbach": "Main-Taunus-Kreis",
-            "Gross-Gerau": "Groß-Gerau", "Walldorf-Mörfelden": "Groß-Gerau", "Eschwege": "Werra-Meißner-Kreis", "Werra-Meissner": "Werra-Meißner-Kreis",
-            "Brühl": "Rhein-Erft-Kreis", "Erftstadt": "Rhein-Erft-Kreis", "Erftstadt Powiat": "Rhein-Erft-Kreis", "Hürth": "Rhein-Erft-Kreis", "Pulheim": "Rhein-Erft-Kreis", "Wesseling": "Rhein-Erft-Kreis", "Bedburg": "Rhein-Erft-Kreis",
-            "Ennepetal": "Ennepe-Ruhr-Kreis", "Breckerfeld": "Ennepe-Ruhr-Kreis", "Sprockhövel": "Ennepe-Ruhr-Kreis",
-            "Wülfrath": "Kreis Mettmann", "Haan": "Kreis Mettmann", "Heiligenhaus": "Kreis Mettmann", "Monheim am Rhein": "Kreis Mettmann", "Ratingen": "Kreis Mettmann", "Erkrath": "Kreis Mettmann", 
-            "Dülmen": "Kreis Coesfeld", "Gräfelfing": "München", "Kirchheim bei München": "München", "Kulmbach Powiat": "Kulmbach",
-            "Heidekreis": "Heidekreis", "Schwedt/Oder": "Uckermark", "Dortmund": "Dortmund", "Emsland": "Emsland", "Lipsk (Leipzig)": "Leipzig",
-            "Rendsburg-Eckernförde": "Rendsburg-Eckernförde", "Neustadt an der Waldnaab": "Neustadt an der Waldnaab",
-            "Lübeck": "Lübeck", "Altena": "Märkischer Kreis", "Balve": "Märkischer Kreis", "Iserlohn": "Märkischer Kreis",
-            "Menden": "Märkischer Kreis", "Nachrodt-Wiblingwerde": "Märkischer Kreis", "Plettenberg": "Märkischer Kreis",
-            "Werdohl": "Märkischer Kreis", "Berlin": "Berlin", "Monachium-Południowy Wschód": "München", "Köln": "Köln", "Cochem-Zell": "Cochem-Zell", "Trier": "Trier-Saarburg"
-        };
-
-        function normalizeLandName(rawName) {
-            const aliases = { "Bavaria": "Bayern", "Hesse": "Hessen", "North Rhine-Westphalia": "Nordrhein-Westfalen", "Rhineland-Palatinate": "Rheinland-Pfalz", "Saxony": "Sachsen", "Lower Saxony": "Niedersachsen", "Saxony-Anhalt": "Sachsen-Anhalt", "Thuringia": "Thüringen", "Schleswig-Holstein": "Schleswig-Holstein", "Brandenburg": "Brandenburg", "Baden-Württemberg": "Baden-Württemberg" };
-            return aliases[rawName] || rawName;
-        }
-
-        function matchRegionName(myName, geoName) {
-            if (!geoName || !myName) return false;
-            let gn = geoName.toLowerCase().trim();
-            let sn = myName.toLowerCase().trim();
-            let mappedCounty = (regionToCountyMap[myName] || myName).toLowerCase().trim();
-
-            if (sn.includes("waldnaab") && gn.includes("waldnaab")) return true;
-            let cleanGn = gn.replace(/[\s\.\-]/g, '');
-            let cleanSn = sn.replace(/[\s\.\-]/g, '');
-            let cleanMapped = mappedCounty.replace(/[\s\.\-]/g, '');
-
-            if (cleanGn.includes(cleanSn) || cleanGn.includes(cleanMapped)) return true;
-            const aliases = {
-                "monachium": ["münchen"], "karlsruhe kreis": ["karlsruhe"], "amberg": ["amberg-sulzbach"],
-                "nordsachsen": ["nordsachsen", "delitzsch", "torgau", "oschatz"], "rendsburg-eckernförde": ["rendsburg-eckernförde", "rendsburg"],
-                "giessen": ["gießen"], "altmarkkreis salzwedel": ["altmarkkreis salzwedel", "altmarkkreis", "salzwedel"],
-                "burgenlandkreis": ["burgenlandkreis", "burgenland"],
-                "burgenland": ["burgenlandkreis"], "heidekreis": ["heidekreis", "soltau-fallingbostel"],
-                "werra-meissner": ["werra-meißner", "werra-meissner-kreis", "werra-meissner"],
-                "lübeck": ["lübeck", "luebeck"], "lipsk (leipzig)": ["leipzig"],
-                "lueneburg": ["lüneburg", "lueneburg"], "harburg": ["harburg"], "stade": ["stade"]
-            };
-            if (aliases[sn] && aliases[sn].some(a => gn.includes(a))) return true;
-            if (aliases[mappedCounty] && aliases[mappedCounty].some(a => gn.includes(a))) return true;
-
-            return false;
-        }
-
-        const landMap = {
-            "Baden-Württemberg": ["Aach", "Bodman-Ludwigshafen", "Büsingen am Hochrhein", "Calw", "Eigeltingen", "Freudenstadt", "Heidelberg", "Heilbronn", "Hohenfels", "Karlsruhe", "Karlsruhe Kreis", "Mühlhausen-Ehingen", "Öhningen", "Orsingen-Nenzingen", "Ortenau", "Reichenau", "Rhein-Neckar-Kreis", "Steißlingen", "Stockach", "Tengen", "Tuttlingen", "Volkertshausen", "Zollernalb"],
-            "Bayern": ["Amberg", "Augsburg", "Augsburg Powiat", "Bamberg", "Bayreuth", "Fürth", "Gräfelfing", "Kirchheim bei München", "Kulmbach", "Kulmbach Powiat", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab", "Regensburg", "Straubing-Bogen"],
-            "Berlin": ["Berlin"],
-            "Brandenburg": ["Barnim", "Elbe-Elster", "Oder-Spree", "Schwedt/Oder", "Spree-Neiße"],
-            "Hessen": ["Allendorf (Lumda)", "Bad Homburg", "Bad Orb", "Bad Soden-Salmünster", "Biebertal", "Biebergemünd", "Buseck", "Eppstein", "Eschwege", "Fernwald", "Flörsbachtal", "Flörsheim am Main", "Frankfurt", "Freigericht", "Friedrichsdorf", "Fulda", "Gelnhausen", "Gießen", "Giessen", "Giessen Powiat", "Gross-Gerau", "Grünberg", "Gründau", "Hasselroth", "Hattersheim am Main", "Hersfeld-Rotenburg", "Heuchelheim an der Lahn", "Hofheim am Taunus", "Hungen", "Jossgrund", "Kelkheim (Taunus)", "Königstein (Taunus)", "Kronberg im Taunus", "Langgöns", "Laubach", "Lich", "Limburg-Weilburg", "Linden", "Linsengericht", "Lollar", "Nidderau", "Oberursel (Taunus)", "Pohlheim", "Rabenau", "Reiskirchen", "Rheingau-Taunus", "Rodenbach", "Ronneburg", "Schlüchtern", "Schwalbach", "Sinntal", "Staufenberg", "Steinbach", "Walldorf-Mörfelden", "Werra-Meissner", "Wettenberg"],
-            "Niedersachsen": ["Adendorf", "Agathenburg", "Ahlerstedt", "Amelinghausen", "Amt Neuhaus", "Appel", "Artlenburg", "Asendorf", "Balje", "Barendorf", "Bardowick", "Bargstedt", "Barnstedt", "Barum", "Bendestorf", "Betzendorf", "Bleckede", "Bliedersdorf", "Boitze", "Brackel", "Braunschweig", "Brest", "Brietlingen", "Buchholz in der Nordheide", "Burweg", "Buxtehude", "Dahlem (Lüneburg)", "Dahlenburg", "Deinste", "Deutsch Evern", "Diepholz", "Dohren", "Dollern", "Drage", "Drestedt", "Drochtersen", "Düdenbüttel", "Echem", "Egestorf", "Embsen", "Emsland", "Engelschoff", "Estorf (Stade)", "Eyendorf", "Fredenbeck", "Freiburg (Elbe)", "Garlstorf", "Garstedt", "Gifhorn", "Gödenstorf", "Göttingen", "Großenwörden", "Grünendeich", "Guderhandviertel", "Halvesbostel", "Hammah", "Handeloh", "Handorf", "Hannover", "Hanstedt", "Harburg", "Harmstorf", "Harsefeld", "Heidekreis", "Heidenau", "Heinbockel", "Himmelpforten", "Hittbergen", "Hohnstorf (Elbe)", "Hollenstedt", "Hollern-Twielenfleth", "Holzminden", "Horneburg", "Jesteburg", "Jork", "Kakenstorf", "Kirchgellersen", "Königsmoor", "Kranenburg", "Krummendeich", "Kutenholz", "Lüdersburg", "Lüneburg", "Lüneburg Powiat", "Marschacht", "Marxen", "Mechtersen", "Melbeck", "Mittelnkirchen", "Nahrendorf", "Neetze", "Neu Wulmstorf", "Neuenkirchen (Altes Land)", "Nottensdorf", "Oederquart", "Oldendorf (Luhe)", "Oldendorf (Stade)", "Osnabrück", "Otter", "Radbruch", "Regesbostel", "Rehlingen", "Reinstorf", "Reppenstedt", "Rosengarten", "Rullstorf", "Salzhausen", "Sauensiek", "Scharnebeck", "Seevetal", "Soderstorf", "Stade", "Steinkirchen", "Südergellersen", "Tespe", "Thomasburg", "Toppenstedt", "Tostedt", "Tosterglope", "Undeloh", "Vastorf", "Vierhöfen", "Vögelsen", "Welle", "Wendisch Evern", "Wenzendorf", "Westergellersen", "Winsen (Luhe)", "Wischhafen", "Wistedt", "Wittorf", "Wolfsburg", "Wulfsen"],
-            "Nordrhein-Westfalen": ["Aldenhoven", "Alpen", "Altena", "Attendorn", "Bad Münstereifel", "Balve", "Bedburg", "Bedburg-Hau", "Blankenheim", "Bonn", "Breckerfeld", "Brühl", "Dahlem", "Dormagen", "Dortmund", "Drolshagen", "Dülmen", "Düsseldorf", "Emmerich am Rhein", "Ennepetal", "Erftstadt", "Erftstadt Powiat", "Erkrath", "Euskirchen", "Finnentrop", "Gangelt", "Geilenkirchen", "Geldern", "Goch", "Grefrath", "Grevenbroich", "Haan", "Heek", "Heiligenhaus", "Heinsberg", "Hellenthal", "Hückelhoven", "Hürth", "Iserlohn", "Isselburg", "Issum", "Jüchen", "Jülich", "Jülich (E)", "Kaarst", "Kall", "Kamp-Lintfort", "Kerken", "Kevelaer", "Kirchhundem", "Korschenbroich", "Köln", "Legden", "Lennestadt", "Leverkusen", "Mechernich", "Meerbusch", "Menden", "Merzenich", "Monheim am Rhein", "Münster", "Nachrodt-Wiblingwerde", "Nettetal", "Neukirchen-Vluyn", "Neuss", "Oberberg", "Olpe", "Plettenberg", "Pulheim", "Ratingen", "Rees", "Rhein-Sieg", "Rheinisch-Bergischer", "Rheurdt", "Rommerskirchen", "Schleiden", "Selfkant", "Solingen", "Sonsbeck", "Sprockhövel", "Straelen", "Tönisvorst", "Uedem", "Übach-Palenberg", "Viersen", "Voerde", "Weeze", "Weilerswist", "Wenden", "Werdohl", "Wesseling", "Wülfrath", "Wuppertal", "Xanten", "Zülpich"],
-            "Rheinland-Pfalz": ["Altenkirchen (Westerwald)", "Alzey-Worms", "Bad-Kreuznach", "Bernkastel-Wittlich", "Cochem-Zell", "Eifelkreis Bitburg-Prüm", "Mayen-Koblenz", "Trier", "Trier-Saarburg", "Vulkaneifel", "Westerwald"],
-            "Sachsen": ["Arzberg", "Bad Düben", "Beilrode", "Belgern-Schildau", "Cavertitz", "Dahlen", "Delitzsch", "Doberschütz", "Dommitzsch", "Dreiheide", "Eilenburg", "Elsnig", "Jesewitz", "Krostitz", "Laußig", "Liebschützberg", "Lipsk (Leipzig)", "Löbnitz", "Mockrehna", "Mügeln", "Naundorf", "Oschatz", "Rackwitz", "Schkeuditz", "Schönwölkau", "Taucha", "Torgau", "Trossin", "Wermsdorf", "Wiedemar", "Zschepplin"],
-            "Sachsen-Anhalt": ["Altmarkkreis Salzwedel", "An der Poststraße", "Apenburg-Winterfeld", "Arendsee (Altmark)", "Bad Bibra", "Balgstädt", "Beetzendorf", "Dähre", "Diesdorf", "Droyßig", "Eckartsberga", "Elsteraue", "Finne", "Finneland", "Freyburg (Unstrut)", "Gardelegen", "Gleina", "Goseck", "Gutenborn", "Hohenmölsen", "Jübar", "Kaiserpfalz", "Kalbe (Milde)", "Karsdorf", "Klötze", "Kretzschau", "Kuhfelde", "Lanitz-Hassel-Tal", "Laucha an der Unstrut", "Lützen", "Meineweh", "Mertendorf", "Molauer Land", "Naumburg (Saale)", "Nebra (Unstrut)", "Osterfeld", "Rohrberg", "Salzwedel", "Schnaudertal", "Schönburg", "Stößen", "Teuchern", "Wallstawe", "Weißenfels", "Wethau", "Wetterzeube", "Zeitz"],
-            "Schleswig-Holstein": ["Rendsburg-Eckernförde", "Lübeck"]
-        };
-        const landColors = {
-            "Baden-Württemberg": "#FF5733", "Bayern": "#3385FF", "Berlin": "#FF33A1", "Brandenburg": "#E633FF", "Hessen": "#FFD133", "Niedersachsen": "#33FF85", "Nordrhein-Westfalen": "#8A33FF", "Rheinland-Pfalz": "#FF8A33", "Sachsen": "#33FFE6", "Sachsen-Anhalt": "#FF3366", "Schleswig-Holstein": "#A1FF33" 
-        };
-        const regionCoords = {
-            // Altmarkkreis Salzwedel
-            "Apenburg-Winterfeld": [52.7333, 11.2000], "Arendsee (Altmark)": [52.8833, 11.4833], "Beetzendorf": [52.7000, 11.0833], 
-            "Dähre": [52.8000, 10.9000], "Diesdorf": [52.7500, 10.8667], "Gardelegen": [52.5264, 11.3925], 
-            "Jübar": [52.6833, 10.9167], "Kalbe (Milde)": [52.6500, 11.3833], "Klötze": [52.6250, 11.1611], 
-            "Kuhfelde": [52.7833, 11.1167], "Rohrberg": [52.7000, 11.0167], "Salzwedel": [52.8500, 11.1500], "Wallstawe": [52.8000, 11.0167],
-
-            // Landkreis Lüneburg
-            "Adendorf": [53.2833, 10.4500], "Amelinghausen": [53.1264, 10.2139], "Amt Neuhaus": [53.2833, 10.9333], 
-            "Artlenburg": [53.3742, 10.4908], "Barendorf": [53.2242, 10.5186], "Bardowick": [53.3000, 10.3833], 
-            "Barnstedt": [53.1333, 10.3667], "Barum": [53.3536, 10.4039], "Betzendorf": [53.1333, 10.3167], 
-            "Bleckede": [53.2947, 10.7303], "Boitze": [53.1500, 10.7500], "Brietlingen": [53.3333, 10.4500], 
-            "Dahlem (Lüneburg)": [53.2000, 10.7500], "Dahlenburg": [53.1833, 10.7333], "Deutsch Evern": [53.2000, 10.4333], 
-            "Echem": [53.3333, 10.5333], "Embsen": [53.1833, 10.3500], "Handorf": [53.3333, 10.3333], 
-            "Hittbergen": [53.3444, 10.5908], "Hohnstorf (Elbe)": [53.3667, 10.5500], "Kirchgellersen": [53.2333, 10.3000], 
-            "Lüdersburg": [53.3167, 10.5667], "Lüneburg": [53.2452, 10.4089], "Lüneburg Powiat": [53.2452, 10.4089], 
-            "Mechtersen": [53.2833, 10.3167], "Melbeck": [53.1833, 10.4000], "Nahrendorf": [53.1833, 10.8167], 
-            "Neetze": [53.2667, 10.6333], "Oldendorf (Luhe)": [53.1500, 10.2167], "Radbruch": [53.3167, 10.2833], 
-            "Rehlingen": [53.1000, 10.2167], "Reinstorf": [53.2333, 10.5667], "Reppenstedt": [53.2500, 10.3500], 
-            "Rullstorf": [53.2833, 10.5333], "Scharnebeck": [53.3000, 10.5167], "Soderstorf": [53.1500, 10.1500], 
-            "Südergellersen": [53.2167, 10.3000], "Thomasburg": [53.2333, 10.6667], "Tosterglope": [53.2167, 10.8167], 
-            "Vastorf": [53.2000, 10.5500], "Vögelsen": [53.2667, 10.3500], "Wendisch Evern": [53.2167, 10.4667], 
-            "Westergellersen": [53.2333, 10.2500], "Wittorf": [53.3333, 10.3833],
-
-            // Landkreis Harburg
-            "Appel": [53.3833, 9.7500], "Asendorf": [53.2833, 9.9833], "Bendestorf": [53.3333, 9.9667], 
-            "Brackel": [53.3000, 10.0333], "Buchholz in der Nordheide": [53.3256, 9.8703], "Dohren": [53.3000, 9.7000], 
-            "Drage": [53.4167, 10.2667], "Drestedt": [53.3333, 9.7667], "Egestorf": [53.1833, 10.0667], 
-            "Eyendorf": [53.2000, 10.1500], "Garlstorf": [53.2333, 10.1000], "Garstedt": [53.2833, 10.1500], 
-            "Gödenstorf": [53.2167, 10.1333], "Halvesbostel": [53.3500, 9.7000], "Handeloh": [53.2500, 9.8333], 
-            "Hanstedt": [53.2667, 10.0167], "Harmstorf": [53.3500, 9.9833], "Heidenau": [53.3167, 9.6667], 
-            "Hollenstedt": [53.3667, 9.7167], "Jesteburg": [53.3000, 9.9500], "Kakenstorf": [53.3167, 9.7667], 
-            "Königsmoor": [53.2333, 9.6500], "Marschacht": [53.4167, 10.3667], "Marxen": [53.3167, 10.0167], 
-            "Neu Wulmstorf": [53.4667, 9.8000], "Otter": [53.2333, 9.7333], "Regesbostel": [53.3833, 9.6500], 
-            "Rosengarten": [53.3833, 9.9000], "Salzhausen": [53.2333, 10.1667], "Seevetal": [53.3833, 10.0333], 
-            "Tespe": [53.3833, 10.4167], "Toppenstedt": [53.2667, 10.1167], "Tostedt": [53.2833, 9.7167], 
-            "Undeloh": [53.2000, 9.9833], "Vierhöfen": [53.2667, 10.2167], "Welle": [53.2333, 9.8000], 
-            "Wenzendorf": [53.3500, 9.7667], "Winsen (Luhe)": [53.3667, 10.2167], "Wistedt": [53.2667, 9.6833], 
-            "Wulfsen": [53.3000, 10.1333],
-
-            // Landkreis Stade
-            "Agathenburg": [53.5639, 9.5319], "Ahlerstedt": [53.4067, 9.4542], "Balje": [53.8333, 9.1333], 
-            "Bargstedt": [53.4600, 9.4475], "Bliedersdorf": [53.4864, 9.5739], "Brest": [53.4500, 9.3833], 
-            "Burweg": [53.6214, 9.2736], "Buxtehude": [53.4769, 9.7011], "Deinste": [53.5303, 9.4217], 
-            "Dollern": [53.5381, 9.5500], "Drochtersen": [53.7083, 9.3861], "Düdenbüttel": [53.5892, 9.3561], 
-            "Engelschoff": [53.6592, 9.3236], "Estorf (Stade)": [53.5786, 9.2064], "Fredenbeck": [53.5258, 9.4089], 
-            "Freiburg (Elbe)": [53.8247, 9.2867], "Großenwörden": [53.6811, 9.2606], "Grünendeich": [53.5758, 9.6133], 
-            "Guderhandviertel": [53.5414, 9.6108], "Hammah": [53.6300, 9.3811], "Harsefeld": [53.4539, 9.5042], 
-            "Heinbockel": [53.5714, 9.3286], "Himmelpforten": [53.6167, 9.3000], "Hollern-Twielenfleth": [53.6019, 9.5375], 
-            "Horneburg": [53.5097, 9.5753], "Jork": [53.5333, 9.6833], "Kranenburg": [53.6000, 9.2000], 
-            "Krummendeich": [53.8333, 9.2167], "Kutenholz": [53.4833, 9.3333], "Mittelnkirchen": [53.5500, 9.6167], 
-            "Neuenkirchen (Altes Land)": [53.5200, 9.6050], "Nottensdorf": [53.5300, 9.6000], "Oederquart": [53.8000, 9.2333], 
-            "Oldendorf (Stade)": [53.5936, 9.2514], "Sauensiek": [53.3833, 9.6000], "Stade": [53.6006, 9.4759], 
-            "Steinkirchen": [53.5667, 9.6500], "Wischhafen": [53.7719, 9.3178],
-
-            // Pozostałe
-            "Arzberg": [51.5333, 13.1333], "Bad Düben": [51.5917, 12.5833], "Beilrode": [51.5667, 13.0667], "Belgern-Schildau": [51.4833, 13.1333], "Cavertitz": [51.3667, 13.1333], "Dahlen": [51.3667, 12.9667], "Delitzsch": [51.5244, 12.3361], "Doberschütz": [51.5000, 12.7333], "Dommitzsch": [51.6400, 12.8800], "Dreiheide": [51.5667, 12.8833], "Eilenburg": [51.4603, 12.6339], "Elsnig": [51.6167, 12.9333], "Jesewitz": [51.4167, 12.5667], "Krostitz": [51.4667, 12.4500], "Laußig": [51.5333, 12.6333], "Liebschützberg": [51.3167, 13.1500], "Löbnitz": [51.5917, 12.4667], "Mockrehna": [51.5167, 12.8167], "Mügeln": [51.2367, 13.0467], "Naundorf": [51.2500, 13.1167], "Oschatz": [51.2978, 13.1097], "Rackwitz": [51.4375, 12.3850], "Schkeuditz": [51.3939, 12.2222], "Schönwölkau": [51.5000, 12.4833], "Taucha": [51.3800, 12.4947], "Torgau": [51.5581, 13.0042], "Trossin": [51.6167, 12.8167], "Wermsdorf": [51.2833, 12.9500], "Wiedemar": [51.4667, 12.2000], "Zschepplin": [51.5000, 12.6000],
-            "An der Poststraße": [51.1667, 11.5333], "Bad Bibra": [51.2047, 11.5839], "Balgstädt": [51.2067, 11.7378], "Droyßig": [51.0425, 12.0308], "Eckartsberga": [51.1239, 11.5619], "Elsteraue": [51.0833, 12.2333], "Finne": [51.2333, 11.5333], "Finneland": [51.2000, 11.5167], "Freyburg (Unstrut)": [51.2131, 11.7700], "Gleina": [51.2333, 11.7167], "Goseck": [51.1925, 11.8747], "Gutenborn": [51.0000, 12.1167], "Hohenmölsen": [51.1567, 12.0983], "Kaiserpfalz": [51.2667, 11.5333], "Karsdorf": [51.2833, 11.6500], "Kretzschau": [51.0500, 12.0667], "Lanitz-Hassel-Tal": [51.1333, 11.6333], "Laucha an der Unstrut": [51.2239, 11.6797], "Lützen": [51.2567, 12.1383], "Meineweh": [51.0833, 11.9833], "Mertendorf": [51.1167, 11.8500], "Molauer Land": [51.0667, 11.7833], "Naumburg (Saale)": [51.1522, 11.8103], "Nebra (Unstrut)": [51.2867, 11.5778], "Osterfeld": [51.0806, 11.9317], "Schnaudertal": [50.9667, 12.1833], "Schönburg": [51.1667, 11.8667], "Stößen": [51.1167, 11.9333], "Teuchern": [51.1189, 12.0225], "Weißenfels": [51.2003, 11.9725], "Wethau": [51.1333, 11.8500], "Wetterzeube": [51.0000, 12.0167], "Zeitz": [51.0506, 12.1383],
-            "Attendorn": [51.1272, 7.9042], "Drolshagen": [51.0264, 7.7778], "Finnentrop": [51.1783, 7.9719], "Kirchhundem": [51.0872, 8.0872], "Lennestadt": [51.1242, 8.0642], "Olpe": [51.0298, 7.8458], "Wenden": [50.9639, 7.8683],
-            "Allendorf (Lumda)": [50.6786, 8.8239], "Biebertal": [50.6386, 8.5861], "Buseck": [50.6053, 8.7844], "Fernwald": [50.5639, 8.7561], "Gießen": [50.5841, 8.6784], "Grünberg": [50.5906, 8.9606], "Heuchelheim an der Lahn": [50.5833, 8.6333], "Hungen": [50.4744, 8.9022], "Langgöns": [50.4989, 8.6653], "Laubach": [50.5425, 8.9889], "Lich": [50.5208, 8.8208], "Linden": [50.5317, 8.6575], "Lollar": [50.6508, 8.7042], "Pohlheim": [50.5222, 8.7181], "Rabenau": [50.6719, 8.8719], "Reiskirchen": [50.5975, 8.8322], "Staufenberg": [50.6628, 8.7289], "Wettenberg": [50.6272, 8.6369],
-            "Aach": [47.8456, 8.8517], "Bodman-Ludwigshafen": [47.8186, 9.0558], "Büsingen am Hochrhein": [47.6969, 8.6903], "Eigeltingen": [47.8582, 8.8975], "Hohenfels": [47.8950, 9.0753], "Mühlhausen-Ehingen": [47.8167, 8.8167], "Öhningen": [47.6614, 8.8870], "Orsingen-Nenzingen": [47.8432, 8.9602], "Reichenau": [47.6967, 9.0616], "Steißlingen": [47.8000, 8.9333], "Stockach": [47.8532, 9.0092], "Tengen": [47.8210, 8.6610], "Volkertshausen": [47.8220, 8.8649],
-            "Augsburg": [48.3705, 10.8978], "Augsburg Powiat": [48.3500, 10.7000], "Elbe-Elster": [51.6167, 13.4000], "Rendsburg-Eckernförde": [54.3044, 9.6631], "Altenkirchen (Westerwald)": [50.6874, 7.6456], "Altmarkkreis Salzwedel": [52.8494, 11.1506], "Alzey-Worms": [49.7408, 8.1130], "Amberg": [49.4442, 11.8484], "Bad Homburg": [50.2269, 8.6186], "Bad Orb": [50.2264, 9.3467], "Bad Soden-Salmünster": [50.2833, 9.3667], "Bad-Kreuznach": [49.8430, 7.8660], "Bad Münstereifel": [50.5562, 6.7640], "Bamberg": [49.8916, 10.8985], "Barnim": [52.8318, 13.8211], "Bayreuth": [49.9456, 11.5713], "Bedburg": [51.00152268965858, 6.563050792319124], "Bernkastel-Wittlich": [49.9880, 6.8906], "Biebergemünd": [50.2272, 9.2789], "Blankenheim": [50.4386, 6.6492], "Bonn": [50.7374, 7.0982], "Braunschweig": [52.2689, 10.5268], "Breckerfeld": [51.2618, 7.4665], "Brühl": [50.8274, 6.9042], "Burgenland": [51.1500, 11.8333], "Calw": [48.7132, 8.7369], "Cochem-Zell": [50.1467, 7.1667], "Dahlem": [50.3833, 6.5500], "Diepholz": [52.6046, 8.3683], "Dortmund": [51.5136, 7.4653], "Dülmen": [51.8288, 7.2798], "Düsseldorf": [51.2277, 6.7735], "Eifelkreis Bitburg-Prüm": [50.0500, 6.4167], "Emsland": [52.6908, 7.2917], "Ennepetal": [51.2982, 7.3508], "Eppstein": [50.1408, 8.3917], "Erftstadt": [50.8034, 6.7681], "Erftstadt Powiat": [50.8034, 6.7681], "Eschwege": [51.1833, 10.0500], "Euskirchen": [50.6606, 6.7865], "Flörsbachtal": [50.1167, 9.4333], "Flörsheim am Main": [50.0125, 8.4286], "Frankfurt": [50.1109, 8.6821], "Freigericht": [50.1333, 9.1167], "Freudenstadt": [48.4632, 8.4116], "Friedrichsdorf": [50.2562, 8.6384], "Fulda": [50.5528, 9.6766], "Fürth": [49.4774, 10.9886], "Gangelt": [50.9833, 6.0000], "Geilenkirchen": [50.9654, 6.1197], "Gelnhausen": [50.2017, 9.1869], "Giessen": [50.5841, 8.6784], "Giessen Powiat": [50.5841, 8.6784], "Gifhorn": [52.4884, 10.5473], "Göttingen": [51.5413, 9.9158], "Gräfelfing": [48.1192, 11.4293], "Gross-Gerau": [49.9234, 8.4830], "Gründau": [50.2185, 9.1179], "Hannover": [52.3759, 9.7320], "Harburg": [53.4608, 9.9822], "Hasselroth": [50.1667, 9.1000], "Hattersheim am Main": [50.0673, 8.4860], "Heek": [52.1167, 7.1167], "Heidekreis": [52.8833, 9.6667], "Heidelberg": [49.3988, 8.6724], "Heilbronn": [49.1427, 9.2109], "Heiligenhaus": [51.328, 6.969], "Heinsberg": [51.0640, 6.1000], "Hellenthal": [50.4907, 6.4385], "Hersfeld-Rotenburg": [50.8667, 9.7167], "Hofheim am Taunus": [50.0877, 8.4452], "Hohenfels": [47.8950, 9.0753], "Holzminden": [51.8266, 9.4475], "Hürth": [50.8772, 6.8741], "Isselburg": [51.8333, 6.4667], "Jossgrund": [50.1833, 9.4667], "Jülich": [50.9221, 6.3571], "Kall": [50.5398, 6.5540], "Kamp-Lintfort": [51.4988, 6.5332], "Karlsruhe": [49.0069, 8.4037], "Karlsruhe Kreis": [49.0833, 8.5167], "Kelkheim (Taunus)": [50.1384, 8.4526], "Kirchheim bei München": [48.1758, 11.7511], "Königstein (Taunus)": [50.1824, 8.4651], "Kronberg im Taunus": [50.1814, 8.5076], "Kulmbach": [50.1082, 11.4586], "Kulmbach Powiat": [50.1082, 11.4586], "Legden": [52.0333, 7.1000], "Leverkusen": [51.0303, 6.9843], "Limburg-Weilburg": [50.4167, 8.1667], "Linsengericht": [50.1833, 9.2167], "Lipsk (Leipzig)": [51.3397, 12.3731], "Lübeck": [53.8690, 10.6870], "Mayen-Koblenz": [50.3333, 7.3000], "Mechernich": [50.5910, 6.6543], "Mühlhausen-Ehingen": [47.8167, 8.8167], "Monachium-Południowy Wschód": [48.1100, 11.6200], "Münster": [51.9607, 7.6261], "Neuss": [51.198, 6.691], "Neustadt an der Waldnaab": [49.7314, 12.1706], "Nidderau": [50.2443, 8.8787], "Oberberg": [51.0267, 7.5644], "Oberursel (Taunus)": [50.2014, 8.5778], "Oder-Spree": [52.2167, 14.2667], "Öhningen": [47.6614, 8.8870], "Olpe": [51.0298, 7.8458], "Orsingen-Nenzingen": [47.8432, 8.9602], "Ortenau": [48.4167, 8.0000], "Osnabrück": [52.2799, 8.0472], "Pulheim": [51.0000, 6.8000], "Regensburg": [49.0134, 12.1016], "Reichenau": [47.6967, 9.0616], "Rhein-Neckar-Kreis": [49.3500, 8.7667], "Rhein-Sieg": [50.7833, 7.3333], "Rheingau-Taunus": [50.1333, 8.0667], "Rheinisch-Bergischer": [51.0167, 7.2000], "Rodenbach": [50.1500, 9.0167], "Ronneburg": [50.2333, 9.0500], "Schleiden": [50.5303, 6.4746], "Schlüchtern": [50.3475, 9.5247], "Schwalbach": [50.1539, 8.5325], "Schwedt/Oder": [53.0583, 14.2833], "Selfkant": [51.018, 5.908], "Sinntal": [50.2833, 9.6167], "Solingen": [51.1702, 7.0827], "Sonsbeck": [51.611, 6.280], "Spree-Neiße": [51.7167, 14.4167], "Sprockhövel": [51.3683, 7.2483], "Steinbach": [50.1683, 8.5714], "Steißlingen": [47.8000, 8.9333], "Stockach": [47.8532, 9.0092], "Straelen": [51.443, 6.265], "Straubing-Bogen": [48.9167, 12.6333], "Tengen": [47.8210, 8.6610], "Tönisvorst": [51.3204, 6.4950], "Trier": [49.7499, 6.6371], "Trier-Saarburg": [49.6333, 6.6667], "Tuttlingen": [47.9839, 8.8174], "Volkertshausen": [47.8220, 8.8649], "Vulkaneifel": [50.2167, 6.7833], "Walldorf-Mörfelden": [49.9833, 8.5667], "Weeze": [51.626, 6.202], "Weilerswist": [50.7601, 6.8404], "Werra-Meissner": [51.2167, 9.9833], "Wesseling": [50.8252, 6.9792], "Westerwald": [50.5167, 7.8667], "Wolfsburg": [52.4227, 10.7865], "Wülfrath": [51.2833, 7.0333], "Wuppertal": [51.2562, 7.1508], "Xanten": [51.661, 6.453], "Zollernalb": [48.2667, 8.9167], "Zülpich": [50.6922, 6.6481], "Berlin": [52.5200, 13.4050],
-            "Aldenhoven": [50.895, 6.282], "Alpen": [51.575, 6.513], "Bedburg-Hau": [51.761, 6.177], 
-            "Emmerich am Rhein": [51.833, 6.246], "Geldern": [51.516, 6.326], "Goch": [51.679, 6.159], "Grevenbroich": [51.088, 6.587], 
-            "Hückelhoven": [51.058, 6.220], "Issum": [51.534, 6.425], "Jüchen": [51.101, 6.500], 
-            "Jülich (E)": [50.922, 6.357], "Kaarst": [51.228, 6.627], "Kerken": [51.420, 6.420], 
-            "Kevelaer": [51.583, 6.248], "Korschenbroich": [51.191, 6.513], "Meerbusch": [51.266, 6.664], 
-            "Merzenich": [50.828, 6.527], "Neukirchen-Vluyn": [51.442, 6.541], "Rees": [51.758, 6.396], 
-            "Rheurdt": [51.450, 6.480], "Rommerskirchen": [51.033, 6.683], "Selfkant": [51.018, 5.908], 
-            "Sonsbeck": [51.611, 6.280], "Straelen": [51.443, 6.265], "Übach-Palenberg": [50.916, 6.116], 
-            "Uedem": [51.666, 6.283], "Viersen": [51.255, 6.395], "Voerde": [51.597, 6.685], 
-            "Weeze": [51.626, 6.202], "Xanten": [51.661, 6.453],
-            "Dormagen": [51.0964, 6.8402], "Grefrath": [51.3364, 6.3375], "Nettetal": [51.3167, 6.2833],
-            "Altena": [51.302, 7.674], "Balve": [51.331, 7.865], "Iserlohn": [51.383, 7.666], 
-            "Menden": [51.438, 7.794], "Nachrodt-Wiblingwerde": [51.336, 7.629], "Plettenberg": [51.213, 7.874], 
-            "Werdohl": [51.258, 7.761], "Monachium-Południowy Wschód": [48.1100, 11.6200], "Köln": [50.9375, 6.9603], 
-            "Haan": [51.193, 7.013], "Heiligenhaus": [51.328, 6.969], "Monheim am Rhein": [51.089, 6.890], 
-            "Ratingen": [51.296, 6.850], "Erkrath": [51.223, 6.915]
-        };
-
-        var map = L.map('dabuOSMMap', { zoomControl: false }).setView([51.1657, 10.4515], 6);
+        const map = L.map('dabuOSMMap', { zoomControl: false }).setView([51.1657, 10.4515], 6);
         L.control.zoom({ position: 'topleft' }).addTo(map);
-        
+
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { 
-            attribution: 'Esri StreetMap', 
-            maxZoom: 18 
+            attribution: 'Esri StreetMap', maxZoom: 18 
         }).addTo(map);
 
-        var markersLayer = new L.FeatureGroup().addTo(map);
-        countyPolygonsLayer.addTo(map);
-
-        var customControls = L.control({position: 'topright'});
-        customControls.onAdd = function (map) {
-            var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-            var locBtn = L.DomUtil.create('a', '', container);
-            locBtn.innerHTML = '🎯'; locBtn.href = '#'; locBtn.title = 'Znajdź moją pozycję'; locBtn.style.fontSize = '16px';
+        // GEOLOKALISIERUNG
+        const customControls = L.control({position: 'topright'});
+        customControls.onAdd = function () {
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+            const locBtn = L.DomUtil.create('a', '', container);
+            locBtn.innerHTML = '🎯'; locBtn.href = '#'; locBtn.title = 'Moja pozycja'; locBtn.style.fontSize = '16px';
             locBtn.style.lineHeight = '30px'; locBtn.style.textAlign = 'center'; locBtn.style.textDecoration = 'none';
             locBtn.onclick = function(e){
                 e.preventDefault();
-                locateUser();
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+                        if (userLocationMarker) map.removeLayer(userLocationMarker);
+                        userLocationMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({ className: 'user-loc-pin', iconSize: [16, 16], iconAnchor: [8, 8] })
+                        }).addTo(map);
+                        map.flyTo([lat, lon], 10, { duration: 1.2 });
+                    });
+                }
             };
             return container;
         };
         customControls.addTo(map);
 
-        function locateUser() {
-            if (!navigator.geolocation) {
-                alert("Geolokalizacja nie jest wspierana przez Twoją przeglądarkę.");
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(
-                function(pos) {
-                    var lat = pos.coords.latitude;
-                    var lon = pos.coords.longitude;
-                    
-                    if (userLocationMarker) {
-                        map.removeLayer(userLocationMarker);
-                    }
-
-                    var userIcon = L.divIcon({
-                        className: '',
-                        html: '<div class="user-loc-pin"></div>',
-                        iconSize: [16, 16],
-                        iconAnchor: [8, 8]
-                    });
-
-                    userLocationMarker = L.marker([lat, lon], { icon: userIcon }).addTo(map);
-                    userLocationMarker.bindPopup("<b>📍 Twoja lokalizacja</b>").openPopup();
-                    map.flyTo([lat, lon], 10, { duration: 1.2 });
-                },
-                function(err) {
-                    alert("Nie udało się pobrać Twojej lokalizacji: " + err.message);
-                },
-                { enableHighAccuracy: true, timeout: 8000 }
-            );
-        }
-
-        function updateRegionCounters() {
-            let total = document.querySelectorAll('.region-chk').length;
-            let visible = Object.keys(markerMapElements).length;
-            
-            let totalEl = document.getElementById('totalRegionCount');
-            let visibleEl = document.getElementById('visibleRegionCount');
-            
-            if (totalEl) totalEl.innerText = total;
-            if (visibleEl) visibleEl.innerText = visible;
-        }
-
-        function openRegionsList() {
-            document.getElementById('regionsContainer').classList.add('is-open');
-        }
-
-        function closeRegionsList() {
-            document.getElementById('regionsContainer').classList.remove('is-open');
-        }
-
-        map.on('click', function() {
-            closeRegionsList();
-        });
-
-        // GRANICE LANDÓW
-        let landFrontLayer = L.layerGroup().addTo(map);
-
-        fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
-            .then(r => r.json())
-            .then(geoData => {
-               let geoLayer = L.geoJSON(geoData, {
-                  style: function(feature) {
-                      let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
-                      let active = landMap[name] && landMap[name].length > 0;
-                      let regionColor = landColors[name] || "#00FF7F"; 
-                      return { 
-                          color: active ? regionColor : "#4b5563", 
-                          weight: active ? 2.5 : 1, 
-                          dashArray: active ? null : '3, 4',
-                          fillColor: active ? regionColor : "transparent", 
-                          fillOpacity: active ? 0.05 : 0.0,
-                          className: active ? 'land-boundary-3d' : ''
-                      };
-                  },
-                  onEachFeature: function (feature, layer) {
-                      let name = normalizeLandName(feature.properties.NAME_1 || feature.properties.name || feature.properties.GEN);
-                      let count = landMap[name] ? landMap[name].length : 0;
-                      let regionColor = landColors[name] || "#00FF7F";
-
-                      layer.bindTooltip("<b>"+name+"</b><br>"+(count > 0 ? "Rejony: "+count : "Brak rejonów"), {sticky: true, className: 'custom-leaflet-tooltip'});
-                      
-                      layer.on('mouseover', function(e) {
-                          if (landMap[name] && landMap[name].length > 0) {
-                              this.setStyle({
-                                  weight: 4,
-                                  fillOpacity: 0.18,
-                                  color: '#ffffff'
-                              });
-                              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                                  this.bringToFront();
-                              }
-                          }
-                      });
-
-                      layer.on('mouseout', function(e) {
-                          let active = landMap[name] && landMap[name].length > 0;
-                          this.setStyle({
-                              color: active ? regionColor : "#4b5563",
-                              weight: active ? 2.5 : 1,
-                              fillOpacity: active ? 0.05 : 0.0
-                          });
-                      });
-
-                      layer.on('click', () => selectLand(name));
-                  }
-               }).addTo(landFrontLayer);
-
-               let isMobile = window.innerWidth <= 600;
-               map.fitBounds(geoLayer.getBounds(), {
-                   paddingTopLeft: [0, isMobile ? 120 : 90],
-                   paddingBottomRight: [0, isMobile ? 40 : 30]
-               });
-            });
-
+        // KREIS-GRENZEN LADEN & INTERAKTIV MACHEN
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
-               kreiseLayer = L.geoJSON(geoData, {
-                  interactive: false,
-                  style: { color: "transparent", weight: 1, fillOpacity: 0 },
-                  onEachFeature: function (feature, layer) {
-                      let p = feature.properties || {};
-                      layer.featureName = p.GEN || p.NAME_3 || p.name || p.NAME_2 || "unknown";
-                  }
-               }).addTo(map);
-            });
-            
-        function drawSingleRegionOnMap(name, info) {
-            if (!regionCoords[name] || markerMapElements[name]) return;
-            
-            let popupContent = `<b>${name}</b><br><small>${info}</small><br><br>` +
-                `<button onclick="sendSingleRegionInquiry('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:7px 10px; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#00FF7F; border:none; border-radius:4px; font-weight:bold; font-size:13px; cursor:pointer; margin-bottom:6px;">💬 Wyślij zapytanie o ten rejon</button>` +
-                `<button onclick="addToCart('${name.replace(/'/g, "\\'")}')" style="display:block; width:100%; text-align:center; padding:6px 10px; background:rgba(0,255,127,0.2); color:#00FF7F; border:1px solid #00FF7F; border-radius:4px; font-weight:bold; font-size:12px; cursor:pointer;">➕ Dodaj do listy zapytania</button>`;
-            
-            let treasureIcon = L.divIcon({
-                className: '',
-                html: '<div class="treasure-pin"></div>',
-                iconSize: [24, 24],
-                iconAnchor: [12, 12],
-                popupAnchor: [0, -12]
-            });
+                L.geoJSON(geoData, {
+                    style: function (feature) {
+                        const p = feature.properties || {};
+                        const name = p.GEN || p.name || "";
+                        const isAvailable = Object.keys(countyDatabase).some(k => k.toLowerCase().includes(name.toLowerCase()));
+                        return {
+                            color: isAvailable ? "#00FF7F" : "rgba(255,255,255,0.15)",
+                            weight: isAvailable ? 1.8 : 0.8,
+                            fillColor: isAvailable ? "#00FF7F" : "transparent",
+                            fillOpacity: isAvailable ? 0.08 : 0,
+                            className: isAvailable ? 'land-boundary-3d' : ''
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        const p = feature.properties || {};
+                        const name = p.GEN || p.name || "";
+                        const matchedKey = Object.keys(countyDatabase).find(k => k.toLowerCase().includes(name.toLowerCase()));
 
-            let marker = L.marker(regionCoords[name], { icon: treasureIcon }).bindPopup(popupContent);
-            marker.addTo(markersLayer);
-            markerMapElements[name] = marker; 
-
-            if (name === "Neustadt an der Waldnaab") {
-                let neustadtPolygon = [[49.863, 11.855], [49.895, 11.965], [49.876, 12.155], [49.899, 12.355], [49.799, 12.445], [49.665, 12.515], [49.632, 12.355], [49.544, 12.344], [49.566, 12.188], [49.644, 12.022], [49.622, 11.899], [49.711, 11.755], [49.811, 11.722], [49.863, 11.855]];
-                L.polygon(neustadtPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-            }
-            if (name === "Altenkirchen (Westerwald)") {
-                let altenkirchenPolygon = [[50.865, 7.533], [50.922, 7.722], [50.845, 7.965], [50.822, 8.022], [50.711, 7.944], [50.599, 7.844], [50.622, 7.611], [50.688, 7.455], [50.785, 7.444], [50.865, 7.533]];
-                L.polygon(altenkirchenPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-            }
-            if (name === "Eifelkreis Bitburg-Prüm") {
-                let bitburgPolygon = [[50.315, 6.222], [50.288, 6.455], [50.188, 6.644], [50.122, 6.755], [49.995, 6.688], [49.885, 6.511], [49.812, 6.455], [49.833, 6.188], [49.988, 6.111], [50.122, 6.133], [50.215, 6.022], [50.315, 6.222]];
-                L.polygon(bitburgPolygon, { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 }).addTo(countyPolygonsLayer);
-            }
-
-            if (kreiseLayer) {
-                kreiseLayer.eachLayer(function(layer) {
-                     if (matchRegionName(name, layer.featureName)) {
-                         let countyPoly = L.polygon(layer.getLatLngs(), { color: "#ffd700", weight: 2, fillColor: "#ffd700", fillOpacity: 0.0 });
-                         countyPolygonsLayer.addLayer(countyPoly);
-                     }
-                });
-            }
-
-            updateRegionCounters();
-        }
-
-        function refreshMapState() {
-            markersLayer.clearLayers();
-            countyPolygonsLayer.clearLayers();
-            markerMapElements = {};
-
-            let regionsToDraw = new Set();
-            
-            if (currentFilteredLand && landMap[currentFilteredLand]) {
-                landMap[currentFilteredLand].forEach(r => regionsToDraw.add(r));
-            }
-            
-            document.querySelectorAll('.region-chk').forEach(chk => {
-                if (chk.checked) {
-                    regionsToDraw.add(chk.value.trim());
-                }
-            });
-
-            regionsToDraw.forEach(name => {
-                let matchingLabel = Array.from(document.querySelectorAll('.region-chk')).find(cb => cb.value.trim() === name);
-                let info = matchingLabel ? matchingLabel.closest('.region-label').getAttribute('data-info') : "";
-                drawSingleRegionOnMap(name, info);
-            });
-
-            updateRegionCounters();
-        }
-
-        function selectLand(landName) {
-            let regions = landMap[landName] || [];
-            let header = document.getElementById('selectedLandTitle');
-            header.style.display = 'block';
-            if (regions.length === 0) {
-                header.innerHTML = `❌ Brak rejonów w: <strong>${landName}</strong>`;
-                return;
-            }
-            header.innerHTML = `Land: <strong>${landName}</strong> (${regions.length} rejonów)`;
-            currentFilteredLand = landName;
-            openRegionsList();
-            
-            document.querySelectorAll('.region-label').forEach(label => {
-                let val = label.querySelector('input').value.trim();
-                label.style.display = regions.includes(val) ? 'flex' : 'none';
-            });
-
-            refreshMapState();
-
-            if(markersLayer.getLayers().length > 0) { 
-                map.fitBounds(markersLayer.getBounds(), {paddingTopLeft: [40, 140], paddingBottomRight: [40, 80], maxZoom: 10});
-            }
-            updateCountySuggestions();
-        }
-
-        function selectOnlyNormalRegions(e) {
-            if (e) e.preventDefault();
-            currentFilteredLand = null;
-            document.getElementById('selectedLandTitle').style.display = 'none';
-            openRegionsList();
-            
-            document.querySelectorAll('.region-chk').forEach(chk => {
-                let info = chk.closest('.region-label').getAttribute('data-info') || "";
-                let isFesteTermine = info.includes("Terminy stałe");
-                chk.checked = isFesteTermine;
-                chk.closest('.region-label').style.display = 'flex'; 
-            });
-
-            refreshMapState();
-
-            if(markersLayer.getLayers().length > 0) { 
-                map.fitBounds(markersLayer.getBounds(), {paddingTopLeft: [40, 140], paddingBottomRight: [40, 80], maxZoom: 9});
-            }
-            updateCountySuggestions();
-        }
-
-        function addToCart(regionName) {
-            if (!cartRegions.includes(regionName)) {
-                cartRegions.push(regionName);
-                updateCartSummary();
-                updateListButtons();
-                triggerMarkerPulse(regionName); 
-                showOrderPopup(regionName);
-            }
-        }
-
-        function showOrderPopup(regionName) {
-            let popup = document.getElementById('dabuOrderPopup');
-            let popupText = document.getElementById('dabuOrderPopupText');
-            popupText.innerText = regionName;
-            popup.classList.add('show');
-            setTimeout(() => { popup.classList.remove('show'); }, 1500);
-        }
-
-        function triggerMarkerPulse(regionName) {
-            let marker = markerMapElements[regionName];
-            if (marker) {
-                let iconEl = marker.getElement();
-                if (iconEl) {
-                    let pinDiv = iconEl.querySelector('.treasure-pin');
-                    if (pinDiv) {
-                        pinDiv.classList.add('pulse-treasure');
-                        setTimeout(() => { pinDiv.classList.remove('pulse-treasure'); }, 2400); 
-                    }
-                }
-            }
-        }
-
-        function updateCartSummary() {
-            let summaryEl = document.getElementById('selectedRegionsSummary');
-            if (cartRegions.length === 0) {
-                summaryEl.innerHTML = "Wybrane: brak";
-            } else {
-                summaryEl.innerHTML = "Wybrane: <strong>" + cartRegions.join(', ') + "</strong>";
-            }
-        }
-
-        function updateListButtons() {
-            document.querySelectorAll('.add-list-btn').forEach(btn => {
-                let rName = btn.getAttribute('data-region');
-                if (cartRegions.includes(rName)) {
-                    btn.innerHTML = "✓ Dodano";
-                    btn.style.background = "#ffd700";
-                    btn.style.color = "#000";
-                    btn.style.borderColor = "#ffd700";
-                } else {
-                    btn.innerHTML = "+";
-                    btn.style.background = "rgba(0, 255, 127, 0.15)";
-                    btn.style.color = "#00FF7F";
-                    btn.style.borderColor = "#00FF7F";
-                }
-            });
-        }
-
-        function clearAllFilters(e) {
-            if (e) e.preventDefault();
-            document.getElementById('dabuRegionSearch').value = '';
-            currentFilteredLand = null;
-            cartRegions = [];
-            markerMapElements = {};
-            updateCartSummary();
-            updateListButtons();
-            document.getElementById('selectedLandTitle').style.display = 'none';
-            document.querySelectorAll('.region-chk').forEach(chk => chk.checked = false);
-            document.querySelectorAll('.region-label').forEach(l => l.style.display = 'flex');
-            closeRegionsList();
-            refreshMapState();
-            
-            let isMobile = window.innerWidth <= 600;
-            map.flyTo([51.1657, 10.4515], isMobile ? 5.8 : 6.2, { duration: 0.8 });
-            updateCountySuggestions();
-        }
-
-        function updateCountySuggestions() {
-            let container = document.getElementById('countySuggestions');
-            container.innerHTML = '';
-            if (currentFilteredLand) {
-                let btnReset = document.createElement('button');
-                btnReset.className = 'dabu-county-btn';
-                btnReset.style.background = '#ff4444'; btnReset.style.color = 'white';
-                btnReset.innerHTML = '✖ Reset wyboru';
-                btnReset.onclick = (e) => { e.preventDefault(); clearAllFilters(); };
-                container.appendChild(btnReset);
-            }
-        }
-
-        function filterDabuRegions() {
-            openRegionsList();
-            let input = document.getElementById('dabuRegionSearch').value.toLowerCase().trim();
-            
-            document.querySelectorAll('.region-label').forEach(label => {
-                let val = label.querySelector('input').value.trim();
-                let county = (regionToCountyMap[val] || "").toLowerCase();
-                
-                let textMatch = label.textContent.toLowerCase().includes(input) || county.includes(input);
-                
-                if (currentFilteredLand) {
-                    let inLand = landMap[currentFilteredLand] && landMap[currentFilteredLand].includes(val);
-                    label.style.display = (textMatch && inLand) ? "flex" : "none";
-                } else {
-                    label.style.display = textMatch ? "flex" : "none";
-                }
-            });
-        }
-
-        // DYNAMICZNE BUDOWANIE ELEMENTÓW LISTY ZE WSZYSTKICH WSPÓŁRZĘDNYCH
-        function buildRegionsList() {
-            const container = document.getElementById('regionsListItems');
-            container.innerHTML = '';
-            
-            const sortedNames = Object.keys(regionCoords).sort((a,b) => a.localeCompare(b, 'de', {sensitivity: 'base'}));
-            
-            sortedNames.forEach(name => {
-                const label = document.createElement('label');
-                label.className = 'region-label';
-                label.setAttribute('data-info', 'Terminy na żądanie / Termine auf Abruf');
-                
-                const chk = document.createElement('input');
-                chk.className = 'region-chk';
-                chk.type = 'checkbox';
-                chk.name = 'regiony[]';
-                chk.value = name;
-                
-                label.appendChild(chk);
-                label.appendChild(document.createTextNode(' ' + name));
-                
-                chk.addEventListener('change', () => {
-                    if (chk.checked) {
-                        drawSingleRegionOnMap(name, label.getAttribute('data-info'));
-                        if (regionCoords[name]) {
-                            map.flyTo(regionCoords[name], 9, {duration: 0.5});
-                            setTimeout(() => {
-                                if (markerMapElements[name]) {
-                                    markerMapElements[name].openPopup();
-                                }
-                            }, 500);
+                        if (matchedKey) {
+                            layer.bindTooltip(`<b>Powiat: ${matchedKey}</b><br><small>Kliknij, aby wybrać gminy</small>`, { sticky: true });
+                            layer.on('click', () => {
+                                showCountyModal(matchedKey);
+                                map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+                            });
                         }
-                    } else {
-                        refreshMapState();
                     }
-                });
-
-                let btn = document.createElement('button');
-                btn.type = "button";
-                btn.className = "add-list-btn";
-                btn.innerHTML = "+";
-                btn.setAttribute('data-region', name);
-                btn.title = "Dodaj do zapytania";
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    addToCart(name);
-                };
-                label.appendChild(btn);
-
-                container.appendChild(label);
+                }).addTo(map);
             });
-            
-            updateRegionCounters();
+
+        // MODAL MIT GEMEINDEN ÖFFNEN
+        function showCountyModal(countyName) {
+            const data = countyDatabase[countyName];
+            if (!data) return;
+
+            document.getElementById('modalCountyTitle').innerHTML = `📍 ${countyName} <small style="font-size:12px; color:#94a3b8; font-weight:normal;">(${data.land})</small>`;
+            const container = document.getElementById('modalMunicipalitiesList');
+            container.innerHTML = '';
+
+            data.municipalities.sort().forEach(mun => {
+                const row = document.createElement('div');
+                row.className = 'municipality-row';
+
+                const isAdded = selectedMunicipalities.includes(mun);
+
+                row.innerHTML = `
+                    <span style="font-size:14px; font-weight:500;">${mun}</span>
+                    <button class="add-mun-btn ${isAdded ? 'added' : ''}" onclick="toggleMunicipality('${mun.replace(/'/g, "\\'")}', this)">
+                        ${isAdded ? '✓ Dodano' : '+ Dodaj'}
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById('countyDetailsModal').classList.add('is-active');
+            updateCartDisplays();
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            buildRegionsList();
+        function closeCountyModal() {
+            document.getElementById('countyDetailsModal').classList.remove('is-active');
+        }
+
+        function toggleMunicipality(name, btn) {
+            if (selectedMunicipalities.includes(name)) {
+                selectedMunicipalities = selectedMunicipalities.filter(m => m !== name);
+                btn.classList.remove('added');
+                btn.innerText = '+ Dodaj';
+            } else {
+                selectedMunicipalities.push(name);
+                btn.classList.add('added');
+                btn.innerText = '✓ Dodano';
+            }
+            updateCartDisplays();
+        }
+
+        function updateCartDisplays() {
+            document.getElementById('totalCartCount').innerText = selectedMunicipalities.length;
+            document.getElementById('modalSelectedCounter').innerText = `Wybrano gmin: ${selectedMunicipalities.length}`;
+        }
+
+        // SUCHE NACH KREISEN
+        function openCountiesList() {
+            document.getElementById('countiesSearchList').classList.add('is-open');
+            filterCounties();
+        }
+
+        function filterCounties() {
+            const query = document.getElementById('dabuRegionSearch').value.toLowerCase().trim();
+            const list = document.getElementById('countiesSearchList');
+            list.innerHTML = '';
+
+            const matched = Object.keys(countyDatabase).filter(c => c.toLowerCase().includes(query) || countyDatabase[c].municipalities.some(m => m.toLowerCase().includes(query)));
+
+            matched.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'county-search-item';
+                item.innerHTML = `
+                    <span><strong>${c}</strong> <small style="color:#94a3b8;">(${countyDatabase[c].land})</small></span>
+                    <span style="font-size:11.5px; color:#00FF7F;">${countyDatabase[c].municipalities.length} gmin ›</span>
+                `;
+                item.onclick = () => {
+                    showCountyModal(c);
+                    list.classList.remove('is-open');
+                    map.flyTo(countyDatabase[c].center, 9, { duration: 1 });
+                };
+                list.appendChild(item);
+            });
+        }
+
+        function clearAllSelections() {
+            selectedMunicipalities = [];
+            document.getElementById('dabuRegionSearch').value = '';
+            document.getElementById('countiesSearchList').classList.remove('is-open');
+            closeCountyModal();
+            updateCartDisplays();
+            zoomGermany();
+        }
+
+        function zoomGermany() {
+            map.flyTo([51.1657, 10.4515], 6, { duration: 1 });
+        }
+
+        map.on('click', () => {
+            document.getElementById('countiesSearchList').classList.remove('is-open');
         });
 
-        function sendSingleRegionInquiry(regionName) {
-            let phoneNumber = "+48600812820";
-            let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            let smsSeparator = isIOS ? "&" : "?";
-            let message = `Dzień dobry, proszę o informację i wycenę w sprawie rejonu: ${regionName}.`;
-            window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
-        }
-
+        // SMS-ANFRAGE ABSENDEN
         function sendSmsQuote() {
-            if (cartRegions.length === 0) {
-                alert("Wybierz przynajmniej jeden rejon klikając '+' na liście lub w dymku na mapie.");
+            if (selectedMunicipalities.length === 0) {
+                alert("Wybierz przynajmniej jedną gminę z listy.");
                 return;
             }
-
-            let phoneNumber = "+48600812820";
-            let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            let smsSeparator = isIOS ? "&" : "?";
-            
-            let message = cartRegions.length === 1
-                ? `Dzień dobry, proszę o informację i wycenę w sprawie rejonu: ${cartRegions[0]}.`
-                : `Dzień dobry, proszę o informację i wycenę w sprawie rejonów: ${cartRegions.join(', ')}.`;
-
+            const phoneNumber = "+48600812820";
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const smsSeparator = isIOS ? "&" : "?";
+            const message = `Dzień dobry, proszę o wycenę i terminy dla wybranych gmin: ${selectedMunicipalities.join(', ')}.`;
             window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
         }
     </script>
-
-    <script src="translator.js"></script>
-    <script src="/footer.js"></script>
 </body>
 </html>
