@@ -433,14 +433,16 @@
         };
 
         const map = L.map('dabuOSMMap', { zoomControl: false }).setView([51.1657, 10.4515], 6);
-        L.control.zoom({ position: 'topleft' }).addTo(map);
+        // Zmiana pozycji przycisków zoom na prawy dolny róg
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
 
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { 
             attribution: 'Esri StreetMap', maxZoom: 18 
         }).addTo(map);
 
         // GEOLOKALIZACJA
-        const customControls = L.control({position: 'topright'});
+        // Zmiana pozycji przycisku geolokalizacji na prawy dolny róg
+        const customControls = L.control({position: 'bottomright'});
         customControls.onAdd = function () {
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             const locBtn = L.DomUtil.create('a', '', container);
@@ -463,22 +465,22 @@
         };
         customControls.addTo(map);
 
-// --- NOWOŚĆ: TWORZENIE WARSTWY ZAWSZE NA WIERZCHU DLA LANDÓW ---
+        // TWORZENIE WARSTWY ZAWSZE NA WIERZCHU DLA LANDÓW
         map.createPane('landBordersPane');
-        map.getPane('landBordersPane').style.zIndex = 450; // Powyżej standardowych warstw (400)
-        map.getPane('landBordersPane').style.pointerEvents = 'none'; // Przepuszcza kliknięcia w dół do powiatów
+        map.getPane('landBordersPane').style.zIndex = 450; 
+        map.getPane('landBordersPane').style.pointerEvents = 'none'; 
 
         // WCZYTANIE GRANIC LANDÓW (BUNDESLÄNDER)
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
                 L.geoJSON(geoData, {
-                    pane: 'landBordersPane', // Przypisanie do wyższej warstwy
+                    pane: 'landBordersPane',
                     interactive: false,
                     style: {
-                        color: "#ffd700",      // Złoty kolor
-                        weight: 3.5,           // Zwiększona grubość, żeby wybić się nad powiaty
-                        opacity: 1,            // Pełna nieprzezroczystość linii
+                        color: "#ffd700",
+                        weight: 3.5,
+                        opacity: 1,
                         fillOpacity: 0
                     }
                 }).addTo(map);
@@ -637,7 +639,6 @@
             if (success && municipalities.length > 0) {
                 container.innerHTML = '';
 
-                // --- NOWOŚĆ: OPCJA CAŁEGO POWIATU NA SAMEJ GÓRZE ---
                 const wholeCountyStr = `Cały powiat (${cleanName})`;
                 const isCountyAdded = selectedMunicipalities.includes(wholeCountyStr);
                 const countyRow = document.createElement('div');
@@ -652,7 +653,6 @@
                     </button>
                 `;
                 container.appendChild(countyRow);
-                // --------------------------------------------------
 
                 municipalities.forEach(mun => {
                     const row = document.createElement('div');
