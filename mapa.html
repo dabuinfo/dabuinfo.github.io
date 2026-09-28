@@ -516,6 +516,10 @@
                     paddingTopLeft: [0, isMobile ? 120 : 90],
                     paddingBottomRight: [0, isMobile ? 40 : 30]
                 });
+            })
+            .catch(err => {
+                console.error("Błąd podczas pobierania pliku GeoJSON: ", err);
+                alert("Nie udało się pobrać mapy z granicami powiatów. Odśwież stronę.");
             });
 
         // UNIWERSALNA FUNKCJA NORMALIZACJI NIEMIECKICH ZNAKÓW
@@ -535,7 +539,11 @@
             const modalTitle = document.getElementById('modalCountyTitle');
             const container = document.getElementById('modalMunicipalitiesList');
             
-            modalTitle.innerHTML = `📍 ${countyName} <small style="font-size:12px; color:#94a3b8; font-weight:normal;">(${landName})</small>`;
+            // XSS protection basic escaping
+            const safeCountyName = countyName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const safeLandName = landName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            modalTitle.innerHTML = `📍 ${safeCountyName} <small style="font-size:12px; color:#94a3b8; font-weight:normal;">(${safeLandName})</small>`;
             container.innerHTML = `
                 <div style="text-align:center; padding: 30px; color: #00FF7F;">
                     <div style="font-size: 26px; animation: spin 1s infinite linear; display: inline-block;">⏳</div>
@@ -570,9 +578,10 @@
             `;
 
             const encoded = encodeURIComponent(overpassQuery);
+            // Updated more reliable endpoints
             const endpoints = [
                 "https://overpass-api.de/api/interpreter?data=" + encoded,
-                "https://overpass.kumi.systems/api/interpreter?data=" + encoded
+                "https://lz4.overpass-api.de/api/interpreter?data=" + encoded
             ];
 
             let municipalities = [];
@@ -614,7 +623,7 @@
                     const isAdded = selectedMunicipalities.includes(mun);
 
                     row.innerHTML = `
-                        <span style="font-size:14px; font-weight:500;">${mun}</span>
+                        <span style="font-size:14px; font-weight:500;">${mun.replace(/</g, "&lt;")}</span>
                         <button class="add-mun-btn ${isAdded ? 'added' : ''}" onclick="toggleMunicipality('${mun.replace(/'/g, "\\'")}', this)">
                             ${isAdded ? '✓ Dodano' : '+ Dodaj'}
                         </button>
@@ -629,7 +638,7 @@
                             Możesz złożyć zapytanie ogólne o cały powiat.
                         </p>
                         <button class="add-mun-btn" style="margin-top: 10px;" onclick="toggleMunicipality('${cleanName.replace(/'/g, "\\'")}', this)">
-                            + Dodaj powiat "${cleanName}" do zapytania
+                            + Dodaj powiat "${cleanName.replace(/</g, "&lt;")}" do zapytania
                         </button>
                     </div>
                 `;
@@ -639,6 +648,13 @@
         function closeCountyModal() {
             document.getElementById('countyDetailsModal').classList.remove('is-active');
         }
+
+        // Dodanie zamykania modalu na klawisz Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeCountyModal();
+            }
+        });
 
         function toggleMunicipality(name, btn) {
             if (selectedMunicipalities.includes(name)) {
@@ -702,7 +718,7 @@
                     const item = document.createElement('div');
                     item.className = 'county-search-item';
                     item.innerHTML = `
-                        <span>📍 <strong>${c.name}</strong></span>
+                        <span>📍 <strong>${c.name.replace(/</g, "&lt;")}</strong></span>
                         <span style="font-size:11.5px; color:#00FF7F;">Wybierz ›</span>
                     `;
                     item.onclick = () => {
@@ -754,7 +770,11 @@
                 return;
             }
             const phoneNumber = "+48600812820";
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Poprawiona detekcja pod nowoczesny system iOS (szczególnie iPady)
+            const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) || 
+                          (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+                          
             const smsSeparator = isIOS ? "&" : "?";
             const message = `Dzień dobry, proszę o wycenę i terminy dla wybranych gmin: ${selectedMunicipalities.join(', ')}.`;
             window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
