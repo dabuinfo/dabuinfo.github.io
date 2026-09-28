@@ -463,6 +463,22 @@
         };
         customControls.addTo(map);
 
+        // WCZYTANIE GRANIC LANDÓW (BUNDESLÄNDER)
+        fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
+            .then(r => r.json())
+            .then(geoData => {
+                L.geoJSON(geoData, {
+                    style: {
+                        color: "#ffd700",      // Złoty kolor odróżniający landy od powiatów
+                        weight: 2.5,           // Grubsza linia
+                        opacity: 0.8,
+                        fillOpacity: 0,        // Brak wypełnienia, aby było widać powiaty
+                        interactive: false     // KLUCZOWE: Nie blokuje klikania w warstwy poniżej!
+                    }
+                }).addTo(map);
+            })
+            .catch(err => console.error("Błąd podczas pobierania granic landów: ", err));
+
         // WCZYTANIE POWIATÓW Z PRZYPISANIEM DO LANDÓW
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
             .then(r => r.json())
