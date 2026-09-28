@@ -215,6 +215,7 @@
         const isExcludedPage = currentPath.includes('kalendarz') || 
                                currentPath.includes('gieldy') || 
                                currentPath.includes('mapa2026') || 
+                               currentPath.includes('mapa') ||
                                currentPath.includes('data');
 
         if (!isExcludedPage && !document.getElementById('chat-toggle-btn')) {
