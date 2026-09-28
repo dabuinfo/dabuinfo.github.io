@@ -119,7 +119,7 @@
             color: #000;
         }
 
-        /* --- ROZWIJANA LISTA REGIONÓW (POKAZYWANA TYLKO PRZY WYSZUKIWANIU) --- */
+        /* --- ROZWIJANA LISTA REGIONÓW --- */
         .regions-scroll-box { 
             max-height: 0;
             opacity: 0;
@@ -203,7 +203,7 @@
             color: #000;
         }
 
-        /* --- DOLNY BLOK ZAPYTANIA SMS (MINI PASEK) --- */
+        /* --- DOLNY BLOK ZAPYTANIA SMS --- */
         .dabu-sms-dock {
             position: absolute;
             bottom: 20px;
@@ -267,7 +267,6 @@
             font-size: 14px; 
         }
 
-        /* STYLISTYKA PRZEŁĄCZNIKA WARSTW LEAFLET */
         .leaflet-control-layers {
             background: rgba(18, 24, 38, 0.95) !important;
             color: #e2e8f0 !important;
@@ -282,7 +281,6 @@
             cursor: pointer;
         }
 
-        /* STYL PINÓW */
         .treasure-pin {
             background: linear-gradient(135deg, #ffd700, #ff8c00);
             border: 2px solid #ffffff;
@@ -301,7 +299,6 @@
             transform: rotate(45deg);
         }
 
-        /* STYL WŁASNEJ LOKALIZACJI */
         .user-loc-pin {
             background: #00c3ff;
             border: 2px solid #ffffff;
@@ -338,7 +335,6 @@
             animation: pulse-ring 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
-        /* POPUP */
         .dabu-order-popup {
             position: fixed;
             top: 50%;
@@ -745,7 +741,7 @@
 
         var map = L.map('dabuOSMMap', { zoomControl: true }).setView([51.3, 10.45], 6);
         
-        // PODKŁADY MAPOWE (WARSTWY BAZOWE)
+        // PODKŁADY MAPOWE
         const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 });
         const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
@@ -957,26 +953,6 @@
             updateRegionCounters();
         }
 
-        // WYŚWIETLANIE WSZYSTKICH REJONÓW NA MAPIE OD RAZU
-        function drawAllRegionsInitial() {
-            markersLayer.clearLayers();
-            countyPolygonsLayer.clearLayers();
-            markerMapElements = {};
-
-            document.querySelectorAll('.region-chk').forEach(chk => {
-                chk.checked = true;
-                let val = chk.value.trim();
-                let info = chk.closest('.region-label').getAttribute('data-info') || "";
-                drawSingleRegionOnMap(val, info);
-            });
-
-            updateRegionCounters();
-
-            if (markersLayer.getLayers().length > 0) {
-                map.fitBounds(markersLayer.getBounds(), { padding: [60, 60] });
-            }
-        }
-
         function refreshMapState() {
             markersLayer.clearLayers();
             countyPolygonsLayer.clearLayers();
@@ -1139,9 +1115,11 @@
             updateCartSummary();
             updateListButtons();
             document.getElementById('selectedLandTitle').style.display = 'none';
+            document.querySelectorAll('.region-chk').forEach(chk => chk.checked = false);
             document.querySelectorAll('.region-label').forEach(l => l.style.display = 'flex');
             closeRegionsList();
-            drawAllRegionsInitial();
+            refreshMapState();
+            map.setView([51.3, 10.45], 6);
             updateCountySuggestions();
         }
 
@@ -1178,6 +1156,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            updateRegionCounters();
+
             // Dodawanie przycisków '+' do listy
             document.querySelectorAll('.region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
@@ -1215,9 +1195,6 @@
                     label.appendChild(btn);
                 }
             });
-
-            // Nanieś wszystkie rejony na start na cały ekran
-            drawAllRegionsInitial();
         });
 
         function sendSingleRegionInquiry(regionName) {
