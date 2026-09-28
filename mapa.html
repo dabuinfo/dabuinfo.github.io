@@ -415,7 +415,7 @@
     <!-- DOLNY LICZNIK -->
     <div class="bottom-counter-container">
         <div class="map-counter-box">
-            <span>Wybrane gminy do zapytania: <strong id="totalCartCount" style="color:#00FF7F;">0</strong></span>
+            <span>Wybrane gminy / powiaty: <strong id="totalCartCount" style="color:#00FF7F;">0</strong></span>
         </div>
     </div>
 
@@ -469,11 +469,11 @@
             .then(geoData => {
                 L.geoJSON(geoData, {
                     style: {
-                        color: "#ffd700",      // Złoty kolor odróżniający landy od powiatów
-                        weight: 2.5,           // Grubsza linia
+                        color: "#ffd700",
+                        weight: 2.5,
                         opacity: 0.8,
-                        fillOpacity: 0,        // Brak wypełnienia, aby było widać powiaty
-                        interactive: false     // KLUCZOWE: Nie blokuje klikania w warstwy poniżej!
+                        fillOpacity: 0,
+                        interactive: false
                     }
                 }).addTo(map);
             })
@@ -538,7 +538,6 @@
                 alert("Nie udało się pobrać mapy z granicami powiatów. Odśwież stronę.");
             });
 
-        // UNIWERSALNA FUNKCJA NORMALIZACJI NIEMIECKICH ZNAKÓW
         function normalizeGermanStr(str) {
             if (!str) return "";
             return str.toLowerCase()
@@ -555,7 +554,6 @@
             const modalTitle = document.getElementById('modalCountyTitle');
             const container = document.getElementById('modalMunicipalitiesList');
             
-            // XSS protection basic escaping
             const safeCountyName = countyName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             const safeLandName = landName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -594,7 +592,6 @@
             `;
 
             const encoded = encodeURIComponent(overpassQuery);
-            // Updated more reliable endpoints
             const endpoints = [
                 "https://overpass-api.de/api/interpreter?data=" + encoded,
                 "https://lz4.overpass-api.de/api/interpreter?data=" + encoded
@@ -633,6 +630,24 @@
 
             if (success && municipalities.length > 0) {
                 container.innerHTML = '';
+
+                // --- NOWOŚĆ: OPCJA CAŁEGO POWIATU NA SAMEJ GÓRZE ---
+                const wholeCountyStr = `Cały powiat (${cleanName})`;
+                const isCountyAdded = selectedMunicipalities.includes(wholeCountyStr);
+                const countyRow = document.createElement('div');
+                countyRow.className = 'municipality-row';
+                countyRow.style.border = '1px solid rgba(255, 215, 0, 0.4)';
+                countyRow.style.background = 'rgba(255, 215, 0, 0.05)';
+                countyRow.style.marginBottom = '6px';
+                countyRow.innerHTML = `
+                    <span style="font-size:14px; font-weight:bold; color:#ffd700;">⭐ ${wholeCountyStr.replace(/</g, "&lt;")}</span>
+                    <button class="add-mun-btn ${isCountyAdded ? 'added' : ''}" onclick="toggleMunicipality('${wholeCountyStr.replace(/'/g, "\\'")}', this)">
+                        ${isCountyAdded ? '✓ Dodano' : '+ Dodaj'}
+                    </button>
+                `;
+                container.appendChild(countyRow);
+                // --------------------------------------------------
+
                 municipalities.forEach(mun => {
                     const row = document.createElement('div');
                     row.className = 'municipality-row';
@@ -653,8 +668,8 @@
                             Nie udało się pobrać szczegółowej listy gmin.<br>
                             Możesz złożyć zapytanie ogólne o cały powiat.
                         </p>
-                        <button class="add-mun-btn" style="margin-top: 10px;" onclick="toggleMunicipality('${cleanName.replace(/'/g, "\\'")}', this)">
-                            + Dodaj powiat "${cleanName.replace(/</g, "&lt;")}" do zapytania
+                        <button class="add-mun-btn" style="margin-top: 10px; border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.1);" onclick="toggleMunicipality('Cały powiat (${cleanName.replace(/'/g, "\\'")})', this)">
+                            + Dodaj "Cały powiat (${cleanName.replace(/</g, "&lt;")})"
                         </button>
                     </div>
                 `;
@@ -665,7 +680,6 @@
             document.getElementById('countyDetailsModal').classList.remove('is-active');
         }
 
-        // Dodanie zamykania modalu na klawisz Escape
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeCountyModal();
@@ -687,10 +701,9 @@
 
         function updateCartDisplays() {
             document.getElementById('totalCartCount').innerText = selectedMunicipalities.length;
-            document.getElementById('modalSelectedCounter').innerText = `Wybrano gmin: ${selectedMunicipalities.length}`;
+            document.getElementById('modalSelectedCounter').innerText = `Wybrano pozycji: ${selectedMunicipalities.length}`;
         }
 
-        // WYSZUKIWARKA Z PODZIAŁEM NA LANDY I NORMALIZACJĄ ZNAKÓW
         function openCountiesList() {
             document.getElementById('countiesSearchList').classList.add('is-open');
             filterCounties();
@@ -779,20 +792,18 @@
             document.getElementById('countiesSearchList').classList.remove('is-open');
         });
 
-        // WYSYŁANIE WIADOMOŚCI SMS
         function sendSmsQuote() {
             if (selectedMunicipalities.length === 0) {
-                alert("Wybierz przynajmniej jedną gminę z listy.");
+                alert("Wybierz przynajmniej jedną pozycję z listy.");
                 return;
             }
             const phoneNumber = "+48600812820";
             
-            // Poprawiona detekcja pod nowoczesny system iOS (szczególnie iPady)
             const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) || 
                           (navigator.userAgent.includes("Mac") && "ontouchend" in document);
                           
             const smsSeparator = isIOS ? "&" : "?";
-            const message = `Dzień dobry, proszę o wycenę i terminy dla wybranych gmin: ${selectedMunicipalities.join(', ')}.`;
+            const message = `Dzień dobry, proszę o wycenę i terminy dla: ${selectedMunicipalities.join(', ')}.`;
             window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
         }
     </script>
