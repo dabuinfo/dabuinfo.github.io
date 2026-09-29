@@ -1093,7 +1093,7 @@
                 const yA = weekYearsMap[a] || currentYear;
                 const yB = weekYearsMap[b] || currentYear;
                 if (yA !== yB) {
-                    return yA - yB; // 2026 wyżej, 2027 niżej (na końcu listy)
+                    return yA - yB;
                 }
                 return parseInt(a, 10) - parseInt(b, 10);
             });
@@ -1170,19 +1170,40 @@
                 });
             }
 
-            const allUniqueRegionNames = new Set();
-            for (let r in SPECIAL_REGIONS_LAND_MAP) {
-                allUniqueRegionNames.add(r.charAt(0).toUpperCase() + r.slice(1));
+            // Mapa do eliminacji duplikatów bez względu na wielkość liter
+            const uniqueRegionsMap = new Map();
+
+            function dodajRejon(nazwa) {
+                if (!nazwa || !nazwa.trim()) return;
+                let trimmed = nazwa.trim();
+                let key = trimmed.toLowerCase();
+
+                if (!uniqueRegionsMap.has(key)) {
+                    uniqueRegionsMap.set(key, trimmed);
+                } else {
+                    let dotychczasowa = uniqueRegionsMap.get(key);
+                    let countNowa = (trimmed.match(/[A-ZĄĆĘŁŃÓŚŹŻÄÖÜ]/g) || []).length;
+                    let countStara = (dotychczasowa.match(/[A-ZĄĆĘŁŃÓŚŹŻÄÖÜ]/g) || []).length;
+                    if (countNowa > countStara) {
+                        uniqueRegionsMap.set(key, trimmed);
+                    }
+                }
             }
+
+            // 1. Zasilenie ze stałej mapy
+            for (let r in SPECIAL_REGIONS_LAND_MAP) {
+                dodajRejon(r.charAt(0).toUpperCase() + r.slice(1));
+            }
+
+            // 2. Zasilenie z danych pobranych z bazy
             for (let w in regionsData) {
                 (regionsData[w] || []).forEach(item => {
                     const n = typeof item === 'string' ? item : item.nazwa;
-                    if (n && n.trim()) allUniqueRegionNames.add(n.trim());
+                    if (n) dodajRejon(n);
                 });
             }
 
-            const structuredRegions = Array.from(allUniqueRegionNames).map(val => {
-                const cleanKey = val.toLowerCase().trim();
+            const structuredRegions = Array.from(uniqueRegionsMap.entries()).map(([cleanKey, val]) => {
                 const land = regionLandMap[cleanKey] || SPECIAL_REGIONS_LAND_MAP[cleanKey] || "Pozostałe Landy";
 
                 const lbl = document.createElement('label');
@@ -1300,7 +1321,6 @@
                                     if (/e-schrott|elektro|kuhl|kühl/i.test(rodzajWpisu)) tagi.push("E");
                                     let frakcjaTekst = tagi.length > 0 ? tagi.join('/') : "S";
 
-                                    // Weryfikacja czy termin przypada w sobotę
                                     let testD = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
                                     let czySobota = (testD.getDay() === 6) || linia.includes("SOB") || linia.includes("sob");
 
