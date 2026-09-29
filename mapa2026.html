@@ -504,17 +504,28 @@
             odswiezMape();
         }
 
-        // GENEROWANIE LISTY TYGODNI Z AUTOMATYCZNIE DOPASOWANYM ROKIEM
-        function generujOpcjeTygodni() {
+function generujOpcjeTygodni() {
             const selectEl = document.getElementById('weekSelect');
             selectEl.innerHTML = '';
 
-            const dostepneTygodnie = Object.keys(daneTygodni).map(Number).sort((a,b) => a - b);
+            const dostepneTygodnie = Object.keys(daneTygodni).map(Number);
 
             if (dostepneTygodnie.length === 0) {
                 selectEl.innerHTML = '<option value="">Brak zaplanowanych zbiórek w bazie</option>';
                 return;
             }
+
+            // SORTOWANIE CHRONOLOGICZNE:
+            // Najpierw rokiem (2026 przed 2027), a w ramach tego samego roku numerem tygodnia
+            dostepneTygodnie.sort((a, b) => {
+                const yearA = rokDlaTygodnia[a] || 2026;
+                const yearB = rokDlaTygodnia[b] || 2026;
+                
+                if (yearA !== yearB) {
+                    return yearA - yearB; // 2026 pojawi się wyżej niż 2027
+                }
+                return a - b; // tygodnie rosnąco
+            });
 
             dostepneTygodnie.forEach((w, idx) => {
                 const targetYear = rokDlaTygodnia[w] || new Date().getFullYear();
