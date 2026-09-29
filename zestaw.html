@@ -1062,7 +1062,7 @@
         let regionLandMap = {};
         let weekYearsMap = {};
 
-        // DYNAMICZNE RENDEROWANIE TYGODNI Z BAZY (BEZ BLOKADY ROKU 2026, Z CHRONOLOGIĄ 2026 PRZED 2027)
+        // DYNAMICZNE RENDEROWANIE TYGODNI Z BAZY (BEZ BLOKADY ROKU 2026, Z CHRONOLOGIĄ I WYKRYWANIEM SOBÓT)
         function renderWeeksFromData(matrix) {
             const weeksContainer = document.getElementById('weeksContainer');
             if (!weeksContainer) return;
@@ -1115,23 +1115,50 @@
                 return parseInt(a, 10) - parseInt(b, 10);
             });
 
-            // 3. Budowanie checkboxów tygodni
+            // 3. Budowanie checkboxów tygodni z automatycznym wykrywaniem soboty
             availableWeeks.forEach(w => {
                 const weekNum = parseInt(w, 10);
                 const targetYear = weekYearsMap[w] || currentYear;
+                const items = matrix[w] || [];
+
+                // Sprawdzamy czy w tym tygodniu jakikolwiek rejon ma zbiórkę w sobotę
+                let maSobote = false;
+                for (let i = 0; i < items.length; i++) {
+                    const dStr = (typeof items[i] === 'object') ? (items[i].daty || items[i]["DATA (PN-SOB)"] || "") : "";
+                    if (dStr && (dStr.includes("SOB") || dStr.includes("sob"))) {
+                        maSobote = true;
+                        break;
+                    }
+                    if (dStr) {
+                        const matches = dStr.match(/\d{4}-\d{2}-\d{2}/g);
+                        if (matches) {
+                            for (let m = 0; m < matches.length; m++) {
+                                const pts = matches[m].split('-');
+                                const testD = new Date(parseInt(pts[0], 10), parseInt(pts[1], 10) - 1, parseInt(pts[2], 10));
+                                if (testD.getDay() === 6) {
+                                    maSobote = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (maSobote) break;
+                }
 
                 const monday = getMondayOfISOWeek(weekNum, targetYear);
-                const friday = new Date(monday);
-                friday.setDate(monday.getDate() + 4);
+                
+                // Jeśli jest sobota, wydłużamy zakres do soboty (+5 dni), w przeciwnym razie do piątku (+4 dni)
+                const endDate = new Date(monday);
+                endDate.setDate(monday.getDate() + (maSobote ? 5 : 4));
 
                 const mD = String(monday.getDate()).padStart(2, '0');
                 const mM = String(monday.getMonth() + 1).padStart(2, '0');
-                const fD = String(friday.getDate()).padStart(2, '0');
-                const fM = String(friday.getMonth() + 1).padStart(2, '0');
-                const fY = friday.getFullYear();
+                const eD = String(endDate.getDate()).padStart(2, '0');
+                const eM = String(endDate.getMonth() + 1).padStart(2, '0');
+                const eY = endDate.getFullYear();
 
-                const yearSuffix = (targetYear > currentYear) ? `.${fY}` : '';
-                const dateRangeFormatted = `(${mD}.${mM} - ${fD}.${fM}${yearSuffix})`;
+                const yearSuffix = (targetYear > currentYear) ? `.${eY}` : '';
+                const dateRangeFormatted = `(${mD}.${mM} - ${eD}.${eM}${yearSuffix})`;
 
                 const label = document.createElement('label');
                 label.className = "region-label";
@@ -1143,7 +1170,7 @@
                 input.setAttribute('data-week', weekNum);
                 input.setAttribute('data-year', targetYear);
 
-                input.value = `Tydzień ${weekNum} ${dateRangeFormatted}`;
+                input.value = `Tydzień ${weekNum} ${dateRangeFormatted}` + (maSobote ? " ⚠️ +SOB" : "");
                 if (previouslyChecked.includes(String(weekNum))) {
                     input.checked = true;
                 }
@@ -1161,6 +1188,14 @@
                 dateSpan.setAttribute('translate', 'no');
                 dateSpan.textContent = dateRangeFormatted;
                 leftSpan.appendChild(dateSpan);
+
+                // Pomarańczowa etykietka ostrzegawcza przy wykrytej sobocie
+                if (maSobote) {
+                    const satBadge = document.createElement('span');
+                    satBadge.style.cssText = "background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fbbf24; font-size: 0.72rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; margin-left: 6px;";
+                    satBadge.textContent = "⚠️ +SOB";
+                    leftSpan.appendChild(satBadge);
+                }
 
                 label.appendChild(leftSpan);
                 weeksContainer.appendChild(label);
@@ -1187,7 +1222,6 @@
                 });
             }
 
-            // Zbieranie wszystkich unikalnych rejonów: zarówno z predefiniowanej listy, jak i z bazy arkusza
             const allUniqueRegionNames = new Set();
             for (let r in SPECIAL_REGIONS_LAND_MAP) {
                 allUniqueRegionNames.add(r.charAt(0).toUpperCase() + r.slice(1));
@@ -2182,7 +2216,6 @@
             window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
         });
 
-        // Start pobierania danych
         fetchAvailableRegions();
     }); 
 
