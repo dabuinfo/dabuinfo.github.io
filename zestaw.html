@@ -1760,7 +1760,7 @@
             });
         }
 
-        /* --- INTELIGENTNE GRUPOWANIE W TRASY: KLASTRY SĄSIADUJĄCE SCALANE, ODDALONE SUMOWANE --- */
+        /* --- INTELIGENTNE GRUPOWANIE W TRASY WYJAZDOWE (MAX 3 POWIĄZANE REJONY NA KLASTER) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1788,7 +1788,7 @@
             let currentWeekNum = getWeekNumber(now).toString();
             let matrixToUse = availabilityMatrix;
 
-            // 1. Zbieramy zbiory dat dla każdego rejonu osobno
+            // 1. Zbieramy zbiory dat dla każdego zaznaczonego rejonu
             let regionDatesMap = {};
             let totalRegionDaysSum = 0;
 
@@ -1825,35 +1825,28 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            // 2. Budowa grup spójnych (klastrów sąsiedztw geograficznych)
-            let regKeys = Object.keys(regionDatesMap);
-            let visited = new Set();
+            // 2. Budowa zwartych klastrów wyjazdowych (max 3 rejony na jedną trasę)
+            const MAX_REGIONS_PER_CLUSTER = 3;
+            let unassigned = [...Object.keys(regionDatesMap)];
             let clusters = [];
 
-            regKeys.forEach(rKey => {
-                if (visited.has(rKey)) return;
+            while (unassigned.length > 0) {
+                let seed = unassigned.shift();
+                let currentCluster = [seed];
+                let directNeighbors = (NEIGHBOR_CLUSTERS_MAP[seed] || []).map(cleanNameForCompare);
 
-                let cluster = [];
-                let queue = [rKey];
-                visited.add(rKey);
-
-                while (queue.length > 0) {
-                    let curr = queue.shift();
-                    cluster.push(curr);
-
-                    let neighbors = (NEIGHBOR_CLUSTERS_MAP[curr] || []).map(cleanNameForCompare);
-
-                    regKeys.forEach(other => {
-                        if (!visited.has(other) && neighbors.includes(other)) {
-                            visited.add(other);
-                            queue.push(other);
-                        }
-                    });
+                for (let i = unassigned.length - 1; i >= 0; i--) {
+                    if (currentCluster.length >= MAX_REGIONS_PER_CLUSTER) break;
+                    let candidate = unassigned[i];
+                    if (directNeighbors.includes(candidate)) {
+                        currentCluster.push(candidate);
+                        unassigned.splice(i, 1);
+                    }
                 }
-                clusters.push(cluster);
-            });
+                clusters.push(currentCluster);
+            }
 
-            // 3. Dla każdego klastra sąsiedzkiego scal unikalne dni; dni z odrębnych klastrów zsumuj
+            // 3. Wewnątrz klastra (trasy) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane!
             let billableDaysTotal = 0;
 
             clusters.forEach(clusterGroup => {
