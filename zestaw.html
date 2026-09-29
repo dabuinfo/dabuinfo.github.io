@@ -799,6 +799,9 @@
 
                 <div class="form-header">💳 5. Preferowana forma płatności:</div>
                 <div class="extra-options-group" id="paymentBox">
+                    <div class="option-box" id="cashOptionBox" style="display: none;">
+                        <label class="region-label"><input type="radio" name="payment" value="GOTÓWKA PRZY ODBIORZE" /> <span>💵 Płatność gotówką przy odbiorze</span></label>
+                    </div>
                     <div class="option-box">
                         <label class="region-label"><input type="radio" name="payment" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)" checked /> <span>🏦 IBAN / Przelew bankowy</span></label>
                     </div>
@@ -1771,7 +1774,7 @@
             });
         }
 
-        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + 50% RABATU PRZY ODBIORZE OSOBISTYM --- */
+        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + 50% RABATU PRZY ODBIORZE OSOBISTYM (BEZ RABATÓW ILOŚCIOWYCH) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1788,6 +1791,9 @@
 
             let pickupChk = document.getElementById('pickupOption');
             let isPickup = pickupChk ? pickupChk.checked : false;
+
+            let selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
+            let isCashPayment = selectedPaymentRadio && selectedPaymentRadio.value === "GOTÓWKA PRZY ODBIORZE";
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
                 return { 
@@ -1880,12 +1886,22 @@
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
 
-            let baseRate = isEuro ? 10.00 : 40.00;
+            let regularBaseReference = isEuro ? 10.00 : 40.00;
             let ratePerDay;
+            let totalPriceNetto;
 
-            if (isMapAddonChecked) {
-                ratePerDay = baseRate;
+            // WARUNEK: Odbiór osobisty + Gotówka + PLN + Brak Mapy Online
+            // Wyłącza rabaty schodkowe/ilościowe i liczy sztywno 50% od ceny bazowej (20 PLN/dzień)
+            let isEligibleForPickupCashDiscount = isPickup && isCashPayment && !isEuro && !isMapAddonChecked;
+
+            if (isEligibleForPickupCashDiscount) {
+                ratePerDay = 20.00; // Sztywna stawka: 50% ze standardowych 40.00 PLN (brak rabatów ilościowych)
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+            } else if (isMapAddonChecked) {
+                ratePerDay = regularBaseReference;
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else {
+                // Standardowe rabaty ilościowe (dla przelewów, PayPal, BLIK lub w walucie EUR)
                 if (isEuro) {
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
@@ -1907,25 +1923,15 @@
                     else if (totalDays >= 6)   ratePerDay = 36.00;
                     else                       ratePerDay = 40.00;
                 }
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
 
-            let regularBaseReference = isEuro ? 10.00 : 40.00;
             let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-
-            // Zależność: Odbiór osobisty nalicza 50% rabatu WYŁĄCZNIE w PLN i gdy NIE DOKUPIONO mapy online
-            if (isPickup && !isEuro && !isMapAddonChecked && totalPriceNetto > 0) {
-                totalPriceNetto = Math.round((totalPriceNetto * 0.5) * 100) / 100;
-                ratePerDay = Math.round((ratePerDay * 0.5) * 100) / 100;
-            }
-
             let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
             let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
             // GROSS-UP PAYPAL
-            let selectedPayment = document.querySelector('input[name="payment"]:checked')?.value || "";
-            let isPaypal = selectedPayment.toUpperCase().includes("PAYPAL");
-
+            let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
             let paypalFixed = isEuro ? 0.35 : 1.35;
             let paypalPercent = 0.029;
 
@@ -1942,6 +1948,7 @@
                 totalRegionDaysSum: totalRegionDaysSum,
                 isSingleCluster: isSingleCluster,
                 isPickup: isPickup,
+                isEligibleForPickupCashDiscount: isEligibleForPickupCashDiscount,
                 clustersCount: clusters.length,
                 totalPrice: totalPriceNetto,
                 finalPrice: finalPayAmount,
@@ -2076,6 +2083,25 @@
             let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             let calc = calculateActiveDaysAndPrice();
+
+            // Dynamiczne sterowanie widocznością płatności gotówką przy odbiorze
+            var cashBox = document.getElementById('cashOptionBox');
+            if (cashBox) {
+                var pickupChk = document.getElementById('pickupOption');
+                var isPickup = pickupChk ? pickupChk.checked : false;
+
+                if (isPickup) {
+                    cashBox.style.display = 'block';
+                } else {
+                    cashBox.style.display = 'none';
+                    var cashRadio = cashBox.querySelector('input[type="radio"]');
+                    if (cashRadio && cashRadio.checked) {
+                        // Przywracamy domyślnie przelew bankowy po odznaczeniu odbioru osobistego
+                        var ibanRadio = document.querySelector('input[name="payment"][value^="IBAN"]');
+                        if (ibanRadio) ibanRadio.checked = true;
+                    }
+                }
+            }
 
             var dhlContainer = document.getElementById('dhlBox');
             if (dhlContainer) {
@@ -2365,6 +2391,12 @@
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
             if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
+                if (e.target.id === 'pickupOption') {
+                    var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
+                    if (e.target.checked && cashRadio) {
+                        cashRadio.checked = true;
+                    }
+                }
                 if(e.target.id === 'schrottOption') { 
                     availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
                 }
