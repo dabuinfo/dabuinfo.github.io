@@ -1243,6 +1243,18 @@
             'rendsburg-eckernförde': ['kiel', 'schleswig-flensburg', 'dithmarschen', 'steinburg', 'neumünster']
         };
 
+        // Pomocnicza funkcja: czy dwa rejony są sąsiadami (dwukierunkowo)
+        function areRegionsNeighbors(rA, rB) {
+            let keyA = cleanNameForCompare(rA);
+            let keyB = cleanNameForCompare(rB);
+            if (keyA === keyB) return true;
+
+            let neighborsA = (NEIGHBOR_CLUSTERS_MAP[keyA] || []).map(cleanNameForCompare);
+            let neighborsB = (NEIGHBOR_CLUSTERS_MAP[keyB] || []).map(cleanNameForCompare);
+
+            return neighborsA.includes(keyB) || neighborsB.includes(keyA);
+        }
+
         const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
 
         let availabilityMatrixAll = {}; 
@@ -1760,7 +1772,7 @@
             });
         }
 
-        /* --- INTELIGENTNE GRUPOWANIE W TRASY WYJAZDOWE (MAX 3 POWIĄZANE REJONY NA KLASTER) --- */
+        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE (DWUKIERUNKOWE, MAX 3 REJONY NA TRASĘ) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1788,7 +1800,7 @@
             let currentWeekNum = getWeekNumber(now).toString();
             let matrixToUse = availabilityMatrix;
 
-            // 1. Zbieramy zbiory dat dla każdego zaznaczonego rejonu
+            // 1. Zbieramy unikalne daty dla każdego zaznaczonego rejonu
             let regionDatesMap = {};
             let totalRegionDaysSum = 0;
 
@@ -1825,28 +1837,35 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            // 2. Budowa zwartych klastrów wyjazdowych (max 3 rejony na jedną trasę)
+            // 2. Budowa zwartych klastrów wyjazdowych (max 3 sąsiednie rejony w jednej trasie)
             const MAX_REGIONS_PER_CLUSTER = 3;
-            let unassigned = [...Object.keys(regionDatesMap)];
+            let unassigned = Object.keys(regionDatesMap);
             let clusters = [];
 
             while (unassigned.length > 0) {
                 let seed = unassigned.shift();
                 let currentCluster = [seed];
-                let directNeighbors = (NEIGHBOR_CLUSTERS_MAP[seed] || []).map(cleanNameForCompare);
 
-                for (let i = unassigned.length - 1; i >= 0; i--) {
-                    if (currentCluster.length >= MAX_REGIONS_PER_CLUSTER) break;
-                    let candidate = unassigned[i];
-                    if (directNeighbors.includes(candidate)) {
-                        currentCluster.push(candidate);
-                        unassigned.splice(i, 1);
+                // Szukamy bezpośrednich sąsiadów dla każdego rejonu dodanego do tego klastra
+                let changed = true;
+                while (changed && currentCluster.length < MAX_REGIONS_PER_CLUSTER) {
+                    changed = false;
+                    for (let i = 0; i < unassigned.length; i++) {
+                        let candidate = unassigned[i];
+                        let canJoin = currentCluster.some(inCluster => areRegionsNeighbors(inCluster, candidate));
+
+                        if (canJoin) {
+                            currentCluster.push(candidate);
+                            unassigned.splice(i, 1);
+                            changed = true;
+                            if (currentCluster.length >= MAX_REGIONS_PER_CLUSTER) break;
+                        }
                     }
                 }
                 clusters.push(currentCluster);
             }
 
-            // 3. Wewnątrz klastra (trasy) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane!
+            // 3. Wewnątrz klastra (wspólna trasa) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane!
             let billableDaysTotal = 0;
 
             clusters.forEach(clusterGroup => {
