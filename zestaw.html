@@ -343,7 +343,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.04); 
             color: #e2e8f0; 
             font-size: clamp(0.88rem, 1.4vw, 0.98rem); 
-            transition: background 0.15s ease, opacity 0.2s ease; 
+            transition: background 0.15s ease, opacity 0.2s ease, border-color 0.2s ease; 
             box-sizing: border-box; 
             gap: 4px;
             min-height: 44px;
@@ -1264,6 +1264,10 @@
             return formatted;
         }
 
+        function cleanNameForCompare(str) {
+            return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
+        }
+
         function renderWeeksFromData(matrix) {
             const weeksContainer = document.getElementById('weeksContainer');
             if (!weeksContainer) return;
@@ -1390,7 +1394,7 @@
             function dodajRejon(nazwa) {
                 if (!nazwa || !nazwa.trim()) return;
                 let trimmed = nazwa.trim();
-                let key = trimmed.toLowerCase();
+                let key = cleanNameForCompare(trimmed);
                 let estetycznaNazwa = formatNazwaRejonu(trimmed);
 
                 if (!uniqueRegionsMap.has(key)) {
@@ -1502,13 +1506,13 @@
                     return;
                 }
 
-                let rName = chk.value.trim().toLowerCase();
+                let rName = cleanNameForCompare(chk.value);
                 let terminyDlaWybranychTygodni = [];
 
                 selectedWeeks.forEach(w => {
                     if (!matrixToUse[w]) return;
                     matrixToUse[w].forEach(item => {
-                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
                         if (itemName !== rName) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
@@ -1562,7 +1566,7 @@
                     badgeContainer.innerHTML = pills;
                     badgeContainer.classList.add('is-visible');
                 } else {
-                    let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === rName);
+                    let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rName);
 
                     if (isSpecial) {
                         badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no" style="border-color: rgba(46, 204, 113, 0.4); background: rgba(46, 204, 113, 0.15);"><b style="color: #2ecc71;">🔒 Rejon chroniony – terminy weryfikowane pod zamówienie</b></span>`;
@@ -1582,7 +1586,7 @@
             if (checkedBoxes.length === 0) return;
 
             checkedBoxes.forEach(chk => {
-                let rKey = chk.value.trim().toLowerCase();
+                let rKey = cleanNameForCompare(chk.value);
                 let neighbors = NEIGHBOR_CLUSTERS_MAP[rKey];
 
                 if (neighbors && neighbors.length > 0) {
@@ -1593,8 +1597,9 @@
                     let neighborCheckboxesToToggle = [];
 
                     neighbors.forEach(nKey => {
+                        let cleanNKey = cleanNameForCompare(nKey);
                         let targetChk = Array.from(document.querySelectorAll('.region-chk')).find(
-                            c => c.value.trim().toLowerCase() === nKey
+                            c => cleanNameForCompare(c.value) === cleanNKey
                         );
                         if (targetChk) {
                             availableNeighborNames.push(targetChk.value);
@@ -1755,12 +1760,12 @@
             });
         }
 
-        /* --- DYNAMICZNY PRZELICZNIK: UNIKALNE DNI WYJAZDOWE KLASTRA (40 PLN / 10 EUR ZA DZIEŃ) --- */
+        /* --- INTELIGENTNE GRUPOWANIE W TRASY: KLASTRY SĄSIADUJĄCE SCALANE, ODDALONE SUMOWANE --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
             
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim());
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
 
             var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
@@ -1772,8 +1777,8 @@
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
                 return { 
-                    totalDays: 0, totalRegionDaysSum: 0, totalPrice: 0, finalPrice: 0, regularPrice: 0, discountPercent: 0, 
-                    savings: 0, ratePerDay: 0, currency: currencySymbol, 
+                    totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, totalPrice: 0, finalPrice: 0, 
+                    regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, 
                     isMapAddonChecked: isMapAddonChecked, isPaypal: false, paypalFee: 0 
                 };
             }
@@ -1781,20 +1786,22 @@
             let now = new Date();
             let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
             let currentWeekNum = getWeekNumber(now).toString();
-
-            // Zbiorczy zestaw unikalnych dat kalendarzowych w klastrze (1 dzień = 1 wyjazd na okoliczne zbiórki)
-            let uniqueCalendarClusterDates = new Set();
-            let totalRegionDaysSum = 0;
             let matrixToUse = availabilityMatrix;
 
-            selectedRegions.forEach(rName => {
-                let regionDates = new Set();
+            // 1. Zbieramy zbiory dat dla każdego rejonu osobno
+            let regionDatesMap = {};
+            let totalRegionDaysSum = 0;
+
+            selectedRegions.forEach(rOriginal => {
+                let rKey = cleanNameForCompare(rOriginal);
+                let datesSet = new Set();
+
                 selectedWeeks.forEach(w => {
                     if (!matrixToUse[w]) return;
 
                     matrixToUse[w].forEach(item => {
-                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
-                        if (itemName !== rName) return;
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
+                        if (itemName !== rKey) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || "");
                         if (!dStr || dStr === "-") return;
@@ -1805,24 +1812,60 @@
                             if (match) {
                                 let dObj = new Date(match[1], match[2] - 1, match[3]);
                                 if (w === currentWeekNum) {
-                                    if (dObj >= tomorrow) {
-                                        regionDates.add(match[0]);
-                                        uniqueCalendarClusterDates.add(match[0]);
-                                    }
+                                    if (dObj >= tomorrow) datesSet.add(match[0]);
                                 } else {
-                                    regionDates.add(match[0]);
-                                    uniqueCalendarClusterDates.add(match[0]);
+                                    datesSet.add(match[0]);
                                 }
                             }
                         });
                     });
                 });
 
-                totalRegionDaysSum += regionDates.size;
+                regionDatesMap[rKey] = datesSet;
+                totalRegionDaysSum += datesSet.size;
             });
 
-            // Rozliczenie bazuje na unikalnych dniach operacyjnych trasy
-            let totalDays = uniqueCalendarClusterDates.size;
+            // 2. Budowa grup spójnych (klastrów sąsiedztw geograficznych)
+            let regKeys = Object.keys(regionDatesMap);
+            let visited = new Set();
+            let clusters = [];
+
+            regKeys.forEach(rKey => {
+                if (visited.has(rKey)) return;
+
+                let cluster = [];
+                let queue = [rKey];
+                visited.add(rKey);
+
+                while (queue.length > 0) {
+                    let curr = queue.shift();
+                    cluster.push(curr);
+
+                    let neighbors = (NEIGHBOR_CLUSTERS_MAP[curr] || []).map(cleanNameForCompare);
+
+                    regKeys.forEach(other => {
+                        if (!visited.has(other) && neighbors.includes(other)) {
+                            visited.add(other);
+                            queue.push(other);
+                        }
+                    });
+                }
+                clusters.push(cluster);
+            });
+
+            // 3. Dla każdego klastra sąsiedzkiego scal unikalne dni; dni z odrębnych klastrów zsumuj
+            let billableDaysTotal = 0;
+
+            clusters.forEach(clusterGroup => {
+                let clusterDatesUnion = new Set();
+                clusterGroup.forEach(rKey => {
+                    (regionDatesMap[rKey] || []).forEach(d => clusterDatesUnion.add(d));
+                });
+                billableDaysTotal += clusterDatesUnion.size;
+            });
+
+            let totalDays = billableDaysTotal;
+            let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
 
             let baseRate = isEuro ? 10.00 : 40.00;
             let ratePerDay;
@@ -1877,6 +1920,8 @@
             return {
                 totalDays: totalDays,
                 totalRegionDaysSum: totalRegionDaysSum,
+                isSingleCluster: isSingleCluster,
+                clustersCount: clusters.length,
                 totalPrice: totalPriceNetto,
                 finalPrice: finalPayAmount,
                 regularPrice: regularPrice,
@@ -1918,8 +1963,8 @@
 
             selectedRegions.forEach(chkR => {
                 var rName = chkR.value.trim();
-                var rKey = rName.toLowerCase();
-                var isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === rKey);
+                var rKey = cleanNameForCompare(rName);
+                var isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
                 var rejonTotalDni = 0;
                 var weeksListHtml = '';
                 var rawInfoD = "";
@@ -1930,7 +1975,7 @@
                         if (!matrixToUse[w]) return;
 
                         matrixToUse[w].forEach(item => {
-                            var itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                            var itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
                             if (itemName !== rKey) return;
 
                             if (typeof item === 'object' && !rawInfoD) {
@@ -2005,9 +2050,9 @@
             let configPrice = document.getElementById('configPrice');
             let configSubtitle = document.getElementById('configSubtitle');
             
-            let checkedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value.trim().toLowerCase());
-            let hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r));
-            let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r));
+            let checkedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cleanNameForCompare(cb.value));
+            let hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
+            let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             let calc = calculateActiveDaysAndPrice();
 
@@ -2042,22 +2087,22 @@
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Baza PRO' : '';
-                let clusterInfo = checkedRegions.length > 1 ? ` (${calc.totalDays} dni wyjazdowych na trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
+                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfo}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})`;
                 } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfo}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień trasy: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka za dzień trasy: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>`;
+                            configSubtitle.innerHTML = `Stawka za dzień: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>`;
                         }
                     }
                 }
@@ -2132,7 +2177,7 @@
             for (let w in availabilityMatrix) {
                 availabilityMatrix[w].forEach(rObj => {
                     let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                    if (nazwaRejonu) allAvailableRegionsInDb.add(nazwaRejonu.toLowerCase().trim());
+                    if (nazwaRejonu) allAvailableRegionsInDb.add(cleanNameForCompare(nazwaRejonu));
                 });
             }
 
@@ -2143,8 +2188,8 @@
                 let chk = label.querySelector('.region-chk');
                 if (!chk) return;
                 let rName = chk.value.trim();
-                let rKey = rName.toLowerCase();
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === rKey);
+                let rKey = cleanNameForCompare(rName);
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
                 let isAvailable = true;
 
                 if (!isSpecial && !allAvailableRegionsInDb.has(rKey)) {
@@ -2153,7 +2198,7 @@
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
-                            return (n || "").toLowerCase().trim() === rKey;
+                            return cleanNameForCompare(n) === rKey;
                         });
                     });
                     if (!presentInAnySelectedWeek) {
@@ -2202,8 +2247,8 @@
             });
 
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim().toLowerCase());
-            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r));
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cleanNameForCompare(cb.value));
+            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
@@ -2215,7 +2260,7 @@
                     let hasMatchingRegion = selectedRegularRegions.some(r => {
                         return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
-                            return (n || "").toLowerCase().trim() === r;
+                            return cleanNameForCompare(n) === r;
                         });
                     });
 
@@ -2224,10 +2269,28 @@
                     }
                 }
 
-                label.style.opacity = isAvailable ? '1' : '0.3';
-                chk.disabled = !isAvailable;
-                if (!isAvailable && chk.checked) {
-                    chk.checked = false;
+                if (isAvailable && selectedRegularRegions.length > 0) {
+                    label.style.opacity = '1';
+                    label.style.background = 'rgba(46, 204, 113, 0.12)';
+                    label.style.border = '1px solid rgba(46, 204, 113, 0.4)';
+                    label.style.borderRadius = '6px';
+                    label.style.pointerEvents = 'auto';
+                    chk.disabled = false;
+                } else if (!isAvailable && selectedRegularRegions.length > 0) {
+                    label.style.opacity = '0.22';
+                    label.style.background = 'transparent';
+                    label.style.border = '1px solid transparent';
+                    label.style.pointerEvents = 'none';
+                    chk.disabled = true;
+                    if (chk.checked) {
+                        chk.checked = false;
+                    }
+                } else {
+                    label.style.opacity = '1';
+                    label.style.background = 'transparent';
+                    label.style.border = '1px solid transparent';
+                    label.style.pointerEvents = 'auto';
+                    chk.disabled = false;
                 }
             });
 
@@ -2256,7 +2319,7 @@
             var specialDateContainer = document.getElementById('specialDateContainer');
             
             var selectedSpecialNames = Array.from(checkedNodes)
-                .filter(chk => GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === chk.value.trim().toLowerCase()))
+                .filter(chk => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === cleanNameForCompare(chk.value)))
                 .map(chk => chk.value)
                 .join(', ');
             
@@ -2293,9 +2356,9 @@
             var wR = document.querySelectorAll('.region-chk:checked');
             var wT = document.querySelectorAll('.week-chk:checked');
             
-            var checkedRegions = Array.from(wR).map(cb => cb.value.trim().toLowerCase());
-            var hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r));
-            var hasRegular = checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r));
+            var checkedRegions = Array.from(wR).map(cb => cleanNameForCompare(cb.value));
+            var hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
+            var hasRegular = checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             if (wR.length === 0 || (hasRegular && wT.length === 0)) { 
                 alert("[ UWAGA ] Wybierz rejony oraz co najmniej jeden tydzień z kalendarza!"); 
@@ -2316,15 +2379,15 @@
                 } else {
                     body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 }
-                body += "- Liczba dni wyjazdowych na trasie klastra: " + calc.totalDays + " dni\n";
+                body += "- Liczba rozliczeniowych dni roboczych: " + calc.totalDays + " dni\n";
                 body += "- Suma dni we wszystkich rejonach: " + calc.totalRegionDaysSum + " dni zbiórek\n";
-                body += "- Stawka za dzień trasy: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
+                body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
                 if (calc.isMapAddonChecked) {
                     body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
                 } else if (calc.savings > 0) {
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
                 }
-                if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === r))) {
+                if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r))) {
                     body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (pełne terminy w generowanym raporcie PRO).\n";
                 }
                 body += "\n";
@@ -2384,8 +2447,8 @@
 
             wR.forEach(chkR => {
                 let rName = chkR.value.trim();
-                let rKey = rName.toLowerCase();
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => sr.toLowerCase() === rKey);
+                let rKey = cleanNameForCompare(rName);
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
 
                 body += "📍 REJON: " + rName.toUpperCase() + "\n";
 
@@ -2403,7 +2466,7 @@
                     if (!matrixToUse[w]) return;
 
                     matrixToUse[w].forEach(item => {
-                        let itemName = (typeof item === 'string' ? item : item.nazwa || "").toLowerCase().trim();
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
                         if (itemName !== rKey) return;
 
                         if (typeof item === 'object' && !rawInfoD) {
