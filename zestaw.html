@@ -601,6 +601,7 @@
                         <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
+                        <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
@@ -1870,8 +1871,13 @@
                         askBtn.innerText = "🔔 Zapytaj o terminy";
                         askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
                         
-                        let mailSubject = encodeURIComponent(`Zapytanie o rejon: ${rName}`);
-                        let mailBody = encodeURIComponent(`Dzień dobry,\n\nChciałbym zapytać o dostępność i najbliższe terminy zbiórek dla rejonu: ${rName}.\nProszę o informację zwrotną po sprawdzeniu w bazie.\n`);
+                        let mailSubject = encodeURIComponent(`Weryfikacja terminów: ${rName}`);
+                        let mailBody = encodeURIComponent(
+                            `Dzień dobry,\n\n` +
+                            `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
+                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
+                            `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
+                        );
                         
                         askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
                         
