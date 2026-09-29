@@ -633,8 +633,9 @@
                         <span style="font-weight: bold; color: #93c5fd; text-transform: uppercase;">ℹ Legenda:</span>
                         <span><b style="color: #fff;">08</b> – Dzień miesiąca</span>
                         <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll</span>
+                        <span><b style="color: #a78bfa;">(H)</b> – Holz</span>
                         <span><b style="color: #fbbf24;">(M)</b> – Złom</span>
-                        <span><b style="color: #38bdf8;">(E)</b> – Elektro</span>
+                        <span><b style="color: #38bdf8;">(E)</b> – Elektro / Kleinelektro</span>
                     </div>
                     <div class="selection-tools">
                         <a href="javascript:void(0)" id="btnUnselectAll">[ Odznacz wszystko / Clear ]</a>
@@ -1547,10 +1548,31 @@
                                     let rodzajWpisu = linieRodzaj[idx] || "";
 
                                     let tagi = [];
-                                    if (/sperrm/i.test(rodzajWpisu)) tagi.push("S");
-                                    if (/metall/i.test(rodzajWpisu)) tagi.push("M");
-                                    if (/e-schrott|elektro|kuhl|kühl/i.test(rodzajWpisu)) tagi.push("E");
-                                    let frakcjaTekst = tagi.length > 0 ? tagi.join('/') : "S";
+                                    
+                                    // 1. Drewno (Holz / Altholz / Sperrmüllholz)
+                                    let czyHolz = /holz/i.test(rodzajWpisu);
+                                    if (czyHolz) tagi.push("H");
+
+                                    // 2. Sperrmüll (zabezpieczenie: jeśli to tylko Holz/Sperrmüllholz, nie dubluj S)
+                                    let czySperr = /sperrm/i.test(rodzajWpisu);
+                                    if (czySperr) {
+                                        if (!czyHolz || /sperrm(?!.*holz)|rest.*sperrm/i.test(rodzajWpisu) || (rodzajWpisu.match(/sperrm/gi) || []).length > 1) {
+                                            tagi.push("S");
+                                        }
+                                    }
+
+                                    // 3. Złom / Metal
+                                    if (/metall|schrott|altmetall/i.test(rodzajWpisu)) {
+                                        tagi.push("M");
+                                    }
+
+                                    // 4. Elektro / E-Schrott oraz Kleinelektro (am Papierkorb)
+                                    if (/e-schrott|elektro|kuhl|kühl|papierkorb/i.test(rodzajWpisu)) {
+                                        tagi.push("E");
+                                    }
+
+                                    let unikalneTagi = Array.from(new Set(tagi));
+                                    let frakcjaTekst = unikalneTagi.length > 0 ? unikalneTagi.join('/') : "S";
 
                                     let testD = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
                                     let czySobota = (testD.getDay() === 6) || linia.includes("SOB") || linia.includes("sob");
@@ -1774,7 +1796,7 @@
             });
         }
 
-        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + 50% RABATU PRZY ODBIORZE OSOBISTYM (BEZ RABATÓW ILOŚCIOWYCH) --- */
+        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + RABAT PRZY PŁATNOŚCI GOTÓWKĄ (25 PLN / DZIEŃ) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1891,11 +1913,11 @@
             let totalPriceNetto;
 
             // WARUNEK: Odbiór osobisty + Gotówka + PLN + Brak Mapy Online
-            // Wyłącza rabaty schodkowe/ilościowe i liczy sztywno 50% od ceny bazowej (20 PLN/dzień)
+            // Wyłącza rabaty schodkowe/ilościowe i liczy sztywno 25.00 PLN za dzień
             let isEligibleForPickupCashDiscount = isPickup && isCashPayment && !isEuro && !isMapAddonChecked;
 
             if (isEligibleForPickupCashDiscount) {
-                ratePerDay = 25.00; // Sztywna stawka promocyjna: 25.00 PLN / dzień
+                ratePerDay = 25.00; // Sztywna stawka promocyjna przy płatności gotówką: 25.00 PLN / dzień
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
@@ -2096,7 +2118,6 @@
                     cashBox.style.display = 'none';
                     var cashRadio = cashBox.querySelector('input[type="radio"]');
                     if (cashRadio && cashRadio.checked) {
-                        // Przywracamy domyślnie przelew bankowy po odznaczeniu odbioru osobistego
                         var ibanRadio = document.querySelector('input[name="payment"][value^="IBAN"]');
                         if (ibanRadio) ibanRadio.checked = true;
                     }
