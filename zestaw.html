@@ -630,7 +630,7 @@
                 
                 <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
                     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 0.82rem; color: #cbd5e1;">
-                        <span style="font-weight: bold; color: #93c5fd; text-transform: uppercase;">ℹ️ Legenda:</span>
+                        <span style="font-weight: bold; color: #93c5fd; text-transform: uppercase;">ℹ Legenda:</span>
                         <span><b style="color: #fff;">08</b> – Dzień miesiąca</span>
                         <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll</span>
                         <span><b style="color: #fbbf24;">(M)</b> – Złom</span>
@@ -1243,7 +1243,6 @@
             'rendsburg-eckernförde': ['kiel', 'schleswig-flensburg', 'dithmarschen', 'steinburg', 'neumünster']
         };
 
-        // Pomocnicza funkcja: czy dwa rejony są sąsiadami (dwukierunkowo)
         function areRegionsNeighbors(rA, rB) {
             let keyA = cleanNameForCompare(rA);
             let keyB = cleanNameForCompare(rB);
@@ -1772,7 +1771,7 @@
             });
         }
 
-        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE (DWUKIERUNKOWE, MAX 3 REJONY NA TRASĘ) --- */
+        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + 50% RABATU PRZY ODBIORZE OSOBISTYM --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1787,9 +1786,12 @@
             let mapAddonChk = document.getElementById('mapOnlineOption');
             let isMapAddonChecked = mapAddonChk ? mapAddonChk.checked : false;
 
+            let pickupChk = document.getElementById('pickupOption');
+            let isPickup = pickupChk ? pickupChk.checked : false;
+
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
                 return { 
-                    totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, totalPrice: 0, finalPrice: 0, 
+                    totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, isPickup: isPickup, totalPrice: 0, finalPrice: 0, 
                     regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, 
                     isMapAddonChecked: isMapAddonChecked, isPaypal: false, paypalFee: 0 
                 };
@@ -1846,7 +1848,6 @@
                 let seed = unassigned.shift();
                 let currentCluster = [seed];
 
-                // Szukamy bezpośrednich sąsiadów dla każdego rejonu dodanego do tego klastra
                 let changed = true;
                 while (changed && currentCluster.length < MAX_REGIONS_PER_CLUSTER) {
                     changed = false;
@@ -1865,7 +1866,7 @@
                 clusters.push(currentCluster);
             }
 
-            // 3. Wewnątrz klastra (wspólna trasa) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane!
+            // 3. Wewnątrz klastra (wspólna trasa) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane
             let billableDaysTotal = 0;
 
             clusters.forEach(clusterGroup => {
@@ -1911,6 +1912,13 @@
             let regularBaseReference = isEuro ? 10.00 : 40.00;
             let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+
+            // Zależność: Odbiór osobisty nalicza 50% rabatu WYŁĄCZNIE w PLN i gdy NIE DOKUPIONO mapy online
+            if (isPickup && !isEuro && !isMapAddonChecked && totalPriceNetto > 0) {
+                totalPriceNetto = Math.round((totalPriceNetto * 0.5) * 100) / 100;
+                ratePerDay = Math.round((ratePerDay * 0.5) * 100) / 100;
+            }
+
             let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
             let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
@@ -1933,6 +1941,7 @@
                 totalDays: totalDays,
                 totalRegionDaysSum: totalRegionDaysSum,
                 isSingleCluster: isSingleCluster,
+                isPickup: isPickup,
                 clustersCount: clusters.length,
                 totalPrice: totalPriceNetto,
                 finalPrice: finalPayAmount,
@@ -2070,7 +2079,7 @@
 
             var dhlContainer = document.getElementById('dhlBox');
             if (dhlContainer) {
-                if (calc.totalDays >= 5) {
+                if (calc.totalDays >= 5 && !calc.isPickup) {
                     dhlContainer.style.display = 'block';
                 } else {
                     dhlContainer.style.display = 'none';
@@ -2308,7 +2317,7 @@
 
             document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
                 let nextEl = header.nextElementSibling;
-                let hasVisible = false;
+                var hasVisible = false;
                 while (nextEl && nextEl.classList.contains('region-label')) {
                     if (nextEl.style.opacity !== '0.3' && nextEl.style.opacity !== '0.45') {
                         hasVisible = true;
@@ -2355,7 +2364,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'mapOnlineOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
                 if(e.target.id === 'schrottOption') { 
                     availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
                 }
@@ -2427,7 +2436,7 @@
                 body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
             }
 
-            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5) {
+            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5 && !calc.isPickup) {
                 var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
                 var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
                 body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
