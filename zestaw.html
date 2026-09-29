@@ -179,17 +179,6 @@
             }
         }
 
-        .promo-banner {
-            background: linear-gradient(90deg, rgba(46, 204, 113, 0.2), rgba(59, 130, 246, 0.2));
-            border: 1px solid var(--primary-accent);
-            border-radius: var(--radius-sm);
-            padding: 12px 18px;
-            margin: 20px 0 10px 0;
-            text-align: center;
-            color: #ffffff;
-            box-shadow: 0 4px 16px rgba(46, 204, 113, 0.2);
-        }
-
         .form-wrapper { 
             background: linear-gradient(145deg, #152238 0%, #1e293b 100%); 
             padding: clamp(16px, 2.5vw, 30px); 
@@ -596,13 +585,6 @@
                   <text x="400" y="382" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
                 </svg>
             </div>
-        </div>
-
-        <div class="promo-banner">
-            <span style="font-size: 1.05rem; font-weight: 800; color: #2ecc71; text-transform: uppercase;">🔥 Promocja do końca roku:</span>
-            <span style="font-size: 0.94rem; margin-left: 6px;">
-                Stawka za dzień zbiórki wynosi maksymalnie <b>25 PLN / 6 €</b> (zamiast standardowych 40 PLN / 10 €)!
-            </span>
         </div>
 
         <div class="harmonogram-wrapper">
@@ -1538,15 +1520,8 @@
                 totalDays += regionDates.size;
             });
 
-            // 1. PROGI RABATOWE Z PROMOCJĄ DO KOŃCA ROKU (MAX 25 PLN / 6 EUR)
-            let nowTime = new Date();
-            let promoDeadline = new Date(nowTime.getFullYear(), 11, 31, 23, 59, 59);
-            let isPromoActive = (nowTime <= promoDeadline);
-
-            let baseRate = isPromoActive 
-                ? (isEuro ? 6.00 : 25.00) 
-                : (isEuro ? 10.00 : 40.00);
-
+            // 1. PROGI RABATOWE (STANDARDOWY CENNIK)
+            let baseRate = isEuro ? 10.00 : 40.00;
             let ratePerDay;
 
             if (isMapAddonChecked) {
@@ -1558,20 +1533,20 @@
                     else if (totalDays >= 121) ratePerDay = 4.00;
                     else if (totalDays >= 81)  ratePerDay = 5.00;
                     else if (totalDays >= 51)  ratePerDay = 6.00;
-                    else if (totalDays >= 31)  ratePerDay = isPromoActive ? 6.00 : 7.00;
-                    else if (totalDays >= 16)  ratePerDay = isPromoActive ? 6.00 : 8.00;
-                    else if (totalDays >= 6)   ratePerDay = isPromoActive ? 6.00 : 9.00;
-                    else                       ratePerDay = isPromoActive ? 6.00 : 10.00;
+                    else if (totalDays >= 31)  ratePerDay = 7.00;
+                    else if (totalDays >= 16)  ratePerDay = 8.00;
+                    else if (totalDays >= 6)   ratePerDay = 9.00;
+                    else                       ratePerDay = 10.00;
                 } else {
                     if (totalDays >= 250) ratePerDay = 8.00;
                     else if (totalDays >= 181) ratePerDay = 12.00;
                     else if (totalDays >= 121) ratePerDay = 16.00;
                     else if (totalDays >= 81)  ratePerDay = 20.00;
                     else if (totalDays >= 51)  ratePerDay = 24.00;
-                    else if (totalDays >= 31)  ratePerDay = isPromoActive ? 25.00 : 28.00;
-                    else if (totalDays >= 16)  ratePerDay = isPromoActive ? 25.00 : 32.00;
-                    else if (totalDays >= 6)   ratePerDay = isPromoActive ? 25.00 : 36.00;
-                    else                       ratePerDay = isPromoActive ? 25.00 : 40.00;
+                    else if (totalDays >= 31)  ratePerDay = 28.00;
+                    else if (totalDays >= 16)  ratePerDay = 32.00;
+                    else if (totalDays >= 6)   ratePerDay = 36.00;
+                    else                       ratePerDay = 40.00;
                 }
             }
 
