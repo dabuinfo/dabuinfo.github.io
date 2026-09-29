@@ -598,7 +598,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
+                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
                         <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
@@ -1755,7 +1755,7 @@
             });
         }
 
-        /* --- DYNAMICZNY PRZELICZNIK: RABATY SCHODKOWE + GROSS-UP PAYPAL --- */
+        /* --- DYNAMICZNY PRZELICZNIK: UNIKALNE DNI WYJAZDOWE KLASTRA (40 PLN / 10 EUR ZA DZIEŃ) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1772,7 +1772,7 @@
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
                 return { 
-                    totalDays: 0, totalPrice: 0, finalPrice: 0, regularPrice: 0, discountPercent: 0, 
+                    totalDays: 0, totalRegionDaysSum: 0, totalPrice: 0, finalPrice: 0, regularPrice: 0, discountPercent: 0, 
                     savings: 0, ratePerDay: 0, currency: currencySymbol, 
                     isMapAddonChecked: isMapAddonChecked, isPaypal: false, paypalFee: 0 
                 };
@@ -1782,7 +1782,9 @@
             let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
             let currentWeekNum = getWeekNumber(now).toString();
 
-            let totalDays = 0;
+            // Zbiorczy zestaw unikalnych dat kalendarzowych w klastrze (1 dzień = 1 wyjazd na okoliczne zbiórki)
+            let uniqueCalendarClusterDates = new Set();
+            let totalRegionDaysSum = 0;
             let matrixToUse = availabilityMatrix;
 
             selectedRegions.forEach(rName => {
@@ -1805,19 +1807,23 @@
                                 if (w === currentWeekNum) {
                                     if (dObj >= tomorrow) {
                                         regionDates.add(match[0]);
+                                        uniqueCalendarClusterDates.add(match[0]);
                                     }
                                 } else {
                                     regionDates.add(match[0]);
+                                    uniqueCalendarClusterDates.add(match[0]);
                                 }
                             }
                         });
                     });
                 });
 
-                totalDays += regionDates.size;
+                totalRegionDaysSum += regionDates.size;
             });
 
-            // PROGI RABATOWE (STANDARDOWY CENNIK)
+            // Rozliczenie bazuje na unikalnych dniach operacyjnych trasy
+            let totalDays = uniqueCalendarClusterDates.size;
+
             let baseRate = isEuro ? 10.00 : 40.00;
             let ratePerDay;
 
@@ -1853,7 +1859,7 @@
             let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
             let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
-            // GROSS-UP DLA PAYPAL (2.9% + 0.35 EUR / 1.35 PLN)
+            // GROSS-UP PAYPAL
             let selectedPayment = document.querySelector('input[name="payment"]:checked')?.value || "";
             let isPaypal = selectedPayment.toUpperCase().includes("PAYPAL");
 
@@ -1870,6 +1876,7 @@
 
             return {
                 totalDays: totalDays,
+                totalRegionDaysSum: totalRegionDaysSum,
                 totalPrice: totalPriceNetto,
                 finalPrice: finalPayAmount,
                 regularPrice: regularPrice,
@@ -2035,21 +2042,22 @@
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Baza PRO' : '';
+                let clusterInfo = checkedRegions.length > 1 ? ` (${calc.totalDays} dni wyjazdowych na trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge} (${calc.totalDays} dni${extraNotice})`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfo}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})`;
                 } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge} (${calc.totalDays} dni${extraNotice})`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfo}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka: ${calc.ratePerDay.toFixed(2)} ${calc.currency}/dzień)`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień trasy: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}/dzień</b>`;
+                            configSubtitle.innerHTML = `Stawka za dzień trasy: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>`;
                         }
                     }
                 }
@@ -2308,8 +2316,9 @@
                 } else {
                     body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 }
-                body += "- Łączna liczba dni roboczych: " + calc.totalDays + " dni\n";
-                body += "- Stawka: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
+                body += "- Liczba dni wyjazdowych na trasie klastra: " + calc.totalDays + " dni\n";
+                body += "- Suma dni we wszystkich rejonach: " + calc.totalRegionDaysSum + " dni zbiórek\n";
+                body += "- Stawka za dzień trasy: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
                 if (calc.isMapAddonChecked) {
                     body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
                 } else if (calc.savings > 0) {
