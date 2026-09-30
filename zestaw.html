@@ -817,30 +817,26 @@
                     </div>
                 </div>
 
-                <!-- BOKS AUTOMATYCZNEGO RABATU STAŁEGO KLIENTA Z WERYFIKACJĄ W ARKUSZU -->
-                <div id="regularCustomerBox" style="background: rgba(46, 204, 113, 0.08); border: 1px dashed rgba(46, 204, 113, 0.4); border-radius: var(--radius-sm); padding: 14px; margin: 18px 0 12px 0;">
+                <!-- STREFA STAŁEGO KLIENTA (PROSTY KOD RABATOWY) -->
+                <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
                     <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer;">
                         <div class="region-left-side">
-                            <input type="checkbox" id="regularCustomerOption" style="accent-color: var(--primary-accent); width: 19px; height: 19px;" />
-                            <span style="color: #2ecc71; font-weight: bold; font-size: 0.95rem;">
-                                ⭐ Jestem stałym klientem (wpisz identyfikator / nr zamówienia, aby naliczyć stały rabat)
+                            <input type="checkbox" id="regularCustomerOption" style="accent-color: var(--primary-accent); width: 18px; height: 18px;" />
+                            <span style="color: #f8fafc; font-weight: 600; font-size: 0.92rem;">
+                                Strefa stałego klienta / Posiadam kod rabatowy
                             </span>
                         </div>
                     </label>
                     
-                    <div id="regularCustomerDetails" style="display: none; margin-top: 12px; margin-left: 31px;">
-                        <p style="font-size: 0.82rem; color: #cbd5e1; margin: 0 0 8px 0; line-height: 1.4;">
-                            Podaj identyfikator dowolnego wcześniejszego zamówienia (np. <code>ORD-2026...</code> lub <code>2026...-....</code>) albo numer telefonu zgłoszony do rabatu:
-                        </p>
-                        
+                    <div id="regularCustomerDetails" style="display: none; margin-top: 10px; margin-left: 30px;">
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <input type="text" id="regularClientIdInput" class="client-input" placeholder="Wpisz np. ORD-20260930-A1B2 lub nr tel." style="flex: 1; min-width: 220px; margin-bottom: 0; padding: 10px 12px; font-size: 0.88rem; background: #0f172a; color: #f8fafc; border: 1px solid #334155; text-transform: uppercase;">
-                            <button type="button" id="btnCheckLoyalty" style="background: #2ecc71; color: #0d1117; font-weight: 800; border: none; padding: 0 18px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.85rem; text-transform: uppercase;">
-                                Zastosuj rabat
+                            <input type="text" id="regularClientIdInput" class="client-input" placeholder="Wpisz kod rabatowy lub ID klienta" style="flex: 1; min-width: 200px; margin-bottom: 0; padding: 9px 12px; font-size: 0.88rem; background: #0f172a; color: #f8fafc; border: 1px solid #334155; text-transform: uppercase;">
+                            <button type="button" id="btnCheckLoyalty" style="background: #2ecc71; color: #0d1117; font-weight: 700; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.84rem; text-transform: uppercase;">
+                                Zastosuj kod
                             </button>
                         </div>
                         
-                        <div id="loyaltyStatusMessage" style="font-size: 0.84rem; margin-top: 8px; font-weight: bold; display: none;"></div>
+                        <div id="loyaltyStatusMessage" style="font-size: 0.82rem; margin-top: 6px; font-weight: 600; display: none;"></div>
                     </div>
                 </div>
 
@@ -991,7 +987,7 @@
 
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
 
-        // OBSŁUGA BOKSU STAŁEGO KLIENTA I INTEGRACJI Z BAZĄ ARKUSZA
+        // OBSŁUGA STREFY STAŁEGO KLIENTA
         var regCustChk = document.getElementById('regularCustomerOption');
         var regCustDetails = document.getElementById('regularCustomerDetails');
         var clientIdInput = document.getElementById('regularClientIdInput');
@@ -1027,7 +1023,7 @@
                     if (loyaltyStatusMsg) {
                         loyaltyStatusMsg.style.display = 'block';
                         loyaltyStatusMsg.style.color = '#ef4444';
-                        loyaltyStatusMsg.innerText = '⚠️ Wpisz identyfikator lub numer zamówienia.';
+                        loyaltyStatusMsg.innerText = 'Wpisz kod rabatowy.';
                     }
                     return;
                 }
@@ -1050,11 +1046,11 @@
                             };
                             loyaltyStatusMsg.style.color = '#2ecc71';
                             var unit = activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR';
-                            loyaltyStatusMsg.innerHTML = `✓ Witaj ${data.clientName || ''}! Twój stały rabat <b>-${activeLoyaltyDiscount.value}${unit}</b> został naliczony.`;
+                            loyaltyStatusMsg.innerHTML = `✓ Zastosowano rabat: <b>-${activeLoyaltyDiscount.value}${unit}</b>`;
                         } else {
                             activeLoyaltyDiscount = null;
                             loyaltyStatusMsg.style.color = '#fbbf24';
-                            loyaltyStatusMsg.innerHTML = `ℹ Nie znaleziono jeszcze aktywnego rabatu dla tego identyfikatora w bazie. Twoje zgłoszenie zostanie wysłane do akceptacji wraz z zamówieniem!`;
+                            loyaltyStatusMsg.innerHTML = `Kod oczekuje na weryfikację. Zostanie uwzględniony przy potwierdzeniu zamówienia.`;
                         }
                     })
                     .catch(err => {
@@ -1062,12 +1058,12 @@
                         if (loyaltyStatusMsg) {
                             loyaltyStatusMsg.style.display = 'block';
                             loyaltyStatusMsg.style.color = '#ef4444';
-                            loyaltyStatusMsg.innerText = '⚠️ Błąd połączenia z bazą rabatów. Spróbuj ponownie za chwilę.';
+                            loyaltyStatusMsg.innerText = 'Błąd połączenia. Spróbuj ponownie.';
                         }
                         activeLoyaltyDiscount = null;
                     })
                     .finally(() => {
-                        btnCheckLoyalty.innerText = 'Zastosuj rabat';
+                        btnCheckLoyalty.innerText = 'Zastosuj kod';
                         btnCheckLoyalty.disabled = false;
                         updatePriceDisplay();
                     });
@@ -1914,7 +1910,6 @@
             let isPickup = pickupChk ? pickupChk.checked : false;
 
             let selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
-            let isCashPayment = selectedPaymentRadio && selectedPaymentRadio.value === "GOTÓWKA PRZY ODBIORZE";
 
             if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
                 return { 
@@ -2037,7 +2032,7 @@
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
 
-            // NALICZENIE ZDEFINIOWANEGO RABATU STAŁEGO KLIENTA
+            // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
                 if (activeLoyaltyDiscount.type === 'PROCENT') {
@@ -2204,8 +2199,6 @@
             let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             let calc = calculateActiveDaysAndPrice();
-            let regCustChk = document.getElementById('regularCustomerOption');
-            let isRegular = regCustChk && regCustChk.checked;
 
             var cashBox = document.getElementById('cashOptionBox');
             if (cashBox) {
@@ -2243,16 +2236,12 @@
                 }
             }
 
-            let regularCustomerBadge = isRegular ? ' ⭐ (STAŁY KLIENT)' : '';
-
             if (hasOnlySpecial) {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)" + regularCustomerBadge;
+                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)";
                 if (svgPriceSub) svgPriceSub.textContent = 'indywidualna';
                 if (configPrice) configPrice.textContent = "Wycena indywidualna";
                 if (configSubtitle) {
-                    configSubtitle.textContent = isRegular 
-                        ? "Wybrano rejon zastrzeżony – prośba o rabat stałego klienta zostanie uwzględniona w wycenie" 
-                        : "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
+                    configSubtitle.textContent = "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
                 }
                 renderOrderLiveBreakdown();
                 return;
@@ -2265,33 +2254,31 @@
                 
                 let loyaltyNotice = '';
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
-                    loyaltyNotice = ` | <b style="color:#2ecc71;">Naliczono stały rabat: -${calc.loyaltyDeduction.toFixed(2)} ${calc.currency}</b>`;
-                } else if (isRegular) {
-                    loyaltyNotice = ` | <b style="color:#fbbf24;">Zgłoszono weryfikację rabatu stałego klienta</b>`;
+                    loyaltyNotice = ` | <b style="color:#2ecc71;">Rabat z kodu: -${calc.loyaltyDeduction.toFixed(2)} ${calc.currency}</b>`;
                 }
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}${regularCustomerBadge}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
                 } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}${regularCustomerBadge}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień w trasie: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień w trasie: ${calc.ratePerDay.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
                         } else {
                             configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>${loyaltyNotice}`;
                         }
                     }
                 }
             } else {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE" + regularCustomerBadge;
+                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
                 if (svgPriceSub) svgPriceSub.textContent = "automatyczna";
                 if (configPrice) configPrice.textContent = "Wycena dynamiczna";
-                if (configSubtitle) configSubtitle.textContent = isRegular ? "Zaznacz opcje poniżej – zgłoszono status stałego klienta" : "Zaznacz opcje poniżej i wyślij zamówienie";
+                if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
             }
 
             renderOrderLiveBreakdown();
@@ -2611,7 +2598,7 @@
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
                 }
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
-                    body += "- Dodatkowy rabat stałego klienta: -" + calc.loyaltyDeduction.toFixed(2) + " " + calc.currency + " (ID: " + activeLoyaltyDiscount.clientId + ")\n";
+                    body += "- Zastosowany kod rabatowy: -" + calc.loyaltyDeduction.toFixed(2) + " " + calc.currency + " [Kod: " + activeLoyaltyDiscount.clientId + "]\n";
                 }
                 if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r))) {
                     body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (wycena indywidualna / pełne terminy w generowanym raporcie PRO).\n";
@@ -2626,15 +2613,12 @@
 
             if (isRegular) {
                 body += "--------------------------------------------------------\n";
-                body += "⭐ STATUS: STAŁY KLIENT (PROŚBA / NALICZENIE RABATU)\n";
+                body += "KOD RABATOWY / STREFA STAŁEGO KLIENTA:\n";
                 if (activeLoyaltyDiscount) {
-                    body += "- Aktywny rabat lojalnościowy zweryfikowany w bazie: -" + activeLoyaltyDiscount.value + (activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR') + "\n";
-                    body += "- Klient przypisany: " + activeLoyaltyDiscount.clientName + " [ID: " + activeLoyaltyDiscount.clientId + "]\n";
+                    body += "- Aktywny rabat zweryfikowany w bazie: -" + activeLoyaltyDiscount.value + (activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR') + "\n";
+                    body += "- Kod / Klient: " + activeLoyaltyDiscount.clientId + (activeLoyaltyDiscount.clientName ? " (" + activeLoyaltyDiscount.clientName + ")" : "") + "\n";
                 } else {
-                    body += "- Zgłoszono prośbę o weryfikację i aktywację stałego rabatu.\n";
-                    if (regularProof) {
-                        body += "- Podany identyfikator / dane weryfikacyjne: " + regularProof + "\n";
-                    }
+                    body += "- Wpisany kod do weryfikacji: " + (regularProof || "Brak") + "\n";
                 }
                 body += "--------------------------------------------------------\n\n";
             }
@@ -2778,10 +2762,6 @@
             }
 
             var subject = hasOnlySpecial ? "[#" + nr + "] ZAPYTANIE O WYCENĘ INDYWIDUALNĄ PRO" : "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
-            if (isRegular) {
-                subject = "[STAŁY KLIENT ⭐] " + subject;
-            }
-
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
 
