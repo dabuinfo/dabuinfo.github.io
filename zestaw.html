@@ -600,7 +600,7 @@
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
                         <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
-                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Większość z nich jest automatycznie wyszukiwanych przez boty – część wyłącznie na życzenie!</li>
+                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
                         <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
                     </ul>
 
@@ -685,7 +685,7 @@
                         </div>
 
                         <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-top: 12px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
-                            <span id="specialDateText">Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO</span>
+                            <span id="specialDateText">Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO (bez wymogu wyboru tygodnia)</span>
                         </div>
                     </div>
 
@@ -1032,9 +1032,7 @@
             'Rendsburg-Eckernförde': 'Schleswig-Holstein'
         };
 
-        // KOMPLETNA MAPA KLASTRÓW SĄSIEDZTW DLA WSZYSTKICH REJONÓW W BAZIE
         const NEIGHBOR_CLUSTERS_MAP = {
-            // BADEN-WÜRTTEMBERG
             'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
             'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
             'heidelberg': ['rhein-neckar-kreis', 'karlsruhe kreis', 'heilbronn'],
@@ -1046,8 +1044,6 @@
             'rhein-neckar-kreis': ['heidelberg', 'karlsruhe kreis', 'karlsruhe stadt', 'heilbronn'],
             'tuttlingen': ['konstanz', 'zollernalb', 'freudenstadt'],
             'zollernalb': ['tuttlingen', 'freudenstadt', 'calw', 'konstanz'],
-
-            // BAYERN
             'amberg': ['regensburg', 'neustadt a.d. waldnaab', 'bayreuth', 'fürth'],
             'augsburg kreis': ['augsburg stadt', 'gräfelfing', 'kirchheim'],
             'augsburg stadt': ['augsburg kreis', 'gräfelfing', 'kirchheim'],
@@ -1061,16 +1057,12 @@
             'neustadt a.d. waldnaab': ['amberg', 'bayreuth', 'regensburg', 'kulmbach'],
             'regensburg': ['straubing-bogen', 'amberg', 'neustadt a.d. waldnaab'],
             'straubing-bogen': ['regensburg', 'amberg'],
-
-            // BERLIN & BRANDENBURG
             'berlin': ['barnim', 'oder-spree'],
             'barnim': ['berlin', 'oder-spree', 'schwedt/oder'],
             'elbe-elster': ['spree-neiße', 'nordsachsen', 'leipzig'],
             'oder-spree': ['berlin', 'barnim', 'spree-neiße', 'schwedt/oder'],
             'schwedt/oder': ['barnim', 'oder-spree'],
             'spree-neiße': ['oder-spree', 'elbe-elster'],
-
-            // HESSEN
             'bad homburg': ['friedrichsdorf', 'oberursel (taunus)', 'steinbach', 'frankfurt', 'usingen'],
             'bad orb': ['bad soden-salmünster', 'biebergemünd', 'gelnhausen', 'jossgrund', 'flörsbachtal'],
             'bad soden-salmünster': ['bad orb', 'schlüchtern', 'sinntal', 'biebergemünd', 'gelnhausen'],
@@ -1122,8 +1114,6 @@
             'weilrod': ['usingen', 'schmitten', 'grävenwiesbach', 'limburg-weilburg'],
             'werra-meissner': ['eschwege', 'hersfeld-rotenburg', 'göttingen'],
             'wiesbaden-naurod': ['hofheim am taunus', 'eppstein', 'rheingau-taunus'],
-
-            // NIEDERSACHSEN
             'braunschweig': ['wolfsburg', 'gifhorn', 'hannover'],
             'diepholz': ['osnabrück', 'hannover'],
             'emsland': ['osnabrück'],
@@ -1137,15 +1127,13 @@
             'osnabrück': ['diepholz', 'emsland', 'münster'],
             'stade': ['harburg', 'lüneburg'],
             'wolfsburg': ['gifhorn', 'braunschweig', 'altmarkkreis-salzwedel'],
-
-            // NORDRHEIN-WESTFALEN
             'aldenhoven': ['jülich', 'merzenich', 'eschweiler', 'geilenkirchen', 'baesweiler'],
             'alpen': ['rheinberg', 'issum', 'sonsbeck', 'xanten', 'kamp-lintfort'],
             'altena': ['werdohl', 'nachrodt-wiblingwerde', 'iserlohn', 'plettenberg', 'ludenscheid'],
             'bad münstereifel': ['bad-munstereifel', 'euskirchen', 'mechernich', 'zülpich', 'blankenheim'],
             'bad-munstereifel': ['bad münstereifel', 'euskirchen', 'mechernich', 'zülpich'],
             'balve': ['menden', 'iserlohn', 'neuenrade', 'sundern', 'arnsberg'],
-            'bedburg': ['bergheim', 'elギリ', 'jüchen', 'rommerskirchen', 'grevenbroich'],
+            'bedburg': ['bergheim', 'jüchen', 'rommerskirchen', 'grevenbroich'],
             'bedburg-hau': ['kleve', 'kalkar', 'goch', 'emmerich am rhein', 'kranenburg'],
             'blankenheim': ['dahlem', 'nettersheim', 'schleiden', 'bad münstereifel', 'kall'],
             'bonn': ['rhein-sieg', 'brühl', 'bornheim', 'alfter', 'wesseling'],
@@ -1224,8 +1212,6 @@
             'wuppertal': ['solingen', 'remscheid', 'schwelm', 'sprockhövel', 'haan'],
             'xanten': ['sonsbeck', 'alpen', 'wesel', 'kalkar', 'uedem'],
             'zülpich': ['euskirchen', 'mechernich', 'weilerswist', 'nörvenich', 'erftstadt'],
-
-            // RHEINLAND-PFALZ
             'alzey-worms': ['worms', 'bad-kreuznach', 'mainz-bingen'],
             'altenkirchen (westerwald)': ['westerwald', 'neuwied', 'rhein-sieg'],
             'bad-kreuznach': ['alzey-worms', 'birkenfeld', 'rhein-hunsrück', 'mainz-bingen'],
@@ -1237,8 +1223,6 @@
             'trier-stadt': ['trier-saarburg', 'bernkastel-wittlich', 'eifelkreis bitburg-prüm'],
             'vulkaneifel': ['eifelkreis bitburg-prüm', 'bernkastel-wittlich', 'cochem-zell', 'ahrweiler'],
             'westerwald': ['altenkirchen (westerwald)', 'neuwied', 'mayen-koblenz'],
-
-            // SACHSEN & SACHSEN-ANHALT & SCHLESWIG-HOLSTEIN
             'altmarkkreis-salzwedel': ['wolfsburg', 'stendal', 'lüchow-dannenberg'],
             'burgenland': ['leipzig', 'weissenfels', 'naumburg', 'zeitz'],
             'leipzig': ['nordsachsen', 'burgenland', 'elbe-elster'],
@@ -1515,13 +1499,27 @@
                 let badgeContainer = label.querySelector('.region-schedule-badges');
                 if (!chk || !badgeContainer) return;
 
-                if (!chk.checked || selectedWeeks.length === 0) {
+                let rName = cleanNameForCompare(chk.value);
+                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rName);
+
+                if (!chk.checked) {
                     badgeContainer.classList.remove('is-visible');
                     badgeContainer.innerHTML = '';
                     return;
                 }
 
-                let rName = cleanNameForCompare(chk.value);
+                if (isSpecial) {
+                    badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.15);"><b style="color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna PRO)</b></span>`;
+                    badgeContainer.classList.add('is-visible');
+                    return;
+                }
+
+                if (selectedWeeks.length === 0) {
+                    badgeContainer.classList.remove('is-visible');
+                    badgeContainer.innerHTML = '';
+                    return;
+                }
+
                 let terminyDlaWybranychTygodni = [];
 
                 selectedWeeks.forEach(w => {
@@ -1549,11 +1547,9 @@
 
                                     let tagi = [];
                                     
-                                    // 1. Drewno (Holz / Altholz / Sperrmüllholz)
                                     let czyHolz = /holz/i.test(rodzajWpisu);
                                     if (czyHolz) tagi.push("H");
 
-                                    // 2. Sperrmüll (zabezpieczenie: jeśli to tylko Holz/Sperrmüllholz, nie dubluj S)
                                     let czySperr = /sperrm/i.test(rodzajWpisu);
                                     if (czySperr) {
                                         if (!czyHolz || /sperrm(?!.*holz)|rest.*sperrm/i.test(rodzajWpisu) || (rodzajWpisu.match(/sperrm/gi) || []).length > 1) {
@@ -1561,12 +1557,10 @@
                                         }
                                     }
 
-                                    // 3. Złom / Metal
                                     if (/metall|schrott|altmetall/i.test(rodzajWpisu)) {
                                         tagi.push("M");
                                     }
 
-                                    // 4. Elektro / E-Schrott oraz Kleinelektro (am Papierkorb)
                                     if (/e-schrott|elektro|kuhl|kühl|papierkorb/i.test(rodzajWpisu)) {
                                         tagi.push("E");
                                     }
@@ -1602,19 +1596,12 @@
                     badgeContainer.innerHTML = pills;
                     badgeContainer.classList.add('is-visible');
                 } else {
-                    let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rName);
-
-                    if (isSpecial) {
-                        badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no" style="border-color: rgba(46, 204, 113, 0.4); background: rgba(46, 204, 113, 0.15);"><b style="color: #2ecc71;">🔒 Rejon chroniony – terminy weryfikowane pod zamówienie</b></span>`;
-                    } else {
-                        badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no"><b>Brak przyszłych dat w wybranym okresie</b></span>`;
-                    }
+                    badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no"><b>Brak przyszłych dat w wybranym okresie</b></span>`;
                     badgeContainer.classList.add('is-visible');
                 }
             });
         }
 
-        // DYNAMICZNE BOKSY KLASTRÓW SĄSIEDZTW DLA WYJAZDÓW
         function renderNeighborClusterSuggestions() {
             document.querySelectorAll('.cluster-suggestion-box').forEach(el => el.remove());
 
@@ -1796,7 +1783,6 @@
             });
         }
 
-        /* --- PRECYZYJNE GRUPOWANIE W KLASTRY TRASOWE + RABAT PRZY PŁATNOŚCI GOTÓWKĄ (25 PLN / DZIEŃ) --- */
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1830,7 +1816,6 @@
             let currentWeekNum = getWeekNumber(now).toString();
             let matrixToUse = availabilityMatrix;
 
-            // 1. Zbieramy unikalne daty dla każdego zaznaczonego rejonu
             let regionDatesMap = {};
             let totalRegionDaysSum = 0;
 
@@ -1867,7 +1852,6 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            // 2. Budowa zwartych klastrów wyjazdowych (max 3 sąsiednie rejony w jednej trasie)
             const MAX_REGIONS_PER_CLUSTER = 3;
             let unassigned = Object.keys(regionDatesMap);
             let clusters = [];
@@ -1894,7 +1878,6 @@
                 clusters.push(currentCluster);
             }
 
-            // 3. Wewnątrz klastra (wspólna trasa) unikalne dni liczą się raz. Osobne trasy/klastry są do siebie sumowane
             let billableDaysTotal = 0;
 
             clusters.forEach(clusterGroup => {
@@ -1912,18 +1895,15 @@
             let ratePerDay;
             let totalPriceNetto;
 
-            // WARUNEK: Odbiór osobisty + Gotówka + PLN + Brak Mapy Online
-            // Wyłącza rabaty schodkowe/ilościowe i liczy sztywno 25.00 PLN za dzień
             let isEligibleForPickupCashDiscount = isPickup && isCashPayment && !isEuro && !isMapAddonChecked;
 
             if (isEligibleForPickupCashDiscount) {
-                ratePerDay = 25.00; // Sztywna stawka promocyjna przy płatności gotówką: 25.00 PLN / dzień
+                ratePerDay = 25.00;
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else {
-                // Standardowe rabaty ilościowe (dla przelewów, PayPal, BLIK lub w walucie EUR)
                 if (isEuro) {
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
@@ -1952,7 +1932,6 @@
             let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
             let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
 
-            // GROSS-UP PAYPAL
             let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
             let paypalFixed = isEuro ? 0.35 : 1.35;
             let paypalPercent = 0.029;
@@ -2063,8 +2042,8 @@
                 var parsed = parseRegionInfo(rawInfoD);
                 if (!parsed && isSpecial) {
                     parsed = {
-                        system: "Baza PRO (pełne daty w raporcie)",
-                        frequency: "Terminy dedykowane dla raportu PRO"
+                        system: "Baza Zastrzeżona (PRO)",
+                        frequency: "Dedykowana weryfikacja i wycena indywidualna"
                     };
                 }
 
@@ -2079,7 +2058,7 @@
                 }
 
                 if (isSpecial) {
-                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #38bdf8;">Harmonogram zastrzeżony — pełne terminy generowane bezpośrednio do raportu PRO</div>';
+                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna bez konieczności wyboru tygodnia)</div>';
                 } else if (weeksListHtml !== '') {
                     html += weeksListHtml;
                     html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' dni zbiórki</div>';
@@ -2106,7 +2085,6 @@
 
             let calc = calculateActiveDaysAndPrice();
 
-            // Dynamiczne sterowanie widocznością płatności gotówką przy odbiorze
             var cashBox = document.getElementById('cashOptionBox');
             if (cashBox) {
                 var pickupChk = document.getElementById('pickupOption');
@@ -2144,17 +2122,17 @@
             }
 
             if (hasOnlySpecial) {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE (Wycena dynamiczna)";
-                if (svgPriceSub) svgPriceSub.textContent = 'automatyczna';
-                if (configPrice) configPrice.textContent = "Wycena dynamiczna";
-                if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
+                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)";
+                if (svgPriceSub) svgPriceSub.textContent = 'indywidualna';
+                if (configPrice) configPrice.textContent = "Wycena indywidualna";
+                if (configSubtitle) configSubtitle.textContent = "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
                 renderOrderLiveBreakdown();
                 return;
             }
 
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
-                let extraNotice = hasMixedSpecial ? ' + Baza PRO' : '';
+                let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
                 let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
@@ -2274,14 +2252,55 @@
                     }
                 }
 
-                label.style.opacity = isAvailable ? '1' : '0.45';
-                chk.disabled = !isAvailable;
-                if (!isAvailable && chk.checked) {
-                    chk.checked = false;
+                // OBSŁUGA REJONÓW SPECJALNYCH:
+                // Są wyszarzone tak samo jak brakujące w bazie, ale ich checkbox pozostaje aktywny i można je dodać do koszyka!
+                if (isSpecial) {
+                    label.style.opacity = chk.checked ? '1' : '0.5';
+                    chk.disabled = false; // Checkbox zawsze aktywny do koszyka
+                } else {
+                    label.style.opacity = isAvailable ? '1' : '0.45';
+                    chk.disabled = !isAvailable;
+                    if (!isAvailable && chk.checked) {
+                        chk.checked = false;
+                    }
                 }
 
+                // Generowanie odpowiednich przycisków akcji
                 let existingAskBtn = label.querySelector('.ask-region-btn');
-                if (!isAvailable) {
+                let existingSpecialBtn = label.querySelector('.special-region-btn');
+
+                if (isSpecial) {
+                    if (existingAskBtn) existingAskBtn.remove();
+
+                    if (!existingSpecialBtn) {
+                        let specialBtn = document.createElement('a');
+                        specialBtn.className = 'special-region-btn';
+                        specialBtn.innerText = "🔒 Wycena indywidualna";
+                        specialBtn.title = "Kliknij, aby wysłać szybkie zapytanie o wycenę indywidualną bez tygodnia";
+                        specialBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
+
+                        let mailSubject = encodeURIComponent(`Zapytanie o wycenę indywidualną (Rejon zastrzeżony): ${rName}`);
+                        let mailBody = encodeURIComponent(
+                            `Dzień dobry,\n\n` +
+                            `Zwracam się z zapytaniem o wycenę indywidualną i przygotowanie terminów zbiórek dla rejonu zastrzeżonego: ${rName}.\n\n` +
+                            `Proszę o informację o dostępnych terminach, możliwości wygenerowania Raportu Operacyjnego PRO oraz o kalkulację kosztów.\n\n` +
+                            `Pozdrawiam,\n`
+                        );
+
+                        specialBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+                        specialBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(specialBtn);
+                        }
+                    }
+                } else if (!isAvailable) {
+                    if (existingSpecialBtn) existingSpecialBtn.remove();
+
                     if (!existingAskBtn) {
                         let askBtn = document.createElement('a');
                         askBtn.className = 'ask-region-btn';
@@ -2308,9 +2327,8 @@
                         }
                     }
                 } else {
-                    if (existingAskBtn) {
-                        existingAskBtn.remove();
-                    }
+                    if (existingAskBtn) existingAskBtn.remove();
+                    if (existingSpecialBtn) existingSpecialBtn.remove();
                 }
             });
 
@@ -2366,13 +2384,13 @@
                 let nextEl = header.nextElementSibling;
                 var hasVisible = false;
                 while (nextEl && nextEl.classList.contains('region-label')) {
-                    if (nextEl.style.opacity !== '0.3' && nextEl.style.opacity !== '0.45') {
+                    if (nextEl.style.opacity !== '0.22' && nextEl.style.opacity !== '0.45' && nextEl.style.opacity !== '0.5') {
                         hasVisible = true;
                         break;
                     }
                     nextEl = nextEl.nextElementSibling;
                 }
-                header.style.opacity = hasVisible ? '1' : '0.3';
+                header.style.opacity = hasVisible ? '1' : '0.4';
             });
 
             applyRegionSearchFilter();
@@ -2394,7 +2412,7 @@
             if (specialDateContainer) {
                 if (selectedSpecialNames.length > 0) {
                     specialDateContainer.style.display = 'block';
-                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO:<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
+                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO (bez wymogu wyboru tygodnia):<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
                 } else {
                     specialDateContainer.style.display = 'none';
                 }
@@ -2435,7 +2453,7 @@
             var hasRegular = checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             if (wR.length === 0 || (hasRegular && wT.length === 0)) { 
-                alert("[ UWAGA ] Wybierz rejony oraz co najmniej jeden tydzień z kalendarza!"); 
+                alert("[ UWAGA ] Wybierz rejony oraz co najmniej jeden tydzień z kalendarza (chyba że zamawiasz wyłącznie rejony zastrzeżone do wyceny indywidualnej)!"); 
                 return; 
             }
                     
@@ -2462,11 +2480,11 @@
                     body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
                 }
                 if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r))) {
-                    body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (pełne terminy w generowanym raporcie PRO).\n";
+                    body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (wycena indywidualna / pełne terminy w generowanym raporcie PRO).\n";
                 }
                 body += "\n";
             } else {
-                body += "PODSUMOWANIE CENY: Wycena dynamiczna\n\n";
+                body += "PODSUMOWANIE CENY: Wycena indywidualna (pakiet zawiera rejony zastrzeżone bez przypisanego tygodnia)\n\n";
             }
             
             body += "Preferowana płatność / Identyfikator: " + nr + "\n\n";
@@ -2527,7 +2545,7 @@
                 body += "📍 REJON: " + rName.toUpperCase() + "\n";
 
                 if (isSpecial) {
-                    body += "   -> Tryb: Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO\n\n";
+                    body += "   -> Tryb: Rejon zastrzeżony – przygotowanie pełnych terminów i wyceny indywidualnej bezpośrednio do raportu PRO\n\n";
                     return;
                 }
 
@@ -2607,7 +2625,7 @@
                 return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
             }
 
-            var subject = "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
+            var subject = hasOnlySpecial ? "[#" + nr + "] ZAPYTANIE O WYCENĘ INDYWIDUALNĄ PRO" : "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
             
