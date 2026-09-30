@@ -429,7 +429,7 @@
         let allCountiesGeoList = [];
         let userLocationMarker = null;
         let kreisGeoLayer = null;
-        let currentCountyName = ""; // Przechowuje nazwę aktualnie wybranego powiatu
+        let currentCountyName = "";
 
         const AGS_LAND_MAP = {
             "01": "Schleswig-Holstein", "02": "Hamburg", "03": "Niedersachsen", "04": "Bremen",
@@ -469,12 +469,12 @@
         };
         customControls.addTo(map);
 
-        // TWORZENIE WARSTWY ZAWSZE NA WIERZCHU DLA LANDÓW
+        // WARSTWA DLA LANDÓW
         map.createPane('landBordersPane');
         map.getPane('landBordersPane').style.zIndex = 450; 
         map.getPane('landBordersPane').style.pointerEvents = 'none'; 
 
-        // WCZYTANIE GRANIC LANDÓW (BUNDESLÄNDER)
+        // GRANICE LANDÓW
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/2_bundeslaender/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
@@ -491,7 +491,7 @@
             })
             .catch(err => console.error("Błąd podczas pobierania granic landów: ", err));
 
-        // WCZYTANIE POWIATÓW Z PRZYPISANIEM DO LANDÓW
+        // WCZYTANIE POWIATÓW
         fetch('https://raw.githubusercontent.com/isellsoap/deutschlandGeoJSON/main/4_kreise/4_niedrig.geo.json')
             .then(r => r.json())
             .then(geoData => {
@@ -561,9 +561,22 @@
                 .trim();
         }
 
-        // POBIERANIE GMIN W LOCIE Z OVERPASS API (Z KODAMI POCZTOWYMI)
+        // Pomocnicza funkcja geometryczna: czy punkt leży wewnątrz wielokąta
+        function pointInPolygon(pt, ring) {
+            let inside = false;
+            for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+                const xi = ring[i].lon, yi = ring[i].lat;
+                const xj = ring[j].lon, yj = ring[j].lat;
+                const intersect = ((yi > pt.lat) !== (yj > pt.lat)) &&
+                    (pt.lon < (xj - xi) * (pt.lat - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+            return inside;
+        }
+
+        // POBIERANIE GMIN ORAZ KODÓW POCZTOWYCH (PLZ) W LOCIE
         async function fetchMunicipalitiesInFlight(countyName, landName, layer) {
-            currentCountyName = countyName; // Zapamiętanie aktywnego rejonu
+            currentCountyName = countyName;
             const modalTitle = document.getElementById('modalCountyTitle');
             const container = document.getElementById('modalMunicipalitiesList');
             
@@ -574,7 +587,7 @@
             container.innerHTML = `
                 <div style="text-align:center; padding: 30px; color: #00FF7F;">
                     <div style="font-size: 26px; animation: spin 1s infinite linear; display: inline-block;">⏳</div>
-                    <p style="margin-top: 12px; font-size: 13.5px; color: #cbd5e1;">Pobieranie gmin w locie z bazy danych...</p>
+                    <p style="margin-top: 12px; font-size: 13.5px; color: #cbd5e1;">Pobieranie gmin i kodów pocztowych (PLZ)...</p>
                 </div>
             `;
             document.getElementById('countyDetailsModal').classList.add('is-active');
@@ -587,21 +600,26 @@
 
             const cleanName = countyName.replace(/^(Landkreis|Kreis|Stadt)\s+/i, '').trim();
 
+            // Pobieramy zarówno jednostki osadnicze (z lat/lon i centrum), jak i strefy pocztowe z geometrią granic
             let overpassQuery = bbox ? `
-                [out:json][timeout:25];
+                [out:json][timeout:30];
                 (
                   relation["boundary"="administrative"]["admin_level"="8"](${bbox});
                   node["place"~"^(city|town|village)$"](${bbox});
                 );
-                out tags;
+                out tags center;
+                relation["boundary"="postal_code"](${bbox});
+                out tags geom;
             ` : `
-                [out:json][timeout:25];
+                [out:json][timeout:30];
                 area["name"~"${cleanName}"]["boundary"="administrative"]->.a;
                 (
                   relation["boundary"="administrative"]["admin_level"="8"](area.a);
                   node["place"~"^(city|town|village)$"](area.a);
                 );
-                out tags;
+                out tags center;
+                relation["boundary"="postal_code"](area.a);
+                out tags geom;
             `;
 
             const encoded = encodeURIComponent(overpassQuery);
@@ -610,33 +628,16 @@
                 "https://lz4.overpass-api.de/api/interpreter?data=" + encoded
             ];
 
-            let municipalitiesMap = new Map();
             let success = false;
+            let rawElements = [];
 
             for (let url of endpoints) {
                 try {
                     const resp = await fetch(url);
                     if (!resp.ok) continue;
                     const data = await resp.json();
-
                     if (data && data.elements && data.elements.length > 0) {
-                        data.elements.forEach(el => {
-                            if (el.tags && el.tags.name) {
-                                const n = el.tags.name.trim();
-                                if (!n.toLowerCase().startsWith("landkreis") && 
-                                    !n.toLowerCase().startsWith("kreis ") &&
-                                    n !== countyName) {
-                                    
-                                    // Odczytanie kodu pocztowego z tagów OSM
-                                    const zip = el.tags.postal_code || el.tags["addr:postcode"] || "";
-                                    const label = zip ? `${zip} ${n}` : n;
-
-                                    if (!municipalitiesMap.has(n)) {
-                                        municipalitiesMap.set(n, label);
-                                    }
-                                }
-                            }
-                        });
+                        rawElements = data.elements;
                         success = true;
                         break;
                     }
@@ -645,13 +646,64 @@
                 }
             }
 
-            if (!municipalitiesMap.has(cleanName)) {
-                municipalitiesMap.set(cleanName, cleanName);
-            }
+            if (success && rawElements.length > 0) {
+                // 1. Wyodrębniamy strefy kodów pocztowych
+                const plzZones = [];
+                rawElements.forEach(el => {
+                    if (el.tags && el.tags.postal_code) {
+                        const zip = el.tags.postal_code;
+                        if (el.members) {
+                            el.members.forEach(m => {
+                                if (m.geometry && m.geometry.length > 2) {
+                                    plzZones.push({ zip: zip, geom: m.geometry });
+                                }
+                            });
+                        }
+                    }
+                });
 
-            let sortedEntries = Array.from(municipalitiesMap.entries()).sort((a, b) => a[0].localeCompare(b[0], 'de'));
+                // 2. Parsujemy miejscowości oraz ich koordynaty
+                const municipalitiesMap = new Map();
 
-            if (success && sortedEntries.length > 0) {
+                rawElements.forEach(el => {
+                    if (el.tags && el.tags.name && (!el.tags.boundary || el.tags.boundary !== "postal_code")) {
+                        const n = el.tags.name.trim();
+                        if (!n.toLowerCase().startsWith("landkreis") && 
+                            !n.toLowerCase().startsWith("kreis ") &&
+                            n !== countyName) {
+                            
+                            // Bezpośredni kod pocztowy w tagu, o ile występuje
+                            let zip = el.tags.postal_code || el.tags["addr:postcode"] || "";
+                            
+                            // Wyznaczenie punktu środkowego
+                            let lat = el.lat || (el.center ? el.center.lat : null);
+                            let lon = el.lon || (el.center ? el.center.lon : null);
+
+                            // Jeśli nie ma tagu PLZ, sprawdzamy przynależność punktu do strefy PLZ
+                            if (!zip && lat !== null && lon !== null && plzZones.length > 0) {
+                                const pt = { lat, lon };
+                                for (let zone of plzZones) {
+                                    if (pointInPolygon(pt, zone.geom)) {
+                                        zip = zone.zip;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            const formatted = zip ? `${zip} ${n}` : n;
+                            if (!municipalitiesMap.has(n) || (zip && !municipalitiesMap.get(n).match(/^\d{5}/))) {
+                                municipalitiesMap.set(n, formatted);
+                            }
+                        }
+                    }
+                });
+
+                if (!municipalitiesMap.has(cleanName)) {
+                    municipalitiesMap.set(cleanName, cleanName);
+                }
+
+                let sortedEntries = Array.from(municipalitiesMap.entries()).sort((a, b) => a[0].localeCompare(b[0], 'de'));
+
                 container.innerHTML = '';
 
                 const wholeCountyStr = `Cały powiat (${cleanName})`;
