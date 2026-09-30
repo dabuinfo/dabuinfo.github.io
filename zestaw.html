@@ -2792,8 +2792,15 @@
             var safeBody = removeDiacritics(body);
 
             // ========================================================
-            // ZAPIS ZAMÓWIENIA W ARKUSZU GOOGLE W TLE (POST)
+            // ASYNCHRONICZNY ZAPIS ZAMÓWIENIA W ARKUSZU GOOGLE
             // ========================================================
+            var btnSubmit = document.getElementById('btnSubmit');
+            var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
+            if (btnSubmit) {
+                btnSubmit.innerHTML = "⏳ ZAPISYWANIE ZAMÓWIENIA W BAZIE...";
+                btnSubmit.disabled = true;
+            }
+
             var orderPayload = {
                 akcja: 'zapisz_zamowienie',
                 orderId: nr,
@@ -2813,14 +2820,25 @@
 
             fetch(apiURL, {
                 method: "POST",
+                mode: "no-cors",
                 headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(orderPayload)
-            }).catch(function(err) {
-                console.warn("Błąd zapisu zamówienia w arkuszu:", err);
+            })
+            .then(function() {
+                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+            })
+            .catch(function(err) {
+                console.warn("Błąd zapisu w arkuszu:", err);
+                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+            })
+            .finally(function() {
+                setTimeout(function() {
+                    if (btnSubmit) {
+                        btnSubmit.innerHTML = staryTekstBtn;
+                        btnSubmit.disabled = false;
+                    }
+                }, 2000);
             });
-            
-            // Otwarcie programu pocztowego
-            window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
         });
 
         fetchAvailableRegions();
