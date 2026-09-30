@@ -192,7 +192,7 @@
             transform: translate(-50%, -50%) scale(0.95);
             width: 90%;
             max-width: 480px;
-            max-height: 80vh;
+            max-height: 85vh;
             background: rgba(18, 24, 38, 0.98);
             backdrop-filter: blur(16px);
             border: 1px solid #00FF7F;
@@ -290,9 +290,30 @@
             padding: 12px 16px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(11, 15, 25, 0.8);
+        }
+
+        .user-phone-input {
+            width: 100%;
+            padding: 9px 12px;
+            background: #111827;
+            border: 1px solid #374151;
+            color: #fff;
+            font-size: 13.5px;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .user-phone-input:focus {
+            border-color: #00FF7F;
+        }
+
+        .modal-footer-actions {
+            display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(11, 15, 25, 0.6);
         }
 
         .modal-sms-btn {
@@ -304,8 +325,13 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
+            transition: background 0.2s;
         }
         .modal-sms-btn:hover { background: #00cc66; }
+        .modal-sms-btn:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+        }
 
         /* --- DOLNY LICZNIK --- */
         .bottom-counter-container {
@@ -396,7 +422,7 @@
                     <option value="Thüringen">Thüringen</option>
                 </select>
                 <button class="dabu-county-btn" onclick="zoomGermany()">🇩🇪 Reset</button>
-                <button class="dabu-county-btn" style="background:#dc3545; color:#fff; border-color:#dc3545;" onclick="clearAllSelections()">🗑️ Wyczyść</button>
+                <button class="dabu-county-btn" style="background:#dc3545; color:#fff; border-color:#dc3545;" onclick="clearAllSelections()">🗑️️ Wyczyść</button>
             </div>
         </div>
 
@@ -411,8 +437,11 @@
         </div>
         <div class="modal-body" id="modalMunicipalitiesList"></div>
         <div class="modal-footer">
-            <div id="modalSelectedCounter" style="font-size: 12px; color: #00FF7F;">Wybrano: 0</div>
-            <button class="modal-sms-btn" onclick="sendSmsQuote()">💬 Wyślij zapytanie</button>
+            <input type="tel" id="userPhoneNumber" class="user-phone-input" placeholder="Twój numer telefonu (np. +48... lub +49...)" />
+            <div class="modal-footer-actions">
+                <div id="modalSelectedCounter" style="font-size: 12px; color: #00FF7F;">Wybrano: 0</div>
+                <button class="modal-sms-btn" id="submitBtn" onclick="sendSmsQuote()">💬 Wyślij zapytanie</button>
+            </div>
         </div>
     </div>
 
@@ -424,6 +453,9 @@
     </div>
 
     <script>
+        // TUTAJ WKLEJ LINK DO SWOJEJ APLIKACJI GOOGLE APPS SCRIPT:
+        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx-E2ypclCbhp3Fvk06vI3rRFc5eoBe2yu_S_m3kXCUYQ0v74I-Vg3DRGqmgqCZ47xt4w/exec";
+
         let selectedMunicipalities = [];
         let allCountiesGeoList = [];
         let userLocationMarker = null;
@@ -563,7 +595,6 @@
                 .trim();
         }
 
-        // Sprawdzanie punktu w geometrii GeoJSON (Polygon / MultiPolygon)
         function isPointInGeoJson(lat, lon, layer) {
             if (!layer || !layer.feature || !layer.feature.geometry) return true;
             const geom = layer.feature.geometry;
@@ -593,12 +624,10 @@
             return true;
         }
 
-        // Pobieranie kodu pocztowego TYLKO DLA REJONU (POWIATU)
         async function fetchCountyPostalCode(cleanCountyName, landName, centerLat, centerLon) {
             const key = `${cleanCountyName}_${landName}`;
             if (countyZipCache.has(key)) return countyZipCache.get(key);
 
-            // 1. Sprawdzenie współrzędnych centrum powiatu
             if (centerLat && centerLon) {
                 try {
                     const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${centerLat}&longitude=${centerLon}&localityLanguage=de`);
@@ -612,7 +641,6 @@
                 } catch(e) {}
             }
 
-            // 2. Wyszukanie w OpenPLZ po nazwie miasta powiatowego
             try {
                 const r = await fetch(`https://openplzapi.org/de/Localities?name=${encodeURIComponent(cleanCountyName)}&pageSize=5`);
                 if (r.ok) {
@@ -632,7 +660,6 @@
             return "";
         }
 
-        // BŁYSKAWICZNE POBIERANIE SAMYCH NAZW GMIN W OBRĘBIE POWIATU
         async function fetchMunicipalitiesInFlight(countyName, landName, layer) {
             currentCountyName = countyName;
             currentCountyZip = "";
@@ -653,7 +680,6 @@
 
             const cleanName = countyName.replace(/^(Landkreis|Kreis|Stadt)\s+/i, '').trim();
 
-            // Równolegle: pobieramy jeden kod pocztowy dla rejonu
             const center = layer && layer.getBounds ? layer.getBounds().getCenter() : null;
             const zipPromise = fetchCountyPostalCode(cleanName, landName, center ? center.lat : null, center ? center.lng : null);
 
@@ -737,7 +763,6 @@
                 }
             }
 
-            // Odrzucenie gmin leżących poza obrysem wielokąta powiatu
             if (layer && layer.feature) {
                 for (let [name, item] of entitiesMap.entries()) {
                     if (item.lat !== null && item.lon !== null) {
@@ -748,7 +773,6 @@
                 }
             }
 
-            // Odebranie kodu pocztowego dla powiatu
             currentCountyZip = await zipPromise;
             if (currentCountyZip) {
                 modalTitle.innerHTML = `📍 ${safeCountyName} <small style="font-size:12px; color:#00FF7F; font-weight:bold;">[${currentCountyZip}]</small> <small style="font-size:12px; color:#94a3b8; font-weight:normal;">(${safeLandName})</small>`;
@@ -759,7 +783,6 @@
             if (uniqueNames.length > 0) {
                 container.innerHTML = '';
 
-                // Wiersz całego powiatu
                 const wholeCountyStr = `Cały powiat (${cleanName})`;
                 const isCountyAdded = selectedMunicipalities.includes(wholeCountyStr);
                 const countyRow = document.createElement('div');
@@ -775,7 +798,6 @@
                 `;
                 container.appendChild(countyRow);
 
-                // Czyste nazwy gmin bez czekania na kody pojedynczych wiosek
                 uniqueNames.forEach(name => {
                     if (name === cleanName) return;
 
@@ -909,6 +931,7 @@
             currentCountyZip = "";
             document.getElementById('dabuRegionSearch').value = '';
             document.getElementById('landSelectFilter').value = '';
+            document.getElementById('userPhoneNumber').value = '';
             document.getElementById('countiesSearchList').classList.remove('is-open');
             closeCountyModal();
             updateCartDisplays();
@@ -924,17 +947,50 @@
             document.getElementById('countiesSearchList').classList.remove('is-open');
         });
 
-        // WYSYŁANIE WIADOMOŚCI SMS: KOD POCZTOWY I REJON W NAGŁÓWKU
-        function sendSmsQuote() {
+        // WYSYŁANIE WIADOMOŚCI SMS ORAZ ZAPIS DO ARKUSZA GOOGLE
+        async function sendSmsQuote() {
             if (selectedMunicipalities.length === 0) {
                 alert("Wybierz przynajmniej jedną pozycję z listy.");
                 return;
             }
-            const phoneNumber = "+48600812820";
-            
+
+            const clientPhone = document.getElementById('userPhoneNumber').value.trim();
+            if (!clientPhone) {
+                alert("Podaj swój numer telefonu, abyśmy mogli zapisać zapytanie i odpowiedzieć.");
+                document.getElementById('userPhoneNumber').focus();
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "⏳ Zapisywanie...";
+
+            // 1. Zapis do Arkusza Google w tle (jeśli podano URL)
+            if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes("TUTAJ_WKLEJ")) {
+                try {
+                    await fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Omija ograniczenia CORS w Apps Script
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            phone: clientPhone,
+                            region: currentCountyName,
+                            zip: currentCountyZip,
+                            items: selectedMunicipalities.join(', ')
+                        })
+                    });
+                } catch (err) {
+                    console.warn("Błąd zapisu do arkusza:", err);
+                }
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = "💬 Wyślij zapytanie";
+
+            // 2. Otwarcie aplikacji SMS
+            const myTargetPhone = "+48600812820";
             const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) || 
                           (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-                          
             const smsSeparator = isIOS ? "&" : "?";
 
             let rejonHeader = "";
@@ -943,9 +999,8 @@
                 rejonHeader = ` (Rejon: ${zipPart}${currentCountyName})`;
             }
 
-            const message = `Dzień dobry, proszę o wycenę i terminy dla${rejonHeader}: ${selectedMunicipalities.join(', ')}.`;
-            
-            window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
+            const message = `Dzień dobry, proszę o wycenę i terminy dla${rejonHeader}: ${selectedMunicipalities.join(', ')}. Mój tel: ${clientPhone}.`;
+            window.location.href = `sms:${myTargetPhone}${smsSeparator}body=${encodeURIComponent(message)}`;
         }
     </script>
 </body>
