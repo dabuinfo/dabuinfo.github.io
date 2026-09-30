@@ -521,7 +521,6 @@
 
         .hidden { display: none !important; }
 
-        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-icon,
         #goog-gt-tt,
@@ -971,7 +970,6 @@
         return ISOweekStart;
     }
 
-    // STAN RABATU STAŁEGO KLIENTA
     let activeLoyaltyDiscount = null;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -987,7 +985,6 @@
 
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
 
-        // OBSŁUGA STREFY STAŁEGO KLIENTA
         var regCustChk = document.getElementById('regularCustomerOption');
         var regCustDetails = document.getElementById('regularCustomerDetails');
         var clientIdInput = document.getElementById('regularClientIdInput');
@@ -1893,7 +1890,7 @@
         }
 
         // ========================================================
-        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR)
+        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR + 10 EUR)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2003,13 +2000,8 @@
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN, Pojedynczy = 25 PLN, EUR = 10 EUR
-            // Sprawdzenie czy wybrano korytarz wspólny (więcej niż 1 rejon w korytarzu)
-            let czyKorytarzWspolny = (selectedRegions.length > 1);
-
-            // STAWKI BAZOWE:
-            // W PLN: Korytarz = 40 PLN/dzień, Pojedynczy = 25 PLN/dzień
-            // W EUR: Stawka dzienna = 10 EUR/dzień
+            // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN/dzień, Pojedynczy = 25 PLN/dzień
+            // W EUR: Stawka dzienna = 10 EUR/dzień + 10 EUR za pakiet korytarza (5 dni = 60 EUR)
             let regularBaseReference;
             if (isEuro) {
                 regularBaseReference = 10.00;
@@ -2026,7 +2018,7 @@
                 totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
             } else {
                 if (isEuro) {
-                    // CENNIK EUR: 10 EUR za dzień + 10 EUR opłaty za korytarz wspólny (5 dni = 60 EUR)
+                    // CENNIK EUR: 10 EUR za dzień + 10 EUR za korytarz (5 dni = 60 EUR)
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
                     else if (totalDays >= 121) ratePerDay = 4.00;
@@ -2042,7 +2034,7 @@
                 } else {
                     // CENNIK PLN
                     if (czyKorytarzWspolny) {
-                        // KORYTARZ WSPÓLNY: 40 PLN / dzień
+                        // KORYTARZ WSPÓLNY: 40 PLN / dzień (1-5 dni)
                         if (totalDays >= 250) ratePerDay = 15.00;
                         else if (totalDays >= 181) ratePerDay = 18.00;
                         else if (totalDays >= 121) ratePerDay = 22.00;
@@ -2051,9 +2043,9 @@
                         else if (totalDays >= 31)  ratePerDay = 33.00;
                         else if (totalDays >= 16)  ratePerDay = 36.00;
                         else if (totalDays >= 6)   ratePerDay = 38.00; // rabat od 6 dni
-                        else                       ratePerDay = 40.00; // 1-5 dni = 40 PLN/dzień
+                        else                       ratePerDay = 40.00; // 1 do 5 dni = 40 PLN / dzień
                     } else {
-                        // POJEDYNCZY REJON: 25 PLN / dzień
+                        // POJEDYNCZY REJON: 25 PLN / dzień (1-5 dni)
                         if (totalDays >= 250) ratePerDay = 8.00;
                         else if (totalDays >= 181) ratePerDay = 10.00;
                         else if (totalDays >= 121) ratePerDay = 12.00;
@@ -2062,7 +2054,7 @@
                         else if (totalDays >= 31)  ratePerDay = 20.00;
                         else if (totalDays >= 16)  ratePerDay = 22.00;
                         else if (totalDays >= 6)   ratePerDay = 22.50; // rabat od 6 dni
-                        else                       ratePerDay = 25.00; // 1-5 dni = 25 PLN/dzień
+                        else                       ratePerDay = 25.00; // 1 do 5 dni = 25 PLN / dzień
                     }
                     totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                 }
@@ -2801,7 +2793,6 @@
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
 
-            // Asynchroniczny zapis zamówienia w Arkuszu Google
             var btnSubmit = document.getElementById('btnSubmit');
             var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
             if (btnSubmit) {
@@ -2870,7 +2861,6 @@
 //]]>
 </script>
 
-<!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA GOOGLE W TLE -->
 <script>
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
