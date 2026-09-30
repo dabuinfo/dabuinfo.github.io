@@ -817,6 +817,24 @@
                     </div>
                 </div>
 
+                <!-- BOKS DLA STAŁYCH KLIENTÓW -->
+                <div id="regularCustomerBox" style="background: rgba(46, 204, 113, 0.08); border: 1px dashed rgba(46, 204, 113, 0.4); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
+                    <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer;">
+                        <div class="region-left-side">
+                            <input type="checkbox" id="regularCustomerOption" style="accent-color: var(--primary-accent); width: 19px; height: 19px;" />
+                            <span style="color: #2ecc71; font-weight: bold; font-size: 0.95rem;">
+                                ⭐ Jestem stałym klientem (zamawiam regularnie – prośba o rabat lojalnościowy)
+                            </span>
+                        </div>
+                    </label>
+                    <div id="regularCustomerDetails" style="display: none; margin-top: 10px; margin-left: 31px;">
+                        <p style="font-size: 0.82rem; color: #cbd5e1; margin: 0 0 6px 0; line-height: 1.4;">
+                            Doceniamy stałą współpracę! Podaj dane, po których możemy zweryfikować poprzednie zamówienia (np. nr telefonu, e-mail lub imię i miejscowość):
+                        </p>
+                        <input type="text" id="regularCustomerVerification" class="client-input" placeholder="Wpisz np. nr tel. z poprzedniego zamówienia lub 'zamawiam co tydzień'..." style="margin-bottom: 0; padding: 8px 12px; font-size: 0.88rem; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
+                    </div>
+                </div>
+
                 <div id="orderSummaryBreakdown" style="display: none; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; margin: 20px 0 10px 0; font-size: 0.9rem; color: #cbd5e1;">
                     <div id="orderSummaryBreakdownHeader" style="font-weight: bold; color: #93c5fd; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; font-size: 0.95rem;">
                         📋 Twoje zestawienie wg rejonów i tygodni:
@@ -956,6 +974,18 @@
                     var parsed = extractPointData(e);
                     if (parsed) applySelectedPoint(parsed);
                 });
+            });
+        }
+
+        // Obsługa boksu stałego klienta
+        var regCustChk = document.getElementById('regularCustomerOption');
+        var regCustDetails = document.getElementById('regularCustomerDetails');
+        if (regCustChk) {
+            regCustChk.addEventListener('change', function() {
+                if (regCustDetails) {
+                    regCustDetails.style.display = this.checked ? 'block' : 'none';
+                }
+                updatePriceDisplay();
             });
         }
         
@@ -2084,6 +2114,8 @@
             let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             let calc = calculateActiveDaysAndPrice();
+            let regCustChk = document.getElementById('regularCustomerOption');
+            let isRegular = regCustChk && regCustChk.checked;
 
             var cashBox = document.getElementById('cashOptionBox');
             if (cashBox) {
@@ -2121,11 +2153,17 @@
                 }
             }
 
+            let regularCustomerBadge = isRegular ? ' ⭐ (STAŁY KLIENT)' : '';
+
             if (hasOnlySpecial) {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)";
+                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)" + regularCustomerBadge;
                 if (svgPriceSub) svgPriceSub.textContent = 'indywidualna';
                 if (configPrice) configPrice.textContent = "Wycena indywidualna";
-                if (configSubtitle) configSubtitle.textContent = "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
+                if (configSubtitle) {
+                    configSubtitle.textContent = isRegular 
+                        ? "Wybrano rejon zastrzeżony – prośba o rabat stałego klienta zostanie uwzględniona w wycenie" 
+                        : "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
+                }
                 renderOrderLiveBreakdown();
                 return;
             }
@@ -2134,29 +2172,30 @@
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
                 let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
+                let regularNoticeSub = isRegular ? ' | <b style="color:#2ecc71;">Uwzględniono prośbę o rabat stałego klienta</b>' : '';
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}${regularCustomerBadge}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})`;
+                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${regularNoticeSub}`;
                 } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
+                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}${regularCustomerBadge}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień: ${calc.ratePerDay.toFixed(2)} ${calc.currency})${regularNoticeSub}`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka za dzień: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>`;
+                            configSubtitle.innerHTML = `Stawka za dzień: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>${regularNoticeSub}`;
                         }
                     }
                 }
             } else {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
+                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE" + regularCustomerBadge;
                 if (svgPriceSub) svgPriceSub.textContent = "automatyczna";
                 if (configPrice) configPrice.textContent = "Wycena dynamiczna";
-                if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
+                if (configSubtitle) configSubtitle.textContent = isRegular ? "Zaznacz opcje poniżej – zgłoszono status stałego klienta" : "Zaznacz opcje poniżej i wyślij zamówienie";
             }
 
             renderOrderLiveBreakdown();
@@ -2253,10 +2292,9 @@
                 }
 
                 // OBSŁUGA REJONÓW SPECJALNYCH:
-                // Są wyszarzone tak samo jak brakujące w bazie, ale ich checkbox pozostaje aktywny i można je dodać do koszyka!
                 if (isSpecial) {
                     label.style.opacity = chk.checked ? '1' : '0.5';
-                    chk.disabled = false; // Checkbox zawsze aktywny do koszyka
+                    chk.disabled = false;
                 } else {
                     label.style.opacity = isAvailable ? '1' : '0.45';
                     chk.disabled = !isAvailable;
@@ -2265,7 +2303,6 @@
                     }
                 }
 
-                // Generowanie odpowiednich przycisków akcji
                 let existingAskBtn = label.querySelector('.ask-region-btn');
                 let existingSpecialBtn = label.querySelector('.special-region-btn');
 
@@ -2429,7 +2466,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
                 if (e.target.id === 'pickupOption') {
                     var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
                     if (e.target.checked && cashRadio) {
@@ -2485,6 +2522,20 @@
                 body += "\n";
             } else {
                 body += "PODSUMOWANIE CENY: Wycena indywidualna (pakiet zawiera rejony zastrzeżone bez przypisanego tygodnia)\n\n";
+            }
+
+            // DOŁĄCZENIE INFORMACJI O STATUSIE STAŁEGO KLIENTA
+            var isRegular = document.getElementById('regularCustomerOption')?.checked;
+            var regularProof = document.getElementById('regularCustomerVerification')?.value.trim();
+
+            if (isRegular) {
+                body += "--------------------------------------------------------\n";
+                body += "⭐ STATUS: STAŁY KLIENT (PROŚBA O RABAT LOJALNOŚCIOWY)\n";
+                body += "- Klient deklaruje regularne zamówienia i zgłasza prośbę o rabat stałego klienta.\n";
+                if (regularProof) {
+                    body += "- Dane weryfikacyjne z poprzednich zleceń: " + regularProof + "\n";
+                }
+                body += "--------------------------------------------------------\n\n";
             }
             
             body += "Preferowana płatność / Identyfikator: " + nr + "\n\n";
@@ -2626,6 +2677,10 @@
             }
 
             var subject = hasOnlySpecial ? "[#" + nr + "] ZAPYTANIE O WYCENĘ INDYWIDUALNĄ PRO" : "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
+            if (isRegular) {
+                subject = "[STAŁY KLIENT ⭐] " + subject;
+            }
+
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
             
