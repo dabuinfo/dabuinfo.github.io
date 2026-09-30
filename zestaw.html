@@ -593,7 +593,7 @@
             <div class="strategy-container">
                 <div class="strategy-card">
                     <div class="strategy-title">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice">Wycena dynamiczna</div>
+                    <div class="price-tag-large" id="configPrice">Wycena automatyczna</div>
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
@@ -1893,7 +1893,7 @@
         }
 
         // ========================================================
-        // KALKULACJA - POPRAWIONA LOGIKA SĄSIEDZTW I TRASY
+        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -1963,8 +1963,7 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            // Grupowanie w korytarze tras (usuwamy sztuczny limit 3 rejonów!)
-            // Jeśli rejony ze sobą graniczą / są po trasie, tworzą jeden korytarz wyjazdowy
+            // Grupowanie w korytarze tras bez sztucznego limitu 3 rejonów
             let unassigned = Object.keys(regionDatesMap);
             let clusters = [];
 
@@ -2002,9 +2001,16 @@
 
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
+            let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            // STAWKI BAZOWE: 25 PLN / 10 EUR
-            let regularBaseReference = isEuro ? 10.00 : 25.00;
+            // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN, Pojedynczy = 25 PLN, EUR = 10 EUR
+            let regularBaseReference;
+            if (isEuro) {
+                regularBaseReference = 10.00;
+            } else {
+                regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
+            }
+
             let ratePerDay;
             let totalPriceNetto;
 
@@ -2020,18 +2026,33 @@
                     else if (totalDays >= 51)  ratePerDay = 6.00;
                     else if (totalDays >= 31)  ratePerDay = 7.00;
                     else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00; // 6 dni = 10% rabatu (stawka 9 EUR)
-                    else                       ratePerDay = 10.00;
+                    else if (totalDays >= 6)   ratePerDay = 9.00;  // Rabat dopiero od 6 dni
+                    else                       ratePerDay = 10.00; // 1 do 5 dni = stawka bazowa 10 EUR
                 } else {
-                    if (totalDays >= 250) ratePerDay = 8.00;
-                    else if (totalDays >= 181) ratePerDay = 10.00;
-                    else if (totalDays >= 121) ratePerDay = 12.00;
-                    else if (totalDays >= 81)  ratePerDay = 15.00;
-                    else if (totalDays >= 51)  ratePerDay = 18.00;
-                    else if (totalDays >= 31)  ratePerDay = 20.00;
-                    else if (totalDays >= 16)  ratePerDay = 22.00;
-                    else if (totalDays >= 6)   ratePerDay = 22.50; // 6 dni = 10% rabatu
-                    else                       ratePerDay = 25.00;
+                    // CENNIK PLN
+                    if (czyKorytarzWspolny) {
+                        // KORYTARZ WSPÓLNY: 40 PLN / dzień (1-5 dni trasy)
+                        if (totalDays >= 250) ratePerDay = 15.00;
+                        else if (totalDays >= 181) ratePerDay = 18.00;
+                        else if (totalDays >= 121) ratePerDay = 22.00;
+                        else if (totalDays >= 81)  ratePerDay = 26.00;
+                        else if (totalDays >= 51)  ratePerDay = 30.00;
+                        else if (totalDays >= 31)  ratePerDay = 33.00;
+                        else if (totalDays >= 16)  ratePerDay = 36.00;
+                        else if (totalDays >= 6)   ratePerDay = 38.00; // Rabat od 6 dni
+                        else                       ratePerDay = 40.00; // 1 do 5 dni = 40 PLN / dzień
+                    } else {
+                        // POJEDYNCZY REJON: 25 PLN / dzień (1-5 dni trasy)
+                        if (totalDays >= 250) ratePerDay = 8.00;
+                        else if (totalDays >= 181) ratePerDay = 10.00;
+                        else if (totalDays >= 121) ratePerDay = 12.00;
+                        else if (totalDays >= 81)  ratePerDay = 15.00;
+                        else if (totalDays >= 51)  ratePerDay = 18.00;
+                        else if (totalDays >= 31)  ratePerDay = 20.00;
+                        else if (totalDays >= 16)  ratePerDay = 22.00;
+                        else if (totalDays >= 6)   ratePerDay = 22.50; // Rabat od 6 dni
+                        else                       ratePerDay = 25.00; // 1 do 5 dni = 25 PLN / dzień
+                    }
                 }
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
@@ -2281,7 +2302,7 @@
             } else {
                 if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
                 if (svgPriceSub) svgPriceSub.textContent = "automatyczna";
-                if (configPrice) configPrice.textContent = "Wycena dynamiczna";
+                if (configPrice) configPrice.textContent = "Wycena automatyczna";
                 if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
             }
 
