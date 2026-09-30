@@ -555,7 +555,7 @@
 
     </div>
 
-    <!-- Stały pasek zamówień na dole strony z wyborem płatności i obsługą PayPal Gross-up -->
+    <!-- Stały pasek zamówień na dole strony -->
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
             ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
@@ -567,15 +567,9 @@
         <!-- WYBÓR METODY PŁATNOŚCI -->
         <div class="payment-select-group">
             <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
-            <label class="payment-label">
-                <input type="radio" name="cartPaymentMethod" value="BLIK" checked> BLIK
-            </label>
-            <label class="payment-label">
-                <input type="radio" name="cartPaymentMethod" value="IBAN"> Przelew (IBAN)
-            </label>
-            <label class="payment-label">
-                <input type="radio" name="cartPaymentMethod" value="PAYPAL"> PayPal
-            </label>
+            <span id="payment-options-container" style="display:inline-flex; gap: 10px; align-items:center;">
+                <!-- Opcje generowane dynamicznie wg kraju -->
+            </span>
         </div>
 
         <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
@@ -594,7 +588,6 @@
             d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"]
         };
 
-        // Algorytm obliczania daty Wielkanocy i świąt w danym roku (wspiera 2026, 2027 i kolejne)
         function getGermanHolidaysForYear(y) {
             const holidays = {};
 
@@ -603,7 +596,6 @@
                 holidays[k] = { name, type };
             }
 
-            // Święta stałe
             addH(0, 1, "Nowy Rok", "national");
             addH(0, 6, "Trzech Króli", "regional");
             addH(2, 8, "Dzień Kobiet", "regional");
@@ -615,7 +607,6 @@
             addH(11, 25, "1. Dzień Świąt Bożego Narodzenia", "national");
             addH(11, 26, "2. Dzień Świąt Bożego Narodzenia", "national");
 
-            // Wielkanoc (Meeus/Jones/Butcher)
             const a = y % 19;
             const b = Math.floor(y / 100);
             const c = y % 100;
@@ -653,7 +644,6 @@
             const corpusChristi = offsetEaster(60);
             addH(corpusChristi.getMonth(), corpusChristi.getDate(), "Boże Ciało", "regional");
 
-            // Buß- und Bettag (środa przed 23 listopada)
             const nov23 = new Date(y, 10, 23);
             let dayOfWeek = nov23.getDay();
             let diff = dayOfWeek - 3;
@@ -714,12 +704,29 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
-            // CENNIK BAZOWY NETTO: 40 PLN / 10 EUR
-            const unitRateNetto = isPolish ? 40.00 : 10.00;
+            // 25 PLN w Polsce, 10 EUR za granicą
+            const unitRateNetto = isPolish ? 25.00 : 10.00;
             const currencyUnit = isPolish ? "PLN" : "€";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
+
+            // Dynamiczne metody płatności – ukrywamy BLIK dla klientów spoza PL
+            const paymentOptionsContainer = document.getElementById('payment-options-container');
+            if (paymentOptionsContainer) {
+                if (isPolish) {
+                    paymentOptionsContainer.innerHTML = `
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="BLIK" checked> BLIK</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN"> Przelew (IBAN)</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL"> PayPal</label>
+                    `;
+                } else {
+                    paymentOptionsContainer.innerHTML = `
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL" checked> PayPal</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN"> Überweisung (IBAN)</label>
+                    `;
+                }
+            }
 
             const globalOrderBadge = document.getElementById('global-order-id');
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
@@ -729,7 +736,6 @@
             if (!grid) return;
             grid.innerHTML = '';
 
-            // Wyliczamy kalendarz na najbliższe 6 miesięcy
             const monthsCount = 6;
             const holidayCache = {};
 
@@ -865,7 +871,8 @@
                 const totalTermsCount = globalCart.size;
                 const totalNetto = Math.round((totalTermsCount * unitRateNetto) * 100) / 100;
 
-                const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || "BLIK";
+                const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+                const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
                 const isPaypal = (selectedPayment === "PAYPAL");
 
                 let finalAmount = totalNetto;
@@ -913,7 +920,9 @@
                 if (calc.isPaypal && calc.paypalFee > 0) {
                     cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}`;
                     cartFeeNoteEl.style.display = "inline";
-                    cartFeeNoteEl.textContent = `(netto: ${calc.totalNetto.toFixed(2)} ${currencyUnit} + opłata PayPal: ${calc.paypalFee.toFixed(2)} ${currencyUnit})`;
+                    cartFeeNoteEl.textContent = isPolish
+                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN)`
+                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €)`;
                 } else {
                     cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}`;
                     cartFeeNoteEl.style.display = "none";
@@ -936,12 +945,12 @@
                         if (calc.isPaypal) {
                             paymentInfoText += ` (Łącznie z prowizją PayPal: ${calc.finalAmount.toFixed(2)} PLN, kwota netto: ${calc.totalNetto.toFixed(2)} PLN). PayPal: ewabu74@gmail.com`;
                         } else if (calc.paymentMethod === 'BLIK') {
-                            paymentInfoText += ` na nr 733035301`;
+                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na BLIK nr 733035301)`;
                         } else {
-                            paymentInfoText += ` IBAN: PL33 1020 5297 0000 1702 0290 9323`;
+                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nWybrane terminy:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
@@ -952,10 +961,10 @@
                         if (calc.isPaypal) {
                             paymentInfoText += ` (Inkl. PayPal-Gebühr: ${calc.finalAmount.toFixed(2)} €, Netto: ${calc.totalNetto.toFixed(2)} €). PayPal: ewabu74@gmail.com`;
                         } else {
-                            paymentInfoText += ` IBAN: PL33 1020 5297 0000 1702 0290 9323`;
+                            paymentInfoText += ` (Betrag: ${calc.finalAmount.toFixed(2)} € auf IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
                         };
@@ -968,9 +977,7 @@
                 }
             }
 
-            document.querySelectorAll('input[name="cartPaymentMethod"]').forEach(r => {
-                r.addEventListener('change', refreshCartUI);
-            });
+            document.getElementById('payment-options-container').addEventListener('change', refreshCartUI);
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
@@ -1019,6 +1026,7 @@
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/(?=📍)/g);
 
+                                // Czysty nagłówek bez podawania cen jednostkowych w PLN dla obcokrajowców
                                 let headerHint = `
                                     <div style="
                                         background: #141414;
@@ -1033,9 +1041,6 @@
                                                 <span style="font-size: 1.15rem;">📋</span>
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
-                                            <div class="notranslate" translate="no" style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.35); color: #2ecc71; padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
-                                                ⚡ ${unitRateNetto} ${currencyUnit} netto / rejon za dzień
-                                            </div>
                                         </div>
 
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0;">
@@ -1048,19 +1053,11 @@
                                                 <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Użyj <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong> dla powiatu.</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Zamów</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Wybierz dogodną płatność (BLIK, IBAN lub PayPal z prowizją) na dolnym pasku.</div>
+                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Podsumuj</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Sprawdź wyliczoną kwotę i zamów na dolnym pasku koszyka.</div>
                                             </div>
                                         </div>
 
-                                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #aaa;">
-                                            <div>
-                                                💳 Opcje wpłaty: <strong class="notranslate" translate="no" style="color: #fff;">BLIK (+48 733 035 301)</strong>, przelew <strong>IBAN</strong> lub <strong>PayPal</strong>
-                                            </div>
-                                            <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
-                                        </div>
-
-                                        <!-- PASEK WYSZUKIWANIA I PRZEWIJANIA DO REJONU -->
                                         <div style="display: flex; gap: 8px; margin-top: 14px;">
                                             <input 
                                                 type="text" 
@@ -1287,7 +1284,6 @@
                                     });
                                 });
 
-                                // Logika wyszukiwania i płynnego przewijania do wpisanego rejonu
                                 function scrollToRegion(query) {
                                     if (!query) return;
                                     const cleanQuery = query.toLowerCase().trim();
