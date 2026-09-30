@@ -13,15 +13,15 @@
       gtag('config', 'G-YQTCG26T1B');
     </script>
     
-    <meta name="description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów wielkogabarytowych (Sperrmüll) w Niemczech na rok 2026. Sprawdź harmonogramy dla ponad 100 rejonów w Europie.">
-    <meta name="keywords" content="terminy wystawek, rozpiski, plany, harmonogramy 2026, gabaryty Niemcy, Sperrmüll Termine, Sperrmüllkalender, bulk waste collection Germany, termíny svozu, krupni otpad, lomtalanítás idopontok">
+    <meta name="description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów wielkogabarytowych (Sperrmüll) w Niemczech. Sprawdź harmonogramy dla ponad 100 rejonów w Europie.">
+    <meta name="keywords" content="terminy wystawek, rozpiski, plany, harmonogramy 2026, harmonogramy 2027, gabaryty Niemcy, Sperrmüll Termine, Sperrmüllkalender, bulk waste collection Germany, termíny svozu, krupni otpad, lomtalanítás idopontok">
     
     <!-- Link kanoniczny -->
     <link rel="canonical" href="https://dabu-info.com/kalendarz.html">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dabu-info.com/kalendarz.html">
-    <meta property="og:title" content="dabu-info - Terminy Wystawek 2026">
+    <meta property="og:title" content="dabu-info - Terminy Wystawek">
     <meta property="og:description" content="Najdokładniejsze terminy wystawek, plany oraz rozpiski wywozu odpadów (Sperrmüll) w Niemczech.">
     
     <meta property="og:image" content="https://dabu-info.com/dabu-infologo.png">
@@ -272,15 +272,23 @@
         font-size: 0.9375rem; 
         line-height: 1.55; 
         border-left: 4px solid transparent; 
-        transition: all 0.2s ease; 
+        transition: all 0.3s ease; 
         display: flex;
         flex-direction: column;
         gap: 10px;
+        scroll-margin-top: 25px;
     }
     .zebra-row:nth-child(even) { background-color: #1a1a1a; }
     .zebra-row:hover { background-color: #282828; border-left-color: #2ecc71; }
     .zebra-row strong { color: #fff; font-size: 1.025rem; font-weight: 700; }
     
+    /* Efekt podświetlenia znalezionego rejonu */
+    .highlight-target {
+        border-left: 4px solid #f59e0b !important;
+        background-color: #2e2619 !important;
+        box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
+    }
+
     .region-checkbox {
         width: 22px;
         height: 22px;
@@ -495,7 +503,7 @@
                         <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek</h2>
-                    <span class="year-badge notranslate" translate="no">DE 2026</span>
+                    <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026/2027</span>
                 </div>
                 
                 <div class="hero-features-grid" id="cal-hint">
@@ -583,30 +591,88 @@
         const calData = {
             wk: "Ty",
             m: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
-            d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"],
-            h: { 
-                "0-1": "Nowy Rok", "0-6": "Trzech Króli", "2-8": "Dzień Kobiet", "3-3": "Wielki Piątek", 
-                "3-6": "Poniedziałek Wielkanocny", "4-1": "Święto Pracy", "4-14": "Wniebowstąpienie", 
-                "4-25": "Zielone Świątki", "5-4": "Boże Ciało", "7-15": "Wniebowzięcie NMP", 
-                "9-3": "Dzień Jedności", "9-31": "Święto Reformacji", "10-1": "Wszystkich Świętych", 
-                "10-18": "Dzień Pokuty", "11-25": "1. Dzień Świąt", "11-26": "2. Dzień Świąt" 
-            }
+            d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"]
         };
 
-        const holidayTypes = {
-            "0-1": "national", "0-6": "regional", "2-8": "regional", "3-3": "national", "3-6": "national",
-            "4-1": "national", "4-14": "national", "4-25": "national", "5-4": "regional", "7-15": "regional",
-            "9-3": "national", "9-31": "regional", "10-1": "regional", "10-18": "regional", "11-25": "national", "11-26": "national"
-        };
+        // Algorytm obliczania daty Wielkanocy i świąt w danym roku (wspiera 2026, 2027 i kolejne)
+        function getGermanHolidaysForYear(y) {
+            const holidays = {};
+
+            function addH(mZero, day, name, type) {
+                const k = `${y}-${String(mZero + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                holidays[k] = { name, type };
+            }
+
+            // Święta stałe
+            addH(0, 1, "Nowy Rok", "national");
+            addH(0, 6, "Trzech Króli", "regional");
+            addH(2, 8, "Dzień Kobiet", "regional");
+            addH(4, 1, "Święto Pracy", "national");
+            addH(7, 15, "Wniebowzięcie NMP", "regional");
+            addH(9, 3, "Dzień Jedności Niemiec", "national");
+            addH(9, 31, "Święto Reformacji", "regional");
+            addH(10, 1, "Wszystkich Świętych", "regional");
+            addH(11, 25, "1. Dzień Świąt Bożego Narodzenia", "national");
+            addH(11, 26, "2. Dzień Świąt Bożego Narodzenia", "national");
+
+            // Wielkanoc (Meeus/Jones/Butcher)
+            const a = y % 19;
+            const b = Math.floor(y / 100);
+            const c = y % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            const easterDate = new Date(y, month, day);
+
+            function offsetEaster(days) {
+                const res = new Date(easterDate);
+                res.setDate(res.getDate() + days);
+                return res;
+            }
+
+            const goodFriday = offsetEaster(-2);
+            addH(goodFriday.getMonth(), goodFriday.getDate(), "Wielki Piątek", "national");
+
+            const easterMonday = offsetEaster(1);
+            addH(easterMonday.getMonth(), easterMonday.getDate(), "Poniedziałek Wielkanocny", "national");
+
+            const ascension = offsetEaster(39);
+            addH(ascension.getMonth(), ascension.getDate(), "Wniebowstąpienie", "national");
+
+            const pentecostMonday = offsetEaster(50);
+            addH(pentecostMonday.getMonth(), pentecostMonday.getDate(), "Zielone Świątki", "national");
+
+            const corpusChristi = offsetEaster(60);
+            addH(corpusChristi.getMonth(), corpusChristi.getDate(), "Boże Ciało", "regional");
+
+            // Buß- und Bettag (środa przed 23 listopada)
+            const nov23 = new Date(y, 10, 23);
+            let dayOfWeek = nov23.getDay(); // 0 to Nd, 3 to Śr
+            let diff = dayOfWeek - 3;
+            if (diff <= 0) diff += 7;
+            const bussTag = new Date(nov23);
+            bussTag.setDate(nov23.getDate() - diff);
+            addH(bussTag.getMonth(), bussTag.getDate(), "Dzień Pokuty i Modlitwy", "regional");
+
+            return holidays;
+        }
 
         const holidayRegionalDescriptions = {
-            "cal-info-l1": "<strong>Trzech Króli (06.01):</strong> Normalny dzień roboczy z wyjątkiem BW, BY, ST.",
-            "cal-info-l2": "<strong>Dzień Kobiet (08.03):</strong> Normalny dzień roboczy z wyjątkiem BE, MV.",
-            "cal-info-l3": "<strong>Boże Ciało (04.06):</strong> Brak dnia wolnego w północnych i wschodnich landach.",
-            "cal-info-l4": "<strong>Wniebowzięcie NMP (15.08):</strong> Dzień roboczy niemal wszędzie, z wyjątkiem SL i gmin w BY.",
-            "cal-info-l5": "<strong>Święto Reformacji (31.10):</strong> Brak wolnego na zachodzie i południu kraju.",
-            "cal-info-l6": "<strong>Wszystkich Świętych (01.11):</strong> Dzień roboczy na północy i wschodzie kraju.",
-            "cal-info-l7": "<strong>Dzień Pokuty (18.11):</strong> Normalny dzień roboczy w 15 z 16 landów (tylko w Saksonii wolne)."
+            "Trzech Króli": "<strong>Trzech Króli (06.01):</strong> Normalny dzień roboczy z wyjątkiem BW, BY, ST.",
+            "Dzień Kobiet": "<strong>Dzień Kobiet (08.03):</strong> Normalny dzień roboczy z wyjątkiem BE, MV.",
+            "Boże Ciało": "<strong>Boże Ciało:</strong> Brak dnia wolnego w północnych i wschodnich landach.",
+            "Wniebowzięcie NMP": "<strong>Wniebowzięcie NMP (15.08):</strong> Dzień roboczy niemal wszędzie, z wyjątkiem Saarlandu i katolickich gmin w Bawarii.",
+            "Święto Reformacji": "<strong>Święto Reformacji (31.10):</strong> Dzień wolny głównie na północy i wschodzie kraju.",
+            "Wszystkich Świętych": "<strong>Wszystkich Świętych (01.11):</strong> Dzień roboczy na północy i wschodzie kraju (wolne m.in. w NRW, BW, BY, RP, SL).",
+            "Dzień Pokuty i Modlitwy": "<strong>Dzień Pokuty i Modlitwy:</strong> Normalny dzień roboczy w 15 z 16 landów (wolne tylko w Saksonii)."
         };
 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
@@ -658,58 +724,95 @@
             const globalOrderBadge = document.getElementById('global-order-id');
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
 
-            const year = 2026;
             const now = new Date();
-            let currentMonthIdx = (now.getFullYear() === year) ? now.getMonth() : (now.getFullYear() > year ? 11 : 0);
             const grid = document.getElementById('calendar-grid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            for (let m = currentMonthIdx; m <= 11; m++) {
+            // Wyliczamy kalendarz na najbliższe 6 miesięcy
+            const monthsCount = 6;
+            const holidayCache = {};
+
+            const startYear = now.getFullYear();
+            const startMonth = now.getMonth();
+
+            // Dynamiczny badge lat w nagłówku
+            const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
+            const yearsBadge = document.getElementById('header-years-badge');
+            if (yearsBadge) {
+                if (startYear === endMonthDate.getFullYear()) {
+                    yearsBadge.textContent = `DE ${startYear}`;
+                } else {
+                    yearsBadge.textContent = `DE ${startYear}/${endMonthDate.getFullYear()}`;
+                }
+            }
+
+            for (let i = 0; i < monthsCount; i++) {
+                let targetDate = new Date(startYear, startMonth + i, 1);
+                let curY = targetDate.getFullYear();
+                let curM = targetDate.getMonth();
+
+                if (!holidayCache[curY]) {
+                    holidayCache[curY] = getGermanHolidaysForYear(curY);
+                }
+
+                let isCurrentMonthNow = (now.getFullYear() === curY && now.getMonth() === curM);
+
                 let table = document.createElement('table');
-                table.className = 'month-table notranslate' + (m === currentMonthIdx ? ' current-month' : '');
+                table.className = 'month-table notranslate' + (isCurrentMonthNow ? ' current-month' : '');
                 table.setAttribute('translate', 'no');
                 
+                let monthTitleDisplay = `${calData.m[curM]} <span style="font-size:0.75rem; color:#aaa; font-weight:normal;">${curY}</span>`;
+
                 let header = `<thead class="notranslate" translate="no">
-                    <tr><th colspan="8" class="month-title notranslate" translate="no">${calData.m[m]}</th></tr>
+                    <tr><th colspan="8" class="month-title notranslate" translate="no">${monthTitleDisplay}</th></tr>
                     <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
                 </thead>`;
                 
-                let firstDay = new Date(year, m, 1).getDay();
-                let daysInMonth = new Date(year, m + 1, 0).getDate();
+                let firstDay = new Date(curY, curM, 1).getDay();
+                let daysInMonth = new Date(curY, curM + 1, 0).getDate();
                 let startingDay = firstDay === 0 ? 6 : firstDay - 1; 
                 
                 let body = '<tbody class="notranslate" translate="no"><tr class="notranslate" translate="no">';
-                let firstDateForWeek = new Date(year, m, 1);
+                let firstDateForWeek = new Date(curY, curM, 1);
                 
                 let wNum = getISOWeekNumber(firstDateForWeek);
                 body += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
                 
                 let dayCount = 0;
-                for (let i = 0; i < startingDay; i++) { body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; dayCount++; }
+                for (let j = 0; j < startingDay; j++) { 
+                    body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; 
+                    dayCount++; 
+                }
                 
                 for (let d = 1; d <= daysInMonth; d++) {
                     if (dayCount % 7 === 0 && dayCount !== 0) {
                         body += '</tr><tr class="notranslate" translate="no">';
-                        let currentDayForWeek = new Date(year, m, d);
+                        let currentDayForWeek = new Date(curY, curM, d);
                         let wNumRow = getISOWeekNumber(currentDayForWeek);
                         body += `<td class="week-number notranslate" translate="no" data-week="${wNumRow}">${wNumRow}</td>`;
                     }
                     
-                    let key = `${m}-${d}`;
-                    let isHoliday = holidayTypes[key];
-                    let hName = isHoliday ? (calData.h[key] || "") : "";
-                    let hClass = "";
-                    if (isHoliday === "national") hClass = "holiday-national has-holiday";
-                    else if (isHoliday === "regional") hClass = "holiday-regional has-holiday";
-                    
-                    let isToday = (year === now.getFullYear() && m === now.getMonth() && d === now.getDate()) ? 'today' : '';
-                    let mStr = String(m + 1).padStart(2, '0');
+                    let mStr = String(curM + 1).padStart(2, '0');
                     let dStr = String(d).padStart(2, '0');
-                    body += `<td class="${hClass} ${isToday} clickable-day notranslate" translate="no" data-holiday="${hName}" data-date="${year}-${mStr}-${dStr}">${d}</td>`;
+                    let dateKey = `${curY}-${mStr}-${dStr}`;
+
+                    let holidayObj = holidayCache[curY][dateKey];
+                    let hName = holidayObj ? holidayObj.name : "";
+                    let hClass = "";
+                    if (holidayObj) {
+                        if (holidayObj.type === "national") hClass = "holiday-national has-holiday";
+                        else if (holidayObj.type === "regional") hClass = "holiday-regional has-holiday";
+                    }
+                    
+                    let isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
+                    body += `<td class="${hClass} ${isToday} clickable-day notranslate" translate="no" data-holiday="${hName}" data-date="${dateKey}">${d}</td>`;
                     dayCount++;
                 }
-                while (dayCount % 7 !== 0) { body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; dayCount++; }
+                while (dayCount % 7 !== 0) { 
+                    body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; 
+                    dayCount++; 
+                }
                 body += '</tr></tbody>';
                 table.innerHTML = header + body;
                 grid.appendChild(table);
@@ -720,32 +823,33 @@
                 let existingInfo = document.querySelector('.calendar-info');
                 if (existingInfo) existingInfo.remove();
 
-                const regionalHolidaysInfo = [
-                    { m: 0, d: 6, key: "cal-info-l1" }, { m: 2, d: 8, key: "cal-info-l2" },
-                    { m: 5, d: 4, key: "cal-info-l3" }, { m: 7, d: 15, key: "cal-info-l4" },
-                    { m: 9, d: 31, key: "cal-info-l5" }, { m: 10, d: 1, key: "cal-info-l6" },
-                    { m: 10, d: 18, key: "cal-info-l7" }
-                ];
-                
-                let closestKey = null;
+                // Znajdź najbliższe święto regionalne w generowanym oknie
+                let closestRegionalDesc = "<strong>Święta Regionalne:</strong> Sprawdź wykaz dla poszczególnych landów.";
                 let minDiff = Infinity;
-                
-                for (let rh of regionalHolidaysInfo) {
-                    let hDate = new Date(year, rh.m, rh.d, 23, 59, 59);
-                    let diff = hDate - now;
-                    if (diff >= 0 && diff < minDiff) { 
-                        minDiff = diff; 
-                        closestKey = rh.key; 
+
+                for (let yr in holidayCache) {
+                    for (let dKey in holidayCache[yr]) {
+                        let h = holidayCache[yr][dKey];
+                        if (h.type === "regional") {
+                            let p = dKey.split('-');
+                            let hDate = new Date(p[0], p[1] - 1, p[2], 23, 59, 59);
+                            let diff = hDate - now;
+                            if (diff >= 0 && diff < minDiff) {
+                                minDiff = diff;
+                                if (holidayRegionalDescriptions[h.name]) {
+                                    closestRegionalDesc = holidayRegionalDescriptions[h.name];
+                                }
+                            }
+                        }
                     }
                 }
-                if (!closestKey) closestKey = "cal-info-l7";
 
                 const calInfoHTML = `
                     <div class="calendar-info">
                         <h3>ℹ️ Informacje o zasięgu najbliższych świąt</h3>
                         <p><strong>Święta Narodowe</strong> są dniami wolnymi w <strong>całych Niemczech</strong>.</p>
-                        <p><strong>Święta Regionalne</strong> obowiązują tylko w określonych landach. Sprawdź, gdzie najbliższe święto regionalne w 2026 roku <strong>NIE JEST</strong> dniem wolnym:</p>
-                        <ul><li>${holidayRegionalDescriptions[closestKey]}</li></ul>
+                        <p><strong>Święta Regionalne</strong> obowiązują tylko w określonych landach. Sprawdź status najbliższego święta:</p>
+                        <ul><li>${closestRegionalDesc}</li></ul>
                     </div>
                 `;
                 wrapper.insertAdjacentHTML('beforeend', calInfoHTML);
@@ -956,6 +1060,28 @@
                                                 💳 Opcje wpłaty: <strong class="notranslate" translate="no" style="color: #fff;">BLIK (+48 733 035 301)</strong>, przelew <strong>IBAN</strong> lub <strong>PayPal</strong>
                                             </div>
                                             <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
+                                        </div>
+
+                                        <!-- PASEK SZYBKIEGO WYSZUKIWANIA I SKOKU DO REJONU -->
+                                        <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+                                            <input 
+                                                type="text" 
+                                                id="region-search-input" 
+                                                placeholder="Wpisz nazwę rejonu (np. Alzey-Worms)..." 
+                                                style="flex: 1; min-width: 200px; padding: 9px 12px; background: #1c1c1c; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none;"
+                                            />
+                                            <button 
+                                                type="button" 
+                                                id="btn-find-region" 
+                                                style="background: #007bff; border: none; color: #fff; padding: 9px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s;">
+                                                🔍 Szukaj
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                id="btn-jump-alzey" 
+                                                style="background: #1e293b; border: 1px solid #3b82f6; color: #60a5fa; padding: 9px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;">
+                                                🎯 Skocz do Alzey-Worms
+                                            </button>
                                         </div>
                                     </div>
                                 `;
@@ -1168,6 +1294,50 @@
                                         refreshCartUI();
                                     });
                                 });
+
+                                // Logika wyszukiwania i płynnego przewijania
+                                function scrollToRegion(query) {
+                                    if (!query) return;
+                                    const cleanQuery = query.toLowerCase().trim();
+                                    const rows = resultsContent.querySelectorAll('.zebra-row');
+                                    let targetRow = null;
+
+                                    rows.forEach(row => {
+                                        row.classList.remove('highlight-target');
+                                        const text = row.innerText.toLowerCase();
+                                        if (!targetRow && text.includes(cleanQuery)) {
+                                            targetRow = row;
+                                        }
+                                    });
+
+                                    if (targetRow) {
+                                        targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        targetRow.classList.add('highlight-target');
+                                        setTimeout(() => {
+                                            targetRow.classList.remove('highlight-target');
+                                        }, 3000);
+                                    } else {
+                                        alert(`Nie znaleziono rejonu pasującego do "${query}" w tym dniu.`);
+                                    }
+                                }
+
+                                const btnAlzey = document.getElementById('btn-jump-alzey');
+                                if (btnAlzey) {
+                                    btnAlzey.addEventListener('click', () => scrollToRegion('Alzey-Worms'));
+                                }
+
+                                const btnSearch = document.getElementById('btn-find-region');
+                                const searchInput = document.getElementById('region-search-input');
+
+                                if (btnSearch && searchInput) {
+                                    btnSearch.addEventListener('click', () => scrollToRegion(searchInput.value));
+                                    searchInput.addEventListener('keydown', (e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            scrollToRegion(searchInput.value);
+                                        }
+                                    });
+                                }
 
                             } else {
                                 resultsContent.innerHTML = `<div class="notranslate" translate="no" style="padding: 20px; color: #ccc;">${parsedText.replace(/\n/g, '<br>')}</div>`;
