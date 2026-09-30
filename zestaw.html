@@ -1892,6 +1892,9 @@
             });
         }
 
+        // ========================================================
+        // KALKULACJA - POPRAWIONA LOGIKA SĄSIEDZTW I TRASY
+        // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
@@ -1960,7 +1963,8 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            const MAX_REGIONS_PER_CLUSTER = 3;
+            // Grupowanie w korytarze tras (usuwamy sztuczny limit 3 rejonów!)
+            // Jeśli rejony ze sobą graniczą / są po trasie, tworzą jeden korytarz wyjazdowy
             let unassigned = Object.keys(regionDatesMap);
             let clusters = [];
 
@@ -1969,7 +1973,7 @@
                 let currentCluster = [seed];
 
                 let changed = true;
-                while (changed && currentCluster.length < MAX_REGIONS_PER_CLUSTER) {
+                while (changed) {
                     changed = false;
                     for (let i = 0; i < unassigned.length; i++) {
                         let candidate = unassigned[i];
@@ -1979,7 +1983,7 @@
                             currentCluster.push(candidate);
                             unassigned.splice(i, 1);
                             changed = true;
-                            if (currentCluster.length >= MAX_REGIONS_PER_CLUSTER) break;
+                            break;
                         }
                     }
                 }
@@ -2016,7 +2020,7 @@
                     else if (totalDays >= 51)  ratePerDay = 6.00;
                     else if (totalDays >= 31)  ratePerDay = 7.00;
                     else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;
+                    else if (totalDays >= 5)   ratePerDay = 9.00; // 5 dni = 10% rabatu (stawka 9 EUR)
                     else                       ratePerDay = 10.00;
                 } else {
                     if (totalDays >= 250) ratePerDay = 8.00;
@@ -2026,7 +2030,7 @@
                     else if (totalDays >= 51)  ratePerDay = 18.00;
                     else if (totalDays >= 31)  ratePerDay = 20.00;
                     else if (totalDays >= 16)  ratePerDay = 22.00;
-                    else if (totalDays >= 6)   ratePerDay = 24.00;
+                    else if (totalDays >= 5)   ratePerDay = 22.50; // 5 dni = 10% rabatu
                     else                       ratePerDay = 25.00;
                 }
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
@@ -2250,7 +2254,7 @@
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
-                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni w trasie${extraNotice})`;
+                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} DNI W TRASIE | KORYTARZ WSPÓLNY${extraNotice})` : ` (${calc.totalDays} DNI W TRASIE${extraNotice})`;
                 
                 let loyaltyNotice = '';
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
@@ -2268,9 +2272,9 @@
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień w trasie: ${calc.ratePerDay.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Dni w trasie: ${calc.totalDays} | Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>${loyaltyNotice}`;
+                            configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b> (Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
                         }
                     }
                 }
@@ -2591,7 +2595,7 @@
                     body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 }
                 body += "- Unikalne dni wyjazdowe w trasie: " + calc.totalDays + " dni (stawka bazowa: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + "/dzień)\n";
-                body += "- Łączna liczba zbiórek we wszystkich rejonach: " + calc.totalRegionDaysSum + " zaplanowanych terminów\n";
+                body += "- Łączna pula zbiórek w rejonach: " + calc.totalRegionDaysSum + " zaplanowanych terminów\n";
                 if (calc.isMapAddonChecked) {
                     body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
                 } else if (calc.savings > 0) {
@@ -2765,9 +2769,7 @@
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
 
-            // ========================================================
-            // ASYNCHRONICZNY ZAPIS ZAMÓWIENIA W ARKUSZU GOOGLE
-            // ========================================================
+            // Asynchroniczny zapis zamówienia w Arkuszu Google
             var btnSubmit = document.getElementById('btnSubmit');
             var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
             if (btnSubmit) {
