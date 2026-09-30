@@ -655,7 +655,7 @@
 
             // Buß- und Bettag (środa przed 23 listopada)
             const nov23 = new Date(y, 10, 23);
-            let dayOfWeek = nov23.getDay(); // 0 to Nd, 3 to Śr
+            let dayOfWeek = nov23.getDay();
             let diff = dayOfWeek - 3;
             if (diff <= 0) diff += 7;
             const bussTag = new Date(nov23);
@@ -736,7 +736,6 @@
             const startYear = now.getFullYear();
             const startMonth = now.getMonth();
 
-            // Dynamiczny badge lat w nagłówku
             const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
             const yearsBadge = document.getElementById('header-years-badge');
             if (yearsBadge) {
@@ -823,7 +822,6 @@
                 let existingInfo = document.querySelector('.calendar-info');
                 if (existingInfo) existingInfo.remove();
 
-                // Znajdź najbliższe święto regionalne w generowanym oknie
                 let closestRegionalDesc = "<strong>Święta Regionalne:</strong> Sprawdź wykaz dla poszczególnych landów.";
                 let minDiff = Infinity;
 
@@ -1062,25 +1060,19 @@
                                             <span style="color: #666; font-size: 0.75rem;">Natychmiastowy dostęp</span>
                                         </div>
 
-                                        <!-- PASEK SZYBKIEGO WYSZUKIWANIA I SKOKU DO REJONU -->
-                                        <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+                                        <!-- PASEK WYSZUKIWANIA I PRZEWIJANIA DO REJONU -->
+                                        <div style="display: flex; gap: 8px; margin-top: 14px;">
                                             <input 
                                                 type="text" 
                                                 id="region-search-input" 
-                                                placeholder="Wpisz nazwę rejonu (np. Alzey-Worms)..." 
-                                                style="flex: 1; min-width: 200px; padding: 9px 12px; background: #1c1c1c; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none;"
+                                                placeholder="Wpisz nazwę szukanego rejonu..." 
+                                                style="flex: 1; padding: 9px 12px; background: #1c1c1c; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none;"
                                             />
                                             <button 
                                                 type="button" 
                                                 id="btn-find-region" 
-                                                style="background: #007bff; border: none; color: #fff; padding: 9px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s;">
+                                                style="background: #007bff; border: none; color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; white-space: nowrap;">
                                                 🔍 Szukaj
-                                            </button>
-                                            <button 
-                                                type="button" 
-                                                id="btn-jump-alzey" 
-                                                style="background: #1e293b; border: 1px solid #3b82f6; color: #60a5fa; padding: 9px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;">
-                                                🎯 Skocz do Alzey-Worms
                                             </button>
                                         </div>
                                     </div>
@@ -1295,7 +1287,7 @@
                                     });
                                 });
 
-                                // Logika wyszukiwania i płynnego przewijania
+                                // Logika wyszukiwania i płynnego przewijania do wpisanego rejonu
                                 function scrollToRegion(query) {
                                     if (!query) return;
                                     const cleanQuery = query.toLowerCase().trim();
@@ -1319,11 +1311,6 @@
                                     } else {
                                         alert(`Nie znaleziono rejonu pasującego do "${query}" w tym dniu.`);
                                     }
-                                }
-
-                                const btnAlzey = document.getElementById('btn-jump-alzey');
-                                if (btnAlzey) {
-                                    btnAlzey.addEventListener('click', () => scrollToRegion('Alzey-Worms'));
                                 }
 
                                 const btnSearch = document.getElementById('btn-find-region');
