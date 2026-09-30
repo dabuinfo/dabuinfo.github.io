@@ -2004,16 +2004,12 @@
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
 
-            let regularBaseReference = isEuro ? 10.00 : 40.00;
+            // STAWKI BAZOWE: 25 PLN / 10 EUR
+            let regularBaseReference = isEuro ? 10.00 : 25.00;
             let ratePerDay;
             let totalPriceNetto;
 
-            let isEligibleForPickupCashDiscount = isPickup && isCashPayment && !isEuro && !isMapAddonChecked;
-
-            if (isEligibleForPickupCashDiscount) {
-                ratePerDay = 25.00;
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-            } else if (isMapAddonChecked) {
+            if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else {
@@ -2029,14 +2025,14 @@
                     else                       ratePerDay = 10.00;
                 } else {
                     if (totalDays >= 250) ratePerDay = 8.00;
-                    else if (totalDays >= 181) ratePerDay = 12.00;
-                    else if (totalDays >= 121) ratePerDay = 16.00;
-                    else if (totalDays >= 81)  ratePerDay = 20.00;
-                    else if (totalDays >= 51)  ratePerDay = 24.00;
-                    else if (totalDays >= 31)  ratePerDay = 28.00;
-                    else if (totalDays >= 16)  ratePerDay = 32.00;
-                    else if (totalDays >= 6)   ratePerDay = 36.00;
-                    else                       ratePerDay = 40.00;
+                    else if (totalDays >= 181) ratePerDay = 10.00;
+                    else if (totalDays >= 121) ratePerDay = 12.00;
+                    else if (totalDays >= 81)  ratePerDay = 15.00;
+                    else if (totalDays >= 51)  ratePerDay = 18.00;
+                    else if (totalDays >= 31)  ratePerDay = 20.00;
+                    else if (totalDays >= 16)  ratePerDay = 22.00;
+                    else if (totalDays >= 6)   ratePerDay = 24.00;
+                    else                       ratePerDay = 25.00;
                 }
                 totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
@@ -2073,7 +2069,6 @@
                 totalRegionDaysSum: totalRegionDaysSum,
                 isSingleCluster: isSingleCluster,
                 isPickup: isPickup,
-                isEligibleForPickupCashDiscount: isEligibleForPickupCashDiscount,
                 clustersCount: clusters.length,
                 totalPrice: totalPriceNetto,
                 finalPrice: finalPayAmount,
@@ -2186,7 +2181,7 @@
                     html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna bez konieczności wyboru tygodnia)</div>';
                 } else if (weeksListHtml !== '') {
                     html += weeksListHtml;
-                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' dni zbiórki</div>';
+                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' zaplanowanych terminów zbiórek</div>';
                 } else {
                     html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #ef4444;">Brak terminów w zaznaczonych tygodniach</div>';
                 }
@@ -2266,7 +2261,7 @@
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
-                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni${extraNotice})`;
+                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} dni na wspólnej trasie${extraNotice})` : ` (${calc.totalDays} dni w trasie${extraNotice})`;
                 
                 let loyaltyNotice = '';
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
@@ -2286,9 +2281,9 @@
                     if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configSubtitle) {
                         if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień: ${calc.ratePerDay.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
+                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Stawka za dzień w trasie: ${calc.ratePerDay.toFixed(2)} ${calc.currency})`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka za dzień: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>${loyaltyNotice}`;
+                            configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b>${loyaltyNotice}`;
                         }
                     }
                 }
@@ -2608,9 +2603,8 @@
                 } else {
                     body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
                 }
-                body += "- Liczba rozliczeniowych dni roboczych: " + calc.totalDays + " dni\n";
-                body += "- Suma dni we wszystkich rejonach: " + calc.totalRegionDaysSum + " dni zbiórek\n";
-                body += "- Stawka bazowa: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + " / dzień\n";
+                body += "- Unikalne dni wyjazdowe w trasie: " + calc.totalDays + " dni (stawka bazowa: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + "/dzień)\n";
+                body += "- Łączna liczba zbiórek we wszystkich rejonach: " + calc.totalRegionDaysSum + " zaplanowanych terminów\n";
                 if (calc.isMapAddonChecked) {
                     body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
                 } else if (calc.savings > 0) {
@@ -2762,7 +2756,7 @@
                         body += "   • " + dw.tydzien + "\n";
                         body += "     Dni zbiorki: " + dw.daty + "\n";
                     });
-                    body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " dni zbiorki\n\n";
+                    body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " zaplanowanych zbiorek\n\n";
                 } else {
                     body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
                 }
