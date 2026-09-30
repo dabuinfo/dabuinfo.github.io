@@ -2004,6 +2004,12 @@
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
             // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN, Pojedynczy = 25 PLN, EUR = 10 EUR
+            // Sprawdzenie czy wybrano korytarz wspólny (więcej niż 1 rejon w korytarzu)
+            let czyKorytarzWspolny = (selectedRegions.length > 1);
+
+            // STAWKI BAZOWE:
+            // W PLN: Korytarz = 40 PLN/dzień, Pojedynczy = 25 PLN/dzień
+            // W EUR: Stawka dzienna = 10 EUR/dzień
             let regularBaseReference;
             if (isEuro) {
                 regularBaseReference = 10.00;
@@ -2016,9 +2022,11 @@
 
             if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+                let dodatekKorytarzEur = (isEuro && czyKorytarzWspolny) ? 10.00 : 0;
+                totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
             } else {
                 if (isEuro) {
+                    // CENNIK EUR: 10 EUR za dzień + 10 EUR opłaty za korytarz wspólny (5 dni = 60 EUR)
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
                     else if (totalDays >= 121) ratePerDay = 4.00;
@@ -2026,12 +2034,15 @@
                     else if (totalDays >= 51)  ratePerDay = 6.00;
                     else if (totalDays >= 31)  ratePerDay = 7.00;
                     else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;  // Rabat dopiero od 6 dni
-                    else                       ratePerDay = 10.00; // 1 do 5 dni = stawka bazowa 10 EUR
+                    else if (totalDays >= 6)   ratePerDay = 9.00;  // rabat od 6 dni
+                    else                       ratePerDay = 10.00; // 1-5 dni = 10 EUR/dzień
+
+                    let oplataKorytarzEur = czyKorytarzWspolny ? 10.00 : 0.00;
+                    totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
                 } else {
                     // CENNIK PLN
                     if (czyKorytarzWspolny) {
-                        // KORYTARZ WSPÓLNY: 40 PLN / dzień (1-5 dni trasy)
+                        // KORYTARZ WSPÓLNY: 40 PLN / dzień
                         if (totalDays >= 250) ratePerDay = 15.00;
                         else if (totalDays >= 181) ratePerDay = 18.00;
                         else if (totalDays >= 121) ratePerDay = 22.00;
@@ -2039,10 +2050,10 @@
                         else if (totalDays >= 51)  ratePerDay = 30.00;
                         else if (totalDays >= 31)  ratePerDay = 33.00;
                         else if (totalDays >= 16)  ratePerDay = 36.00;
-                        else if (totalDays >= 6)   ratePerDay = 38.00; // Rabat od 6 dni
-                        else                       ratePerDay = 40.00; // 1 do 5 dni = 40 PLN / dzień
+                        else if (totalDays >= 6)   ratePerDay = 38.00; // rabat od 6 dni
+                        else                       ratePerDay = 40.00; // 1-5 dni = 40 PLN/dzień
                     } else {
-                        // POJEDYNCZY REJON: 25 PLN / dzień (1-5 dni trasy)
+                        // POJEDYNCZY REJON: 25 PLN / dzień
                         if (totalDays >= 250) ratePerDay = 8.00;
                         else if (totalDays >= 181) ratePerDay = 10.00;
                         else if (totalDays >= 121) ratePerDay = 12.00;
@@ -2050,11 +2061,11 @@
                         else if (totalDays >= 51)  ratePerDay = 18.00;
                         else if (totalDays >= 31)  ratePerDay = 20.00;
                         else if (totalDays >= 16)  ratePerDay = 22.00;
-                        else if (totalDays >= 6)   ratePerDay = 22.50; // Rabat od 6 dni
-                        else                       ratePerDay = 25.00; // 1 do 5 dni = 25 PLN / dzień
+                        else if (totalDays >= 6)   ratePerDay = 22.50; // rabat od 6 dni
+                        else                       ratePerDay = 25.00; // 1-5 dni = 25 PLN/dzień
                     }
+                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                 }
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
 
             // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
