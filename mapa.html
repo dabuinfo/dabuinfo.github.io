@@ -310,7 +310,7 @@
         /* --- DOLNY LICZNIK --- */
         .bottom-counter-container {
             position: absolute;
-            bottom: 40px; /* Podniesione z 15px na 40px, aby nie chowało się pod paskiem telefonu */
+            bottom: 40px;
             left: 15px;
             z-index: 1000;
             pointer-events: none;
@@ -330,7 +330,7 @@
 
         /* --- PODNIESIENIE PRZYCISKÓW LEAFLET (ZOOM, LOKALIZACJA) --- */
         .leaflet-bottom {
-            bottom: 30px !important; /* Wymuszenie podniesienia całego bloku z przyciskami */
+            bottom: 30px !important;
         }
 
         .county-boundary {
@@ -429,6 +429,7 @@
         let allCountiesGeoList = [];
         let userLocationMarker = null;
         let kreisGeoLayer = null;
+        let currentCountyName = ""; // Przechowuje nazwę aktualnie wybranego powiatu
 
         const AGS_LAND_MAP = {
             "01": "Schleswig-Holstein", "02": "Hamburg", "03": "Niedersachsen", "04": "Bremen",
@@ -438,7 +439,6 @@
         };
 
         const map = L.map('dabuOSMMap', { zoomControl: false }).setView([51.1657, 10.4515], 6);
-        // Zmiana pozycji przycisków zoom na prawy dolny róg
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { 
@@ -446,7 +446,6 @@
         }).addTo(map);
 
         // GEOLOKALIZACJA
-        // Zmiana pozycji przycisku geolokalizacji na prawy dolny róg
         const customControls = L.control({position: 'bottomright'});
         customControls.onAdd = function () {
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
@@ -562,8 +561,9 @@
                 .trim();
         }
 
-        // POBIERANIE GMIN W LOCIE Z OVERPASS API
+        // POBIERANIE GMIN W LOCIE Z OVERPASS API (Z KODAMI POCZTOWYMI)
         async function fetchMunicipalitiesInFlight(countyName, landName, layer) {
+            currentCountyName = countyName; // Zapamiętanie aktywnego rejonu
             const modalTitle = document.getElementById('modalCountyTitle');
             const container = document.getElementById('modalMunicipalitiesList');
             
@@ -610,7 +610,7 @@
                 "https://lz4.overpass-api.de/api/interpreter?data=" + encoded
             ];
 
-            let municipalities = [];
+            let municipalitiesMap = new Map();
             let success = false;
 
             for (let url of endpoints) {
@@ -626,7 +626,14 @@
                                 if (!n.toLowerCase().startsWith("landkreis") && 
                                     !n.toLowerCase().startsWith("kreis ") &&
                                     n !== countyName) {
-                                    municipalities.push(n);
+                                    
+                                    // Odczytanie kodu pocztowego z tagów OSM
+                                    const zip = el.tags.postal_code || el.tags["addr:postcode"] || "";
+                                    const label = zip ? `${zip} ${n}` : n;
+
+                                    if (!municipalitiesMap.has(n)) {
+                                        municipalitiesMap.set(n, label);
+                                    }
                                 }
                             }
                         });
@@ -638,10 +645,13 @@
                 }
             }
 
-            municipalities.push(cleanName);
-            municipalities = [...new Set(municipalities)].sort((a, b) => a.localeCompare(b, 'de'));
+            if (!municipalitiesMap.has(cleanName)) {
+                municipalitiesMap.set(cleanName, cleanName);
+            }
 
-            if (success && municipalities.length > 0) {
+            let sortedEntries = Array.from(municipalitiesMap.entries()).sort((a, b) => a[0].localeCompare(b[0], 'de'));
+
+            if (success && sortedEntries.length > 0) {
                 container.innerHTML = '';
 
                 const wholeCountyStr = `Cały powiat (${cleanName})`;
@@ -659,14 +669,14 @@
                 `;
                 container.appendChild(countyRow);
 
-                municipalities.forEach(mun => {
+                sortedEntries.forEach(([name, displayWithZip]) => {
                     const row = document.createElement('div');
                     row.className = 'municipality-row';
-                    const isAdded = selectedMunicipalities.includes(mun);
+                    const isAdded = selectedMunicipalities.includes(displayWithZip);
 
                     row.innerHTML = `
-                        <span style="font-size:14px; font-weight:500;">${mun.replace(/</g, "&lt;")}</span>
-                        <button class="add-mun-btn ${isAdded ? 'added' : ''}" onclick="toggleMunicipality('${mun.replace(/'/g, "\\'")}', this)">
+                        <span style="font-size:14px; font-weight:500;">${displayWithZip.replace(/</g, "&lt;")}</span>
+                        <button class="add-mun-btn ${isAdded ? 'added' : ''}" onclick="toggleMunicipality('${displayWithZip.replace(/'/g, "\\'")}', this)">
                             ${isAdded ? '✓ Dodano' : '+ Dodaj'}
                         </button>
                     `;
@@ -786,6 +796,7 @@
 
         function clearAllSelections() {
             selectedMunicipalities = [];
+            currentCountyName = "";
             document.getElementById('dabuRegionSearch').value = '';
             document.getElementById('landSelectFilter').value = '';
             document.getElementById('countiesSearchList').classList.remove('is-open');
@@ -803,6 +814,7 @@
             document.getElementById('countiesSearchList').classList.remove('is-open');
         });
 
+        // WYSYŁANIE WIADOMOŚCI SMS Z UWZGLĘDNIENIEM REJONU I KODÓW POCZTOWYCH
         function sendSmsQuote() {
             if (selectedMunicipalities.length === 0) {
                 alert("Wybierz przynajmniej jedną pozycję z listy.");
@@ -814,7 +826,9 @@
                           (navigator.userAgent.includes("Mac") && "ontouchend" in document);
                           
             const smsSeparator = isIOS ? "&" : "?";
-            const message = `Dzień dobry, proszę o wycenę i terminy dla: ${selectedMunicipalities.join(', ')}.`;
+            const rejonInfo = currentCountyName ? ` (Rejon: ${currentCountyName})` : "";
+            const message = `Dzień dobry, proszę o wycenę i terminy dla${rejonInfo}: ${selectedMunicipalities.join(', ')}.`;
+            
             window.location.href = `sms:${phoneNumber}${smsSeparator}body=${encodeURIComponent(message)}`;
         }
     </script>
