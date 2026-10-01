@@ -2,3000 +2,433 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zestaw Tygodniowy - Skonfiguruj swój pakiet</title>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-YQTCG26T1B');
-    </script>
-
-    <!-- INPOST GEOWIDGET v5 -->
-    <link rel="stylesheet" href="https://geowidget.inpost.pl/inpost-geowidget.css"/>
-    <script src="https://geowidget.inpost.pl/inpost-geowidget.js" defer></script>
-
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/favicon.png">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Konfigurator Zestawu PRO</title>
     <style>
-        /* --- SYSTEM BAZOWY & RESET --- */
         :root {
-            --bg-body: #0d1117;
-            --bg-card: rgba(22, 27, 34, 0.85);
-            --primary-accent: #2ecc71;
-            --primary-hover: #27ae60;
-            --border-subtle: rgba(76, 161, 175, 0.25);
-            --border-highlight: #3b82f6;
-            --text-main: #f0f6fc;
-            --text-muted: #8b949e;
-            --radius-md: 10px;
+            --primary-accent: #38bdf8;
+            --bg-dark: #0f172a;
+            --border-subtle: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
             --radius-sm: 6px;
         }
-
-        html, body {
-            background-color: var(--bg-body);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0 12px;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            top: 0 !important;
+            padding: 15px;
         }
-        
-        .main-content {
-            flex-grow: 1;
-            width: 100%;
-        }
-
-        #pageWrapper {
-            width: 100%;
-            max-width: 1180px;
+        .container {
+            max-width: 600px;
             margin: 0 auto;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-
-        input, textarea, select {
-            -webkit-user-select: text !important;
-            user-select: text !important;
-            font-family: inherit;
-        }
-
-        #inpostModal, #inpostModal * {
-            -webkit-user-select: auto !important;
-            user-select: auto !important;
-            pointer-events: auto !important;
-        }
-
-        .harmonogram-wrapper h2 {
+        .form-header {
+            font-size: 1.1rem;
+            font-weight: bold;
             color: var(--primary-accent);
-            border-bottom: 2px solid var(--primary-hover);
-            padding-bottom: 8px;
-            margin: 24px 0 16px 0;
-            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-align: center;
-        }
-
-        .info-text { 
-            font-size: clamp(0.9rem, 1.5vw, 1.02rem); 
-            margin-bottom: 15px; 
-            color: var(--text-muted); 
-            text-align: center; 
-        }
-
-        .benefit-list { list-style: none !important; padding: 0 !important; margin: 0; }
-        .benefit-list li { 
-            margin-bottom: 8px; 
-            padding-left: 24px !important; 
-            position: relative; 
-            font-size: clamp(0.85rem, 1.3vw, 0.94rem); 
-            line-height: 1.45; 
-        }
-        .benefit-list li::before { 
-            content: "\2714"; 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
-            color: var(--primary-accent); 
-            font-weight: bold; 
-        }
-
-        .strategy-container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            margin-bottom: 25px; 
-            justify-content: center; 
-            width: 100%; 
-        }
-        .strategy-card { 
-            flex: 1 1 100%; 
-            background: var(--bg-card); 
-            border-radius: var(--radius-md); 
-            padding: clamp(16px, 3vw, 28px); 
-            border: 1px solid var(--border-subtle); 
-            border-top: 4px solid var(--primary-accent); 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.35); 
-            box-sizing: border-box; 
-        }
-        .strategy-title { 
-            font-size: clamp(1.1rem, 2vw, 1.35rem); 
-            font-weight: 700; 
-            margin-bottom: 8px; 
-            text-transform: uppercase; 
-            text-align: center; 
-            color: #d1d5db; 
-        }
-        .price-tag-large { 
-            font-size: clamp(1.6rem, 3.5vw, 2.3rem); 
-            font-weight: 900; 
-            text-align: center; 
-            margin: 4px 0 8px 0; 
-            color: var(--primary-accent); 
-            text-shadow: 0 0 16px rgba(46, 204, 113, 0.25); 
-        }
-        .price-subtitle-small { 
-            display: block; 
-            font-size: clamp(0.85rem, 1.5vw, 0.96rem); 
-            color: var(--text-muted); 
-            text-align: center; 
-            margin-bottom: 18px; 
-        }
-
-        .strategy-list { list-style: none !important; padding: 0 !important; margin: 0; font-size: clamp(0.88rem, 1.4vw, 0.98rem); }
-        .strategy-list li { margin-bottom: 10px; padding-left: 26px !important; position: relative; line-height: 1.45; }
-        .strategy-list li::before { content: "\2714"; position: absolute; left: 0; top: 0; color: var(--primary-accent); }
-
-        .format-pro-box { 
-            padding: 18px 20px; 
-            border-radius: var(--radius-sm); 
-            box-sizing: border-box; 
-            width: 100%; 
-            text-align: left; 
-            border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--primary-accent); 
-            background: rgba(46, 204, 113, 0.08); 
-        }
-        .format-pro-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-        @media (min-width: 768px) {
-            .format-pro-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .form-wrapper { 
-            background: linear-gradient(145deg, #152238 0%, #1e293b 100%); 
-            padding: clamp(16px, 2.5vw, 30px); 
-            border-radius: var(--radius-md); 
-            margin-top: 20px; 
-            border: 1px solid var(--border-subtle); 
-            box-shadow: 0 12px 32px rgba(0,0,0,0.45); 
-            box-sizing: border-box; 
-            width: 100%; 
-        }
-        .form-header { 
-            text-align: center; 
-            color: #fff; 
-            margin-bottom: 12px; 
-            margin-top: 22px; 
-            font-weight: 700; 
-            font-size: clamp(1rem, 2vw, 1.22rem); 
-            border-top: 1px solid rgba(255,255,255,0.08); 
-            padding-top: 18px; 
-            letter-spacing: 0.3px; 
-        }
-        .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-        
-        .selection-grid-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            width: 100%;
-        }
-
-        .selection-col-left .form-header,
-        .selection-col-right .form-header {
-            margin-top: 0 !important;
-            border-top: none !important;
-            padding-top: 0 !important;
-            margin-bottom: 12px !important;
-        }
-
-        @media (min-width: 992px) {
-            .selection-grid-container {
-                grid-template-columns: 1fr 1fr;
-                align-items: start;
-            }
-            .regions-scroll-box {
-                min-height: 520px !important;
-                max-height: 520px !important;
-                margin: 0 !important;
-            }
-            .selection-col-right {
-                margin-top: 0px; 
-            }
-        }
-
-        .regions-scroll-box { 
-            position: relative; 
-            min-height: 280px; 
-            max-height: 380px; 
-            overflow-y: scroll; 
-            background: rgba(10, 14, 20, 0.65); 
-            border: 1px solid var(--border-subtle); 
-            border-radius: var(--radius-sm); 
-            padding: 8px 12px; 
-            margin: 0 auto 15px auto; 
-            box-sizing: border-box; 
-            width: 100%; 
-        }
-
-        .regions-scroll-box.is-loading { overflow: hidden !important; touch-action: none; }
-        .regions-scroll-box::-webkit-scrollbar { width: 7px; }
-        .regions-scroll-box::-webkit-scrollbar-track { background: #0f172a; }
-        .regions-scroll-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-        .region-search-sticky-box {
-            position: sticky;
-            top: -8px;
-            z-index: 6;
-            background: #0f172a;
-            padding: 8px 0;
-            margin: -8px -12px 6px -12px;
-            padding-left: 12px;
-            padding-right: 12px;
+            margin-bottom: 12px;
+            margin-top: 25px;
             border-bottom: 1px solid var(--border-subtle);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            padding-bottom: 5px;
         }
-        .region-search-input {
-            width: 100%;
-            padding: 9px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-subtle);
-            background: rgba(15, 23, 42, 0.9);
-            color: #f0f6fc;
-            font-size: 0.88rem;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s, background 0.2s;
-        }
-        .region-search-input:focus {
-            border-color: var(--primary-accent);
-            background: rgba(22, 27, 34, 1);
-        }
-        .region-search-input::placeholder {
-            color: #64748b;
-        }
-        
-        .pro-loader-overlay { 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(13, 17, 23, 0.96); 
-            backdrop-filter: blur(4px); 
-            z-index: 10; 
-            display: flex; 
-            flex-direction: column; 
-            border-radius: var(--radius-sm); 
-            transition: opacity 0.3s ease; 
-        }
-        .loader-video-section { flex: 2; display: flex; align-items: center; justify-content: center; background: #000; padding: 6px; }
-        .loader-video-wrapper { aspect-ratio: 16/9; height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; }
-        .loader-video-wrapper img, .loader-video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
-        .loader-text-section { flex: 1; background: rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(46, 204, 113, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 10px; }
-        .loader-title-inline { color: var(--primary-accent); font-size: clamp(0.9rem, 1.8vw, 1.05rem); font-weight: 800; text-transform: uppercase; }
-        .loader-desc-inline { color: var(--text-muted); font-size: clamp(0.78rem, 1.4vw, 0.85rem); }
-        .pro-spinner { width: 26px; height: 26px; min-width: 26px; border: 3px solid rgba(46, 204, 113, 0.2); border-left-color: var(--primary-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .land-group-header {
-            background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
-            border-left: 4px solid var(--border-highlight);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 8px 10px;
-            margin: 10px -12px 4px -12px;
-            color: #ffffff;
-            font-size: clamp(0.78rem, 1.3vw, 0.86rem);
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
+        .form-header:first-child { margin-top: 0; }
+        .region-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            position: sticky;
-            top: 36px;
-            z-index: 5;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .land-group-header:first-of-type { margin-top: -8px; }
-        .land-tag-badge {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #93c5fd;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .region-label { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-start; 
-            padding: 10px 6px; 
-            cursor: pointer; 
-            border-bottom: 1px solid rgba(255,255,255,0.04); 
-            color: #e2e8f0; 
-            font-size: clamp(0.88rem, 1.4vw, 0.98rem); 
-            transition: background 0.15s ease, opacity 0.2s ease, border-color 0.2s ease; 
-            box-sizing: border-box; 
-            gap: 4px;
-            min-height: 44px;
-            justify-content: center;
-        }
-        .region-label:hover { background: rgba(255,255,255,0.05); }
-        
+        .region-label:hover { border-color: var(--primary-accent); }
         .region-left-side {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
         }
-
-        .region-label input[type="checkbox"], .region-label input[type="radio"] { 
-            margin: 0;
-            width: 19px;
-            height: 19px;
-            cursor: pointer;
-            accent-color: var(--primary-accent);
-            flex-shrink: 0;
-        }
-
-        .region-schedule-badges {
-            display: none;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-left: 31px;
-            margin-top: 4px;
-        }
-        .region-schedule-badges.is-visible { display: flex; }
-        .schedule-pill {
-            background: rgba(59, 130, 246, 0.16);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            padding: 2px 7px;
-            border-radius: 4px;
-            font-size: clamp(0.72rem, 1.2vw, 0.8rem);
-            white-space: nowrap;
-            line-height: 1.3;
-        }
-        .schedule-pill b { color: #93c5fd; font-weight: 700; }
-        .schedule-pill small { color: #fbbf24; font-weight: 800; margin-left: 2px; }
-        
-        .selection-tools { 
-            display: flex; 
-            justify-content: flex-end; 
-            align-items: center; 
-            font-size: clamp(0.8rem, 1.3vw, 0.9rem); 
-        }
-        .selection-tools a { color: #38bdf8; text-decoration: none; cursor: pointer; padding: 4px 6px; }
-        .selection-tools a:hover { color: #fff; text-decoration: underline; }
-
-        .extra-options-group { 
-            background: rgba(10, 14, 20, 0.45); 
-            border: 1px dashed var(--border-subtle); 
-            border-radius: var(--radius-sm); 
-            padding: 8px; 
-            margin-bottom: 12px; 
-            box-sizing: border-box; 
-        }
-        .option-box { padding: 8px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
-        .option-box:last-child { border-bottom: none; margin-bottom: 0; }
-
-        .report-format-options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        @media (min-width: 768px) {
-            .report-format-options-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .format-card-radio {
-            position: relative;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 14px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .format-card-radio:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            background: rgba(15, 23, 42, 0.9);
-        }
-        .format-card-radio.active {
-            border-color: var(--primary-accent);
-            background: rgba(46, 204, 113, 0.12);
-            box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
-        }
-        .format-card-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 0.94rem;
-            color: #f8fafc;
-        }
-        .format-card-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        .client-input { 
-            width: 100%; 
-            padding: 12px 14px; 
-            margin-bottom: 18px; 
-            border-radius: var(--radius-sm); 
-            border: 1px solid #334155; 
-            background: #ffffff; 
-            color: #0f172a; 
-            font-size: clamp(0.92rem, 1.5vw, 1.02rem); 
-            box-sizing: border-box; 
-            transition: border-color 0.2s; 
+        .client-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background: #0f172a;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            box-sizing: border-box;
         }
         .client-input:focus {
             outline: none;
             border-color: var(--primary-accent);
         }
-
-        /* --- STYL DLA WYBORU FORMY ZAMÓWIENIA --- */
-        .order-channel-box {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid var(--border-subtle);
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-accent);
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 15px;
+            border: none;
             border-radius: var(--radius-sm);
-            padding: 12px 16px;
+            cursor: pointer;
             margin-top: 15px;
-            margin-bottom: 5px;
-            box-sizing: border-box;
+            transition: 0.2s;
         }
-        .order-channel-title {
-            font-size: 0.88rem;
-            color: #cbd5e1;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .submit-btn:hover { background: #0ea5e9; }
+        .submit-btn:disabled { background: #475569; cursor: not-allowed; }
+        .price-summary {
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #2ecc71;
         }
-        .order-channel-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 20px;
-        }
-        .order-channel-label {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #f0f6fc;
-            padding: 4px 6px;
-            border-radius: 4px;
-            transition: background 0.15s ease;
-        }
-        .order-channel-label:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .order-channel-label input[type="radio"] {
-            margin: 0;
-            width: 17px;
-            height: 17px;
-            cursor: pointer;
-            accent-color: var(--primary-accent);
-        }
-
-        .submit-btn { 
-            width: 100%; 
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); 
-            color: #ffffff; 
-            padding: clamp(14px, 2.5vw, 18px); 
-            border: none; 
-            border-radius: var(--radius-sm); 
-            font-size: clamp(1rem, 2.2vw, 1.25rem); 
-            font-weight: 800; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            transition: transform 0.15s ease, filter 0.2s ease; 
-            margin-top: 14px; 
-            box-sizing: border-box; 
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
-        }
-        .submit-btn:hover { 
-            transform: translateY(-2px); 
-            filter: brightness(1.08); 
-        }
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .inpost-modal-overlay {
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); 
-            z-index: 10000; 
-            justify-content: center; 
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-        .inpost-modal-content {
-            background: #1e293b; 
-            width: 95%; 
-            max-width: 900px; 
-            height: 85vh; 
-            border-radius: var(--radius-md); 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden;
-            border: 1px solid #334155;
-            box-shadow: 0 16px 36px rgba(0,0,0,0.6);
-        }
-
-        .hidden { display: none !important; }
-
-        .goog-te-banner-frame.skiptranslate,
-        .goog-te-gadget-icon,
-        #goog-gt-tt,
-        .goog-te-balloon-frame {
-            display: none !important;
-        }
-        body { top: 0px !important; }
-        .skiptranslate { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="pageWrapper">
-        <div class="main-content">
-            <div style="width: 100%; max-width: 860px; margin: 25px auto 15px auto;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); display: block;">
-                  <defs>
-                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#1e3c72" />
-                      <stop offset="100%" stop-color="#2a5298" />
-                    </linearGradient>
-                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-                      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.4"/>
-                    </filter>
-                  </defs>
-                  <rect width="800" height="400" rx="12" fill="url(#bg)" />
-                  <path d="M0 15 Q0 0 15 0 L785 0 Q800 0 800 15 L800 60 L0 60 Z" fill="#0f172a" />
-                  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">ZBUDUJ SWÓJ WŁASNY ZESTAW</text>
-                  
-                  <rect x="40" y="100" width="220" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#38bdf8" stroke-width="2" filter="url(#shadow)" />
-                  <text x="150" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">ZAMÓWIENIE</text>
-                  <g transform="translate(150, 180)">
-                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#e74c3c" />
-                    <circle cx="0" cy="-5" r="8" fill="#fff" />
-                  </g>
-                  <text x="150" y="260" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#f1c40f" text-anchor="middle">WYCENA</text>
-                  <text x="150" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle" id="svgPriceSub">automatyczna</text>
-                  
-                  <text x="290" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#2ecc71" text-anchor="middle">+</text>
-                  
-                  <rect x="320" y="100" width="220" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)" />
-                  <text x="430" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">TWÓJ WYBÓR</text>
-                  <g transform="translate(430, 180)">
-                    <path d="M0 -30 C-15 -30 -25 -15 -25 0 C-25 20 0 45 0 45 C0 45 25 20 25 0 C25 -15 15 -30 0 -30 Z" fill="#38bdf8" />
-                    <circle cx="0" cy="-5" r="8" fill="#fff" />
-                    <circle cx="25" cy="-25" r="12" fill="#e74c3c" />
-                    <text x="25" y="-20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">+1</text>
-                  </g>
-                  <text x="430" y="260" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#f1c40f" text-anchor="middle">ELASTYCZNE</text>
-                  <text x="430" y="280" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#aaa" text-anchor="middle">opcje</text>
-                  
-                  <text x="570" y="210" font-family="Arial, sans-serif" font-size="45" font-weight="bold" fill="#f1c40f" text-anchor="middle">=</text>
-                  
-                  <rect x="600" y="100" width="160" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="#f1c40f" stroke-width="2" filter="url(#shadow)" />
-                  <text x="680" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">WOLNOŚĆ</text>
-                  <text x="680" y="210" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#f1c40f" text-anchor="middle">∞</text>
-                  <text x="680" y="260" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#fff" text-anchor="middle">DOWOLNE</text>
-                  <text x="680" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#aaa" text-anchor="middle">KOMBINACJE!</text>
-                  
-                  <path d="M0 350 L800 350 L800 385 Q800 400 785 400 L15 400 Q0 400 0 385 Z" fill="#0f172a" />
-                  <text x="400" y="382" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="2">DABU-<tspan fill="#2ecc71">INFO</tspan></text>
-                </svg>
-            </div>
-        </div>
-
-        <div class="harmonogram-wrapper">
-            <h2>Skonfiguruj swój pakiet</h2>
-
-            <div class="strategy-container">
-                <div class="strategy-card">
-                    <div class="strategy-title">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice">Wycena automatyczna</div>
-                    <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
-                    
-                    <ul class="strategy-list" style="margin-bottom: 20px;">
-                        <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
-                        <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
-                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
-                        <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
-                    </ul>
-
-                    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
-
-                    <p class="info-text"><b>Standard realizacji zamówienia:</b></p>
-                    
-                    <div class="format-pro-box">
-                        <p style="color: #2ecc71; font-weight: 800; margin: 0 0 12px 0; font-size: clamp(1rem, 1.6vw, 1.15rem); text-transform: uppercase;">
-                            📱 Raport Operacyjny PRO & Interaktywna Mapa GPS
-                        </p>
-                        <div class="format-pro-grid">
-                            <ul class="benefit-list">
-                                <li><strong>Aktywne linki GPS:</strong> Ulice podlinkowane bezpośrednio do nawigacji Google Maps na smartfonie.</li>
-                                <li><strong>Podział logistyczny:</strong> Wykaz podzielony na gminy, dzielnice, sołectwa oraz zliczone punkty odbioru.</li>
-                            </ul>
-                            <ul class="benefit-list">
-                                <li><strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo (opcja dodatkowa).</li>
-                                <li><strong>Gotowość do druku A4:</strong> Zintegrowana funkcja ekonomicznego wydruku (czysty tekst na białym tle).</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-wrapper" id="formContent">
-                
-                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
-                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 0.82rem; color: #cbd5e1;">
-                        <span style="font-weight: bold; color: #93c5fd; text-transform: uppercase;">ℹ Legenda:</span>
-                        <span><b style="color: #fff;">08</b> – Dzień miesiąca</span>
-                        <span><b style="color: #2ecc71;">(S)</b> – Sperrmüll</span>
-                        <span><b style="color: #a78bfa;">(H)</b> – Holz</span>
-                        <span><b style="color: #fbbf24;">(M)</b> – Złom</span>
-                        <span><b style="color: #38bdf8;">(E)</b> – Elektro / Kleinelektro</span>
-                    </div>
-                    <div class="selection-tools">
-                        <a href="javascript:void(0)" id="btnUnselectAll">[ Odznacz wszystko / Clear ]</a>
-                    </div>
-                </div>
-
-                <div class="selection-grid-container">
-                    
-                    <!-- 1. WYBIERZ REJONY -->
-                    <div class="selection-col-left">
-                        <div class="form-header">👇 1. Wybierz Rejony:</div>
-
-                        <div class="regions-scroll-box is-loading notranslate" translate="no" id="regionsContainer">
-                            <div id="regionsLoading" class="pro-loader-overlay">
-                                <div class="loader-video-section">
-                                    <div class="loader-video-wrapper">
-                                        <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                                        <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: contain;">
-                                            <source src="1000064135.mp4" type="video/mp4">
-                                        </video>
-                                    </div>
-                                </div>
-                                <div class="loader-text-section">
-                                    <div class="loader-bottom-text">
-                                        <div class="loader-title-inline">Synchronizacja Danych</div>
-                                        <div class="loader-desc-inline">Trwa łączenie z bazą...</div>
-                                    </div>
-                                    <div class="pro-spinner"></div>
-                                </div>
-                            </div>
-
-                            <div class="region-search-sticky-box">
-                                <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonów (np. Konstanz, Freudenstadt)..." autocomplete="off">
-                            </div>
-
-                            <div id="regionsCheckboxes" class="notranslate" translate="no"></div>
-                        </div>
-                    </div>
-
-                    <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM 2026/2027) -->
-                    <div class="selection-col-right" id="step2Wrapper">
-                        <div class="form-header">📅 2. Wybierz Tygodnie:</div>
-                        <div class="regions-scroll-box" id="weeksContainer">
-                            <div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">
-                                ⏳ Wczytywanie dostępnych tygodni z bazy...
-                            </div>
-                        </div>
-
-                        <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-top: 12px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
-                            <span id="specialDateText">Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO (bez wymogu wyboru tygodnia)</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- KROK 3: WYBÓR MOTYWU RAPORTU PRO -->
-                <div class="form-header">📄 3. Standard realizacji zamówienia:</div>
-                <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 12px;">
-                    <div style="font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; line-height: 1.4;">
-                        Wybierz preferowany motyw graficzny Raportu Operacyjnego PRO:
-                    </div>
-
-                    <div class="report-format-options-grid">
-                        
-                        <!-- OPCJA 1: RAPORT JASNY -->
-                        <div class="format-card-radio active" onclick="wybierzFormat('Light Mode', this)">
-                            <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Light Mode" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
-                                <span>☀️ Raport Jasny (A4 Druk)</span>
-                            </div>
-                            <div class="format-card-desc">
-                                Czysty, biały podkład zoptymalizowany pod wydruk na kartkach A4 oraz czytanie w pełnym słońcu w szoferce.
-                            </div>
-                        </div>
-
-                        <!-- OPCJA 2: RAPORT CIEMNY -->
-                        <div class="format-card-radio" onclick="wybierzFormat('Dark Mode', this)">
-                            <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Dark Mode" style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
-                                <span>🌙 Raport Ciemny (OLED)</span>
-                            </div>
-                            <div class="format-card-desc">
-                                Nowoczesny ciemny motyw oszczędzający baterię telefonu i wzrok podczas planowania tras wieczorem i nocą.
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- KROK 4: OPCJE DODATKOWE -->
-                <div class="form-header">💾 4. Opcje dodatkowe:</div>
-                <div class="extra-options-group">
-                    
-                    <!-- DODATEK: INTERAKTYWNA MAPA ONLINE GPS -->
-                    <div class="option-box" id="mapAddonBox" style="background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 8px; margin-bottom: 6px;">
-                        <label class="region-label" style="min-height: auto; padding: 0;">
-                            <div class="region-left-side">
-                                <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" /> 
-                                <span style="color: #38bdf8; font-weight: bold;">
-                                    🗺️ Dołącz Interaktywną Mapę Online GPS (+dodatkowa wycena bez rabatu)
-                                </span>
-                            </div>
-                        </label>
-                        <div style="font-size: 0.82rem; color: #94a3b8; margin-left: 31px; margin-top: 4px; line-height: 1.4;">
-                            Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia, klastrami oraz szybką nawigacją Google Maps.
-                        </div>
-                    </div>
-
-                    <div class="option-box" id="dhlBox" style="display: none;">
-                        <label class="region-label">
-                            <input id="dhlOption" type="checkbox" /> 
-                            <span>📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)</span>
-                        </label>
-                        
-                        <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.9em; color: #93c5fd; font-weight: bold; margin-bottom: 10px;">
-                                🚚 Wybierz operatora i automat / punkt odbioru:
-                            </div>
-                            
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 14px;">
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="InPost" checked /> InPost Paczkomat
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="DPD" /> DPD Pickup
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="DHL" /> DHL BOX / POP
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="ORLEN" /> ORLEN Paczka
-                                </label>
-                            </div>
-
-                            <div id="inpostMapTriggerBox" style="margin-bottom: 10px;">
-                                <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border: none; padding: 11px 18px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);">
-                                    📍 Wybierz Paczkomat na mapie InPost
-                                </button>
-                            </div>
-
-                            <div id="externalMapTriggerBox" style="display: none; margin-bottom: 10px;">
-                                <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 9px 15px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 0.88rem;">
-                                    🔍 Znajdź punkt w wyszukiwarce operatora &raquo;
-                                </a>
-                                <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">
-                                    Otwórz mapę w nowym oknie, odczytaj kod punktu i wklej go poniżej:
-                                </div>
-                            </div>
-
-                            <input type="text" id="paczkomatInput" class="client-input" placeholder="Kod i adres wybranego punktu (np. KRA010M lub wpisz ręcznie)" style="margin-bottom: 6px;">
-                            <div id="selectedPaczkomatInfo" style="font-size: 0.85em; color: #2ecc71; font-weight: bold; min-height: 1.2em;"></div>
-                        </div>
-                    </div>
-
-                    <div class="option-box" id="pickupBox">
-                         <label class="region-label"><input id="pickupOption" type="checkbox" /> <span>🏪 Odbiór osobisty</span></label>
-                    </div>
-                    <div class="option-box" id="schrottBox">
-                         <label class="region-label"><input id="schrottOption" type="checkbox" /> <span>🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
-                    </div>
-                </div>
-
-                <div class="form-header">💳 5. Preferowana forma płatności:</div>
-                <div class="extra-options-group" id="paymentBox">
-                    <div class="option-box" id="cashOptionBox" style="display: none;">
-                        <label class="region-label"><input type="radio" name="payment" value="GOTÓWKA PRZY ODBIORZE" /> <span>💵 Płatność gotówką przy odbiorze</span></label>
-                    </div>
-                    <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)" checked /> <span>🏦 IBAN / Przelew bankowy</span></label>
-                    </div>
-                    <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="PAYPAL (ewabu74@gmail.com)" /> <span>🅿️ PayPal (ewabu74@gmail.com)</span></label>
-                    </div>
-                    <div class="option-box" id="blikContainer">
-                        <label class="region-label"><input type="radio" name="payment" value="BLIK (+48 733 035 301)" /> <span>📱 BLIK na Telefon</span></label>
-                    </div>
-                    <div class="option-box">
-                         <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span>❓ Inne</span></label>
-                    </div>
-                </div>
-
-                <!-- STREFA STAŁEGO KLIENTA (PROSTY KOD RABATOWY) -->
-                <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
-                    <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer;">
-                        <div class="region-left-side">
-                            <input type="checkbox" id="regularCustomerOption" style="accent-color: var(--primary-accent); width: 18px; height: 18px;" />
-                            <span style="color: #f8fafc; font-weight: 600; font-size: 0.92rem;">
-                                Strefa stałego klienta / Posiadam kod rabatowy
-                            </span>
-                        </div>
-                    </label>
-                    
-                    <div id="regularCustomerDetails" style="display: none; margin-top: 10px; margin-left: 30px;">
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <input type="text" id="regularClientIdInput" class="client-input" placeholder="Wpisz kod rabatowy lub ID klienta" style="flex: 1; min-width: 200px; margin-bottom: 0; padding: 9px 12px; font-size: 0.88rem; background: #0f172a; color: #f8fafc; border: 1px solid #334155; text-transform: uppercase;">
-                            <button type="button" id="btnCheckLoyalty" style="background: #2ecc71; color: #0d1117; font-weight: 700; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.84rem; text-transform: uppercase;">
-                                Zastosuj kod
-                            </button>
-                        </div>
-                        
-                        <div id="loyaltyStatusMessage" style="font-size: 0.82rem; margin-top: 6px; font-weight: 600; display: none;"></div>
-                    </div>
-                </div>
-
-                <div id="orderSummaryBreakdown" style="display: none; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; margin: 20px 0 10px 0; font-size: 0.9rem; color: #cbd5e1;">
-                    <div id="orderSummaryBreakdownHeader" style="font-weight: bold; color: #93c5fd; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; font-size: 0.95rem;">
-                        📋 Twoje zestawienie wg rejonów i tygodni:
-                    </div>
-                    <div id="orderSummaryDetails"></div>
-                </div>
-
-                <!-- WYBÓR SPOSOBU PRZEKAZANIA ZAMÓWIENIA -->
-                <div class="order-channel-box">
-                    <div class="order-channel-title">
-                        📲 Wybierz sposób przekazania zamówienia:
-                    </div>
-                    <div class="order-channel-options">
-                        <label class="order-channel-label">
-                            <input type="radio" name="orderChannel" value="email" checked />
-                            <span>✉️ E-mail</span>
-                        </label>
-                        <label class="order-channel-label">
-                            <input type="radio" name="orderChannel" value="whatsapp" />
-                            <span>💬 WhatsApp</span>
-                        </label>
-                        <label class="order-channel-label">
-                            <input type="radio" name="orderChannel" value="sms" />
-                            <span>📱 SMS</span>
-                        </label>
-                    </div>
-                </div>
-
-                <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
-            </div>
-        </div>
-
+<div class="container">
+    <div style="text-align:center; margin-bottom: 20px;">
+        <h2 style="margin:0; color:var(--primary-accent);">Konfigurator Pakietu PRO</h2>
+        <p style="margin:5px 0 0 0; color:var(--text-muted); font-size:0.9rem;">Wybierz rejony, tygodnie i wyślij zgłoszenie.</p>
     </div>
 
-    <!-- MODAL INPOST Z TOKENEM PRODUKCYJNYM -->
-    <div id="inpostModal" class="inpost-modal-overlay">
-        <div class="inpost-modal-content">
-            <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
-                <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
-                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
+    <div class="form-header">📍 1. Wybierz Rejony:</div>
+    <div id="regionsContainer">
+        <!-- Przykładowe rejony (podmień na swoje lub generuj z JS) -->
+        <label class="region-label"><div class="region-left-side"><input type="checkbox" class="region-chk" value="Rejon A" /> <span>Rejon A</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="checkbox" class="region-chk" value="Rejon B" /> <span>Rejon B</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="checkbox" class="region-chk" value="Rejon C" /> <span>Rejon C</span></div></label>
+    </div>
+
+    <div class="form-header">📅 2. Wybierz Tygodnie:</div>
+    <div id="weeksContainer">
+        <!-- Przykładowe tygodnie -->
+        <label class="region-label"><div class="region-left-side"><input type="checkbox" class="week-chk" value="Tydzień 41" /> <span>Tydzień 41</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="checkbox" class="week-chk" value="Tydzień 42" /> <span>Tydzień 42</span></div></label>
+    </div>
+
+    <!-- Opcje dodatkowe z Twojego kodu -->
+    <div class="form-header">💾 3. Opcje dodatkowe:</div>
+    <div class="extra-options-group">                    
+        <div class="option-box" id="mapAddonBox" style="background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 8px; margin-bottom: 6px; border-radius: var(--radius-sm);">
+            <label class="region-label" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                <div class="region-left-side">
+                    <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" /> 
+                    <span style="color: #38bdf8; font-weight: bold;">🗺️ Dołącz Interaktywną Mapę Online GPS</span>
+                </div>
+            </label>
+            <div style="font-size: 0.82rem; color: #94a3b8; margin-left: 31px; margin-top: 4px; line-height: 1.4;">
+                Dodatkowa wycena bez rabatu. Klastry i nawigacja na telefon.
             </div>
-            <div style="flex: 1; width: 100%; height: 100%; position: relative;">
-                <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIxMDQzMzU0OTcsImlhdCI6MTc4ODk3NTQ5NywianRpIjoiOTE3ZTZlNTAtMzM1NC00Yzg1LThlZjAtNjcyYzVkNzg1YzU2IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpZQXRHZkFJR2llTzA1b055TWtsdWxxeU1UZFF1Mnk1VXFjZHpJaGo2QTVBIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiMTE0MmY1MzUtZWJhZS00MTNjLWIzZGEtN2RmMzFmNjc1OTkzIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjExNDJmNTM1LWViYWUtNDEzYy1iM2RhLTdkZjMxZjY3NTk5MyIsImFsbG93ZWRfcmVmZXJyZXJzIjoiZGFidS1pbmZvLmNvbSIsInV1aWQiOiI0YjJkZjdmMi00MzYxLTRiODItODA1MC02ZDdhNTM3NTI3ZTYifQ.ggwtWyuokYjZ_HKl54jOADkIZ5i6cUxbY6CBDs3JwpC2OTIRYxxfVloLt6urXBgzHikNEg2stOXwYeUb6dIEYVpQuRC8GB-WhcAYzLr9c7bpQcj1175j9Gz1QHsdIijgrnR--dcsJv1nU_GrqGDCosrhMBHN94vfa6aHbYtCC0OvlPj7jZlqkGipT_ps8EWlCaMCWA3aelloZroy7yXNhrA_CIPGcoi-CZZVp7bqTuU1-yjJsXb6MOC1LqMdQlS9vySSQYvDouyGEIsYEPEl3pba47wVFvcBmHWOvncrprPkIMnugnRwE4U0kdd8nBFemXqwu3timNpEFpuJ_nj4Bw" language="pl" config="parcelCollect"></inpost-geowidget>
+        </div>
+        <label class="region-label"><div class="region-left-side"><input id="pickupOption" type="checkbox" /> <span>🏪 Odbiór osobisty</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input id="schrottOption" type="checkbox" /> <span>🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></div></label>
+    </div>
+
+    <div class="form-header">💳 4. Preferowana forma płatności:</div>
+    <div class="extra-options-group" id="paymentBox">
+        <label class="region-label"><div class="region-left-side"><input type="radio" name="payment" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)" checked /> <span>🏦 IBAN / Przelew bankowy</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="radio" name="payment" value="PAYPAL (ewabu74@gmail.com)" /> <span>🅿️ PayPal (ewabu74@gmail.com)</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="radio" name="payment" value="BLIK (+48 733 035 301)" /> <span>📱 BLIK na Telefon</span></div></label>
+        <label class="region-label"><div class="region-left-side"><input type="radio" name="payment" value="INNE" /> <span>❓ Inne</span></div></label>
+    </div>
+
+    <!-- CZYSTA STREFA STAŁEGO KLIENTA -->
+    <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
+        <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer; border: none; background: transparent;">
+            <div class="region-left-side">
+                <input type="checkbox" id="regularCustomerOption" style="accent-color: var(--primary-accent); width: 18px; height: 18px;" />
+                <span style="color: #f8fafc; font-weight: 600; font-size: 0.92rem;">Strefa stałego klienta / Posiadam kod rabatowy</span>
             </div>
+        </label>
+        <div id="regularCustomerDetails" style="display: none; margin-top: 10px; margin-left: 30px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="regularClientIdInput" class="client-input" placeholder="Wpisz kod rabatowy lub ID klienta" style="flex: 1; min-width: 200px; margin-bottom: 0; padding: 9px 12px; font-size: 0.88rem; text-transform: uppercase;">
+                <button type="button" id="btnCheckLoyalty" style="background: #2ecc71; color: #0d1117; font-weight: 700; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.84rem; text-transform: uppercase;">Zastosuj kod</button>
+            </div>
+            <div id="loyaltyStatusMessage" style="font-size: 0.82rem; margin-top: 6px; font-weight: 600; display: none;"></div>
         </div>
     </div>
 
-    <div id="google_translate_element" style="display:none;"></div>
+    <!-- CENA I PODSUMOWANIE -->
+    <div class="price-summary" id="priceSummary">Suma: 0.00 PLN</div>
+    
+    <div id="orderSummaryBreakdown" style="display: none; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 16px; margin: 20px 0 10px 0; font-size: 0.9rem; color: #cbd5e1;">
+        <div id="orderSummaryBreakdownHeader" style="font-weight: bold; color: #93c5fd; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; font-size: 0.95rem;">
+            📋 Twoje zestawienie wg rejonów i tygodni:
+        </div>
+        <div id="orderSummaryDetails"></div>
+    </div>
+
+    <hr style="border-color: var(--border-subtle); margin: 20px 0;">
+
+    <!-- NOWE POLE: NUMER TELEFONU KLIENTA (WYMAGANE DLA WA/SMS) -->
+    <div style="margin-bottom: 16px;">
+        <label style="color: #93c5fd; font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 6px;">
+            📞 Twój numer telefonu (Twój identyfikator):
+        </label>
+        <input type="text" id="mainClientIdInput" class="client-input" placeholder="Podaj swój numer telefonu..." style="background: #0f172a; border: 1px solid #334155;">
+        <div id="phoneErrorMsg" style="color: #ef4444; font-size: 0.8rem; margin-top: 4px; display: none; font-weight: bold;">
+            ⚠️ To pole jest wymagane, jeśli chcesz wysłać zamówienie przez WhatsApp lub SMS.
+        </div>
+    </div>
+
+    <!-- WYBÓR KANAŁU WYSYŁKI -->
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: var(--radius-sm); padding: 12px 14px; margin: 15px 0;">
+        <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; font-weight: 600;">
+            Wybierz, jak chcesz przesłać konfigurację:
+        </div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; color: #f8fafc;">
+                <input type="radio" name="sendChannel" value="email" checked style="accent-color: #38bdf8;">
+                ✉️ E-mail
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; color: #25D366; font-weight: 600;">
+                <input type="radio" name="sendChannel" value="whatsapp" style="accent-color: #25D366;">
+                💬 WhatsApp
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; color: #facc15;">
+                <input type="radio" name="sendChannel" value="sms" style="accent-color: #facc15;">
+                📱 SMS
+            </label>
+        </div>
+    </div>
+
+    <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
+</div>
 
 <script>
-//<![CDATA[
-    function wybierzFormat(wartosc, el) {
-        document.querySelectorAll('.format-card-radio').forEach(c => c.classList.remove('active'));
-        if (el) el.classList.add('active');
-        var radio = el.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = true;
-            var event = new Event('change', { bubbles: true });
-            radio.dispatchEvent(event);
-        }
-        
-        if (typeof updatePriceDisplay === 'function') {
+    // --- KONFIGURACJA API I DANYCH ---
+    var apiURL = "TUTAJ_WKLEJ_SWOJ_LINK_DO_SKRYPTU_GOOGLE_APPS_SCRIPT"; 
+    var MOJ_NUMER_TEL = "48600812820";
+
+    // --- ZMIENNE STANU ---
+    var activeLoyaltyDiscount = null; 
+    var currentCurrency = "PLN";
+    var calc = { totalPrice: 0, finalPrice: 0, totalDays: 0, currency: "PLN" };
+
+    // --- LOGIKA FORMULARZA I PRZELICZANIA ---
+    document.querySelectorAll('.region-chk, .week-chk, #mapOnlineOption').forEach(el => {
+        el.addEventListener('change', updatePriceDisplay);
+    });
+
+    // Rozwijanie strefy stałego klienta
+    var regCustChk = document.getElementById('regularCustomerOption');
+    var regCustDetails = document.getElementById('regularCustomerDetails');
+    if (regCustChk) {
+        regCustChk.addEventListener('change', function() {
+            if (regCustDetails) {
+                regCustDetails.style.display = this.checked ? 'block' : 'none';
+            }
+            if (!this.checked) {
+                activeLoyaltyDiscount = null; // reset rabatu
+                document.getElementById('loyaltyStatusMessage').style.display = 'none';
+                document.getElementById('regularClientIdInput').value = '';
+            }
             updatePriceDisplay();
-        }
-    }
-
-    function parseRegionInfo(rawInfo) {
-        if (!rawInfo || typeof rawInfo !== 'string' || rawInfo.trim() === '-' || rawInfo.trim() === '') {
-            return null;
-        }
-        var str = rawInfo.trim();
-
-        var isAbruf = /telefon|abruf/i.test(str);
-        var systemText = isAbruf ? "Na zgłoszenie (Auf Abruf)" : (/stałe|feste/i.test(str) ? "Harmonogram stały" : "Harmonogram");
-
-        var m = str.match(/\((.*?)\)/);
-        var inside = m ? m[1].trim() : str;
-        var freqPl = inside;
-        if (inside.indexOf('/') !== -1) {
-            freqPl = inside.split('/')[0].trim();
-        }
-
-        return {
-            system: systemText,
-            frequency: freqPl
-        };
-    }
-
-    function extractPointData(raw) {
-        if (!raw) return null;
-        var p = raw.detail || raw.point || raw.data || raw;
-        var name = p.name || p.id || (p.point && (p.point.name || p.point.id));
-        if (!name && typeof p === 'string' && /^[A-Z]{3,4}\d{2,5}[A-Z0-9]*$/i.test(p.trim())) {
-            name = p.trim();
-        }
-        if (!name) return null;
-
-        var addr = "";
-        if (p.address) {
-            addr = [p.address.line1, p.address.line2].filter(Boolean).join(', ');
-        } else if (p.address_details) {
-            addr = [p.address_details.street + " " + (p.address_details.building_number || ""), p.address_details.post_code + " " + p.address_details.city].filter(Boolean).join(', ');
-        }
-        return { code: name, address: addr };
-    }
-
-    function applySelectedPoint(parsed) {
-        if (!parsed || !parsed.code) return;
-        var fullText = "[InPost] " + parsed.code + (parsed.address ? " (" + parsed.address + ")" : "");
-
-        var targetInput = document.getElementById('paczkomatInput');
-        var infoDiv = document.getElementById('selectedPaczkomatInfo');
-        var modal = document.getElementById('inpostModal');
-
-        if (targetInput) targetInput.value = fullText;
-        if (infoDiv) infoDiv.innerText = "✓ Wybrano: " + parsed.code + (parsed.address ? " - " + parsed.address : "");
-        if (modal) modal.style.display = 'none';
-    }
-
-    window.addEventListener('message', function(event) {
-        if (!event.data) return;
-        var parsed = extractPointData(event.data);
-        if (parsed) applySelectedPoint(parsed);
-    });
-
-    ['inpost:geowidget:point:select', 'pointselect', 'point:select', 'geowidget:point:select'].forEach(function(evtName) {
-        document.addEventListener(evtName, function(e) {
-            var parsed = extractPointData(e);
-            if (parsed) applySelectedPoint(parsed);
         });
-        window.addEventListener(evtName, function(e) {
-            var parsed = extractPointData(e);
-            if (parsed) applySelectedPoint(parsed);
-        });
-    });
-
-    window.onPaczkomatSelect = function(data) {
-        var parsed = extractPointData(data);
-        if (parsed) applySelectedPoint(parsed);
-    };
-
-    function getMondayOfISOWeek(w, y) {
-        const simple = new Date(y, 0, 1 + (w - 1) * 7);
-        const dow = simple.getDay();
-        const ISOweekStart = simple;
-        if (dow <= 4)
-            ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-        else
-            ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-        return ISOweekStart;
     }
 
-    let activeLoyaltyDiscount = null;
+    // Weryfikacja kodu rabatowego (Strefa stałego klienta)
+    document.getElementById('btnCheckLoyalty').addEventListener('click', function() {
+        var codeInput = document.getElementById('regularClientIdInput').value.trim().toUpperCase();
+        var statusMsg = document.getElementById('loyaltyStatusMessage');
+        var btnLoyalty = document.getElementById('btnCheckLoyalty');
 
-    document.addEventListener("DOMContentLoaded", function() {
-        var w = document.getElementById('inpostGeowidget');
-        if (w) {
-            ['pointselect', 'inpost:geowidget:point:select', 'select'].forEach(function(evtName) {
-                w.addEventListener(evtName, function(e) {
-                    var parsed = extractPointData(e);
-                    if (parsed) applySelectedPoint(parsed);
-                });
-            });
+        if (!codeInput) {
+            statusMsg.style.display = 'block';
+            statusMsg.style.color = '#ef4444';
+            statusMsg.innerText = 'Wpisz kod rabatowy.';
+            return;
         }
 
-        const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
-
-        var regCustChk = document.getElementById('regularCustomerOption');
-        var regCustDetails = document.getElementById('regularCustomerDetails');
-        var clientIdInput = document.getElementById('regularClientIdInput');
-        var btnCheckLoyalty = document.getElementById('btnCheckLoyalty');
-        var loyaltyStatusMsg = document.getElementById('loyaltyStatusMessage');
-
-        if (regCustChk) {
-            regCustChk.addEventListener('change', function() {
-                if (regCustDetails) {
-                    regCustDetails.style.display = this.checked ? 'block' : 'none';
-                }
-                if (!this.checked) {
-                    activeLoyaltyDiscount = null;
-                    if (loyaltyStatusMsg) loyaltyStatusMsg.style.display = 'none';
-                    if (clientIdInput) clientIdInput.value = '';
-                    updatePriceDisplay();
-                }
-            });
-        }
-
-        if (clientIdInput) {
-            clientIdInput.addEventListener('input', function() {
-                activeLoyaltyDiscount = null;
-                if (loyaltyStatusMsg) loyaltyStatusMsg.style.display = 'none';
-                updatePriceDisplay();
-            });
-        }
-
-        if (btnCheckLoyalty) {
-            btnCheckLoyalty.addEventListener('click', function() {
-                var idVal = (clientIdInput ? clientIdInput.value : '').trim();
-                if (!idVal) {
-                    if (loyaltyStatusMsg) {
-                        loyaltyStatusMsg.style.display = 'block';
-                        loyaltyStatusMsg.style.color = '#ef4444';
-                        loyaltyStatusMsg.innerText = 'Wpisz kod rabatowy.';
-                    }
-                    return;
-                }
-
-                btnCheckLoyalty.innerText = 'Sprawdzam...';
-                btnCheckLoyalty.disabled = true;
-
-                fetch(apiURL + "?action=checkDiscount&clientId=" + encodeURIComponent(idVal))
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!loyaltyStatusMsg) return;
-                        loyaltyStatusMsg.style.display = 'block';
-
-                        if (data.status === "OK" && data.found) {
-                            activeLoyaltyDiscount = {
-                                type: String(data.discountType).toUpperCase(),
-                                value: Number(data.discountValue),
-                                clientName: data.clientName || "",
-                                clientId: idVal
-                            };
-                            loyaltyStatusMsg.style.color = '#2ecc71';
-                            var unit = activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR';
-                            loyaltyStatusMsg.innerHTML = `✓ Zastosowano rabat: <b>-${activeLoyaltyDiscount.value}${unit}</b>`;
-                        } else {
-                            activeLoyaltyDiscount = null;
-                            loyaltyStatusMsg.style.color = '#fbbf24';
-                            loyaltyStatusMsg.innerHTML = `Kod oczekuje na weryfikację. Zostanie uwzględniony przy potwierdzeniu zamówienia.`;
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Błąd weryfikacji rabatu:", err);
-                        if (loyaltyStatusMsg) {
-                            loyaltyStatusMsg.style.display = 'block';
-                            loyaltyStatusMsg.style.color = '#ef4444';
-                            loyaltyStatusMsg.innerText = 'Błąd połączenia. Spróbuj ponownie.';
-                        }
-                        activeLoyaltyDiscount = null;
-                    })
-                    .finally(() => {
-                        btnCheckLoyalty.innerText = 'Zastosuj kod';
-                        btnCheckLoyalty.disabled = false;
-                        updatePriceDisplay();
-                    });
-            });
-        }
- 
-        const GLOBAL_SPECIAL_REGIONS = [
-            'Eppstein', 'Flörsbachtal', 'Giessen Stadt', 'Gräfelfing', 'Gründau', 
-            'Hattersheim', 'Hattersheim am Main', 'Hofheim am Taunus', 'Kamp-Lintfort', 
-            'Kelkheim (Taunus)', 'Kelkheim am Taunus', 'Kirchheim', 'Königstein (Taunus)', 
-            'Kronberg im Taunus', 'Trier-Stadt'
-        ];
-
-        const SPECIAL_REGIONS_LAND_MAP = {
-            'Calw': 'Baden-Württemberg', 'Freudenstadt': 'Baden-Württemberg', 'Heidelberg': 'Baden-Württemberg',
-            'Heilbronn': 'Baden-Württemberg', 'Karlsruhe Kreis': 'Baden-Württemberg', 'Karlsruhe Stadt': 'Baden-Württemberg',
-            'Konstanz': 'Baden-Württemberg', 'Ortenau': 'Baden-Württemberg', 'Rhein-Neckar-Kreis': 'Baden-Württemberg',
-            'Tuttlingen': 'Baden-Württemberg', 'Zollernalb': 'Baden-Württemberg', 'Augsburg Kreis': 'Bayern',
-            'Augsburg Stadt': 'Bayern', 'Amberg': 'Bayern', 'Bamberg': 'Bayern', 'Bayreuth': 'Bayern', 'Fürth': 'Bayern',
-            'Gräfelfing': 'Bayern', 'Kirchheim': 'Bayern', 'Kulmbach': 'Bayern', 'Monachium-Południowy Wschód': 'Bayern',
-            'Neustadt a.d. Waldnaab': 'Bayern', 'Regensburg': 'Bayern', 'Straubing-Bogen': 'Bayern', 'Berlin': 'Berlin',
-            'Barnim': 'Brandenburg', 'Elbe-Elster': 'Brandenburg', 'Oder-Spree': 'Brandenburg', 'Schwedt/Oder': 'Brandenburg',
-            'Spree-Neiße': 'Brandenburg', 'Bad Homburg': 'Hessen', 'Bad Orb': 'Hessen', 'Bad Soden-Salmünster': 'Hessen',
-            'Biebergemünd': 'Hessen', 'Eppstein': 'Hessen', 'Eschwege': 'Hessen', 'Flörsbachtal': 'Hessen',
-            'Flörsheim am Main': 'Hessen', 'Frankfurt': 'Hessen', 'Freigericht': 'Hessen', 'Friedrichsdorf': 'Hessen',
-            'Fulda': 'Hessen', 'Gelnhausen': 'Hessen', 'Giessen': 'Hessen', 'Giessen Stadt': 'Hessen', 'Glashütten': 'Hessen',
-            'Grävenwiesbach': 'Hessen', 'Gross-Gerau': 'Hessen', 'Gründau': 'Hessen', 'Hasselroth': 'Hessen',
-            'Hattersheim': 'Hessen', 'Hattersheim am Main': 'Hessen', 'Hersfeld-Rotenburg': 'Hessen', 'Hofheim am Taunus': 'Hessen',
-            'Jossgrund': 'Hessen', 'Kelkheim (Taunus)': 'Hessen', 'Kelkheim am Taunus': 'Hessen', 'Königstein (Taunus)': 'Hessen', 'Kronberg': 'Hessen',
-            'Kronberg im Taunus': 'Hessen', 'Liederbach': 'Hessen', 'Limburg-Weilburg': 'Hessen', 'Linsengericht': 'Hessen',
-            'Neu-Anspach': 'Hessen', 'Nidderau': 'Hessen', 'Oberursel (Taunus)': 'Hessen', 'Rheingau-Taunus': 'Hessen',
-            'Rodenbach': 'Hessen', 'Ronneburg': 'Hessen', 'Schlüchtern': 'Hessen', 'Schmitten': 'Hessen',
-            'Schmitten im Taunus': 'Hessen', 'Schwalbach': 'Hessen', 'Sinntal': 'Hessen', 'Steinbach': 'Hessen',
-            'Usingen': 'Hessen', 'Walldorf-Mörfelden': 'Hessen', 'Wehrheim': 'Hessen', 'Weilrod': 'Hessen',
-            'Werra-Meissner': 'Hessen', 'Wiesbaden-Naurod': 'Hessen', 'Braunschweig': 'Niedersachsen',
-            'Diepholz': 'Niedersachsen', 'Emsland': 'Niedersachsen', 'Gifhorn': 'Niedersachsen', 'Göttingen': 'Niedersachsen',
-            'Hannover': 'Niedersachsen', 'Harburg': 'Niedersachsen', 'Heidekreis': 'Niedersachsen',
-            'Holzminden': 'Niedersachsen', 'Lüneburg': 'Niedersachsen', 'Osnabrück': 'Niedersachsen', 'Stade': 'Niedersachsen',
-            'Wolfsburg': 'Niedersachsen', 'Aldenhoven': 'Nordrhein-Westfalen', 'Alpen': 'Nordrhein-Westfalen',
-            'Altena': 'Nordrhein-Westfalen', 'Bad Münstereifel': 'Nordrhein-Westfalen', 'Bad-Munstereifel': 'Nordrhein-Westfalen',
-            'Balve': 'Nordrhein-Westfalen', 'Bedburg': 'Nordrhein-Westfalen', 'Bedburg-Hau': 'Nordrhein-Westfalen',
-            'Blankenheim': 'Nordrhein-Westfalen', 'Bonn': 'Nordrhein-Westfalen', 'Breckerfeld': 'Nordrhein-Westfalen',
-            'Brühl': 'Nordrhein-Westfalen', 'Dahlem': 'Nordrhein-Westfalen', 'Dormagen': 'Nordrhein-Westfalen',
-            'Dortmund': 'Nordrhein-Westfalen', 'Dülmen': 'Nordrhein-Westfalen', 'Düsseldorf': 'Nordrhein-Westfalen',
-            'Düren': 'Nordrhein-Westfalen', 'Euskirchen Kreis': 'Nordrhein-Westfalen',
-            'Emmerich am Rhein': 'Nordrhein-Westfalen', 'Ennepetal': 'Nordrhein-Westfalen', 'Erftstadt': 'Nordrhein-Westfalen',
-            'Erkrath': 'Nordrhein-Westfalen', 'Euskirchen': 'Nordrhein-Westfalen', 'Geilenkirchen': 'Nordrhein-Westfalen',
-            'Geldern': 'Nordrhein-Westfalen', 'Goch': 'Nordrhein-Westfalen', 'Grefrath': 'Nordrhein-Westfalen',
-            'Grevenbroich': 'Nordrhein-Westfalen', 'Haan': 'Nordrhein-Westfalen', 'Heiligenhaus': 'Nordrhein-Westfalen',
-            'Heinsberg': 'Nordrhein-Westfalen', 'Heinsberg Kreis': 'Nordrhein-Westfalen', 'Hellenthal': 'Nordrhein-Westfalen', 'Hückelhoven': 'Nordrhein-Westfalen',
-            'Hürth': 'Nordrhein-Westfalen', 'Iserlohn': 'Nordrhein-Westfalen', 'Issum': 'Nordrhein-Westfalen',
-            'Jüchen': 'Nordrhein-Westfalen', 'Jülich': 'Nordrhein-Westfalen', 'Kaarst': 'Nordrhein-Westfalen',
-            'Kall': 'Nordrhein-Westfalen', 'Kamp-Lintfort': 'Nordrhein-Westfalen', 'Kerken': 'Nordrhein-Westfalen',
-            'Kevelaer': 'Nordrhein-Westfalen', 'Kleve Kreis': 'Nordrhein-Westfalen', 'Korschenbroich': 'Nordrhein-Westfalen', 'Köln': 'Nordrhein-Westfalen',
-            'Krefeld': 'Nordrhein-Westfalen', 'Leverkusen': 'Nordrhein-Westfalen', 'Mechernich': 'Nordrhein-Westfalen',
-            'Meerbusch': 'Nordrhein-Westfalen', 'Menden': 'Nordrhein-Westfalen', 'Merzenich': 'Nordrhein-Westfalen',
-            'Monheim am Rhein': 'Nordrhein-Westfalen', 'Münster': 'Nordrhein-Westfalen',
-            'Nachrodt-Wiblingwerde': 'Nordrhein-Westfalen', 'Nettetal': 'Nordrhein-Westfalen',
-            'Neukirchen-Vluyn': 'Nordrhein-Westfalen', 'Neuss': 'Nordrhein-Westfalen', 'Oberberg': 'Nordrhein-Westfalen',
-            'Olpe': 'Nordrhein-Westfalen', 'Plettenberg': 'Nordrhein-Westfalen', 'Pulheim': 'Nordrhein-Westfalen',
-            'Ratingen': 'Nordrhein-Westfalen', 'Rees': 'Nordrhein-Westfalen', 'Rhein-Kreis Neuss': 'Nordrhein-Westfalen', 'Rhein-Sieg': 'Nordrhein-Westfalen',
-            'Rheinisch-Bergischer': 'Nordrhein-Westfalen', 'Rheurdt': 'Nordrhein-Westfalen',
-            'Rommerskirchen': 'Nordrhein-Westfalen', 'Schleiden': 'Nordrhein-Westfalen', 'Selfkant': 'Nordrhein-Westfalen',
-            'Solingen': 'Nordrhein-Westfalen', 'Sonsbeck': 'Nordrhein-Westfalen', 'Sprockhövel': 'Nordrhein-Westfalen',
-            'Straelen': 'Nordrhein-Westfalen', 'Tönisvorst': 'Nordrhein-Westfalen', 'Übach-Palenberg': 'Nordrhein-Westfalen',
-            'Uedem': 'Nordrhein-Westfalen', 'Viersen': 'Nordrhein-Westfalen', 'Viersen Kreis': 'Nordrhein-Westfalen', 'Voerde': 'Nordrhein-Westfalen',
-            'Weeze': 'Nordrhein-Westfalen', 'Weilerswist': 'Nordrhein-Westfalen', 'Werdohl': 'Nordrhein-Westfalen',
-            'Wesel': 'Nordrhein-Westfalen', 'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
-            'Xanten': 'Nordrhein-Westfalen', 'Zülpich': 'Nordrhein-Westfalen', 'Alzey-Worms': 'Rheinland-Pfalz',
-            'Altenkirchen (Westerwald)': 'Rheinland-Pfalz', 'Bad-Kreuznach': 'Rheinland-Pfalz',
-            'Bernkastel-Wittlich': 'Rheinland-Pfalz', 'Cochem-Zell': 'Rheinland-Pfalz',
-            'Eifelkreis Bitburg-Prüm': 'Rheinland-Pfalz', 'Mayen-Koblenz': 'Rheinland-Pfalz',
-            'Trier-Saarburg': 'Rheinland-Pfalz', 'Trier-Stadt': 'Rheinland-Pfalz', 'Vulkaneifel': 'Rheinland-Pfalz',
-            'Westerwald': 'Rheinland-Pfalz', 'Altmarkkreis-Salzwedel': 'Sachsen-Anhalt', 'Burgenland': 'Sachsen-Anhalt',
-            'Leipzig': 'Sachsen', 'Nordsachsen': 'Sachsen', 'Lübeck': 'Schleswig-Holstein',
-            'Rendsburg-Eckernförde': 'Schleswig-Holstein'
-        };
-
-        const NEIGHBOR_CLUSTERS_MAP = {
-            'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
-            'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
-            'heidelberg': ['rhein-neckar-kreis', 'karlsruhe kreis', 'heilbronn'],
-            'heilbronn': ['heidelberg', 'rhein-neckar-kreis', 'karlsruhe kreis'],
-            'karlsruhe kreis': ['karlsruhe stadt', 'heidelberg', 'rhein-neckar-kreis', 'calw'],
-            'karlsruhe stadt': ['karlsruhe kreis', 'rhein-neckar-kreis', 'calw'],
-            'konstanz': ['tuttlingen', 'zollernalb'],
-            'ortenau': ['freudenstadt', 'karlsruhe kreis', 'calw'],
-            'rhein-neckar-kreis': ['heidelberg', 'karlsruhe kreis', 'karlsruhe stadt', 'heilbronn'],
-            'tuttlingen': ['konstanz', 'zollernalb', 'freudenstadt'],
-            'zollernalb': ['tuttlingen', 'freudenstadt', 'calw', 'konstanz'],
-            'amberg': ['regensburg', 'neustadt a.d. waldnaab', 'bayreuth', 'fürth'],
-            'augsburg kreis': ['augsburg stadt', 'gräfelfing', 'kirchheim'],
-            'augsburg stadt': ['augsburg kreis', 'gräfelfing', 'kirchheim'],
-            'bamberg': ['bayreuth', 'kulmbach', 'fürth', 'amberg'],
-            'bayreuth': ['kulmbach', 'bamberg', 'amberg', 'neustadt a.d. waldnaab'],
-            'fürth': ['bamberg', 'amberg', 'bayreuth'],
-            'gräfelfing': ['kirchheim', 'monachium-południowy wschód', 'augsburg kreis', 'augsburg stadt'],
-            'kirchheim': ['gräfelfing', 'monachium-południowy wschód', 'augsburg kreis'],
-            'kulmbach': ['bayreuth', 'bamberg', 'neustadt a.d. waldnaab'],
-            'monachium-południowy wschód': ['kirchheim', 'gräfelfing'],
-            'neustadt a.d. waldnaab': ['amberg', 'bayreuth', 'regensburg', 'kulmbach'],
-            'regensburg': ['straubing-bogen', 'amberg', 'neustadt a.d. waldnaab'],
-            'straubing-bogen': ['regensburg', 'amberg'],
-            'berlin': ['barnim', 'oder-spree'],
-            'barnim': ['berlin', 'oder-spree', 'schwedt/oder'],
-            'elbe-elster': ['spree-neiße', 'nordsachsen', 'leipzig'],
-            'oder-spree': ['berlin', 'barnim', 'spree-neiße', 'schwedt/oder'],
-            'schwedt/oder': ['barnim', 'oder-spree'],
-            'spree-neiße': ['oder-spree', 'elbe-elster'],
-            'bad homburg': ['friedrichsdorf', 'oberursel (taunus)', 'steinbach', 'frankfurt', 'usingen'],
-            'bad orb': ['bad soden-salmünster', 'biebergemünd', 'gelnhausen', 'jossgrund', 'flörsbachtal'],
-            'bad soden-salmünster': ['bad orb', 'schlüchtern', 'sinntal', 'biebergemünd', 'gelnhausen'],
-            'biebergemünd': ['gelnhausen', 'bad orb', 'flörsbachtal', 'linsengericht', 'jossgrund'],
-            'eppstein': ['hofheim am taunus', 'kelkheim (taunus)', 'glashütten', 'wiesbaden-naurod'],
-            'eschwege': ['werra-meissner', 'hersfeld-rotenburg', 'fulda'],
-            'flörsbachtal': ['jossgrund', 'biebergemünd', 'bad orb', 'sinntal'],
-            'flörsheim am main': ['hattersheim', 'hattersheim am main', 'hofheim am taunus', 'gross-gerau'],
-            'frankfurt': ['bad homburg', 'oberursel (taunus)', 'steinbach', 'hattersheim', 'gross-gerau'],
-            'freigericht': ['hasselroth', 'gelnhausen', 'rodenbach', 'linsengericht'],
-            'friedrichsdorf': ['bad homburg', 'rosbach', 'usingen', 'wehrheim'],
-            'fulda': ['hersfeld-rotenburg', 'schlüchtern', 'sinntal', 'bad soden-salmünster'],
-            'gelnhausen': ['linsengericht', 'gründau', 'biebergemünd', 'bad orb', 'hasselroth'],
-            'giessen': ['giessen stadt', 'hersfeld-rotenburg', 'limburg-weilburg', 'usingen'],
-            'giessen stadt': ['giessen', 'usingen', 'limburg-weilburg'],
-            'glashütten': ['königstein (taunus)', 'schmitten', 'schmitten im taunus', 'eppstein'],
-            'grävenwiesbach': ['usingen', 'weilrod', 'wehrheim', 'schmitten'],
-            'gross-gerau': ['walldorf-mörfelden', 'frankfurt', 'flörsheim am main', 'hattersheim'],
-            'gründau': ['gelnhausen', 'nidderau', 'ronneburg', 'hasselroth', 'linsengericht'],
-            'hasselroth': ['freigericht', 'gelnhausen', 'gründau', 'rodenbach', 'linsengericht'],
-            'hattersheim': ['hofheim am taunus', 'kelkheim (taunus)', 'flörsheim am main', 'frankfurt'],
-            'hattersheim am main': ['hattersheim', 'hofheim am taunus', 'flörsheim am main', 'frankfurt'],
-            'hersfeld-rotenburg': ['fulda', 'werra-meissner', 'eschwege', 'giessen'],
-            'hofheim am taunus': ['hattersheim', 'kelkheim (taunus)', 'eppstein', 'flörsheim am main', 'wiesbaden-naurod'],
-            'jossgrund': ['bad orb', 'flörsbachtal', 'biebergemünd', 'sinntal'],
-            'kelkheim (taunus)': ['hofheim am taunus', 'königstein (taunus)', 'hattersheim', 'eppstein', 'kronberg'],
-            'kelkheim am taunus': ['kelkheim (taunus)', 'hofheim am taunus', 'königstein (taunus)'],
-            'königstein (taunus)': ['kronberg', 'kronberg im taunus', 'kelkheim (taunus)', 'schwalbach', 'glashütten'],
-            'kronberg': ['kronberg im taunus', 'königstein (taunus)', 'schwalbach', 'steinbach', 'oberursel (taunus)'],
-            'kronberg im taunus': ['kronberg', 'königstein (taunus)', 'schwalbach', 'oberursel (taunus)'],
-            'liederbach': ['kelkheim (taunus)', 'bad soden am taunus', 'frankfurt', 'sulzbach'],
-            'limburg-weilburg': ['weilrod', 'usingen', 'giessen', 'rheingau-taunus'],
-            'linsengericht': ['gelnhausen', 'biebergemünd', 'freigericht', 'hasselroth'],
-            'neu-anspach': ['usingen', 'wehrheim', 'schmitten', 'bad homburg'],
-            'nidderau': ['gründau', 'ronneburg', 'rodenbach', 'frankfurt'],
-            'oberursel (taunus)': ['bad homburg', 'steinbach', 'kronberg', 'frankfurt'],
-            'rheingau-taunus': ['wiesbaden-naurod', 'limburg-weilburg', 'eppstein'],
-            'rodenbach': ['ronneburg', 'freigericht', 'hasselroth', 'nidderau', 'gelnhausen'],
-            'ronneburg': ['gründau', 'rodenbach', 'nidderau', 'gelnhausen'],
-            'schlüchtern': ['sinntal', 'bad soden-salmünster', 'fulda', 'bad orb'],
-            'schmitten': ['schmitten im taunus', 'weilrod', 'usingen', 'glashütten', 'königstein (taunus)'],
-            'schmitten im taunus': ['schmitten', 'weilrod', 'usingen', 'glashütten', 'königstein (taunus)'],
-            'schwalbach': ['eschborn', 'kronberg', 'königstein (taunus)', 'sulzbach', 'frankfurt'],
-            'sinntal': ['schlüchtern', 'bad soden-salmünster', 'jossgrund', 'flörsbachtal', 'fulda'],
-            'steinbach': ['oberursel (taunus)', 'kronberg', 'frankfurt', 'schwalbach'],
-            'usingen': ['neu-anspach', 'wehrheim', 'grävenwiesbach', 'weilrod', 'schmitten'],
-            'walldorf-mörfelden': ['gross-gerau', 'frankfurt', 'flörsheim am main'],
-            'wehrheim': ['usingen', 'neu-anspach', 'friedrichsdorf', 'bad homburg'],
-            'weilrod': ['usingen', 'schmitten', 'grävenwiesbach', 'limburg-weilburg'],
-            'werra-meissner': ['eschwege', 'hersfeld-rotenburg', 'göttingen'],
-            'wiesbaden-naurod': ['hofheim am taunus', 'eppstein', 'rheingau-taunus'],
-            'braunschweig': ['wolfsburg', 'gifhorn', 'hannover'],
-            'diepholz': ['osnabrück', 'hannover'],
-            'emsland': ['osnabrück'],
-            'gifhorn': ['wolfsburg', 'braunschweig', 'hannover', 'heidekreis'],
-            'göttingen': ['holzminden', 'werra-meissner', 'eschwege'],
-            'hannover': ['braunschweig', 'heidekreis', 'diepholz', 'gifhorn'],
-            'harburg': ['lüneburg', 'heidekreis', 'stade'],
-            'heidekreis': ['hannover', 'harburg', 'lüneburg', 'gifhorn'],
-            'holzminden': ['göttingen', 'hannover'],
-            'lüneburg': ['harburg', 'heidekreis'],
-            'osnabrück': ['diepholz', 'emsland', 'münster'],
-            'stade': ['harburg', 'lüneburg'],
-            'wolfsburg': ['gifhorn', 'braunschweig', 'altmarkkreis-salzwedel'],
-            'aldenhoven': ['jülich', 'merzenich', 'eschweiler', 'geilenkirchen', 'baesweiler', 'düren'],
-            'alpen': ['rheinberg', 'issum', 'sonsbeck', 'xanten', 'kamp-lintfort', 'wesel'],
-            'altena': ['werdohl', 'nachrodt-wiblingwerde', 'iserlohn', 'plettenberg', 'ludenscheid'],
-            'bad münstereifel': ['bad-munstereifel', 'euskirchen', 'mechernich', 'zülpich', 'blankenheim', 'euskirchen kreis'],
-            'bad-munstereifel': ['bad münstereifel', 'euskirchen', 'mechernich', 'zülpich', 'euskirchen kreis'],
-            'balve': ['menden', 'iserlohn', 'neuenrade', 'sundern', 'arnsberg'],
-            'bedburg': ['bergheim', 'jüchen', 'rommerskirchen', 'grevenbroich', 'düren'],
-            'bedburg-hau': ['kleve', 'kalkar', 'goch', 'emmerich am rhein', 'kranenburg', 'kleve kreis'],
-            'blankenheim': ['dahlem', 'nettersheim', 'schleiden', 'bad münstereifel', 'kall', 'euskirchen kreis'],
-            'bonn': ['rhein-sieg', 'brühl', 'bornheim', 'alfter', 'wesseling', 'euskirchen kreis'],
-            'breckerfeld': ['ennepetal', 'schwelm', 'hagen', 'halver'],
-            'brühl': ['wesseling', 'hürth', 'erftstadt', 'bonn', 'köln', 'euskirchen kreis'],
-            'dahlem': ['blankenheim', 'hellenthal', 'schleiden', 'kall', 'euskirchen kreis'],
-            'dormagen': ['neuss', 'rommerskirchen', 'pulheim', 'köln', 'monheim am rhein', 'rhein-kreis neuss'],
-            'dortmund': ['bochum', 'castrop-rauxel', 'lünen', 'schwerte', 'unna', 'witten'],
-            'dülmen': ['haltern am see', 'coesfeld', 'lüdinghausen', 'münster', 'wesel'],
-            'düsseldorf': ['meerbusch', 'ratingen', 'neuss', 'erkrath', 'hilden', 'dormagen', 'duisburg', 'rhein-kreis neuss'],
-            'düren': ['euskirchen kreis', 'heinsberg kreis', 'euskirchen', 'heinsberg', 'merzenich', 'jülich', 'aldenhoven', 'zülpich', 'aachen', 'rhein-erft-kreis'],
-            'euskirchen kreis': ['düren', 'euskirchen', 'bad münstereifel', 'bad-munstereifel', 'mechernich', 'zülpich', 'weilerswist', 'kall', 'schleiden', 'blankenheim', 'dahlem', 'hellenthal', 'rhein-sieg', 'brühl', 'erftstadt', 'bonn'],
-            'emmerich am rhein': ['rees', 'kleve', 'bedburg-hau', 'kleve kreis'],
-            'ennepetal': ['schwelm', 'gevelsberg', 'breckerfeld', 'sprockhövel'],
-            'erftstadt': ['hürth', 'brühl', 'kerpen', 'zülpich', 'weilerswist', 'euskirchen kreis', 'düren'],
-            'erkrath': ['düsseldorf', 'haan', 'mettmann', 'hilden', 'wülfrath', 'rhein-kreis neuss'],
-            'euskirchen': ['weilerswist', 'bad münstereifel', 'zülpich', 'mechernich', 'rhein-sieg', 'euskirchen kreis', 'düren'],
-            'geilenkirchen': ['übach-palenberg', 'heinsberg', 'hückelhoven', 'gangelt', 'aldenhoven', 'heinsberg kreis', 'düren'],
-            'geldern': ['kevelaer', 'straelen', 'issum', 'kerken', 'sonsbeck', 'kleve kreis', 'wesel'],
-            'goch': ['bedburg-hau', 'kleve', 'uedem', 'weeze', 'kevelaer', 'kleve kreis'],
-            'grefrath': ['nettetal', 'kempen', 'tönisvorst', 'viersen', 'viersen kreis'],
-            'grevenbroich': ['jüchen', 'rommerskirchen', 'neuss', 'bedburg', 'korschenbroich', 'rhein-kreis neuss'],
-            'haan': ['solingen', 'hilden', 'erkrath', 'mettmann', 'wuppertal'],
-            'heiligenhaus': ['velbert', 'ratingen', 'wülfrath', 'essen'],
-            'heinsberg': ['geilenkirchen', 'hückelhoven', 'selfkant', 'waldfeucht', 'wassenberg', 'heinsberg kreis', 'düren', 'viersen kreis'],
-            'heinsberg kreis': ['düren', 'viersen kreis', 'rhein-kreis neuss', 'heinsberg', 'geilenkirchen', 'hückelhoven', 'selfkant', 'aldenhoven', 'jülich', 'viersen', 'aachen', 'mönchengladbach'],
-            'hellenthal': ['schleiden', 'kall', 'dahlem', 'blankenheim', 'euskirchen kreis'],
-            'hückelhoven': ['heinsberg', 'geilenkirchen', 'erkelenz', 'wassenberg', 'jüchen', 'heinsberg kreis', 'rhein-kreis neuss'],
-            'hürth': ['köln', 'brühl', 'erftstadt', 'frechen'],
-            'iserlohn': ['menden', 'hemer', 'schwerte', 'altena', 'nachrodt-wiblingwerde'],
-            'issum': ['geldern', 'kamp-lintfort', 'alpen', 'kerken', 'sonsbeck', 'wesel', 'kleve kreis'],
-            'jüchen': ['grevenbroich', 'korschenbroich', 'mönchengladbach', 'bedburg', 'rhein-kreis neuss'],
-            'jülich': ['aldenhoven', 'titz', 'linnich', 'niederzier', 'merzenich', 'düren', 'heinsberg kreis'],
-            'kaarst': ['neuss', 'meerbusch', 'korschenbroich', 'willich', 'krefeld', 'rhein-kreis neuss', 'viersen kreis'],
-            'kall': ['mechernich', 'schleiden', 'hellenthal', 'blankenheim', 'nettersheim', 'euskirchen kreis'],
-            'kamp-lintfort': ['moers', 'neukirchen-vluyn', 'rheinberg', 'issum', 'alpen', 'wesel'],
-            'kerken': ['geldern', 'straelen', 'kempen', 'wachtendonk', 'issum', 'kleve kreis', 'wesel'],
-            'kevelaer': ['geldern', 'weeze', 'sonsbeck', 'straelen', 'goch', 'kleve kreis', 'wesel'],
-            'kleve kreis': ['wesel', 'viersen kreis', 'geldern', 'kevelaer', 'goch', 'weeze', 'uedem', 'straelen', 'kerken', 'bedburg-hau', 'emmerich am rhein', 'rees'],
-            'korschenbroich': ['mönchengladbach', 'kaarst', 'jüchen', 'neuss', 'willich', 'rhein-kreis neuss', 'viersen kreis'],
-            'köln': ['leverkusen', 'bergisch gladbach', 'hürth', 'brühl', 'pulheim', 'dormagen', 'rhein-kreis neuss'],
-            'krefeld': ['moers', 'meerbusch', 'tönisvorst', 'willich', 'duisburg', 'viersen kreis', 'rhein-kreis neuss', 'wesel'],
-            'leverkusen': ['köln', 'monheim am rhein', 'leichlingen', 'burscheid', 'bergisch gladbach'],
-            'mechernich': ['euskirchen', 'kall', 'zülpich', 'bad münstereifel', 'schleiden', 'euskirchen kreis'],
-            'meerbusch': ['düsseldorf', 'krefeld', 'kaarst', 'neuss', 'duisburg', 'rhein-kreis neuss'],
-            'menden': ['iserlohn', 'balve', 'hemer', 'fröndenberg', 'wickede'],
-            'merzenich': ['düren', 'nörvenich', 'jülich', 'aldenhoven'],
-            'monheim am rhein': ['leverkusen', 'düsseldorf', 'dormagen', 'langenfeld', 'hilden', 'rhein-kreis neuss'],
-            'münster': ['greven', 'telgte', 'everswinkel', 'senden', 'dülmen'],
-            'nachrodt-wiblingwerde': ['altena', 'iserlohn', 'lüdenscheid', 'werdohl'],
-            'nettetal': ['viersen', 'grefrath', 'schwalmtal', 'brüggen', 'viersen kreis', 'kleve kreis'],
-            'neukirchen-vluyn': ['kamp-lintfort', 'moers', 'krefeld', 'rheurdt', 'wesel'],
-            'neuss': ['düsseldorf', 'dormagen', 'kaarst', 'meerbusch', 'korschenbroich', 'grevenbroich', 'rhein-kreis neuss'],
-            'oberberg': ['gummersbach', 'wiehl', 'wipperfürth', 'lindlar', 'rheinisch-bergischer'],
-            'olpe': ['attendorn', 'drolshagen', 'lennestadt', 'kreuztal', 'plettenberg'],
-            'plettenberg': ['attendorn', 'finnentrop', 'werdohl', 'altena', 'olpe'],
-            'pulheim': ['köln', 'bergheim', 'rommerskirchen', 'dormagen', 'frechen', 'rhein-kreis neuss'],
-            'ratingen': ['düsseldorf', 'heiligenhaus', 'mülheim an der ruhr', 'duisburg', 'mettmann'],
-            'rees': ['emmerich am rhein', 'kalkar', 'wesel', 'haldern', 'bocholt', 'kleve kreis'],
-            'rhein-kreis neuss': ['neuss', 'grevenbroich', 'dormagen', 'kaarst', 'korschenbroich', 'jüchen', 'rommerskirchen', 'meerbusch', 'viersen kreis', 'heinsberg kreis', 'düsseldorf', 'mönchengladbach', 'krefeld', 'köln'],
-            'rhein-sieg': ['bonn', 'troisdorf', 'sankt augustin', 'hennef', 'euskirchen', 'euskirchen kreis'],
-            'rheinisch-bergischer': ['bergisch gladbach', 'overath', 'leverkusen', 'köln', 'oberberg'],
-            'rheurdt': ['neukirchen-vluyn', 'kamp-lintfort', 'kerken', 'issum', 'wesel'],
-            'rommerskirchen': ['dormagen', 'grevenbroich', 'pulheim', 'bedburg', 'köln', 'rhein-kreis neuss'],
-            'schleiden': ['hellenthal', 'kall', 'simmerath', 'heimbach', 'blankenheim', 'euskirchen kreis'],
-            'selfkant': ['waldfeucht', 'gangelt', 'heinsberg', 'heinsberg kreis'],
-            'solingen': ['remscheid', 'wuppertal', 'haan', 'hilden', 'leichlingen'],
-            'sonsbeck': ['xanten', 'geldern', 'kevelaer', 'alpen', 'issum', 'wesel', 'kleve kreis'],
-            'sprockhövel': ['hattingen', 'gevelsberg', 'wuppertal', 'witten', 'ennepetal'],
-            'straelen': ['wachtendonk', 'geldern', 'kerken', 'nettetal', 'kleve kreis', 'viersen kreis'],
-            'tönisvorst': ['krefeld', 'kempen', 'viersen', 'willich', 'grefrath', 'viersen kreis'],
-            'übach-palenberg': ['geilenkirchen', 'baesweiler', 'herzogenrath', 'aldenhoven', 'heinsberg kreis'],
-            'uedem': ['goch', 'weeze', 'kalkar', 'sonsbeck', 'xanten', 'kleve kreis', 'wesel'],
-            'viersen': ['mönchengladbach', 'willich', 'schwalmtal', 'tönisvorst', 'grefrath', 'nettetal', 'viersen kreis'],
-            'viersen kreis': ['kleve kreis', 'wesel', 'rhein-kreis neuss', 'heinsberg kreis', 'viersen', 'nettetal', 'grefrath', 'tönisvorst', 'straelen', 'krefeld', 'mönchengladbach'],
-            'voerde': ['dinslaken', 'wesel', 'hünxe', 'rheinberg'],
-            'weeze': ['kevelaer', 'goch', 'uedem', 'geldern', 'kleve kreis'],
-            'weilerswist': ['erftstadt', 'brühl', 'euskirchen', 'zülpich', 'bornheim', 'euskirchen kreis'],
-            'werdohl': ['altena', 'plettenberg', 'neuenrade', 'lüdenscheid'],
-            'wesel': ['kleve kreis', 'viersen kreis', 'alpen', 'sonsbeck', 'xanten', 'voerde', 'rees', 'kamp-lintfort', 'issum', 'neukirchen-vluyn', 'rheurdt', 'krefeld', 'duisburg', 'oberhausen', 'dülmen', 'borken', 'recklinghausen'],
-            'wesseling': ['brühl', 'köln', 'bonn', 'niederkassel'],
-            'wülfrath': ['velbert', 'mettmann', 'heiligenhaus', 'wuppertal'],
-            'wuppertal': ['solingen', 'remscheid', 'schwelm', 'sprockhövel', 'haan'],
-            'xanten': ['sonsbeck', 'alpen', 'wesel', 'kalkar', 'uedem', 'kleve kreis'],
-            'zülpich': ['euskirchen', 'mechernich', 'weilerswist', 'nörvenich', 'erftstadt', 'düren', 'euskirchen kreis'],
-            'alzey-worms': ['worms', 'bad-kreuznach', 'mainz-bingen'],
-            'altenkirchen (westerwald)': ['westerwald', 'neuwied', 'rhein-sieg'],
-            'bad-kreuznach': ['alzey-worms', 'birkenfeld', 'rhein-hunsrück', 'mainz-bingen'],
-            'bernkastel-wittlich': ['cochem-zell', 'trier-saarburg', 'vulkaneifel', 'eifelkreis bitburg-prüm'],
-            'cochem-zell': ['bernkastel-wittlich', 'mayen-koblenz', 'rhein-hunsrück', 'vulkaneifel'],
-            'eifelkreis bitburg-prüm': ['vulkaneifel', 'trier-saarburg', 'bernkastel-wittlich'],
-            'mayen-koblenz': ['koblenz', 'neu-wied', 'cochem-zell', 'ahrweiler', 'rhein-lahn'],
-            'trier-saarburg': ['trier-stadt', 'bernkastel-wittlich', 'eifelkreis bitburg-prüm'],
-            'trier-stadt': ['trier-saarburg', 'bernkastel-wittlich', 'eifelkreis bitburg-prüm'],
-            'vulkaneifel': ['eifelkreis bitburg-prüm', 'bernkastel-wittlich', 'cochem-zell', 'ahrweiler'],
-            'westerwald': ['altenkirchen (westerwald)', 'neuwied', 'mayen-koblenz'],
-            'altmarkkreis-salzwedel': ['wolfsburg', 'stendal', 'lüchow-dannenberg'],
-            'burgenland': ['leipzig', 'weissenfels', 'naumburg', 'zeitz'],
-            'leipzig': ['nordsachsen', 'burgenland', 'elbe-elster'],
-            'nordsachsen': ['leipzig', 'torgau', 'oschatz', 'delitzsch', 'elbe-elster'],
-            'lübeck': ['ostholstein', 'herzogtum lauenburg', 'stormarn', 'nordwestmecklenburg'],
-            'rendsburg-eckernförde': ['kiel', 'schleswig-flensburg', 'dithmarschen', 'steinburg', 'neumünster']
-        };
-
-        function areRegionsNeighbors(rA, rB) {
-            let keyA = cleanNameForCompare(rA);
-            let keyB = cleanNameForCompare(rB);
-            if (keyA === keyB) return true;
-
-            let neighborsA = (NEIGHBOR_CLUSTERS_MAP[keyA] || []).map(cleanNameForCompare);
-            let neighborsB = (NEIGHBOR_CLUSTERS_MAP[keyB] || []).map(cleanNameForCompare);
-
-            return neighborsA.includes(keyB) || neighborsB.includes(keyA);
-        }
-
-        const iconHourglass = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJlY2M3MSI+PHBhdGggZD0iTTYgMnY2aC4wMUw2IDguMDEgMTAgMTJsLTQgNCAuMDEuMDFINlYyMmgxMnYtNS45OWgtLjAxTDE4IDE2bC00LTQgNC0zLjk5LS4wMS0uMDFIMThWMkg2em0xMCAxNC41VjIwSDh2LTMuNWw0LTQgNCA4em0tNC01bC00LTRWNGg4djMuNWwtNCA4eiIvPjwvc3ZnPg==" style="width: 1.1em; height: 1.1em; vertical-align: text-bottom; margin-right: 6px;">';
-
-        let availabilityMatrixAll = {}; 
-        let availabilityMatrixScrap = {};
-        let availabilityMatrix = {};
-        let regionLandMap = {};
-        let weekYearsMap = {};
-
-        function formatNazwaRejonu(nazwa) {
-            if (!nazwa) return '';
-            let formatted = nazwa.trim().toLowerCase().replace(/(?:^|[\s\-\/\(\)])[a-z\u00df-\u00ff]/g, function(letter) {
-                return letter.toUpperCase();
-            });
-            formatted = formatted
-                .replace(/\bAm\b/g, 'am')
-                .replace(/\bIm\b/g, 'im')
-                .replace(/\bAn Der\b/g, 'an der')
-                .replace(/\bA\.d\.\b/g, 'a.d.');
-            return formatted;
-        }
-
-        function cleanNameForCompare(str) {
-            return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
-        }
-
-        function renderWeeksFromData(matrix) {
-            const weeksContainer = document.getElementById('weeksContainer');
-            if (!weeksContainer) return;
-
-            const previouslyChecked = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
-            weeksContainer.innerHTML = '';
-            weekYearsMap = {};
-
-            const availableWeeks = Object.keys(matrix).filter(w => matrix[w] && matrix[w].length > 0);
-
-            if (availableWeeks.length === 0) {
-                weeksContainer.innerHTML = '<div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">Brak zaplanowanych zbiórek w bazie.</div>';
-                return;
-            }
-
-            const currentYear = new Date().getFullYear();
-
-            availableWeeks.forEach(w => {
-                let detectedYear = null;
-                const items = matrix[w] || [];
-
-                for (let i = 0; i < items.length; i++) {
-                    const dStr = (typeof items[i] === 'object') ? (items[i].daty || items[i]["DATA (PN-SOB)"] || "") : "";
-                    if (dStr) {
-                        const m = dStr.match(/\d{4}-\d{2}-\d{2}/);
-                        if (m) {
-                            detectedYear = parseInt(m[0].split('-')[0], 10);
-                            break;
-                        }
-                    }
-                }
-
-                if (!detectedYear) {
-                    const wNum = parseInt(w, 10);
-                    const nowW = getWeekNumber(new Date());
-                    detectedYear = (wNum < 10 && nowW > 35) ? (currentYear + 1) : currentYear;
-                }
-
-                weekYearsMap[w] = detectedYear;
-            });
-
-            availableWeeks.sort((a, b) => {
-                const yA = weekYearsMap[a] || currentYear;
-                const yB = weekYearsMap[b] || currentYear;
-                if (yA !== yB) {
-                    return yA - yB;
-                }
-                return parseInt(a, 10) - parseInt(b, 10);
-            });
-
-            availableWeeks.forEach(w => {
-                const weekNum = parseInt(w, 10);
-                const targetYear = weekYearsMap[w] || currentYear;
-
-                const monday = getMondayOfISOWeek(weekNum, targetYear);
-                const friday = new Date(monday);
-                friday.setDate(monday.getDate() + 4);
-
-                const mD = String(monday.getDate()).padStart(2, '0');
-                const mM = String(monday.getMonth() + 1).padStart(2, '0');
-                const fD = String(friday.getDate()).padStart(2, '0');
-                const fM = String(friday.getMonth() + 1).padStart(2, '0');
-                const fY = friday.getFullYear();
-
-                const yearSuffix = (targetYear > currentYear) ? `.${fY}` : '';
-                const dateRangeFormatted = `(${mD}.${mM} - ${fD}.${fM}${yearSuffix})`;
-
-                const label = document.createElement('label');
-                label.className = "region-label";
-
-                const input = document.createElement('input');
-                input.type = "checkbox";
-                input.className = "week-chk";
-                input.name = "tygodnie[]";
-                input.setAttribute('data-week', weekNum);
-                input.setAttribute('data-year', targetYear);
-
-                input.value = `Tydzień ${weekNum} ${dateRangeFormatted}`;
-                if (previouslyChecked.includes(String(weekNum))) {
-                    input.checked = true;
-                }
-
-                const leftSpan = document.createElement('span');
-                leftSpan.className = "region-left-side";
-                leftSpan.appendChild(input);
-
-                const weekTextSpan = document.createElement('span');
-                weekTextSpan.textContent = ` Tydzień ${weekNum} `;
-                leftSpan.appendChild(weekTextSpan);
-
-                const dateSpan = document.createElement('span');
-                dateSpan.className = "notranslate";
-                dateSpan.setAttribute('translate', 'no');
-                dateSpan.textContent = dateRangeFormatted;
-                leftSpan.appendChild(dateSpan);
-
-                label.appendChild(leftSpan);
-                weeksContainer.appendChild(label);
-            });
-        }
-
-        function rebuildRegionsCheckboxesWithLands(regionsData) {
-            const container = document.getElementById('regionsCheckboxes');
-            if (!container) return;
-
-            for (let reg in SPECIAL_REGIONS_LAND_MAP) {
-                regionLandMap[reg.toLowerCase().trim()] = SPECIAL_REGIONS_LAND_MAP[reg];
-            }
-
-            for (let w in regionsData) {
-                regionsData[w].forEach(rObj => {
-                    let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                    let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
-                        ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
-                        : "";
-                    if (rName && rLand && rLand.toUpperCase() !== "TRUE" && rLand.toUpperCase() !== "FALSE" && rLand !== "Pozostałe Landy") {
-                        regionLandMap[rName.toLowerCase().trim()] = rLand;
-                    }
-                });
-            }
-
-            const uniqueRegionsMap = new Map();
-
-            function dodajRejon(nazwa) {
-                if (!nazwa || !nazwa.trim()) return;
-                let trimmed = nazwa.trim();
-                let key = cleanNameForCompare(trimmed);
-                let estetycznaNazwa = formatNazwaRejonu(trimmed);
-
-                if (!uniqueRegionsMap.has(key)) {
-                    uniqueRegionsMap.set(key, estetycznaNazwa);
-                } else {
-                    let dotychczasowa = uniqueRegionsMap.get(key);
-                    let countNowa = (estetycznaNazwa.match(/[A-ZĄĆĘŁŃÓŚŹŻÄÖÜ]/g) || []).length;
-                    let countStara = (dotychczasowa.match(/[A-ZĄĆĘŁŃÓŚŹŻÄÖÜ]/g) || []).length;
-                    if (countNowa >= countStara) {
-                        uniqueRegionsMap.set(key, estetycznaNazwa);
-                    }
-                }
-            }
-
-            for (let r in SPECIAL_REGIONS_LAND_MAP) {
-                dodajRejon(r);
-            }
-
-            for (let w in regionsData) {
-                (regionsData[w] || []).forEach(item => {
-                    const n = typeof item === 'string' ? item : item.nazwa;
-                    if (n) dodajRejon(n);
-                });
-            }
-
-            const structuredRegions = Array.from(uniqueRegionsMap.entries()).map(([cleanKey, val]) => {
-                const land = regionLandMap[cleanKey] || SPECIAL_REGIONS_LAND_MAP[val] || "Pozostałe Landy";
-
-                const lbl = document.createElement('label');
-                lbl.className = 'region-label notranslate';
-                lbl.setAttribute('translate', 'no');
-
-                const topDiv = document.createElement('div');
-                topDiv.className = 'region-left-side notranslate';
-                topDiv.setAttribute('translate', 'no');
-
-                const chk = document.createElement('input');
-                chk.type = 'checkbox';
-                chk.className = 'region-chk';
-                chk.name = 'regiony[]';
-                chk.value = val;
-
-                const textSpan = document.createElement('span');
-                textSpan.className = 'notranslate';
-                textSpan.setAttribute('translate', 'no');
-                textSpan.textContent = val;
-
-                topDiv.appendChild(chk);
-                topDiv.appendChild(textSpan);
-                lbl.appendChild(topDiv);
-
-                const bottomDiv = document.createElement('div');
-                bottomDiv.className = 'region-schedule-badges notranslate';
-                bottomDiv.setAttribute('translate', 'no');
-                bottomDiv.setAttribute('id', 'badge-' + cleanKey.replace(/[^a-z0-9]/g, '-'));
-                lbl.appendChild(bottomDiv);
-
-                return {
-                    labelNode: lbl,
-                    name: val,
-                    land: land
-                };
-            });
-
-            structuredRegions.sort((a, b) => {
-                let compLand = a.land.localeCompare(b.land, 'de', { sensitivity: 'base' });
-                if (compLand !== 0) return compLand;
-                return a.name.localeCompare(b.name, 'de', { sensitivity: 'base' });
-            });
-
-            container.innerHTML = '';
-            let currentLand = null;
-
-            structuredRegions.forEach(item => {
-                if (item.land !== currentLand) {
-                    currentLand = item.land;
-                    const headerDiv = document.createElement('div');
-                    headerDiv.className = 'land-group-header notranslate';
-                    headerDiv.setAttribute('translate', 'no');
-                    headerDiv.innerHTML = `<span class="land-tag-badge notranslate" translate="no">🏛️ LAND</span><span class="notranslate" translate="no">${currentLand}</span>`;
-                    container.appendChild(headerDiv);
-                }
-                container.appendChild(item.labelNode);
-            });
-
-            const countDisplay = document.getElementById('dynamicRegionCount');
-            if (countDisplay) {
-                countDisplay.textContent = structuredRegions.length;
-            }
-        }
-        
-        function updateScheduleBadges() {
-            let selectedWeeks = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
-            let matrixToUse = availabilityMatrix;
-
-            let todayObj = new Date();
-            let todayStr = todayObj.getFullYear() + "-" + 
-                           String(todayObj.getMonth() + 1).padStart(2, '0') + "-" + 
-                           String(todayObj.getDate()).padStart(2, '0');
-
-            document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
-                let chk = label.querySelector('.region-chk');
-                let badgeContainer = label.querySelector('.region-schedule-badges');
-                if (!chk || !badgeContainer) return;
-
-                let rName = cleanNameForCompare(chk.value);
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rName);
-
-                if (!chk.checked) {
-                    badgeContainer.classList.remove('is-visible');
-                    badgeContainer.innerHTML = '';
-                    return;
-                }
-
-                if (isSpecial) {
-                    badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.15);"><b style="color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna PRO)</b></span>`;
-                    badgeContainer.classList.add('is-visible');
-                    return;
-                }
-
-                if (selectedWeeks.length === 0) {
-                    badgeContainer.classList.remove('is-visible');
-                    badgeContainer.innerHTML = '';
-                    return;
-                }
-
-                let terminyDlaWybranychTygodni = [];
-
-                selectedWeeks.forEach(w => {
-                    if (!matrixToUse[w]) return;
-                    matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rName) return;
-
-                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                        let rStr = typeof item === 'string' ? "" : (item.rodzaj || item["RODZAJ"] || "");
-
-                        if (dStr && dStr !== "-") {
-                            let linieDat = dStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
-                            let linieRodzaj = rStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
-
-                            linieDat.forEach((linia, idx) => {
-                                let m = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if (m) {
-                                    let pelnaDataWpisu = m[0];
-
-                                    if (pelnaDataWpisu <= todayStr) return;
-
-                                    let samDzien = m[3];
-                                    let rodzajWpisu = linieRodzaj[idx] || "";
-
-                                    let tagi = [];
-                                    
-                                    let czyHolz = /holz/i.test(rodzajWpisu);
-                                    if (czyHolz) tagi.push("H");
-
-                                    let czySperr = /sperrm/i.test(rodzajWpisu);
-                                    if (czySperr) {
-                                        if (!czyHolz || /sperrm(?!.*holz)|rest.*sperrm/i.test(rodzajWpisu) || (rodzajWpisu.match(/sperrm/gi) || []).length > 1) {
-                                            tagi.push("S");
-                                        }
-                                    }
-
-                                    if (/metall|schrott|altmetall/i.test(rodzajWpisu)) {
-                                        tagi.push("M");
-                                    }
-
-                                    if (/e-schrott|elektro|kuhl|kühl|papierkorb/i.test(rodzajWpisu)) {
-                                        tagi.push("E");
-                                    }
-
-                                    let unikalneTagi = Array.from(new Set(tagi));
-                                    let frakcjaTekst = unikalneTagi.length > 0 ? unikalneTagi.join('/') : "S";
-
-                                    let testD = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
-                                    let czySobota = (testD.getDay() === 6) || linia.includes("SOB") || linia.includes("sob");
-
-                                    if (!terminyDlaWybranychTygodni.some(x => x.pelnaData === pelnaDataWpisu)) {
-                                        terminyDlaWybranychTygodni.push({
-                                            pelnaData: pelnaDataWpisu,
-                                            dzien: samDzien,
-                                            frakcja: frakcjaTekst,
-                                            isSaturday: czySobota
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-
-                if (terminyDlaWybranychTygodni.length > 0) {
-                    terminyDlaWybranychTygodni.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
-                    let pills = terminyDlaWybranychTygodni.map(item => {
-                        if (item.isSaturday) {
-                            return `<span class="schedule-pill notranslate" translate="no" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b;"><b>${item.dzien}</b> <small style="color:#fbbf24;">(${item.frakcja} ⚠️ SOB)</small></span>`;
-                        }
-                        return `<span class="schedule-pill notranslate" translate="no"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`;
-                    }).join('');
-                    badgeContainer.innerHTML = pills;
-                    badgeContainer.classList.add('is-visible');
-                } else {
-                    badgeContainer.innerHTML = `<span class="schedule-pill notranslate" translate="no"><b>Brak przyszłych dat w wybranym okresie</b></span>`;
-                    badgeContainer.classList.add('is-visible');
-                }
-            });
-        }
-
-        function renderNeighborClusterSuggestions() {
-            document.querySelectorAll('.cluster-suggestion-box').forEach(el => el.remove());
-
-            let checkedBoxes = Array.from(document.querySelectorAll('.region-chk:checked'));
-            if (checkedBoxes.length === 0) return;
-
-            checkedBoxes.forEach(chk => {
-                let rKey = cleanNameForCompare(chk.value);
-                let neighbors = NEIGHBOR_CLUSTERS_MAP[rKey];
-
-                if (neighbors && neighbors.length > 0) {
-                    let parentLabel = chk.closest('.region-label');
-                    if (!parentLabel) return;
-
-                    let availableNeighborNames = [];
-                    let neighborCheckboxesToToggle = [];
-
-                    neighbors.forEach(nKey => {
-                        let cleanNKey = cleanNameForCompare(nKey);
-                        let targetChk = Array.from(document.querySelectorAll('.region-chk')).find(
-                            c => cleanNameForCompare(c.value) === cleanNKey
-                        );
-                        if (targetChk) {
-                            availableNeighborNames.push(targetChk.value);
-                            if (!targetChk.checked) {
-                                neighborCheckboxesToToggle.push(targetChk);
-                            }
-                        }
-                    });
-
-                    if (availableNeighborNames.length === 0) return;
-
-                    let box = document.createElement('div');
-                    box.className = 'cluster-suggestion-box notranslate';
-                    box.setAttribute('translate', 'no');
-                    box.style.cssText = "margin-left: 31px; margin-top: 6px; margin-bottom: 4px; padding: 6px 10px; background: rgba(46, 204, 113, 0.12); border: 1px dashed #2ecc71; border-radius: 6px; font-size: 0.8rem; color: #cbd5e1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px;";
-
-                    let textSpan = document.createElement('span');
-                    textSpan.innerHTML = `🚐 <b>Trasa w okolicy:</b> ${availableNeighborNames.join(', ')}`;
-                    box.appendChild(textSpan);
-
-                    if (neighborCheckboxesToToggle.length > 0) {
-                        let addBtn = document.createElement('button');
-                        addBtn.type = "button";
-                        addBtn.innerText = `+ Dodaj okolice (${neighborCheckboxesToToggle.length})`;
-                        addBtn.style.cssText = "background: #2ecc71; color: #0d1117; font-weight: 800; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.76rem; text-transform: uppercase;";
-
-                        addBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            neighborCheckboxesToToggle.forEach(c => { c.checked = true; });
-                            updateMutualFiltering();
-                            updatePriceDisplay();
-                        });
-
-                        box.appendChild(addBtn);
-                    }
-
-                    parentLabel.appendChild(box);
-                }
-            });
-        }
-
-        function fetchAvailableRegions() {
-            var d = new Date();
-            var month = String(d.getMonth() + 1).padStart(2, '0');
-            var day = String(d.getDate()).padStart(2, '0');
-            var dzisiaj = d.getFullYear() + month + day;
-            var dynamicznyToken = "Dabu" + dzisiaj;
-
-            var fallbackVideo = document.getElementById('splashVideoFallback');
-            if (fallbackVideo && fallbackVideo.style.display !== 'none') {
-                fallbackVideo.play().catch(function() {});
-            }
-
-            fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "OK" && data.data) {
-                        availabilityMatrixAll = data.data;
-                        if (data.dataScrap) availabilityMatrixScrap = data.dataScrap;
-                
-                        var now = new Date();
-                        var currentDay = now.getDay();
-                        var currentHour = now.getHours();
-                        var currentWeek = getWeekNumber(now).toString();
-       
-                        if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
-                            delete availabilityMatrixAll[currentWeek];
-                            delete availabilityMatrixScrap[currentWeek];
-                        }
-                        
-                        let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
-                        availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
-
-                        rebuildRegionsCheckboxesWithLands(availabilityMatrixAll);
-                        renderWeeksFromData(availabilityMatrix);
-                        updateMutualFiltering();
-                    }
-                })
-                .catch(err => {
-                    console.error("Błąd fetch:", err);
-                    rebuildRegionsCheckboxesWithLands({});
-                })
-                .finally(() => {
-                    let loaderOverlay = document.getElementById('regionsLoading');
-                    let regionsCont = document.getElementById('regionsContainer');
-                    if (regionsCont) {
-                        regionsCont.classList.remove('is-loading');
-                    }
-                    if(loaderOverlay) { 
-                        loaderOverlay.style.opacity = '0';
-                        setTimeout(() => { 
-                            loaderOverlay.style.display = 'none'; 
-                            if (fallbackVideo) fallbackVideo.pause();
-                        }, 400); 
-                    }
-                    updatePriceDisplay();
-                });
-        }
-
-        const carrierUrls = {
-            'DPD': 'https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/',
-            'DHL': 'https://dhl24.com.pl/mapa',
-            'ORLEN': 'https://www.orlenpaczka.pl/pokaz-punkty/'
-        };
-
-        var dhlOpt = document.getElementById('dhlOption');
-        var paczSection = document.getElementById('paczkomatSection');
-        if (dhlOpt) {
-            dhlOpt.addEventListener('change', function() {
-                if (paczSection) {
-                    paczSection.style.display = this.checked ? 'block' : 'none';
-                }
-                if (!this.checked) {
-                    document.getElementById('paczkomatInput').value = '';
-                    document.getElementById('selectedPaczkomatInfo').innerText = '';
-                }
-            });
-        }
-
-        document.querySelectorAll('input[name="carrierOption"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                var selectedCarrier = this.value;
-                var inpostBtnBox = document.getElementById('inpostMapTriggerBox');
-                var extBox = document.getElementById('externalMapTriggerBox');
-                var extLink = document.getElementById('externalMapLink');
-                var paczInput = document.getElementById('paczkomatInput');
-                var infoDiv = document.getElementById('selectedPaczkomatInfo');
-
-                if (selectedCarrier === 'InPost') {
-                    inpostBtnBox.style.display = 'block';
-                    extBox.style.display = 'none';
-                    paczInput.placeholder = "Kod i adres Paczkomatu (np. KRA010M lub wybierz na mapie)";
-                } else {
-                    inpostBtnBox.style.display = 'none';
-                    extBox.style.display = 'block';
-                    extLink.href = carrierUrls[selectedCarrier] || '#';
-                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie &raquo;";
-                    paczInput.placeholder = "Wklej kod/adres punktu " + selectedCarrier + " (np. z mapy operatora)";
-                }
-                paczInput.value = '';
-                infoDiv.innerText = '';
-            });
-        });
-
-        var btnOpenMap = document.getElementById('btnOpenInPostMap');
-        var btnCloseMap = document.getElementById('btnCloseInPostModal');
-        var inpostModal = document.getElementById('inpostModal');
-
-        if (btnOpenMap) {
-            btnOpenMap.addEventListener('click', function() {
-                if (inpostModal) inpostModal.style.display = 'flex';
-            });
-        }
-        if (btnCloseMap) {
-            btnCloseMap.addEventListener('click', function() {
-                if (inpostModal) inpostModal.style.display = 'none';
-            });
-        }
-
-        // ========================================================
-        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR + 10 EUR)
-        // ========================================================
-        function calculateActiveDaysAndPrice() {
-            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
-            
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cb.value.trim());
-            let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
-
-            var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
-            let isEuro = (userLang !== 'pl');
-            let currencySymbol = isEuro ? 'EUR' : 'PLN';
-
-            let mapAddonChk = document.getElementById('mapOnlineOption');
-            let isMapAddonChecked = mapAddonChk ? mapAddonChk.checked : false;
-
-            let pickupChk = document.getElementById('pickupOption');
-            let isPickup = pickupChk ? pickupChk.checked : false;
-
-            let selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
-
-            if (selectedRegions.length === 0 || selectedWeeks.length === 0) {
-                return { 
-                    totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, isPickup: isPickup, totalPrice: 0, finalPrice: 0, 
-                    regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, 
-                    isMapAddonChecked: isMapAddonChecked, isPaypal: false, paypalFee: 0, loyaltyDeduction: 0
-                };
-            }
-
-            let now = new Date();
-            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            let currentWeekNum = getWeekNumber(now).toString();
-            let matrixToUse = availabilityMatrix;
-
-            let regionDatesMap = {};
-            let totalRegionDaysSum = 0;
-
-            selectedRegions.forEach(rOriginal => {
-                let rKey = cleanNameForCompare(rOriginal);
-                let datesSet = new Set();
-
-                selectedWeeks.forEach(w => {
-                    if (!matrixToUse[w]) return;
-
-                    matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rKey) return;
-
-                        let dStr = typeof item === 'string' ? "" : (item.daty || "");
-                        if (!dStr || dStr === "-") return;
-
-                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                        datyArr.forEach(d => {
-                            let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                            if (match) {
-                                let dObj = new Date(match[1], match[2] - 1, match[3]);
-                                if (w === currentWeekNum) {
-                                    if (dObj >= tomorrow) datesSet.add(match[0]);
-                                } else {
-                                    datesSet.add(match[0]);
-                                }
-                            }
-                        });
-                    });
-                });
-
-                regionDatesMap[rKey] = datesSet;
-                totalRegionDaysSum += datesSet.size;
-            });
-
-            // Grupowanie w korytarze tras bez sztucznego limitu 3 rejonów
-            let unassigned = Object.keys(regionDatesMap);
-            let clusters = [];
-
-            while (unassigned.length > 0) {
-                let seed = unassigned.shift();
-                let currentCluster = [seed];
-
-                let changed = true;
-                while (changed) {
-                    changed = false;
-                    for (let i = 0; i < unassigned.length; i++) {
-                        let candidate = unassigned[i];
-                        let canJoin = currentCluster.some(inCluster => areRegionsNeighbors(inCluster, candidate));
-
-                        if (canJoin) {
-                            currentCluster.push(candidate);
-                            unassigned.splice(i, 1);
-                            changed = true;
-                            break;
-                        }
-                    }
-                }
-                clusters.push(currentCluster);
-            }
-
-            let billableDaysTotal = 0;
-
-            clusters.forEach(clusterGroup => {
-                let clusterDatesUnion = new Set();
-                clusterGroup.forEach(rKey => {
-                    (regionDatesMap[rKey] || []).forEach(d => clusterDatesUnion.add(d));
-                });
-                billableDaysTotal += clusterDatesUnion.size;
-            });
-
-            let totalDays = billableDaysTotal;
-            let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
-            let czyKorytarzWspolny = (selectedRegions.length > 1);
-
-            // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN/dzień, Pojedynczy = 25 PLN/dzień
-            // W EUR: Stawka dzienna = 10 EUR/dzień + 10 EUR za pakiet korytarza (5 dni = 60 EUR)
-            let regularBaseReference;
-            if (isEuro) {
-                regularBaseReference = 10.00;
-            } else {
-                regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
-            }
-
-            let ratePerDay;
-            let totalPriceNetto;
-
-            if (isMapAddonChecked) {
-                ratePerDay = regularBaseReference;
-                let dodatekKorytarzEur = (isEuro && czyKorytarzWspolny) ? 10.00 : 0;
-                totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
-            } else {
-                if (isEuro) {
-                    // CENNIK EUR: 10 EUR za dzień + 10 EUR za korytarz (5 dni = 60 EUR)
-                    if (totalDays >= 250) ratePerDay = 2.00;
-                    else if (totalDays >= 181) ratePerDay = 3.00;
-                    else if (totalDays >= 121) ratePerDay = 4.00;
-                    else if (totalDays >= 81)  ratePerDay = 5.00;
-                    else if (totalDays >= 51)  ratePerDay = 6.00;
-                    else if (totalDays >= 31)  ratePerDay = 7.00;
-                    else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;  // rabat od 6 dni
-                    else                       ratePerDay = 10.00; // 1-5 dni = 10 EUR/dzień
-
-                    let oplataKorytarzEur = czyKorytarzWspolny ? 10.00 : 0.00;
-                    totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
-                } else {
-                    // CENNIK PLN
-                    if (czyKorytarzWspolny) {
-                        // KORYTARZ WSPÓLNY: 40 PLN / dzień (1-5 dni)
-                        if (totalDays >= 250) ratePerDay = 15.00;
-                        else if (totalDays >= 181) ratePerDay = 18.00;
-                        else if (totalDays >= 121) ratePerDay = 22.00;
-                        else if (totalDays >= 81)  ratePerDay = 26.00;
-                        else if (totalDays >= 51)  ratePerDay = 30.00;
-                        else if (totalDays >= 31)  ratePerDay = 33.00;
-                        else if (totalDays >= 16)  ratePerDay = 36.00;
-                        else if (totalDays >= 6)   ratePerDay = 38.00; // rabat od 6 dni
-                        else                       ratePerDay = 40.00; // 1 do 5 dni = 40 PLN / dzień
-                    } else {
-                        // POJEDYNCZY REJON: 25 PLN / dzień (1-5 dni)
-                        if (totalDays >= 250) ratePerDay = 8.00;
-                        else if (totalDays >= 181) ratePerDay = 10.00;
-                        else if (totalDays >= 121) ratePerDay = 12.00;
-                        else if (totalDays >= 81)  ratePerDay = 15.00;
-                        else if (totalDays >= 51)  ratePerDay = 18.00;
-                        else if (totalDays >= 31)  ratePerDay = 20.00;
-                        else if (totalDays >= 16)  ratePerDay = 22.00;
-                        else if (totalDays >= 6)   ratePerDay = 22.50; // rabat od 6 dni
-                        else                       ratePerDay = 25.00; // 1 do 5 dni = 25 PLN / dzień
-                    }
-                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-                }
-            }
-
-            // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
-            let loyaltyDeduction = 0;
-            if (activeLoyaltyDiscount && totalPriceNetto > 0) {
-                if (activeLoyaltyDiscount.type === 'PROCENT') {
-                    loyaltyDeduction = Math.round((totalPriceNetto * (activeLoyaltyDiscount.value / 100)) * 100) / 100;
-                } else if (activeLoyaltyDiscount.type === 'KWOTA') {
-                    loyaltyDeduction = Math.min(totalPriceNetto, activeLoyaltyDiscount.value);
-                }
-                totalPriceNetto = Math.max(0, Math.round((totalPriceNetto - loyaltyDeduction) * 100) / 100);
-            }
-
-            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
-            let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
-
-            let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
-            let paypalFixed = isEuro ? 0.35 : 1.35;
-            let paypalPercent = 0.029;
-
-            let finalPayAmount = totalPriceNetto;
-            let paypalFee = 0;
-
-            if (isPaypal && totalPriceNetto > 0) {
-                finalPayAmount = Math.round(((totalPriceNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
-                paypalFee = Math.round((finalPayAmount - totalPriceNetto) * 100) / 100;
-            }
-
-            return {
-                totalDays: totalDays,
-                totalRegionDaysSum: totalRegionDaysSum,
-                isSingleCluster: isSingleCluster,
-                isPickup: isPickup,
-                clustersCount: clusters.length,
-                totalPrice: totalPriceNetto,
-                finalPrice: finalPayAmount,
-                regularPrice: regularPrice,
-                discountPercent: discountPercent,
-                savings: savings,
-                paypalFee: paypalFee,
-                isPaypal: isPaypal,
-                ratePerDay: ratePerDay,
-                currency: currencySymbol,
-                isMapAddonChecked: isMapAddonChecked,
-                loyaltyDeduction: loyaltyDeduction
-            };
-        }
-
-        function renderOrderLiveBreakdown() {
-            var box = document.getElementById('orderSummaryBreakdown');
-            var details = document.getElementById('orderSummaryDetails');
-            if (!box || !details) return;
-
-            var selectedRegions = document.querySelectorAll('.region-chk:checked');
-            var selectedWeeks = document.querySelectorAll('.week-chk:checked');
-
-            if (selectedRegions.length === 0) {
-                box.style.display = 'none';
-                details.innerHTML = '';
-                return;
-            }
-
-            var selectedWeeksArr = Array.from(selectedWeeks).map(cb => ({
-                num: cb.getAttribute('data-week'),
-                label: cb.value.trim()
-            }));
-
-            var now = new Date();
-            var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            var currentWeekNum = getWeekNumber(now).toString();
-            var matrixToUse = availabilityMatrix;
-
-            var html = '';
-
-            selectedRegions.forEach(chkR => {
-                var rName = chkR.value.trim();
-                var rKey = cleanNameForCompare(rName);
-                var isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
-                var rejonTotalDni = 0;
-                var weeksListHtml = '';
-                var rawInfoD = "";
-
-                if (!isSpecial) {
-                    selectedWeeksArr.forEach(wObj => {
-                        var w = wObj.num;
-                        if (!matrixToUse[w]) return;
-
-                        matrixToUse[w].forEach(item => {
-                            var itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                            if (itemName !== rKey) return;
-
-                            if (typeof item === 'object' && !rawInfoD) {
-                                rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
-                            }
-
-                            var dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                            var datyWTygodniu = [];
-
-                            if (dStr && dStr !== "-") {
-                                var linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                                linieDat.forEach(d => {
-                                    var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                    if (match) {
-                                        var dObj = new Date(match[1], match[2] - 1, match[3]);
-                                        if (w === currentWeekNum) {
-                                            if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                        } else {
-                                            datyWTygodniu.push(match[0]);
-                                        }
-                                    }
-                                });
-                            }
-
-                            if (datyWTygodniu.length > 0) {
-                                rejonTotalDni += datyWTygodniu.length;
-                                weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
-                                    '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span class="notranslate" translate="no" style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
-                                '</div>';
-                            }
-                        });
-                    });
-                }
-
-                var parsed = parseRegionInfo(rawInfoD);
-                if (!parsed && isSpecial) {
-                    parsed = {
-                        system: "Baza Zastrzeżona (PRO)",
-                        frequency: "Dedykowana weryfikacja i wycena indywidualna"
+        btnLoyalty.innerText = 'Sprawdzam...';
+        btnLoyalty.disabled = true;
+
+        fetch(apiURL + "?action=checkDiscount&clientId=" + encodeURIComponent(codeInput))
+            .then(res => res.json())
+            .then(data => {
+                statusMsg.style.display = 'block';
+                if (data.status === "OK" && data.found) {
+                    activeLoyaltyDiscount = {
+                        clientId: codeInput,
+                        type: data.discountType,
+                        value: data.discountValue,
+                        name: data.clientName
                     };
-                }
-
-                html += '<div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 8px;">';
-                html += '<div class="notranslate" translate="no" style="font-weight: bold; color: #2ecc71; font-size: 0.95rem;">📍 ' + rName.toUpperCase() + '</div>';
-
-                if (parsed) {
-                    html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
-                        '<span style="color: #93c5fd; font-weight: bold;">System:</span> ' + parsed.system + ' | ' +
-                        '<span style="color: #fbbf24; font-weight: bold;">Częstotliwość:</span> ' + parsed.frequency +
-                    '</div>';
-                }
-
-                if (isSpecial) {
-                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna bez konieczności wyboru tygodnia)</div>';
-                } else if (weeksListHtml !== '') {
-                    html += weeksListHtml;
-                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' zaplanowanych terminów zbiórek</div>';
+                    statusMsg.style.color = '#2ecc71';
+                    statusMsg.innerText = '✓ Kod zaakceptowany! Rabat zniżkowy aktywny.';
                 } else {
-                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #ef4444;">Brak terminów w zaznaczonych tygodniach</div>';
+                    activeLoyaltyDiscount = null;
+                    statusMsg.style.color = '#ef4444';
+                    statusMsg.innerText = '✕ Nieprawidłowy kod. Spróbuj ponownie.';
                 }
-
-                html += '</div>';
-            });
-
-            details.innerHTML = html;
-            box.style.display = 'block';
-        }
-
-        function updatePriceDisplay() {
-            let btn = document.getElementById('btnSubmit');
-            let svgPriceSub = document.getElementById('svgPriceSub');
-            let configPrice = document.getElementById('configPrice');
-            let configSubtitle = document.getElementById('configSubtitle');
-            
-            let checkedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cleanNameForCompare(cb.value));
-            let hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-            let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-
-            let calc = calculateActiveDaysAndPrice();
-
-            var cashBox = document.getElementById('cashOptionBox');
-            if (cashBox) {
-                var pickupChk = document.getElementById('pickupOption');
-                var isPickup = pickupChk ? pickupChk.checked : false;
-
-                if (isPickup) {
-                    cashBox.style.display = 'block';
-                } else {
-                    cashBox.style.display = 'none';
-                    var cashRadio = cashBox.querySelector('input[type="radio"]');
-                    if (cashRadio && cashRadio.checked) {
-                        var ibanRadio = document.querySelector('input[name="payment"][value^="IBAN"]');
-                        if (ibanRadio) ibanRadio.checked = true;
-                    }
-                }
-            }
-
-            var dhlContainer = document.getElementById('dhlBox');
-            if (dhlContainer) {
-                if (calc.totalDays >= 5 && !calc.isPickup) {
-                    dhlContainer.style.display = 'block';
-                } else {
-                    dhlContainer.style.display = 'none';
-                    var dhlChk = document.getElementById('dhlOption');
-                    if (dhlChk && dhlChk.checked) {
-                        dhlChk.checked = false;
-                        var paczSection = document.getElementById('paczkomatSection');
-                        if (paczSection) paczSection.style.display = 'none';
-                        var paczInput = document.getElementById('paczkomatInput');
-                        if (paczInput) paczInput.value = '';
-                        var paczInfo = document.getElementById('selectedPaczkomatInfo');
-                        if (paczInfo) paczInfo.innerText = '';
-                    }
-                }
-            }
-
-            if (hasOnlySpecial) {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ DO WYCENY INDYWIDUALNEJ (Rejon Zastrzeżony)";
-                if (svgPriceSub) svgPriceSub.textContent = 'indywidualna';
-                if (configPrice) configPrice.textContent = "Wycena indywidualna";
-                if (configSubtitle) {
-                    configSubtitle.textContent = "Wybrano rejon zastrzeżony – wycena zostanie przygotowana indywidualnie";
-                }
-                renderOrderLiveBreakdown();
-                return;
-            }
-
-            if (calc.totalDays > 0) {
-                let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
-                let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
-                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} DNI W TRASIE | KORYTARZ WSPÓLNY${extraNotice})` : ` (${calc.totalDays} DNI W TRASIE${extraNotice})`;
-                
-                let loyaltyNotice = '';
-                if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
-                    loyaltyNotice = ` | <b style="color:#2ecc71;">Rabat z kodu: -${calc.loyaltyDeduction.toFixed(2)} ${calc.currency}</b>`;
-                }
-
-                if (calc.isPaypal && calc.paypalFee > 0) {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
-                    if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
-                } else {
-                    if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
-                    if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configPrice) configPrice.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) {
-                        if (calc.savings > 0) {
-                            configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Dni w trasie: ${calc.totalDays} | Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
-                        } else {
-                            configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b> (Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
-                        }
-                    }
-                }
-            } else {
-                if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
-                if (svgPriceSub) svgPriceSub.textContent = "automatyczna";
-                if (configPrice) configPrice.textContent = "Wycena automatyczna";
-                if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
-            }
-
-            renderOrderLiveBreakdown();
-        }
-
-        function applyRegionSearchFilter() {
-            var searchInput = document.getElementById('regionSearchInput');
-            if (!searchInput) return;
-
-            var tokens = searchInput.value.split(',')
-                .map(function(t) { return t.trim().toLowerCase(); })
-                .filter(function(t) { return t.length > 0; });
-
-            var labels = document.querySelectorAll('#regionsContainer .region-label');
-            labels.forEach(function(lbl) {
-                var chk = lbl.querySelector('.region-chk');
-                var text = (chk ? chk.value : lbl.textContent).toLowerCase();
-
-                if (tokens.length === 0) {
-                    lbl.style.display = 'flex';
-                } else {
-                    var matchesAny = tokens.some(function(token) {
-                        return text.indexOf(token) !== -1;
-                    });
-                    lbl.style.display = matchesAny ? 'flex' : 'none';
-                }
-            });
-
-            document.querySelectorAll('#regionsContainer .land-group-header').forEach(function(header) {
-                var nextEl = header.nextElementSibling;
-                var hasVisible = false;
-                while (nextEl && nextEl.classList.contains('region-label')) {
-                    if (nextEl.style.display !== 'none') {
-                        hasVisible = true;
-                        break;
-                    }
-                    nextEl = nextEl.nextElementSibling;
-                }
-                header.style.display = hasVisible ? 'flex' : 'none';
-            });
-        }
-
-        var searchBoxEl = document.getElementById('regionSearchInput');
-        if (searchBoxEl) {
-            searchBoxEl.addEventListener('input', applyRegionSearchFilter);
-        }
-
-        function updateMutualFiltering() {
-            if (Object.keys(availabilityMatrix).length === 0) return;
-
-            var dzisiaj = new Date();
-            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-            if (chkObecny && chkObecny.parentElement) {
-                if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-                    chkObecny.parentElement.style.display = 'none';
-                    chkObecny.checked = false; 
-                } else {
-                    chkObecny.parentElement.style.display = 'block';
-                }
-            }
-
-            let allAvailableRegionsInDb = new Set();
-            for (let w in availabilityMatrix) {
-                availabilityMatrix[w].forEach(rObj => {
-                    let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
-                    if (nazwaRejonu) allAvailableRegionsInDb.add(cleanNameForCompare(nazwaRejonu));
-                });
-            }
-
-            let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
-            let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
-
-            document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
-                let chk = label.querySelector('.region-chk');
-                if (!chk) return;
-                let rName = chk.value.trim();
-                let rKey = cleanNameForCompare(rName);
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
-                let isAvailable = true;
-
-                if (!isSpecial && !allAvailableRegionsInDb.has(rKey)) {
-                    isAvailable = false; 
-                } else if (!isSpecial && selectedWeeks.length > 0) {
-                    let presentInAnySelectedWeek = selectedWeeks.some(w => {
-                        return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
-                            let n = typeof item === 'string' ? item : item.nazwa;
-                            return cleanNameForCompare(n) === rKey;
-                        });
-                    });
-                    if (!presentInAnySelectedWeek) {
-                        isAvailable = false;
-                    }
-                }
-
-                if (isSpecial) {
-                    label.style.opacity = chk.checked ? '1' : '0.5';
-                    chk.disabled = false;
-                } else {
-                    label.style.opacity = isAvailable ? '1' : '0.45';
-                    chk.disabled = !isAvailable;
-                    if (!isAvailable && chk.checked) {
-                        chk.checked = false;
-                    }
-                }
-
-                let existingAskBtn = label.querySelector('.ask-region-btn');
-                let existingSpecialBtn = label.querySelector('.special-region-btn');
-
-                if (isSpecial) {
-                    if (existingAskBtn) existingAskBtn.remove();
-
-                    if (!existingSpecialBtn) {
-                        let specialBtn = document.createElement('a');
-                        specialBtn.className = 'special-region-btn';
-                        specialBtn.innerText = "🔒 Wycena indywidualna";
-                        specialBtn.title = "Kliknij, aby wysłać szybkie zapytanie o wycenę indywidualną bez tygodnia";
-                        specialBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-
-                        let mailSubject = encodeURIComponent(`Zapytanie o wycenę indywidualną (Rejon zastrzeżony): ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Zwracam się z zapytaniem o wycenę indywidualną i przygotowanie terminów zbiórek dla rejonu zastrzeżonego: ${rName}.\n\n` +
-                            `Proszę o informację o dostępnych terminach, możliwości wygenerowania Raportu Operacyjnego PRO oraz o kalkulację kosztów.\n\n` +
-                            `Pozdrawiam,\n`
-                        );
-
-                        specialBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-
-                        specialBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(specialBtn);
-                        }
-                    }
-                } else if (!isAvailable) {
-                    if (existingSpecialBtn) existingSpecialBtn.remove();
-
-                    if (!existingAskBtn) {
-                        let askBtn = document.createElement('a');
-                        askBtn.className = 'ask-region-btn';
-                        askBtn.innerText = "🔔 Zapytaj o terminy";
-                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-                        
-                        let mailSubject = encodeURIComponent(`Weryfikacja terminów: ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
-                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
-                            `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
-                        );
-                        
-                        askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-                        
-                        askBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(askBtn);
-                        }
-                    }
-                } else {
-                    if (existingAskBtn) existingAskBtn.remove();
-                    if (existingSpecialBtn) existingSpecialBtn.remove();
-                }
-            });
-
-            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cleanNameForCompare(cb.value));
-            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-
-            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
-                let chk = label.querySelector('.week-chk');
-                if (!chk) return;
-                let wNum = chk.getAttribute('data-week');
-                let isAvailable = true;
-
-                if (selectedRegularRegions.length > 0) {
-                    let hasMatchingRegion = selectedRegularRegions.some(r => {
-                        return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
-                            let n = typeof item === 'string' ? item : item.nazwa;
-                            return cleanNameForCompare(n) === r;
-                        });
-                    });
-
-                    if (!hasMatchingRegion) {
-                        isAvailable = false;
-                    }
-                }
-
-                if (isAvailable && selectedRegularRegions.length > 0) {
-                    label.style.opacity = '1';
-                    label.style.background = 'rgba(46, 204, 113, 0.12)';
-                    label.style.border = '1px solid rgba(46, 204, 113, 0.4)';
-                    label.style.borderRadius = '6px';
-                    label.style.pointerEvents = 'auto';
-                    chk.disabled = false;
-                } else if (!isAvailable && selectedRegularRegions.length > 0) {
-                    label.style.opacity = '0.22';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
-                    label.style.pointerEvents = 'none';
-                    chk.disabled = true;
-                    if (chk.checked) {
-                        chk.checked = false;
-                    }
-                } else {
-                    label.style.opacity = '1';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
-                    label.style.pointerEvents = 'auto';
-                    chk.disabled = false;
-                }
-            });
-
-            document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
-                let nextEl = header.nextElementSibling;
-                var hasVisible = false;
-                while (nextEl && nextEl.classList.contains('region-label')) {
-                    if (nextEl.style.opacity !== '0.22' && nextEl.style.opacity !== '0.45' && nextEl.style.opacity !== '0.5') {
-                        hasVisible = true;
-                        break;
-                    }
-                    nextEl = nextEl.nextElementSibling;
-                }
-                header.style.opacity = hasVisible ? '1' : '0.4';
-            });
-
-            applyRegionSearchFilter();
-            updateDynamicOptions();
-            updateScheduleBadges();
-            renderNeighborClusterSuggestions();
-            updatePriceDisplay();
-        }
-
-        function updateDynamicOptions() {
-            var checkedNodes = document.querySelectorAll('.region-chk:checked');
-            var specialDateContainer = document.getElementById('specialDateContainer');
-            
-            var selectedSpecialNames = Array.from(checkedNodes)
-                .filter(chk => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === cleanNameForCompare(chk.value)))
-                .map(chk => chk.value)
-                .join(', ');
-            
-            if (specialDateContainer) {
-                if (selectedSpecialNames.length > 0) {
-                    specialDateContainer.style.display = 'block';
-                    document.getElementById('specialDateText').innerHTML = iconHourglass + ' Harmonogram zastrzeżony – przygotowanie pełnych terminów bezpośrednio do raportu PRO (bez wymogu wyboru tygodnia):<br><span style="color:#fff; font-size: 0.9em;">' + selectedSpecialNames + '</span>';
-                } else {
-                    specialDateContainer.style.display = 'none';
-                }
-            }
-        }
-
-        document.getElementById('btnUnselectAll').addEventListener('click', function() {
-            document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
-            var sInput = document.getElementById('regionSearchInput');
-            if (sInput) { sInput.value = ''; }
-            document.querySelectorAll('.cluster-suggestion-box').forEach(el => el.remove());
-            updateMutualFiltering();
-            updatePriceDisplay();
-        });
-
-        document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment' || e.target.name === 'orderChannel')) {
-                if (e.target.id === 'pickupOption') {
-                    var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
-                    if (e.target.checked && cashRadio) {
-                        cashRadio.checked = true;
-                    }
-                }
-                if(e.target.id === 'schrottOption') { 
-                    availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
-                }
-                updateMutualFiltering();
                 updatePriceDisplay();
-            }
-        });
-
-        document.getElementById('btnSubmit').addEventListener('click', function() {
-            var wR = document.querySelectorAll('.region-chk:checked');
-            var wT = document.querySelectorAll('.week-chk:checked');
-            
-            var checkedRegions = Array.from(wR).map(cb => cleanNameForCompare(cb.value));
-            var hasOnlySpecial = checkedRegions.length > 0 && checkedRegions.every(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-            var hasRegular = checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-
-            if (wR.length === 0 || (hasRegular && wT.length === 0)) { 
-                alert("[ UWAGA ] Wybierz rejony oraz co najmniej jeden tydzień z kalendarza (chyba że zamawiasz wyłącznie rejony zastrzeżone do wyceny indywidualnej)!"); 
-                return; 
-            }
-                    
-            var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-            
-            var body = "Dzień dobry,\n\n";
-            body += "Przesyłam specyfikację zamówienia zestawu:\n";
-            body += "KONFIGURACJA PAKIETU (" + wR.length + " rejonów, " + wT.length + " zaznaczonych tygodni kalendarzowych)\n";
-            
-            var calc = calculateActiveDaysAndPrice();
-            if (!hasOnlySpecial && calc.totalDays > 0) {
-                if (calc.isPaypal && calc.paypalFee > 0) {
-                    body += "PODSUMOWANIE CENY: " + calc.finalPrice.toFixed(2) + " " + calc.currency + " (w tym opłata transakcyjna PayPal: +" + calc.paypalFee.toFixed(2) + " " + calc.currency + ")\n";
-                    body += "- Wartość zamówienia po rabacie: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
-                } else {
-                    body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
-                }
-                body += "- Unikalne dni wyjazdowe w trasie: " + calc.totalDays + " dni (stawka bazowa: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + "/dzień)\n";
-                body += "- Łączna pula zbiórek w rejonach: " + calc.totalRegionDaysSum + " zaplanowanych terminów\n";
-                if (calc.isMapAddonChecked) {
-                    body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
-                } else if (calc.savings > 0) {
-                    body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
-                }
-                if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
-                    body += "- Zastosowany kod rabatowy: -" + calc.loyaltyDeduction.toFixed(2) + " " + calc.currency + " [Kod: " + activeLoyaltyDiscount.clientId + "]\n";
-                }
-                if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r))) {
-                    body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (wycena indywidualna / pełne terminy w generowanym raporcie PRO).\n";
-                }
-                body += "\n";
-            } else {
-                body += "PODSUMOWANIE CENY: Wycena indywidualna (pakiet zawiera rejony zastrzeżone bez przypisanego tygodnia)\n\n";
-            }
-
-            var isRegular = document.getElementById('regularCustomerOption')?.checked;
-            var regularProof = document.getElementById('regularClientIdInput')?.value.trim();
-
-            if (isRegular) {
-                body += "--------------------------------------------------------\n";
-                body += "KOD RABATOWY / STREFA STAŁEGO KLIENTA:\n";
-                if (activeLoyaltyDiscount) {
-                    body += "- Aktywny rabat zweryfikowany w bazie: -" + activeLoyaltyDiscount.value + (activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR') + "\n";
-                    body += "- Kod / Klient: " + activeLoyaltyDiscount.clientId + (activeLoyaltyDiscount.clientName ? " (" + activeLoyaltyDiscount.clientName + ")" : "") + "\n";
-                } else {
-                    body += "- Wpisany kod do weryfikacji: " + (regularProof || "Brak") + "\n";
-                }
-                body += "--------------------------------------------------------\n\n";
-            }
-            
-            body += "Preferowana płatność / Identyfikator: " + nr + "\n\n";
-
-            var selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
-            var selectedThemeVal = selectedThemeEl ? selectedThemeEl.value : "Light Mode";
-            var formatTekst = "Raport Operacyjny PRO [" + selectedThemeVal + "]";
-            
-            body += "WYBRANY MOTYW RAPORTU: " + formatTekst + "\n";
-
-            if (document.getElementById('mapOnlineOption')?.checked) {
-                body += "DODATEK: TAK – Dołączona Interaktywna Mapa Online GPS (Punkty GPS & Nawigacja na żywo)\n";
-            } else {
-                body += "DODATEK: Samodzielny Raport Operacyjny PRO (bez Mapy Online)\n";
-            }
-            body += "\n";
-
-            var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
-            if(selectedPaymentMethod) {
-                body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
-            }
-
-            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5 && !calc.isPickup) {
-                var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
-                var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
-                body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
-                body += "OPERATOR: " + selectedCarrier + "\n";
-                body += "PUNKT / ADRES: " + paczkomat + "\n";
-            }
-
-            if (document.getElementById('pickupOption')?.checked) {
-                body += "ODBIÓR OSOBISTY: TAK\n";
-            }
-            
-            if (document.getElementById('schrottOption')?.checked) {
-                body += "OPCJA: SCHROTT (Metal / Elektro)\n";
-            }
-
-            body += "\n========================================================";
-            body += "\n📋 SZCZEGÓŁOWE ROZBICIE ZAMÓWIENIA WG REJONÓW:";
-            body += "\n========================================================\n\n";
-
-            let selectedWeeksArr = Array.from(wT).map(cb => ({
-                num: cb.getAttribute('data-week'),
-                label: cb.value.trim()
-            }));
-
-            let now = new Date();
-            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            let currentWeekNum = getWeekNumber(now).toString();
-            let matrixToUse = availabilityMatrix;
-
-            wR.forEach(chkR => {
-                let rName = chkR.value.trim();
-                let rKey = cleanNameForCompare(rName);
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
-
-                body += "📍 REJON: " + rName.toUpperCase() + "\n";
-
-                if (isSpecial) {
-                    body += "   -> Tryb: Rejon zastrzeżony – przygotowanie pełnych terminów i wyceny indywidualnej bezpośrednio do raportu PRO\n\n";
-                    return;
-                }
-
-                let rejonTotalDni = 0;
-                let dopasowaneTygodnie = [];
-                let rawInfoD = "";
-
-                selectedWeeksArr.forEach(wObj => {
-                    let w = wObj.num;
-                    if (!matrixToUse[w]) return;
-
-                    matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rKey) return;
-
-                        if (typeof item === 'object' && !rawInfoD) {
-                            rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
-                        }
-
-                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                        let datyWTygodniu = [];
-
-                        if (dStr && dStr !== "-") {
-                            let linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                            linieDat.forEach(d => {
-                                var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if (match) {
-                                    var dObj = new Date(match[1], match[2] - 1, match[3]);
-                                    if (w === currentWeekNum) {
-                                        if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                    } else {
-                                        datyWTygodniu.push(match[0]);
-                                    }
-                                }
-                            });
-                        }
-
-                        if (datyWTygodniu.length > 0) {
-                            rejonTotalDni += datyWTygodniu.length;
-                            dopasowaneTygodnie.push({
-                                tydzien: wObj.label,
-                                daty: datyWTygodniu.join(', ')
-                            });
-                        }
-                    });
-                });
-
-                let parsed = parseRegionInfo(rawInfoD);
-                if (parsed) {
-                    body += "   System: " + parsed.system + "\n";
-                    body += "   Czestotliwosc: " + parsed.frequency + "\n";
-                }
-
-                if (dopasowaneTygodnie.length > 0) {
-                    dopasowaneTygodnie.forEach(dw => {
-                        body += "   • " + dw.tydzien + "\n";
-                        body += "     Dni zbiorki: " + dw.daty + "\n";
-                    });
-                    body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " zaplanowanych zbiorek\n\n";
-                } else {
-                    body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
-                }
+            })
+            .catch(err => {
+                statusMsg.style.display = 'block';
+                statusMsg.style.color = '#fbbf24';
+                statusMsg.innerText = '⚠️ Błąd połączenia. Spróbuj za chwilę.';
+            })
+            .finally(() => {
+                btnLoyalty.innerText = 'Zastosuj kod';
+                btnLoyalty.disabled = false;
             });
-            
-            body += "--------------------------------------------------------\n" +
-                    "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\n" +
-                    "Czekam na potwierdzenie i realizację.\n" +
-                    "(Zamówienia w dni robocze realizujemy po godzinie 16:00).\n";
-            
-            function removeDiacritics(str) {
-                const map = {
-                    'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
-                    'Ą':'A', 'Ć':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
-                    'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
-                    'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
-                };
-                return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
-            }
-
-            var subject = hasOnlySpecial ? "[#" + nr + "] ZAPYTANIE O WYCENĘ INDYWIDUALNĄ PRO" : "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
-            var safeSubject = removeDiacritics(subject);
-            var safeBody = removeDiacritics(body);
-
-            // OBSŁUGA WYBRANEGO KANAŁU PRZEKAZANIA ZAMÓWIENIA
-            var selectedOrderChannel = document.querySelector('input[name="orderChannel"]:checked')?.value || 'email';
-            var MOJ_NUMER_TEL = "48600812820";
-
-            var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
-            var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
-            var tygodnieListaTekst = Array.from(wT).map(cb => cb.value.trim()).join(", ");
-            var platnoscTekst = selectedPaymentMethod ? selectedPaymentMethod.value : "Standardowa";
-
-            var krotkaWiadomosc = "Dzień dobry, zamawiam pakiet trasy #" + nr + ".\n" +
-                "Kwota: " + kwotaTekst + "\n" +
-                "Dni w trasie: " + calc.totalDays + "\n" +
-                "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
-                "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
-                "Motyw: " + selectedThemeVal + "\n" +
-                "Płatność: " + platnoscTekst;
-
-            function wykonajPrzekierowanie() {
-                if (selectedOrderChannel === "whatsapp") {
-                    var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
-                    window.open(waUrl, "_blank");
-                } else if (selectedOrderChannel === "sms") {
-                    var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
-                    window.location.href = smsUrl;
-                } else {
-                    window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
-                }
-            }
-
-            var btnSubmit = document.getElementById('btnSubmit');
-            var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
-            if (btnSubmit) {
-                btnSubmit.innerHTML = "⏳ ZAPISYWANIE ZAMÓWIENIA W BAZIE...";
-                btnSubmit.disabled = true;
-            }
-
-            var orderPayload = {
-                akcja: 'zapisz_zamowienie',
-                orderId: nr,
-                channel: selectedOrderChannel,
-                totalPrice: calc.totalPrice,
-                finalPrice: calc.finalPrice,
-                currency: calc.currency,
-                totalDays: calc.totalDays,
-                paymentMethod: selectedPaymentMethod ? selectedPaymentMethod.value : "Nie wybrano",
-                reportTheme: selectedThemeVal,
-                mapAddon: document.getElementById('mapOnlineOption')?.checked || false,
-                regions: Array.from(wR).map(cb => cb.value.trim()),
-                weeks: Array.from(wT).map(cb => cb.value.trim()),
-                isRegularCustomer: isRegular || false,
-                loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : (regularProof || ""),
-                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ")"
-            };
-
-            fetch(apiURL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(orderPayload)
-            })
-            .then(function() {
-                wykonajPrzekierowanie();
-            })
-            .catch(function(err) {
-                console.warn("Błąd zapisu w arkuszu:", err);
-                wykonajPrzekierowanie();
-            })
-            .finally(function() {
-                setTimeout(function() {
-                    if (btnSubmit) {
-                        btnSubmit.innerHTML = staryTekstBtn;
-                        btnSubmit.disabled = false;
-                    }
-                }, 2000);
-            });
-        });
-
-        fetchAvailableRegions();
-    }); 
-
-    function getWeekNumber(d) { 
-        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); 
-        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    }
-  
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
     });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
-    });
-//]]>
-</script>
 
-<script>
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'pl',
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
+    function updatePriceDisplay() {
+        var wR = document.querySelectorAll('.region-chk:checked');
+        var wT = document.querySelectorAll('.week-chk:checked');
+        var isMapSelected = document.getElementById('mapOnlineOption')?.checked;
 
-    (function() {
-        var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
+        var selectedRegions = wR.length;
+        var selectedWeeks = wT.length;
+        var days = selectedRegions * selectedWeeks; // Uproszczenie na potrzeby frontendu
+        
+        calc.totalDays = days;
+        calc.currency = currentCurrency;
 
-        if (userLang === 'pl') return;
+        var rate = (selectedRegions > 1) ? 40 : 25; // PLN
+        var mapAddonPrice = isMapSelected ? 50 : 0; // Przykładowa dopłata za mapę
+        
+        calc.totalPrice = (days * rate) + mapAddonPrice;
+        calc.finalPrice = calc.totalPrice;
 
-        var matchCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
-        var currentTrans = matchCookie ? matchCookie[2] : null;
-        var targetTrans = '/pl/' + userLang;
-
-        if (currentTrans !== targetTrans) {
-            var domain = window.location.hostname;
-            document.cookie = "googtrans=" + targetTrans + "; path=/; domain=" + domain;
-            document.cookie = "googtrans=" + targetTrans + "; path=/;";
+        // Aplikowanie rabatu (Strefa stałego klienta)
+        if (activeLoyaltyDiscount) {
+            if (activeLoyaltyDiscount.type === "PROCENT") {
+                calc.finalPrice = calc.totalPrice - (calc.totalPrice * (activeLoyaltyDiscount.value / 100));
+            } else if (activeLoyaltyDiscount.type === "KWOTA") {
+                calc.finalPrice = calc.totalPrice - activeLoyaltyDiscount.value;
+            }
+            // Zabezpieczenie przed ujemną ceną
+            if (calc.finalPrice < 0) calc.finalPrice = 0;
         }
 
-        var gtScript = document.createElement('script');
-        gtScript.type = 'text/javascript';
-        gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        document.head.appendChild(gtScript);
-    })();
+        // Renderowanie szczegółów
+        var summaryDiv = document.getElementById('orderSummaryBreakdown');
+        var detailsDiv = document.getElementById('orderSummaryDetails');
+        
+        if (days > 0) {
+            summaryDiv.style.display = 'block';
+            detailsDiv.innerHTML = "Rejony: " + Array.from(wR).map(cb=>cb.value).join(", ") + "<br>" +
+                                   "Tygodnie: " + Array.from(wT).map(cb=>cb.value).join(", ") + "<br>" +
+                                   "Dni łącznie: " + days;
+        } else {
+            summaryDiv.style.display = 'none';
+            detailsDiv.innerHTML = "";
+        }
+
+        document.getElementById('priceSummary').innerText = "Suma: " + calc.finalPrice.toFixed(2) + " " + calc.currency;
+    }
+
+    // --- WYSYŁKA ZAMÓWIENIA (EMAIL / WHATSAPP / SMS) ---
+    document.getElementById('btnSubmit').addEventListener('click', function() {
+        var wR = document.querySelectorAll('.region-chk:checked');
+        var wT = document.querySelectorAll('.week-chk:checked');
+        
+        if (wR.length === 0 || wT.length === 0) {
+            alert("Wybierz przynajmniej jeden rejon i jeden tydzień przed wysłaniem!");
+            return;
+        }
+
+        var selectedChannel = document.querySelector('input[name="sendChannel"]:checked')?.value || 'email';
+        var phoneInput = document.getElementById('mainClientIdInput');
+        var phoneVal = phoneInput ? phoneInput.value.trim() : '';
+        var phoneError = document.getElementById('phoneErrorMsg');
+
+        // WALIDACJA NUMERU TELEFONU DLA WHATSAPP / SMS
+        if ((selectedChannel === 'whatsapp' || selectedChannel === 'sms') && phoneVal === '') {
+            if (phoneError) phoneError.style.display = 'block';
+            if (phoneInput) phoneInput.style.borderColor = '#ef4444';
+            alert("Proszę wpisać Twój numer telefonu (identyfikator), abyśmy mogli zrealizować zamówienie przez WhatsApp/SMS.");
+            phoneInput.focus();
+            return; // Przerwanie wysyłki!
+        } else {
+            if (phoneError) phoneError.style.display = 'none';
+            if (phoneInput) phoneInput.style.borderColor = '#334155';
+        }
+
+        var btn = document.getElementById('btnSubmit');
+        var originalText = btn.innerHTML;
+        btn.innerHTML = "⏳ ZAPISYWANIE W BAZIE...";
+        btn.disabled = true;
+
+        var nr = "ORD-" + new Date().getFullYear() + String(new Date().getMonth()+1).padStart(2,'0') + String(new Date().getDate()).padStart(2,'0') + "-" + Math.floor(Math.random()*9000+1000);
+        var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
+
+        // Treść do komunikatorów WA/SMS (krótka i bez tagów HTML)
+        var krotkaWiadomosc = "Dzień dobry, zamawiam pakiet trasy #" + nr + ".\n" +
+            "Mój identyfikator/telefon: " + (phoneVal || "Brak") + "\n" +
+            "Kwota: " + calc.finalPrice.toFixed(2) + " " + calc.currency + "\n" +
+            "Dni: " + calc.totalDays + "\n" +
+            "Rejony: " + Array.from(wR).map(cb => cb.value.trim()).join(", ") + "\n" +
+            "Tygodnie: " + Array.from(wT).map(cb => cb.value.trim()).join(", ") + "\n" +
+            "Płatność: " + (selectedPaymentMethod ? selectedPaymentMethod.value : "Standardowa");
+
+        // Treść maila
+        var safeSubject = "[#" + nr + "] ZAMÓWIENIE PAKIETU PRO";
+        var safeBody = krotkaWiadomosc + "\n\n(Zgłoszenie wysłane z formularza www)";
+
+        // Paczka danych do Arkusza Google (doPost)
+        var orderPayload = {
+            akcja: "zapisz_zamowienie",
+            orderId: nr,
+            clientId: phoneVal || "Brak", // <-- ZAPIS ID (TELEFONU)
+            totalPrice: calc.totalPrice,
+            finalPrice: calc.finalPrice,
+            currency: calc.currency,
+            totalDays: calc.totalDays,
+            paymentMethod: selectedPaymentMethod ? selectedPaymentMethod.value : "Nie wybrano",
+            reportTheme: "",
+            mapAddon: document.getElementById('mapOnlineOption')?.checked || false,
+            regions: Array.from(wR).map(cb => cb.value.trim()),
+            weeks: Array.from(wT).map(cb => cb.value.trim()),
+            isRegularCustomer: !!activeLoyaltyDiscount,
+            loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : "",
+            rawSummary: "Przesłano kanałem: " + selectedChannel.toUpperCase()
+        };
+
+        function przekierujKlienta() {
+            if (selectedChannel === "whatsapp") {
+                var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
+                window.open(waUrl, "_blank");
+            } else if (selectedChannel === "sms") {
+                var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
+                window.location.href = smsUrl;
+            } else {
+                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+            }
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        // Cichy zapis w tle do Arkusza Google i wywołanie linku
+        fetch(apiURL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(orderPayload)
+        })
+        .then(() => { przekierujKlienta(); })
+        .catch(err => { 
+            console.warn("Błąd zapisu w arkuszu:", err);
+            przekierujKlienta(); // Przekieruj nawet w razie awarii zapisu w tle
+        });
+    });
 </script>
 
-<script src="/footer.js"></script>
 </body>
 </html>
