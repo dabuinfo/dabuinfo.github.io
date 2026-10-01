@@ -471,6 +471,44 @@
             border-color: var(--primary-accent);
         }
 
+        /* STYL PRZEŁĄCZNIKA KANAŁÓW WYSYŁKI */
+        .channel-selector-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #334155;
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin: 20px 0 10px 0;
+            box-sizing: border-box;
+        }
+        .channel-selector-title {
+            font-size: 0.88rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .channel-options {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .channel-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            color: #f8fafc;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .channel-label:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: var(--border-highlight);
+        }
+
         .submit-btn { 
             width: 100%; 
             background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); 
@@ -483,7 +521,7 @@
             cursor: pointer; 
             text-transform: uppercase; 
             transition: transform 0.15s ease, filter 0.2s ease; 
-            margin-top: 14px; 
+            margin-top: 10px; 
             box-sizing: border-box; 
             letter-spacing: 0.5px;
             box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
@@ -521,6 +559,7 @@
 
         .hidden { display: none !important; }
 
+        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-icon,
         #goog-gt-tt,
@@ -592,7 +631,7 @@
             <div class="strategy-container">
                 <div class="strategy-card">
                     <div class="strategy-title">🛠️ Twój własny zestaw</div>
-                    <div class="price-tag-large" id="configPrice">Wycena automatyczna</div>
+                    <div class="price-tag-large" id="configPrice">Wycena dynamiczna</div>
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
@@ -667,14 +706,14 @@
                             </div>
 
                             <div class="region-search-sticky-box">
-                                <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonów (np. Düren Kreis, Viersen Kreis)..." autocomplete="off">
+                                <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonów (np. Konstanz, Freudenstadt)..." autocomplete="off">
                             </div>
 
                             <div id="regionsCheckboxes" class="notranslate" translate="no"></div>
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE -->
+                    <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM 2026/2027) -->
                     <div class="selection-col-right" id="step2Wrapper">
                         <div class="form-header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box" id="weeksContainer">
@@ -728,6 +767,7 @@
                 <div class="form-header">💾 4. Opcje dodatkowe:</div>
                 <div class="extra-options-group">
                     
+                    <!-- DODATEK: INTERAKTYWNA MAPA ONLINE GPS -->
                     <div class="option-box" id="mapAddonBox" style="background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 8px; margin-bottom: 6px;">
                         <label class="region-label" style="min-height: auto; padding: 0;">
                             <div class="region-left-side">
@@ -815,7 +855,7 @@
                     </div>
                 </div>
 
-                <!-- STREFA STAŁEGO KLIENTA -->
+                <!-- STREFA STAŁEGO KLIENTA (PROSTY KOD RABATOWY) -->
                 <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
                     <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer;">
                         <div class="region-left-side">
@@ -845,13 +885,34 @@
                     <div id="orderSummaryDetails"></div>
                 </div>
 
+                <!-- WYBÓR KANAŁU DO PRZESŁANIA ZAMÓWIENIA -->
+                <div class="channel-selector-box">
+                    <div class="channel-selector-title">
+                        📲 Wybierz sposób przekazania zamówienia:
+                    </div>
+                    <div class="channel-options">
+                        <label class="channel-label">
+                            <input type="radio" name="sendChannel" value="email" checked style="accent-color: #38bdf8;">
+                            <span>✉️ E-mail</span>
+                        </label>
+                        <label class="channel-label">
+                            <input type="radio" name="sendChannel" value="whatsapp" style="accent-color: #25D366;">
+                            <span style="color: #25D366; font-weight: 700;">💬 WhatsApp</span>
+                        </label>
+                        <label class="channel-label">
+                            <input type="radio" name="sendChannel" value="sms" style="accent-color: #facc15;">
+                            <span style="color: #facc15; font-weight: 700;">📱 SMS</span>
+                        </label>
+                    </div>
+                </div>
+
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
             </div>
         </div>
 
     </div>
 
-    <!-- MODAL INPOST -->
+    <!-- MODAL INPOST Z TOKENEM PRODUKCYJNYM -->
     <div id="inpostModal" class="inpost-modal-overlay">
         <div class="inpost-modal-content">
             <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
@@ -969,6 +1030,7 @@
         return ISOweekStart;
     }
 
+    // STAN RABATU STAŁEGO KLIENTA
     let activeLoyaltyDiscount = null;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -984,6 +1046,7 @@
 
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
 
+        // OBSŁUGA STREFY STAŁEGO KLIENTA
         var regCustChk = document.getElementById('regularCustomerOption');
         var regCustDetails = document.getElementById('regularCustomerDetails');
         var clientIdInput = document.getElementById('regularClientIdInput');
@@ -1073,7 +1136,6 @@
             'Kronberg im Taunus', 'Trier-Stadt'
         ];
 
-        // ZAKTUALIZOWANA MAPA LANDÓW (Düren Kreis, Wesel Kreis, Euskirchen Stadt, Kleve Kreis, Rhein-Kreis Neuss, Heinsberg Kreis, Viersen Kreis)
         const SPECIAL_REGIONS_LAND_MAP = {
             'Calw': 'Baden-Württemberg', 'Freudenstadt': 'Baden-Württemberg', 'Heidelberg': 'Baden-Württemberg',
             'Heilbronn': 'Baden-Württemberg', 'Karlsruhe Kreis': 'Baden-Württemberg', 'Karlsruhe Stadt': 'Baden-Württemberg',
@@ -1105,30 +1167,29 @@
             'Blankenheim': 'Nordrhein-Westfalen', 'Bonn': 'Nordrhein-Westfalen', 'Breckerfeld': 'Nordrhein-Westfalen',
             'Brühl': 'Nordrhein-Westfalen', 'Dahlem': 'Nordrhein-Westfalen', 'Dormagen': 'Nordrhein-Westfalen',
             'Dortmund': 'Nordrhein-Westfalen', 'Dülmen': 'Nordrhein-Westfalen', 'Düsseldorf': 'Nordrhein-Westfalen',
-            'Düren Kreis': 'Nordrhein-Westfalen', 'Euskirchen Stadt': 'Nordrhein-Westfalen',
             'Emmerich am Rhein': 'Nordrhein-Westfalen', 'Ennepetal': 'Nordrhein-Westfalen', 'Erftstadt': 'Nordrhein-Westfalen',
-            'Erkrath': 'Nordrhein-Westfalen', 'Geilenkirchen': 'Nordrhein-Westfalen',
+            'Erkrath': 'Nordrhein-Westfalen', 'Euskirchen': 'Nordrhein-Westfalen', 'Geilenkirchen': 'Nordrhein-Westfalen',
             'Geldern': 'Nordrhein-Westfalen', 'Goch': 'Nordrhein-Westfalen', 'Grefrath': 'Nordrhein-Westfalen',
             'Grevenbroich': 'Nordrhein-Westfalen', 'Haan': 'Nordrhein-Westfalen', 'Heiligenhaus': 'Nordrhein-Westfalen',
-            'Heinsberg': 'Nordrhein-Westfalen', 'Heinsberg Kreis': 'Nordrhein-Westfalen', 'Hellenthal': 'Nordrhein-Westfalen', 'Hückelhoven': 'Nordrhein-Westfalen',
+            'Heinsberg': 'Nordrhein-Westfalen', 'Hellenthal': 'Nordrhein-Westfalen', 'Hückelhoven': 'Nordrhein-Westfalen',
             'Hürth': 'Nordrhein-Westfalen', 'Iserlohn': 'Nordrhein-Westfalen', 'Issum': 'Nordrhein-Westfalen',
             'Jüchen': 'Nordrhein-Westfalen', 'Jülich': 'Nordrhein-Westfalen', 'Kaarst': 'Nordrhein-Westfalen',
             'Kall': 'Nordrhein-Westfalen', 'Kamp-Lintfort': 'Nordrhein-Westfalen', 'Kerken': 'Nordrhein-Westfalen',
-            'Kevelaer': 'Nordrhein-Westfalen', 'Kleve Kreis': 'Nordrhein-Westfalen', 'Korschenbroich': 'Nordrhein-Westfalen', 'Köln': 'Nordrhein-Westfalen',
+            'Kevelaer': 'Nordrhein-Westfalen', 'Korschenbroich': 'Nordrhein-Westfalen', 'Köln': 'Nordrhein-Westfalen',
             'Krefeld': 'Nordrhein-Westfalen', 'Leverkusen': 'Nordrhein-Westfalen', 'Mechernich': 'Nordrhein-Westfalen',
             'Meerbusch': 'Nordrhein-Westfalen', 'Menden': 'Nordrhein-Westfalen', 'Merzenich': 'Nordrhein-Westfalen',
             'Monheim am Rhein': 'Nordrhein-Westfalen', 'Münster': 'Nordrhein-Westfalen',
             'Nachrodt-Wiblingwerde': 'Nordrhein-Westfalen', 'Nettetal': 'Nordrhein-Westfalen',
             'Neukirchen-Vluyn': 'Nordrhein-Westfalen', 'Neuss': 'Nordrhein-Westfalen', 'Oberberg': 'Nordrhein-Westfalen',
             'Olpe': 'Nordrhein-Westfalen', 'Plettenberg': 'Nordrhein-Westfalen', 'Pulheim': 'Nordrhein-Westfalen',
-            'Ratingen': 'Nordrhein-Westfalen', 'Rees': 'Nordrhein-Westfalen', 'Rhein-Kreis Neuss': 'Nordrhein-Westfalen', 'Rhein-Sieg': 'Nordrhein-Westfalen',
+            'Ratingen': 'Nordrhein-Westfalen', 'Rees': 'Nordrhein-Westfalen', 'Rhein-Sieg': 'Nordrhein-Westfalen',
             'Rheinisch-Bergischer': 'Nordrhein-Westfalen', 'Rheurdt': 'Nordrhein-Westfalen',
             'Rommerskirchen': 'Nordrhein-Westfalen', 'Schleiden': 'Nordrhein-Westfalen', 'Selfkant': 'Nordrhein-Westfalen',
             'Solingen': 'Nordrhein-Westfalen', 'Sonsbeck': 'Nordrhein-Westfalen', 'Sprockhövel': 'Nordrhein-Westfalen',
             'Straelen': 'Nordrhein-Westfalen', 'Tönisvorst': 'Nordrhein-Westfalen', 'Übach-Palenberg': 'Nordrhein-Westfalen',
-            'Uedem': 'Nordrhein-Westfalen', 'Viersen': 'Nordrhein-Westfalen', 'Viersen Kreis': 'Nordrhein-Westfalen', 'Voerde': 'Nordrhein-Westfalen',
+            'Uedem': 'Nordrhein-Westfalen', 'Viersen': 'Nordrhein-Westfalen', 'Voerde': 'Nordrhein-Westfalen',
             'Weeze': 'Nordrhein-Westfalen', 'Weilerswist': 'Nordrhein-Westfalen', 'Werdohl': 'Nordrhein-Westfalen',
-            'Wesel Kreis': 'Nordrhein-Westfalen', 'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
+            'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
             'Xanten': 'Nordrhein-Westfalen', 'Zülpich': 'Nordrhein-Westfalen', 'Alzey-Worms': 'Rheinland-Pfalz',
             'Altenkirchen (Westerwald)': 'Rheinland-Pfalz', 'Bad-Kreuznach': 'Rheinland-Pfalz',
             'Bernkastel-Wittlich': 'Rheinland-Pfalz', 'Cochem-Zell': 'Rheinland-Pfalz',
@@ -1139,7 +1200,6 @@
             'Rendsburg-Eckernförde': 'Schleswig-Holstein'
         };
 
-        // ZAKTUALIZOWANE RELACJE SĄSIEDZKIE I KORYTARZE
         const NEIGHBOR_CLUSTERS_MAP = {
             'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
             'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
@@ -1235,97 +1295,91 @@
             'osnabrück': ['diepholz', 'emsland', 'münster'],
             'stade': ['harburg', 'lüneburg'],
             'wolfsburg': ['gifhorn', 'braunschweig', 'altmarkkreis-salzwedel'],
-            'aldenhoven': ['jülich', 'merzenich', 'eschweiler', 'geilenkirchen', 'baesweiler', 'düren kreis'],
-            'alpen': ['rheinberg', 'issum', 'sonsbeck', 'xanten', 'kamp-lintfort', 'wesel kreis'],
+            'aldenhoven': ['jülich', 'merzenich', 'eschweiler', 'geilenkirchen', 'baesweiler'],
+            'alpen': ['rheinberg', 'issum', 'sonsbeck', 'xanten', 'kamp-lintfort'],
             'altena': ['werdohl', 'nachrodt-wiblingwerde', 'iserlohn', 'plettenberg', 'ludenscheid'],
-            'bad münstereifel': ['bad-munstereifel', 'euskirchen stadt', 'mechernich', 'zülpich', 'blankenheim'],
-            'bad-munstereifel': ['bad münstereifel', 'euskirchen stadt', 'mechernich', 'zülpich'],
+            'bad münstereifel': ['bad-munstereifel', 'euskirchen', 'mechernich', 'zülpich', 'blankenheim'],
+            'bad-munstereifel': ['bad münstereifel', 'euskirchen', 'mechernich', 'zülpich'],
             'balve': ['menden', 'iserlohn', 'neuenrade', 'sundern', 'arnsberg'],
-            'bedburg': ['bergheim', 'jüchen', 'rommerskirchen', 'grevenbroich', 'düren kreis'],
-            'bedburg-hau': ['kleve', 'kalkar', 'goch', 'emmerich am rhein', 'kranenburg', 'kleve kreis'],
-            'blankenheim': ['dahlem', 'nettersheim', 'schleiden', 'bad münstereifel', 'kall', 'euskirchen stadt'],
-            'bonn': ['rhein-sieg', 'brühl', 'bornheim', 'alfter', 'wesseling', 'euskirchen stadt'],
+            'bedburg': ['bergheim', 'jüchen', 'rommerskirchen', 'grevenbroich'],
+            'bedburg-hau': ['kleve', 'kalkar', 'goch', 'emmerich am rhein', 'kranenburg'],
+            'blankenheim': ['dahlem', 'nettersheim', 'schleiden', 'bad münstereifel', 'kall'],
+            'bonn': ['rhein-sieg', 'brühl', 'bornheim', 'alfter', 'wesseling'],
             'breckerfeld': ['ennepetal', 'schwelm', 'hagen', 'halver'],
-            'brühl': ['wesseling', 'hürth', 'erftstadt', 'bonn', 'köln', 'euskirchen stadt'],
-            'dahlem': ['blankenheim', 'hellenthal', 'schleiden', 'kall', 'euskirchen stadt'],
-            'dormagen': ['neuss', 'rommerskirchen', 'pulheim', 'köln', 'monheim am rhein', 'rhein-kreis neuss'],
+            'brühl': ['wesseling', 'hürth', 'erftstadt', 'bonn', 'köln'],
+            'dahlem': ['blankenheim', 'hellenthal', 'schleiden', 'kall'],
+            'dormagen': ['neuss', 'rommerskirchen', 'pulheim', 'köln', 'monheim am rhein'],
             'dortmund': ['bochum', 'castrop-rauxel', 'lünen', 'schwerte', 'unna', 'witten'],
-            'dülmen': ['haltern am see', 'coesfeld', 'lüdinghausen', 'münster', 'wesel kreis'],
-            'düsseldorf': ['meerbusch', 'ratingen', 'neuss', 'erkrath', 'hilden', 'dormagen', 'duisburg', 'rhein-kreis neuss'],
-            'düren kreis': ['euskirchen stadt', 'heinsberg kreis', 'heinsberg', 'merzenich', 'jülich', 'aldenhoven', 'zülpich', 'aachen', 'rhein-erft-kreis'],
-            'euskirchen stadt': ['düren kreis', 'bad münstereifel', 'bad-munstereifel', 'mechernich', 'zülpich', 'weilerswist', 'kall', 'schleiden', 'blankenheim', 'dahlem', 'hellenthal', 'rhein-sieg-kreis', 'rhein-sieg', 'brühl', 'erftstadt', 'bonn', 'ahrweiler', 'rhein-erft-kreis'],
-            'emmerich am rhein': ['rees', 'kleve', 'bedburg-hau', 'kleve kreis'],
+            'dülmen': ['haltern am see', 'coesfeld', 'lüdinghausen', 'münster'],
+            'düsseldorf': ['meerbusch', 'ratingen', 'neuss', 'erkrath', 'hilden', 'dormagen', 'duisburg'],
+            'emmerich am rhein': ['rees', 'kleve', 'bedburg-hau'],
             'ennepetal': ['schwelm', 'gevelsberg', 'breckerfeld', 'sprockhövel'],
-            'erftstadt': ['hürth', 'brühl', 'kerpen', 'zülpich', 'weilerswist', 'euskirchen stadt', 'düren kreis'],
-            'erkrath': ['düsseldorf', 'haan', 'mettmann', 'hilden', 'wülfrath', 'rhein-kreis neuss'],
-            'geilenkirchen': ['übach-palenberg', 'heinsberg', 'hückelhoven', 'gangelt', 'aldenhoven', 'heinsberg kreis', 'düren kreis'],
-            'geldern': ['kevelaer', 'straelen', 'issum', 'kerken', 'sonsbeck', 'kleve kreis', 'wesel kreis'],
-            'goch': ['bedburg-hau', 'kleve', 'uedem', 'weeze', 'kevelaer', 'kleve kreis'],
-            'grefrath': ['nettetal', 'kempen', 'tönisvorst', 'viersen', 'viersen kreis'],
-            'grevenbroich': ['jüchen', 'rommerskirchen', 'neuss', 'bedburg', 'korschenbroich', 'rhein-kreis neuss'],
+            'erftstadt': ['hürth', 'brühl', 'kerpen', 'zülpich', 'weilerswist'],
+            'erkrath': ['düsseldorf', 'haan', 'mettmann', 'hilden', 'wülfrath'],
+            'euskirchen': ['weilerswist', 'bad münstereifel', 'zülpich', 'mechernich', 'rhein-sieg'],
+            'geilenkirchen': ['übach-palenberg', 'heinsberg', 'hückelhoven', 'gangelt', 'aldenhoven'],
+            'geldern': ['kevelaer', 'straelen', 'issum', 'kerken', 'sonsbeck'],
+            'goch': ['bedburg-hau', 'kleve', 'uedem', 'weeze', 'kevelaer'],
+            'grefrath': ['nettetal', 'kempen', 'tönisvorst', 'viersen'],
+            'grevenbroich': ['jüchen', 'rommerskirchen', 'neuss', 'bedburg', 'korschenbroich'],
             'haan': ['solingen', 'hilden', 'erkrath', 'mettmann', 'wuppertal'],
             'heiligenhaus': ['velbert', 'ratingen', 'wülfrath', 'essen'],
-            'heinsberg': ['geilenkirchen', 'hückelhoven', 'selfkant', 'waldfeucht', 'wassenberg', 'heinsberg kreis', 'düren kreis', 'viersen kreis'],
-            'heinsberg kreis': ['düren kreis', 'viersen kreis', 'rhein-kreis neuss', 'heinsberg', 'geilenkirchen', 'hückelhoven', 'selfkant', 'aldenhoven', 'jülich', 'viersen', 'aachen', 'mönchengladbach'],
-            'hellenthal': ['schleiden', 'kall', 'dahlem', 'blankenheim', 'euskirchen stadt'],
-            'hückelhoven': ['heinsberg', 'geilenkirchen', 'erkelenz', 'wassenberg', 'jüchen', 'heinsberg kreis', 'rhein-kreis neuss'],
+            'heinsberg': ['geilenkirchen', 'hückelhoven', 'selfkant', 'waldfeucht', 'wassenberg'],
+            'hellenthal': ['schleiden', 'kall', 'dahlem', 'blankenheim'],
+            'hückelhoven': ['heinsberg', 'geilenkirchen', 'erkelenz', 'wassenberg', 'jüchen'],
             'hürth': ['köln', 'brühl', 'erftstadt', 'frechen'],
             'iserlohn': ['menden', 'hemer', 'schwerte', 'altena', 'nachrodt-wiblingwerde'],
-            'issum': ['geldern', 'kamp-lintfort', 'alpen', 'kerken', 'sonsbeck', 'wesel kreis', 'kleve kreis'],
-            'jüchen': ['grevenbroich', 'korschenbroich', 'mönchengladbach', 'bedburg', 'rhein-kreis neuss'],
-            'jülich': ['aldenhoven', 'titz', 'linnich', 'niederzier', 'merzenich', 'düren kreis', 'heinsberg kreis'],
-            'kaarst': ['neuss', 'meerbusch', 'korschenbroich', 'willich', 'krefeld', 'rhein-kreis neuss', 'viersen kreis'],
-            'kall': ['mechernich', 'schleiden', 'hellenthal', 'blankenheim', 'nettersheim', 'euskirchen stadt'],
-            'kamp-lintfort': ['moers', 'neukirchen-vluyn', 'rheinberg', 'issum', 'alpen', 'wesel kreis'],
-            'kerken': ['geldern', 'straelen', 'kempen', 'wachtendonk', 'issum', 'kleve kreis', 'wesel kreis'],
-            'kevelaer': ['geldern', 'weeze', 'sonsbeck', 'straelen', 'goch', 'kleve kreis', 'wesel kreis'],
-            'kleve kreis': ['wesel kreis', 'viersen kreis', 'geldern', 'kevelaer', 'goch', 'weeze', 'uedem', 'straelen', 'kerken', 'bedburg-hau', 'emmerich am rhein', 'rees'],
-            'korschenbroich': ['mönchengladbach', 'kaarst', 'jüchen', 'neuss', 'willich', 'rhein-kreis neuss', 'viersen kreis'],
-            'köln': ['leverkusen', 'bergisch gladbach', 'hürth', 'brühl', 'pulheim', 'dormagen', 'rhein-kreis neuss'],
-            'krefeld': ['moers', 'meerbusch', 'tönisvorst', 'willich', 'duisburg', 'viersen kreis', 'rhein-kreis neuss', 'wesel kreis'],
+            'issum': ['geldern', 'kamp-lintfort', 'alpen', 'kerken', 'sonsbeck'],
+            'jüchen': ['grevenbroich', 'korschenbroich', 'mönchengladbach', 'bedburg'],
+            'jülich': ['aldenhoven', 'titz', 'linnich', 'niederzier', 'merzenich'],
+            'kaarst': ['neuss', 'meerbusch', 'korschenbroich', 'willich', 'krefeld'],
+            'kall': ['mechernich', 'schleiden', 'hellenthal', 'blankenheim', 'nettersheim'],
+            'kamp-lintfort': ['moers', 'neukirchen-vluyn', 'rheinberg', 'issum', 'alpen'],
+            'kerken': ['geldern', 'straelen', 'kempen', 'wachtendonk', 'issum'],
+            'kevelaer': ['geldern', 'weeze', 'sonsbeck', 'straelen', 'goch'],
+            'korschenbroich': ['mönchengladbach', 'kaarst', 'jüchen', 'neuss', 'willich'],
+            'köln': ['leverkusen', 'bergisch gladbach', 'hürth', 'brühl', 'pulheim', 'dormagen'],
+            'krefeld': ['moers', 'meerbusch', 'tönisvorst', 'willich', 'duisburg'],
             'leverkusen': ['köln', 'monheim am rhein', 'leichlingen', 'burscheid', 'bergisch gladbach'],
-            'mechernich': ['euskirchen stadt', 'kall', 'zülpich', 'bad münstereifel', 'schleiden'],
-            'meerbusch': ['düsseldorf', 'krefeld', 'kaarst', 'neuss', 'duisburg', 'rhein-kreis neuss'],
+            'mechernich': ['euskirchen', 'kall', 'zülpich', 'bad münstereifel', 'schleiden'],
+            'meerbusch': ['düsseldorf', 'krefeld', 'kaarst', 'neuss', 'duisburg'],
             'menden': ['iserlohn', 'balve', 'hemer', 'fröndenberg', 'wickede'],
-            'merzenich': ['düren kreis', 'nörvenich', 'jülich', 'aldenhoven'],
-            'monheim am rhein': ['leverkusen', 'düsseldorf', 'dormagen', 'langenfeld', 'hilden', 'rhein-kreis neuss'],
+            'merzenich': ['düren', 'nörvenich', 'jülich', 'aldenhoven'],
+            'monheim am rhein': ['leverkusen', 'düsseldorf', 'dormagen', 'langenfeld', 'hilden'],
             'münster': ['greven', 'telgte', 'everswinkel', 'senden', 'dülmen'],
             'nachrodt-wiblingwerde': ['altena', 'iserlohn', 'lüdenscheid', 'werdohl'],
-            'nettetal': ['viersen', 'grefrath', 'schwalmtal', 'brüggen', 'viersen kreis', 'kleve kreis'],
-            'neukirchen-vluyn': ['kamp-lintfort', 'moers', 'krefeld', 'rheurdt', 'wesel kreis'],
-            'neuss': ['düsseldorf', 'dormagen', 'kaarst', 'meerbusch', 'korschenbroich', 'grevenbroich', 'rhein-kreis neuss'],
+            'nettetal': ['viersen', 'grefrath', 'schwalmtal', 'brüggen'],
+            'neukirchen-vluyn': ['kamp-lintfort', 'moers', 'krefeld', 'rheurdt'],
+            'neuss': ['düsseldorf', 'dormagen', 'kaarst', 'meerbusch', 'korschenbroich', 'grevenbroich'],
             'oberberg': ['gummersbach', 'wiehl', 'wipperfürth', 'lindlar', 'rheinisch-bergischer'],
             'olpe': ['attendorn', 'drolshagen', 'lennestadt', 'kreuztal', 'plettenberg'],
             'plettenberg': ['attendorn', 'finnentrop', 'werdohl', 'altena', 'olpe'],
-            'pulheim': ['köln', 'bergheim', 'rommerskirchen', 'dormagen', 'frechen', 'rhein-kreis neuss'],
+            'pulheim': ['köln', 'bergheim', 'rommerskirchen', 'dormagen', 'frechen'],
             'ratingen': ['düsseldorf', 'heiligenhaus', 'mülheim an der ruhr', 'duisburg', 'mettmann'],
-            'rees': ['emmerich am rhein', 'kalkar', 'wesel kreis', 'haldern', 'bocholt', 'kleve kreis'],
-            'rhein-kreis neuss': ['neuss', 'grevenbroich', 'dormagen', 'kaarst', 'korschenbroich', 'jüchen', 'rommerskirchen', 'meerbusch', 'viersen kreis', 'heinsberg kreis', 'düsseldorf', 'mönchengladbach', 'krefeld', 'köln'],
-            'rhein-sieg': ['bonn', 'troisdorf', 'sankt augustin', 'hennef', 'euskirchen stadt'],
+            'rees': ['emmerich am rhein', 'kalkar', 'wesel', 'haldern', 'bocholt'],
+            'rhein-sieg': ['bonn', 'troisdorf', 'sankt augustin', 'hennef', 'euskirchen'],
             'rheinisch-bergischer': ['bergisch gladbach', 'overath', 'leverkusen', 'köln', 'oberberg'],
-            'rheurdt': ['neukirchen-vluyn', 'kamp-lintfort', 'kerken', 'issum', 'wesel kreis'],
-            'rommerskirchen': ['dormagen', 'grevenbroich', 'pulheim', 'bedburg', 'köln', 'rhein-kreis neuss'],
-            'schleiden': ['hellenthal', 'kall', 'simmerath', 'heimbach', 'blankenheim', 'euskirchen stadt'],
-            'selfkant': ['waldfeucht', 'gangelt', 'heinsberg', 'heinsberg kreis'],
+            'rheurdt': ['neukirchen-vluyn', 'kamp-lintfort', 'kerken', 'issum'],
+            'rommerskirchen': ['dormagen', 'grevenbroich', 'pulheim', 'bedburg', 'köln'],
+            'schleiden': ['hellenthal', 'kall', 'simmerath', 'heimbach', 'blankenheim'],
+            'selfkant': ['waldfeucht', 'gangelt', 'heinsberg'],
             'solingen': ['remscheid', 'wuppertal', 'haan', 'hilden', 'leichlingen'],
-            'sonsbeck': ['xanten', 'geldern', 'kevelaer', 'alpen', 'issum', 'wesel kreis', 'kleve kreis'],
+            'sonsbeck': ['xanten', 'geldern', 'kevelaer', 'alpen', 'issum'],
             'sprockhövel': ['hattingen', 'gevelsberg', 'wuppertal', 'witten', 'ennepetal'],
-            'straelen': ['wachtendonk', 'geldern', 'kerken', 'nettetal', 'kleve kreis', 'viersen kreis'],
-            'tönisvorst': ['krefeld', 'kempen', 'viersen', 'willich', 'grefrath', 'viersen kreis'],
-            'übach-palenberg': ['geilenkirchen', 'baesweiler', 'herzogenrath', 'aldenhoven', 'heinsberg kreis'],
-            'uedem': ['goch', 'weeze', 'kalkar', 'sonsbeck', 'xanten', 'kleve kreis', 'wesel kreis'],
-            'viersen': ['mönchengladbach', 'willich', 'schwalmtal', 'tönisvorst', 'grefrath', 'nettetal', 'viersen kreis'],
-            'viersen kreis': ['kleve kreis', 'wesel kreis', 'rhein-kreis neuss', 'heinsberg kreis', 'viersen', 'nettetal', 'grefrath', 'tönisvorst', 'straelen', 'krefeld', 'mönchengladbach'],
-            'voerde': ['dinslaken', 'wesel kreis', 'hünxe', 'rheinberg'],
-            'weeze': ['kevelaer', 'goch', 'uedem', 'geldern', 'kleve kreis'],
-            'weilerswist': ['erftstadt', 'brühl', 'euskirchen stadt', 'zülpich', 'bornheim'],
+            'straelen': ['wachtendonk', 'geldern', 'kerken', 'nettetal'],
+            'tönisvorst': ['krefeld', 'kempen', 'viersen', 'willich', 'grefrath'],
+            'übach-palenberg': ['geilenkirchen', 'baesweiler', 'herzogenrath', 'aldenhoven'],
+            'uedem': ['goch', 'weeze', 'kalkar', 'sonsbeck', 'xanten'],
+            'viersen': ['mönchengladbach', 'willich', 'schwalmtal', 'tönisvorst', 'grefrath', 'nettetal'],
+            'voerde': ['dinslaken', 'wesel', 'hünxe', 'rheinberg'],
+            'weeze': ['kevelaer', 'goch', 'uedem', 'geldern'],
+            'weilerswist': ['erftstadt', 'brühl', 'euskirchen', 'zülpich', 'bornheim'],
             'werdohl': ['altena', 'plettenberg', 'neuenrade', 'lüdenscheid'],
-            'wesel kreis': ['kleve kreis', 'viersen kreis', 'alpen', 'sonsbeck', 'xanten', 'voerde', 'rees', 'kamp-lintfort', 'issum', 'neukirchen-vluyn', 'rheurdt', 'krefeld', 'duisburg', 'oberhausen', 'dülmen', 'borken', 'recklinghausen'],
             'wesseling': ['brühl', 'köln', 'bonn', 'niederkassel'],
             'wülfrath': ['velbert', 'mettmann', 'heiligenhaus', 'wuppertal'],
             'wuppertal': ['solingen', 'remscheid', 'schwelm', 'sprockhövel', 'haan'],
-            'xanten': ['sonsbeck', 'alpen', 'wesel kreis', 'kalkar', 'uedem', 'kleve kreis'],
-            'zülpich': ['euskirchen stadt', 'mechernich', 'weilerswist', 'nörvenich', 'erftstadt', 'düren kreis'],
+            'xanten': ['sonsbeck', 'alpen', 'wesel', 'kalkar', 'uedem'],
+            'zülpich': ['euskirchen', 'mechernich', 'weilerswist', 'nörvenich', 'erftstadt'],
             'alzey-worms': ['worms', 'bad-kreuznach', 'mainz-bingen'],
             'altenkirchen (westerwald)': ['westerwald', 'neuwied', 'rhein-sieg'],
             'bad-kreuznach': ['alzey-worms', 'birkenfeld', 'rhein-hunsrück', 'mainz-bingen'],
@@ -1703,7 +1757,7 @@
                     terminyDlaWybranychTygodni.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
                     let pills = terminyDlaWybranychTygodni.map(item => {
                         if (item.isSaturday) {
-                            return `<span class="schedule-pill notranslate" translate="no" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b;"><b>${item.dzien}</b> <small style="color:#fbbf24;">(${item.frakcja} ⚠️️ SOB)</small></span>`;
+                            return `<span class="schedule-pill notranslate" translate="no" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b;"><b>${item.dzien}</b> <small style="color:#fbbf24;">(${item.frakcja} ⚠️ SOB)</small></span>`;
                         }
                         return `<span class="schedule-pill notranslate" translate="no"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`;
                     }).join('');
@@ -1898,7 +1952,7 @@
         }
 
         // ========================================================
-        // KALKULACJA - KORYTARZ WSPÓLNY
+        // KALKULACJA - LOGIKA SĄSIEDZTW I TRASY
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2006,22 +2060,15 @@
 
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
-            let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            let regularBaseReference;
-            if (isEuro) {
-                regularBaseReference = 10.00;
-            } else {
-                regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
-            }
-
+            // STAWKI BAZOWE: 25 PLN / 10 EUR
+            let regularBaseReference = isEuro ? 10.00 : 25.00;
             let ratePerDay;
             let totalPriceNetto;
 
             if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
-                let dodatekKorytarzEur = (isEuro && czyKorytarzWspolny) ? 10.00 : 0;
-                totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else {
                 if (isEuro) {
                     if (totalDays >= 250) ratePerDay = 2.00;
@@ -2031,37 +2078,23 @@
                     else if (totalDays >= 51)  ratePerDay = 6.00;
                     else if (totalDays >= 31)  ratePerDay = 7.00;
                     else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;
+                    else if (totalDays >= 5)   ratePerDay = 9.00; 
                     else                       ratePerDay = 10.00;
-
-                    let oplataKorytarzEur = czyKorytarzWspolny ? 10.00 : 0.00;
-                    totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
                 } else {
-                    if (czyKorytarzWspolny) {
-                        if (totalDays >= 250) ratePerDay = 15.00;
-                        else if (totalDays >= 181) ratePerDay = 18.00;
-                        else if (totalDays >= 121) ratePerDay = 22.00;
-                        else if (totalDays >= 81)  ratePerDay = 26.00;
-                        else if (totalDays >= 51)  ratePerDay = 30.00;
-                        else if (totalDays >= 31)  ratePerDay = 33.00;
-                        else if (totalDays >= 16)  ratePerDay = 36.00;
-                        else if (totalDays >= 6)   ratePerDay = 38.00;
-                        else                       ratePerDay = 40.00;
-                    } else {
-                        if (totalDays >= 250) ratePerDay = 8.00;
-                        else if (totalDays >= 181) ratePerDay = 10.00;
-                        else if (totalDays >= 121) ratePerDay = 12.00;
-                        else if (totalDays >= 81)  ratePerDay = 15.00;
-                        else if (totalDays >= 51)  ratePerDay = 18.00;
-                        else if (totalDays >= 31)  ratePerDay = 20.00;
-                        else if (totalDays >= 16)  ratePerDay = 22.00;
-                        else if (totalDays >= 6)   ratePerDay = 22.50;
-                        else                       ratePerDay = 25.00;
-                    }
-                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+                    if (totalDays >= 250) ratePerDay = 8.00;
+                    else if (totalDays >= 181) ratePerDay = 10.00;
+                    else if (totalDays >= 121) ratePerDay = 12.00;
+                    else if (totalDays >= 81)  ratePerDay = 15.00;
+                    else if (totalDays >= 51)  ratePerDay = 18.00;
+                    else if (totalDays >= 31)  ratePerDay = 20.00;
+                    else if (totalDays >= 16)  ratePerDay = 22.00;
+                    else if (totalDays >= 5)   ratePerDay = 22.50; 
+                    else                       ratePerDay = 25.00;
                 }
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
 
+            // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
                 if (activeLoyaltyDiscount.type === 'PROCENT') {
@@ -2306,7 +2339,7 @@
             } else {
                 if (btn) btn.innerHTML = "🛒 WYŚLIJ ZAMÓWIENIE";
                 if (svgPriceSub) svgPriceSub.textContent = "automatyczna";
-                if (configPrice) configPrice.textContent = "Wycena automatyczna";
+                if (configPrice) configPrice.textContent = "Wycena dynamiczna";
                 if (configSubtitle) configSubtitle.textContent = "Zaznacz opcje poniżej i wyślij zamówienie";
             }
 
@@ -2577,7 +2610,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment' || e.target.name === 'sendChannel')) {
                 if (e.target.id === 'pickupOption') {
                     var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
                     if (e.target.checked && cashRadio) {
@@ -2794,6 +2827,36 @@
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
 
+            // Pobranie wybranego kanału wysyłki
+            var selectedChannel = document.querySelector('input[name="sendChannel"]:checked')?.value || 'email';
+            var MOJ_NUMER_TEL = "48600812820";
+
+            var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
+            var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
+            var tygodnieListaTekst = Array.from(wT).map(cb => cb.value.trim()).join(", ");
+            var platnoscTekst = selectedPaymentMethod ? selectedPaymentMethod.value : "Standardowa";
+
+            var krotkaWiadomosc = "Dzień dobry, zamawiam pakiet trasy #" + nr + ".\n" +
+                "Kwota: " + kwotaTekst + "\n" +
+                "Dni w trasie: " + calc.totalDays + "\n" +
+                "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
+                "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
+                "Motyw: " + selectedThemeVal + "\n" +
+                "Płatność: " + platnoscTekst;
+
+            function wykonajPrzekierowanie() {
+                if (selectedChannel === "whatsapp") {
+                    var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
+                    window.open(waUrl, "_blank");
+                } else if (selectedChannel === "sms") {
+                    var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
+                    window.location.href = smsUrl;
+                } else {
+                    window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                }
+            }
+
+            // Asynchroniczny zapis zamówienia w Arkuszu Google
             var btnSubmit = document.getElementById('btnSubmit');
             var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
             if (btnSubmit) {
@@ -2804,6 +2867,7 @@
             var orderPayload = {
                 akcja: 'zapisz_zamowienie',
                 orderId: nr,
+                channel: selectedChannel,
                 totalPrice: calc.totalPrice,
                 finalPrice: calc.finalPrice,
                 currency: calc.currency,
@@ -2815,7 +2879,7 @@
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
                 loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : (regularProof || ""),
-                rawSummary: "Automatyczny zapis ze strony www"
+                rawSummary: "Automatyczny zapis ze strony www (" + selectedChannel.toUpperCase() + ")"
             };
 
             fetch(apiURL, {
@@ -2825,11 +2889,11 @@
                 body: JSON.stringify(orderPayload)
             })
             .then(function() {
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                wykonajPrzekierowanie();
             })
             .catch(function(err) {
                 console.warn("Błąd zapisu w arkuszu:", err);
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                wykonajPrzekierowanie();
             })
             .finally(function() {
                 setTimeout(function() {
@@ -2862,6 +2926,7 @@
 //]]>
 </script>
 
+<!-- SKRYPT AUTOMATYCZNEGO TŁUMACZENIA GOOGLE W TLE -->
 <script>
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
