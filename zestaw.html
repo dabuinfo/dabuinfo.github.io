@@ -770,97 +770,99 @@
                     </div>
                 </div>
 
-                <!-- KROK 4: OPCJE DODATKOWE -->
-                <div class="form-header">💾 4. Opcje dodatkowe:</div>
-                <div class="extra-options-group">
-                    
-                    <!-- DODATEK: INTERAKTYWNA MAPA ONLINE GPS -->
-                    <div class="option-box" id="mapAddonBox" style="background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 8px; margin-bottom: 6px;">
-                        <label class="region-label" style="min-height: auto; padding: 0;">
-                            <div class="region-left-side">
-                                <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" /> 
-                                <span style="color: #38bdf8; font-weight: bold;">
-                                    🗺️ Dołącz Interaktywną Mapę Online GPS (+dodatkowa wycena bez rabatu)
-                                </span>
-                            </div>
-                        </label>
-                        <div style="font-size: 0.82rem; color: #94a3b8; margin-left: 31px; margin-top: 4px; line-height: 1.4;">
-                            Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia, klastrami oraz szybką nawigacją Google Maps.
-                        </div>
-                    </div>
+<!-- KROK 4: OPCJE DODATKOWE (KOMPAKTOWE) -->
+<div class="order-channel-box" style="margin-top: 22px; margin-bottom: 12px;">
+    <div class="order-channel-title">
+        💾 4. Opcje dodatkowe:
+    </div>
+    <div class="order-channel-options">
+        <label class="order-channel-label" id="mapAddonBox" title="Interaktywna mapa HTML na telefon z punktami zbiórek i nawigacją">
+            <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" />
+            <span style="color: #38bdf8; font-weight: 600;">🗺️ Interaktywna Mapa GPS</span>
+        </label>
 
-                    <div class="option-box" id="dhlBox" style="display: none;">
-                        <label class="region-label">
-                            <input id="dhlOption" type="checkbox" /> 
-                            <span>📦 Darmowa wysyłka wydruku (Paczkomaty / Automaty w Polsce od 5 dni)</span>
-                        </label>
-                        
-                        <div id="paczkomatSection" style="display:none; margin: 12px 0 10px 10px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.9em; color: #93c5fd; font-weight: bold; margin-bottom: 10px;">
-                                🚚 Wybierz operatora i automat / punkt odbioru:
-                            </div>
-                            
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 14px;">
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="InPost" checked /> InPost Paczkomat
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="DPD" /> DPD Pickup
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="DHL" /> DHL BOX / POP
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.92rem; cursor: pointer;">
-                                    <input type="radio" name="carrierOption" value="ORLEN" /> ORLEN Paczka
-                                </label>
-                            </div>
+        <label class="order-channel-label" id="pickupBox">
+            <input id="pickupOption" type="checkbox" />
+            <span>🏪 Odbiór osobisty</span>
+        </label>
 
-                            <div id="inpostMapTriggerBox" style="margin-bottom: 10px;">
-                                <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border: none; padding: 11px 18px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);">
-                                    📍 Wybierz Paczkomat na mapie InPost
-                                </button>
-                            </div>
+        <label class="order-channel-label" id="schrottBox">
+            <input id="schrottOption" type="checkbox" />
+            <span>🧲 Złom / E-Złom</span>
+        </label>
+        
+        <label class="order-channel-label" id="dhlBox" style="display: none;">
+            <input id="dhlOption" type="checkbox" />
+            <span>📦 Darmowa wysyłka wydruku</span>
+        </label>
+    </div>
 
-                            <div id="externalMapTriggerBox" style="display: none; margin-bottom: 10px;">
-                                <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 9px 15px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 0.88rem;">
-                                    🔍 Znajdź punkt w wyszukiwarce operatora &raquo;
-                                </a>
-                                <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">
-                                    Otwórz mapę w nowym oknie, odczytaj kod punktu i wklej go poniżej:
-                                </div>
-                            </div>
+    <!-- Opcjonalne pole paczkomatu (rozwija się automatycznie, gdy darmowa wysyłka jest aktywna) -->
+    <div id="paczkomatSection" style="display:none; margin-top: 10px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-subtle);">
+        <div style="font-size: 0.88rem; color: #93c5fd; font-weight: bold; margin-bottom: 8px;">
+            🚚 Wybierz punkt odbioru:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.88rem; cursor: pointer;">
+                <input type="radio" name="carrierOption" value="InPost" checked /> InPost Paczkomat
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.88rem; cursor: pointer;">
+                <input type="radio" name="carrierOption" value="DPD" /> DPD Pickup
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.88rem; cursor: pointer;">
+                <input type="radio" name="carrierOption" value="DHL" /> DHL BOX / POP
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.88rem; cursor: pointer;">
+                <input type="radio" name="carrierOption" value="ORLEN" /> ORLEN Paczka
+            </label>
+        </div>
+        <div id="inpostMapTriggerBox" style="margin-bottom: 8px;">
+            <button type="button" id="btnOpenInPostMap" style="background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.88rem;">
+                📍 Wybierz Paczkomat na mapie InPost
+            </button>
+        </div>
+        <div id="externalMapTriggerBox" style="display: none; margin-bottom: 8px;">
+            <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.84rem; display: inline-block;">
+                🔍 Otwórz wyszukiwarkę punktów &raquo;
+            </a>
+        </div>
+        <input type="text" id="paczkomatInput" class="client-input" placeholder="Wpisz kod i adres punktu..." style="margin-bottom: 4px;">
+        <div id="selectedPaczkomatInfo" style="font-size: 0.82em; color: #2ecc71; font-weight: bold;"></div>
+    </div>
+</div>
 
-                            <input type="text" id="paczkomatInput" class="client-input" placeholder="Kod i adres wybranego punktu (np. KRA010M lub wpisz ręcznie)" style="margin-bottom: 6px;">
-                            <div id="selectedPaczkomatInfo" style="font-size: 0.85em; color: #2ecc71; font-weight: bold; min-height: 1.2em;"></div>
-                        </div>
-                    </div>
+<!-- KROK 5: FORMY PŁATNOŚCI (KOMPAKTOWE) -->
+<div class="order-channel-box" id="paymentBox" style="margin-top: 10px; margin-bottom: 15px;">
+    <div class="order-channel-title">
+        💳 5. Preferowana forma płatności:
+    </div>
+    <div class="order-channel-options">
+        <label class="order-channel-label" id="cashOptionBox" style="display: none;">
+            <input type="radio" name="payment" value="GOTÓWKA PRZY ODBIORZE" />
+            <span>💵 Gotówka</span>
+        </label>
+        
+        <label class="order-channel-label">
+            <input type="radio" name="payment" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)" checked />
+            <span>🏦 IBAN / Przelew</span>
+        </label>
 
-                    <div class="option-box" id="pickupBox">
-                         <label class="region-label"><input id="pickupOption" type="checkbox" /> <span>🏪 Odbiór osobisty</span></label>
-                    </div>
-                    <div class="option-box" id="schrottBox">
-                         <label class="region-label"><input id="schrottOption" type="checkbox" /> <span>🧲 Złom / E-Złom (E-Schrott, Metal i Elektro)</span></label>
-                    </div>
-                </div>
+        <label class="order-channel-label">
+            <input type="radio" name="payment" value="PAYPAL (ewabu74@gmail.com)" />
+            <span>🅿️ PayPal</span>
+        </label>
 
-                <div class="form-header">💳 5. Preferowana forma płatności:</div>
-                <div class="extra-options-group" id="paymentBox">
-                    <div class="option-box" id="cashOptionBox" style="display: none;">
-                        <label class="region-label"><input type="radio" name="payment" value="GOTÓWKA PRZY ODBIORZE" /> <span>💵 Płatność gotówką przy odbiorze</span></label>
-                    </div>
-                    <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)" checked /> <span>🏦 IBAN / Przelew bankowy</span></label>
-                    </div>
-                    <div class="option-box">
-                        <label class="region-label"><input type="radio" name="payment" value="PAYPAL (ewabu74@gmail.com)" /> <span>🅿️ PayPal (ewabu74@gmail.com)</span></label>
-                    </div>
-                    <div class="option-box" id="blikContainer">
-                        <label class="region-label"><input type="radio" name="payment" value="BLIK (+48 733 035 301)" /> <span>📱 BLIK na Telefon</span></label>
-                    </div>
-                    <div class="option-box">
-                         <label class="region-label"><input type="radio" name="payment" value="INNE" /> <span>❓ Inne</span></label>
-                    </div>
-                </div>
+        <label class="order-channel-label" id="blikContainer">
+            <input type="radio" name="payment" value="BLIK (+48 733 035 301)" />
+            <span>📱 BLIK na telefon</span>
+        </label>
+
+        <label class="order-channel-label">
+            <input type="radio" name="payment" value="INNE" />
+            <span>❓ Inne</span>
+        </label>
+    </div>
+</div>
 
                 <!-- STREFA STAŁEGO KLIENTA (PROSTY KOD RABATOWY) -->
                 <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin: 18px 0 12px 0;">
