@@ -471,6 +471,52 @@
             border-color: var(--primary-accent);
         }
 
+        /* --- STYL DLA WYBORU FORMY ZAMÓWIENIA --- */
+        .order-channel-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+        .order-channel-title {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .order-channel-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+        }
+        .order-channel-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #f0f6fc;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: background 0.15s ease;
+        }
+        .order-channel-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .order-channel-label input[type="radio"] {
+            margin: 0;
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            accent-color: var(--primary-accent);
+        }
+
         .submit-btn { 
             width: 100%; 
             background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%); 
@@ -844,6 +890,27 @@
                         📋 Twoje zestawienie wg rejonów i tygodni:
                     </div>
                     <div id="orderSummaryDetails"></div>
+                </div>
+
+                <!-- WYBÓR SPOSOBU PRZEKAZANIA ZAMÓWIENIA -->
+                <div class="order-channel-box">
+                    <div class="order-channel-title">
+                        📲 Wybierz sposób przekazania zamówienia:
+                    </div>
+                    <div class="order-channel-options">
+                        <label class="order-channel-label">
+                            <input type="radio" name="orderChannel" value="email" checked />
+                            <span>✉️ E-mail</span>
+                        </label>
+                        <label class="order-channel-label">
+                            <input type="radio" name="orderChannel" value="whatsapp" />
+                            <span>💬 WhatsApp</span>
+                        </label>
+                        <label class="order-channel-label">
+                            <input type="radio" name="orderChannel" value="sms" />
+                            <span>📱 SMS</span>
+                        </label>
+                    </div>
                 </div>
 
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
@@ -2584,7 +2651,7 @@
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment' || e.target.name === 'orderChannel')) {
                 if (e.target.id === 'pickupOption') {
                     var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
                     if (e.target.checked && cashRadio) {
@@ -2801,6 +2868,35 @@
             var safeSubject = removeDiacritics(subject);
             var safeBody = removeDiacritics(body);
 
+            // OBSŁUGA WYBRANEGO KANAŁU PRZEKAZANIA ZAMÓWIENIA
+            var selectedOrderChannel = document.querySelector('input[name="orderChannel"]:checked')?.value || 'email';
+            var MOJ_NUMER_TEL = "48733035301";
+
+            var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
+            var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
+            var tygodnieListaTekst = Array.from(wT).map(cb => cb.value.trim()).join(", ");
+            var platnoscTekst = selectedPaymentMethod ? selectedPaymentMethod.value : "Standardowa";
+
+            var krotkaWiadomosc = "Dzień dobry, zamawiam pakiet trasy #" + nr + ".\n" +
+                "Kwota: " + kwotaTekst + "\n" +
+                "Dni w trasie: " + calc.totalDays + "\n" +
+                "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
+                "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
+                "Motyw: " + selectedThemeVal + "\n" +
+                "Płatność: " + platnoscTekst;
+
+            function wykonajPrzekierowanie() {
+                if (selectedOrderChannel === "whatsapp") {
+                    var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
+                    window.open(waUrl, "_blank");
+                } else if (selectedOrderChannel === "sms") {
+                    var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
+                    window.location.href = smsUrl;
+                } else {
+                    window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                }
+            }
+
             var btnSubmit = document.getElementById('btnSubmit');
             var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
             if (btnSubmit) {
@@ -2811,6 +2907,7 @@
             var orderPayload = {
                 akcja: 'zapisz_zamowienie',
                 orderId: nr,
+                channel: selectedOrderChannel,
                 totalPrice: calc.totalPrice,
                 finalPrice: calc.finalPrice,
                 currency: calc.currency,
@@ -2822,7 +2919,7 @@
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
                 loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : (regularProof || ""),
-                rawSummary: "Automatyczny zapis ze strony www"
+                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ")"
             };
 
             fetch(apiURL, {
@@ -2832,11 +2929,11 @@
                 body: JSON.stringify(orderPayload)
             })
             .then(function() {
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                wykonajPrzekierowanie();
             })
             .catch(function(err) {
                 console.warn("Błąd zapisu w arkuszu:", err);
-                window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                wykonajPrzekierowanie();
             })
             .finally(function() {
                 setTimeout(function() {
