@@ -2382,7 +2382,15 @@
             if (calc.totalDays > 0) {
                 let discountBadge = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let extraNotice = hasMixedSpecial ? ' + Wycena indyw.' : '';
-                let clusterInfoText = calc.isSingleCluster ? ` (${calc.totalDays} DNI W TRASIE | KORYTARZ WSPÓLNY${extraNotice})` : ` (${calc.totalDays} DNI W TRASIE${extraNotice})`;
+                let clusterInfoText = '';
+if (calc.isSingleCluster) {
+    clusterInfoText = ` (${calc.totalDays} DNI W TRASIE | KORYTARZ WSPÓLNY${extraNotice})`;
+} else if (calc.clustersCount > 1) {
+    // Rejony nie są po drodze - jasny komunikat o sumie dni z osobnych tras
+    clusterInfoText = ` (${calc.totalDays} DNI RAPORTOWYCH | ${calc.clustersCount} OSOBNE TRASY${extraNotice})`;
+} else {
+    clusterInfoText = ` (${calc.totalDays} DNI W TRASIE${extraNotice})`;
+}
                 
                 let loyaltyNotice = '';
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
@@ -2402,7 +2410,13 @@
                         if (calc.savings > 0) {
                             configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Dni w trasie: ${calc.totalDays} | Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
                         } else {
-                            configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b> (Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
+                            if (calc.clustersCount > 1) {
+    configSubtitle.innerHTML = `Wybrano rejony z różnych obszarów (${calc.clustersCount} osobne trasy). Łączna pula dni raportowych do opracowania: <b style="color:#2ecc71;">${calc.totalDays}</b>${loyaltyNotice}`;
+} else if (calc.savings > 0) {
+    configSubtitle.innerHTML = `Oszczędzasz <b style="color:#2ecc71;">${calc.savings.toFixed(2)} ${calc.currency}</b> (Dni w trasie: ${calc.totalDays} | Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
+} else {
+    configSubtitle.innerHTML = `Stawka za dzień w trasie: <b style="color:#2ecc71;">${calc.ratePerDay.toFixed(2)} ${calc.currency}</b> (Pula zbiórek: ${calc.totalRegionDaysSum})${loyaltyNotice}`;
+}
                         }
                     }
                 }
