@@ -2781,29 +2781,42 @@
                 "Motyw: " + selectedThemeVal + "\n" +
                 "Płatność: " + platnoscTekst;
 
-            function obsluzSukcesWysylki() {
+function obsluzSukcesWysylki() {
+                // 1. Zawsze ukrywamy przycisk wysyłki
+                var btn = document.getElementById('btnSubmit');
+                if (btn) btn.style.display = 'none';
+
+                // 2. Przygotowujemy i pokazujemy zieloną ramkę z numerem zamówienia
+                var successBox = document.getElementById('orderSuccessBox');
+                var orderDisplay = document.getElementById('successOrderIdDisplay');
+                var boxDetails = document.getElementById('successBoxDetails');
+
+                if (orderDisplay) {
+                    orderDisplay.innerText = "Numer Twojego zamówienia: #" + nr;
+                }
+
+                if (boxDetails) {
+                    if (selectedOrderChannel === "whatsapp") {
+                        boxDetails.innerHTML = "Twoje zamówienie zostało zarejestrowane. Otworzono aplikację WhatsApp z przygotowanym zestawieniem.";
+                    } else if (selectedOrderChannel === "sms") {
+                        boxDetails.innerHTML = "Twoje zamówienie zostało zarejestrowane. Otworzono aplikację SMS z przygotowanym zestawieniem.";
+                    } else {
+                        boxDetails.innerHTML = "Twoje zamówienie zostało zarejestrowane w naszym systemie." + (emailVal ? " Na adres <b>" + emailVal + "</b> wysłaliśmy potwierdzenie." : "");
+                    }
+                }
+
+                if (successBox) {
+                    successBox.style.display = 'block';
+                    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                // 3. Po pokazaniu ramki wywołujemy przekierowanie do WhatsApp lub SMS
                 if (selectedOrderChannel === "whatsapp") {
                     var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
-                    window.open(waUrl, "_blank");
+                    setTimeout(function() { window.open(waUrl, "_blank"); }, 300);
                 } else if (selectedOrderChannel === "sms") {
                     var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
-                    window.location.href = smsUrl;
-                } else {
-                    var btn = document.getElementById('btnSubmit');
-                    if (btn) btn.style.display = 'none';
-
-                    var successBox = document.getElementById('orderSuccessBox');
-                    var orderDisplay = document.getElementById('successOrderIdDisplay');
-                    var boxDetails = document.getElementById('successBoxDetails');
-
-                    if (orderDisplay) orderDisplay.innerText = "Numer Twojego zamówienia: #" + nr;
-                    if (boxDetails && emailVal) {
-                        boxDetails.innerHTML = "Twoje zamówienie zostało zarejestrowane. Na adres <b>" + emailVal + "</b> oraz do administratora wysłano powiadomienie e-mail.";
-                    }
-                    if (successBox) {
-                        successBox.style.display = 'block';
-                        successBox.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    setTimeout(function() { window.location.href = smsUrl; }, 300);
                 }
             }
 
