@@ -559,7 +559,6 @@
 
         .hidden { display: none !important; }
 
-        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-icon,
         #goog-gt-tt,
@@ -636,7 +635,7 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
+                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (od 6 dni w trasie stawka dzienna maleje). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
                         <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
@@ -1030,7 +1029,6 @@
         return ISOweekStart;
     }
 
-    // STAN RABATU STAŁEGO KLIENTA
     let activeLoyaltyDiscount = null;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -1046,7 +1044,6 @@
 
         const apiURL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec"; 
 
-        // OBSŁUGA STREFY STAŁEGO KLIENTA
         var regCustChk = document.getElementById('regularCustomerOption');
         var regCustDetails = document.getElementById('regularCustomerDetails');
         var clientIdInput = document.getElementById('regularClientIdInput');
@@ -1189,7 +1186,7 @@
             'Straelen': 'Nordrhein-Westfalen', 'Tönisvorst': 'Nordrhein-Westfalen', 'Übach-Palenberg': 'Nordrhein-Westfalen',
             'Uedem': 'Nordrhein-Westfalen', 'Viersen': 'Nordrhein-Westfalen', 'Voerde': 'Nordrhein-Westfalen',
             'Weeze': 'Nordrhein-Westfalen', 'Weilerswist': 'Nordrhein-Westfalen', 'Werdohl': 'Nordrhein-Westfalen',
-            'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
+            'Wesel': 'Nordrhein-Westfalen', 'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
             'Xanten': 'Nordrhein-Westfalen', 'Zülpich': 'Nordrhein-Westfalen', 'Alzey-Worms': 'Rheinland-Pfalz',
             'Altenkirchen (Westerwald)': 'Rheinland-Pfalz', 'Bad-Kreuznach': 'Rheinland-Pfalz',
             'Bernkastel-Wittlich': 'Rheinland-Pfalz', 'Cochem-Zell': 'Rheinland-Pfalz',
@@ -1694,7 +1691,7 @@
                     if (!matrixToUse[w]) return;
                     matrixToUse[w].forEach(item => {
                         let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rName) return;
+                        if (itemName !== rKey) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         let rStr = typeof item === 'string' ? "" : (item.rodzaj || item["RODZAJ"] || "");
@@ -1952,7 +1949,7 @@
         }
 
         // ========================================================
-        // KALKULACJA - LOGIKA SĄSIEDZTW I TRASY
+        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR + 10 EUR)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2060,41 +2057,58 @@
 
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
+            let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            // STAWKI BAZOWE: 25 PLN / 10 EUR
-            let regularBaseReference = isEuro ? 10.00 : 25.00;
-            let ratePerDay;
-            let totalPriceNetto;
+            // STAWKI I OPŁATY PAKIETOWE:
+            // PLN: 1 rejon = 25 zł/dzień | Pakiet korytarza = 40 zł/dzień
+            // EUR: 10 €/dzień + dopłata 10 € do pakietu korytarza
+            let ratePerDay = 0;
+            let oplataKorytarzEur = (isEuro && czyKorytarzWspolny) ? 10.00 : 0.00;
+            let baseRateStandard = isEuro ? 10.00 : (czyKorytarzWspolny ? 40.00 : 25.00);
 
-            if (isMapAddonChecked) {
-                ratePerDay = regularBaseReference;
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+            if (isEuro) {
+                // Rabaty w EUR dopiero od 6. dnia
+                if (totalDays >= 250)      ratePerDay = 2.00;
+                else if (totalDays >= 181) ratePerDay = 3.00;
+                else if (totalDays >= 121) ratePerDay = 4.00;
+                else if (totalDays >= 81)  ratePerDay = 5.00;
+                else if (totalDays >= 51)  ratePerDay = 6.00;
+                else if (totalDays >= 31)  ratePerDay = 7.00;
+                else if (totalDays >= 16)  ratePerDay = 8.00;
+                else if (totalDays >= 6)   ratePerDay = 9.00;  // rabat od 6 dni
+                else                       ratePerDay = 10.00; // 1-5 dni = 10 €/dzień
             } else {
-                if (isEuro) {
-                    if (totalDays >= 250) ratePerDay = 2.00;
-                    else if (totalDays >= 181) ratePerDay = 3.00;
-                    else if (totalDays >= 121) ratePerDay = 4.00;
-                    else if (totalDays >= 81)  ratePerDay = 5.00;
-                    else if (totalDays >= 51)  ratePerDay = 6.00;
-                    else if (totalDays >= 31)  ratePerDay = 7.00;
-                    else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 5)   ratePerDay = 9.00; 
-                    else                       ratePerDay = 10.00;
+                // PLN
+                if (czyKorytarzWspolny) {
+                    // PAKIET KORYTARZ WSPÓLNY (rabat dopiero od 6. dnia)
+                    if (totalDays >= 250)      ratePerDay = 15.00;
+                    else if (totalDays >= 181) ratePerDay = 18.00;
+                    else if (totalDays >= 121) ratePerDay = 22.00;
+                    else if (totalDays >= 81)  ratePerDay = 26.00;
+                    else if (totalDays >= 51)  ratePerDay = 30.00;
+                    else if (totalDays >= 31)  ratePerDay = 33.00;
+                    else if (totalDays >= 16)  ratePerDay = 36.00;
+                    else if (totalDays >= 6)   ratePerDay = 38.00; // rabat od 6 dni
+                    else                       ratePerDay = 40.00; // 1-5 dni = 40 PLN/dzień (5 dni = 200 PLN)
                 } else {
-                    if (totalDays >= 250) ratePerDay = 8.00;
+                    // 1 POJEDYNCZY REJON (rabat dopiero od 6. dnia)
+                    if (totalDays >= 250)      ratePerDay = 8.00;
                     else if (totalDays >= 181) ratePerDay = 10.00;
                     else if (totalDays >= 121) ratePerDay = 12.00;
                     else if (totalDays >= 81)  ratePerDay = 15.00;
                     else if (totalDays >= 51)  ratePerDay = 18.00;
                     else if (totalDays >= 31)  ratePerDay = 20.00;
                     else if (totalDays >= 16)  ratePerDay = 22.00;
-                    else if (totalDays >= 5)   ratePerDay = 22.50; 
-                    else                       ratePerDay = 25.00;
+                    else if (totalDays >= 6)   ratePerDay = 22.50; // rabat od 6 dni
+                    else                       ratePerDay = 25.00; // 1-5 dni = 25 PLN/dzień (5 dni = 125 PLN)
                 }
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             }
 
-            // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
+            // Kwota bazowa (przed ewentualnym rabatem ilościowym)
+            let regularPrice = Math.round((totalDays * baseRateStandard + oplataKorytarzEur) * 100) / 100;
+            let totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
+
+            // NALICZENIE KODU STAŁEGO KLIENTA (jeśli wpisano)
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
                 if (activeLoyaltyDiscount.type === 'PROCENT') {
@@ -2105,9 +2119,8 @@
                 totalPriceNetto = Math.max(0, Math.round((totalPriceNetto - loyaltyDeduction) * 100) / 100);
             }
 
-            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
-            let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
+            let savings = Math.max(0, Math.round((regularPrice - totalPriceNetto) * 100) / 100);
+            let discountPercent = (regularPrice > 0 && savings > 0) ? Math.round((savings / regularPrice) * 100) : 0;
 
             let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
             let paypalFixed = isEuro ? 0.35 : 1.35;
