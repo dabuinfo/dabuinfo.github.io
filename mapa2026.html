@@ -440,460 +440,31 @@
         document.getElementById('uiTitle').textContent = T.title;
         document.getElementById('statusCounter').textContent = T.loading;
         document.getElementById('uiWeekPlaceholder').textContent = T.loadingWeeks;
-        document.getElementById('uiSummaryText').innerHTML = `${T.activePrefix}<strong id="activeOto kompletny kod pliku **Mapa2026.html** z wdrożonymi wszystkimi poprawkami: pełną obsługą wielojęzyczności (`I18N`), blokadą dni przeszłych i dzisiejszego w bieżącym tygodniu oraz dopasowaną listą powiatów i współrzędnych[cite: 1, 2]:
-
-```html
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Mapa Wystawek w Niemczech – Dabu-Info</title>
-    
-    <link rel="stylesheet" href="[https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css](https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css)"/>
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css](https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css)"/>
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css](https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css)"/>
-    <link rel="stylesheet" href="[https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css](https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css)"/>
-    <link rel="stylesheet" href="[https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css](https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css)"/>
-
-    <script async src="[https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B](https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B)"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-YQTCG26T1B');
-    </script>
-
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="favicon.png">
-    
-    <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@700&display=swap)');
-
-        html, body, #map {
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden; background: #0d1117;
-        }
-
-        .top-nav-panel {
-            position: absolute; top: 12px; left: 10px; right: 10px; max-width: 540px; margin: 0 auto; z-index: 2000;
-            background: rgba(18, 24, 38, 0.96); backdrop-filter: blur(10px);
-            padding: 10px 14px; border-radius: 12px; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.65);
-            border: 1px solid #2d3748; box-sizing: border-box;
-        }
-
-        .header-row {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
-        }
-
-        .header-title {
-            color: #ffffff; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 8px;
-        }
-
-        .badge-de {
-            background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.4);
-            color: #2ecc71; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .select-week {
-            width: 100%; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #f3f4f6;
-            background: #1e293b; border: 1px solid #475569; border-radius: 8px; outline: none;
-            margin-bottom: 8px; cursor: pointer;
-        }
-
-        .days-filter-row {
-            display: flex; gap: 5px; justify-content: space-between;
-        }
-
-        .day-btn {
-            flex: 1; padding: 6px 2px; font-size: 11px; font-weight: 700; text-align: center;
-            border: none; border-radius: 6px; color: white; cursor: pointer; user-select: none;
-            transition: all 0.2s ease;
-        }
-
-        .day-btn.inactive { background: #374151 !important; color: #9ca3af; opacity: 0.45; }
-
-        .region-pin {
-            border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px;
-            color: #ffffff; font-size: 13px; font-weight: 800; box-shadow: 0 3px 8px rgba(0,0,0,0.5);
-            border: 2px solid #ffffff; transition: transform 0.2s ease; cursor: pointer;
-        }
-        .region-pin:hover { transform: scale(1.15); }
-
-        .leaflet-popup-content-wrapper {
-            background: #181818 !important; color: #e2e8f0 !important;
-            padding: 0; overflow: hidden; border-radius: 10px; border: 1px solid #333;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-        }
-        .leaflet-popup-content { margin: 0 !important; line-height: 1.4; }
-
-        .popup-action-btn {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            text-align: center; padding: 8px 10px; border-radius: 6px; text-decoration: none;
-            font-weight: 700; font-size: 12px; transition: filter 0.2s ease; box-sizing: border-box;
-        }
-        .popup-action-btn:hover { filter: brightness(1.12); }
-
-        .btn-week-pack {
-            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
-            color: #000 !important;
-        }
-
-        .btn-day-single {
-            background: #242424; color: #38bdf8 !important;
-            border: 1px solid rgba(56, 189, 248, 0.4);
-        }
-        .btn-day-single:hover { background: #2f2f2f; }
-
-        .info-rejon-box {
-            background: rgba(15, 23, 42, 0.6);
-            border-left: 3px solid #fbbf24;
-            padding: 6px 10px;
-            margin: 6px 0;
-            border-radius: 4px;
-            font-size: 11.5px;
-            color: #cbd5e1;
-            line-height: 1.35;
-        }
-
-        .nearby-box {
-            background: #111827;
-            border: 1px solid #374151;
-            padding: 8px 10px;
-            margin: 8px 0;
-            border-radius: 6px;
-            font-size: 11px;
-        }
-        .nearby-title {
-            color: #38bdf8;
-            font-weight: 700;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .nearby-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            border-bottom: 1px dashed #2d3748;
-        }
-        .nearby-item:last-child {
-            border-bottom: none;
-        }
-
-        .bottom-summary-box {
-            position: absolute; bottom: 25px; left: 10px; z-index: 1000;
-            background: rgba(18, 24, 38, 0.94); backdrop-filter: blur(8px);
-            padding: 8px 14px; border-radius: 8px; border: 1px solid #2d3748;
-            color: #cbd5e1; font-size: 12px; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="top-nav-panel">
-        <div class="header-row">
-            <div class="header-title">
-                <span id="uiTitle">🇩🇪 Mapa Wystawek w Niemczech</span>
-                <span class="badge-de">LIVE</span>
-            </div>
-            <div id="statusCounter" style="color: #2ecc71; font-size: 12px; font-weight: 700;">
-                Wczytywanie...
-            </div>
-        </div>
-
-        <select id="weekSelect" class="select-week" onchange="zmienTydzien()">
-            <option value="" id="uiWeekPlaceholder">⏳ Ładowanie dostępnych tygodni...</option>
-        </select>
-
-        <div class="days-filter-row">
-            <button id="btn-0" class="day-btn" style="background:#2563eb;" onclick="toggleDzien(0)">Pon</button>
-            <button id="btn-1" class="day-btn" style="background:#16a34a;" onclick="toggleDzien(1)">Wt</button>
-            <button id="btn-2" class="day-btn" style="background:#ea580c;" onclick="toggleDzien(2)">Śr</button>
-            <button id="btn-3" class="day-btn" style="background:#9333ea;" onclick="toggleDzien(3)">Czw</button>
-            <button id="btn-4" class="day-btn" style="background:#dc2626;" onclick="toggleDzien(4)">Pt</button>
-            <button id="btn-5" class="day-btn" style="background:#059669; display: none;" onclick="toggleDzien(5)">Sob</button>
-        </div>
-    </div>
-
-    <div class="bottom-summary-box">
-        <span id="uiSummaryText">📍 Aktywne rejony w tym widoku: <strong id="activeCount" style="color:#2ecc71;">0</strong></span>
-    </div>
-
-    <div id="map"></div>
-
-    <script src="[https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js](https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js](https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js](https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js)"></script>
-
-    <script>
-        // SŁOWNIK JĘZYKÓW DLA ZBIERACZY
-        const I18N = {
-            pl: {
-                title: "🇩🇪 Mapa Wystawek w Niemczech",
-                loading: "Wczytywanie...",
-                loadingWeeks: "⏳ Ładowanie dostępnych tygodni...",
-                noWeeks: "Brak zaplanowanych zbiórek w bazie",
-                weekPrefix: "Tydzień",
-                regionsSuffix: "rejonów",
-                activePrefix: "📍 Aktywne rejony w tym widoku: ",
-                days: ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"],
-                land: "Land",
-                week: "Tydzień",
-                collectionDays: "Dni zbiórek w tygodniu:",
-                availableDates: "Dostępne terminy:",
-                datesOnOrder: "Weryfikowane pod zamówienie",
-                fraction: "Frakcja:",
-                modeLabel: "Tryb:",
-                freqLabel: "Częstotliwość:",
-                modeCall: "📞 Na telefon / zgłoszenie (Auf Abruf)",
-                modeFixed: "📅 Harmonogram stały",
-                nearbyTitle: "Propozycje rejonów obok:",
-                orderWeek: "📦 Zamów Zestaw Tygodniowy",
-                orderDay: "📅 Zamów Wybrany Dzień",
-                layerStreet: "Kolorowa (Esri Street)",
-                layerOsm: "Standardowa (OpenStreetMap)",
-                layerTopo: "Topograficzna (Teren)"
-            },
-            de: {
-                title: "🇩🇪 Sperrmüll-Karte Deutschland",
-                loading: "Wird geladen...",
-                loadingWeeks: "⏳ Verfügbare Wochen werden geladen...",
-                noWeeks: "Keine Termine in der Datenbank",
-                weekPrefix: "Woche",
-                regionsSuffix: "Gebiete",
-                activePrefix: "📍 Aktive Gebiete in dieser Ansicht: ",
-                days: ["Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-                land: "Bundesland",
-                week: "Woche",
-                collectionDays: "Sammeltage in der Woche:",
-                availableDates: "Verfügbare Termine:",
-                datesOnOrder: "Auf Anfrage geprüft",
-                fraction: "Fraktion:",
-                modeLabel: "System:",
-                freqLabel: "Häufigkeit:",
-                modeCall: "📞 Auf Abruf / Anmeldung",
-                modeFixed: "📅 Fester Abfuhrplan",
-                nearbyTitle: "Nachbargebiete in der Nähe:",
-                orderWeek: "📦 Wochenpaket bestellen",
-                orderDay: "📅 Tagestour bestellen",
-                layerStreet: "Farbig (Esri Street)",
-                layerOsm: "Standard (OpenStreetMap)",
-                layerTopo: "Topografisch (Gelände)"
-            },
-            cs: {
-                title: "🇩🇪 Mapa svozu odpadu v Německu",
-                loading: "Načítání...",
-                loadingWeeks: "⏳ Načítání dostupných týdnů...",
-                noWeeks: "Žádné naplánované svozy",
-                weekPrefix: "Týden",
-                regionsSuffix: "oblastí",
-                activePrefix: "📍 Aktivní oblasti v tomto zobrazení: ",
-                days: ["Po", "Út", "St", "Čt", "Pá", "So"],
-                land: "Země",
-                week: "Týden",
-                collectionDays: "Dny svozu v týdnu:",
-                availableDates: "Dostupné termíny:",
-                datesOnOrder: "Ověřuje se na objednávku",
-                fraction: "Typ odpadu:",
-                modeLabel: "Režim:",
-                freqLabel: "Četnost:",
-                modeCall: "📞 Na zavolání / objednání (Auf Abruf)",
-                modeFixed: "📅 Pevný harmonogram",
-                nearbyTitle: "Doporučené oblasti v okolí:",
-                orderWeek: "📦 Objednat týdenní balíček",
-                orderDay: "📅 Objednat vybraný den",
-                layerStreet: "Barevná (Esri Street)",
-                layerOsm: "Standardní (OpenStreetMap)",
-                layerTopo: "Topografická (Terén)"
-            },
-            hu: {
-                title: "🇩🇪 Németországi Lomtalanítási Térkép",
-                loading: "Betöltés...",
-                loadingWeeks: "⏳ Elérhető hetek betöltése...",
-                noWeeks: "Nincsenek tervezett gyűjtések",
-                weekPrefix: "Hét",
-                regionsSuffix: "körzet",
-                activePrefix: "📍 Aktív körzetek a nézetben: ",
-                days: ["Hé", "Ke", "Sze", "Csü", "Pé", "Szo"],
-                land: "Tartomány",
-                week: "Hét",
-                collectionDays: "Gyűjtési napok a héten:",
-                availableDates: "Elérhető időpontok:",
-                datesOnOrder: "Megrendelésre ellenőrizve",
-                fraction: "Hulladéktípus:",
-                modeLabel: "Rendszer:",
-                freqLabel: "Gyakoriság:",
-                modeCall: "📞 Bejelentésre (Auf Abruf)",
-                modeFixed: "📅 Fix menetrend",
-                nearbyTitle: "Közeli szomszédos körzetek:",
-                orderWeek: "📦 Heti csomag megrendelése",
-                orderDay: "📅 Kiválasztott nap megrendelése",
-                layerStreet: "Színes (Esri Street)",
-                layerOsm: "Alapértelmezett (OpenStreetMap)",
-                layerTopo: "Topográfiai (Terep)"
-            },
-            bs: {
-                title: "🇩🇪 Karta Krupnog Otpada u Njemačkoj",
-                loading: "Učitavanje...",
-                loadingWeeks: "⏳ Učitavanje dostupnih sedmica...",
-                noWeeks: "Nema zakazanih odvoza",
-                weekPrefix: "Sedmica",
-                regionsSuffix: "regija",
-                activePrefix: "📍 Aktivne regije u ovom prikazu: ",
-                days: ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub"],
-                land: "Pokrajina",
-                week: "Sedmica",
-                collectionDays: "Dani odvoza u sedmici:",
-                availableDates: "Dostupni termini:",
-                datesOnOrder: "Provjera po narudžbi",
-                fraction: "Vrsta otpada:",
-                modeLabel: "Način:",
-                freqLabel: "Učestalost:",
-                modeCall: "📞 Na poziv / prijavu (Auf Abruf)",
-                modeFixed: "📅 Fiksni raspored",
-                nearbyTitle: "Preporučene regije u blizini:",
-                orderWeek: "📦 Naruči sedmični paket",
-                orderDay: "📅 Naruči odabrani dan",
-                layerStreet: "U boji (Esri Street)",
-                layerOsm: "Standardna (OpenStreetMap)",
-                layerTopo: "Topografska (Teren)"
-            },
-            ro: {
-                title: "🇩🇪 Harta Colectare Sperrmüll Germania",
-                loading: "Se încarcă...",
-                loadingWeeks: "⏳ Se încarcă săptămânile...",
-                noWeeks: "Nu există colectări planificate",
-                weekPrefix: "Săptămâna",
-                regionsSuffix: "zone",
-                activePrefix: "📍 Zone active în această vizualizare: ",
-                days: ["Lun", "Mar", "Mie", "Joi", "Vin", "Sâm"],
-                land: "Land",
-                week: "Săptămâna",
-                collectionDays: "Zile de colectare în săptămână:",
-                availableDates: "Date disponibile:",
-                datesOnOrder: "Verificat la cerere",
-                fraction: "Tip deșeu:",
-                modeLabel: "Sistem:",
-                freqLabel: "Frecvență:",
-                modeCall: "📞 La cerere / Înscriere (Auf Abruf)",
-                modeFixed: "📅 Program fix de ridicare",
-                nearbyTitle: "Zone sugerate în apropiere:",
-                orderWeek: "📦 Comandă pachetul săptămânal",
-                orderDay: "📅 Comandă ziua selectată",
-                layerStreet: "Color (Esri Street)",
-                layerOsm: "Standard (OpenStreetMap)",
-                layerTopo: "Topografică (Teren)"
-            },
-            bg: {
-                title: "🇩🇪 Карта за Едрогабаритен Отпадък в Германия",
-                loading: "Зареждане...",
-                loadingWeeks: "⏳ Зареждане на седмиците...",
-                noWeeks: "Няма насрочени събирания",
-                weekPrefix: "Седмица",
-                regionsSuffix: "района",
-                activePrefix: "📍 Активни райони в изгледа: ",
-                days: ["Пон", "Вт", "Ср", "Чет", "Пет", "Съб"],
-                land: "Провинция",
-                week: "Седмица",
-                collectionDays: "Дни за събиране през седмицата:",
-                availableDates: "Налични дати:",
-                datesOnOrder: "Проверява се при поръчка",
-                fraction: "Фракция:",
-                modeLabel: "Режим:",
-                freqLabel: "Честота:",
-                modeCall: "📞 По заявка / повикване (Auf Abruf)",
-                modeFixed: "📅 Фиксиран график",
-                nearbyTitle: "Съседни райони наблизо:",
-                orderWeek: "📦 Поръчай седмичен пакет",
-                orderDay: "📅 Поръчай избран ден",
-                layerStreet: "Цветна (Esri Street)",
-                layerOsm: "Стандартна (OpenStreetMap)",
-                layerTopo: "Топографска (Тeren)"
-            },
-            uk: {
-                title: "🇩🇪 Карта Sperrmüll (Великогабарит) Німеччина",
-                loading: "Завантаження...",
-                loadingWeeks: "⏳ Завантаження тижнів...",
-                noWeeks: "Немає запланованих вивозів",
-                weekPrefix: "Тиждень",
-                regionsSuffix: "районів",
-                activePrefix: "📍 Активні райони на карті: ",
-                days: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-                land: "Земля",
-                week: "Тиждень",
-                collectionDays: "Дні збору на тижні:",
-                availableDates: "Доступні дати:",
-                datesOnOrder: "Перевіряється під замовлення",
-                fraction: "Фракція:",
-                modeLabel: "Режим:",
-                freqLabel: "Періодичність:",
-                modeCall: "📞 За викликом / заявкою (Auf Abruf)",
-                modeFixed: "📅 Постійний графік",
-                nearbyTitle: "Сусідні райони поруч:",
-                orderWeek: "📦 Замовити тижневий пакет",
-                orderDay: "📅 Замовити обраний день",
-                layerStreet: "Кольорова (Esri Street)",
-                layerOsm: "Стандартна (OpenStreetMap)",
-                layerTopo: "Топографічна (Рельєф)"
-            },
-            en: {
-                title: "🇩🇪 Germany Bulky Waste Map",
-                loading: "Loading...",
-                loadingWeeks: "⏳ Loading available weeks...",
-                noWeeks: "No collections scheduled",
-                weekPrefix: "Week",
-                regionsSuffix: "regions",
-                activePrefix: "📍 Active regions in this view: ",
-                days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                land: "State",
-                week: "Week",
-                collectionDays: "Collection days of the week:",
-                availableDates: "Available dates:",
-                datesOnOrder: "Verified upon order",
-                fraction: "Waste type:",
-                modeLabel: "System:",
-                freqLabel: "Frequency:",
-                modeCall: "📞 On demand / Call (Auf Abruf)",
-                modeFixed: "📅 Fixed schedule",
-                nearbyTitle: "Nearby regions:",
-                orderWeek: "📦 Order Weekly Pack",
-                orderDay: "📅 Order Selected Day",
-                layerStreet: "Color (Esri Street)",
-                layerOsm: "Standard (OpenStreetMap)",
-                layerTopo: "Topographic (Terrain)"
-            }
-        };
-
-        function wykryjJezyk() {
-            const raw = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
-            const langCode = raw.slice(0, 2);
-            if (['bs', 'hr', 'sr', 'cnr'].includes(langCode)) return 'bs';
-            if (langCode === 'sk') return 'cs';
-            if (['uk', 'ru', 'be'].includes(langCode)) return 'uk';
-            return I18N[langCode] ? langCode : 'pl';
-        }
-
-        const LANG = wykryjJezyk();
-        const T = I18N[LANG];
-
-        // Inicjalizacja etykiet interfejsu po załadowaniu
-        document.getElementById('uiTitle').textContent = T.title;
-        document.getElementById('statusCounter').textContent = T.loading;
-        document.getElementById('uiWeekPlaceholder').textContent = T.loadingWeeks;
         document.getElementById('uiSummaryText').innerHTML = `${T.activePrefix}<strong id="activeCount" style="color:#2ecc71;">0</strong>`;
         T.days.forEach((nazwa, i) => {
             const btn = document.getElementById(`btn-${i}`);
             if (btn) btn.textContent = nazwa;
         });
 
-        const API_URL = "[https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec](https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec)";
+        const API_URL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec";
+
+        const GMINY_MAIN_TAUNUS = [
+            'bad soden', 'bad soden am taunus', 'eppstein', 'eschborn', 'flörsheim', 
+            'flörsheim am main', 'hattersheim', 'hattersheim am main', 'hochheim', 
+            'hochheim am main', 'hofheim', 'hofheim am taunus', 'kelkheim', 
+            'kelkheim (taunus)', 'kelkheim am taunus', 'kriftel', 'königstein', 
+            'königstein (taunus)', 'königstein im taunus', 'kronberg', 'kronberg im taunus', 
+            'liederbach', 'liederbach am taunus', 'schwalbach', 'schwalbach am taunus', 'sulzbach'
+        ];
+
+        const GMINY_MAIN_KINZIG = [
+            'bad orb', 'bad soden-salmünster', 'biebergemünd', 'birstein', 'brachttal', 
+            'bruchköbel', 'erlensee', 'flörsbachtal', 'freigericht', 'gelnhausen', 
+            'gründau', 'grosskrotzenburg', 'großkrotzenburg', 'hammersbach', 'hanau', 
+            'hasselroth', 'jossgrund', 'langenselbold', 'linsengericht', 'maintal', 
+            'neuberg', 'nidderau', 'rodenbach', 'ronneburg', 'schlüchtern', 
+            'schmitten', 'sinntal', 'steinau', 'steinau an der straße', 'wächtersbach'
+        ];
 
         const SPECIAL_REGIONS_LAND_MAP = {
             'calw': 'Baden-Württemberg', 'freudenstadt': 'Baden-Württemberg', 'heidelberg': 'Baden-Württemberg',
@@ -906,11 +477,13 @@
             'gräfelfing': 'Bayern', 'kirchheim': 'Bayern', 'kulmbach': 'Bayern', 'monachium-południowy wschód': 'Bayern',
             'neustadt a.d. waldnaab': 'Bayern', 'regensburg': 'Bayern', 'straubing-bogen': 'Bayern', 'berlin': 'Berlin',
             'barnim': 'Brandenburg', 'elbe-elster': 'Brandenburg', 'oder-spree': 'Brandenburg', 'schwedt/oder': 'Brandenburg',
-            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'bad orb': 'Hessen', 'bad soden-salmünster': 'Hessen',
-            'biebergemünd': 'Hessen', 'eppstein': 'Hessen', 'eschwege': 'Hessen', 'flörsbachtal': 'Hessen',
-            'flörsheim am main': 'Hessen', 'frankfurt': 'Hessen', 'freigericht': 'Hessen', 'friedrichsdorf': 'Hessen',
-            'fulda': 'Hessen', 'gelnhausen': 'Hessen', 'giessen': 'Hessen', 'giessen stadt': 'Hessen', 'stadt giessen': 'Hessen',
-            'glashütten': 'Hessen', 'grävenwiesbach': 'Hessen', 'gross-gerau': 'Hessen', 'gründau': 'Hessen', 'hasselroth': 'Hessen',
+            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'main-taunus-kreis': 'Hessen', 'main-taunus kreis': 'Hessen',
+            'main-kinzig-kreis': 'Hessen', 'main-kinzig kreis': 'Hessen', 'kreis main-kinzig': 'Hessen',
+            'bad orb': 'Hessen', 'bad soden-salmünster': 'Hessen', 'biebergemünd': 'Hessen', 'eppstein': 'Hessen', 
+            'eschwege': 'Hessen', 'flörsbachtal': 'Hessen', 'flörsheim am main': 'Hessen', 'frankfurt': 'Hessen', 
+            'freigericht': 'Hessen', 'friedrichsdorf': 'Hessen', 'fulda': 'Hessen', 'gelnhausen': 'Hessen', 
+            'giessen': 'Hessen', 'giessen stadt': 'Hessen', 'stadt giessen': 'Hessen', 'glashütten': 'Hessen', 
+            'grävenwiesbach': 'Hessen', 'gross-gerau': 'Hessen', 'gründau': 'Hessen', 'hasselroth': 'Hessen',
             'hattersheim': 'Hessen', 'hattersheim am main': 'Hessen', 'hersfeld-rotenburg': 'Hessen', 'hofheim am taunus': 'Hessen',
             'jossgrund': 'Hessen', 'kelkheim (taunus)': 'Hessen', 'kelkheim am taunus': 'Hessen', 'königstein (taunus)': 'Hessen', 'kronberg': 'Hessen',
             'kronberg im taunus': 'Hessen', 'liederbach': 'Hessen', 'limburg-weilburg': 'Hessen', 'linsengericht': 'Hessen',
@@ -1026,7 +599,10 @@
             "kronberg im taunus": [50.1808, 8.5086], "kulmbach": [50.1075, 11.4553], "leipzig": [51.3397, 12.3731],
             "leverkusen": [51.0459, 7.0192], "liederbach": [50.1167, 8.5167], "limburg-weilburg": [50.3833, 8.1833],
             "linsengericht": [50.1833, 9.2167], "lübeck": [53.8655, 10.6866], "ludwigsburg": [48.8974, 9.1918],
-            "lüneburg": [53.2464, 10.4116], "main-taunus-kreis": [50.0833, 8.4500], "märkischer kreis": [51.2167, 7.7333],
+            "lüneburg": [53.2464, 10.4116], 
+            "main-taunus-kreis": [50.0833, 8.4500], "main-taunus kreis": [50.0833, 8.4500], "kreis main-taunus": [50.0833, 8.4500],
+            "main-kinzig-kreis": [50.2167, 9.2833], "main-kinzig kreis": [50.2167, 9.2833], "kreis main-kinzig": [50.2167, 9.2833],
+            "märkischer kreis": [51.2167, 7.7333],
             "mayen-koblenz": [50.3569, 7.3789], "mechernich": [50.5953, 6.6528], "meerbusch": [51.2647, 6.6694],
             "menden": [51.4367, 7.7944], "merzenich": [50.8283, 6.5261], "mettmann": [51.2500, 6.9667],
             "monachium-południowy wschód": [48.0667, 11.6833], "monheim am rhein": [51.0917, 6.8917],
@@ -1053,7 +629,8 @@
             "tuttlingen": [47.9844, 8.8189], "übach-palenberg": [50.9197, 6.1186], "uedem": [51.6667, 6.2833],
             "usingen": [50.3344, 8.5367],
             "viersen": [51.2558, 6.3917], "kreis viersen": [51.2558, 6.3917], "viersen kreis": [51.2558, 6.3917],
-            "voerde": [51.5989, 6.6853], "vulkaneifel": [50.2500, 6.8333], "walldorf-mörfelden": [49.9889, 8.5708],
+            "voerde": [51.5989, 6.6853], "vulkaneifel": [50.2500, 6.8333], 
+            "walldorf-mörfelden": [49.9889, 8.5708], "walldorf-morfelden": [49.9889, 8.5708], "mörfelden-walldorf": [49.9889, 8.5708],
             "weeze": [51.6264, 6.1956], "wehrheim": [50.3033, 8.5722], "weilerswist": [50.7606, 6.8367],
             "weilrod": [50.3167, 8.4167], "werdohl": [51.2589, 7.7619], "werra-meissner": [51.2167, 9.9333],
             "wesel": [51.6586, 6.6175], "kreis wesel": [51.6586, 6.6175], "wesel kreis": [51.6586, 6.6175],
@@ -1149,9 +726,9 @@
             try { L.control.fullscreen({ position: 'bottomright' }).addTo(map); } catch(e) {}
         }
 
-        const streetLayer = L.tileLayer('[https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/](https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/){z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
+        const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri StreetMap', maxZoom: 18 }).addTo(map);
         const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap', maxZoom: 19 });
-        const topoLayer = L.tileLayer('[https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/](https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/){z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
+        const topoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri TopoMap', maxZoom: 18 });
 
         const baseMaps = {};
         baseMaps[T.layerStreet] = streetLayer;
@@ -1191,7 +768,7 @@
 
             const dzis = new Date();
             const rawDay = dzis.getDay();
-            const dzisiejszyIndeks = rawDay === 0 ? 6 : rawDay - 1; // 0=Pon, ..., 4=Pt, 5=Sob, 6=Nd
+            const dzisiejszyIndeks = rawDay === 0 ? 6 : rawDay - 1;
 
             for (let i = 0; i <= 5; i++) {
                 const btn = document.getElementById(`btn-${i}`);
@@ -1256,6 +833,27 @@
                 daneTygodni[wNum] = [];
                 let znalezioneLata = [];
 
+                let mainTaunusGroup = null;
+                let mainKinzigGroup = null;
+                let monachiumGroup = null;
+                let grossGerauGroup = null;
+
+                function dodajDoGrupy(groupObj, datyStr, frakcjaStr, parsedInfo, dniSet) {
+                    if (datyStr && datyStr !== "-") {
+                        let dArr = datyStr.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                        dArr.forEach(d => {
+                            if (!groupObj.datyArr.includes(d)) groupObj.datyArr.push(d);
+                        });
+                    }
+                    if (frakcjaStr) {
+                        frakcjaStr.split('+').forEach(f => groupObj.frakcjeSet.add(f.trim()));
+                    }
+                    if (!groupObj.infoRejon && parsedInfo) {
+                        groupObj.infoRejon = parsedInfo;
+                    }
+                    dniSet.forEach(d => groupObj.dniSet.add(d));
+                }
+
                 tydzienArr.forEach(item => {
                     let rName = typeof item === 'string' ? item : item.nazwa;
                     if (!rName) return;
@@ -1263,12 +861,7 @@
                     let cleanKey = rName.toLowerCase().trim();
                     let strippedKey = cleanKey.replace(/\bkreis\b/g, '').trim();
 
-                    let land = (typeof item === 'object' && (item.land || item.Land)) 
-                        ? item.land 
-                        : (SPECIAL_REGIONS_LAND_MAP[cleanKey] || SPECIAL_REGIONS_LAND_MAP[strippedKey] || "Niemcy");
-
                     let datyStr = (typeof item === 'object' && (item.daty || item["DATA (PN-SOB)"])) ? (item.daty || item["DATA (PN-SOB)"]) : "";
-                    
                     let rawInfoD = (typeof item === 'object') ? (item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "") : "";
                     let parsedInfo = parseRegionInfo(rawInfoD);
 
@@ -1295,7 +888,94 @@
                         [0, 1, 2, 3, 4].forEach(d => dniSet.add(d));
                     }
 
-                    // Inteligentne dopasowanie lokalizacji ze wsparciem wariacji "kreis"
+                    // 1. ZALEŻNOŚĆ MAIN-TAUNUS-KREIS
+                    const czyMainTaunus = cleanKey === 'main-taunus-kreis' || cleanKey === 'main-taunus kreis' || 
+                                          cleanKey === 'kreis main-taunus' || GMINY_MAIN_TAUNUS.includes(cleanKey) || 
+                                          GMINY_MAIN_TAUNUS.includes(strippedKey);
+                    if (czyMainTaunus) {
+                        if (!mainTaunusGroup) {
+                            mainTaunusGroup = {
+                                rejon: "Main-Taunus-Kreis",
+                                land: "Hessen",
+                                datyArr: [],
+                                frakcjeSet: new Set(),
+                                infoRejon: null,
+                                dniSet: new Set(),
+                                lat: KOORDYNATY_CENTRA["main-taunus-kreis"][0],
+                                lon: KOORDYNATY_CENTRA["main-taunus-kreis"][1]
+                            };
+                        }
+                        dodajDoGrupy(mainTaunusGroup, datyStr, frakcjaStr, parsedInfo, dniSet);
+                        return;
+                    }
+
+                    // 2. ZALEŻNOŚĆ MAIN-KINZIG-KREIS
+                    const czyMainKinzig = cleanKey === 'main-kinzig-kreis' || cleanKey === 'main-kinzig kreis' || 
+                                          cleanKey === 'kreis main-kinzig' || GMINY_MAIN_KINZIG.includes(cleanKey) || 
+                                          GMINY_MAIN_KINZIG.includes(strippedKey);
+                    if (czyMainKinzig) {
+                        if (!mainKinzigGroup) {
+                            mainKinzigGroup = {
+                                rejon: "Main-Kinzig-Kreis",
+                                land: "Hessen",
+                                datyArr: [],
+                                frakcjeSet: new Set(),
+                                infoRejon: null,
+                                dniSet: new Set(),
+                                lat: KOORDYNATY_CENTRA["main-kinzig-kreis"][0],
+                                lon: KOORDYNATY_CENTRA["main-kinzig-kreis"][1]
+                            };
+                        }
+                        dodajDoGrupy(mainKinzigGroup, datyStr, frakcjaStr, parsedInfo, dniSet);
+                        return;
+                    }
+
+                    // 3. ZALEŻNOŚĆ MONACHIUM-POŁUDNIOWY WSCHÓD (Gräfelfing + Kirchheim)
+                    const czyMonachiumWschod = cleanKey === 'monachium-południowy wschód' || 
+                                               cleanKey === 'gräfelfing' || cleanKey === 'graefelfing' || 
+                                               cleanKey === 'kirchheim';
+                    if (czyMonachiumWschod) {
+                        if (!monachiumGroup) {
+                            monachiumGroup = {
+                                rejon: "Monachium-Południowy Wschód",
+                                land: "Bayern",
+                                datyArr: [],
+                                frakcjeSet: new Set(),
+                                infoRejon: null,
+                                dniSet: new Set(),
+                                lat: KOORDYNATY_CENTRA["monachium-południowy wschód"][0],
+                                lon: KOORDYNATY_CENTRA["monachium-południowy wschód"][1]
+                            };
+                        }
+                        dodajDoGrupy(monachiumGroup, datyStr, frakcjaStr, parsedInfo, dniSet);
+                        return;
+                    }
+
+                    // 4. ZALEŻNOŚĆ GROSS-GERAU (w tym Walldorf-Mörfelden)
+                    const czyGrossGerau = cleanKey === 'gross-gerau' || cleanKey === 'groß-gerau' || 
+                                          cleanKey.includes('walldorf-mörfelden') || cleanKey.includes('walldorf-morfelden') || 
+                                          cleanKey.includes('mörfelden-walldorf') || cleanKey.includes('morfelden-walldorf');
+                    if (czyGrossGerau) {
+                        if (!grossGerauGroup) {
+                            grossGerauGroup = {
+                                rejon: "Gross-Gerau",
+                                land: "Hessen",
+                                datyArr: [],
+                                frakcjeSet: new Set(),
+                                infoRejon: null,
+                                dniSet: new Set(),
+                                lat: KOORDYNATY_CENTRA["gross-gerau"][0],
+                                lon: KOORDYNATY_CENTRA["gross-gerau"][1]
+                            };
+                        }
+                        dodajDoGrupy(grossGerauGroup, datyStr, frakcjaStr, parsedInfo, dniSet);
+                        return;
+                    }
+
+                    let land = (typeof item === 'object' && (item.land || item.Land)) 
+                        ? item.land 
+                        : (SPECIAL_REGIONS_LAND_MAP[cleanKey] || SPECIAL_REGIONS_LAND_MAP[strippedKey] || "Niemcy");
+
                     let coords = KOORDYNATY_CENTRA[cleanKey];
                     if (!coords) {
                         let kreisPre = ('kreis ' + strippedKey).trim();
@@ -1316,6 +996,22 @@
                         lat: coords[0],
                         lon: coords[1]
                     });
+                });
+
+                [mainTaunusGroup, mainKinzigGroup, monachiumGroup, grossGerauGroup].forEach(grp => {
+                    if (grp) {
+                        grp.datyArr.sort();
+                        daneTygodni[wNum].push({
+                            rejon: grp.rejon,
+                            land: grp.land,
+                            daty: grp.datyArr.join('\n'),
+                            frakcje: Array.from(grp.frakcjeSet).join(' + ') || "Sperrmüll",
+                            infoRejon: grp.infoRejon,
+                            dni: Array.from(grp.dniSet).sort(),
+                            lat: grp.lat,
+                            lon: grp.lon
+                        });
+                    }
                 });
 
                 if (znalezioneLata.length > 0) {
@@ -1464,10 +1160,10 @@
                             ${propozycjeHtml}
                             
                             <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333; display: flex; flex-direction: column; gap: 8px;">
-                                <a href="[https://dabu-info.com/zestaw.html](https://dabu-info.com/zestaw.html)" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-week-pack">
+                                <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-week-pack">
                                     ${T.orderWeek}
                                 </a>
-                                <a href="[https://dabu-info.com/kalendarz.html](https://dabu-info.com/kalendarz.html)" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-day-single">
+                                <a href="https://dabu-info.com/kalendarz.html" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-day-single">
                                     ${T.orderDay}
                                 </a>
                             </div>
