@@ -913,18 +913,44 @@
                     </div>
                 </div>
 
-                <!-- NOWE POLE: NUMER TELEFONU KLIENTA (WYMAGANE DLA WA/SMS) -->
-                <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 15px; margin-bottom: 15px; box-sizing: border-box;">
-                    <label style="color: #93c5fd; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 8px;">
-                        📞 Twój numer telefonu (Twój identyfikator):
-                    </label>
-                    <input type="text" id="mainClientIdInput" class="client-input" placeholder="Podaj swój numer telefonu..." style="margin-bottom: 0; background: #0f172a; border: 1px solid #334155; color: #f8fafc;">
-                    <div id="phoneErrorMsg" style="color: #ef4444; font-size: 0.85rem; margin-top: 8px; display: none; font-weight: bold;">
-                        ⚠️ To pole jest wymagane, jeśli chcesz wysłać zamówienie przez WhatsApp lub SMS.
+                <!-- DANE KLIENTA: TELEFON I E-MAIL -->
+                <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 15px; margin-bottom: 15px; box-sizing: border-box;">
+                    
+                    <!-- POLE: NUMER TELEFONU (WYMAGANE DLA WA/SMS) -->
+                    <div style="margin-bottom: 14px;">
+                        <label style="color: #93c5fd; font-weight: bold; font-size: 0.92rem; display: block; margin-bottom: 6px;">
+                            📞 Twój numer telefonu (Twój identyfikator):
+                        </label>
+                        <input type="text" id="mainClientIdInput" class="client-input" placeholder="Podaj swój numer telefonu..." style="margin-bottom: 0; background: #0f172a; border: 1px solid #334155; color: #f8fafc;">
+                        <div id="phoneErrorMsg" style="color: #ef4444; font-size: 0.84rem; margin-top: 6px; display: none; font-weight: bold;">
+                            ⚠️ To pole jest wymagane, jeśli chcesz wysłać zamówienie przez WhatsApp lub SMS.
+                        </div>
                     </div>
+
+                    <!-- NOWE POLE: ADRES E-MAIL KLIENTA -->
+                    <div>
+                        <label style="color: #93c5fd; font-weight: bold; font-size: 0.92rem; display: block; margin-bottom: 6px;">
+                            ✉️ Twój adres e-mail (do przesłania potwierdzenia i zestawienia):
+                        </label>
+                        <input type="email" id="mainClientEmailInput" class="client-input" placeholder="np. jan.kowalski@gmail.com" style="margin-bottom: 0; background: #0f172a; border: 1px solid #334155; color: #f8fafc;">
+                        <div id="emailErrorMsg" style="color: #ef4444; font-size: 0.84rem; margin-top: 6px; display: none; font-weight: bold;">
+                            ⚠️ Wpisz poprawny adres e-mail, abyśmy mogli wysłać zestawienie i potwierdzenie.
+                        </div>
+                    </div>
+
                 </div>
 
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
+
+                <!-- BOKS SUKCESU PO POPRAWNYM WYSŁANIU ZAMÓWIENIA -->
+                <div id="orderSuccessBox" style="display: none; background: rgba(34, 197, 94, 0.15); border: 2px solid #22c55e; border-radius: 8px; padding: 18px; margin-top: 20px; text-align: center;">
+                    <h3 style="color: #22c55e; margin: 0 0 8px 0; font-size: 1.25rem;">✅ Zamówienie zostało wysłane pomyślnie!</h3>
+                    <p style="color: #f8fafc; font-size: 0.95rem; margin: 0 0 8px 0;" id="successBoxDetails">
+                        Twoje zamówienie zostało zarejestrowane w naszym systemie. Na podany adres e-mail wysłaliśmy potwierdzenie.
+                    </p>
+                    <div style="font-size: 0.88rem; color: #94a3b8; font-weight: bold;" id="successOrderIdDisplay"></div>
+                </div>
+
             </div>
         </div>
 
@@ -1781,7 +1807,7 @@
                     terminyDlaWybranychTygodni.sort((a, b) => a.pelnaData.localeCompare(b.pelnaData));
                     let pills = terminyDlaWybranychTygodni.map(item => {
                         if (item.isSaturday) {
-                            return `<span class="schedule-pill notranslate" translate="no" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b;"><b>${item.dzien}</b> <small style="color:#fbbf24;">(${item.frakcja} ⚠️ SOB)</small></span>`;
+                            return `<span class="schedule-pill notranslate" translate="no" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b;"><b>${item.dzien}</b> <small style="color:#fbbf24;">(${item.frakcja} ⚠️️ SOB)</small></span>`;
                         }
                         return `<span class="schedule-pill notranslate" translate="no"><b>${item.dzien}</b> <small>(${item.frakcja})</small></span>`;
                     }).join('');
@@ -2046,7 +2072,6 @@
                 totalRegionDaysSum += datesSet.size;
             });
 
-            // Grupowanie w korytarze tras bez sztucznego limitu 3 rejonów
             let unassigned = Object.keys(regionDatesMap);
             let clusters = [];
 
@@ -2086,8 +2111,6 @@
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            // STAWKI BAZOWE: Korytarz wspólny w PLN = 40 PLN/dzień, Pojedynczy = 25 PLN/dzień
-            // W EUR: Stawka dzienna = 10 EUR/dzień + 10 EUR za pakiet korytarza (5 dni = 60 EUR)
             let regularBaseReference;
             if (isEuro) {
                 regularBaseReference = 10.00;
@@ -2104,7 +2127,6 @@
                 totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
             } else {
                 if (isEuro) {
-                    // CENNIK EUR: 10 EUR za dzień + 10 EUR za korytarz (5 dni = 60 EUR)
                     if (totalDays >= 250) ratePerDay = 2.00;
                     else if (totalDays >= 181) ratePerDay = 3.00;
                     else if (totalDays >= 121) ratePerDay = 4.00;
@@ -2112,15 +2134,13 @@
                     else if (totalDays >= 51)  ratePerDay = 6.00;
                     else if (totalDays >= 31)  ratePerDay = 7.00;
                     else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;  // rabat od 6 dni
-                    else                       ratePerDay = 10.00; // 1-5 dni = 10 EUR/dzień
+                    else if (totalDays >= 6)   ratePerDay = 9.00;
+                    else                       ratePerDay = 10.00;
 
                     let oplataKorytarzEur = czyKorytarzWspolny ? 10.00 : 0.00;
                     totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
                 } else {
-                    // CENNIK PLN
                     if (czyKorytarzWspolny) {
-                        // KORYTARZ WSPÓLNY: 40 PLN / dzień (1-5 dni)
                         if (totalDays >= 250) ratePerDay = 15.00;
                         else if (totalDays >= 181) ratePerDay = 18.00;
                         else if (totalDays >= 121) ratePerDay = 22.00;
@@ -2128,10 +2148,9 @@
                         else if (totalDays >= 51)  ratePerDay = 30.00;
                         else if (totalDays >= 31)  ratePerDay = 33.00;
                         else if (totalDays >= 16)  ratePerDay = 36.00;
-                        else if (totalDays >= 6)   ratePerDay = 38.00; // rabat od 6 dni
-                        else                       ratePerDay = 40.00; // 1 do 5 dni = 40 PLN / dzień
+                        else if (totalDays >= 6)   ratePerDay = 38.00;
+                        else                       ratePerDay = 40.00;
                     } else {
-                        // POJEDYNCZY REJON: 25 PLN / dzień (1-5 dni)
                         if (totalDays >= 250) ratePerDay = 8.00;
                         else if (totalDays >= 181) ratePerDay = 10.00;
                         else if (totalDays >= 121) ratePerDay = 12.00;
@@ -2139,14 +2158,13 @@
                         else if (totalDays >= 51)  ratePerDay = 18.00;
                         else if (totalDays >= 31)  ratePerDay = 20.00;
                         else if (totalDays >= 16)  ratePerDay = 22.00;
-                        else if (totalDays >= 6)   ratePerDay = 22.50; // rabat od 6 dni
-                        else                       ratePerDay = 25.00; // 1 do 5 dni = 25 PLN / dzień
+                        else if (totalDays >= 6)   ratePerDay = 22.50;
+                        else                       ratePerDay = 25.00;
                     }
                     totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                 }
             }
 
-            // NALICZENIE ZDEFINIOWANEGO KODU RABATOWEGO
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
                 if (activeLoyaltyDiscount.type === 'PROCENT') {
@@ -2690,215 +2708,51 @@
                 return; 
             }
 
-            // === WALIDACJA NUMERU TELEFONU ===
+            // === WALIDACJA NUMERU TELEFONU ORAZ E-MAILA ===
             var selectedOrderChannel = document.querySelector('input[name="orderChannel"]:checked')?.value || 'email';
             var phoneInput = document.getElementById('mainClientIdInput');
             var phoneVal = phoneInput ? phoneInput.value.trim() : '';
             var phoneError = document.getElementById('phoneErrorMsg');
 
+            var emailInput = document.getElementById('mainClientEmailInput');
+            var emailVal = emailInput ? emailInput.value.trim() : '';
+            var emailError = document.getElementById('emailErrorMsg');
+
+            // 1. Walidacja telefonu dla WhatsApp i SMS
             if ((selectedOrderChannel === 'whatsapp' || selectedOrderChannel === 'sms') && phoneVal === '') {
                 if (phoneError) phoneError.style.display = 'block';
                 if (phoneInput) phoneInput.style.borderColor = '#ef4444';
                 alert("Proszę wpisać Twój numer telefonu (identyfikator), abyśmy mogli zrealizować zamówienie przez WhatsApp/SMS.");
                 if(phoneInput) phoneInput.focus();
-                return; // Przerwanie wysyłki!
+                return;
             } else {
                 if (phoneError) phoneError.style.display = 'none';
                 if (phoneInput) phoneInput.style.borderColor = '#334155';
             }
-            // ===================================
+
+            // 2. Walidacja adresu e-mail dla kanału E-mail
+            if (selectedOrderChannel === 'email' && (!emailVal || emailVal.indexOf('@') === -1 || emailVal.indexOf('.') === -1)) {
+                if (emailError) emailError.style.display = 'block';
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                alert("Proszę wpisać poprawny adres e-mail, abyśmy mogli przesłać potwierdzenie i zestawienie.");
+                if(emailInput) emailInput.focus();
+                return;
+            } else {
+                if (emailError) emailError.style.display = 'none';
+                if (emailInput) emailInput.style.borderColor = '#334155';
+            }
+            // ===============================================
                     
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
-            
-            var body = "Dzień dobry,\n\n";
-            body += "Przesyłam specyfikację zamówienia zestawu:\n";
-            body += "KONFIGURACJA PAKIETU (" + wR.length + " rejonów, " + wT.length + " zaznaczonych tygodni kalendarzowych)\n";
-            
             var calc = calculateActiveDaysAndPrice();
-            if (!hasOnlySpecial && calc.totalDays > 0) {
-                if (calc.isPaypal && calc.paypalFee > 0) {
-                    body += "PODSUMOWANIE CENY: " + calc.finalPrice.toFixed(2) + " " + calc.currency + " (w tym opłata transakcyjna PayPal: +" + calc.paypalFee.toFixed(2) + " " + calc.currency + ")\n";
-                    body += "- Wartość zamówienia po rabacie: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
-                } else {
-                    body += "PODSUMOWANIE CENY: " + calc.totalPrice.toFixed(2) + " " + calc.currency + "\n";
-                }
-                body += "- Unikalne dni wyjazdowe w trasie: " + calc.totalDays + " dni (stawka bazowa: " + calc.ratePerDay.toFixed(2) + " " + calc.currency + "/dzień)\n";
-                body += "- Łączna pula zbiórek w rejonach: " + calc.totalRegionDaysSum + " zaplanowanych terminów\n";
-                if (calc.isMapAddonChecked) {
-                    body += "- Opcja: Pakiet rozszerzony o Interaktywną Mapę Online GPS (wycena bazowa bez rabatu ilościowego)\n";
-                } else if (calc.savings > 0) {
-                    body += "- Rabat pakietowy: " + calc.discountPercent + "% (Oszczędzasz: " + calc.savings.toFixed(2) + " " + calc.currency + ")\n";
-                }
-                if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
-                    body += "- Zastosowany kod rabatowy: -" + calc.loyaltyDeduction.toFixed(2) + " " + calc.currency + " [Kod: " + activeLoyaltyDiscount.clientId + "]\n";
-                }
-                if (checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r))) {
-                    body += "- Dodatkowo w pakiecie: rejony z bazy zastrzeżonej (wycena indywidualna / pełne terminy w generowanym raporcie PRO).\n";
-                }
-                body += "\n";
-            } else {
-                body += "PODSUMOWANIE CENY: Wycena indywidualna (pakiet zawiera rejony zastrzeżone bez przypisanego tygodnia)\n\n";
-            }
 
             var isRegular = document.getElementById('regularCustomerOption')?.checked;
             var regularProof = document.getElementById('regularClientIdInput')?.value.trim();
-
-            if (isRegular) {
-                body += "--------------------------------------------------------\n";
-                body += "KOD RABATOWY / STREFA STAŁEGO KLIENTA:\n";
-                if (activeLoyaltyDiscount) {
-                    body += "- Aktywny rabat zweryfikowany w bazie: -" + activeLoyaltyDiscount.value + (activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ' PLN/EUR') + "\n";
-                    body += "- Kod / Klient: " + activeLoyaltyDiscount.clientId + (activeLoyaltyDiscount.clientName ? " (" + activeLoyaltyDiscount.clientName + ")" : "") + "\n";
-                } else {
-                    body += "- Wpisany kod do weryfikacji: " + (regularProof || "Brak") + "\n";
-                }
-                body += "--------------------------------------------------------\n\n";
-            }
-            
-            body += "Preferowana płatność / Identyfikator: " + nr + "\n\n";
-
             var selectedThemeEl = document.querySelector('input[name="reportTheme"]:checked');
             var selectedThemeVal = selectedThemeEl ? selectedThemeEl.value : "Light Mode";
-            var formatTekst = "Raport Operacyjny PRO [" + selectedThemeVal + "]";
-            
-            body += "WYBRANY MOTYW RAPORTU: " + formatTekst + "\n";
-
-            if (document.getElementById('mapOnlineOption')?.checked) {
-                body += "DODATEK: TAK – Dołączona Interaktywna Mapa Online GPS (Punkty GPS & Nawigacja na żywo)\n";
-            } else {
-                body += "DODATEK: Samodzielny Raport Operacyjny PRO (bez Mapy Online)\n";
-            }
-            body += "\n";
-
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
-            if(selectedPaymentMethod) {
-                body += "PŁATNOŚĆ / PAYMENT: " + selectedPaymentMethod.value + "\n";
-            }
-
-            if (document.getElementById('dhlOption')?.checked && calc.totalDays >= 5 && !calc.isPickup) {
-                var paczkomat = document.getElementById('paczkomatInput') ? document.getElementById('paczkomatInput').value : '';
-                var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
-                body += "DARMOWA WYSYŁKA WYDRUKU: TAK\n";
-                body += "OPERATOR: " + selectedCarrier + "\n";
-                body += "PUNKT / ADRES: " + paczkomat + "\n";
-            }
-
-            if (document.getElementById('pickupOption')?.checked) {
-                body += "ODBIÓR OSOBISTY: TAK\n";
-            }
-            
-            if (document.getElementById('schrottOption')?.checked) {
-                body += "OPCJA: SCHROTT (Metal / Elektro)\n";
-            }
-
-            body += "\n========================================================";
-            body += "\n📋 SZCZEGÓŁOWE ROZBICIE ZAMÓWIENIA WG REJONÓW:";
-            body += "\n========================================================\n\n";
-
-            let selectedWeeksArr = Array.from(wT).map(cb => ({
-                num: cb.getAttribute('data-week'),
-                label: cb.value.trim()
-            }));
-
-            let now = new Date();
-            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            let currentWeekNum = getWeekNumber(now).toString();
-            let matrixToUse = availabilityMatrix;
-
-            wR.forEach(chkR => {
-                let rName = chkR.value.trim();
-                let rKey = cleanNameForCompare(rName);
-                let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
-
-                body += "📍 REJON: " + rName.toUpperCase() + "\n";
-
-                if (isSpecial) {
-                    body += "   -> Tryb: Rejon zastrzeżony – przygotowanie pełnych terminów i wyceny indywidualnej bezpośrednio do raportu PRO\n\n";
-                    return;
-                }
-
-                let rejonTotalDni = 0;
-                let dopasowaneTygodnie = [];
-                let rawInfoD = "";
-
-                selectedWeeksArr.forEach(wObj => {
-                    let w = wObj.num;
-                    if (!matrixToUse[w]) return;
-
-                    matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rKey) return;
-
-                        if (typeof item === 'object' && !rawInfoD) {
-                            rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
-                        }
-
-                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                        let datyWTygodniu = [];
-
-                        if (dStr && dStr !== "-") {
-                            let linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                            linieDat.forEach(d => {
-                                var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
-                                if (match) {
-                                    var dObj = new Date(match[1], match[2] - 1, match[3]);
-                                    if (w === currentWeekNum) {
-                                        if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                    } else {
-                                        datyWTygodniu.push(match[0]);
-                                    }
-                                }
-                            });
-                        }
-
-                        if (datyWTygodniu.length > 0) {
-                            rejonTotalDni += datyWTygodniu.length;
-                            dopasowaneTygodnie.push({
-                                tydzien: wObj.label,
-                                daty: datyWTygodniu.join(', ')
-                            });
-                        }
-                    });
-                });
-
-                let parsed = parseRegionInfo(rawInfoD);
-                if (parsed) {
-                    body += "   System: " + parsed.system + "\n";
-                    body += "   Czestotliwosc: " + parsed.frequency + "\n";
-                }
-
-                if (dopasowaneTygodnie.length > 0) {
-                    dopasowaneTygodnie.forEach(dw => {
-                        body += "   • " + dw.tydzien + "\n";
-                        body += "     Dni zbiorki: " + dw.daty + "\n";
-                    });
-                    body += "   => Lacznie dla tego rejonu: " + rejonTotalDni + " zaplanowanych zbiorek\n\n";
-                } else {
-                    body += "   • Brak terminow zbiorki w wybranych tygodniach!\n\n";
-                }
-            });
-            
-            body += "--------------------------------------------------------\n" +
-                    "Płatność: BLIK (+48 733 035 301) lub IBAN: PL33 1020 5297 0000 1702 0290 9323\n" +
-                    "Czekam na potwierdzenie i realizację.\n" +
-                    "(Zamówienia w dni robocze realizujemy po godzinie 16:00).\n";
-            
-            function removeDiacritics(str) {
-                const map = {
-                    'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z',
-                    'Ą':'A', 'Ć':'E', 'Ł':'L', 'Ń':'N', 'Ó':'O', 'Ś':'S', 'Ź':'Z', 'Ż':'Z',
-                    'ä':'ae', 'ö':'oe', 'ü':'ue', 'ß':'ss',
-                    'Ä':'Ae', 'Ö':'Oe', 'Ü':'Ue'
-                };
-                return str.replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻäöüßÄÖÜ]/g, m => map[m] || m);
-            }
-
-            var subject = hasOnlySpecial ? "[#" + nr + "] ZAPYTANIE O WYCENĘ INDYWIDUALNĄ PRO" : "[#" + nr + "] ZAMÓWIENIE RAPORTU PRO";
-            var safeSubject = removeDiacritics(subject);
-            var safeBody = removeDiacritics(body);
 
             var MOJ_NUMER_TEL = "48600812820";
-
             var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
             var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
             var tygodnieListaTekst = Array.from(wT).map(cb => cb.value.trim()).join(", ");
@@ -2906,6 +2760,7 @@
 
             var krotkaWiadomosc = "Dzień dobry, zamawiam pakiet trasy #" + nr + ".\n" +
                 "Twój ID/Telefon: " + (phoneVal || "Brak") + "\n" +
+                "E-mail: " + (emailVal || "Brak") + "\n" +
                 "Kwota: " + kwotaTekst + "\n" +
                 "Dni w trasie: " + calc.totalDays + "\n" +
                 "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
@@ -2913,7 +2768,7 @@
                 "Motyw: " + selectedThemeVal + "\n" +
                 "Płatność: " + platnoscTekst;
 
-            function wykonajPrzekierowanie() {
+            function obsluzSukcesWysylki() {
                 if (selectedOrderChannel === "whatsapp") {
                     var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
                     window.open(waUrl, "_blank");
@@ -2921,21 +2776,38 @@
                     var smsUrl = "sms:+" + MOJ_NUMER_TEL + "?body=" + encodeURIComponent(krotkaWiadomosc);
                     window.location.href = smsUrl;
                 } else {
-                    window.location.href = "mailto:wystawki@gmail.com?subject=" + encodeURIComponent(safeSubject) + "&body=" + encodeURIComponent(safeBody);
+                    // Dla kanału E-mail: ukrywamy przycisk i pokazujemy zielony boks sukcesu
+                    var btn = document.getElementById('btnSubmit');
+                    if (btn) btn.style.display = 'none';
+
+                    var successBox = document.getElementById('orderSuccessBox');
+                    var orderDisplay = document.getElementById('successOrderIdDisplay');
+                    var boxDetails = document.getElementById('successBoxDetails');
+
+                    if (orderDisplay) orderDisplay.innerText = "Numer Twojego zamówienia: #" + nr;
+                    if (boxDetails && emailVal) {
+                        boxDetails.innerHTML = "Twoje zamówienie zostało zarejestrowane. Na adres <b>" + emailVal + "</b> oraz do administratora wysłano powiadomienie e-mail.";
+                    }
+                    if (successBox) {
+                        successBox.style.display = 'block';
+                        successBox.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             }
 
             var btnSubmit = document.getElementById('btnSubmit');
             var staryTekstBtn = btnSubmit ? btnSubmit.innerHTML : "";
             if (btnSubmit) {
-                btnSubmit.innerHTML = "⏳ ZAPISYWANIE ZAMÓWIENIA W BAZIE...";
+                btnSubmit.innerHTML = "⏳ ZAPISYWANIE I WYSYŁANIE ZAMÓWIENIA...";
                 btnSubmit.disabled = true;
             }
 
+            // PAKIET DANYCH WYSYŁANY DO APPS SCRIPT
             var orderPayload = {
                 akcja: 'zapisz_zamowienie',
                 orderId: nr,
-                clientId: phoneVal || "Brak", // <-- ZAPIS TELEFONU DO BAZY
+                clientId: phoneVal || "Brak",
+                clientEmail: emailVal || "", // <-- ZAPIS E-MAILA KLIENTA
                 channel: selectedOrderChannel,
                 totalPrice: calc.totalPrice,
                 finalPrice: calc.finalPrice,
@@ -2958,15 +2830,15 @@
                 body: JSON.stringify(orderPayload)
             })
             .then(function() {
-                wykonajPrzekierowanie();
+                obsluzSukcesWysylki();
             })
             .catch(function(err) {
                 console.warn("Błąd zapisu w arkuszu:", err);
-                wykonajPrzekierowanie();
+                obsluzSukcesWysylki();
             })
             .finally(function() {
                 setTimeout(function() {
-                    if (btnSubmit) {
+                    if (btnSubmit && selectedOrderChannel !== 'email') {
                         btnSubmit.innerHTML = staryTekstBtn;
                         btnSubmit.disabled = false;
                     }
