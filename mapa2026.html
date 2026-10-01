@@ -466,6 +466,16 @@
             'schmitten', 'sinntal', 'steinau', 'steinau an der straße', 'wächtersbach'
         ];
 
+        const GMINY_HOCHTAUNUS = [
+            'bad homburg', 'bad homburg vor der höhe', 'bad homburg vor der hoehe',
+            'friedrichsdorf', 'glashütten', 'glashuetten', 'glashütten (taunus)',
+            'grävenwiesbach', 'graevenwiesbach', 'königstein', 'königstein im taunus',
+            'koenigstein', 'koenigstein im taunus', 'kronberg', 'kronberg im taunus',
+            'neu-anspach', 'oberursel', 'oberursel (taunus)', 'schmitten', 
+            'schmitten im taunus', 'steinbach', 'steinbach (taunus)', 'usingen', 
+            'wehrheim', 'weilrod'
+        ];
+
         const SPECIAL_REGIONS_LAND_MAP = {
             'calw': 'Baden-Württemberg', 'freudenstadt': 'Baden-Württemberg', 'heidelberg': 'Baden-Württemberg',
             'heilbronn': 'Baden-Württemberg', 'karlsruhe kreis': 'Baden-Württemberg', 'kreis karlsruhe': 'Baden-Württemberg',
@@ -477,7 +487,8 @@
             'gräfelfing': 'Bayern', 'kirchheim': 'Bayern', 'kulmbach': 'Bayern', 'monachium-południowy wschód': 'Bayern',
             'neustadt a.d. waldnaab': 'Bayern', 'regensburg': 'Bayern', 'straubing-bogen': 'Bayern', 'berlin': 'Berlin',
             'barnim': 'Brandenburg', 'elbe-elster': 'Brandenburg', 'oder-spree': 'Brandenburg', 'schwedt/oder': 'Brandenburg',
-            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'main-taunus-kreis': 'Hessen', 'main-taunus kreis': 'Hessen',
+            'spree-neiße': 'Brandenburg', 'bad homburg': 'Hessen', 'hochtaunuskreis': 'Hessen', 'hochtaunus kreis': 'Hessen',
+            'kreis hochtaunus': 'Hessen', 'hochtaunus': 'Hessen', 'main-taunus-kreis': 'Hessen', 'main-taunus kreis': 'Hessen',
             'main-kinzig-kreis': 'Hessen', 'main-kinzig kreis': 'Hessen', 'kreis main-kinzig': 'Hessen',
             'bad orb': 'Hessen', 'bad soden-salmünster': 'Hessen', 'biebergemünd': 'Hessen', 'eppstein': 'Hessen', 
             'eschwege': 'Hessen', 'flörsbachtal': 'Hessen', 'flörsheim am main': 'Hessen', 'frankfurt': 'Hessen', 
@@ -584,7 +595,7 @@
             "heidelberg": [49.3988, 8.6724], "heilbronn": [49.1403, 9.2200], "heiligenhaus": [51.3267, 6.9733],
             "heinsberg": [51.0633, 6.0967], "kreis heinsberg": [51.0633, 6.0967], "heinsberg kreis": [51.0633, 6.0967],
             "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
-            "hochtaunuskreis": [50.2833, 8.5333], "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478],
+            "hochtaunuskreis": [50.2833, 8.5333], "hochtaunus": [50.2833, 8.5333], "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478],
             "hückelhoven": [51.0608, 6.2208], "hürth": [50.8750, 6.8706], "iserlohn": [51.3842, 7.6833],
             "issum": [51.5369, 6.4264], "jossgrund": [50.1833, 9.4500], "jüchen": [51.1000, 6.5000],
             "jülich": [50.9222, 6.3606], "kaarst": [51.2269, 6.6214], "kall": [50.5408, 6.5511],
@@ -835,6 +846,7 @@
 
                 let mainTaunusGroup = null;
                 let mainKinzigGroup = null;
+                let hochtaunusGroup = null;
                 let monachiumGroup = null;
                 let grossGerauGroup = null;
 
@@ -930,7 +942,28 @@
                         return;
                     }
 
-                    // 3. ZALEŻNOŚĆ MONACHIUM-POŁUDNIOWY WSCHÓD (Gräfelfing + Kirchheim)
+                    // 3. ZALEŻNOŚĆ HOCHTAUNUSKREIS
+                    const czyHochtaunus = cleanKey === 'hochtaunuskreis' || cleanKey === 'hochtaunus kreis' || 
+                                          cleanKey === 'kreis hochtaunus' || cleanKey === 'hochtaunus' ||
+                                          GMINY_HOCHTAUNUS.includes(cleanKey) || GMINY_HOCHTAUNUS.includes(strippedKey);
+                    if (czyHochtaunus) {
+                        if (!hochtaunusGroup) {
+                            hochtaunusGroup = {
+                                rejon: "Hochtaunuskreis",
+                                land: "Hessen",
+                                datyArr: [],
+                                frakcjeSet: new Set(),
+                                infoRejon: null,
+                                dniSet: new Set(),
+                                lat: KOORDYNATY_CENTRA["hochtaunuskreis"][0],
+                                lon: KOORDYNATY_CENTRA["hochtaunuskreis"][1]
+                            };
+                        }
+                        dodajDoGrupy(hochtaunusGroup, datyStr, frakcjaStr, parsedInfo, dniSet);
+                        return;
+                    }
+
+                    // 4. ZALEŻNOŚĆ MONACHIUM-POŁUDNIOWY WSCHÓD (Gräfelfing + Kirchheim)
                     const czyMonachiumWschod = cleanKey === 'monachium-południowy wschód' || 
                                                cleanKey === 'gräfelfing' || cleanKey === 'graefelfing' || 
                                                cleanKey === 'kirchheim';
@@ -951,7 +984,7 @@
                         return;
                     }
 
-                    // 4. ZALEŻNOŚĆ GROSS-GERAU (w tym Walldorf-Mörfelden)
+                    // 5. ZALEŻNOŚĆ GROSS-GERAU (w tym Walldorf-Mörfelden)
                     const czyGrossGerau = cleanKey === 'gross-gerau' || cleanKey === 'groß-gerau' || 
                                           cleanKey.includes('walldorf-mörfelden') || cleanKey.includes('walldorf-morfelden') || 
                                           cleanKey.includes('mörfelden-walldorf') || cleanKey.includes('morfelden-walldorf');
@@ -998,7 +1031,7 @@
                     });
                 });
 
-                [mainTaunusGroup, mainKinzigGroup, monachiumGroup, grossGerauGroup].forEach(grp => {
+                [mainTaunusGroup, mainKinzigGroup, hochtaunusGroup, monachiumGroup, grossGerauGroup].forEach(grp => {
                     if (grp) {
                         grp.datyArr.sort();
                         daneTygodni[wNum].push({
