@@ -1,7 +1,16 @@
-// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google[cite: 1]
+// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google
 (function() {
     function initFooterAndAssistant() {
-        // 1. STYLE CSS[cite: 1]
+        // ========================================================
+        // PRZEŁĄCZNIK INFORMACJI O URLOPIE
+        // true = pasek widoczny | false = pasek całkowicie wyłączony
+        // ========================================================
+        const IS_VACATION_ACTIVE = true;
+
+        // Wykrywanie języka przeglądarki
+        const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
+
+        // 1. STYLE CSS
         if (!document.getElementById('dabu-footer-styles')) {
             const style = document.createElement('style');
             style.id = 'dabu-footer-styles';
@@ -153,6 +162,7 @@
                     .dabu-footer-boxes { gap: 8px; }
                     .dabu-footer-boxes li a { font-size: 0.8em; padding: 7px 12px; }
                     #chat-main-window { bottom: 85px !important; left: 12px !important; right: 12px !important; width: auto !important; max-width: none !important; }
+                    #vacation-bar { font-size: 13px !important; padding: 10px 14px !important; }
                 }
             `;
             document.head.appendChild(style);
@@ -160,7 +170,7 @@
 
         const currentYear = new Date().getFullYear();
 
-        // 2. TWORZENIE STOPKI[cite: 1]
+        // 2. TWORZENIE STOPKI
         if (!document.querySelector('.dabu-footer')) {
             const footerElement = document.createElement('footer');
             footerElement.className = 'dabu-footer';
@@ -210,8 +220,30 @@
             document.body.appendChild(footerElement);
         }
 
-// PŁYWAJĄCY PASEK URLOPOWY (WARIANT 1)
-        if (!document.getElementById('vacation-bar')) {
+        // ========================================================
+        // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
+        // ========================================================
+        if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
+            const vacationTranslations = {
+                pl: {
+                    title: "Przerwa urlopowa:",
+                    text: "W dniach <strong>dzisiaj i jutro</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!",
+                    close: "✕ Zamknij"
+                },
+                de: {
+                    title: "Betriebsurlaub:",
+                    text: "<strong>Heute und morgen</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!",
+                    close: "✕ Schließen"
+                },
+                en: {
+                    title: "Vacation notice:",
+                    text: "We are currently on vacation <strong>today and tomorrow</strong>. We will reply to your inquiries as soon as we return!",
+                    close: "✕ Close"
+                }
+            };
+
+            const tVac = vacationTranslations[browserLang] || vacationTranslations['de'];
+
             const vacationBar = document.createElement('div');
             vacationBar.id = 'vacation-bar';
             vacationBar.style.cssText = `
@@ -236,16 +268,16 @@
             vacationBar.innerHTML = `
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:18px;">🌴</span>
-                    <span><strong>Przerwa urlopowa:</strong> W dniach <strong>dzisiaj i jutro</strong> przebywamy na urlopie. Na wiadomości odpowiemy zaraz po powrocie!</span>
+                    <span><strong>${tVac.title}</strong> ${tVac.text}</span>
                 </div>
                 <button onclick="document.getElementById('vacation-bar').remove()" style="background:#334155; border:none; color:#ffffff; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap; transition:0.2s;">
-                    ✕ Zamknij
+                    ${tVac.close}
                 </button>
             `;
             document.body.appendChild(vacationBar);
         }
-        
-        // 3. TWORZENIE ASYSTENTA[cite: 1]
+
+        // 3. TWORZENIE ASYSTENTA
         const currentPath = window.location.pathname.toLowerCase();
         const isExcludedPage = currentPath.includes('kalendarz') || 
                                currentPath.includes('gieldy') || 
@@ -287,8 +319,6 @@
             const userInput = document.getElementById('chat-user-input');
             const sendBtn = document.getElementById('chat-send-btn');
             const headerTitle = document.getElementById('chat-header-title');
-
-            let browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
 
             const fallbackLang = {
                 pl: { powitanie: "Cześć! Wpisz nazwę miejscowości lub adres, aby sprawdzić dostępne terminy.", placeholder: "Wpisz miejscowość lub adres...", wyslij: "Wyślij", ladowanie: "🤔 Szukam...", blad: "❌ Błąd serwera." },
@@ -374,7 +404,6 @@
                     if(el) el.remove();
                     
                     if (data && data.odpowiedz) {
-                        // Przekazujemy odpowiedź oraz infoRejon z kolumny D
                         appendMessage(data.odpowiedz, 'received', null, data.infoRejon);
                     } else {
                         appendMessage(tChat.blad, 'received');
@@ -394,7 +423,6 @@
                 let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                 bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-                // Obsługa rozwijania informacji o rejonie z kolumny D
                 if (infoRejon && infoRejon.trim() !== '') {
                     const uniqueId = 'info-' + Math.random().toString(36).substring(2, 9);
                     const infoBlock = document.createElement('div');
