@@ -210,6 +210,41 @@
             document.body.appendChild(footerElement);
         }
 
+// PŁYWAJĄCY PASEK URLOPOWY (WARIANT 1)
+        if (!document.getElementById('vacation-bar')) {
+            const vacationBar = document.createElement('div');
+            vacationBar.id = 'vacation-bar';
+            vacationBar.style.cssText = `
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #1e293b;
+                color: #f8fafc;
+                padding: 12px 20px;
+                box-shadow: 0 -4px 16px rgba(0,0,0,0.35);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+                z-index: 99998;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 14px;
+                box-sizing: border-box;
+                border-top: 1px solid #334155;
+            `;
+            vacationBar.innerHTML = `
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🌴</span>
+                    <span><strong>Przerwa urlopowa:</strong> W dniach <strong>dzisiaj i jutro</strong> przebywamy na urlopie. Na wiadomości odpowiemy zaraz po powrocie!</span>
+                </div>
+                <button onclick="document.getElementById('vacation-bar').remove()" style="background:#334155; border:none; color:#ffffff; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap; transition:0.2s;">
+                    ✕ Zamknij
+                </button>
+            `;
+            document.body.appendChild(vacationBar);
+        }
+        
         // 3. TWORZENIE ASYSTENTA[cite: 1]
         const currentPath = window.location.pathname.toLowerCase();
         const isExcludedPage = currentPath.includes('kalendarz') || 
