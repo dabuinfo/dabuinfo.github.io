@@ -509,15 +509,15 @@
                 <div class="hero-features-grid" id="cal-hint">
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">📅</span>
-                        <div class="hero-feature-text"><strong>Wybierz dzień</strong> w kalendarzu, aby wyświetlić dostępne rejony wywozów.</div>
+                        <div class="hero-feature-text"><strong>Wybierz dzień wywozu</strong> w kalendarzu, aby sprawdzić rejony oficjalnej zbiórki odpadów.</div>
                     </div>
                     <div class="hero-feature-item">
-                        <span class="hero-feature-icon">⚡</span>
-                        <div class="hero-feature-text"><strong>Szybki wybór:</strong> zaznacz kolejny dzień lub cały tydzień dla danego powiatu.</div>
+                        <span class="hero-feature-icon">🌙</span>
+                        <div class="hero-feature-text"><strong>Wystawki:</strong> mieszkańcy wystawiają gabaryty <strong>dzień wcześniej</strong> wieczorem.</div>
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">🛒</span>
-                        <div class="hero-feature-text"><strong>Wspólny koszyk:</strong> wybrane pozycje podsumujesz bezpośrednio na dole strony.</div>
+                        <div class="hero-feature-text"><strong>Wspólny koszyk:</strong> zaznaczaj rejony i zrealizuj zamówienie na dolnej belce.</div>
                     </div>
                 </div>
             </div>
@@ -555,7 +555,7 @@
 
     </div>
 
-    <!-- Stały pasek zamówień na dole strony -->
+    <!-- Stały pasek zamówień na dole strony z wyborem płatności i obsługą PayPal Gross-up -->
     <div class="summary-cart-bar" id="global-cart-bar">
         <div class="cart-info">
             ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
@@ -568,7 +568,7 @@
         <div class="payment-select-group">
             <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
             <span id="payment-options-container" style="display:inline-flex; gap: 10px; align-items:center;">
-                <!-- Opcje generowane dynamicznie wg kraju -->
+                <!-- Generowane dynamicznie wg kraju -->
             </span>
         </div>
 
@@ -588,6 +588,7 @@
             d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"]
         };
 
+        // Algorytm obliczania świąt w Niemczech
         function getGermanHolidaysForYear(y) {
             const holidays = {};
 
@@ -704,14 +705,14 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
-            // 25 PLN w Polsce, 10 EUR za granicą
+            // CENNIK BAZOWY NETTO: 25 PLN / 10 EUR
             const unitRateNetto = isPolish ? 25.00 : 10.00;
             const currencyUnit = isPolish ? "PLN" : "€";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Dynamiczne metody płatności – ukrywamy BLIK dla klientów spoza PL
+            // Metody płatności z ograniczeniem dla PL / DE
             const paymentOptionsContainer = document.getElementById('payment-options-container');
             if (paymentOptionsContainer) {
                 if (isPolish) {
@@ -950,7 +951,7 @@
                             paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
@@ -977,7 +978,10 @@
                 }
             }
 
-            document.getElementById('payment-options-container').addEventListener('change', refreshCartUI);
+            const paymentContainer = document.getElementById('payment-options-container');
+            if (paymentContainer) {
+                paymentContainer.addEventListener('change', refreshCartUI);
+            }
 
             grid.onclick = async function(e) {
                 if (e.target.classList.contains('week-number')) {
@@ -989,23 +993,32 @@
                     const clickedDateStr = e.target.getAttribute('data-date');
                     if (!clickedDateStr) return;
 
+                    // SPRAWDZANIE PO DNIU ZBIERANIA (bez sztucznego dodawania dnia)
                     const parts = clickedDateStr.split('-');
-                    const clickedDate = new Date(parts[0], parts[1] - 1, parts[2]);
-                    const tomorrow = new Date(clickedDate);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const collectionDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
-                    const dd = String(tomorrow.getDate()).padStart(2, '0');
-                    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-                    const yyyy = tomorrow.getFullYear();
-                    const targetDateFormatted = `${yyyy}-${mm}-${dd}`; 
-                    const displayDate = `${dd}.${mm}.${yyyy}`;
-                    const weekNumber = getISOWeekNumber(tomorrow);
+                    const targetDateFormatted = clickedDateStr; // RRRR-MM-DD
+                    const displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // DD.MM.RRRR
+                    const weekNumber = getISOWeekNumber(collectionDate);
+
+                    // Data wystawienia (dzień wcześniej)
+                    const eveningBefore = new Date(collectionDate);
+                    eveningBefore.setDate(eveningBefore.getDate() - 1);
+                    const ddPrev = String(eveningBefore.getDate()).padStart(2, '0');
+                    const mmPrev = String(eveningBefore.getMonth() + 1).padStart(2, '0');
+                    const yyyyPrev = eveningBefore.getFullYear();
+                    const prevDisplayDate = `${ddPrev}.${mmPrev}.${yyyyPrev}`;
 
                     resultsBox.style.display = 'block';
                     resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-                    resultsTitle.innerHTML = `📅 Dostępne rejony na dzień: <span class="notranslate" translate="no">${displayDate}</span>`;
-                    resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Wczytywanie rejonów...</div>`;
+                    if (isPolish) {
+                        resultsTitle.innerHTML = `📅 Dzień zbiórki / wywozu: <span class="notranslate" translate="no" style="color:#2ecc71;">${displayDate}</span>`;
+                        resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Wczytywanie rejonów...</div>`;
+                    } else {
+                        resultsTitle.innerHTML = `📅 Abholtag: <span class="notranslate" translate="no" style="color:#2ecc71;">${displayDate}</span>`;
+                        resultsContent.innerHTML = `<div style="padding: 20px; color:#aaa;">⏳ Gebiete werden geladen...</div>`;
+                    }
                     
                     document.querySelectorAll('.clickable-day').forEach(td => td.style.outline = 'none');
                     e.target.style.outline = '2px solid #007bff';
@@ -1014,7 +1027,7 @@
                         const resp = await fetch(SCRIPT_URL, {
                             method: 'POST',
                             headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: 'pl' })
+                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: isPolish ? 'pl' : 'de' })
                         });
                         
                         const data = await resp.json();
@@ -1026,7 +1039,25 @@
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/(?=📍)/g);
 
-                                // Czysty nagłówek bez podawania cen jednostkowych w PLN dla obcokrajowców
+                                // Ważna informacja o terminie wystawienia wieczorem dzień wcześniej
+                                let logisticsBanner = isPolish ? `
+                                    <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; color: #fde68a;">
+                                        <span style="font-size: 1.2rem; line-height: 1;">ℹ️</span>
+                                        <div>
+                                            <strong>Ważna uwaga logistyczna dla kierowców:</strong><br>
+                                            Data <span class="notranslate" translate="no" style="color: #fff; font-weight:700;">${displayDate}</span> to oficjalny dzień zbiórki przez śmieciarki od rana (zwykle od 6:00–7:00). Mieszkańcy wystawiają odpady <strong>dzień wcześniej wieczorem</strong> (<span class="notranslate" translate="no" style="color: #60a5fa; font-weight:700;">${prevDisplayDate}</span>, zazwyczaj od godz. 18:00–19:00).
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; color: #fde68a;">
+                                        <span style="font-size: 1.2rem; line-height: 1;">ℹ️</span>
+                                        <div>
+                                            <strong>Wichtiger logistischer Hinweis:</strong><br>
+                                            Das Datum <span class="notranslate" translate="no" style="color: #fff; font-weight:700;">${displayDate}</span> ist der offizielle Abholtag ab morgens (ab 6:00–7:00 Uhr). Die Bereitstellung (Sperrmüll) erfolgt durch Anwohner bereits <strong>am Vorabend</strong> (<span class="notranslate" translate="no" style="color: #60a5fa; font-weight:700;">${prevDisplayDate}</span>, meist ab 18:00–19:00 Uhr).
+                                        </div>
+                                    </div>
+                                `;
+
                                 let headerHint = `
                                     <div style="
                                         background: #141414;
@@ -1039,22 +1070,24 @@
                                         <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #242424;">
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 1.15rem;">📋</span>
-                                                <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">Dostępne zbiórki: <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
+                                                <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
                                         </div>
 
+                                        ${logisticsBanner}
+
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0;">
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #60a5fa; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">1. Wybierz</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Zaznacz <strong>pole wyboru</strong> przy rejonie, aby dodać termin do zamówienia.</div>
+                                                <div style="color: #60a5fa; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">1. ${isPolish ? 'Wybierz' : 'Auswählen'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Zaznacz <strong>pole wyboru</strong> przy rejonie, aby dodać termin do zamówienia.' : 'Markieren Sie das <strong>Kontrollkästchen</strong>, um das Gebiet hinzuzufügen.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. Przyspiesz</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Użyj <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong> dla powiatu.</div>
+                                                <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. ${isPolish ? 'Przyspiesz' : 'Schnellwahl'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Użyj <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong> dla powiatu.' : 'Nutzen Sie <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong>.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. Podsumuj</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">Sprawdź wyliczoną kwotę i zamów na dolnym pasku koszyka.</div>
+                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. ${isPolish ? 'Podsumuj' : 'Bestellen'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Sprawdź wyliczoną kwotę i zamów na dolnym pasku koszyka.' : 'Prüfen Sie den Gesamtbetrag und bestellen Sie direkt unten.'}</div>
                                             </div>
                                         </div>
 
@@ -1062,14 +1095,14 @@
                                             <input 
                                                 type="text" 
                                                 id="region-search-input" 
-                                                placeholder="Wpisz nazwę szukanego rejonu..." 
+                                                placeholder="${isPolish ? 'Wpisz nazwę szukanego rejonu...' : 'Gebietsname suchen...'}" 
                                                 style="flex: 1; padding: 9px 12px; background: #1c1c1c; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none;"
                                             />
                                             <button 
                                                 type="button" 
                                                 id="btn-find-region" 
                                                 style="background: #007bff; border: none; color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; white-space: nowrap;">
-                                                🔍 Szukaj
+                                                🔍 ${isPolish ? 'Szukaj' : 'Suchen'}
                                             </button>
                                         </div>
                                     </div>
@@ -1182,8 +1215,8 @@
                                             <div class="notranslate" translate="no" style="flex:1;">${infoPart}</div>
                                         </label>
                                         <div class="quick-add-container">
-                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ Następny dzień</button>
-                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 Cały tydzień</button>
+                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ ${isPolish ? 'Następny dzień' : 'Nächster Tag'}</button>
+                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 ${isPolish ? 'Cały tydzień' : 'Ganze Woche'}</button>
                                         </div>
                                     </div>`;
                                 }).join('');
@@ -1226,7 +1259,7 @@
                                             globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
                                             alert(`✅ Dodano kolejny termin: ${nextDisp} dla rejonu ${rName}`);
                                         } else {
-                                            alert(`ℹ️ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
+                                            alert(`ℹ️️ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
                                         }
 
                                         const parentRow = this.closest('.zebra-row');
@@ -1254,7 +1287,6 @@
                                         sunday.setHours(23, 59, 59, 999);
 
                                         const earliestOrderDate = new Date();
-                                        earliestOrderDate.setDate(earliestOrderDate.getDate() + 1);
                                         earliestOrderDate.setHours(0, 0, 0, 0);
 
                                         const validDates = availableDates.filter(dStr => {
