@@ -224,21 +224,72 @@
         // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
         // ========================================================
         if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
-            const vacationTranslations = {
+const vacationTranslations = {
+                // Polski
                 pl: {
                     title: "Przerwa urlopowa:",
                     text: "W dniach <strong>dzisiaj i jutro</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!",
                     close: "✕ Zamknij"
                 },
+                // Niemiecki (domyślny fallback)
                 de: {
                     title: "Betriebsurlaub:",
                     text: "<strong>Heute und morgen</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!",
                     close: "✕ Schließen"
                 },
+                // Angielski
                 en: {
                     title: "Vacation notice:",
-                    text: "We are currently on vacation <strong>today and tomorrow</strong>. We will reply to your inquiries as soon as we return!",
+                    text: "We are on vacation <strong>today and tomorrow</strong>. We will reply to your inquiries as soon as we return!",
                     close: "✕ Close"
+                },
+                // Czeski (cs)
+                cs: {
+                    title: "Dovolená:",
+                    text: "<strong>Dnes a zítra</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!",
+                    close: "✕ Zavřít"
+                },
+                // Słowacki (sk)
+                sk: {
+                    title: "Dovolenka:",
+                    text: "<strong>Dnes a zajtra</strong> máme dovolenku. Na správy odpovieme hneď po návrate!",
+                    close: "✕ Zavrieť"
+                },
+                // Węgierski (hu)
+                hu: {
+                    title: "Szabadság:",
+                    text: "<strong>Ma és holnap</strong> szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!",
+                    close: "✕ Bezárás"
+                },
+                // Rumuński (ro)
+                ro: {
+                    title: "Concediu:",
+                    text: "<strong>Astăzi și mâine</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!",
+                    close: "✕ Închide"
+                },
+                // Bułgarski (bg)
+                bg: {
+                    title: "В отпуск:",
+                    text: "<strong>Днес и утре</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!",
+                    close: "✕ Затвори"
+                },
+                // Ukraiński (uk)
+                uk: {
+                    title: "Відпустка:",
+                    text: "<strong>Сьогодні та завтра</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!",
+                    close: "✕ Закрити"
+                },
+                // Litewski (lt)
+                lt: {
+                    title: "Atostogos:",
+                    text: "<strong>Šiandien ir rytoj</strong> atostogaujame. Į žinutes atsakysime grįžę!",
+                    close: "✕ Uždaryti"
+                },
+                // Niderlandzki (nl)
+                nl: {
+                    title: "Vakantie:",
+                    text: "Wij zijn <strong>vandaag en morgen</strong> met vakantie. Wij beantwoorden berichten na terugkomst!",
+                    close: "✕ Sluiten"
                 }
             };
 
