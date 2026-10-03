@@ -5,7 +5,7 @@
         // PRZEŁĄCZNIK INFORMACJI O URLOPIE
         // true = pasek widoczny | false = pasek całkowicie wyłączony
         // ========================================================
-        const IS_VACATION_ACTIVE = true;
+        const IS_VACATION_ACTIVE = false;
 
         // Wykrywanie języka przeglądarki
         const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
