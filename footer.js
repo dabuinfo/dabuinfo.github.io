@@ -7,10 +7,14 @@
         // ========================================================
         const IS_VACATION_ACTIVE = true;
 
-        // Ustaw daty urlopu (np. '15.07' i '28.07.2026' lub samo '20.08' itp.)
-        const VACATION_FROM = '02.10';
-        const VACATION_TO   = '03.10.2026';
-        const VACATION_DATES = `${VACATION_FROM} – ${VACATION_TO}`;
+        // Jeśli urlop trwa 1 dzień, wpisz tylko datę do VACATION_FROM, a VACATION_TO zostaw puste: ''
+        // Jeśli urlop to zakres, wpisz obie daty (np. '03.10' i '10.10.2026')
+        const VACATION_FROM = '03.10.2026';
+        const VACATION_TO   = '';
+
+        // Automatyczne wykrywanie czy to jeden dzień oraz formatowanie zapisu
+        const IS_SINGLE_DAY = !VACATION_TO || VACATION_TO.trim() === '' || VACATION_FROM.trim() === VACATION_TO.trim();
+        const VACATION_DATES = IS_SINGLE_DAY ? VACATION_FROM.trim() : `${VACATION_FROM.trim()} – ${VACATION_TO.trim()}`;
 
         // Wykrywanie języka przeglądarki
         const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
@@ -230,70 +234,92 @@
         // ========================================================
         if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
             const vacationTranslations = {
-                // Polski
+                // Polski: "W dniu ..." lub "W dniach ..."
                 pl: {
                     title: "Przerwa urlopowa:",
-                    text: `W dniach <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`,
+                    text: IS_SINGLE_DAY 
+                        ? `W dniu <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`
+                        : `W dniach <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`,
                     close: "✕ Zamknij"
                 },
-                // Niemiecki (domyślny fallback)
+                // Niemiecki: "Am ..." lub "Vom ..."
                 de: {
                     title: "Betriebsurlaub:",
-                    text: `Vom <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`,
+                    text: IS_SINGLE_DAY
+                        ? `Am <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`
+                        : `Vom <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`,
                     close: "✕ Schließen"
                 },
-                // Angielski
+                // Angielski: "On ..." lub "From ..."
                 en: {
                     title: "Vacation notice:",
-                    text: `From <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`,
+                    text: IS_SINGLE_DAY
+                        ? `On <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`
+                        : `From <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`,
                     close: "✕ Close"
                 },
-                // Czeski (cs)
+                // Czeski: "Dne ..." lub "V termínu ..."
                 cs: {
                     title: "Dovolená:",
-                    text: `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`,
+                    text: IS_SINGLE_DAY
+                        ? `Dne <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`
+                        : `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`,
                     close: "✕ Zavřít"
                 },
-                // Słowacki (sk)
+                // Słowacki: "Dňa ..." lub "V termíne ..."
                 sk: {
                     title: "Dovolenka:",
-                    text: `V termíne <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`,
+                    text: IS_SINGLE_DAY
+                        ? `Dňa <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`
+                        : `V termíne <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`,
                     close: "✕ Zavrieť"
                 },
-                // Węgierski (hu)
+                // Węgierski
                 hu: {
                     title: "Szabadság:",
-                    text: `<strong>${VACATION_DATES}</strong> között szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`,
+                    text: IS_SINGLE_DAY
+                        ? `<strong>${VACATION_DATES}</strong> napon szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`
+                        : `<strong>${VACATION_DATES}</strong> között szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`,
                     close: "✕ Bezárás"
                 },
-                // Rumuński (ro)
+                // Rumuński: "În data de ..." lub "În perioada ..."
                 ro: {
                     title: "Concediu:",
-                    text: `În perioada <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`,
+                    text: IS_SINGLE_DAY
+                        ? `În data de <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`
+                        : `În perioada <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`,
                     close: "✕ Închide"
                 },
-                // Bułgarski (bg)
+                // Bułgarski: "На ..." lub "В периода ..."
                 bg: {
                     title: "В отпуск:",
-                    text: `В периода <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!`,
+                    text: IS_SINGLE_DAY
+                        ? `На <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!`
+                        : `В периода <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенияta ви веднага след завръщането си!`,
                     close: "✕ Затвори"
                 },
-                // Ukraiński (uk)
+                // Ukraiński
                 uk: {
                     title: "Відпустка:",
-                    text: `У період <strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`,
+                    text: IS_SINGLE_DAY
+                        ? `<strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`
+                        : `У період <strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`,
                     close: "✕ Закрити"
                 },
-                // Litewski (lt)
+                // Litewski
                 lt: {
                     title: "Atostogos:",
-                    text: `Nuo <strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`,
+                    text: IS_SINGLE_DAY
+                        ? `<strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`
+                        : `Nuo <strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`,
                     close: "✕ Uždaryti"
                 },
-                // Niderlandzki (nl)
+                // Niderlandzki: "Op ..." lub "Van ..."
                 nl: {
                     title: "Vakantie:",
-                    text: `Van <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`,
+                    text: IS_SINGLE_DAY
+                        ? `Op <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`
+                        : `Van <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`,
                     close: "✕ Sluiten"
                 }
             };
@@ -504,7 +530,7 @@
                         e.preventDefault();
                         const isOpen = content.style.display === 'block';
                         content.style.display = isOpen ? 'none' : 'block';
-                        btn.innerHTML = isOpen ? 'ℹ️️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
+                        btn.innerHTML = isOpen ? 'ℹ️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
                         messagesArea.scrollTop = messagesArea.scrollHeight;
                     });
                 }
