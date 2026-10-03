@@ -228,7 +228,7 @@ const vacationTranslations = {
                 // Polski
                 pl: {
                     title: "Przerwa urlopowa:",
-                    text: "W dniach <strong>dzisiaj i jutro</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!",
+                    text: "W dniach <strong>dzisiaj</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!",
                     close: "✕ Zamknij"
                 },
                 // Niemiecki (domyślny fallback)
