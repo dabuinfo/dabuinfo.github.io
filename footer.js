@@ -5,7 +5,7 @@
         // KONFIGURACJA URLOPU
         // true = pasek widoczny | false = pasek całkowicie wyłączony
         // ========================================================
-        const IS_VACATION_ACTIVE = false;
+        const IS_VACATION_ACTIVE = true;
 
         // Ustaw daty urlopu (np. '15.07' i '28.07.2026' lub samo '20.08' itp.)
         const VACATION_FROM = '03.10';
