@@ -2,10 +2,15 @@
 (function() {
     function initFooterAndAssistant() {
         // ========================================================
-        // PRZEŁĄCZNIK INFORMACJI O URLOPIE
+        // KONFIGURACJA URLOPU
         // true = pasek widoczny | false = pasek całkowicie wyłączony
         // ========================================================
         const IS_VACATION_ACTIVE = false;
+
+        // Ustaw daty urlopu (np. '15.07' i '28.07.2026' lub samo '20.08' itp.)
+        const VACATION_FROM = '03.10';
+        const VACATION_TO   = '03.10.2026';
+        const VACATION_DATES = `${VACATION_FROM} – ${VACATION_TO}`;
 
         // Wykrywanie języka przeglądarki
         const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
@@ -224,71 +229,71 @@
         // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
         // ========================================================
         if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
-const vacationTranslations = {
+            const vacationTranslations = {
                 // Polski
                 pl: {
                     title: "Przerwa urlopowa:",
-                    text: "W dniach <strong>dzisiaj</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!",
+                    text: `W dniach <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`,
                     close: "✕ Zamknij"
                 },
                 // Niemiecki (domyślny fallback)
                 de: {
                     title: "Betriebsurlaub:",
-                    text: "<strong>Heute und morgen</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!",
+                    text: `Vom <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`,
                     close: "✕ Schließen"
                 },
                 // Angielski
                 en: {
                     title: "Vacation notice:",
-                    text: "We are on vacation <strong>today and tomorrow</strong>. We will reply to your inquiries as soon as we return!",
+                    text: `From <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`,
                     close: "✕ Close"
                 },
                 // Czeski (cs)
                 cs: {
                     title: "Dovolená:",
-                    text: "<strong>Dnes a zítra</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!",
+                    text: `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`,
                     close: "✕ Zavřít"
                 },
                 // Słowacki (sk)
                 sk: {
                     title: "Dovolenka:",
-                    text: "<strong>Dnes a zajtra</strong> máme dovolenku. Na správy odpovieme hneď po návrate!",
+                    text: `V termíne <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`,
                     close: "✕ Zavrieť"
                 },
                 // Węgierski (hu)
                 hu: {
                     title: "Szabadság:",
-                    text: "<strong>Ma és holnap</strong> szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!",
+                    text: `<strong>${VACATION_DATES}</strong> között szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`,
                     close: "✕ Bezárás"
                 },
                 // Rumuński (ro)
                 ro: {
                     title: "Concediu:",
-                    text: "<strong>Astăzi și mâine</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!",
+                    text: `În perioada <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`,
                     close: "✕ Închide"
                 },
                 // Bułgarski (bg)
                 bg: {
                     title: "В отпуск:",
-                    text: "<strong>Днес и утре</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!",
+                    text: `В периода <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!`,
                     close: "✕ Затвори"
                 },
                 // Ukraiński (uk)
                 uk: {
                     title: "Відпустка:",
-                    text: "<strong>Сьогодні та завтра</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!",
+                    text: `У період <strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`,
                     close: "✕ Закрити"
                 },
                 // Litewski (lt)
                 lt: {
                     title: "Atostogos:",
-                    text: "<strong>Šiandien ir rytoj</strong> atostogaujame. Į žinutes atsakysime grįžę!",
+                    text: `Nuo <strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`,
                     close: "✕ Uždaryti"
                 },
                 // Niderlandzki (nl)
                 nl: {
                     title: "Vakantie:",
-                    text: "Wij zijn <strong>vandaag en morgen</strong> met vakantie. Wij beantwoorden berichten na terugkomst!",
+                    text: `Van <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`,
                     close: "✕ Sluiten"
                 }
             };
@@ -499,7 +504,7 @@ const vacationTranslations = {
                         e.preventDefault();
                         const isOpen = content.style.display === 'block';
                         content.style.display = isOpen ? 'none' : 'block';
-                        btn.innerHTML = isOpen ? 'ℹ️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
+                        btn.innerHTML = isOpen ? 'ℹ️️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
                         messagesArea.scrollTop = messagesArea.scrollHeight;
                     });
                 }
