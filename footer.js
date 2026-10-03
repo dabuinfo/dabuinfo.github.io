@@ -5,7 +5,7 @@
         // KONFIGURACJA URLOPU
         // true = pasek widoczny | false = pasek całkowicie wyłączony
         // ========================================================
-        const IS_VACATION_ACTIVE = true;
+        const IS_VACATION_ACTIVE = false;
 
         // Jeśli urlop trwa 1 dzień, wpisz tylko datę do VACATION_FROM, a VACATION_TO zostaw puste: ''
         // Jeśli urlop to zakres, wpisz obie daty (np. '03.10' i '10.10.2026')
