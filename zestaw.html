@@ -2110,13 +2110,17 @@
                 billableDaysTotal += clusterDatesUnion.size;
             });
 
+// ========================================================
+            // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR / 6 EUR)
+            // ========================================================
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
             let regularBaseReference;
             if (isEuro) {
-                regularBaseReference = 10.00;
+                // 6 € dla pojedynczego rejonu (odpowiednik 25 zł), 10 € dla korytarza wspólnego (odpowiednik 40 zł)
+                regularBaseReference = czyKorytarzWspolny ? 10.00 : 6.00;
             } else {
                 regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
             }
@@ -2126,22 +2130,33 @@
 
             if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
-                let dodatekKorytarzEur = (isEuro && czyKorytarzWspolny) ? 10.00 : 0;
-                totalPriceNetto = Math.round((totalDays * ratePerDay + dodatekKorytarzEur) * 100) / 100;
+                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
             } else {
                 if (isEuro) {
-                    if (totalDays >= 250) ratePerDay = 2.00;
-                    else if (totalDays >= 181) ratePerDay = 3.00;
-                    else if (totalDays >= 121) ratePerDay = 4.00;
-                    else if (totalDays >= 81)  ratePerDay = 5.00;
-                    else if (totalDays >= 51)  ratePerDay = 6.00;
-                    else if (totalDays >= 31)  ratePerDay = 7.00;
-                    else if (totalDays >= 16)  ratePerDay = 8.00;
-                    else if (totalDays >= 6)   ratePerDay = 9.00;
-                    else                       ratePerDay = 10.00;
-
-                    let oplataKorytarzEur = czyKorytarzWspolny ? 10.00 : 0.00;
-                    totalPriceNetto = Math.round((totalDays * ratePerDay + oplataKorytarzEur) * 100) / 100;
+                    if (czyKorytarzWspolny) {
+                        // Korytarz wspólny EUR (baza: 10 €)
+                        if (totalDays >= 250) ratePerDay = 3.50;
+                        else if (totalDays >= 181) ratePerDay = 4.50;
+                        else if (totalDays >= 121) ratePerDay = 5.50;
+                        else if (totalDays >= 81)  ratePerDay = 6.50;
+                        else if (totalDays >= 51)  ratePerDay = 7.50;
+                        else if (totalDays >= 31)  ratePerDay = 8.25;
+                        else if (totalDays >= 16)  ratePerDay = 9.00;
+                        else if (totalDays >= 6)   ratePerDay = 9.50;
+                        else                       ratePerDay = 10.00;
+                    } else {
+                        // Pojedynczy rejon EUR (baza: 6 € odpowiadająca 25 zł)
+                        if (totalDays >= 250) ratePerDay = 2.00;
+                        else if (totalDays >= 181) ratePerDay = 2.50;
+                        else if (totalDays >= 121) ratePerDay = 3.00;
+                        else if (totalDays >= 81)  ratePerDay = 3.75;
+                        else if (totalDays >= 51)  ratePerDay = 4.50;
+                        else if (totalDays >= 31)  ratePerDay = 5.00;
+                        else if (totalDays >= 16)  ratePerDay = 5.50;
+                        else if (totalDays >= 6)   ratePerDay = 5.75;
+                        else                       ratePerDay = 6.00;
+                    }
+                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                 } else {
                     if (czyKorytarzWspolny) {
                         if (totalDays >= 250) ratePerDay = 15.00;
