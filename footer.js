@@ -8,7 +8,7 @@
         const IS_VACATION_ACTIVE = true;
 
         // Ustaw daty urlopu (np. '15.07' i '28.07.2026' lub samo '20.08' itp.)
-        const VACATION_FROM = '03.10';
+        const VACATION_FROM = '02.10';
         const VACATION_TO   = '03.10.2026';
         const VACATION_DATES = `${VACATION_FROM} – ${VACATION_TO}`;
 
