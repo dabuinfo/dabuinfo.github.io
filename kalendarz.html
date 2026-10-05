@@ -226,7 +226,21 @@
     .holiday-national { background-color: #8B0000 !important; color: #fff !important; font-weight: 700; cursor: help; }
     .holiday-regional { background-color: #4A2323 !important; color: #fecaca !important; cursor: help; }
     .today { background-color: #007bff !important; color: #fff !important; font-weight: 700; }
+    
+    /* Dni aktywne do kliknięcia (od jutra) */
     .clickable-day:hover { background-color: #3b3b3b !important; outline: 1px solid #007bff; cursor: pointer; }
+
+    /* Dni zablokowane (od dziś wstecz) */
+    .past-day {
+        opacity: 0.35;
+        cursor: not-allowed !important;
+        color: #666 !important;
+    }
+    .past-day:hover {
+        background-color: #2a2a2a !important;
+        outline: none !important;
+        cursor: not-allowed !important;
+    }
 
     .calendar-legend { 
         margin-top: 25px; 
@@ -705,8 +719,6 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
-            // CENNIK BAZOWY NETTO: 25 PLN / 10 EUR
-            const unitRateNetto = isPolish ? 40.00 : 10.00;
             const currencyUnit = isPolish ? "PLN" : "€";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -733,6 +745,10 @@
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
 
             const now = new Date();
+            // Data graniczna: jutro o północy. Wszystkie daty mniejsze od tomorrowMidnight są zablokowane.
+            const tomorrowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            tomorrowMidnight.setHours(0, 0, 0, 0);
+
             const grid = document.getElementById('calendar-grid');
             if (!grid) return;
             grid.innerHTML = '';
@@ -812,7 +828,17 @@
                     }
                     
                     let isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
-                    body += `<td class="${hClass} ${isToday} clickable-day notranslate" translate="no" data-holiday="${hName}" data-date="${dateKey}">${d}</td>`;
+
+                    // Blokada dni przeszłych oraz dnia bieżącego (klikalne wyłącznie od jutra)
+                    const cellDate = new Date(curY, curM, d);
+                    cellDate.setHours(0, 0, 0, 0);
+                    const isPastOrToday = cellDate < tomorrowMidnight;
+
+                    const dayClasses = isPastOrToday 
+                        ? `${hClass} ${isToday} past-day notranslate` 
+                        : `${hClass} ${isToday} clickable-day notranslate`;
+
+                    body += `<td class="${dayClasses}" translate="no" data-holiday="${hName}" data-date="${dateKey}">${d}</td>`;
                     dayCount++;
                 }
                 while (dayCount % 7 !== 0) { 
@@ -868,10 +894,11 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
+            // CENNIK PROGRESYWNY: 1. dzień = 40 PLN / 10 €, kolejne = 25 PLN / 6 €
+// CENNIK: 1 dzień = 40 PLN / 10 €, od 2 dni wzwyż = każdy dzień po 25 PLN / 6 €
 function calculateTotals() {
     const totalTermsCount = globalCart.size;
 
-    // Zliczanie unikalnych dni wybranych w koszyku
     const uniqueDates = new Set();
     globalCart.forEach(item => {
         if (item.date) {
@@ -881,18 +908,18 @@ function calculateTotals() {
 
     const selectedDays = uniqueDates.size;
 
-    // Ceny progresywne:
-    // 1. dzień: 40 PLN / 10 €
-    // Kolejne dni: 25 PLN / 6 €
-    const firstDayRate = isPolish ? 40.00 : 10.00;
-    const nextDayRate = isPolish ? 25.00 : 6.00;
+    let rawNetto = 0;
+    if (selectedDays === 1) {
+        // Tylko 1 dzień
+        rawNetto = isPolish ? 40.00 : 10.00;
+    } else if (selectedDays >= 2) {
+        // 2 dni i więcej: każdy dzień (w tym pierwszy) po 25 PLN / 6 EUR
+        const discountDayRate = isPolish ? 25.00 : 6.00;
+        rawNetto = selectedDays * discountDayRate;
+    }
 
-    const rawNetto = selectedDays > 0 
-        ? firstDayRate + (selectedDays - 1) * nextDayRate 
-        : 0;
     const totalNetto = Math.round(rawNetto * 100) / 100;
 
-    // Metoda płatności
     const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
     const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
     const isPaypal = (selectedPayment === "PAYPAL");
@@ -900,7 +927,6 @@ function calculateTotals() {
     let finalAmount = totalNetto;
     let paypalFee = 0;
 
-    // Gross-up prowizji PayPal
     if (isPaypal && totalNetto > 0) {
         const paypalFixed = isPolish ? 1.35 : 0.35;
         const paypalPercent = 0.029;
@@ -936,9 +962,10 @@ function calculateTotals() {
                 if (isPolish) {
                     const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
                     const terminyOdmiana = odmienSlowo(calc.termsCount, "termin", "terminy", "terminów");
-                    cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana})`;
+                    const dniOdmiana = odmienSlowo(calc.selectedDays, "dzień", "dni", "dni");
+                    cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniOdmiana})`;
                 } else {
-                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)`;
+                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.selectedDays} Tage)`;
                 }
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
@@ -974,7 +1001,7 @@ function calculateTotals() {
                             paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów.\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.selectedDays} dni).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
@@ -988,7 +1015,7 @@ function calculateTotals() {
                             paymentInfoText += ` (Betrag: ${calc.finalAmount.toFixed(2)} € auf IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.selectedDays} Tage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
                         };
@@ -1012,11 +1039,15 @@ function calculateTotals() {
                     return;
                 }
 
+                // Całkowite odrzucenie kliknięć w przeszłość i dzień dzisiejszy
+                if (e.target.classList.contains('past-day')) {
+                    return;
+                }
+
                 if (e.target.tagName === 'TD' && e.target.classList.contains('clickable-day')) {
                     const clickedDateStr = e.target.getAttribute('data-date');
                     if (!clickedDateStr) return;
 
-                    // SPRAWDZANIE PO DNIU ZBIERANIA (bez sztucznego dodawania dnia)
                     const parts = clickedDateStr.split('-');
                     const collectionDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
@@ -1062,7 +1093,6 @@ function calculateTotals() {
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/(?=📍)/g);
 
-                                // Ważna informacja o terminie wystawienia wieczorem dzień wcześniej
                                 let logisticsBanner = isPolish ? `
                                     <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; color: #fde68a;">
                                         <span style="font-size: 1.2rem; line-height: 1;">ℹ️</span>
@@ -1282,7 +1312,7 @@ function calculateTotals() {
                                             globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
                                             alert(`✅ Dodano kolejny termin: ${nextDisp} dla rejonu ${rName}`);
                                         } else {
-                                            alert(`ℹ️️ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
+                                            alert(`ℹ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
                                         }
 
                                         const parentRow = this.closest('.zebra-row');
