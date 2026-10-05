@@ -868,33 +868,56 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            function calculateTotals() {
-                const totalTermsCount = globalCart.size;
-                const totalNetto = Math.round((totalTermsCount * unitRateNetto) * 100) / 100;
+function calculateTotals() {
+    const totalTermsCount = globalCart.size;
 
-                const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
-                const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
-                const isPaypal = (selectedPayment === "PAYPAL");
+    // Zliczanie unikalnych dni wybranych w koszyku
+    const uniqueDates = new Set();
+    globalCart.forEach(item => {
+        if (item.date) {
+            uniqueDates.add(item.date);
+        }
+    });
 
-                let finalAmount = totalNetto;
-                let paypalFee = 0;
+    const selectedDays = uniqueDates.size;
 
-                if (isPaypal && totalNetto > 0) {
-                    const paypalFixed = isPolish ? 1.35 : 0.35;
-                    const paypalPercent = 0.029;
-                    finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
-                    paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
-                }
+    // Ceny progresywne:
+    // 1. dzień: 40 PLN / 10 €
+    // Kolejne dni: 25 PLN / 6 €
+    const firstDayRate = isPolish ? 40.00 : 10.00;
+    const nextDayRate = isPolish ? 25.00 : 6.00;
 
-                return {
-                    termsCount: totalTermsCount,
-                    totalNetto: totalNetto,
-                    finalAmount: finalAmount,
-                    paypalFee: paypalFee,
-                    isPaypal: isPaypal,
-                    paymentMethod: selectedPayment
-                };
-            }
+    const rawNetto = selectedDays > 0 
+        ? firstDayRate + (selectedDays - 1) * nextDayRate 
+        : 0;
+    const totalNetto = Math.round(rawNetto * 100) / 100;
+
+    // Metoda płatności
+    const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+    const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
+    const isPaypal = (selectedPayment === "PAYPAL");
+
+    let finalAmount = totalNetto;
+    let paypalFee = 0;
+
+    // Gross-up prowizji PayPal
+    if (isPaypal && totalNetto > 0) {
+        const paypalFixed = isPolish ? 1.35 : 0.35;
+        const paypalPercent = 0.029;
+        finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
+        paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
+    }
+
+    return {
+        termsCount: totalTermsCount,
+        selectedDays: selectedDays,
+        totalNetto: totalNetto,
+        finalAmount: finalAmount,
+        paypalFee: paypalFee,
+        isPaypal: isPaypal,
+        paymentMethod: selectedPayment
+    };
+}
 
             function refreshCartUI() {
                 const calc = calculateTotals();
