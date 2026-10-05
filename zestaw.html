@@ -2490,17 +2490,19 @@ leftSpan.appendChild(dateSpan);
         function updateMutualFiltering() {
             if (Object.keys(availabilityMatrix).length === 0) return;
 
-            var dzisiaj = new Date();
-            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-            if (chkObecny && chkObecny.parentElement) {
-                if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-                    chkObecny.parentElement.style.display = 'none';
-                    chkObecny.checked = false; 
-                } else {
-                    chkObecny.parentElement.style.display = 'block';
-                }
-            }
+var dzisiaj = new Date();
+var obecnyTydzien = getWeekNumber(dzisiaj).toString();
+var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
+if (chkObecny) {
+    var parentLabel = chkObecny.closest('.region-label');
+    if (parentLabel) {
+        if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
+            parentLabel.style.display = 'none';
+            chkObecny.checked = false; 
+        } else {
+            parentLabel.style.display = 'flex';
+        }
+    }
 
             let allAvailableRegionsInDb = new Set();
             for (let w in availabilityMatrix) {
