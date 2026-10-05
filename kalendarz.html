@@ -897,25 +897,27 @@
             // CENNIK PROGRESYWNY: 1. dzień = 40 PLN / 10 €, kolejne = 25 PLN / 6 €
 // CENNIK: 1 dzień = 40 PLN / 10 €, od 2 dni wzwyż = każdy dzień po 25 PLN / 6 €
 function calculateTotals() {
+    // Liczba wszystkich wybranych rejonów / terminów w koszyku
     const totalTermsCount = globalCart.size;
 
+    // Zliczanie unikalnych dni (do celów podsumowania/SMS)
     const uniqueDates = new Set();
     globalCart.forEach(item => {
         if (item.date) {
             uniqueDates.add(item.date);
         }
     });
-
     const selectedDays = uniqueDates.size;
 
+    // Kalkulacja za KAŻDY zaznaczony rejon / termin:
+    // 1 rejon = 40 PLN / 10 €
+    // 2 lub więcej rejonów = każdy po 25 PLN / 6 €
     let rawNetto = 0;
-    if (selectedDays === 1) {
-        // Tylko 1 dzień
+    if (totalTermsCount === 1) {
         rawNetto = isPolish ? 40.00 : 10.00;
-    } else if (selectedDays >= 2) {
-        // 2 dni i więcej: każdy dzień (w tym pierwszy) po 25 PLN / 6 EUR
-        const discountDayRate = isPolish ? 25.00 : 6.00;
-        rawNetto = selectedDays * discountDayRate;
+    } else if (totalTermsCount >= 2) {
+        const discountRate = isPolish ? 25.00 : 6.00;
+        rawNetto = totalTermsCount * discountRate;
     }
 
     const totalNetto = Math.round(rawNetto * 100) / 100;
