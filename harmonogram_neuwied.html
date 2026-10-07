@@ -391,7 +391,7 @@
       color: #0f172a;
     }
 
-    /* LISTA MIEJSCOWOŚCI I WIOSKÓW */
+    /* LISTA MIEJSCOWOŚCI I WIOSKÓW – Z LINKAMI DO GOOGLE MAPS */
     .places-body {
       padding: 1.25rem;
       display: flex;
@@ -407,15 +407,28 @@
       border-radius: 6px;
       font-size: 0.82rem;
       font-weight: 500;
-      display: inline-block;
-      transition: transform 0.1s, background 0.15s, border-color 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.1s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .place-tag svg {
+      color: #94a3b8;
+      transition: color 0.15s;
     }
 
     .place-tag:hover {
-      background: #e2e8f0;
-      color: #0f172a;
+      background: #e0f2fe;
+      color: #0369a1;
       transform: translateY(-1px);
-      border-color: #94a3b8;
+      border-color: #7dd3fc;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .place-tag:hover svg {
+      color: #0284c7;
     }
 
     .place-tag mark {
@@ -482,13 +495,13 @@
         <div class="intel-card">
           <h4>⏱️ Reguła cyklu 3 tygodni</h4>
           <p>
-            W powiecie Neuwied <strong>nie ma sztywnej wystawki dla każdego domu jednocześnie</strong>. Władze udostępniają mieszkańcom okna do zgłaszania wywozu co <strong>3 tygodnie</strong>. To oznacza, że dany rejon ma akumulację odbiorów dokładnie w tych interwałach.
+            W powiecie Neuwied <strong>nie ma sztywnej wystawki dla każdego domu jednocześnie</strong>. Władze udostępniają mieszkańcom okna do zgłaszania wywozu co <strong>3 tygodnie</strong>[cite: 3]. To oznacza, że dany rejon ma akumulację odbiorów dokładnie w tych interwałach[cite: 3].
           </p>
         </div>
         <div class="intel-card">
           <h4>📦 Sperrmüll vs ⚡ Elektroschrott</h4>
           <p>
-            Mieszkańcy mogą zamawiać gabaryt i elektroodpady w tym samym lub sąsiednich tygodniach. <strong>Złom i AGD</strong> (pralki, narzędzia, silniki, lodówki) jeżdżą innymi autami niż <strong>meble i drewno</strong>. Szukaj obu frakcji równolegle.
+            Mieszkańcy mogą zamawiać gabaryt i elektroodpady w tym samym lub sąsiednich tygodniach[cite: 3]. <strong>Złom i AGD</strong> (pralki, narzędzia, silniki, lodówki) jeżdżą innymi autami niż <strong>meble i drewno</strong>[cite: 3]. Szukaj obu frakcji równolegle[cite: 3].
           </p>
         </div>
         <div class="intel-card">
@@ -498,9 +511,9 @@
           </p>
         </div>
         <div class="intel-card">
-          <h4>🗺️ Duże aglomeracje vs Wioski</h4>
+          <h4>🗺️ Kliknij miejscowość = Google Maps</h4>
           <p>
-            Miejscowości takie jak <strong>Neuwied (Engers, Irlich, Heimbach-Weis)</strong> to wysoka gęstość zabudowy i szybkie zbiory. Z kolei wielkie rejony wiejskie (<strong>Asbach, Neustadt, Buchholz</strong>) oferują domy jednorodzinne z bogatymi piwnicami i strychami.
+            Każda miejscowość na poniższej liście jest <strong>aktywnym odnośnikiem</strong>. Kliknięcie otwiera lokalizację w Google Maps (lub aplikacji na smartfonie), co ułatwia planowanie trasy dojazdu.
           </p>
         </div>
       </div>
@@ -542,7 +555,6 @@
   </div>
 
   <script>
-    // Pełna baza danych wyciągnięta z harmonogram_do_publikacji_2.txt
     const RAW_DATA = [
       {
         kw: "KW 42/2026 (12.10.2026 - 17.10.2026)",
@@ -590,7 +602,7 @@
         dates: "26.10.2026 - 31.10.2026",
         rodzaj: "Sperrmüll",
         count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
+        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach -宽度 Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
       },
       {
         kw: "KW 45/2026 (02.11.2026 - 07.11.2026)",
@@ -784,12 +796,9 @@
       const filtered = [];
 
       RAW_DATA.forEach(block => {
-        // Filtr frakcji
         if (currentFrakcja !== 'ALL' && block.rodzaj !== currentFrakcja) return;
-        // Filtr KW
         if (currentKW !== 'ALL' && block.kwShort !== currentKW) return;
 
-        // Filtr tekstu (szuka w miejscowościach lub nagłówku)
         if (searchVal) {
           const matchedPlaces = block.places.filter(p => p.toLowerCase().includes(searchVal));
           const matchesMeta = block.kw.toLowerCase().includes(searchVal) || block.rodzaj.toLowerCase().includes(searchVal);
@@ -832,13 +841,24 @@
         const badgeIcon = isSperr ? '📦' : '⚡';
         const badgeLabel = isSperr ? 'Sperrmüll (Gabaryty)' : 'Schrott & Elektroschrott (AGD / Złom)';
 
+        // Generowanie odnośników Google Maps
         const placesHtml = item.displayPlaces.map(p => {
           let text = p;
           if (item.highlight) {
             const regex = new RegExp(`(${item.highlight})`, 'gi');
             text = text.replace(regex, '<mark>$1</mark>');
           }
-          return `<span class="place-tag">${text}</span>`;
+
+          // Format zapytania: np. "Asbach - Altenburg, Landkreis Neuwied"
+          const mapQuery = encodeURIComponent(`${p}, Landkreis Neuwied`);
+          const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+          return `
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="place-tag" title="Pokaż w Google Maps">
+              <span>${text}</span>
+              <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+          `;
         }).join('');
 
         return `
