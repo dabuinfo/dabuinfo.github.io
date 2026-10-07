@@ -172,6 +172,51 @@
     const MAX_LOCAL_ATTEMPTS = 5;
     const LOCKOUT_MINUTES = 10;
 
+    // --- MECHANIZM ŚLEDZENIA LIVE (Heartbeat) ---
+    let currentActivePin = null;
+    let currentSessionId = null;
+    let pingInterval = null;
+
+    function startLiveTracking(pin) {
+        stopLiveTracking(false);
+        currentActivePin = pin;
+        currentSessionId = 's_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        sendHeartbeat('ping');
+        pingInterval = setInterval(() => sendHeartbeat('ping'), 20000); // Sygnał obecności co 20 sekund
+    }
+
+    function stopLiveTracking(sendLeave = true) {
+        if (pingInterval) {
+            clearInterval(pingInterval);
+            pingInterval = null;
+        }
+        if (sendLeave && currentActivePin && currentSessionId) {
+            sendHeartbeat('leave');
+        }
+        currentActivePin = null;
+        currentSessionId = null;
+    }
+
+    function sendHeartbeat(action) {
+        if (!currentActivePin || !currentSessionId) return;
+        const url = `${GAS_URL}?action=${action}&pin=${encodeURIComponent(currentActivePin)}&session=${encodeURIComponent(currentSessionId)}`;
+        
+        if (action === 'leave') {
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(url);
+            } else {
+                fetch(url, { mode: 'no-cors', keepalive: true }).catch(() => {});
+            }
+        } else {
+            fetch(url, { mode: 'no-cors', cache: 'no-cache' }).catch(() => {});
+        }
+    }
+
+    // Wysłanie sygnału wyjścia przy zamknięciu lub odświeżeniu karty
+    window.addEventListener('pagehide', () => stopLiveTracking(true));
+    window.addEventListener('beforeunload', () => stopLiveTracking(true));
+    // ----------------------------------------------
+
     window.addEventListener('DOMContentLoaded', () => {
         sprawdzBlokadeLokalna();
 
@@ -244,6 +289,10 @@
                     localStorage.removeItem('auth_lockout');
 
                     localStorage.setItem(STORAGE_KEY, pin);
+                    
+                    // START ŚLEDZENIA LIVE DLA TEGO PIN-U
+                    startLiveTracking(pin);
+
                     document.getElementById('authOverlay').style.display = 'none';
                     document.getElementById('currentOrderBadge').innerText = pin.toUpperCase();
                     document.getElementById('mainContent').style.display = 'block';
@@ -285,6 +334,7 @@
                     }
                 } else {
                     localStorage.removeItem(STORAGE_KEY);
+                    stopLiveTracking(false);
 
                     // Rejestracja błędnej próby
                     let attempts = parseInt(localStorage.getItem('auth_attempts') || '0', 10) + 1;
@@ -312,6 +362,7 @@
     }
 
     function wyloguj() {
+        stopLiveTracking(true); // Natychmiastowe odjęcie aktywnego użytkownika w arkuszu
         localStorage.removeItem(STORAGE_KEY);
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('reportContainer').innerHTML = '';
