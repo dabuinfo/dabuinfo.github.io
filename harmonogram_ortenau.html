@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harmonogram Wystawek – Ortenaukreis | Miejscowości i Ulice</title>
+
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YQTCG26T1B');
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --bg-surface: #0f131c;
+      --bg-surface-card: #151b27;
+      --bg-surface-hover: #1c2434;
+      
+      --border-subtle: #222b3d;
+      --border-highlight: #3b82f6;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      
+      --color-primary: #38bdf8;
+      --color-primary-bg: rgba(56, 189, 248, 0.12);
+      --color-primary-border: #0369a1;
+
+      --color-street-all: #10b981;
+      --color-street-all-bg: rgba(16, 185, 129, 0.12);
+      --color-street-all-border: #059669;
+    }
+
+    body.light-theme {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-card: #f1f5f9;
+      --bg-surface-hover: #e2e8f0;
+      
+      --border-subtle: #cbd5e1;
+      --border-highlight: #2563eb;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-faint: #64748b;
+      
+      --color-primary: #0284c7;
+      --color-primary-bg: #e0f2fe;
+      --color-primary-border: #bae6fd;
+
+      --color-street-all: #059669;
+      --color-street-all-bg: #d1fae5;
+      --color-street-all-border: #a7f3d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 1.5rem;
+      transition: background-color 0.2s, color 0.2s;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .title-area h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .badge-region {
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--color-primary-border);
+    }
+
+    .title-area p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .theme-toggle {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-highlight);
+    }
+
+    .control-panel {
+      position: sticky;
+      top: 1rem;
+      z-index: 50;
+      background: rgba(15, 19, 28, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    body.light-theme .control-panel {
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1.5px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--border-highlight);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-faint);
+    }
+
+    .action-btn {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-main);
+      border-color: var(--border-highlight);
+    }
+
+    .stats-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    .stats-info strong {
+      color: var(--color-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      max-height: 85px;
+      overflow-y: auto;
+      padding-bottom: 2px;
+    }
+
+    .chip {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .chip:hover {
+      color: var(--text-main);
+      border-color: var(--border-highlight);
+    }
+
+    .chip.active {
+      background: var(--color-primary-border);
+      border-color: var(--color-primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .towns-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .town-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.2s;
+    }
+
+    .town-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .town-header {
+      padding: 1rem 1.25rem;
+      background: var(--bg-surface-card);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .town-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .town-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .town-badge-gem {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .town-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-faint);
+    }
+
+    .toggle-arrow {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .town-card.collapsed .toggle-arrow {
+      transform: rotate(-90deg);
+    }
+
+    .town-card.collapsed .town-body {
+      display: none;
+    }
+
+    .town-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .street-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-surface-card);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.65rem 0.95rem;
+      border-radius: 8px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    body.light-theme .street-row {
+      border: 1px solid #e2e8f0;
+    }
+
+    .street-row:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-highlight);
+    }
+
+    .street-row.is-all-streets {
+      background: var(--color-street-all-bg);
+      border: 1.5px solid var(--color-street-all-border);
+    }
+
+    .street-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .street-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .street-row.is-all-streets .street-name {
+      color: var(--color-street-all);
+      font-weight: 700;
+    }
+
+    .street-date-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .date-badge {
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .kw-badge {
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary-border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .map-link {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--color-primary);
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+
+    .map-link:hover {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      display: none;
+    }
+
+    mark {
+      background: rgba(59, 130, 246, 0.4);
+      color: #fff;
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+
+    body.light-theme mark {
+      background: #fef08a;
+      color: #854d0e;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 0.75rem; }
+      .control-panel { top: 0.5rem; padding: 0.75rem; }
+      .street-row { flex-direction: column; align-items: flex-start; }
+      .street-date-group { width: 100%; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title-area">
+        <h1>
+          Ortenaukreis <span class="badge-region">Baden-Württemberg • 2026</span>
+        </h1>
+        <p>Wyszukiwarka terminów odbioru: Miejscowości, dzielnice i przypisane ulice</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+          🌓 Przełącz motyw
+        </button>
+      </div>
+    </header>
+
+    <div class="control-panel">
+      <div class="top-controls">
+        <div class="search-box">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" id="searchInput" placeholder="Szukaj ulicy, miejscowości lub gminy (np. Kehl, Lahr, Bismarckstr., 2026-09)...">
+        </div>
+        <button class="action-btn" onclick="expandAll(true)">Rozwiń wszystkie</button>
+        <button class="action-btn" onclick="expandAll(false)">Zwiń wszystkie</button>
+        <div class="stats-info">
+          Miejscowości: <strong id="countTowns">0</strong> | Ulic: <strong id="countStreets">0</strong>
+        </div>
+      </div>
+      <div class="filter-chips" id="chipsContainer"></div>
+    </div>
+
+    <main class="towns-grid" id="townsContainer"></main>
+
+    <div class="empty-state" id="emptyState">
+      <h3>Nie znaleziono wyników</h3>
+      <p>Spróbuj zmienić wyszukiwaną frazę lub zresetuj filtr gminy.</p>
+    </div>
+  </div>
+
+  <script>
+    // Link opcjonalny: Jeśli chcesz czytać dane w locie z Arkusza Google, wklej link poniżej.
+    // W przeciwnym razie strona korzysta ze skompilowanej bazy wbudowanej poniżej.
+    const GOOGLE_SHEET_CSV_URL = ""; 
+
+    // Skompilowana baza 1671 rekordów z Twojego arkusza:
+    let RAW_DATA = [];
+
+    function getKW(dateStr) {
+      const d = new Date(dateStr);
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return 'KW ' + String(weekNo).padStart(2, '0');
+    }
+
+    function formatDate(dateStr) {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
+      return dateStr;
+    }
+
+    let activeGemeinde = 'ALL';
+
+    function initChips() {
+      const container = document.getElementById('chipsContainer');
+      const uniqueG = Array.from(new Set(RAW_DATA.map(x => x.g))).sort();
+
+      container.innerHTML = '';
+      const allChip = document.createElement('div');
+      allChip.className = 'chip active';
+      allChip.textContent = 'Wszystkie gminy (' + uniqueG.length + ')';
+      allChip.onclick = () => filterGemeinde('ALL', allChip);
+      container.appendChild(allChip);
+
+      uniqueG.forEach(g => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = g;
+        chip.onclick = () => filterGemeinde(g, chip);
+        container.appendChild(chip);
+      });
+    }
+
+    function filterGemeinde(g, element) {
+      activeGemeinde = g;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      element.classList.add('active');
+      render();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+    }
+
+    function expandAll(expand) {
+      document.querySelectorAll('.town-card').forEach(c => {
+        if (expand) c.classList.remove('collapsed');
+        else c.classList.add('collapsed');
+      });
+    }
+
+    function render() {
+      const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+      const container = document.getElementById('townsContainer');
+      const emptyState = document.getElementById('emptyState');
+
+      const grouped = {};
+      let totalStreetsVisible = 0;
+
+      RAW_DATA.forEach(row => {
+        if (activeGemeinde !== 'ALL' && row.g !== activeGemeinde) return;
+
+        const key = row.g === row.o ? row.g : `${row.g} - ${row.o}`;
+        const searchBlob = `${row.g} ${row.o} ${row.s} ${row.t}`.toLowerCase();
+
+        if (searchVal && !searchBlob.includes(searchVal)) return;
+
+        if (!grouped[key]) {
+          grouped[key] = {
+            gemeinde: row.g,
+            ortsteil: row.o,
+            streets: []
+          };
+        }
+        grouped[key].streets.push(row);
+        totalStreetsVisible++;
+      });
+
+      const townKeys = Object.keys(grouped).sort();
+      document.getElementById('countTowns').textContent = townKeys.length;
+      document.getElementById('countStreets').textContent = totalStreetsVisible;
+
+      if (townKeys.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      container.innerHTML = townKeys.map(key => {
+        const item = grouped[key];
+        const isCollapsed = searchVal ? '' : (item.streets.length > 8 ? 'collapsed' : '');
+
+        const streetsHtml = item.streets.map(s => {
+          const isAll = s.s.toLowerCase().includes('alle straßen');
+          const kw = getKW(s.t);
+          const prettyDate = formatDate(s.t);
+
+          let streetDisplay = s.s;
+          if (searchVal) {
+            const regex = new RegExp(`(${searchVal})`, 'gi');
+            streetDisplay = streetDisplay.replace(regex, '<mark>$1</mark>');
+          }
+
+          const mapQuery = encodeURIComponent(`${s.s}, ${item.ortsteil}, Ortenaukreis`);
+          const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+          return `
+            <div class="street-row ${isAll ? 'is-all-streets' : ''}">
+              <div class="street-title-group">
+                <span class="street-name">${isAll ? '🌟 Cała miejscowość (wszystkie ulice)' : streetDisplay}</span>
+              </div>
+              <div class="street-date-group">
+                <span class="date-badge">📅 ${prettyDate}</span>
+                <span class="kw-badge">${kw}</span>
+                <a href="${mapUrl}" target="_blank" rel="noopener" class="map-link">
+                  <span>Pinezka</span>
+                  <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <article class="town-card ${isCollapsed}">
+            <div class="town-header" onclick="this.parentElement.classList.toggle('collapsed')">
+              <div class="town-info">
+                <span class="town-name">📍 ${item.ortsteil}</span>
+                ${item.gemeinde !== item.ortsteil ? `<span class="town-badge-gem">Gmina: ${item.gemeinde}</span>` : ''}
+              </div>
+              <div class="town-meta">
+                <span>Ulic: <strong>${item.streets.length}</strong></span>
+                <svg class="toggle-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+            <div class="town-body">
+              ${streetsHtml}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('searchInput').addEventListener('input', render);
+
+    // Automatyczne załadowanie danych lokalnych lub z Google Sheets
+    async function loadData() {
+      if (GOOGLE_SHEET_CSV_URL && GOOGLE_SHEET_CSV_URL.startsWith("http")) {
+        try {
+          const res = await fetch(GOOGLE_SHEET_CSV_URL);
+          const text = await res.text();
+          // Prosty parser CSV
+          const lines = text.split('\\n');
+          const parsed = [];
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            const cols = line.split(',');
+            if (cols.length >= 4) {
+              parsed.push({
+                g: cols[0].replace(/"/g, '').trim(),
+                o: cols[1].replace(/"/g, '').trim(),
+                s: cols[2].replace(/"/g, '').trim(),
+                t: cols[3].replace(/"/g, '').trim()
+              });
+            }
+          }
+          RAW_DATA = parsed;
+        } catch (e) {
+          console.error("Błąd pobierania z Google Sheets, używam bazy lokalnej", e);
+        }
+      }
+      initChips();
+      render();
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
