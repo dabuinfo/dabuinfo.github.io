@@ -317,12 +317,19 @@
 
                         report.innerHTML = data.content;
 
+                        // Wykonanie dołączonych skryptów raportu
                         report.querySelectorAll('script').forEach(oldScript => {
                             const newScript = document.createElement('script');
                             Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                            newScript.textContent = oldScript.textContent;
                             oldScript.parentNode.replaceChild(newScript, oldScript);
                         });
+
+                        // Gwarancja uruchomienia widoku od razu po załadowaniu skryptu
+                        setTimeout(() => {
+                            if (typeof updateKWChips === 'function') updateKWChips();
+                            if (typeof render === 'function') render();
+                        }, 50);
 
                         inicjalizujWyszukiwarke();
                     }
@@ -355,21 +362,10 @@
     }
 
     function wyloguj() {
-        stopLiveTracking(true); // Natychmiast zeruje licznik użytkownika w arkuszu
+        stopLiveTracking(true); // Zerowanie sesji w Google Apps Script
         localStorage.removeItem(STORAGE_KEY);
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('reportContainer').innerHTML = '';
-        const mapFrame = document.getElementById('mapFrame');
-        if (mapFrame) {
-            mapFrame.srcdoc = '';
-            mapFrame.style.display = 'none';
-        }
-        document.getElementById('orderInput').value = '';
-        const msg = document.getElementById('authMsg');
-        msg.style.color = "#0284c7";
-        msg.innerText = "Wylogowano. Wpisz nowy numer zamówienia.";
-        document.getElementById('authOverlay').style.display = 'flex';
-        document.getElementById('orderInput').focus();
+        // Pełne odświeżenie strony – czyści pamięć RAM i zmienne JS poprzedniego powiatu
+        window.location.href = window.location.pathname;
     }
 
     function inicjalizujWyszukiwarke() {
