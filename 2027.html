@@ -456,11 +456,26 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        // Ustaw domyślną datę na jutro
+        // Blokada wyboru dat z przeszłości i dzisiaj (najwcześniejsza data do wyboru to jutro)
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        dateInput.value = tomorrow.toISOString().split('T')[0];
-        selectedDate = dateInput.value;
+        const yyyy = tomorrow.getFullYear();
+        const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const dd = String(tomorrow.getDate()).padStart(2, '0');
+        const minDateStr = `${yyyy}-${mm}-${dd}`;
+
+        dateInput.min = minDateStr;       // blokuje kliknięcie dzisiejszego i wcześniejszych dni w kalendarzu
+        dateInput.value = minDateStr;     // ustawia jutro jako domyślnie wybraną datę
+        selectedDate = minDateStr;
+
+        dateInput.addEventListener('change', (e) => {
+            if (e.target.value < minDateStr) {
+                alert("Można wybrać wyłącznie terminy przyszłe (od jutra wzwyż).");
+                e.target.value = minDateStr;
+            }
+            selectedDate = e.target.value;
+            updateCalculation();
+        });
 
         // Renderowanie kafelków rejonów
         regionsList.forEach(name => {
