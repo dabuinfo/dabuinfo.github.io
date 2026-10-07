@@ -47,13 +47,13 @@
             padding-bottom: 50px; 
         }
 
-        /* BANER INFORMACYJNY / KORZYŚCI CYFROWE */
+        /* BANER INFORMACYJNY */
         .service-info { 
             background: linear-gradient(145deg, rgba(52, 152, 219, 0.12), rgba(46, 204, 113, 0.08)); 
             border: 1px solid rgba(52, 152, 219, 0.4); 
             padding: 18px 20px; 
             border-radius: 10px; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
             line-height: 1.55; 
         }
         .service-info ul { margin: 8px 0 0 0; padding-left: 20px; }
@@ -61,7 +61,42 @@
         .service-info a { color: var(--accent-green); text-decoration: underline; font-weight: bold; }
         .service-info a:hover { color: #58d68d; }
 
-        /* WYBÓR TRYBU ZAMÓWIENIA (KAFLE) */
+        /* PORÓWNANIE Z KARTKAMI PAPIERU */
+        .comparison-box {
+            background: #181818;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .comparison-title {
+            color: var(--accent-gold);
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .comp-card-bad {
+            background: rgba(231, 76, 60, 0.08);
+            border-left: 4px solid #e74c3c;
+            padding: 14px 16px;
+            border-radius: 4px;
+        }
+        .comp-card-good {
+            background: rgba(46, 204, 113, 0.08);
+            border-left: 4px solid var(--accent-green);
+            padding: 14px 16px;
+            border-radius: 4px;
+        }
+
+        /* WYBÓR TRYBU ZAMÓWIENIA */
         .plan-selector-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -140,17 +175,35 @@
         .date-picker-container {
             display: none;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         .date-input {
             background: var(--bg-input);
             border: 1px solid #555;
             color: #fff;
-            padding: 6px 10px;
+            padding: 7px 12px;
             border-radius: 6px;
             font-size: 0.95rem;
             outline: none;
+            color-scheme: dark;
         }
+
+        .counter-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            border: none;
+            transition: opacity 0.15s;
+        }
+        .counter-btn:active { opacity: 0.7; }
 
         /* GRID Z REJONAMI */
         .regions-grid { 
@@ -295,12 +348,47 @@
     <h2>📋 Zamówienie terminarzy i map rejonów (Niemcy)</h2>
     
     <div class="service-info">
-        💻 <b>Wersja cyfrowa z nawigacją GPS (vs. papierowe kartki):</b>
+        💻 <b>Interaktywny system cyfrowy:</b>
         <ul>
-            <li><b>Bezpośrednia nawigacja do wystawki:</b> Jednym kliknięciem przechodzisz prosto do nawigacji Google Maps.</li>
-            <li><b>Bieżące aktualizacje:</b> Gminy korygują terminy przez cały rok – Twoja baza cyfrowa jest stale aktualna.</li>
-            <li><b>Pakiety roczne:</b> Zapewniają dostęp do 365 dni harmonogramu i gwarancję stałej ceny.</li>
+            <li><b>Bezpośrednia nawigacja do wystawki:</b> Jednym kliknięciem przechodzisz z mapy prosto do nawigacji Google Maps.</li>
+            <li><b>Bieżące aktualizacje:</b> Gminy korygują terminy przez cały rok – Twoja baza cyfrowa jest stale aktualizowana.</li>
+            <li><b>Pakiety roczne:</b> Pełny dostęp do 365 dni harmonogramu i gwarancja stałej stawki.</li>
         </ul>
+    </div>
+
+    <!-- PORÓWNANIE Z KARTKAMI PAPIERU Z PRZYMRUŻENIEM OKA -->
+    <div class="comparison-box">
+        <h3 class="comparison-title">
+            <span>⚡</span> Cyfrowy system vs. „Koledzy z kartkami w kratkę”
+        </h3>
+
+        <div class="comparison-grid">
+            <!-- PAPIEROWA KLASYKA -->
+            <div class="comp-card-bad">
+                <div style="color: #e74c3c; font-weight: bold; margin-bottom: 8px; font-size: 0.95rem;">
+                    📄 Kserówki i notesy (po taniości):
+                </div>
+                <ul style="margin: 0; padding-left: 18px; font-size: 0.88rem; color: #bbb; line-height: 1.5;">
+                    <li>W nocy w busie świecisz latarką w zębach i próbujesz rozczytać bazgroły na kolanie.</li>
+                    <li>Ręczne wklepywanie 40 niemieckich ulic w nawigację zajmuje więcej czasu niż sam załadunek.</li>
+                    <li>Gmina zmieniła termin przez święto? Na kartce tego nie ma – puste kilometry i tankowanie za 2€/litr na darmo.</li>
+                    <li>Jedna rozlana kawa na stacji w Görlitz i cały Twój „harmonogram” zamienia się w papier mache.</li>
+                </ul>
+            </div>
+
+            <!-- SYSTEM CYFROWY -->
+            <div class="comp-card-good">
+                <div style="color: #2ecc71; font-weight: bold; margin-bottom: 8px; font-size: 0.95rem;">
+                    📱 Nasza mapa i system online:
+                </div>
+                <ul style="margin: 0; padding-left: 18px; font-size: 0.88rem; color: #ddd; line-height: 1.5;">
+                    <li>Widzisz klaster i całe skupisko rejonu – jedno kliknięcie w pinezkę i Google Maps samo prowadzi Cię pod krawężnik.</li>
+                    <li>Aktualizacje na żywo: wiesz dokładnie gdzie jechać, zanim konkurencja z kartkami zdąży rozłożyć mapę na masce.</li>
+                    <li>Brak błądzenia i oszczędność paliwa – narzędzie zwraca się zazwyczaj już przy pierwszym zapełnionym busie.</li>
+                    <li>Telefon w uchwycie, kawa na swoim miejscu, pełna kontrola nad trasą.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- WYBÓR MODELU ROZLICZENIA -->
@@ -318,10 +406,10 @@
 
         <label class="plan-card" id="cardPlanDay">
             <input type="radio" name="orderPlan" value="day">
-            <div class="plan-title">Dostęp Jednodniowy</div>
+            <div class="plan-title">Dostęp Dzienny</div>
             <div class="plan-price-tag">25 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ rejon / dzień</span></div>
             <div class="plan-desc">
-                Idealny na okazjonalne, pojedyncze wyjazdy i szybkie zjazdy na konkretny dzień trasy.
+                Wybierz dzień startu i liczbę dni trasy za pomocą wygodnego licznika +/-.
             </div>
         </label>
     </div>
@@ -335,8 +423,18 @@
         </div>
 
         <div class="date-picker-container" id="dayBox">
-            <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Wybierz dzień trasy:</span>
-            <input type="date" id="selectedDateInput" class="date-input">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dzień startu:</span>
+                <input type="date" id="selectedDateInput" class="date-input">
+            </div>
+
+            <!-- LICZNIK DNI +/- -->
+            <div style="display: flex; align-items: center; background: #141414; border: 1px solid #444; border-radius: 6px; padding: 3px 8px; gap: 6px;">
+                <span style="color: #bbb; font-size: 0.85rem; font-weight: 600;">Liczba dni:</span>
+                <button type="button" id="btnMinusDay" class="counter-btn" style="background: #333; color: #fff; border: 1px solid #555;">–</button>
+                <span id="daysCountDisplay" style="min-width: 32px; text-align: center; color: var(--accent-gold); font-weight: bold; font-size: 1.15rem;">1</span>
+                <button type="button" id="btnPlusDay" class="counter-btn" style="background: var(--accent-green); color: #121212;">+</button>
+            </div>
         </div>
     </div>
 
@@ -353,7 +451,7 @@
     </div>
 
     <div class="land-header">📍 Wybierz powiat / miasto (zaznacz interesujące Cię rejony):</div>
-    <div class="group-desc">Zaznacz minimum 3 rejony roczne, aby odblokować cenę pakietową 250 zł/rejon:</div>
+    <div class="group-desc">Zaznacz minimum 3 rejony roczne, aby odblokować stawkę pakietową 250 zł/rejon:</div>
 
     <div class="regions-grid" id="regionsGrid"></div>
 
@@ -370,11 +468,11 @@
             </div>
             <div class="price-line" id="unitPriceRow">
                 <span>Stawka jednostkowa:</span>
-                <span id="calcUnitPrice" style="color: #2ecc71;">450 zł / rejon</span>
+                <span id="calcUnitPrice" style="color: var(--accent-green);">450 zł / rejon</span>
             </div>
-            <div class="price-line" id="discountNoteRow" style="display: none; color: #2ecc71; font-size: 0.88rem;">
+            <div class="price-line" id="discountNoteRow" style="display: none; color: var(--accent-green); font-size: 0.88rem;">
                 <span>Aktywny rabat:</span>
-                <span>Pakiet roczny (od 3 rejonów)</span>
+                <span>Pakiet roczny (od 3 rejonów w górę)</span>
             </div>
             <div class="price-total-line">
                 <span>ŁĄCZNA KWOTA:</span>
@@ -406,319 +504,4 @@
             </div>
         </div>
 
-        <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i potwierdź</button>
-    </div>
-</div>
-
-<script>
-    (function() {
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7r_MzcGJSfQbnBFM5jNeQLRYFXRHe4T5XoX466dvzMmmnE4LufptzAgB0IC7lHLHJCA/exec";
-        
-        const regionsList = [
-            "Altmarkkreis Salzwedel", "Bonn", "Bernkastel-Wittlich", "Bitburg-Prüm",
-            "Erftstadt", "Eppstein Gmina", "Eschwege", "Fulda Miasto",
-            "Freudenstadt", "Gifhorn", "Heilbronn", "Hofheim Gmina",
-            "Holzminden", "Kelkheim Gmina", "Königstein Gmina", "Limburg-Weilburg",
-            "Lüneburg", "Mayen-Koblenz", "Monachium-Południowy Wschód", "Neustadt an der Waldnaab",
-            "Ortenau (Offenburg)", "Rendsburg-Eckenförde", "Rheingau-Taunus", "Rhein-Neckar",
-            "Trier-Saarburg", "Trier Miasto", "Vulkaneifel", "Westerwald",
-            "Wuppertal", "Zollernalb"
-        ];
-
-        const noScrappersRegions = ["Rhein-Neckar", "Freudenstadt", "Eschwege"];
-        const onlyScrappersRegions = ["Zollernalb"];
-
-        let currentPlan = 'year'; // 'year' lub 'day'
-        let selectedYear = '2027';
-        let selectedDate = '';
-        let selectedRegions = new Set();
-        let currentStep = 'need_pin';
-
-        // Elementy DOM
-        const regionsGrid = document.getElementById('regionsGrid');
-        const orderSection = document.getElementById('orderSection');
-        const calcCount = document.getElementById('calcCount');
-        const calcPlanName = document.getElementById('calcPlanName');
-        const calcUnitPrice = document.getElementById('calcUnitPrice');
-        const calcTotalPrice = document.getElementById('calcTotalPrice');
-        const discountNoteRow = document.getElementById('discountNoteRow');
-        const yearBox = document.getElementById('yearBox');
-        const dayBox = document.getElementById('dayBox');
-        const cardPlanYear = document.getElementById('cardPlanYear');
-        const cardPlanDay = document.getElementById('cardPlanDay');
-        const dateInput = document.getElementById('selectedDateInput');
-        const emailInput = document.getElementById('clientEmailInput');
-        const phoneInput = document.getElementById('clientPhoneInput');
-        const pinBox = document.getElementById('pinStepBox');
-        const pinInput = document.getElementById('pinInput');
-        const btnChangeEmail = document.getElementById('btnChangeEmail');
-        const submitBtn = document.getElementById('submitOrderBtn');
-        const scrappersFilter = document.getElementById('scrappersFilter');
-        const scrappersNote = document.getElementById('scrappersNote');
-
-        // Blokada wyboru dat z przeszłości i dzisiaj (najwcześniejsza data do wyboru to jutro)
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const yyyy = tomorrow.getFullYear();
-        const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const dd = String(tomorrow.getDate()).padStart(2, '0');
-        const minDateStr = `${yyyy}-${mm}-${dd}`;
-
-        dateInput.min = minDateStr;       // blokuje kliknięcie dzisiejszego i wcześniejszych dni w kalendarzu
-        dateInput.value = minDateStr;     // ustawia jutro jako domyślnie wybraną datę
-        selectedDate = minDateStr;
-
-        dateInput.addEventListener('change', (e) => {
-            if (e.target.value < minDateStr) {
-                alert("Można wybrać wyłącznie terminy przyszłe (od jutra wzwyż).");
-                e.target.value = minDateStr;
-            }
-            selectedDate = e.target.value;
-            updateCalculation();
-        });
-
-        // Renderowanie kafelków rejonów
-        regionsList.forEach(name => {
-            const label = document.createElement('label');
-            label.className = 'region-checkbox-label';
-            
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.value = name;
-
-            input.addEventListener('change', () => {
-                if (input.checked) {
-                    selectedRegions.add(name);
-                    label.classList.add('checked');
-                } else {
-                    selectedRegions.delete(name);
-                    label.classList.remove('checked');
-                }
-                updateCalculation();
-            });
-
-            label.appendChild(input);
-            label.appendChild(document.createTextNode(name));
-            regionsGrid.appendChild(label);
-        });
-
-        // Przełączanie planu roczny / dzień
-        cardPlanYear.addEventListener('click', () => {
-            currentPlan = 'year';
-            cardPlanYear.classList.add('active');
-            cardPlanDay.classList.remove('active');
-            yearBox.style.display = 'flex';
-            dayBox.style.display = 'none';
-            updateCalculation();
-        });
-
-        cardPlanDay.addEventListener('click', () => {
-            currentPlan = 'day';
-            cardPlanDay.classList.add('active');
-            cardPlanYear.classList.remove('active');
-            yearBox.style.display = 'none';
-            dayBox.style.display = 'flex';
-            updateCalculation();
-        });
-
-        document.querySelectorAll('input[name="orderYear"]').forEach(radio => {
-            radio.addEventListener('change', (e) => selectedYear = e.target.value);
-        });
-
-        dateInput.addEventListener('change', (e) => selectedDate = e.target.value);
-
-        function updateCalculation() {
-            const count = selectedRegions.size;
-            calcCount.textContent = count;
-
-            if (count === 0) {
-                orderSection.style.display = 'none';
-                return;
-            }
-
-            orderSection.style.display = 'block';
-
-            let total = 0;
-            if (currentPlan === 'day') {
-                calcPlanName.textContent = `Dostęp 1-dniowy (${selectedDate || 'wybrany dzień'})`;
-                calcUnitPrice.textContent = '25 zł / dzień / rejon';
-                discountNoteRow.style.display = 'none';
-                total = count * 25;
-            } else {
-                calcPlanName.textContent = `Abonament roczny (${selectedYear})`;
-                if (count === 1) {
-                    calcUnitPrice.textContent = '450 zł / rejon';
-                    discountNoteRow.style.display = 'none';
-                    total = 450;
-                } else if (count === 2) {
-                    calcUnitPrice.textContent = '450 zł / rejon (w pakiecie od 3: tylko 250 zł!)';
-                    discountNoteRow.style.display = 'none';
-                    total = count * 450; // 900 zł
-                } else {
-                    calcUnitPrice.textContent = '250 zł / rejon (pakiet aktywowany)';
-                    discountNoteRow.style.display = 'flex';
-                    total = count * 250;
-                }
-            }
-
-            calcTotalPrice.textContent = `${total.toLocaleString('pl-PL')} zł`;
-
-            if (currentStep === 'need_pin') {
-                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${total} zł)`;
-            } else {
-                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${total} zł)`;
-            }
-
-            // Weryfikacja opcji złomiarzy
-            const selectedArr = Array.from(selectedRegions);
-            let hasForbidden = selectedArr.some(r => noScrappersRegions.includes(r));
-            let hasMandatory = selectedArr.some(r => onlyScrappersRegions.includes(r));
-
-            if (hasForbidden) {
-                scrappersFilter.checked = false;
-                scrappersFilter.disabled = true;
-                scrappersNote.textContent = "⚠️ W co najmniej jednym z wybranych rejonów brak opcji dla złomiarzy.";
-                scrappersNote.style.display = "inline";
-            } else if (hasMandatory) {
-                scrappersFilter.checked = true;
-                scrappersFilter.disabled = true;
-                scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy.";
-                scrappersNote.style.display = "inline";
-            } else {
-                scrappersFilter.disabled = false;
-                scrappersNote.style.display = "none";
-            }
-        }
-
-        btnChangeEmail.addEventListener('click', () => {
-            currentStep = 'need_pin';
-            pinBox.style.display = 'none';
-            emailInput.disabled = false;
-            pinInput.value = '';
-            updateCalculation();
-        });
-
-        // WYSYŁANIE I WERYFIKACJA PIN
-        submitBtn.addEventListener('click', async () => {
-            const count = selectedRegions.size;
-            if (count === 0) return;
-
-            const clientEmail = (emailInput.value || '').trim().toLowerCase();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!clientEmail || !emailRegex.test(clientEmail)) {
-                alert("Proszę podać poprawny adres e-mail.");
-                emailInput.focus();
-                return;
-            }
-
-            const clientPhone = (phoneInput.value || '').trim();
-            if (!clientPhone || clientPhone.length < 7) {
-                alert("Proszę podać poprawny numer telefonu do kontaktu.");
-                phoneInput.focus();
-                return;
-            }
-
-            // KROK 1: POBRANIE PIN-u
-            if (currentStep === 'need_pin') {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "⏳ Wysyłanie kodu PIN...";
-
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'sendPin', clientEmail: clientEmail })
-                    });
-
-                    currentStep = 'verify_pin';
-                    emailInput.disabled = true;
-                    pinBox.style.display = 'block';
-                    pinInput.focus();
-                    submitBtn.disabled = false;
-                    updateCalculation();
-
-                } catch (err) {
-                    console.error("Błąd PIN:", err);
-                    alert("Wystąpił problem z wysyłką kodu. Spróbuj ponownie.");
-                    submitBtn.disabled = false;
-                    updateCalculation();
-                }
-                return;
-            }
-
-            // KROK 2: WERYFIKACJA PIN-u I ZAPIS
-            if (currentStep === 'verify_pin') {
-                const pinVal = pinInput.value.trim();
-                if (pinVal.length !== 4) {
-                    alert("Wpisz 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
-                    pinInput.focus();
-                    return;
-                }
-
-                const regionsArr = Array.from(selectedRegions);
-                const orderId = `ZAM-${Date.now().toString().slice(-6)}`;
-
-                submitBtn.disabled = true;
-                submitBtn.textContent = "⏳ Rejestrowanie zamówienia...";
-
-                const payload = {
-                    action: 'verifyAndSubmit',
-                    alertId: orderId,
-                    clientEmail: clientEmail,
-                    phone: clientPhone,
-                    pin: pinVal,
-                    plan: currentPlan,
-                    year: currentPlan === 'year' ? selectedYear : null,
-                    date: currentPlan === 'day' ? selectedDate : null,
-                    regionsCount: regionsArr.length,
-                    regions: regionsArr,
-                    totalPrice: calcTotalPrice.textContent,
-                    notes: `Plan: ${currentPlan}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
-                };
-
-                try {
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const result = await response.json();
-
-                    if (result.status === "invalid_pin") {
-                        alert("❌ Wprowadzony kod PIN jest nieprawidłowy. Sprawdź e-mail i wpisz ponownie.");
-                        submitBtn.disabled = false;
-                        pinInput.focus();
-                        return;
-                    }
-
-                    alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły zostały przesłane na adres: ${clientEmail}.`);
-
-                    // Reset formularza
-                    selectedRegions.clear();
-                    document.querySelectorAll('.region-checkbox-label input').forEach(i => {
-                        i.checked = false;
-                        i.parentElement.classList.remove('checked');
-                    });
-                    emailInput.value = '';
-                    emailInput.disabled = false;
-                    pinInput.value = '';
-                    pinBox.style.display = 'none';
-                    currentStep = 'need_pin';
-                    submitBtn.disabled = false;
-                    updateCalculation();
-
-                } catch (err) {
-                    console.error("Błąd zapisu:", err);
-                    alert("Błąd podczas wysyłania zamówienia. Spróbuj ponownie za chwilę.");
-                    submitBtn.disabled = false;
-                    updateCalculation();
-                }
-            }
-        });
-    })();
-</script>
-
-<script src="/footer.js"></script>
-</body>
-</html>
+        <button id="submitOrderBtn" class="btn-order
