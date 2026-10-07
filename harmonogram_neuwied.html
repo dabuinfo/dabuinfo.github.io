@@ -3,21 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sperrmüll & Elektro – Landkreis Neuwied | Hunter Radar</title>
-
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="favicon.png">
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-YQTCG26T1B');
-    </script>
-  
+  <title>Sperrmüll & Elektro – Landkreis Neuwied | Chronologiczny Radar</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,33 +16,34 @@
       --bg-surface: #ffffff;
       --bg-surface-card: #f1f5f9;
       --bg-surface-hover: #e2e8f0;
-      
       --border-subtle: #cbd5e1;
       --border-highlight: #2563eb;
-      
       --text-main: #0f172a;
       --text-muted: #475569;
       --text-faint: #64748b;
-      
-      --color-sperr: #1d4ed8;
-      --color-sperr-bg: #eff6ff;
-      --color-sperr-border: #bfdbfe;
-
-      --color-elektro: #c2410c;
-      --color-elektro-bg: #fff7ed;
-      --color-elektro-border: #fed7aa;
-
-      --accent-gold: #b45309;
-      --accent-gold-bg: #fefce8;
-      --accent-cyan: #0284c7;
+      --color-primary: #0284c7;
+      --color-primary-bg: #e0f2fe;
+      --color-primary-border: #bae6fd;
+      --color-sperr: #0284c7;
+      --color-elektro: #f97316;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    body.dark-theme {
+      --bg-base: #07090e;
+      --bg-surface: #0f131c;
+      --bg-surface-card: #151b27;
+      --bg-surface-hover: #1c2434;
+      --border-subtle: #222b3d;
+      --border-highlight: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      --color-primary: #38bdf8;
+      --color-primary-bg: rgba(56, 189, 248, 0.12);
+      --color-primary-border: #0369a1;
+      --color-sperr: #38bdf8;
+      --color-elektro: #fb923c;
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
@@ -61,9 +51,9 @@
       line-height: 1.5;
       min-height: 100vh;
       padding: 1.5rem;
+      transition: background-color 0.2s, color 0.2s;
       -webkit-font-smoothing: antialiased;
     }
-
     .container {
       max-width: 1560px;
       margin: 0 auto;
@@ -71,8 +61,6 @@
       flex-direction: column;
       gap: 1.5rem;
     }
-
-    /* NAGŁÓWEK GŁÓWNY */
     header {
       display: flex;
       flex-wrap: wrap;
@@ -82,135 +70,88 @@
       padding-bottom: 1.25rem;
       border-bottom: 2px solid var(--border-subtle);
     }
-
     .title-area h1 {
       font-size: 1.75rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: #0f172a;
       display: flex;
       align-items: center;
       gap: 0.6rem;
+      flex-wrap: wrap;
     }
-
-    .title-area h1 span.badge-powiat {
-      background: #e0f2fe;
-      color: #0369a1;
+    .badge-region {
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
       font-size: 0.75rem;
       padding: 0.25rem 0.65rem;
       border-radius: 999px;
       font-weight: 700;
-      border: 1px solid #bae6fd;
+      border: 1px solid var(--color-primary-border);
     }
-
     .title-area p {
       font-size: 0.95rem;
       color: var(--text-muted);
       margin-top: 0.25rem;
     }
-
-    /* BOX EDUKACYJNY / STRATEGIA DLA POSZUKIWACZY */
-    .hunter-intel {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-left: 5px solid #f59e0b;
-      border-radius: 12px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-    }
-
-    .hunter-header {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: var(--accent-gold);
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .hunter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-
-    .intel-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 1rem;
+    .theme-toggle {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
       border-radius: 8px;
-    }
-
-    .intel-card h4 {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 0.4rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .intel-card p {
+      cursor: pointer;
+      font-weight: 600;
       font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+      transition: all 0.2s;
     }
-
-    .intel-card strong {
-      color: #0f172a;
+    .theme-toggle:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-highlight);
     }
-
-    /* STICKY CONTROL PANEL */
     .control-panel {
-      position: sticky;
-      top: 1rem;
+      position: relative;
       z-index: 50;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(14px);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
       padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.9rem;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
     }
-
+    body.dark-theme .control-panel {
+      background: rgba(15, 19, 28, 0.92);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
     .top-controls {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
       align-items: center;
     }
-
     .search-box {
       flex: 1;
       min-width: 260px;
       position: relative;
     }
-
     .search-box input {
       width: 100%;
-      background: #ffffff;
+      background: var(--bg-surface);
       border: 1.5px solid var(--border-subtle);
-      color: #0f172a;
+      color: var(--text-main);
       padding: 0.75rem 1rem 0.75rem 2.6rem;
       border-radius: 8px;
       font-size: 0.95rem;
       font-family: inherit;
       transition: all 0.2s;
     }
-
     .search-box input:focus {
       outline: none;
       border-color: var(--border-highlight);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
-
     .search-box svg {
       position: absolute;
       left: 0.9rem;
@@ -218,665 +159,535 @@
       transform: translateY(-50%);
       color: var(--text-faint);
     }
-
-    /* FILTRY FRAKCJI */
-    .filter-pills {
+    .toolbar-actions {
       display: flex;
-      gap: 0.5rem;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
     }
-
-    .btn-pill {
-      background: #ffffff;
-      border: 1.5px solid var(--border-subtle);
+    .action-btn {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 0.5rem 0.95rem;
+      padding: 0.6rem 0.95rem;
       border-radius: 8px;
       font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
-      display: flex;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .action-btn:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-main);
+      border-color: var(--border-highlight);
+    }
+    .filter-toggle-label {
+      display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
+      background: var(--bg-surface-card);
+      border: 1.5px solid var(--border-subtle);
+      padding: 0.55rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
       transition: all 0.15s;
     }
-
-    .btn-pill:hover {
-      background: #f1f5f9;
-      color: #0f172a;
+    .filter-toggle-label:hover {
+      border-color: var(--border-highlight);
     }
-
-    .btn-pill.active-all {
-      background: #0f172a;
-      border-color: #0f172a;
-      color: #ffffff;
+    .filter-toggle-label input {
+      accent-color: #2563eb;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
-
-    .btn-pill.active-sperr {
-      background: var(--color-sperr-bg);
-      border-color: #3b82f6;
-      color: var(--color-sperr);
-    }
-
-    .btn-pill.active-elektro {
-      background: var(--color-elektro-bg);
-      border-color: #f97316;
-      color: var(--color-elektro);
-    }
-
     .stats-info {
       font-size: 0.88rem;
       color: var(--text-muted);
       white-space: nowrap;
       margin-left: auto;
     }
-
     .stats-info strong {
       color: var(--border-highlight);
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.95rem;
     }
-
-    /* FILTRY TYGODNI (KW) */
-    .week-chips {
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .filter-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .filter-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
-      max-height: 80px;
-      overflow-y: auto;
-      padding-bottom: 2px;
+      gap: 0.38rem;
     }
-
     .chip {
-      background: #ffffff;
+      background: var(--bg-surface-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
       font-size: 0.75rem;
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.65rem;
       border-radius: 6px;
       cursor: pointer;
-      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       transition: all 0.15s;
+      white-space: nowrap;
     }
-
     .chip:hover {
-      color: #0f172a;
-      border-color: #94a3b8;
-      background: #f8fafc;
+      color: var(--text-main);
+      border-color: var(--border-highlight);
     }
-
     .chip.active {
       background: #2563eb;
       border-color: #1d4ed8;
-      color: #ffffff;
+      color: #fff;
       font-weight: 700;
     }
-
-    /* KONTENER WYNIKÓW */
-    .results-grid {
+    .chip-kw {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cards-grid {
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
-
-    /* KARTA TYGODNIA / BLOK ZGŁOSZEŃ */
-    .schedule-block {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+    .date-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      transition: border-color 0.2s;
     }
-
-    .schedule-header {
+    .date-card:hover {
+      border-color: var(--border-highlight);
+    }
+    .date-header {
       padding: 1rem 1.25rem;
-      background: #f8fafc;
-      border-bottom: 1px solid #e2e8f0;
+      background: var(--bg-surface-card);
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
     }
-
-    .kw-title-group {
+    .date-info-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+    .date-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .date-day-badge {
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary-border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .date-kw-badge {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    body.dark-theme .date-kw-badge {
+      background: #334155;
+    }
+    .date-meta {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .kw-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .kw-date {
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .type-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-
-    .badge-sperrmuell {
-      background: var(--color-sperr-bg);
-      border: 1px solid var(--color-sperr-border);
-      color: var(--color-sperr);
-    }
-
-    .badge-elektro {
-      background: var(--color-elektro-bg);
-      border: 1px solid var(--color-elektro-border);
-      color: var(--color-elektro);
-    }
-
-    .places-meta {
       font-size: 0.85rem;
       color: var(--text-faint);
     }
-
-    .places-meta strong {
-      color: #0f172a;
+    .toggle-arrow {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
     }
-
-    /* LISTA MIEJSCOWOŚCI I WIOSKÓW – Z LINKAMI DO GOOGLE MAPS */
-    .places-body {
+    .date-card.collapsed .toggle-arrow {
+      transform: rotate(-90deg);
+    }
+    .date-card.collapsed .date-body {
+      display: none;
+    }
+    .date-body {
       padding: 1.25rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
+      flex-direction: column;
+      gap: 1.25rem;
     }
+    .faction-group {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-surface);
+      margin-bottom: 0.5rem;
+    }
+    .faction-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0.95rem;
+      background: var(--bg-surface-card);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .faction-header-bar:hover {
+      background: var(--bg-surface-hover);
+    }
+    .faction-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .faction-header-badge {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .faction-arrow {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+    .faction-group.collapsed .faction-arrow {
+      transform: rotate(-90deg);
+    }
+    .faction-group.collapsed .places-grid {
+      display: none;
+    }
+    .badge-sperr { color: var(--color-sperr); }
+    .badge-elektro { color: var(--color-elektro); }
 
-    .place-tag {
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      color: #1e293b;
+    .places-grid {
+      padding: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      background: var(--bg-surface);
+    }
+    .place-chip {
+      background: var(--bg-surface-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
       padding: 0.35rem 0.7rem;
       border-radius: 6px;
       font-size: 0.82rem;
-      font-weight: 500;
+      font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: transform 0.1s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      transition: all 0.15s;
     }
-
-    .place-tag svg {
-      color: #94a3b8;
-      transition: color 0.15s;
+    .place-chip:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-highlight);
     }
-
-    .place-tag:hover {
-      background: #e0f2fe;
-      color: #0369a1;
-      transform: translateY(-1px);
-      border-color: #7dd3fc;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      display: none;
     }
-
-    .place-tag:hover svg {
-      color: #0284c7;
-    }
-
-    .place-tag mark {
+    mark {
       background: #fef08a;
       color: #854d0e;
       padding: 0 3px;
       border-radius: 3px;
       font-weight: 700;
     }
-
-    .empty-state {
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--text-muted);
-      background: #ffffff;
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
-      display: none;
+    body.dark-theme mark {
+      background: rgba(59, 130, 246, 0.4);
+      color: #fff;
     }
-
-    /* RWD */
     @media (max-width: 768px) {
-      body {
-        padding: 0.75rem;
-      }
-      .control-panel {
-        top: 0.5rem;
-        padding: 0.75rem;
-      }
-      .hunter-intel {
-        padding: 1rem;
-      }
-      .hunter-grid {
-        grid-template-columns: 1fr;
-      }
-      .schedule-header {
-        padding: 0.85rem;
-      }
-      .places-body {
-        padding: 0.85rem;
-      }
+      body { padding: 0.75rem; }
+      .control-panel { padding: 0.75rem; }
+      .date-header { padding: 0.85rem; }
+      .date-body { padding: 0.85rem; }
+      .stats-info { margin-left: 0; width: 100%; }
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <header>
       <div class="title-area">
         <h1>
-          Powiat Neuwied <span class="badge-powiat">RLP • 2026</span>
+          Landkreis Neuwied <span class="badge-region">Rheinland-Pfalz • 2026</span>
         </h1>
-        <p>Dynamiczny wykaz okien terminowych odbioru odpadów wielkogabarytowych i elektrosprzętu</p>
+        <p>Chronologiczny wykaz terminów zbiórek: Sperrmüll & Elektro</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          🌓 Przełącz motyw
+        </button>
       </div>
     </header>
 
-    <!-- INTEL DLA POSZUKIWACZY SKARBÓW -->
-    <section class="hunter-intel">
-      <div class="hunter-header">
-        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span>Radar Poszukiwacza: Jak czytać ten kalendarz na ulicy?</span>
-      </div>
-      <div class="hunter-grid">
-        <div class="intel-card">
-          <h4>⏱️ Reguła cyklu 3 tygodni</h4>
-          <p>
-            W powiecie Neuwied <strong>nie ma sztywnej wystawki dla każdego terminu</strong>. Władze udostępniają mieszkańcom okna do zgłaszania wywozu co <strong>3 tygodnie</strong>. To oznacza, że dany rejon ma akumulację odbiorów dokładnie w tych interwałach.
-          </p>
-        </div>
-        <div class="intel-card">
-          <h4>📦 Sperrmüll vs ⚡ Elektroschrott</h4>
-          <p>
-            Mieszkańcy mogą zamawiać gabaryt i elektroodpady w tym samym lub sąsiednich tygodniach. <strong>Złom i AGD</strong> (pralki, narzędzia, silniki, lodówki) jeżdżą innymi autami niż <strong>meble i drewno</strong>. Szukaj obu frakcji równolegle.
-          </p>
-        </div>
-        <div class="intel-card">
-          <h4>🎯 Kiedy wyjeżdżać w teren?</h4>
-          <p>
-            Mieszkańcy mają obowiązek wystawić rzeczy <strong>wieczorem przed wyznaczonym dniem odbioru</strong> (zwykle niedziela wieczór lub dni powszednie po 18:00). Największa kumulacja świeżego towaru na chodnikach przypada na <strong>noc z niedzieli na poniedziałek</strong> i kolejne wieczory danego tygodnia KW.
-          </p>
-        </div>
-        <div class="intel-card">
-          <h4>🗺️ Kliknij miejscowość = Google Maps</h4>
-          <p>
-            Każda miejscowość na poniższej liście jest <strong>aktywnym odnośnikiem</strong>. Kliknięcie otwiera lokalizację w Google Maps (lub aplikacji na smartfonie), co ułatwia planowanie trasy dojazdu.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL FILTRÓW I SZUKANIA -->
     <div class="control-panel">
       <div class="top-controls">
         <div class="search-box">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <input type="text" id="searchInput" placeholder="Szukaj miejscowości lub dzielnicy (np. Neuwied, Asbach, Engers)...">
+          <input type="text" id="searchInput" placeholder="Szukaj miejscowości, frakcji, KW (np. Rengsdorf, Sperrmüll, KW 42)...">
         </div>
 
-        <div class="filter-pills">
-          <button class="btn-pill active-all" id="btnFilterAll" onclick="setFrakcjaFilter('ALL')">Wszystkie frakcje</button>
-          <button class="btn-pill" id="btnFilterSperr" onclick="setFrakcjaFilter('Sperrmüll')">📦 Tylko Sperrmüll</button>
-          <button class="btn-pill" id="btnFilterElektro" onclick="setFrakcjaFilter('Schrott Elektroschrott Kühlgeräte')">⚡ Tylko Elektro / Złom</button>
+        <div class="toolbar-actions">
+          <label class="filter-toggle-label" title="Ukrywa przeszłe zbiórki oraz minione tygodnie">
+            <input type="checkbox" id="hidePastCheckbox" onchange="onHidePastChanged()">
+            <span>Ukryj minione (od dziś)</span>
+          </label>
+          <button class="action-btn" onclick="expandAll(true)">Rozwiń wszystkie</button>
+          <button class="action-btn" onclick="expandAll(false)">Zwiń wszystkie</button>
         </div>
 
         <div class="stats-info">
-          Widoczne bloki: <strong id="visibleBlocksCount">0</strong> / <span id="totalBlocksCount">0</span>
+          Bloków zbiórek: <strong id="countDays">0</strong> | Miejscowości: <strong id="countStreets">0</strong>
         </div>
       </div>
 
-      <div class="week-chips" id="weekChipsContainer">
-        <!-- Chipy tygodni KW generowane w JS -->
+      <!-- FILTR TYGODNI (KW) - DYNAMICZNIE UKRYWA MINIONE TYGODNIE -->
+      <div class="filter-section">
+        <span class="filter-label">Filtruj tydzień (KW):</span>
+        <div class="filter-chips" id="kwChipsContainer"></div>
       </div>
     </div>
 
-    <!-- WYNIKI -->
-    <main class="results-grid" id="resultsContainer">
-      <!-- Bloki generowane automatycznie -->
-    </main>
+    <main class="cards-grid" id="cardsContainer"></main>
 
     <div class="empty-state" id="emptyState">
-      <h3>Brak wyników</h3>
-      <p>Żadna miejscowość ani tydzień nie pasuje do wybranych filtrów.</p>
+      <h3>Nie znaleziono nadchodzących zbiórek</h3>
+      <p>Spróbuj odznaczyć opcję "Ukryj minione (od dziś)" lub zresetuj filtr tygodnia.</p>
     </div>
   </div>
 
   <script>
-    const RAW_DATA = [
-      {
-        kw: "KW 42/2026 (12.10.2026 - 17.10.2026)",
-        kwShort: "KW 42",
-        dates: "12.10.2026 - 17.10.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 22,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 42/2026 (12.10.2026 - 17.10.2026)",
-        kwShort: "KW 42",
-        dates: "12.10.2026 - 17.10.2026",
-        rodzaj: "Sperrmüll",
-        count: 19,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 43/2026 (19.10.2026 - 24.10.2026)",
-        kwShort: "KW 43",
-        dates: "19.10.2026 - 24.10.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 290,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 43/2026 (19.10.2026 - 24.10.2026)",
-        kwShort: "KW 43",
-        dates: "19.10.2026 - 24.10.2026",
-        rodzaj: "Sperrmüll",
-        count: 249,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]
-      },
-      {
-        kw: "KW 44/2026 (26.10.2026 - 31.10.2026)",
-        kwShort: "KW 44",
-        dates: "26.10.2026 - 31.10.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 44/2026 (26.10.2026 - 31.10.2026)",
-        kwShort: "KW 44",
-        dates: "26.10.2026 - 31.10.2026",
-        rodzaj: "Sperrmüll",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach -宽度 Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 45/2026 (02.11.2026 - 07.11.2026)",
-        kwShort: "KW 45",
-        dates: "02.11.2026 - 07.11.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 22,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 45/2026 (02.11.2026 - 07.11.2026)",
-        kwShort: "KW 45",
-        dates: "02.11.2026 - 07.11.2026",
-        rodzaj: "Sperrmüll",
-        count: 22,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 46/2026 (09.11.2026 - 14.11.2026)",
-        kwShort: "KW 46",
-        dates: "09.11.2026 - 14.11.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 290,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 46/2026 (09.11.2026 - 14.11.2026)",
-        kwShort: "KW 46",
-        dates: "09.11.2026 - 14.11.2026",
-        rodzaj: "Sperrmüll",
-        count: 290,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 47/2026 (16.11.2026 - 21.11.2026)",
-        kwShort: "KW 47",
-        dates: "16.11.2026 - 21.11.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 47/2026 (16.11.2026 - 21.11.2026)",
-        kwShort: "KW 47",
-        dates: "16.11.2026 - 21.11.2026",
-        rodzaj: "Sperrmüll",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 48/2026 (23.11.2026 - 28.11.2026)",
-        kwShort: "KW 48",
-        dates: "23.11.2026 - 28.11.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 22,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 48/2026 (23.11.2026 - 28.11.2026)",
-        kwShort: "KW 48",
-        dates: "23.11.2026 - 28.11.2026",
-        rodzaj: "Sperrmüll",
-        count: 22,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]
-      },
-      {
-        kw: "KW 49/2026 (30.11.2026 - 05.12.2026)",
-        kwShort: "KW 49",
-        dates: "30.11.2026 - 05.12.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 290,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 49/2026 (30.11.2026 - 05.12.2026)",
-        kwShort: "KW 49",
-        dates: "30.11.2026 - 05.12.2026",
-        rodzaj: "Sperrmüll",
-        count: 290,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 50/2026 (07.12.2026 - 12.12.2026)",
-        kwShort: "KW 50",
-        dates: "07.12.2026 - 12.12.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 50/2026 (07.12.2026 - 12.12.2026)",
-        kwShort: "KW 50",
-        dates: "07.12.2026 - 12.12.2026",
-        rodzaj: "Sperrmüll",
-        count: 85,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 51/2026 (14.12.2026 - 19.12.2026)",
-        kwShort: "KW 51",
-        dates: "14.12.2026 - 19.12.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 63,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Hanroth", "Hardert", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 51/2026 (14.12.2026 - 19.12.2026)",
-        kwShort: "KW 51",
-        dates: "14.12.2026 - 19.12.2026",
-        rodzaj: "Sperrmüll",
-        count: 63,
-        places: ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Hanroth", "Hardert", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Woldert", "Woldert - Hilgert"]
-      },
-      {
-        kw: "KW 52/2026 (21.12.2026 - 26.12.2026)",
-        kwShort: "KW 52",
-        dates: "21.12.2026 - 26.12.2026",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 249,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]
-      },
-      {
-        kw: "KW 52/2026 (21.12.2026 - 26.12.2026)",
-        kwShort: "KW 52",
-        dates: "21.12.2026 - 26.12.2026",
-        rodzaj: "Sperrmüll",
-        count: 249,
-        places: ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]
-      },
-      {
-        kw: "KW 53/2026 (28.12.2026 - 02.01.2027)",
-        kwShort: "KW 53",
-        dates: "28.12.2026 - 02.01.2027",
-        rodzaj: "Schrott Elektroschrott Kühlgeräte",
-        count: 75,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel - Haanhof", "Unkel - Hohenunkel", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
-      },
-      {
-        kw: "KW 53/2026 (28.12.2026 - 02.01.2027)",
-        kwShort: "KW 53",
-        dates: "28.12.2026 - 02.01.2027",
-        rodzaj: "Sperrmüll",
-        count: 75,
-        places: ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel - Haanhof", "Unkel - Hohenunkel", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]
+    const RAW_DATA = [{"t": "2026-10-12", "p": "12.10.2026", "d": "Poniedziałek", "k": "KW 42", "kwFull": "KW 42/2026 (12.10.2026 - 17.10.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-10-12", "p": "12.10.2026", "d": "Poniedziałek", "k": "KW 42", "kwFull": "KW 42/2026 (12.10.2026 - 17.10.2026)", "r": "Sperrmüll", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-10-19", "p": "19.10.2026", "d": "Poniedziałek", "k": "KW 43", "kwFull": "KW 43/2026 (19.10.2026 - 24.10.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-10-19", "p": "19.10.2026", "d": "Poniedziałek", "k": "KW 43", "kwFull": "KW 43/2026 (19.10.2026 - 24.10.2026)", "r": "Sperrmüll", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]}, {"t": "2026-10-26", "p": "26.10.2026", "d": "Poniedziałek", "k": "KW 44", "kwFull": "KW 44/2026 (26.10.2026 - 31.10.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-10-26", "p": "26.10.2026", "d": "Poniedziałek", "k": "KW 44", "kwFull": "KW 44/2026 (26.10.2026 - 31.10.2026)", "r": "Sperrmüll", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-11-02", "p": "02.11.2026", "d": "Poniedziałek", "k": "KW 45", "kwFull": "KW 45/2026 (02.11.2026 - 07.11.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-11-02", "p": "02.11.2026", "d": "Poniedziałek", "k": "KW 45", "kwFull": "KW 45/2026 (02.11.2026 - 07.11.2026)", "r": "Sperrmüll", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-11-09", "p": "09.11.2026", "d": "Poniedziałek", "k": "KW 46", "kwFull": "KW 46/2026 (09.11.2026 - 14.11.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-11-09", "p": "09.11.2026", "d": "Poniedziałek", "k": "KW 46", "kwFull": "KW 46/2026 (09.11.2026 - 14.11.2026)", "r": "Sperrmüll", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-11-16", "p": "16.11.2026", "d": "Poniedziałek", "k": "KW 47", "kwFull": "KW 47/2026 (16.11.2026 - 21.11.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-11-16", "p": "16.11.2026", "d": "Poniedziałek", "k": "KW 47", "kwFull": "KW 47/2026 (16.11.2026 - 21.11.2026)", "r": "Sperrmüll", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-11-23", "p": "23.11.2026", "d": "Poniedziałek", "k": "KW 48", "kwFull": "KW 48/2026 (23.11.2026 - 28.11.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-11-23", "p": "23.11.2026", "d": "Poniedziałek", "k": "KW 48", "kwFull": "KW 48/2026 (23.11.2026 - 28.11.2026)", "r": "Sperrmüll", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Hardert", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle"]}, {"t": "2026-11-30", "p": "30.11.2026", "d": "Poniedziałek", "k": "KW 49", "kwFull": "KW 49/2026 (30.11.2026 - 05.12.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-11-30", "p": "30.11.2026", "d": "Poniedziałek", "k": "KW 49", "kwFull": "KW 49/2026 (30.11.2026 - 05.12.2026)", "r": "Sperrmüll", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Hanroth", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Oberhonnefeld-Gierend", "Oberraden", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rheinbreitbach - Rottlandhof", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-12-07", "p": "07.12.2026", "d": "Poniedziałek", "k": "KW 50", "kwFull": "KW 50/2026 (07.12.2026 - 12.12.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-12-07", "p": "07.12.2026", "d": "Poniedziałek", "k": "KW 50", "kwFull": "KW 50/2026 (07.12.2026 - 12.12.2026)", "r": "Sperrmüll", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Brückrachdorf", "Dierdorf - Giershofen", "Dierdorf - Rother Hof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Großmaischeid", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Kleinmaischeid", "Kleinmaischeid - Kettemers Mühle", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel", "Unkel - Burg Vilzelt", "Unkel - Haanhof", "Unkel - Heister", "Unkel - Hohenunkel", "Unkel - Scheuren", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-12-14", "p": "14.12.2026", "d": "Poniedziałek", "k": "KW 51", "kwFull": "KW 51/2026 (14.12.2026 - 19.12.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Hanroth", "Hardert", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-12-14", "p": "14.12.2026", "d": "Poniedziałek", "k": "KW 51", "kwFull": "KW 51/2026 (14.12.2026 - 19.12.2026)", "r": "Sperrmüll", "places": ["Bonefeld", "Bonefeld - Mittelheidehof", "Bonefeld - Tannenhof", "Döttesfeld", "Döttesfeld - Bauscheid", "Döttesfeld - Breitscheid", "Döttesfeld - Oberähren", "Dürrholz", "Dürrholz - Daufenbach", "Dürrholz - Muscheid", "Dürrholz - Werlenbach", "Hanroth", "Hardert", "Linkenbach", "Linkenbach - Birkhof", "Linkenbach - Breitheider Hof", "Linkenbach - Wonnenberger Hof", "Melsbach", "Neuwied", "Neuwied - Altwied", "Neuwied - Block", "Neuwied - Engers", "Neuwied - Feldkirchen", "Neuwied - Gladbach", "Neuwied - Heimbach-Weis", "Neuwied - Irlich", "Neuwied - Niederbieber", "Neuwied - Oberbieber", "Neuwied - Rodenbach", "Neuwied - Segendorf", "Neuwied - Torney", "Niederwambach", "Niederwambach - Ascheid", "Niederwambach - Breibach", "Niederwambach - Forsthaus Lichtenthal", "Niederwambach - Lahrbach", "Niederwambach - Seyen", "Oberdreis", "Oberdreis - Dendert", "Oberdreis - Lautzert", "Oberdreis - Sonnenhof", "Puderbach", "Puderbach - Haberscheid", "Puderbach - Niederdreis", "Puderbach - Reichenstein", "Puderbach - Richert", "Ratzert", "Ratzert - Brubbach", "Ratzert - Waldhof", "Raubach", "Rengsdorf", "Rengsdorf - Glockenhof", "Rengsdorf - Obere Mühle", "Rengsdorf - Untere Mühle", "Rodenbach", "Rodenbach - Neitzert", "Rodenbach - Udert", "Steimel", "Steimel - Alberthofen", "Steimel - Sensenbach", "Steimel - Weroth", "Woldert", "Woldert - Hilgert"]}, {"t": "2026-12-21", "p": "21.12.2026", "d": "Poniedziałek", "k": "KW 52", "kwFull": "KW 52/2026 (21.12.2026 - 26.12.2026)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]}, {"t": "2026-12-21", "p": "21.12.2026", "d": "Poniedziałek", "k": "KW 52", "kwFull": "KW 52/2026 (21.12.2026 - 26.12.2026)", "r": "Sperrmüll", "places": ["Anhausen", "Anhausen - Bergmannshof", "Anhausen - Forsthaus", "Anhausen - Gewerbegebiet Petershof", "Anhausen - Petershof", "Anhausen - Rosenhof", "Asbach", "Asbach - Altenburg", "Asbach - Altenhofen", "Asbach - Bennau", "Asbach - Büsch", "Asbach - Dasbach", "Asbach - Diefenau", "Asbach - Dinspel", "Asbach - Ditscheid", "Asbach - Drinhausen", "Asbach - Ehrenstein", "Asbach - Germscheid", "Asbach - Graben", "Asbach - Heckenhahn", "Asbach - Heide", "Asbach - Hinterplag", "Asbach - Hofen", "Asbach - Hussen", "Asbach - Kalscheid", "Asbach - Kaltehöhe", "Asbach - Kapaunsmühle", "Asbach - Krankel", "Asbach - Krumbach", "Asbach - Krumbachsmühle", "Asbach - Krumscheid", "Asbach - Köttingen", "Asbach - Limbach", "Asbach - Limberg", "Asbach - Löhe", "Asbach - Meierseifen", "Asbach - Niedermühlen", "Asbach - Oberplag", "Asbach - Pees", "Asbach - Rauenhahn", "Asbach - Reeg", "Asbach - Rindhausen", "Asbach - Schluten", "Asbach - Schöneberg", "Asbach - Sessenhausen", "Asbach - Straßen", "Asbach - Thelenberg", "Asbach - Wester", "Asbach - Wilsberg", "Asbach - Zurheiden", "Bad Hönningen - Girgenrath", "Bad Hönningen - Reidenbruch", "Bonefeld - Birkenhof", "Breitscheid", "Breitscheid - Birkenhof", "Breitscheid - Bleischeid", "Breitscheid - Dasbach", "Breitscheid - Elsbach", "Breitscheid - Fichtelshohn", "Breitscheid - Fockenbachsmühle", "Breitscheid - Gersthahn", "Breitscheid - Gersthahnsmühle", "Breitscheid - Goldscheid", "Breitscheid - Hochscheid", "Breitscheid - Hollig", "Breitscheid - Jagdhaus Elsbach", "Breitscheid - Nassen", "Breitscheid - Siebenmorgen", "Breitscheid - Verscheid", "Buchholz", "Buchholz - Dammig", "Buchholz - Diepenseifen", "Buchholz - Elles", "Buchholz - Griesenbach", "Buchholz - Hammelshahn", "Buchholz - Irmeroth", "Buchholz - Jungeroth", "Buchholz - Krautscheid", "Buchholz - Krummenast", "Buchholz - Kölsch-Büllesbach", "Buchholz - Mendt", "Buchholz - Muß", "Buchholz - Oberelles", "Buchholz - Oberscheid", "Buchholz - Priestersberg", "Buchholz - Sauerwiese", "Buchholz - Seifen", "Buchholz - Unterelles", "Buchholz - Vierwinden", "Buchholz - Wallau", "Buchholz - Wertenbruch", "Dattenberg - Arnsau", "Dattenberg - Heeg", "Dattenberg - Hähnen", "Datzeroth", "Datzeroth - Forsthaus Friedrichstal", "Datzeroth - Haus Grenzelberg", "Dernbach", "Dernbach - Steinebacherhof", "Dierdorf - Elgert", "Dierdorf - Wienau", "Ehlscheid", "Ehlscheid - Forsthaus Gommerscheid", "Ehlscheid - Talhof", "Großmaischeid", "Großmaischeid - Kausen", "Großmaischeid - Schloss Sayneck", "Harschbach", "Harschbach - Kochhof", "Hausen", "Hausen - Bitze", "Hausen - Bremscheid", "Hausen - Frorath", "Hausen - Hähnen", "Hausen - Langscheid", "Hausen - Margaretenhof", "Hausen - Marienhof", "Hausen - Reuschenbach", "Hausen - Seidenhahn", "Hausen - Sohl", "Hausen - Solscheid", "Hausen - Stopperich", "Hausen - Wallbachsmühle", "Hausen - Weissfeld", "Hümmerich", "Hümmerich - Karlshof", "Isenburg", "Kurtscheid", "Kurtscheid - Eichenhof", "Leubsdorf - Hesseln", "Leubsdorf - Krumscheid", "Leubsdorf - Rothekreuz", "Marienhausen", "Marienhausen - Lindenhof", "Marienhausen - Marienhof", "Meinborn", "Neustadt (Wied)", "Neustadt (Wied) - Als-Au", "Neustadt (Wied) - Altenhütte", "Neustadt (Wied) - Ammerich", "Neustadt (Wied) - Bertenau", "Neustadt (Wied) - Borscheid", "Neustadt (Wied) - Brüchen", "Neustadt (Wied) - Bühlingen", "Neustadt (Wied) - Dasbach", "Neustadt (Wied) - Dinkelbach", "Neustadt (Wied) - Ehrenberg", "Neustadt (Wied) - Eilenberg", "Neustadt (Wied) - Etscheid", "Neustadt (Wied) - Fernthal", "Neustadt (Wied) - Funkenhausen", "Neustadt (Wied) - Gerhardshahn", "Neustadt (Wied) - Grube Anxbach", "Neustadt (Wied) - Grube Ferdinand", "Neustadt (Wied) - Grübelsberg", "Neustadt (Wied) - Grübelshof", "Neustadt (Wied) - Hammerhof", "Neustadt (Wied) - Hombach", "Neustadt (Wied) - Hombachsmühle", "Neustadt (Wied) - Jungfernhof", "Neustadt (Wied) - Kodden", "Neustadt (Wied) - Krummenau", "Neustadt (Wied) - Manroth", "Neustadt (Wied) - Mettelshahn", "Neustadt (Wied) - Mittelelsaff", "Neustadt (Wied) - Neschen", "Neustadt (Wied) - Neschermühle", "Neustadt (Wied) - Niederetscheid", "Neustadt (Wied) - Niederhoppen", "Neustadt (Wied) - Oberelsaff", "Neustadt (Wied) - Oberetscheid", "Neustadt (Wied) - Oberhoppen", "Neustadt (Wied) - Paffhausen", "Neustadt (Wied) - Panau", "Neustadt (Wied) - Prangenberg", "Neustadt (Wied) - Rahms", "Neustadt (Wied) - Rott", "Neustadt (Wied) - Rotterheide", "Neustadt (Wied) - Rüddel", "Neustadt (Wied) - Scharenberg", "Neustadt (Wied) - Steeg", "Neustadt (Wied) - Steinshof", "Neustadt (Wied) - Strauscheid", "Neustadt (Wied) - Telegraf", "Neustadt (Wied) - Thalhof", "Neustadt (Wied) - Unterelsaff", "Neustadt (Wied) - Vogtslag", "Neustadt (Wied) - Wahrenberg", "Neustadt (Wied) - Weissenfels", "Neustadt (Wied) - Wied", "Neustadt (Wied) - Wiedmühle", "Neustadt (Wied) - Wölsreeg", "Neustadt (Wied) / Neustadt/Wied", "Niederbreitbach", "Niederbreitbach - Ackerhof", "Niederbreitbach - Bürder", "Niederbreitbach - Clemenshütte", "Niederbreitbach - Haus Nonnenbach", "Niederbreitbach - Hegerhof", "Niederbreitbach - Kelterhof", "Niederbreitbach - Kurtenacker", "Niederbreitbach - Wolfenacker", "Niederhofen", "Oberhonnefeld-Gierend", "Oberraden", "Rheinbreitbach - Rottlandhof", "Roßbach", "Roßbach - Lache", "Roßbach - Niederbuchenau", "Roßbach - Oberbuchenau", "Roßbach - Reifert", "Roßbach - Scheuerchen", "Roßbach - Schimmelshahn", "Roßbach - Spreitchen", "Rüscheid", "Rüscheid - Rehhof", "St. Katharinen - Als-Au", "St. Katharinen - Sengenau", "Stebach", "Stebach - Waldhof", "Straßenhaus", "Straßenhaus - Ellingen", "Straßenhaus - Jahrsfeld", "Straßenhaus - Jahrsfelder Mühlen", "Straßenhaus - Niederhonnefeld", "Thalhausen", "Thalhausen - Mühlenhof", "Urbach", "Vettelschoß - Oberelsaff", "Waldbreitbach", "Waldbreitbach - Gasbitze", "Waldbreitbach - Glockscheid", "Waldbreitbach - Over", "Waldbreitbach - Rabenthal", "Waldbreitbach - Schloß Walburg", "Waldbreitbach - Wüscheid", "Windhagen", "Windhagen - Adamstal", "Windhagen - Birken", "Windhagen - Frohnen", "Windhagen - Günterscheid", "Windhagen - Hallerbach", "Windhagen - Hohn", "Windhagen - Hüngsberg", "Windhagen - Johannisberg", "Windhagen - Köhlershohn", "Windhagen - Rederscheid", "Windhagen - Schweifeld", "Windhagen - Stockhausen"]}, {"t": "2026-12-28", "p": "28.12.2026", "d": "Poniedziałek", "k": "KW 53", "kwFull": "KW 53/2026 (28.12.2026 - 02.01.2027)", "r": "Schrott Elektroschrott Kühlgeräte", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel - Haanhof", "Unkel - Hohenunkel", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}, {"t": "2026-12-28", "p": "28.12.2026", "d": "Poniedziałek", "k": "KW 53", "kwFull": "KW 53/2026 (28.12.2026 - 02.01.2027)", "r": "Sperrmüll", "places": ["Bad Hönningen", "Bad Hönningen - Arenfels", "Bad Hönningen - Ariendorf", "Bad Hönningen - Schafstall", "Bruchhausen", "Dattenberg", "Dattenberg - Brochenbach", "Dattenberg - Ginsterhahn", "Dattenberg - Wallen", "Dierdorf", "Dierdorf - Birkenhof", "Dierdorf - Schloßparkhof", "Erpel", "Erpel - Erpeler Ley Plateau", "Erpel - Orsberg", "Erpel - Reifstein", "Hammerstein", "Hammerstein - Forsthof", "Hammerstein - Weiherhof", "Kasbach-Ohlenberg - Kasbach", "Kasbach-Ohlenberg - Obererl", "Kasbach-Ohlenberg - Ohlenberg", "Kasbach-Ohlenberg - Untererl", "Leubsdorf", "Leubsdorf - Hubertushof", "Leutesdorf", "Leutesdorf - Haus Haselberg", "Leutesdorf - Haus Vogelsang", "Leutesdorf - Hubertusburg", "Leutesdorf - Jakobshof", "Leutesdorf - Marienburg", "Linz", "Linz - Berkenhof", "Linz - Burg Ockenfels", "Linz - Dickert", "Linz - Kretzhaus", "Linz - Rennenberg", "Linz - Roniger Hof", "Linz - Stuxhof", "Ockenfels", "Rheinbreitbach", "Rheinbreitbach - Breite Heide", "Rheinbrohl", "Rheinbrohl - Annahof", "Rheinbrohl - Arienheller", "Rheinbrohl - Berghof", "Rheinbrohl - Christinenhöhe", "Rheinbrohl - Dielsberg", "Rheinbrohl - Hartmannshof", "Rheinbrohl - Haus Forst", "Rheinbrohl - Industriegebiet", "Rheinbrohl - Jagdhaus Wilhelmsruh", "Rheinbrohl - Lampenthalerhof", "Rheinbrohl - Magdalenenhof", "St. Katharinen", "St. Katharinen - Brochenbach", "St. Katharinen - Ginsterhahn", "St. Katharinen - Grendel", "St. Katharinen - Hargarten", "St. Katharinen - Hinterlorscheid", "St. Katharinen - Homscheid", "St. Katharinen - Noll", "St. Katharinen - Notscheid", "St. Katharinen - Rödder", "St. Katharinen - Steinshardt", "St. Katharinen - Strödt", "Unkel - Haanhof", "Unkel - Hohenunkel", "Unkel - Stuxhöhe", "Vettelschoß", "Vettelschoß - Kalenborn", "Vettelschoß - Klaushof", "Vettelschoß - Seiferhof", "Vettelschoß - Willscheid", "Vettelschoß - Willscheider Berg"]}];
+
+    let activeKW = getCurrentKW();
+
+    function getCurrentKW() {
+      const now = new Date();
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+      return 'KW ' + String(weekNo).padStart(2, '0');
+    }
+
+    function getTodayString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function updateKWChips() {
+      const kwContainer = document.getElementById('kwChipsContainer');
+      const hidePast = document.getElementById('hidePastCheckbox').checked;
+      const today = getTodayString();
+
+      const availableData = hidePast ? RAW_DATA.filter(x => x.t >= today) : RAW_DATA;
+      const uniqueKW = Array.from(new Set(availableData.map(x => x.k))).sort();
+
+      if (activeKW !== 'ALL' && !uniqueKW.includes(activeKW)) {
+        activeKW = 'ALL';
       }
-    ];
 
-    let currentFrakcja = 'ALL';
-    let currentKW = 'ALL';
+      kwContainer.innerHTML = '';
+      const allKWChip = document.createElement('div');
+      allKWChip.className = 'chip chip-kw' + (activeKW === 'ALL' ? ' active' : '');
+      allKWChip.textContent = 'Wszystkie tygodnie (' + uniqueKW.length + ')';
+      allKWChip.onclick = () => filterKW('ALL', allKWChip);
+      kwContainer.appendChild(allKWChip);
 
-    function initChips() {
-      const container = document.getElementById('weekChipsContainer');
-      container.innerHTML = '';
-
-      const allChip = document.createElement('div');
-      allChip.className = 'chip active';
-      allChip.textContent = 'Wszystkie tygodnie';
-      allChip.onclick = () => setKWFilter('ALL', allChip);
-      container.appendChild(allChip);
-
-      const uniqueKWs = Array.from(new Set(RAW_DATA.map(d => d.kwShort)));
-      uniqueKWs.forEach(kw => {
+      uniqueKW.forEach(k => {
         const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.textContent = kw;
-        chip.onclick = () => setKWFilter(kw, chip);
-        container.appendChild(chip);
+        chip.className = 'chip chip-kw' + (activeKW === k ? ' active' : '');
+        chip.textContent = k;
+        chip.onclick = () => filterKW(k, chip);
+        kwContainer.appendChild(chip);
       });
     }
 
-    function setFrakcjaFilter(val) {
-      currentFrakcja = val;
-      document.getElementById('btnFilterAll').className = 'btn-pill ' + (val === 'ALL' ? 'active-all' : '');
-      document.getElementById('btnFilterSperr').className = 'btn-pill ' + (val === 'Sperrmüll' ? 'active-sperr' : '');
-      document.getElementById('btnFilterElektro').className = 'btn-pill ' + (val === 'Schrott Elektroschrott Kühlgeräte' ? 'active-elektro' : '');
-      render();
-    }
-
-    function setKWFilter(kw, element) {
-      currentKW = kw;
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    function filterKW(k, element) {
+      activeKW = k;
+      document.querySelectorAll('#kwChipsContainer .chip').forEach(c => c.classList.remove('active'));
       element.classList.add('active');
       render();
     }
 
+    function onHidePastChanged() {
+      updateKWChips();
+      render();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+    }
+
+    function expandAll(expand) {
+      document.querySelectorAll('.date-card').forEach(c => {
+        if (expand) c.classList.remove('collapsed');
+        else c.classList.add('collapsed');
+      });
+      document.querySelectorAll('.faction-group').forEach(fg => {
+        if (expand) fg.classList.remove('collapsed');
+        else fg.classList.add('collapsed');
+      });
+    }
+
     function render() {
       const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
-      const container = document.getElementById('resultsContainer');
+      const hidePast = document.getElementById('hidePastCheckbox').checked;
+      const today = getTodayString();
+      const container = document.getElementById('cardsContainer');
       const emptyState = document.getElementById('emptyState');
 
-      const filtered = [];
+      const groupedDates = {};
+      let totalPlacesVisible = 0;
 
-      RAW_DATA.forEach(block => {
-        if (currentFrakcja !== 'ALL' && block.rodzaj !== currentFrakcja) return;
-        if (currentKW !== 'ALL' && block.kwShort !== currentKW) return;
+      RAW_DATA.forEach(row => {
+        if (hidePast && row.t < today) return;
+        if (activeKW !== 'ALL' && row.k !== activeKW) return;
 
-        if (searchVal) {
-          const matchedPlaces = block.places.filter(p => p.toLowerCase().includes(searchVal));
-          const matchesMeta = block.kw.toLowerCase().includes(searchVal) || block.rodzaj.toLowerCase().includes(searchVal);
+        const placesBlob = row.places.join(' ').toLowerCase();
+        const searchBlob = `${row.kwFull} ${row.r} ${placesBlob}`.toLowerCase();
+        if (searchVal && !searchBlob.includes(searchVal)) return;
 
-          if (matchedPlaces.length > 0) {
-            filtered.push({
-              ...block,
-              displayPlaces: matchedPlaces,
-              highlight: searchVal
-            });
-          } else if (matchesMeta) {
-            filtered.push({
-              ...block,
-              displayPlaces: block.places,
-              highlight: null
-            });
-          }
-        } else {
-          filtered.push({
-            ...block,
-            displayPlaces: block.places,
-            highlight: null
-          });
+        const groupKey = row.kwFull;
+        if (!groupedDates[groupKey]) {
+          groupedDates[groupKey] = {
+            kwFull: row.kwFull,
+            kwShort: row.k,
+            pretty: row.p,
+            day: row.d,
+            factions: {}
+          };
         }
+
+        if (!groupedDates[groupKey].factions[row.r]) {
+          groupedDates[groupKey].factions[row.r] = [];
+        }
+
+        row.places.forEach(p => {
+          if (!groupedDates[groupKey].factions[row.r].includes(p)) {
+            groupedDates[groupKey].factions[row.r].push(p);
+            totalPlacesVisible++;
+          }
+        });
       });
 
-      document.getElementById('visibleBlocksCount').textContent = filtered.length;
-      document.getElementById('totalBlocksCount').textContent = RAW_DATA.length;
+      const groupKeys = Object.keys(groupedDates).sort();
+      document.getElementById('countDays').textContent = groupKeys.length;
+      document.getElementById('countStreets').textContent = totalPlacesVisible;
 
-      if (filtered.length === 0) {
+      if (groupKeys.length === 0) {
         container.innerHTML = '';
         emptyState.style.display = 'block';
         return;
       }
       emptyState.style.display = 'none';
 
-      container.innerHTML = filtered.map(item => {
-        const isSperr = item.rodzaj === 'Sperrmüll';
-        const badgeClass = isSperr ? 'badge-sperrmuell' : 'badge-elektro';
-        const badgeIcon = isSperr ? '📦' : '⚡';
-        const badgeLabel = isSperr ? 'Sperrmüll (Gabaryty)' : 'Schrott & Elektroschrott (AGD / Złom)';
+      container.innerHTML = groupKeys.map(gKey => {
+        const gItem = groupedDates[gKey];
 
-        // Generowanie odnośników Google Maps
-        const placesHtml = item.displayPlaces.map(p => {
-          let text = p;
-          if (item.highlight) {
-            const regex = new RegExp(`(${item.highlight})`, 'gi');
-            text = text.replace(regex, '<mark>$1</mark>');
-          }
+        const factionsHtml = Object.keys(gItem.factions).sort().map(factionName => {
+          const places = gItem.factions[factionName];
+          const isElektro = factionName.toLowerCase().includes('elektro');
+          const badgeClass = isElektro ? 'badge-elektro' : 'badge-sperr';
+          const icon = isElektro ? '⚡' : '🛋️';
 
-          // Format zapytania: np. "Asbach - Altenburg, Landkreis Neuwied"
-          const mapQuery = encodeURIComponent(`${p}, Landkreis Neuwied`);
-          const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+          const placesHtml = places.map(placeName => {
+            let placeDisplay = placeName;
+            if (searchVal) {
+              const regex = new RegExp(`(${searchVal})`, 'gi');
+              placeDisplay = placeDisplay.replace(regex, '<mark>$1</mark>');
+            }
 
+            const mapQuery = encodeURIComponent(`${placeName}, Neuwied`);
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+            return `
+              <a href="${mapUrl}" target="_blank" rel="noopener" class="place-chip">
+                <span>📍 ${placeDisplay}</span>
+                <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              </a>
+            `;
+          }).join('');
+
+          const isFactionCollapsed = searchVal ? '' : 'collapsed';
           return `
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="place-tag" title="Pokaż w Google Maps">
-              <span>${text}</span>
-              <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-            </a>
+            <div class="faction-group ${isFactionCollapsed}">
+              <div class="faction-header-bar" onclick="this.parentElement.classList.toggle('collapsed')">
+                <span class="faction-title ${badgeClass}">
+                  <span>${icon} ${factionName}</span>
+                </span>
+                <span class="faction-header-badge">
+                  <span>${places.length} miejsc</span>
+                  <svg class="faction-arrow" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </span>
+              </div>
+              <div class="places-grid">
+                ${placesHtml}
+              </div>
+            </div>
           `;
         }).join('');
 
         return `
-          <article class="schedule-block">
-            <div class="schedule-header">
-              <div class="kw-title-group">
-                <span class="kw-tag">📅 ${item.kwShort}</span>
-                <span class="kw-date">(${item.dates})</span>
-                <span class="type-badge ${badgeClass}">
-                  ${badgeIcon} ${badgeLabel}
-                </span>
+          <article class="date-card">
+            <div class="date-header" onclick="this.parentElement.classList.toggle('collapsed')">
+              <div class="date-info-left">
+                <span class="date-title">📅 ${gItem.kwFull}</span>
+                <span class="date-kw-badge">${gItem.kwShort}</span>
               </div>
-              <div class="places-meta">
-                Miejscowości: <strong>${item.displayPlaces.length}</strong> ${item.displayPlaces.length < item.places.length ? `(z ${item.places.length})` : ''}
+              <div class="date-meta">
+                <span>Frakcji: <strong>${Object.keys(gItem.factions).length}</strong></span>
+                <svg class="toggle-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
               </div>
             </div>
-            <div class="places-body">
-              ${placesHtml}
+            <div class="date-body">
+              ${factionsHtml}
             </div>
           </article>
         `;
@@ -885,8 +696,7 @@
 
     document.getElementById('searchInput').addEventListener('input', render);
 
-    // Start
-    initChips();
+    updateKWChips();
     render();
   </script>
 </body>
