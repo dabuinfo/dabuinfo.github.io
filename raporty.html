@@ -42,6 +42,7 @@
             border: none; border-radius: 8px; cursor: pointer; transition: 0.15s;
         }
         .auth-box button:hover { background: #0369a1; }
+        .auth-box button:disabled { background: #94a3b8; cursor: not-allowed; }
         #authMsg { margin-top: 10px; font-size: 12.5px; font-weight: 600; min-height: 18px; }
         #mainContent { display: none; }
 
@@ -64,7 +65,7 @@
         .logout-btn { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
         .logout-btn:hover { background: #fecaca; }
 
-        /* Iframe dedykowany dla map Folium */
+        /* Izolowany iframe dla map */
         #mapFrame {
             width: 100%;
             height: calc(100vh - 85px);
@@ -74,7 +75,6 @@
             background: #ffffff;
         }
 
-        /* Sekcje standardowych raportów */
         .main-header {
             background: linear-gradient(135deg, #07456e 0%, #0284c7 100%); color: #ffffff;
             padding: 18px 24px; border-radius: 10px; margin-bottom: 14px; box-shadow: 0 3px 6px rgba(0,0,0,0.06);
@@ -86,11 +86,6 @@
         .stat-val { font-size: 20px; font-weight: 800; color: var(--primary); }
         .stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
-        .alert-box {
-            background-color: #fffbeb; border-left: 4px solid #f59e0b; border: 1px solid #fed7aa; border-left-width: 4px; border-radius: 6px; padding: 12px 14px;
-            margin-bottom: 16px; font-size: 12.5px; color: #92400e; line-height: 1.5;
-        }
-
         .search-box { margin-bottom: 16px; position: sticky; top: 10px; z-index: 100; }
         .search-box input {
             width: 100%; padding: 12px 16px 12px 42px; font-size: 14.5px; border: 1.5px solid var(--primary-light);
@@ -98,42 +93,15 @@
             color: var(--text-dark); outline: none; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.1);
         }
 
-        .table-heading { font-size: 13.5px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
-        .table-container { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 22px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        table.order-table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
-        table.order-table th { background-color: var(--primary); color: #ffffff; font-weight: 700; padding: 10px 12px; border: 1px solid #032b47; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-        table.order-table td { padding: 9px 12px; border: 1px solid var(--border); }
-        table.order-table tbody tr:nth-child(even) td { background-color: #f8fafc; }
-        table.order-table tbody tr:hover td { background-color: #f1f5f9; }
-        table.order-table tr.total-row td { background-color: #e2e8f0; font-weight: 800; color: var(--primary); border-top: 2px solid var(--primary); }
-
         .town-block { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 18px; padding: 14px 16px; }
-        .town-title { font-size: 14px; font-weight: 800; color: var(--primary); border-bottom: 2px solid var(--border-light); padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; }
         .village-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 6px; margin-bottom: 12px; padding: 12px 14px; }
-        .village-title { font-size: 13.5px; font-weight: 700; color: #0369a1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; }
-        .village-pill { background-color: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #bae6fd; }
         .street-columns { column-count: 3; column-gap: 16px; font-size: 12px; }
         .street-item { break-inside: avoid; padding: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .street-item a { color: #1e293b; text-decoration: none; }
-        .street-item a:hover { color: #0284c7; text-decoration: underline; }
-
-        footer { text-align: center; font-size: 11.5px; color: var(--text-muted); padding: 16px 0 10px; }
 
         @media (max-width: 768px) {
             .summary-grid { grid-template-columns: repeat(2, 1fr); }
             .street-columns { column-count: 1; }
             #mapFrame { height: calc(100vh - 75px); }
-        }
-
-        @media print {
-            body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; margin: 0 !important; font-size: 10pt !important; }
-            #authOverlay, .top-bar, .search-box, footer, .btn-action, #mapFrame { display: none !important; }
-            .wrapper { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .town-block, .village-card, .stat-card, .table-container { background: #ffffff !important; border: 1px solid #000000 !important; box-shadow: none !important; color: #000000 !important; page-break-inside: avoid; margin-bottom: 8px !important; }
-            .main-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000 !important; padding: 4px 0 !important; }
-            h1, .town-title, .village-title { color: #000000 !important; }
-            .street-item a { color: #000000 !important; text-decoration: none !important; }
-            table.order-table, table.order-table th, table.order-table td { background: #ffffff !important; color: #000000 !important; border: 1px solid #000000 !important; }
         }
     </style>
 </head>
@@ -143,7 +111,7 @@
     <div class="auth-box">
         <h2>🔒 Dostęp Autoryzowany</h2>
         <p>Wpisz numer zamówienia, aby odblokować materiały.</p>
-        <input type="text" id="orderInput" placeholder="WPISZ NR ZAMÓWIENIA" autofocus>
+        <input type="text" id="orderInput" placeholder="WPISZ NR ZAMÓWIENIA" maxlength="20" autofocus>
         <button id="authBtn" onclick="verifyAccess()">ODBLOKUJ DOSTĘP</button>
         <div id="authMsg"></div>
     </div>
@@ -158,22 +126,26 @@
         </div>
     </div>
     
-    <!-- Kontener na zwykły raport tekstowy -->
     <div id="reportContainer"></div>
-    
-    <!-- Ramka na mapę Folium -->
-    <iframe id="mapFrame" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+    <!-- Zabezpieczony sandbox: brak allow-same-origin zapobiega odczytywaniu strony głównej przez iframe -->
+    <iframe id="mapFrame" sandbox="allow-scripts allow-popups allow-forms"></iframe>
 </div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxMppkJLz3yBZyquq-GDNjqBOz4JNw0g5VroIQEg61PdUqGpv8KjbqS31XljwNpx00S/exec";
     const STORAGE_KEY = "dabu_global_order_pin";
+    const MAX_LOCAL_ATTEMPTS = 5;
+    const LOCKOUT_MINUTES = 10;
 
     window.addEventListener('DOMContentLoaded', () => {
+        sprawdzBlokadeLokalna();
+
         const urlParams = new URLSearchParams(window.location.search);
         const pinParam = urlParams.get("pin");
         if (pinParam) {
-            checkToken(pinParam.trim(), true);
+            // Czyścimy parametr z paska URL po pobraniu, aby nie wisiał w historii przeglądarki
+            window.history.replaceState({}, document.title, window.location.pathname);
+            checkToken(pinParam.trim().toUpperCase(), true);
             return;
         }
 
@@ -181,8 +153,32 @@
         if (saved) checkToken(saved, false);
     });
 
+    function sprawdzBlokadeLokalna() {
+        const lockoutUntil = localStorage.getItem('auth_lockout');
+        if (lockoutUntil && Date.now() < parseInt(lockoutUntil, 10)) {
+            const remMin = Math.ceil((parseInt(lockoutUntil, 10) - Date.now()) / 60000);
+            zablokujFormularz(`Zbyt wiele prób. Spróbuj za ${remMin} min.`);
+            return true;
+        }
+        return false;
+    }
+
+    function zablokujFormularz(tekst) {
+        const btn = document.getElementById('authBtn');
+        const msg = document.getElementById('authMsg');
+        const inp = document.getElementById('orderInput');
+        if (btn) btn.disabled = true;
+        if (inp) inp.disabled = true;
+        if (msg) {
+            msg.style.color = "#dc2626";
+            msg.innerText = tekst;
+        }
+    }
+
     function verifyAccess() {
-        const inputVal = document.getElementById('orderInput').value.trim();
+        if (sprawdzBlokadeLokalna()) return;
+
+        const inputVal = document.getElementById('orderInput').value.trim().toUpperCase();
         if (!inputVal) return;
         checkToken(inputVal, true);
     }
@@ -192,6 +188,8 @@
     });
 
     function checkToken(pin, showLoading) {
+        if (sprawdzBlokadeLokalna()) return;
+
         const btn = document.getElementById('authBtn');
         const msg = document.getElementById('authMsg');
         
@@ -206,6 +204,10 @@
             .then(res => res.json())
             .then(data => {
                 if (data.access === true && data.content) {
+                    // Sukces – resetujemy licznik nieudanych prób
+                    localStorage.removeItem('auth_attempts');
+                    localStorage.removeItem('auth_lockout');
+
                     localStorage.setItem(STORAGE_KEY, pin);
                     document.getElementById('authOverlay').style.display = 'none';
                     document.getElementById('currentOrderBadge').innerText = pin.toUpperCase();
@@ -216,42 +218,39 @@
                     const mapFrame = document.getElementById('mapFrame');
                     const btnPrint = document.getElementById('btnPrint');
 
-                    // Rozpoznanie czy zawartość to interaktywna mapa Folium/Leaflet
                     const isMap = data.content.includes("leaflet") || data.content.includes("folium") || pin.toUpperCase().startsWith("ATV-");
 
                     if (isMap) {
-                        // TRYB MAPY: pełna szerokość i wstrzyknięcie do ramki iframe
                         wrapper.classList.add('map-mode');
                         report.style.display = 'none';
                         mapFrame.style.display = 'block';
                         btnPrint.style.display = 'none';
 
-                        const frameDoc = mapFrame.contentWindow.document;
-                        frameDoc.open();
-                        frameDoc.write(data.content);
-                        frameDoc.close();
+                        // Bezpieczne wstrzyknięcie mapy przez srcdoc
+                        mapFrame.srcdoc = data.content;
                     } else {
-                        // TRYB RAPORTU: standardowy widok harmonogramu
                         wrapper.classList.remove('map-mode');
                         mapFrame.style.display = 'none';
                         report.style.display = 'block';
                         btnPrint.style.display = 'inline-flex';
 
                         report.innerHTML = data.content;
-
-                        report.querySelectorAll('script').forEach(oldScript => {
-                            const newScript = document.createElement('script');
-                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                            oldScript.parentNode.replaceChild(newScript, oldScript);
-                        });
-
                         inicjalizujWyszukiwarke();
                     }
                 } else {
                     localStorage.removeItem(STORAGE_KEY);
-                    msg.style.color = "#dc2626";
-                    msg.innerText = "Nieprawidłowy lub nieaktywny numer!";
+                    
+                    // Rejestracja błędnej próby
+                    let attempts = parseInt(localStorage.getItem('auth_attempts') || '0', 10) + 1;
+                    localStorage.setItem('auth_attempts', attempts);
+
+                    if (attempts >= MAX_LOCAL_ATTEMPTS) {
+                        localStorage.setItem('auth_lockout', Date.now() + (LOCKOUT_MINUTES * 60 * 1000));
+                        zablokujFormularz(`Zbyt wiele prób. Zablokowano na ${LOCKOUT_MINUTES} min.`);
+                    } else {
+                        msg.style.color = "#dc2626";
+                        msg.innerText = data.message || `Błędny kod! Pozostało prób: ${MAX_LOCAL_ATTEMPTS - attempts}`;
+                    }
                 }
             })
             .catch(() => {
@@ -259,8 +258,10 @@
                 msg.innerText = "Błąd połączenia z serwerem weryfikacji.";
             })
             .finally(() => {
-                btn.disabled = false;
-                btn.innerText = "ODBLOKUJ DOSTĘP";
+                if (!sprawdzBlokadeLokalna()) {
+                    btn.disabled = false;
+                    btn.innerText = "ODBLOKUJ DOSTĘP";
+                }
             });
     }
 
