@@ -335,7 +335,7 @@
             <div class="plan-title">Dostęp Dzienny</div>
             <div class="plan-price-tag">25 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień / rejon</span></div>
             <div class="plan-desc">
-                Wybierz dzień startu i określ liczbę dni trasy przyciskami [–] / [+].
+                Wybierz dzień startu i określ liczbę dni roboczych przyciskami [–] / [+].
             </div>
         </label>
     </div>
@@ -356,7 +356,7 @@
 
             <!-- LICZNIK DNI +/- -->
             <div style="display: flex; align-items: center; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; padding: 3px 6px;">
-                <span style="color: #bbb; font-size: 0.85rem; margin-right: 8px; font-weight: 600;">Liczba dni:</span>
+                <span style="color: #bbb; font-size: 0.85rem; margin-right: 8px; font-weight: 600;">Dni robocze:</span>
                 <button type="button" id="btnMinusDay" style="width: 32px; height: 32px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">–</button>
                 <span id="daysCountDisplay" style="min-width: 36px; text-align: center; color: var(--accent-gold); font-weight: bold; font-size: 1.1rem;">1</span>
                 <button type="button" id="btnPlusDay" style="width: 32px; height: 32px; background: var(--accent-green); color: #121212; border: none; border-radius: 4px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
@@ -438,7 +438,7 @@
     (function() {
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7r_MzcGJSfQbnBFM5jNeQLRYFXRHe4T5XoX466dvzMmmnE4LufptzAgB0IC7lHLHJCA/exec";
         
-        // Kompletna lista 30 rejonów
+        // Zaktualizowana lista rejonów (gminy Main-Taunus połączone w 1 ofertę)
         const regionsList = [
             "Altmarkkreis Salzwedel",
             "Bonn",
@@ -473,7 +473,7 @@
         const onlyScrappersRegions = ["Zollernalb"];
 
         let currentPlan = 'year'; // 'year' lub 'day'
-        let selectedYear = '2027';
+        let selectedYear = '2026';
         let selectedDate = '';
         let daysCount = 1;
         let selectedRegions = new Set();
@@ -504,28 +504,135 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        // Blokada dat z przeszłości i dzisiaj (najwcześniejsza data do wyboru to jutro)
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const yyyy = tomorrow.getFullYear();
-        const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const dd = String(tomorrow.getDate()).padStart(2, '0');
-        const minDateStr = `${yyyy}-${mm}-${dd}`;
+        // ========================================================
+        // KALKULATOR ŚWIĄT PAŃSTWOWYCH I DNI ROBOCZYCH W NIEMCZECH
+        // ========================================================
+        function getEasterDate(year) {
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31);
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(year, month - 1, day);
+        }
 
+        function getGermanHolidays(year) {
+            const holidays = new Set();
+            const pad = (n) => String(n).padStart(2, '0');
+            const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+            // Stałe święta ogólnoniemieckie
+            holidays.add(`${year}-01-01`); // Neujahr
+            holidays.add(`${year}-05-01`); // Tag der Arbeit
+            holidays.add(`${year}-10-03`); // Tag der Deutschen Einheit
+            holidays.add(`${year}-12-25`); // 1. Weihnachtstag
+            holidays.add(`${year}-12-26`); // 2. Weihnachtstag
+
+            // Ruchome święta ogólnoniemieckie (relatywnie do Wielkanocy)
+            const easter = getEasterDate(year);
+            const addDays = (base, days) => {
+                const res = new Date(base);
+                res.setDate(res.getDate() + days);
+                return res;
+            };
+
+            holidays.add(fmt(addDays(easter, -2))); // Karfreitag
+            holidays.add(fmt(addDays(easter, 1)));  // Ostermontag
+            holidays.add(fmt(addDays(easter, 39))); // Christi Himmelfahrt
+            holidays.add(fmt(addDays(easter, 50))); // Pfingstmontag
+
+            return holidays;
+        }
+
+        const holidaysCache = {};
+        function isHoliday(dateObj) {
+            const y = dateObj.getFullYear();
+            if (!holidaysCache[y]) {
+                holidaysCache[y] = getGermanHolidays(y);
+            }
+            const pad = (n) => String(n).padStart(2, '0');
+            const key = `${y}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
+            return holidaysCache[y].has(key);
+        }
+
+        function isWorkingDay(dateObj) {
+            const day = dateObj.getDay();
+            if (day === 0 || day === 6) return false; // Niedziela (0) lub Sobota (6)
+            if (isHoliday(dateObj)) return false;
+            return true;
+        }
+
+        function getNextWorkingDay(dateObj) {
+            let cur = new Date(dateObj);
+            while (!isWorkingDay(cur)) {
+                cur.setDate(cur.getDate() + 1);
+            }
+            return cur;
+        }
+
+        function calculateEndDate(startDateObj, workDaysCount) {
+            let cur = new Date(startDateObj);
+            let counted = 0;
+            while (counted < workDaysCount) {
+                if (isWorkingDay(cur)) {
+                    counted++;
+                    if (counted === workDaysCount) break;
+                }
+                cur.setDate(cur.getDate() + 1);
+            }
+            return cur;
+        }
+
+        function formatDateISO(d) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Ustalenie najwcześniejszej dozwolonej daty (najbliższy dzień roboczy od jutra)
+        let initialStartDate = new Date();
+        initialStartDate.setDate(initialStartDate.getDate() + 1);
+        initialStartDate = getNextWorkingDay(initialStartDate);
+
+        const minDateStr = formatDateISO(initialStartDate);
         dateInput.min = minDateStr;
         dateInput.value = minDateStr;
         selectedDate = minDateStr;
 
         dateInput.addEventListener('change', (e) => {
+            const chosen = new Date(e.target.value + 'T00:00:00');
+
             if (e.target.value < minDateStr) {
-                alert("Można wybrać wyłącznie terminy przyszłe (od jutra wzwyż).");
+                alert("Można wybrać wyłącznie terminy przyszłe.");
                 e.target.value = minDateStr;
+                selectedDate = minDateStr;
+                updateCalculation();
+                return;
             }
-            selectedDate = e.target.value;
+
+            if (!isWorkingDay(chosen)) {
+                const corrected = getNextWorkingDay(chosen);
+                const correctedStr = formatDateISO(corrected);
+                alert("Wybrana data wypada w weekend lub ogólnokrajowe święto w Niemczech.\nZbiórki i terminarze nie odbywają się w te dni. Przesunięto na najbliższy dzień roboczy: " + correctedStr);
+                e.target.value = correctedStr;
+                selectedDate = correctedStr;
+            } else {
+                selectedDate = e.target.value;
+            }
             updateCalculation();
         });
 
-        // Obsługa +/- dni
+        // Obsługa +/- dni roboczych
         btnMinusDay.addEventListener('click', () => {
             if (daysCount > 1) {
                 daysCount--;
@@ -602,10 +709,20 @@
             orderSection.style.display = 'block';
 
             let total = 0;
+            let dayRangeDetail = '';
+
             if (currentPlan === 'day') {
-                const dayWord = daysCount === 1 ? 'dzień' : (daysCount < 5 ? 'dni' : 'dni');
-                calcPlanName.textContent = `Dostęp na ${daysCount} ${dayWord} (od ${selectedDate})`;
-                calcUnitPrice.textContent = `25 zł / dzień / rejon (${daysCount} ${dayWord} = ${daysCount * 25} zł / rejon)`;
+                const startObj = new Date(selectedDate + 'T00:00:00');
+                const endObj = calculateEndDate(startObj, daysCount);
+                const endDateStr = formatDateISO(endObj);
+
+                const dayWord = daysCount === 1 ? 'dzień roboczy' : (daysCount < 5 ? 'dni robocze' : 'dni roboczych');
+                dayRangeDetail = daysCount === 1 
+                    ? `Dzień: ${selectedDate}` 
+                    : `Od ${selectedDate} do ${endDateStr} (bez weekendów i świąt DE)`;
+
+                calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b><br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
+                calcUnitPrice.textContent = `25 zł / dzień roboczy / rejon (${daysCount} ${dayWord} = ${daysCount * 25} zł / rejon)`;
                 discountNoteRow.style.display = 'none';
                 total = count * daysCount * 25;
             } else {
@@ -617,7 +734,7 @@
                 } else if (count === 2) {
                     calcUnitPrice.textContent = '450 zł / rejon (od 3 rejonów: 250 zł!)';
                     discountNoteRow.style.display = 'none';
-                    total = count * 450; // 900 zł
+                    total = count * 450;
                 } else {
                     calcUnitPrice.textContent = '250 zł / rejon (pakiet aktywowany)';
                     discountNoteRow.style.display = 'flex';
@@ -722,6 +839,12 @@
                 const regionsArr = Array.from(selectedRegions);
                 const orderId = `ZAM-${Date.now().toString().slice(-6)}`;
 
+                let endDateStr = null;
+                if (currentPlan === 'day') {
+                    const startObj = new Date(selectedDate + 'T00:00:00');
+                    endDateStr = formatDateISO(calculateEndDate(startObj, daysCount));
+                }
+
                 submitBtn.disabled = true;
                 submitBtn.textContent = "⏳ Rejestrowanie zamówienia...";
 
@@ -734,11 +857,12 @@
                     plan: currentPlan,
                     year: currentPlan === 'year' ? selectedYear : null,
                     startDate: currentPlan === 'day' ? selectedDate : null,
+                    endDate: endDateStr,
                     daysCount: currentPlan === 'day' ? daysCount : null,
                     regionsCount: regionsArr.length,
                     regions: regionsArr,
                     totalPrice: calcTotalPrice.textContent,
-                    notes: `Plan: ${currentPlan}. Start: ${selectedDate}, Dni: ${daysCount}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    notes: `Plan: ${currentPlan}. Start: ${selectedDate}, Koniec: ${endDateStr || '-'}, Dni roboczych: ${daysCount}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
@@ -772,6 +896,14 @@
                     currentStep = 'need_pin';
                     daysCount = 1;
                     daysCountDisplay.textContent = '1';
+
+                    // Przywrócenie domyślnej daty roboczej
+                    let resetStartDate = new Date();
+                    resetStartDate.setDate(resetStartDate.getDate() + 1);
+                    resetStartDate = getNextWorkingDay(resetStartDate);
+                    selectedDate = formatDateISO(resetStartDate);
+                    dateInput.value = selectedDate;
+
                     submitBtn.disabled = false;
                     updateCalculation();
 
