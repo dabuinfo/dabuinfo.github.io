@@ -65,7 +65,7 @@
         .logout-btn { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
         .logout-btn:hover { background: #fecaca; }
 
-        /* Izolowany iframe dla map */
+        /* Izolowana ramka dla map */
         #mapFrame {
             width: 100%;
             height: calc(100vh - 85px);
@@ -75,6 +75,7 @@
             background: #ffffff;
         }
 
+        /* Sekcje standardowych raportów */
         .main-header {
             background: linear-gradient(135deg, #07456e 0%, #0284c7 100%); color: #ffffff;
             padding: 18px 24px; border-radius: 10px; margin-bottom: 14px; box-shadow: 0 3px 6px rgba(0,0,0,0.06);
@@ -86,6 +87,11 @@
         .stat-val { font-size: 20px; font-weight: 800; color: var(--primary); }
         .stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
+        .alert-box {
+            background-color: #fffbeb; border-left: 4px solid #f59e0b; border: 1px solid #fed7aa; border-left-width: 4px; border-radius: 6px; padding: 12px 14px;
+            margin-bottom: 16px; font-size: 12.5px; color: #92400e; line-height: 1.5;
+        }
+
         .search-box { margin-bottom: 16px; position: sticky; top: 10px; z-index: 100; }
         .search-box input {
             width: 100%; padding: 12px 16px 12px 42px; font-size: 14.5px; border: 1.5px solid var(--primary-light);
@@ -93,15 +99,42 @@
             color: var(--text-dark); outline: none; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.1);
         }
 
+        .table-heading { font-size: 13.5px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
+        .table-container { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; margin-bottom: 22px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        table.order-table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
+        table.order-table th { background-color: var(--primary); color: #ffffff; font-weight: 700; padding: 10px 12px; border: 1px solid #032b47; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        table.order-table td { padding: 9px 12px; border: 1px solid var(--border); }
+        table.order-table tbody tr:nth-child(even) td { background-color: #f8fafc; }
+        table.order-table tbody tr:hover td { background-color: #f1f5f9; }
+        table.order-table tr.total-row td { background-color: #e2e8f0; font-weight: 800; color: var(--primary); border-top: 2px solid var(--primary); }
+
         .town-block { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 18px; padding: 14px 16px; }
+        .town-title { font-size: 14px; font-weight: 800; color: var(--primary); border-bottom: 2px solid var(--border-light); padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase; }
         .village-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 6px; margin-bottom: 12px; padding: 12px 14px; }
+        .village-title { font-size: 13.5px; font-weight: 700; color: #0369a1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; }
+        .village-pill { background-color: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #bae6fd; }
         .street-columns { column-count: 3; column-gap: 16px; font-size: 12px; }
         .street-item { break-inside: avoid; padding: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .street-item a { color: #1e293b; text-decoration: none; }
+        .street-item a:hover { color: #0284c7; text-decoration: underline; }
+
+        footer { text-align: center; font-size: 11.5px; color: var(--text-muted); padding: 16px 0 10px; }
 
         @media (max-width: 768px) {
             .summary-grid { grid-template-columns: repeat(2, 1fr); }
             .street-columns { column-count: 1; }
             #mapFrame { height: calc(100vh - 75px); }
+        }
+
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; margin: 0 !important; font-size: 10pt !important; }
+            #authOverlay, .top-bar, .search-box, footer, .btn-action, #mapFrame { display: none !important; }
+            .wrapper { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .town-block, .village-card, .stat-card, .table-container { background: #ffffff !important; border: 1px solid #000000 !important; box-shadow: none !important; color: #000000 !important; page-break-inside: avoid; margin-bottom: 8px !important; }
+            .main-header { background: #ffffff !important; color: #000000 !important; border-bottom: 2px solid #000000 !important; padding: 4px 0 !important; }
+            h1, .town-title, .village-title { color: #000000 !important; }
+            .street-item a { color: #000000 !important; text-decoration: none !important; }
+            table.order-table, table.order-table th, table.order-table td { background: #ffffff !important; color: #000000 !important; border: 1px solid #000000 !important; }
         }
     </style>
 </head>
@@ -111,7 +144,7 @@
     <div class="auth-box">
         <h2>🔒 Dostęp Autoryzowany</h2>
         <p>Wpisz numer zamówienia, aby odblokować materiały.</p>
-        <input type="text" id="orderInput" placeholder="WPISZ NR ZAMÓWIENIA" maxlength="20" autofocus>
+        <input type="text" id="orderInput" placeholder="WPISZ NR ZAMÓWIENIA" maxlength="30" autofocus>
         <button id="authBtn" onclick="verifyAccess()">ODBLOKUJ DOSTĘP</button>
         <div id="authMsg"></div>
     </div>
@@ -126,8 +159,10 @@
         </div>
     </div>
     
+    <!-- Kontener na raport harmonogramu -->
     <div id="reportContainer"></div>
-    <!-- Zabezpieczony sandbox: brak allow-same-origin zapobiega odczytywaniu strony głównej przez iframe -->
+    
+    <!-- Izolowana ramka na mapy (bez allow-same-origin) -->
     <iframe id="mapFrame" sandbox="allow-scripts allow-popups allow-forms"></iframe>
 </div>
 
@@ -143,7 +178,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const pinParam = urlParams.get("pin");
         if (pinParam) {
-            // Czyścimy parametr z paska URL po pobraniu, aby nie wisiał w historii przeglądarki
+            // Bezpieczne usunięcie parametru pin z paska adresu
             window.history.replaceState({}, document.title, window.location.pathname);
             checkToken(pinParam.trim().toUpperCase(), true);
             return;
@@ -204,7 +239,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.access === true && data.content) {
-                    // Sukces – resetujemy licznik nieudanych prób
+                    // Reset licznika błędnych prób po poprawnym kodzie
                     localStorage.removeItem('auth_attempts');
                     localStorage.removeItem('auth_lockout');
 
@@ -221,25 +256,36 @@
                     const isMap = data.content.includes("leaflet") || data.content.includes("folium") || pin.toUpperCase().startsWith("ATV-");
 
                     if (isMap) {
+                        // TRYB MAPY
                         wrapper.classList.add('map-mode');
                         report.style.display = 'none';
                         mapFrame.style.display = 'block';
                         btnPrint.style.display = 'none';
 
-                        // Bezpieczne wstrzyknięcie mapy przez srcdoc
                         mapFrame.srcdoc = data.content;
                     } else {
+                        // TRYB RAPORTU
                         wrapper.classList.remove('map-mode');
                         mapFrame.style.display = 'none';
                         report.style.display = 'block';
                         btnPrint.style.display = 'inline-flex';
 
+                        // Wstrzyknięcie HTML raportu
                         report.innerHTML = data.content;
+
+                        // Aktywacja skryptów zawartych w pobranym pliku (np. kalkulator dni, motyw, filtr ulic)
+                        report.querySelectorAll('script').forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+
                         inicjalizujWyszukiwarke();
                     }
                 } else {
                     localStorage.removeItem(STORAGE_KEY);
-                    
+
                     // Rejestracja błędnej próby
                     let attempts = parseInt(localStorage.getItem('auth_attempts') || '0', 10) + 1;
                     localStorage.setItem('auth_attempts', attempts);
