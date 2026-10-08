@@ -1931,10 +1931,25 @@ leftSpan.appendChild(dateSpan);
             let checkedBoxes = Array.from(document.querySelectorAll('.region-chk:checked'));
             if (checkedBoxes.length === 0) return;
 
+            // Zbieramy wszystkie klucze gmin już objętych przez zaznaczone rejony (w tym zbiorcze)
+            let allCoveredKeys = new Set();
+            checkedBoxes.forEach(c => {
+                let k = cleanNameForCompare(c.value);
+                if (typeof getAssociatedKeys === 'function') {
+                    getAssociatedKeys(k).forEach(subK => allCoveredKeys.add(subK));
+                } else {
+                    allCoveredKeys.add(k);
+                }
+            });
+
             checkedBoxes.forEach(chk => {
                 let rKey = cleanNameForCompare(chk.value);
-                let neighbors = NEIGHBOR_CLUSTERS_MAP[rKey];
 
+                // 1. DLA REJONÓW ZBIORCZYCH (POWIATÓW) CAŁKOWICIE POMIJAMY "Trasa w okolicy"
+                let isCollective = (typeof REGION_SUB_AREAS_MAP !== 'undefined') && Boolean(REGION_SUB_AREAS_MAP[rKey]);
+                if (isCollective) return;
+
+                let neighbors = NEIGHBOR_CLUSTERS_MAP[rKey];
                 if (neighbors && neighbors.length > 0) {
                     let parentLabel = chk.closest('.region-label');
                     if (!parentLabel) return;
@@ -1944,6 +1959,17 @@ leftSpan.appendChild(dateSpan);
 
                     neighbors.forEach(nKey => {
                         let cleanNKey = cleanNameForCompare(nKey);
+
+                        // Nie proponuj rejonów zbiorczych jako okolic dla innych gmin
+                        if ((typeof REGION_SUB_AREAS_MAP !== 'undefined') && REGION_SUB_AREAS_MAP[cleanNKey]) {
+                            return;
+                        }
+
+                        // Nie proponuj miejscowości, która już wchodzi w skład zaznaczonego rejonu zbiorczego
+                        if (allCoveredKeys.has(cleanNKey)) {
+                            return;
+                        }
+
                         let targetChk = Array.from(document.querySelectorAll('.region-chk')).find(
                             c => cleanNameForCompare(c.value) === cleanNKey
                         );
