@@ -1290,17 +1290,11 @@
             let clean = cleanNameForCompare(rKey);
             let keys = new Set([clean]);
 
+            // Tylko rejon zbiorczy (powiat) zaciąga dane ze swoich podległych gmin
             if (REGION_SUB_AREAS_MAP[clean]) {
                 REGION_SUB_AREAS_MAP[clean].forEach(sub => keys.add(cleanNameForCompare(sub)));
             }
-
-            for (let parent in REGION_SUB_AREAS_MAP) {
-                let subList = REGION_SUB_AREAS_MAP[parent].map(cleanNameForCompare);
-                if (subList.includes(clean)) {
-                    keys.add(cleanNameForCompare(parent));
-                    subList.forEach(sibling => keys.add(sibling));
-                }
-            }
+            // Pojedyncza gmina reprezentuje wyłącznie siebie samą (nie dziedziczy powiatu)
             return Array.from(keys);
         }
 
