@@ -2696,6 +2696,17 @@ leftSpan.appendChild(dateSpan);
             searchBoxEl.addEventListener('input', applyRegionSearchFilter);
         }
 
+                function getParentCollectiveRegion(cleanKey) {
+            if (typeof REGION_SUB_AREAS_MAP === 'undefined') return null;
+            for (let parent in REGION_SUB_AREAS_MAP) {
+                let subList = REGION_SUB_AREAS_MAP[parent].map(cleanNameForCompare);
+                if (subList.includes(cleanKey)) {
+                    return parent;
+                }
+            }
+            return null;
+        }
+
         function updateMutualFiltering() {
             if (Object.keys(availabilityMatrix).length === 0) return;
 
@@ -2750,7 +2761,14 @@ if (chkObecny) {
                     }
                 }
 
-                if (isSpecial) {
+                let parentCollective = getParentCollectiveRegion(rKey);
+
+                if (parentCollective) {
+                    // Pojedyncza gmina należąca do powiatu zbiorczego NIE jest oferowana osobno
+                    label.style.opacity = '0.55';
+                    chk.disabled = true;
+                    if (chk.checked) chk.checked = false;
+                } else if (isSpecial) {
                     label.style.opacity = chk.checked ? '1' : '0.5';
                     chk.disabled = false;
                 } else {
@@ -2763,6 +2781,44 @@ if (chkObecny) {
 
                 let existingAskBtn = label.querySelector('.ask-region-btn');
                 let existingSpecialBtn = label.querySelector('.special-region-btn');
+                let existingCollectiveBtn = label.querySelector('.collective-sub-btn');
+
+                if (parentCollective) {
+                    if (existingAskBtn) existingAskBtn.remove();
+                    if (existingSpecialBtn) existingSpecialBtn.remove();
+
+                    let parentFormatted = formatNazwaRejonu(parentCollective);
+                    if (!existingCollectiveBtn) {
+                        let colBtn = document.createElement('a');
+                        colBtn.className = 'collective-sub-btn';
+                        colBtn.innerText = "📦 Pakiet: " + parentFormatted;
+                        colBtn.title = "Ta gmina wchodzi w skład całego tygodnia powiatu " + parentFormatted + ". Kliknij, aby zaznaczyć cały powiat.";
+                        colBtn.style.cssText = "margin-left: auto; font-size: 0.74rem; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); padding: 2px 7px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
+
+                        colBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            // Znajdź checkbox powiatu nadrzędnego i go zaznacz
+                            let targetParentChk = Array.from(document.querySelectorAll('.region-chk')).find(
+                                c => cleanNameForCompare(c.value) === parentCollective
+                            );
+                            if (targetParentChk) {
+                                targetParentChk.checked = true;
+                                targetParentChk.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                updateMutualFiltering();
+                                updatePriceDisplay();
+                            }
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(colBtn);
+                        }
+                    }
+                    return;
+                } else {
+                    if (existingCollectiveBtn) existingCollectiveBtn.remove();
+                }
 
                 if (isSpecial) {
                     if (existingAskBtn) existingAskBtn.remove();
