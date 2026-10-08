@@ -779,7 +779,7 @@
                     <div class="order-channel-options">
                         <label class="order-channel-label" id="mapAddonBox" title="Interaktywna mapa HTML na telefon z punktami zbiórek i nawigacją">
                             <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" />
-                            <span style="color: #38bdf8; font-weight: 600;">🗺️️ Interaktywna Mapa GPS</span>
+                            <span style="color: #38bdf8; font-weight: 600;">🗺️️ Interaktywna Mapa GPS</span> <span style="font-size: 0.72rem; color: #94a3b8; font-weight: normal; margin-left: 2px;">(od 125 zł)</span>
                         </label>
 
                         <label class="order-channel-label" id="pickupBox">
@@ -2239,6 +2239,55 @@ leftSpan.appendChild(dateSpan);
 
             let ratePerDay;
             let totalPriceNetto;
+            let reportRateNoMap;
+
+            // Obliczamy stawkę raportu bez dodatku mapy
+            if (isEuro) {
+                if (czyKorytarzWspolny) {
+                    if (totalDays >= 250) reportRateNoMap = 3.50;
+                    else if (totalDays >= 181) reportRateNoMap = 4.50;
+                    else if (totalDays >= 121) reportRateNoMap = 5.50;
+                    else if (totalDays >= 81)  reportRateNoMap = 6.50;
+                    else if (totalDays >= 51)  reportRateNoMap = 7.50;
+                    else if (totalDays >= 31)  reportRateNoMap = 8.25;
+                    else if (totalDays >= 16)  reportRateNoMap = 9.00;
+                    else if (totalDays >= 6)   reportRateNoMap = 9.50;
+                    else                       reportRateNoMap = 10.00;
+                } else {
+                    if (totalDays >= 250) reportRateNoMap = 2.00;
+                    else if (totalDays >= 181) reportRateNoMap = 2.50;
+                    else if (totalDays >= 121) reportRateNoMap = 3.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 3.75;
+                    else if (totalDays >= 51)  reportRateNoMap = 4.50;
+                    else if (totalDays >= 31)  reportRateNoMap = 5.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 5.50;
+                    else if (totalDays >= 6)   reportRateNoMap = 5.75;
+                    else                       reportRateNoMap = 6.00;
+                }
+            } else {
+                if (czyKorytarzWspolny) {
+                    if (totalDays >= 250) reportRateNoMap = 15.00;
+                    else if (totalDays >= 181) reportRateNoMap = 18.00;
+                    else if (totalDays >= 121) reportRateNoMap = 22.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 26.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 30.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 33.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 36.00;
+                    else if (totalDays >= 6)   reportRateNoMap = 38.00;
+                    else                       reportRateNoMap = 40.00;
+                } else {
+                    if (totalDays >= 250) reportRateNoMap = 8.00;
+                    else if (totalDays >= 181) reportRateNoMap = 10.00;
+                    else if (totalDays >= 121) reportRateNoMap = 12.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 15.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 18.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 20.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 22.00;
+                    else if (totalDays >= 6)   reportRateNoMap = 22.50;
+                    else                       reportRateNoMap = 25.00;
+                }
+            }
+            let baseReportPrice = Math.round((totalDays * reportRateNoMap) * 100) / 100;
 
             if (isMapAddonChecked) {
                 ratePerDay = regularBaseReference;
@@ -2335,6 +2384,7 @@ leftSpan.appendChild(dateSpan);
                 paypalFee: paypalFee,
                 isPaypal: isPaypal,
                 ratePerDay: ratePerDay,
+                baseReportPrice: baseReportPrice || 0,
                 currency: currencySymbol,
                 isMapAddonChecked: isMapAddonChecked,
                 loyaltyDeduction: loyaltyDeduction
@@ -2490,6 +2540,31 @@ leftSpan.appendChild(dateSpan);
             let hasMixedSpecial = checkedRegions.some(r => GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r)) && checkedRegions.some(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
             let calc = calculateActiveDaysAndPrice();
+
+            // Warunek dostępności mapy: minimum 125 zł (lub 30 EUR)
+            var mapAddonBox = document.getElementById('mapAddonBox');
+            var mapAddonChk = document.getElementById('mapOnlineOption');
+            if (mapAddonBox && mapAddonChk) {
+                var minMapThreshold = (calc.currency === 'EUR') ? 30.00 : 125.00;
+                var currentBaseVal = (typeof calc.baseReportPrice !== 'undefined') ? calc.baseReportPrice : calc.totalPrice;
+                var isMapEligible = (calc.totalDays > 0) && (currentBaseVal >= minMapThreshold);
+
+                if (!isMapEligible) {
+                    if (mapAddonChk.checked) {
+                        mapAddonChk.checked = false;
+                        calc = calculateActiveDaysAndPrice();
+                    }
+                    mapAddonChk.disabled = true;
+                    mapAddonBox.style.opacity = '0.45';
+                    mapAddonBox.style.cursor = 'not-allowed';
+                    mapAddonBox.title = '🗺️ Interaktywna Mapa GPS dostępna przy zamówieniu od minimum ' + minMapThreshold + ' ' + calc.currency + ' (od 5 dni wyjazdu)';
+                } else {
+                    mapAddonChk.disabled = false;
+                    mapAddonBox.style.opacity = '1';
+                    mapAddonBox.style.cursor = 'pointer';
+                    mapAddonBox.title = '🗺️ Interaktywna mapa HTML na smartfon z punktami zbiórek i nawigacją GPS';
+                }
+            }
 
             var cashBox = document.getElementById('cashOptionBox');
             if (cashBox) {
