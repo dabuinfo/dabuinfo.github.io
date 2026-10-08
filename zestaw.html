@@ -1192,7 +1192,7 @@
             'Barnim': 'Brandenburg', 'Elbe-Elster': 'Brandenburg', 'Oder-Spree': 'Brandenburg', 'Schwedt/Oder': 'Brandenburg',
             'Spree-Neiße': 'Brandenburg', 'Bad Homburg': 'Hessen', 'Bad Orb': 'Hessen', 'Bad Soden-Salmünster': 'Hessen',
             'Biebergemünd': 'Hessen', 'Eppstein': 'Hessen', 'Eschwege': 'Hessen', 'Flörsbachtal': 'Hessen',
-            'Flörsheim am Main': 'Hessen', 'Frankfurt': 'Hessen', 'Freigericht': 'Hessen', 'Friedrichsdorf': 'Hessen',
+            'Flörsheim am Main': 'Hessen', 'Frankfurt': 'Hessen', 'Main-Taunus': 'Hessen', 'Freigericht': 'Hessen', 'Friedrichsdorf': 'Hessen',
             'Fulda': 'Hessen', 'Gelnhausen': 'Hessen', 'Giessen': 'Hessen', 'Giessen Stadt': 'Hessen', 'Glashütten': 'Hessen',
             'Grävenwiesbach': 'Hessen', 'Gross-Gerau': 'Hessen', 'Gründau': 'Hessen', 'Hasselroth': 'Hessen',
             'Hattersheim': 'Hessen', 'Hattersheim am Main': 'Hessen', 'Hersfeld-Rotenburg': 'Hessen', 'Hofheim am Taunus': 'Hessen',
@@ -1245,6 +1245,79 @@
             'Leipzig': 'Sachsen', 'Nordsachsen': 'Sachsen', 'Lübeck': 'Schleswig-Holstein',
             'Rendsburg-Eckernförde': 'Schleswig-Holstein'
         };
+
+        const REGION_SUB_AREAS_MAP = {
+            'main-taunus': [
+                'eppstein', 'flörsheim am main', 'hattersheim', 'hattersheim am main',
+                'hofheim am taunus', 'kelkheim (taunus)', 'kelkheim am taunus',
+                'liederbach', 'schwalbach', 'bad soden am taunus', 'eschborn',
+                'hochheim am main', 'kriftel', 'sulzbach'
+            ],
+            'euskirchen kreis': [
+                'euskirchen', 'bad münstereifel', 'bad-munstereifel', 'mechernich',
+                'zülpich', 'kall', 'schleiden', 'blankenheim', 'dahlem', 'hellenthal', 'weilerswist'
+            ],
+            'kleve kreis': [
+                'bedburg-hau', 'emmerich am rhein', 'geldern', 'goch', 'issum',
+                'kalkar', 'kerken', 'kevelaer', 'kranenburg', 'rees', 'straelen', 'uedem', 'weeze'
+            ],
+            'heinsberg kreis': [
+                'heinsberg', 'geilenkirchen', 'hückelhoven', 'selfkant', 'übach-palenberg', 'waldfeucht', 'wassenberg'
+            ],
+            'viersen kreis': [
+                'viersen', 'grefrath', 'kempen', 'nettetal', 'schwalmtal', 'tönisvorst', 'brüggen'
+            ],
+            'rhein-kreis neuss': [
+                'neuss', 'grevenbroich', 'dormagen', 'kaarst', 'korschenbroich', 'jüchen', 'rommerskirchen', 'meerbusch'
+            ],
+            'wesel': [
+                'alpen', 'dinslaken', 'issum', 'kamp-lintfort', 'moers', 'neukirchen-vluyn',
+                'rheinberg', 'rheurdt', 'sonsbeck', 'voerde', 'wesel', 'xanten'
+            ]
+        };
+
+        function getAssociatedKeys(rKey) {
+            let clean = cleanNameForCompare(rKey);
+            let keys = new Set([clean]);
+
+            if (REGION_SUB_AREAS_MAP[clean]) {
+                REGION_SUB_AREAS_MAP[clean].forEach(sub => keys.add(cleanNameForCompare(sub)));
+            }
+
+            for (let parent in REGION_SUB_AREAS_MAP) {
+                let subList = REGION_SUB_AREAS_MAP[parent].map(cleanNameForCompare);
+                if (subList.includes(clean)) {
+                    keys.add(cleanNameForCompare(parent));
+                    subList.forEach(sibling => keys.add(sibling));
+                }
+            }
+            return Array.from(keys);
+        }
+
+        function extractFractionTag(rodzajWpisu) {
+            if (!rodzajWpisu) return "S";
+            let tagi = [];
+            let czyHolz = /holz/i.test(rodzajWpisu);
+            if (czyHolz) tagi.push("H");
+
+            let czySperr = /sperrm/i.test(rodzajWpisu);
+            if (czySperr) {
+                if (!czyHolz || /sperrm(?!.*holz)|rest.*sperrm/i.test(rodzajWpisu) || (rodzajWpisu.match(/sperrm/gi) || []).length > 1) {
+                    tagi.push("S");
+                }
+            }
+
+            if (/metall|schrott|altmetall/i.test(rodzajWpisu)) {
+                tagi.push("M");
+            }
+
+            if (/e-schrott|elektro|kuhl|kühl|papierkorb/i.test(rodzajWpisu)) {
+                tagi.push("E");
+            }
+
+            let unikalneTagi = Array.from(new Set(tagi));
+            return unikalneTagi.length > 0 ? unikalneTagi.join('/') : "S";
+        }
 
         const NEIGHBOR_CLUSTERS_MAP = {
             'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
@@ -1746,9 +1819,10 @@ leftSpan.appendChild(dateSpan);
 
                 selectedWeeks.forEach(w => {
                     if (!matrixToUse[w]) return;
+                    let rAssociatedKeys = getAssociatedKeys(rName);
                     matrixToUse[w].forEach(item => {
                         let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rName) return;
+                        if (!rAssociatedKeys.includes(itemName)) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         let rStr = typeof item === 'string' ? "" : (item.rodzaj || item["RODZAJ"] || "");
@@ -2050,9 +2124,10 @@ leftSpan.appendChild(dateSpan);
                 selectedWeeks.forEach(w => {
                     if (!matrixToUse[w]) return;
 
+                    let rAssociatedKeys = getAssociatedKeys(rKey);
                     matrixToUse[w].forEach(item => {
                         let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                        if (itemName !== rKey) return;
+                        if (!rAssociatedKeys.includes(itemName)) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || "");
                         if (!dStr || dStr === "-") return;
@@ -2262,74 +2337,103 @@ leftSpan.appendChild(dateSpan);
                 var isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
                 var rejonTotalDni = 0;
                 var weeksListHtml = '';
+                var collectedSystems = new Set();
                 var rawInfoD = "";
+                var rAssociatedKeys = (typeof getAssociatedKeys === 'function') ? getAssociatedKeys(rKey) : [rKey];
 
                 if (!isSpecial) {
                     selectedWeeksArr.forEach(wObj => {
                         var w = wObj.num;
                         if (!matrixToUse[w]) return;
 
-                        matrixToUse[w].forEach(item => {
-                            var itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
-                            if (itemName !== rKey) return;
+                        var dateFractionsMap = {};
 
-                            if (typeof item === 'object' && !rawInfoD) {
-                                rawInfoD = item.info || item.Info || item["Info o rejonie"] || item.kolumnaD || item.opis || "";
+                        matrixToUse[w].forEach(item => {
+                            var rawItemName = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"] || "");
+                            var itemName = cleanNameForCompare(rawItemName);
+                            if (!rAssociatedKeys.includes(itemName)) return;
+
+                            var itemInfoRaw = typeof item === 'object' ? (item.info || item.Info || item["INFO O REJONIE"] || item["Info o rejonie"] || item.kolumnaD || item.opis || "") : "";
+                            if (itemInfoRaw && !rawInfoD) {
+                                rawInfoD = itemInfoRaw;
+                            }
+                            var itemParsed = parseRegionInfo(itemInfoRaw);
+                            if (itemParsed && itemParsed.system) {
+                                collectedSystems.add(itemParsed.system);
                             }
 
                             var dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
-                            var datyWTygodniu = [];
+                            var rStr = typeof item === 'string' ? "" : (item.rodzaj || item["RODZAJ"] || "");
 
                             if (dStr && dStr !== "-") {
-                                var linieDat = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
-                                linieDat.forEach(d => {
-                                    var match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
+                                var linieDat = dStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+                                var linieRodzaj = rStr.split(/\r?\n/).map(x => x.trim()).filter(x => x);
+
+                                linieDat.forEach((linia, idx) => {
+                                    var match = linia.match(/(\d{4})-(\d{2})-(\d{2})/);
                                     if (match) {
+                                        var pelnaDataWpisu = match[0];
                                         var dObj = new Date(match[1], match[2] - 1, match[3]);
-                                        if (w === currentWeekNum) {
-                                            if (dObj >= tomorrow) datyWTygodniu.push(match[0]);
-                                        } else {
-                                            datyWTygodniu.push(match[0]);
+
+                                        var allowDate = (w === currentWeekNum) ? (dObj >= tomorrow) : true;
+                                        if (allowDate) {
+                                            var rodzajWpisu = linieRodzaj[idx] || "";
+                                            var fracTag = (typeof extractFractionTag === 'function') ? extractFractionTag(rodzajWpisu) : "S";
+
+                                            if (!dateFractionsMap[pelnaDataWpisu]) {
+                                                dateFractionsMap[pelnaDataWpisu] = new Set();
+                                            }
+                                            fracTag.split('/').forEach(t => dateFractionsMap[pelnaDataWpisu].add(t));
                                         }
                                     }
                                 });
                             }
-
-                            if (datyWTygodniu.length > 0) {
-                                rejonTotalDni += datyWTygodniu.length;
-                                weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
-                                    '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span class="notranslate" translate="no" style="color:#38bdf8;">' + datyWTygodniu.join(', ') + '</span>' +
-                                '</div>';
-                            }
                         });
-                    });
-                }
 
-                var parsed = parseRegionInfo(rawInfoD);
-                if (!parsed && isSpecial) {
-                    parsed = {
-                        system: "Baza Zastrzeżona (PRO)",
-                        frequency: "Dedykowana weryfikacja i wycena indywidualna"
-                    };
+                        var sortedDates = Object.keys(dateFractionsMap).sort();
+                        if (sortedDates.length > 0) {
+                            rejonTotalDni += sortedDates.length;
+
+                            var formattedDateItems = sortedDates.map(dStr => {
+                                var tagList = Array.from(dateFractionsMap[dStr]);
+                                var tagString = tagList.length > 0 ? tagList.join('/') : 'S';
+                                return dStr + ' <small style="color: #fbbf24; font-weight: 800;">(' + tagString + ')</small>';
+                            });
+
+                            weeksListHtml += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.85rem; color: #94a3b8;">' +
+                                '• <b style="color:#f8fafc;">' + wObj.label + '</b> — Dni: <span class="notranslate" translate="no" style="color:#38bdf8; font-weight: 600;">' + formattedDateItems.join(', ') + '</span>' +
+                            '</div>';
+                        }
+                    });
                 }
 
                 html += '<div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; margin-bottom: 8px;">';
                 html += '<div class="notranslate" translate="no" style="font-weight: bold; color: #2ecc71; font-size: 0.95rem;">📍 ' + rName.toUpperCase() + '</div>';
 
-                if (parsed) {
-                    html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
-                        '<span style="color: #93c5fd; font-weight: bold;">System:</span> ' + parsed.system + ' | ' +
-                        '<span style="color: #fbbf24; font-weight: bold;">Częstotliwość:</span> ' + parsed.frequency +
-                    '</div>';
-                }
-
                 if (isSpecial) {
+                    html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
+                        '<span style="color: #93c5fd; font-weight: bold;">System:</span> Baza Zastrzeżona (PRO) | <span style="color: #fbbf24; font-weight: bold;">Częstotliwość:</span> Dedykowana weryfikacja i wycena indywidualna' +
+                    '</div>';
                     html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #fbbf24;">🔒 Rejon zastrzeżony – dodany do koszyka (wycena indywidualna bez konieczności wyboru tygodnia)</div>';
-                } else if (weeksListHtml !== '') {
-                    html += weeksListHtml;
-                    html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' zaplanowanych terminów zbiórek</div>';
                 } else {
-                    html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #ef4444;">Brak terminów w zaznaczonych tygodniach</div>';
+                    var parsed = parseRegionInfo(rawInfoD);
+                    if (collectedSystems.size > 1) {
+                        html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
+                            '<span style="color: #93c5fd; font-weight: bold;">System:</span> Zróżnicowany (Harmonogram stały / Na zgłoszenie)' +
+                        '</div>';
+                    } else if (parsed) {
+                        html += '<div style="margin-left: 8px; margin-top: 2px; font-size: 0.82rem; color: #cbd5e1;">' +
+                            '<span style="color: #93c5fd; font-weight: bold;">System:</span> ' + parsed.system + ' | ' +
+                            '<span style="color: #fbbf24; font-weight: bold;">Częstotliwość:</span> ' + parsed.frequency +
+                        '</div>';
+                    }
+
+                    if (weeksListHtml !== '') {
+                        html += weeksListHtml;
+                        html += '<div style="margin-top: 6px; font-size: 0.82rem; color: #2ecc71; font-weight: bold; margin-left: 14px;">Łącznie: ' + rejonTotalDni + ' zaplanowanych terminów zbiórek</div>';
+                    } else {
+                        html += '<div style="margin-left: 14px; margin-top: 4px; font-size: 0.84rem; color: #ef4444;">Brak terminów w zaznaczonych tygodniach</div>';
+                    }
                 }
 
                 html += '</div>';
@@ -2524,13 +2628,16 @@ if (chkObecny) {
                 let isSpecial = GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === rKey);
                 let isAvailable = true;
 
-                if (!isSpecial && !allAvailableRegionsInDb.has(rKey)) {
+                let rAssociatedKeys = getAssociatedKeys(rKey);
+                let isPresentInDb = rAssociatedKeys.some(k => allAvailableRegionsInDb.has(k));
+
+                if (!isSpecial && !isPresentInDb) {
                     isAvailable = false; 
                 } else if (!isSpecial && selectedWeeks.length > 0) {
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
-                            return cleanNameForCompare(n) === rKey;
+                            return rAssociatedKeys.includes(cleanNameForCompare(n));
                         });
                     });
                     if (!presentInAnySelectedWeek) {
@@ -2627,9 +2734,10 @@ if (chkObecny) {
 
                 if (selectedRegularRegions.length > 0) {
                     let hasMatchingRegion = selectedRegularRegions.some(r => {
+                        let rAssociatedKeys = getAssociatedKeys(r);
                         return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
                             let n = typeof item === 'string' ? item : item.nazwa;
-                            return cleanNameForCompare(n) === r;
+                            return rAssociatedKeys.includes(cleanNameForCompare(n));
                         });
                     });
 
