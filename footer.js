@@ -59,6 +59,40 @@
                 .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
                 .dabu-footer-contact strong { color: #e0e0e0; }
 
+                /* PRZYCISK KOPIOWANIA IBAN */
+                .copy-iban-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    color: #2ecc71;
+                    padding: 3px 6px;
+                    margin-left: 6px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    vertical-align: middle;
+                    transition: all 0.2s ease;
+                }
+                .copy-iban-btn:hover {
+                    background: rgba(46, 204, 113, 0.15);
+                    border-color: #2ecc71;
+                    transform: scale(1.05);
+                }
+                .copy-iban-btn svg {
+                    width: 14px;
+                    height: 14px;
+                    stroke: currentColor;
+                    fill: none;
+                }
+                .copy-tooltip {
+                    display: none;
+                    color: #2ecc71;
+                    font-size: 0.82em;
+                    margin-left: 6px;
+                    font-weight: 600;
+                }
+
                 .dabu-footer-nav {
                     max-width: 1200px;
                     margin: 35px auto 0;
@@ -204,7 +238,16 @@
                         <ul class="dabu-footer-contact">
                             <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
                             <li>💳 Płatności: BLIK, PayPal</li>
-                            <li>🏦 IBAN: PL33 1020 5297 0000 1702 0290 9323</li>
+                            <li>
+                                🏦 IBAN: <span id="iban-number">PL33 1020 5297 0000 1702 0290 9323</span>
+                                <button type="button" class="copy-iban-btn" id="copy-iban-trigger" title="Skopiuj numer konta">
+                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                                <span class="copy-tooltip" id="iban-copied-msg">Skopiowano!</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -227,6 +270,34 @@
                 </div>
             `;
             document.body.appendChild(footerElement);
+
+            // Obsługa kliknięcia i kopiowania do schowka
+            const copyBtn = document.getElementById('copy-iban-trigger');
+            if (copyBtn) {
+                copyBtn.onclick = function() {
+                    const ibanText = "PL33102052970000170202909323";
+                    navigator.clipboard.writeText(ibanText).then(() => {
+                        const msg = document.getElementById('iban-copied-msg');
+                        if (msg) {
+                            msg.style.display = 'inline';
+                            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+                        }
+                    }).catch(() => {
+                        // Fallback dla starszych przeglądarek
+                        const tempInput = document.createElement("input");
+                        tempInput.value = ibanText;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(tempInput);
+                        const msg = document.getElementById('iban-copied-msg');
+                        if (msg) {
+                            msg.style.display = 'inline';
+                            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+                        }
+                    });
+                };
+            }
         }
 
         // ========================================================
@@ -234,7 +305,6 @@
         // ========================================================
         if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
             const vacationTranslations = {
-                // Polski: "W dniu ..." lub "W dniach ..."
                 pl: {
                     title: "Przerwa urlopowa:",
                     text: IS_SINGLE_DAY 
@@ -242,7 +312,6 @@
                         : `W dniach <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`,
                     close: "✕ Zamknij"
                 },
-                // Niemiecki: "Am ..." lub "Vom ..."
                 de: {
                     title: "Betriebsurlaub:",
                     text: IS_SINGLE_DAY
@@ -250,7 +319,6 @@
                         : `Vom <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`,
                     close: "✕ Schließen"
                 },
-                // Angielski: "On ..." lub "From ..."
                 en: {
                     title: "Vacation notice:",
                     text: IS_SINGLE_DAY
@@ -258,7 +326,6 @@
                         : `From <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`,
                     close: "✕ Close"
                 },
-                // Czeski: "Dne ..." lub "V termínu ..."
                 cs: {
                     title: "Dovolená:",
                     text: IS_SINGLE_DAY
@@ -266,7 +333,6 @@
                         : `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`,
                     close: "✕ Zavřít"
                 },
-                // Słowacki: "Dňa ..." lub "V termíne ..."
                 sk: {
                     title: "Dovolenka:",
                     text: IS_SINGLE_DAY
@@ -274,7 +340,6 @@
                         : `V termíne <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`,
                     close: "✕ Zavrieť"
                 },
-                // Węgierski
                 hu: {
                     title: "Szabadság:",
                     text: IS_SINGLE_DAY
@@ -282,7 +347,6 @@
                         : `<strong>${VACATION_DATES}</strong> között szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`,
                     close: "✕ Bezárás"
                 },
-                // Rumuński: "În data de ..." lub "În perioada ..."
                 ro: {
                     title: "Concediu:",
                     text: IS_SINGLE_DAY
@@ -290,7 +354,6 @@
                         : `În perioada <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`,
                     close: "✕ Închide"
                 },
-                // Bułgarski: "На ..." lub "В периода ..."
                 bg: {
                     title: "В отпуск:",
                     text: IS_SINGLE_DAY
@@ -298,7 +361,6 @@
                         : `В периода <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенияta ви веднага след завръщането си!`,
                     close: "✕ Затвори"
                 },
-                // Ukraiński
                 uk: {
                     title: "Відпустка:",
                     text: IS_SINGLE_DAY
@@ -306,7 +368,6 @@
                         : `У період <strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`,
                     close: "✕ Закрити"
                 },
-                // Litewski
                 lt: {
                     title: "Atostogos:",
                     text: IS_SINGLE_DAY
@@ -314,7 +375,6 @@
                         : `Nuo <strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`,
                     close: "✕ Uždaryti"
                 },
-                // Niderlandzki: "Op ..." lub "Van ..."
                 nl: {
                     title: "Vakantie:",
                     text: IS_SINGLE_DAY
