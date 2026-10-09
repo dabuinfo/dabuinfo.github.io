@@ -143,8 +143,8 @@
 <div id="authOverlay">
     <div class="auth-box">
         <h2>🔒 Dostęp Autoryzowany</h2>
-        <p>Wpisz numer zamówienia, aby odblokować materiały.</p>
-        <input type="text" id="orderInput" placeholder="WPISZ NR ZAMÓWIENIA" maxlength="30" autofocus>
+        <p>Wpisz PIN, który został nadany po zaksięgowaniu wpłaty, aby odblokować materiały.</p>
+        <input type="text" id="pinInput" placeholder="WPISZ KOD PIN" maxlength="30" autofocus>
         <button id="authBtn" onclick="verifyAccess()">ODBLOKUJ DOSTĘP</button>
         <div id="authMsg"></div>
     </div>
@@ -152,7 +152,7 @@
 
 <div id="mainContent" class="wrapper">
     <div class="top-bar">
-        <div class="top-bar-info">Aktywne zamówienie: <span id="currentOrderBadge">---</span></div>
+        <div class="top-bar-info">Aktywny PIN: <span id="currentPinBadge">---</span></div>
         <div class="top-bar-actions">
             <button id="btnPrint" class="btn-action btn-print" onclick="window.print()">🖨️ Drukuj</button>
             <button class="btn-action logout-btn" onclick="wyloguj()">🔒 Wyloguj</button>
@@ -245,7 +245,7 @@
     function zablokujFormularz(tekst) {
         const btn = document.getElementById('authBtn');
         const msg = document.getElementById('authMsg');
-        const inp = document.getElementById('orderInput');
+        const inp = document.getElementById('pinInput');
         if (btn) btn.disabled = true;
         if (inp) inp.disabled = true;
         if (msg) {
@@ -257,12 +257,12 @@
     function verifyAccess() {
         if (sprawdzBlokadeLokalna()) return;
 
-        const inputVal = document.getElementById('orderInput').value.trim().toUpperCase();
+        const inputVal = document.getElementById('pinInput').value.trim().toUpperCase();
         if (!inputVal) return;
         checkToken(inputVal, true);
     }
 
-    document.getElementById('orderInput')?.addEventListener('keydown', (e) => {
+    document.getElementById('pinInput')?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') verifyAccess();
     });
 
@@ -276,7 +276,7 @@
             btn.disabled = true;
             btn.innerText = "SPRAWDZAM...";
             msg.style.color = "#0284c7";
-            msg.innerText = "Weryfikacja numeru...";
+            msg.innerText = "Weryfikacja kodu PIN...";
         }
 
         fetch(`${GAS_URL}?pin=${encodeURIComponent(pin)}`)
@@ -292,7 +292,7 @@
                     startLiveTracking(pin);
 
                     document.getElementById('authOverlay').style.display = 'none';
-                    document.getElementById('currentOrderBadge').innerText = pin.toUpperCase();
+                    document.getElementById('currentPinBadge').innerText = pin.toUpperCase();
                     document.getElementById('mainContent').style.display = 'block';
 
                     const wrapper = document.getElementById('mainContent');
@@ -345,7 +345,7 @@
                         zablokujFormularz(`Zbyt wiele prób. Zablokowano na ${LOCKOUT_MINUTES} min.`);
                     } else {
                         msg.style.color = "#dc2626";
-                        msg.innerText = data.message || `Błędny kod! Pozostało prób: ${MAX_LOCAL_ATTEMPTS - attempts}`;
+                        msg.innerText = data.message || `Błędny PIN! Pozostało prób: ${MAX_LOCAL_ATTEMPTS - attempts}`;
                     }
                 }
             })
