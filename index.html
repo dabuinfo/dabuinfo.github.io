@@ -94,26 +94,6 @@
             border-radius: 8px;
         }
 
-        .dynamic-year-overlay {
-            position: absolute;
-            top: 61%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(3rem, 10vw, 4.5rem); 
-            font-weight: 900;
-            font-family: 'Arial Black', sans-serif;
-            color: #6aeb95; 
-            letter-spacing: 2px;
-            pointer-events: none;
-            text-shadow: 
-                -2px -2px 0 #1b5e20,  
-                 2px -2px 0 #1b5e20,
-                -2px  2px 0 #1b5e20,
-                 2px  2px 0 #1b5e20,
-                 0px  4px 0px #113615,
-                 0 0 20px rgba(46, 204, 113, 0.6);
-        }
-
         @media (min-width: 769px) {
             .banner-container { max-width: 650px; }
         }
@@ -773,7 +753,6 @@
         <!-- ORYGINALNY BANER Z DYNAMICZNYM ROKIEM -->
         <div class="banner-container">
             <img src="ilustracja.png" alt="Dabu-Info" class="main-banner">
-            <div class="dynamic-year-overlay" id="banner-dynamic-year">2026</div>
         </div>
         
         <h1 class="offer-header">Centrum Tras, Gabarytów i Serwisów</h1>
@@ -1001,10 +980,6 @@
     <script>
         (function() {
             var currentYear = new Date().getFullYear();
-            var yearEl = document.getElementById('banner-dynamic-year');
-            if (yearEl) {
-                yearEl.textContent = currentYear;
-            }
             var seasonEls = document.querySelectorAll('.dynamic-season-text');
             seasonEls.forEach(function(el) {
                 el.textContent = currentYear + ' / ' + (currentYear + 1);
