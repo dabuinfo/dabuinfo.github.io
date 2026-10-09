@@ -271,34 +271,45 @@
             `;
             document.body.appendChild(footerElement);
 
-            // Obsługa kliknięcia i kopiowania do schowka
+            // Obsługa inteligentnego kopiowania (Polska bez PL, Zagranica z PL)
             const copyBtn = document.getElementById('copy-iban-trigger');
             if (copyBtn) {
                 copyBtn.onclick = function() {
-                    const ibanText = "PL33102052970000170202909323";
-                    navigator.clipboard.writeText(ibanText).then(() => {
+                    // Jeśli język to 'pl', kopiuje same 26 cyfr, w przeciwnym razie dodaje 'PL'
+                    const isPoland = (browserLang === 'pl');
+                    const ibanText = isPoland 
+                        ? "33102052970000170202909323" 
+                        : "PL33102052970000170202909323";
+
+                    const msgText = isPoland ? "Skopiowano (krajowy)!" : "Copied (IBAN)!";
+
+                    function showSuccess() {
                         const msg = document.getElementById('iban-copied-msg');
                         if (msg) {
+                            msg.textContent = msgText;
                             msg.style.display = 'inline';
                             setTimeout(() => { msg.style.display = 'none'; }, 2500);
                         }
-                    }).catch(() => {
-                        // Fallback dla starszych przeglądarek
+                    }
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(ibanText).then(showSuccess).catch(fallbackCopy);
+                    } else {
+                        fallbackCopy();
+                    }
+
+                    function fallbackCopy() {
                         const tempInput = document.createElement("input");
                         tempInput.value = ibanText;
                         document.body.appendChild(tempInput);
                         tempInput.select();
                         document.execCommand("copy");
                         document.body.removeChild(tempInput);
-                        const msg = document.getElementById('iban-copied-msg');
-                        if (msg) {
-                            msg.style.display = 'inline';
-                            setTimeout(() => { msg.style.display = 'none'; }, 2500);
-                        }
-                    });
+                        showSuccess();
+                    }
                 };
             }
-        }
+      }
 
         // ========================================================
         // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
