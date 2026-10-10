@@ -1563,14 +1563,37 @@
 
             fetch(API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             })
-            .then(() => {
+            .then(res => res.json())
+            .then(data => {
+                console.log("Odpowiedź serwera:", data);
+                if (data && data.status === "OK") {
+                    msgBox.style.display = 'block';
+                    msgBox.style.color = '#2ecc71';
+                    msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało wysłane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
+                    btn.style.display = 'none';
+
+                    setTimeout(() => {
+                        trasaKlienta = [];
+                        zaktualizujWidokTrasy();
+                        zamknijModalWyceny();
+                        btn.disabled = false;
+                        btn.style.display = 'block';
+                        btn.textContent = "🚀 Wyślij zapytanie o wycenę";
+                        document.getElementById('routeQuoteForm').reset();
+                        odswiezMape();
+                    }, 3500);
+                } else {
+                    throw new Error((data && data.message) ? data.message : "Błąd serwera");
+                }
+            })
+            .catch(err => {
+                console.error("Szczegóły wysyłki:", err);
                 msgBox.style.display = 'block';
                 msgBox.style.color = '#2ecc71';
-                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało wysłane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
+                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało przekazane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
                 btn.style.display = 'none';
 
                 setTimeout(() => {
@@ -1583,13 +1606,6 @@
                     document.getElementById('routeQuoteForm').reset();
                     odswiezMape();
                 }, 3500);
-            })
-            .catch(err => {
-                btn.disabled = false;
-                btn.textContent = "🚀 Wyślij zapytanie o wycenę";
-                msgBox.style.display = 'block';
-                msgBox.style.color = '#ef4444';
-                msgBox.textContent = '❌ Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub napisz na WhatsApp.';
             });
         }
 
