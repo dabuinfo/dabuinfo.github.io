@@ -202,7 +202,10 @@
 
         /* WIDGET TRASY KLIENTA */
         .route-float-btn {
-            position: absolute; bottom: 25px; right: 60px; z-index: 1500;
+            position: absolute; 
+            bottom: 70px;
+            left: 10px;
+            z-index: 1500;
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             border: 1.5px solid #38bdf8; color: #ffffff;
             padding: 9px 16px; border-radius: 30px;
@@ -679,7 +682,7 @@
             if (btn) btn.textContent = nazwa;
         });
 
-        const API_URL = "https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
 
         const GMINY_MAIN_TAUNUS = [
             'bad soden', 'bad soden am taunus', 'eppstein', 'eschborn', 'flörsheim', 
@@ -1539,7 +1542,7 @@
             `).join('');
         }
 
-        function wyslijZapytanieWyceny(e) {
+                        function wyslijZapytanieWyceny(e) {
             e.preventDefault();
             if (trasaKlienta.length === 0) {
                 alert("Dodaj przynajmniej jeden rejon do trasy!");
@@ -1557,43 +1560,40 @@
                 klientTelefon: document.getElementById('quotePhone').value.trim(),
                 klientEmail: document.getElementById('quoteEmail').value.trim(),
                 uwagi: document.getElementById('quoteNotes').value.trim(),
-                tydzien: aktualnyTydzien,
+                tydzien: aktualnyTydzien || '',
                 rejony: trasaKlienta
             };
 
-            fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log("Odpowiedź serwera:", data);
-                if (data && data.status === "OK") {
-                    msgBox.style.display = 'block';
-                    msgBox.style.color = '#2ecc71';
-                    msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało wysłane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
-                    btn.style.display = 'none';
+            // Tworzymy ukryty iframe oraz formularz POST (omija ograniczenia CORS)
+            let hiddenFrame = document.getElementById('hidden_upload_frame');
+            if (!hiddenFrame) {
+                hiddenFrame = document.createElement('iframe');
+                hiddenFrame.name = 'hidden_upload_frame';
+                hiddenFrame.id = 'hidden_upload_frame';
+                hiddenFrame.style.display = 'none';
+                document.body.appendChild(hiddenFrame);
+            }
 
-                    setTimeout(() => {
-                        trasaKlienta = [];
-                        zaktualizujWidokTrasy();
-                        zamknijModalWyceny();
-                        btn.disabled = false;
-                        btn.style.display = 'block';
-                        btn.textContent = "🚀 Wyślij zapytanie o wycenę";
-                        document.getElementById('routeQuoteForm').reset();
-                        odswiezMape();
-                    }, 3500);
-                } else {
-                    throw new Error((data && data.message) ? data.message : "Błąd serwera");
-                }
-            })
-            .catch(err => {
-                console.error("Szczegóły wysyłki:", err);
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = API_URL;
+            tempForm.target = 'hidden_upload_frame';
+            tempForm.style.display = 'none';
+
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'postData';
+            hiddenInput.value = JSON.stringify(payload);
+            tempForm.appendChild(hiddenInput);
+
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            document.body.removeChild(tempForm);
+
+            setTimeout(() => {
                 msgBox.style.display = 'block';
                 msgBox.style.color = '#2ecc71';
-                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało przekazane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
+                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało wysłane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
                 btn.style.display = 'none';
 
                 setTimeout(() => {
@@ -1605,8 +1605,8 @@
                     btn.textContent = "🚀 Wyślij zapytanie o wycenę";
                     document.getElementById('routeQuoteForm').reset();
                     odswiezMape();
-                }, 3500);
-            });
+                }, 3000);
+            }, 800);
         }
 
         function odswiezMape() {
