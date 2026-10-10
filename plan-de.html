@@ -88,7 +88,8 @@
         .popup-action-btn {
             display: flex; align-items: center; justify-content: center; gap: 6px;
             text-align: center; padding: 8px 10px; border-radius: 6px; text-decoration: none;
-            font-weight: 700; font-size: 12px; transition: filter 0.2s ease; box-sizing: border-box;
+            font-weight: 700; font-size: 12px; transition: all 0.2s ease; box-sizing: border-box;
+            cursor: pointer; border: none;
         }
         .popup-action-btn:hover { filter: brightness(1.12); }
 
@@ -108,6 +109,18 @@
             border: 1px solid rgba(56, 189, 248, 0.4);
         }
         .btn-day-single:hover { background: #2f2f2f; }
+
+        .btn-route-add {
+            background: #0284c7; color: #ffffff !important;
+            border: 1px solid #38bdf8;
+        }
+        .btn-route-add:hover { background: #0369a1; }
+
+        .btn-route-remove {
+            background: #7f1d1d; color: #fecaca !important;
+            border: 1px solid #ef4444;
+        }
+        .btn-route-remove:hover { background: #991b1b; }
 
         .info-rejon-box {
             background: rgba(15, 23, 42, 0.6);
@@ -144,19 +157,10 @@
             box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
         }
         .alert-2027-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
         }
         .alert-2027-tag {
-            background: #ef4444;
-            color: #ffffff;
-            font-size: 9.5px;
-            font-weight: 800;
-            padding: 1px 6px;
-            border-radius: 4px;
-            letter-spacing: 0.5px;
+            background: #ef4444; color: #ffffff; font-size: 9.5px; font-weight: 800; padding: 1px 6px; border-radius: 4px; letter-spacing: 0.5px;
         }
 
         .info-free-box {
@@ -181,23 +185,12 @@
             font-size: 11px;
         }
         .nearby-title {
-            color: #38bdf8;
-            font-weight: 700;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            color: #38bdf8; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;
         }
         .nearby-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            border-bottom: 1px dashed #2d3748;
+            display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px dashed #2d3748;
         }
-        .nearby-item:last-child {
-            border-bottom: none;
-        }
+        .nearby-item:last-child { border-bottom: none; }
 
         .bottom-summary-box {
             position: absolute; bottom: 25px; left: 10px; z-index: 1000;
@@ -206,6 +199,67 @@
             color: #cbd5e1; font-size: 12px; font-weight: 600;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
+
+        /* PŁYWAJĄCY PRZYCISK TRASY / KOSZYKA */
+        .route-float-btn {
+            position: absolute; bottom: 25px; right: 60px; z-index: 1500;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border: 1.5px solid #38bdf8; color: #ffffff;
+            padding: 9px 16px; border-radius: 30px;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12.5px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+            transition: all 0.25s ease;
+        }
+        .route-float-btn:hover { transform: scale(1.05); filter: brightness(1.15); }
+        .route-badge-num {
+            background: #ef4444; color: white; border-radius: 50%;
+            width: 20px; height: 20px; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+        }
+
+        /* MODAL ZAPYTANIA O WYCENĘ */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+            z-index: 3000; display: none; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;
+        }
+        .modal-box {
+            background: #111827; border: 1.5px solid #38bdf8; border-radius: 14px;
+            max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto;
+            padding: 20px 22px; box-shadow: 0 10px 35px rgba(0,0,0,0.8); color: #f3f4f6; box-sizing: border-box;
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 12px; margin-bottom: 14px;
+        }
+        .modal-header h3 { margin: 0; font-size: 16px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .modal-close-btn { background: transparent; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; padding: 0 4px; }
+        .modal-close-btn:hover { color: #ffffff; }
+
+        .modal-regions-list {
+            max-height: 180px; overflow-y: auto; background: #1f2937; border: 1px solid #374151;
+            border-radius: 8px; padding: 8px 10px; margin-bottom: 14px;
+        }
+        .modal-region-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; border-bottom: 1px solid #2d3748; font-size: 12px;
+        }
+        .modal-region-item:last-child { border-bottom: none; }
+        .modal-region-del { color: #ef4444; cursor: pointer; font-size: 14px; padding-left: 8px; }
+
+        .modal-form-group { margin-bottom: 10px; text-align: left; }
+        .modal-form-group label { display: block; font-size: 11.5px; font-weight: 700; color: #94a3b8; margin-bottom: 4px; }
+        .modal-input {
+            width: 100%; box-sizing: border-box; background: #1e293b; border: 1px solid #475569;
+            color: #ffffff; padding: 8px 10px; border-radius: 6px; font-size: 12.5px; outline: none;
+        }
+        .modal-input:focus { border-color: #38bdf8; }
+        .modal-submit-btn {
+            width: 100%; padding: 11px; background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+            border: none; border-radius: 8px; color: #000; font-weight: 800; font-size: 13px;
+            cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.35); transition: 0.2s;
+        }
+        .modal-submit-btn:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -237,6 +291,54 @@
 
     <div class="bottom-summary-box">
         <span id="uiSummaryText">📍 Aktywne rejony w tym widoku: <strong id="activeCount" style="color:#2ecc71;">0</strong></span>
+    </div>
+
+    <!-- PŁYWAJĄCY PRZYCISK TRASY KLIENTA -->
+    <div id="routeFloatingBtn" class="route-float-btn" onclick="otworzModalWyceny()" style="display:none;">
+        <i class="fa-solid fa-route"></i>
+        <span>Twoja trasa:</span>
+        <span id="routeBadgeCount" class="route-badge-num">0</span>
+        <span style="color:#7dd3fc; margin-left:3px;">Wycena &rarr;</span>
+    </div>
+
+    <!-- MODAL FORMULARZA WYCENY -->
+    <div id="routeModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-route"></i> Zapytanie o wycenę trasy</h3>
+                <button class="modal-close-btn" onclick="zamknijModalWyceny()">&times;</button>
+            </div>
+            
+            <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 8px;">
+                Wybrane rejony do przygotowania zestawienia (Tydzień <span id="modalTydzienLabel" style="color:#38bdf8; font-weight:bold;">-</span>):
+            </div>
+            
+            <div id="modalRegionsContainer" class="modal-regions-list"></div>
+
+            <form id="routeQuoteForm" onsubmit="wyslijZapytanieWyceny(event)">
+                <div class="modal-form-group">
+                    <label>Imię lub Nick *</label>
+                    <input type="text" id="quoteName" class="modal-input" required placeholder="np. Tomasz">
+                </div>
+                <div class="modal-form-group">
+                    <label>Telefon / WhatsApp (najszybszy kontakt) *</label>
+                    <input type="tel" id="quotePhone" class="modal-input" required placeholder="np. +48 600 000 000">
+                </div>
+                <div class="modal-form-group">
+                    <label>Adres E-mail</label>
+                    <input type="email" id="quoteEmail" class="modal-input" placeholder="twoj@email.com">
+                </div>
+                <div class="modal-form-group">
+                    <label>Uwagi / Termin planowanego wyjazdu</label>
+                    <textarea id="quoteNotes" class="modal-input" rows="2" placeholder="np. Interesują mnie wyjazdy we wtorek i środę rano..."></textarea>
+                </div>
+                
+                <button type="submit" id="quoteSubmitBtn" class="modal-submit-btn">
+                    🚀 Wyślij zapytanie o wycenę
+                </button>
+            </form>
+            <div id="quoteStatusMsg" style="margin-top:10px; font-size:12px; text-align:center; display:none;"></div>
+        </div>
     </div>
 
     <div id="map"></div>
@@ -692,7 +794,7 @@
             'westerwald': 'Rheinland-Pfalz', 'altmarkkreis-salzwedel': 'Sachsen-Anhalt', 'burgenland': 'Sachsen-Anhalt',
             'leipzig': 'Sachsen', 'nordsachsen': 'Sachsen', 'lübeck': 'Schleswig-Holstein',
             'rendsburg-eckernförde': 'Schleswig-Holstein',
-            'bodensee': 'Baden-Württemberg', 'bodenseekreis': 'Baden-Württemberg', 'kreis bodensee': 'Baden-Württemberg',
+            'bodensee': 'Baden-Württemberg', 'bodenseekreis': 'Baden-Württemberg', 'kreis bodensee': 'Baden-Württemberg'
         };
 
         const KOORDYNATY_CENTRA = {
@@ -735,7 +837,7 @@
             "hattersheim": [50.0706, 8.4864], "hattersheim am main": [50.0706, 8.4864], "heidekreis": [52.9500, 9.7500],
             "heidelberg": [49.3988, 8.6724], "heilbronn": [49.1403, 9.2200], "heiligenhaus": [51.3267, 6.9733],
             "heinsberg": [51.0633, 6.0967], "kreis heinsberg": [51.0633, 6.0967], "heinsberg kreis": [51.0633, 6.0967],
-            "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
+            "hellenthal": [50.4833, 6.4333], "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
             "hochtaunuskreis": [50.2833, 8.5333], "hochtaunus": [50.2833, 8.5333], "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478],
             "hückelhoven": [51.0608, 6.2208], "hünxe": [51.6425, 6.7681], "huenxe": [51.6425, 6.7681], "hürth": [50.8750, 6.8706], "iserlohn": [51.3842, 7.6833],
             "issum": [51.5369, 6.4264], "jossgrund": [50.1833, 9.4500], "jüchen": [51.1000, 6.5000],
@@ -791,7 +893,7 @@
             "wesseling": [50.8258, 6.9744], "westerwald": [50.4350, 7.8286], "wiesbaden-naurod": [50.1306, 8.3039],
             "wolfsburg": [52.4227, 10.7865], "wülfrath": [51.2825, 7.0375], "wuppertal": [51.2562, 7.1508],
             "xanten": [51.6617, 6.4528], "zollernalb": [48.2725, 8.9567], "zülpich": [50.6908, 6.6492],
-            "bodensee": [47.7200, 9.4700], "bodenseekreis": [47.7200, 9.4700], "kreis bodensee": [47.7200, 9.4700],
+            "bodensee": [47.7200, 9.4700], "bodenseekreis": [47.7200, 9.4700], "kreis bodensee": [47.7200, 9.4700]
         };
 
         const CENTROIDY_LANDOW = {
@@ -817,6 +919,9 @@
         let daneTygodni = {};
         let rokDlaTygodnia = {};
         let aktualnyTydzien = null;
+
+        // STAN KOSZYKA WYCENY TRASY
+        let trasaKlienta = [];
 
         function obliczDystansKm(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -1056,7 +1161,7 @@
                         [0, 1, 2, 3, 4].forEach(d => dniSet.add(d));
                     }
 
-                    // 1. ZALEŻNOŚĆ MAIN-TAUNUS-KREIS
+                    // 1. MAIN-TAUNUS-KREIS
                     const czyMainTaunus = cleanKey === 'main-taunus-kreis' || cleanKey === 'main-taunus kreis' || 
                                           cleanKey === 'kreis main-taunus' || GMINY_MAIN_TAUNUS.includes(cleanKey) || 
                                           GMINY_MAIN_TAUNUS.includes(strippedKey);
@@ -1080,7 +1185,7 @@
                         return;
                     }
 
-                    // 2. ZALEŻNOŚĆ MAIN-KINZIG-KREIS
+                    // 2. MAIN-KINZIG-KREIS
                     const czyMainKinzig = cleanKey === 'main-kinzig-kreis' || cleanKey === 'main-kinzig kreis' || 
                                           cleanKey === 'kreis main-kinzig' || GMINY_MAIN_KINZIG.includes(cleanKey) || 
                                           GMINY_MAIN_KINZIG.includes(strippedKey);
@@ -1104,7 +1209,7 @@
                         return;
                     }
 
-                    // 3. ZALEŻNOŚĆ HOCHTAUNUSKREIS
+                    // 3. HOCHTAUNUSKREIS
                     const czyHochtaunus = cleanKey === 'hochtaunuskreis' || cleanKey === 'hochtaunus kreis' || 
                                           cleanKey === 'kreis hochtaunus' || cleanKey === 'hochtaunus' ||
                                           GMINY_HOCHTAUNUS.includes(cleanKey) || GMINY_HOCHTAUNUS.includes(strippedKey);
@@ -1127,7 +1232,7 @@
                         return;
                     }
 
-                    // 4. ZALEŻNOŚĆ MONACHIUM-POŁUDNIOWY WSCHÓD (Gräfelfing + Kirchheim)
+                    // 4. MONACHIUM-POŁUDNIOWY WSCHÓD
                     const czyMonachiumWschod = cleanKey === 'monachium-południowy wschód' || 
                                                cleanKey === 'gräfelfing' || cleanKey === 'graefelfing' || 
                                                cleanKey === 'kirchheim';
@@ -1150,7 +1255,7 @@
                         return;
                     }
 
-                    // 5. ZALEŻNOŚĆ GROSS-GERAU (w tym Walldorf-Mörfelden)
+                    // 5. GROSS-GERAU
                     const czyGrossGerau = cleanKey === 'gross-gerau' || cleanKey === 'groß-gerau' || 
                                           cleanKey.includes('walldorf-mörfelden') || cleanKey.includes('walldorf-morfelden') || 
                                           cleanKey.includes('mörfelden-walldorf') || cleanKey.includes('morfelden-walldorf');
@@ -1173,7 +1278,7 @@
                         return;
                     }
 
-                    // 6. ZALEŻNOŚĆ KREIS WESEL (gminy scalane w Kreis Wesel)
+                    // 6. KREIS WESEL
                     const czyWesel = cleanKey === 'wesel' || cleanKey === 'kreis wesel' || 
                                      cleanKey === 'wesel kreis' || GMINY_WESEL.includes(cleanKey) || 
                                      GMINY_WESEL.includes(strippedKey);
@@ -1327,6 +1432,135 @@
             aktualnyTydzien = dostepneTygodnie[0];
         }
 
+        // ==========================================
+        // LOGIKA KOSZYKA WYCENY TRASY
+        // ==========================================
+        function czyRejonWTrasie(rejonNazwa) {
+            return trasaKlienta.some(r => r.rejon.toLowerCase() === rejonNazwa.toLowerCase());
+        }
+
+        function toggleRejonWTrasie(rejonNazwa, land, frakcje, datyStr) {
+            const idx = trasaKlienta.findIndex(r => r.rejon.toLowerCase() === rejonNazwa.toLowerCase());
+            if (idx !== -1) {
+                trasaKlienta.splice(idx, 1);
+            } else {
+                trasaKlienta.push({
+                    rejon: rejonNazwa,
+                    land: land,
+                    frakcje: frakcje,
+                    daty: datyStr
+                });
+            }
+            zaktualizujWidokTrasy();
+            odswiezMape();
+        }
+
+        function usunZTrasy(rejonNazwa) {
+            trasaKlienta = trasaKlienta.filter(r => r.rejon.toLowerCase() !== rejonNazwa.toLowerCase());
+            zaktualizujWidokTrasy();
+            renderModalRegionsList();
+            odswiezMape();
+        }
+
+        function zaktualizujWidokTrasy() {
+            const floatBtn = document.getElementById('routeFloatingBtn');
+            const badgeCount = document.getElementById('routeBadgeCount');
+            const count = trasaKlienta.length;
+
+            badgeCount.textContent = count;
+            if (count > 0) {
+                floatBtn.style.display = 'flex';
+            } else {
+                floatBtn.style.display = 'none';
+                zamknijModalWyceny();
+            }
+        }
+
+        function otworzModalWyceny() {
+            if (trasaKlienta.length === 0) return;
+            document.getElementById('modalTydzienLabel').textContent = aktualnyTydzien || "-";
+            renderModalRegionsList();
+            document.getElementById('routeModalOverlay').style.display = 'flex';
+        }
+
+        function zamknijModalWyceny() {
+            document.getElementById('routeModalOverlay').style.display = 'none';
+            document.getElementById('quoteStatusMsg').style.display = 'none';
+        }
+
+        function renderModalRegionsList() {
+            const c = document.getElementById('modalRegionsContainer');
+            if (trasaKlienta.length === 0) {
+                c.innerHTML = '<div style="font-size:12px; color:#9ca3af; text-align:center;">Brak wybranych rejonów</div>';
+                return;
+            }
+            c.innerHTML = trasaKlienta.map((r, i) => `
+                <div class="modal-region-item">
+                    <div>
+                        <strong style="color:#ffffff;">${i + 1}. ${r.rejon}</strong> 
+                        <span style="color:#94a3b8; font-size:11px;">(${r.land})</span><br>
+                        <span style="font-size:10.5px; color:#38bdf8;">${r.frakcje}</span>
+                    </div>
+                    <span class="modal-region-del" title="Usuń z wyceny" onclick="usunZTrasy('${r.rejon}')">&times;</span>
+                </div>
+            `).join('');
+        }
+
+        function wyslijZapytanieWyceny(e) {
+            e.preventDefault();
+            if (trasaKlienta.length === 0) {
+                alert("Dodaj przynajmniej jeden rejon do trasy!");
+                return;
+            }
+
+            const btn = document.getElementById('quoteSubmitBtn');
+            const msgBox = document.getElementById('quoteStatusMsg');
+            btn.disabled = true;
+            btn.textContent = "⏳ Wysyłanie zapytania...";
+
+            const payload = {
+                akcja: 'wycena_trasy',
+                klientNazwa: document.getElementById('quoteName').value.trim(),
+                klientTelefon: document.getElementById('quotePhone').value.trim(),
+                klientEmail: document.getElementById('quoteEmail').value.trim(),
+                uwagi: document.getElementById('quoteNotes').value.trim(),
+                tydzien: aktualnyTydzien,
+                rejony: trasaKlienta
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                msgBox.style.display = 'block';
+                msgBox.style.color = '#2ecc71';
+                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Twoje zapytanie o trasę zostało przesłane.<br>Wycenę odeślemy SMS-em / na WhatsApp lub e-mail.';
+                btn.style.display = 'none';
+
+                // Czyszczenie po udanej wysyłce
+                setTimeout(() => {
+                    trasaKlienta = [];
+                    zaktualizujWidokTrasy();
+                    zamknijModalWyceny();
+                    btn.disabled = false;
+                    btn.style.display = 'block';
+                    btn.textContent = "🚀 Wyślij zapytanie o wycenę";
+                    document.getElementById('routeQuoteForm').reset();
+                    odswiezMape();
+                }, 3500);
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.textContent = "🚀 Wyślij zapytanie o wycenę";
+                msgBox.style.display = 'block';
+                msgBox.style.color = '#ef4444';
+                msgBox.textContent = '❌ Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub napisz na WhatsApp.';
+            });
+        }
+
         function odswiezMape() {
             clusterGroup.clearLayers();
             if (!aktualnyTydzien || !daneTygodni[aktualnyTydzien]) {
@@ -1389,7 +1623,6 @@
                     `;
                 }
 
-                // Box informujący o aktywnych gminach dla Main-Kinzig i Main-Taunus
                 let gminyInfoHtml = "";
                 if (item.gminyLista && item.gminyLista.length > 0) {
                     gminyInfoHtml = `
@@ -1439,14 +1672,27 @@
                     popupAnchor: [0, -12]
                 });
 
+                // Sprawdzamy czy rejon jest już dodany do trasy
+                const wTrasie = czyRejonWTrasie(item.rejon);
+                const btnRouteHtml = wTrasie ? `
+                    <button onclick="toggleRejonWTrasie('${item.rejon}', '${item.land}', '${item.frakcje}', '${(item.daty||'').replace(/'/g, "\\'")}')" class="popup-action-btn btn-route-remove">
+                        <i class="fa-solid fa-trash-can"></i> Usuń z wyceny trasy
+                    </button>
+                ` : `
+                    <button onclick="toggleRejonWTrasie('${item.rejon}', '${item.land}', '${item.frakcje}', '${(item.daty||'').replace(/'/g, "\\'")}')" class="popup-action-btn btn-route-add">
+                        <i class="fa-solid fa-plus-circle"></i> Dodaj do wyceny trasy
+                    </button>
+                `;
+
                 let buttonsHtml = "";
                 if (isNeuwied) {
                     buttonsHtml = `
-                        <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333; text-align: center;">
+                        <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; gap: 6px;">
+                            ${btnRouteHtml}
                             <a href="https://dabu-info.com/raporty.html" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-free-schedule">
                                 <i class="fa-solid fa-calendar-check"></i> ${T.viewFreeSchedule}
                             </a>
-                            <div style="margin-top: 6px; font-size: 11px; color: #a7f3d0; font-weight: 600;">
+                            <div style="margin-top: 4px; font-size: 11px; color: #a7f3d0; font-weight: 600;">
                                 ${T.pinInfo}
                             </div>
                         </div>
@@ -1454,6 +1700,7 @@
                 } else {
                     buttonsHtml = `
                         <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #333; display: flex; flex-direction: column; gap: 8px;">
+                            ${btnRouteHtml}
                             <a href="https://dabu-info.com/zestaw.html" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-week-pack">
                                 ${T.orderWeek}
                             </a>
