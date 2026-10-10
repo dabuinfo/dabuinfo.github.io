@@ -200,7 +200,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
-        /* PŁYWAJĄCY PRZYCISK TRASY / KOSZYKA */
+        /* WIDGET TRASY KLIENTA */
         .route-float-btn {
             position: absolute; bottom: 25px; right: 60px; z-index: 1500;
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
@@ -218,7 +218,7 @@
             align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
         }
 
-        /* MODAL ZAPYTANIA O WYCENĘ */
+        /* MODAL FORMULARZA WYCENY */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
@@ -245,7 +245,8 @@
             padding: 6px 0; border-bottom: 1px solid #2d3748; font-size: 12px;
         }
         .modal-region-item:last-child { border-bottom: none; }
-        .modal-region-del { color: #ef4444; cursor: pointer; font-size: 14px; padding-left: 8px; }
+        .modal-region-del { color: #ef4444; cursor: pointer; font-size: 16px; padding-left: 8px; font-weight: bold; }
+        .modal-region-del:hover { color: #f87171; }
 
         .modal-form-group { margin-bottom: 10px; text-align: left; }
         .modal-form-group label { display: block; font-size: 11.5px; font-weight: 700; color: #94a3b8; margin-bottom: 4px; }
@@ -293,7 +294,7 @@
         <span id="uiSummaryText">📍 Aktywne rejony w tym widoku: <strong id="activeCount" style="color:#2ecc71;">0</strong></span>
     </div>
 
-    <!-- PŁYWAJĄCY PRZYCISK TRASY KLIENTA -->
+    <!-- PŁYWAJĄCY PRZYCISK TRASY -->
     <div id="routeFloatingBtn" class="route-float-btn" onclick="otworzModalWyceny()" style="display:none;">
         <i class="fa-solid fa-route"></i>
         <span>Twoja trasa:</span>
@@ -568,7 +569,7 @@
                 availableDates: "Налични дати:",
                 datesOnOrder: "Проверява се при поръчка",
                 freeDatesBadge: "🎁 Безплатни дати",
-                viewFreeSchedule: "👉 Виж безплатния график",
+                viewFreeSchedule: "👉 Виж bezplatniya grafik",
                 pinInfo: "🔑 Безплатен PIN чрез SMS: +48 600 812 820",
                 fraction: "Фракция:",
                 modeLabel: "Режим:",
@@ -837,7 +838,7 @@
             "hattersheim": [50.0706, 8.4864], "hattersheim am main": [50.0706, 8.4864], "heidekreis": [52.9500, 9.7500],
             "heidelberg": [49.3988, 8.6724], "heilbronn": [49.1403, 9.2200], "heiligenhaus": [51.3267, 6.9733],
             "heinsberg": [51.0633, 6.0967], "kreis heinsberg": [51.0633, 6.0967], "heinsberg kreis": [51.0633, 6.0967],
-            "hellenthal": [50.4833, 6.4333], "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
+            "hellenthal": [50.4833, 6.4333], "hersfeld-rotenburg": [50.8667, 9.7167],
             "hochtaunuskreis": [50.2833, 8.5333], "hochtaunus": [50.2833, 8.5333], "hofheim am taunus": [50.0864, 8.4447], "holzminden": [51.8286, 9.4478],
             "hückelhoven": [51.0608, 6.2208], "hünxe": [51.6425, 6.7681], "huenxe": [51.6425, 6.7681], "hürth": [50.8750, 6.8706], "iserlohn": [51.3842, 7.6833],
             "issum": [51.5369, 6.4264], "jossgrund": [50.1833, 9.4500], "jüchen": [51.1000, 6.5000],
@@ -1433,33 +1434,65 @@
         }
 
         // ==========================================
-        // LOGIKA KOSZYKA WYCENY TRASY
+        // BEZPIECZNA OBSŁUGA KOSZYKA WYCENY TRASY
         // ==========================================
         function czyRejonWTrasie(rejonNazwa) {
             return trasaKlienta.some(r => r.rejon.toLowerCase() === rejonNazwa.toLowerCase());
         }
 
-        function toggleRejonWTrasie(rejonNazwa, land, frakcje, datyStr) {
-            const idx = trasaKlienta.findIndex(r => r.rejon.toLowerCase() === rejonNazwa.toLowerCase());
-            if (idx !== -1) {
-                trasaKlienta.splice(idx, 1);
+        function toggleRejonIndex(idx) {
+            if (!aktualnyTydzien || !daneTygodni[aktualnyTydzien]) return;
+            const item = daneTygodni[aktualnyTydzien][idx];
+            if (!item) return;
+
+            const znalezionyIdx = trasaKlienta.findIndex(r => r.rejon.toLowerCase() === item.rejon.toLowerCase());
+            if (znalezionyIdx !== -1) {
+                trasaKlienta.splice(znalezionyIdx, 1);
             } else {
                 trasaKlienta.push({
-                    rejon: rejonNazwa,
-                    land: land,
-                    frakcje: frakcje,
-                    daty: datyStr
+                    rejon: item.rejon,
+                    land: item.land,
+                    frakcje: item.frakcje,
+                    daty: item.daty || ""
                 });
             }
+
             zaktualizujWidokTrasy();
-            odswiezMape();
+
+            // Bezpośrednia zmiana przycisku w dymku bez przeładowywania i zamykania mapy
+            const popups = document.querySelectorAll('.leaflet-popup-content');
+            popups.forEach(p => {
+                const btn = p.querySelector('.btn-route-add, .btn-route-remove');
+                if (btn) {
+                    const wTrasie = czyRejonWTrasie(item.rejon);
+                    if (wTrasie) {
+                        btn.className = 'popup-action-btn btn-route-remove';
+                        btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Usuń z wyceny trasy';
+                    } else {
+                        btn.className = 'popup-action-btn btn-route-add';
+                        btn.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Dodaj do wyceny trasy';
+                    }
+                }
+            });
         }
 
         function usunZTrasy(rejonNazwa) {
             trasaKlienta = trasaKlienta.filter(r => r.rejon.toLowerCase() !== rejonNazwa.toLowerCase());
             zaktualizujWidokTrasy();
             renderModalRegionsList();
-            odswiezMape();
+
+            // Aktualizacja przycisku na wypadek otwartego dymku usuniętego rejonu
+            const popups = document.querySelectorAll('.leaflet-popup-content');
+            popups.forEach(p => {
+                const titleEl = p.querySelector('strong');
+                if (titleEl && titleEl.textContent.trim().toLowerCase() === rejonNazwa.toLowerCase()) {
+                    const btn = p.querySelector('.btn-route-remove');
+                    if (btn) {
+                        btn.className = 'popup-action-btn btn-route-add';
+                        btn.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Dodaj do wyceny trasy';
+                    }
+                }
+            });
         }
 
         function zaktualizujWidokTrasy() {
@@ -1501,7 +1534,7 @@
                         <span style="color:#94a3b8; font-size:11px;">(${r.land})</span><br>
                         <span style="font-size:10.5px; color:#38bdf8;">${r.frakcje}</span>
                     </div>
-                    <span class="modal-region-del" title="Usuń z wyceny" onclick="usunZTrasy('${r.rejon}')">&times;</span>
+                    <span class="modal-region-del" title="Usuń z wyceny" onclick="usunZTrasy('${r.rejon.replace(/'/g, "\\'")}')">&times;</span>
                 </div>
             `).join('');
         }
@@ -1537,10 +1570,9 @@
             .then(() => {
                 msgBox.style.display = 'block';
                 msgBox.style.color = '#2ecc71';
-                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Twoje zapytanie o trasę zostało przesłane.<br>Wycenę odeślemy SMS-em / na WhatsApp lub e-mail.';
+                msgBox.innerHTML = '✅ <strong>Dziękujemy!</strong> Zapytanie o wycenę zostało wysłane.<br>Wycenę odeślemy na WhatsApp / SMS lub e-mail.';
                 btn.style.display = 'none';
 
-                // Czyszczenie po udanej wysyłce
                 setTimeout(() => {
                     trasaKlienta = [];
                     zaktualizujWidokTrasy();
@@ -1573,7 +1605,7 @@
             const aktywneMarkery = [];
             let liczbaWidocznych = 0;
 
-            listaRejonow.forEach(item => {
+            listaRejonow.forEach((item, idx) => {
                 const czyDzienAktywny = item.dni.some(d => aktywneDni[d]);
                 if (!czyDzienAktywny) return;
 
@@ -1672,14 +1704,14 @@
                     popupAnchor: [0, -12]
                 });
 
-                // Sprawdzamy czy rejon jest już dodany do trasy
+                // Bezpieczne przekazanie tylko numeru indeksu (zapobiega SyntaxError przy wielolinijkowych datach)
                 const wTrasie = czyRejonWTrasie(item.rejon);
                 const btnRouteHtml = wTrasie ? `
-                    <button onclick="toggleRejonWTrasie('${item.rejon}', '${item.land}', '${item.frakcje}', '${(item.daty||'').replace(/'/g, "\\'")}')" class="popup-action-btn btn-route-remove">
+                    <button onclick="toggleRejonIndex(${idx})" class="popup-action-btn btn-route-remove">
                         <i class="fa-solid fa-trash-can"></i> Usuń z wyceny trasy
                     </button>
                 ` : `
-                    <button onclick="toggleRejonWTrasie('${item.rejon}', '${item.land}', '${item.frakcje}', '${(item.daty||'').replace(/'/g, "\\'")}')" class="popup-action-btn btn-route-add">
+                    <button onclick="toggleRejonIndex(${idx})" class="popup-action-btn btn-route-add">
                         <i class="fa-solid fa-plus-circle"></i> Dodaj do wyceny trasy
                     </button>
                 `;
