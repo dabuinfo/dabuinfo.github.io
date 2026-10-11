@@ -397,32 +397,31 @@
             <div class="plan-title">Abonament Roczny</div>
             <div class="plan-price-tag">450 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ rejon</span></div>
             <div class="plan-desc">
-                • Stała stawka: <b>450 zł / rejon / rok</b><br>
+                • Stała stawka: <b>450 zł / rejon / rok 2027</b><br>
                 <i>Pełny dostęp do 365 dni i wszystkich aktualizacji terminów.</i>
             </div>
         </label>
 
         <label class="plan-card" id="cardPlanDay">
             <input type="radio" name="orderPlan" value="day">
-            <div class="plan-title">Dostęp Dzienny</div>
+            <div class="plan-title">Dostęp Dzienny (2027)</div>
             <div class="plan-price-tag">25 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień / rejon</span></div>
             <div class="plan-desc">
-                Wybierz dzień startu i określ liczbę dni roboczych przyciskami [–] / [+].
+                Wybierz dzień startu w 2027 roku i określ liczbę dni roboczych przyciskami [–] / [+].
             </div>
         </label>
     </div>
 
-    <!-- PAS KONTROLNY: ROK LUB WYBÓR DNI -->
+    <!-- PAS KONTROLNY: ROK 2027 LUB WYBÓR DNI 2027 -->
     <div class="controls-row">
         <div class="year-selector-container" id="yearBox">
             <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dotyczy roku:</span>
-            <label><input type="radio" name="orderYear" value="2026" checked> 2026</label>
-            <label><input type="radio" name="orderYear" value="2027"> 2027</label>
+            <label><input type="radio" name="orderYear" value="2027" checked> 2027</label>
         </div>
 
         <div class="date-picker-container" id="dayBox">
             <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dzień startu:</span>
+                <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dzień startu (2027):</span>
                 <input type="date" id="selectedDateInput" class="date-input">
             </div>
 
@@ -461,7 +460,7 @@
             </div>
             <div class="price-line">
                 <span>Wybrany model:</span>
-                <b id="calcPlanName" style="color: #fff;">Abonament roczny</b>
+                <b id="calcPlanName" style="color: #fff;">Abonament roczny (2027)</b>
             </div>
             <div class="price-line">
                 <span>Liczba wybranych rejonów:</span>
@@ -546,7 +545,7 @@
 
         let currentFormat = 'Raport'; // 'Raport' lub 'Mapa'
         let currentPlan = 'year';    // 'year' lub 'day'
-        let selectedYear = '2026';
+        const selectedYear = '2027'; // Zablokowany rok 2027
         let selectedDate = '';
         let daysCount = 1;
         let selectedRegions = new Set();
@@ -683,33 +682,35 @@
             return `${yyyy}-${mm}-${dd}`;
         }
 
-        let initialStartDate = new Date();
-        initialStartDate.setDate(initialStartDate.getDate() + 1);
-        initialStartDate = getNextWorkingDay(initialStartDate);
-
+        // Dostęp dzienny od roku 2027 – pierwszy dzień roboczy w 2027 roku (01.01 to święto)
+        let initialStartDate = getNextWorkingDay(new Date('2027-01-01T00:00:00'));
         const minDateStr = formatDateISO(initialStartDate);
+        const maxDateStr = '2027-12-31';
+
         dateInput.min = minDateStr;
+        dateInput.max = maxDateStr;
         dateInput.value = minDateStr;
         selectedDate = minDateStr;
 
         dateInput.addEventListener('change', (e) => {
-            const chosen = new Date(e.target.value + 'T00:00:00');
-            if (e.target.value < minDateStr) {
-                alert("Można wybrać wyłącznie terminy przyszłe.");
+            const val = e.target.value;
+            if (val < minDateStr || val > maxDateStr) {
+                alert("Dostęp dzienny dotyczy wyłącznie roku 2027.");
                 e.target.value = minDateStr;
                 selectedDate = minDateStr;
                 updateCalculation();
                 return;
             }
 
+            const chosen = new Date(val + 'T00:00:00');
             if (!isWorkingDay(chosen)) {
                 const corrected = getNextWorkingDay(chosen);
                 const correctedStr = formatDateISO(corrected);
-                alert("Wybrana data wypada w weekend lub ogólnokrajowe święto w Niemczech.\nPrzesunięto na najbliższy dzień roboczy: " + correctedStr);
+                alert("Wybrana data wypada w weekend lub święto w Niemczech.\nPrzesunięto na najbliższy dzień roboczy: " + correctedStr);
                 e.target.value = correctedStr;
                 selectedDate = correctedStr;
             } else {
-                selectedDate = e.target.value;
+                selectedDate = val;
             }
             updateCalculation();
         });
@@ -778,10 +779,6 @@
             updateCalculation();
         });
 
-        document.querySelectorAll('input[name="orderYear"]').forEach(radio => {
-            radio.addEventListener('change', (e) => selectedYear = e.target.value);
-        });
-
         function updateCalculation() {
             const count = selectedRegions.size;
             calcCount.textContent = count;
@@ -806,7 +803,7 @@
                     ? `Dzień: ${selectedDate}` 
                     : `Od ${selectedDate} do ${endDateStr} (bez weekendów i świąt DE)`;
 
-                calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b><br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
+                calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b> (2027)<br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
                 calcUnitPrice.textContent = `25 zł / dzień roboczy / rejon (${daysCount} ${dayWord} = ${daysCount * 25} zł / rejon)`;
                 total = count * daysCount * 25;
             } else {
@@ -925,7 +922,7 @@
                     pin: pinVal,
                     format: currentFormat,
                     plan: currentPlan,
-                    year: currentPlan === 'year' ? selectedYear : null,
+                    year: selectedYear,
                     startDate: currentPlan === 'day' ? selectedDate : null,
                     endDate: endDateStr,
                     daysCount: currentPlan === 'day' ? daysCount : null,
@@ -966,9 +963,7 @@
                     daysCount = 1;
                     daysCountDisplay.textContent = '1';
 
-                    let resetStartDate = new Date();
-                    resetStartDate.setDate(resetStartDate.getDate() + 1);
-                    resetStartDate = getNextWorkingDay(resetStartDate);
+                    let resetStartDate = getNextWorkingDay(new Date('2027-01-01T00:00:00'));
                     selectedDate = formatDateISO(resetStartDate);
                     dateInput.value = selectedDate;
 
