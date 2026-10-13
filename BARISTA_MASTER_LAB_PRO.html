@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Barista Master Lab PRO — E61 Espresso • Comandante C40 MK4 • V60 & AeroPress • Acaia Lunar 2021</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        espresso: {
+                            950: '#090706',
+                            900: '#110d0b',
+                            850: '#181310',
+                            800: '#231a15',
+                            700: '#33261f',
+                            600: '#4a372c',
+                        },
+                        copper: {
+                            300: '#f6d2b0',
+                            400: '#e7a463',
+                            500: '#d48742',
+                            600: '#b06625',
+                        },
+                        crema: {
+                            100: '#fdf9f5',
+                            200: '#f5e8d8',
+                            300: '#e2cbb0',
+                            400: '#c9a986',
+                        },
+                        acaia: {
+                            body: '#111214',
+                            bezel: '#1c1e22',
+                            led: '#f0f7ff',
+                            glow: '#7dd3fc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #090706;
+            color: #f5e8d8;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(24, 19, 16, 0.95), rgba(14, 11, 9, 0.98));
+            border: 1px solid rgba(212, 135, 66, 0.18);
+            box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+        }
+
+        /* Acaia Lunar 2021 Anodized Black Aluminum Chassis */
+        .acaia-lunar-chassis {
+            background: linear-gradient(165deg, #1e2024 0%, #101114 45%, #0a0b0d 100%);
+            border: 1.5px solid #2e323b;
+            box-shadow: 
+                0 16px 35px rgba(0, 0, 0, 0.85),
+                inset 0 1px 1px rgba(255, 255, 255, 0.12),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        /* Brushed metal texture overlay */
+        .acaia-lunar-chassis::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,255,255,0.01) 0px,
+                rgba(255,255,255,0.01) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        /* Crisp White-Blue 8-Segment LED Glow */
+        .acaia-led-text {
+            color: #f4faff;
+            text-shadow: 0 0 10px rgba(186, 230, 253, 0.75), 0 0 22px rgba(56, 189, 248, 0.35);
+            letter-spacing: 0.04em;
+        }
+
+        .acaia-led-dim {
+            color: rgba(244, 250, 255, 0.15);
+        }
+
+        /* Flow-Rate 12 LEDs Bar */
+        .flow-led-dot {
+            transition: all 0.1s ease;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .flow-led-dot.active-low {
+            background-color: #f0f9ff;
+            box-shadow: 0 0 8px #7dd3fc, 0 0 14px #38bdf8;
+        }
+
+        .flow-led-dot.active-sweet {
+            background-color: #6ee7b7;
+            box-shadow: 0 0 8px #34d399, 0 0 14px #10b981;
+        }
+
+        .flow-led-dot.active-high {
+            background-color: #fda4af;
+            box-shadow: 0 0 8px #fb7185, 0 0 14px #e11d48;
+        }
+
+        /* Custom Range Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #231a15;
+            border-radius: 999px;
+            outline: none;
+            border: 1px solid rgba(212, 135, 66, 0.25);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f6d2b0, #d48742 65%, #7c4716);
+            cursor: pointer;
+            border: 2px solid #fdf9f5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75), 0 0 12px rgba(212, 135, 66, 0.5);
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover,
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.15);
+        }
+
+        /* Animations */
+        @keyframes streamPulse {
+            0%, 100% { transform: scaleX(1); opacity: 0.92; }
+            50% { transform: scaleX(0.84); opacity: 1; }
+        }
+        @keyframes dripDrop {
+            0% { transform: translateY(0) scale(0.85); opacity: 0.95; }
+            80% { opacity: 0.95; }
+            100% { transform: translateY(42px) scale(1.1); opacity: 0; }
+        }
+        @keyframes bloomBubble {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            50% { opacity: 0.75; }
+            100% { transform: translateY(-10px) scale(1.25); opacity: 0; }
+        }
+
+        .espresso-stream { animation: streamPulse 0.38s infinite ease-in-out; }
+        .drip-anim { animation: dripDrop 0.72s infinite ease-in; }
+        .bubble-anim { animation: bloomBubble 1.5s infinite ease-out; }
+        .comandante-dial { transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-copper-500 selection:text-espresso-950 pb-12">
+
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-espresso-950/90 border-b border-copper-500/20 px-3 sm:px-6 py-2.5">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand Identity -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-copper-400 to-copper-600 flex items-center justify-center text-espresso-950 shadow-lg shadow-copper-500/20 shrink-0">
+                    <i class="ph-fill ph-coffee text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-serif text-base sm:text-lg font-bold tracking-wide text-crema-100">BARISTA MASTER LAB <span class="text-copper-400">PRO</span></h1>
+                        <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-zinc-800 text-sky-300 border border-sky-500/30 hidden md:inline-flex items-center gap-1">
+                            <i class="ph-fill ph-scales"></i> Acaia Lunar 2021 USB-C
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-crema-300/60 hidden lg:block">Zintegrowane laboratorium ekstrakcji: Grupa E61 • Comandante C40 MK4 Nitro Blade • V60 • AeroPress</p>
+                </div>
+            </div>
+
+            <!-- MAIN LAB MODULE SWITCHER (Module 1: Espresso vs Module 2: Alternative) -->
+            <div class="flex items-center bg-espresso-900 p-1 rounded-xl border border-copper-500/30 order-3 md:order-2 w-full md:w-auto">
+                <button id="switchModEspresso" onclick="switchLabModule('espresso')" class="flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-copper-400 to-copper-600 text-espresso-950 shadow-md">
+                    <i class="ph-fill ph-gauge text-base"></i>
+                    <span>1. Laboratorium Espresso (E61)</span>
+                </button>
+                <button id="switchModAlt" onclick="switchLabModule('alt')" class="flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-crema-300 hover:text-crema-100">
+                    <i class="ph-fill ph-funnel text-base"></i>
+                    <span>2. Comandante C40 • V60 & AeroPress</span>
+                </button>
+            </div>
+
+            <!-- Global Audio & Start Extraction Controls -->
+            <div class="flex items-center gap-2 order-2 md:order-3">
+                <button id="soundToggleBtn" onclick="toggleAudio()" class="p-2.5 rounded-xl bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-copper-500/20 transition flex items-center gap-1.5 text-xs" title="Dźwięki Acaia Lunar, klików Comandante i pompy E61">
+                    <i id="soundIcon" class="ph-fill ph-speaker-high text-base text-copper-400"></i>
+                    <span class="hidden sm:inline font-mono text-[11px]">Audio</span>
+                </button>
+                <button id="masterBrewBtn" onclick="toggleMasterSimulation()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-espresso-950 font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center gap-1.5">
+                    <i id="masterBrewIcon" class="ph-fill ph-play-circle text-lg"></i>
+                    <span id="masterBrewText">Start Parzenia</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="border-b border-espresso-800 bg-espresso-900/70 px-3 sm:px-6 py-2">
+        <!-- ESPRESSO PRESETS -->
+        <div id="presetsBarEspresso" class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-copper-400 shrink-0 flex items-center gap-1 mr-1">
+                <i class="ph ph-sliders-horizontal"></i> Presety E61:
+            </span>
+            <button onclick="applyEspressoPreset('italian')" id="espPreset-italian" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-copper-500/20 text-copper-300 border border-copper-500/50 transition flex items-center gap-1.5">
+                <span>🇮🇹</span> Klasyczne Włoskie (1:2)
+            </button>
+            <button onclick="applyEspressoPreset('specialty')" id="espPreset-specialty" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🌸</span> Specialty Light Roast
+            </button>
+            <button onclick="applyEspressoPreset('turbo')" id="espPreset-turbo" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>⚡</span> Turbo Shot (6 bar / 17s)
+            </button>
+            <button onclick="applyEspressoPreset('ristretto')" id="espPreset-ristretto" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🍯</span> Gęste Ristretto (1:1.5)
+            </button>
+            <button onclick="applyEspressoPreset('choked')" id="espPreset-choked" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🛑</span> Zatkana Kolba (Choked)
+            </button>
+            <button onclick="applyEspressoPreset('gusher')" id="espPreset-gusher" class="esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🌊</span> Wodospad (Under-extracted)
+            </button>
+        </div>
+
+        <!-- ALTERNATIVE PRESETS (Hidden initially) -->
+        <div id="presetsBarAlt" class="hidden max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-copper-400 shrink-0 flex items-center gap-1 mr-1">
+                <i class="ph ph-book-open-text"></i> Receptury C40:
+            </span>
+            <button onclick="applyAltPreset('v60_hoffmann')" id="altPreset-v60_hoffmann" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-copper-500/20 text-copper-300 border border-copper-500/50 transition flex items-center gap-1.5">
+                <span>☕</span> V60: Hoffmann 1 Cup (22 kl.)
+            </button>
+            <button onclick="applyAltPreset('v60_kasuya')" id="altPreset-v60_kasuya" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>⚖️</span> V60: Tetsu Kasuya 4:6 (28 kl.)
+            </button>
+            <button onclick="applyAltPreset('v60_carafe')" id="altPreset-v60_carafe" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span> carafe </span> V60: 2 Filiżanki 500ml (26 kl.)
+            </button>
+            <button onclick="applyAltPreset('ap_hoffmann')" id="altPreset-ap_hoffmann" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🧪</span> AeroPress: Klasyczny Hoffmann (18 kl.)
+            </button>
+            <button onclick="applyAltPreset('ap_inverted')" id="altPreset-ap_inverted" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>🔄</span> AeroPress: Odwrócony Inverted (21 kl.)
+            </button>
+            <button onclick="applyAltPreset('ap_espresso')" id="altPreset-ap_espresso" class="alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5">
+                <span>⚡</span> AeroPress: Koncentrat Quasi-Espresso (13 kl.)
+            </button>
+        </div>
+    </section>
+
+    <!-- MAIN WORKSPACE GRID -->
+    <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-4 sm:pt-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- =========================================================================
+             LEFT COLUMN (5 COLS): LIVE VISUALIZER + ACAIA LUNAR 2021 + CONTROLS
+             ========================================================================= -->
+        <div class="lg:col-span-5 flex flex-col gap-5">
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span id="stagePulseDot" class="w-2.5 h-2.5 rounded-full bg-copper-400 animate-pulse"></span>
+                        <h2 id="visualizerHeaderTitle" class="text-xs font-mono uppercase tracking-wider text-crema-200 font-semibold">
+                            Grupa E61 + Acaia Lunar 2021 (USB-C)
+                        </h2>
+                    </div>
+                    <span id="activeStageStatusBadge" class="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-espresso-950 border border-copper-500/30 text-copper-300">
+                        Gotowy • Tryb 4 Auto
+                    </span>
+                </div>
+
+                <!-- 1. ANIMATED BREWING STAGE (Swaps between E61 Espresso, Hario V60, and AeroPress) -->
+                <div class="relative h-52 rounded-t-xl bg-gradient-to-b from-espresso-950 via-espresso-900 to-espresso-950 border-x border-t border-espresso-800 flex flex-col items-center justify-between p-3 overflow-hidden">
+                    <!-- Subtle background lab grid -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#d48742 1px, transparent 1px); background-size: 16px 16px;"></div>
+
+                    <!-- SCENE A: E61 ESPRESSO GROUPHEAD & DOUBLE SPOUT -->
+                    <div id="sceneEspresso" class="w-full h-full flex flex-col items-center justify-between relative z-10">
+                        <!-- Top E61 Chrome Group + Pressure Manometer -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-32 h-6 bg-gradient-to-r from-zinc-700 via-zinc-300 to-zinc-700 rounded-b-lg border-b-2 border-zinc-500 shadow-md flex items-center justify-between px-2.5">
+                                <span class="text-[9px] font-mono text-zinc-950 font-extrabold">E61 PRO</span>
+                                <span id="e61GaugeBadge" class="text-[9px] font-mono bg-zinc-900 text-emerald-400 px-1.5 py-0.2 rounded">9.0 bar</span>
+                            </div>
+                            <div class="w-12 h-3 bg-gradient-to-r from-zinc-600 via-zinc-300 to-zinc-600 rounded-b-md flex justify-around px-1">
+                                <div class="w-1.5 h-1.5 bg-zinc-900 rounded-full self-end"></div>
+                                <div class="w-1.5 h-1.5 bg-zinc-900 rounded-full self-end"></div>
+                            </div>
+                        </div>
+
+                        <!-- Flowing Espresso Tiger Streams -->
+                        <div id="espStreamContainer" class="absolute top-9 bottom-6 w-12 flex justify-around items-stretch pointer-events-none z-0 transition-opacity duration-300">
+                            <div id="espStreamLeft" class="espresso-stream w-1.5 rounded-full bg-gradient-to-b from-amber-700 via-amber-500 to-amber-300 shadow-[0_0_8px_rgba(212,135,66,0.7)]"></div>
+                            <div id="espStreamRight" class="espresso-stream w-1.5 rounded-full bg-gradient-to-b from-amber-700 via-amber-500 to-amber-300 shadow-[0_0_8px_rgba(212,135,66,0.7)]"></div>
+                        </div>
+
+                        <!-- Channeling Alert Pill -->
+                        <div id="espChannelingBadge" class="hidden absolute top-11 text-[10px] font-mono text-amber-300 bg-rose-950/90 border border-rose-500/50 px-2.5 py-0.5 rounded-full z-20 animate-bounce">
+                            ⚠️ Kanałowanie (Channeling >10 bar!)
+                        </div>
+
+                        <!-- Double-wall Espresso Glass sitting directly on the Acaia Lunar Pad -->
+                        <div class="relative z-10 flex items-center justify-center mt-auto">
+                            <div class="relative w-24 h-24 rounded-b-2xl rounded-t-md border-2 border-crema-100/30 bg-white/5 backdrop-blur-sm shadow-inner overflow-hidden flex flex-col justify-end p-0.5">
+                                <div class="absolute right-1 top-2 bottom-2 flex flex-col justify-between text-[7px] font-mono text-crema-200/40 z-20 pointer-events-none">
+                                    <span>60ml</span>
+                                    <span>30ml</span>
+                                </div>
+                                <!-- Crema Layer -->
+                                <div id="espCupCrema" class="w-full rounded-t-sm relative z-10 transition-all duration-300" style="height: 22%; background: linear-gradient(90deg, #c87d45, #e6a972, #b56732);">
+                                    <div id="espTigerStripes" class="w-full h-full opacity-60" style="background: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(65, 29, 10, 0.5) 3px, rgba(65, 29, 10, 0.5) 6px);"></div>
+                                </div>
+                                <!-- Liquid Body -->
+                                <div id="espCupLiquid" class="w-full rounded-b-xl relative transition-all duration-300" style="height: 48%; background: linear-gradient(180deg, #3b1c0e 0%, #1a0b05 100%);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCENE B: HARIO V60 & AEROPRESS (Hidden when Espresso is active) -->
+                    <div id="sceneAlt" class="hidden w-full h-full flex flex-col items-center justify-between relative z-10">
+                        <!-- V60 SVG -->
+                        <svg id="svgV60" class="w-full h-44" viewBox="0 0 260 175">
+                            <!-- Gooseneck Spout -->
+                            <g transform="translate(155, 4)">
+                                <path d="M85 8 C60 8, 45 28, 22 26 C12 25, 8 18, 0 18" fill="none" stroke="#a1a1aa" stroke-width="5.5" stroke-linecap="round"/>
+                                <path d="M85 8 C60 8, 45 28, 22 26 C12 25, 8 18, 0 18" fill="none" stroke="#e4e4e7" stroke-width="1.8" stroke-linecap="round"/>
+                            </g>
+                            <!-- Gooseneck Water Stream -->
+                            <line id="altV60PourStream" x1="154" y1="22" x2="130" y2="75" stroke="#38bdf8" stroke-width="3.5" stroke-dasharray="6 4" class="opacity-80 transition-all duration-300" />
+                            <!-- V60 Cone -->
+                            <g transform="translate(0, 2)">
+                                <clipPath id="v60Clip">
+                                    <polygon points="82,30 178,30 140,92 120,92" />
+                                </clipPath>
+                                <g clip-path="url(#v60Clip)">
+                                    <rect id="altV60Slurry" x="75" y="52" width="110" height="42" fill="rgba(180, 95, 35, 0.68)" class="transition-all duration-300"/>
+                                    <polygon points="95,74 165,74 140,93 120,93" fill="#42220f" />
+                                    <circle cx="124" cy="72" r="2" fill="#f6d2b0" class="bubble-anim"/>
+                                    <circle cx="134" cy="70" r="2.6" fill="#f6d2b0" class="bubble-anim" style="animation-delay: 0.5s"/>
+                                </g>
+                                <polygon points="82,30 178,30 140,92 120,92" fill="rgba(255,255,255,0.04)" stroke="#e2cbb0" stroke-width="2" stroke-linejoin="round"/>
+                                <rect x="102" y="92" width="56" height="4.5" rx="2" fill="#d48742"/>
+                            </g>
+                            <!-- Dripping Drops -->
+                            <g id="altV60Drops">
+                                <circle cx="130" cy="103" r="2.4" fill="#b45f23" class="drip-anim"/>
+                                <circle cx="130" cy="103" r="2" fill="#d48742" class="drip-anim" style="animation-delay: 0.35s"/>
+                            </g>
+                            <!-- Glass Range Server sitting on diagonal pad -->
+                            <g transform="translate(0, 2)">
+                                <clipPath id="altServerClip">
+                                    <path d="M98,97 L162,97 L172,158 C173,164 166,168 158,168 L102,168 C94,168 87,164 88,158 Z"/>
+                                </clipPath>
+                                <g clip-path="url(#altServerClip)">
+                                    <rect id="altV60ServerLiquid" x="82" y="128" width="96" height="42" fill="#5e270b" class="transition-all duration-300"/>
+                                </g>
+                                <path d="M98,97 L162,97 L172,158 C173,164 166,168 158,168 L102,168 C94,168 87,164 88,158 Z" fill="rgba(255,255,255,0.03)" stroke="rgba(245, 232, 216, 0.45)" stroke-width="2"/>
+                                <path d="M164,106 L178,106 C183,106 186,110 186,116 L186,142 C186,148 182,152 176,152 L171,152" fill="none" stroke="rgba(245, 232, 216, 0.45)" stroke-width="2.2"/>
+                            </g>
+                        </svg>
+
+                        <!-- AEROPRESS SVG (Swapped when AeroPress sub-mode selected) -->
+                        <svg id="svgAeroPress" class="hidden w-full h-44" viewBox="0 0 260 175">
+                            <!-- Plunger -->
+                            <g id="altApPlunger" transform="translate(0, 0)" class="transition-transform duration-300">
+                                <rect x="102" y="6" width="56" height="6" rx="3" fill="#d48742"/>
+                                <rect x="113" y="12" width="34" height="54" fill="rgba(212, 212, 216, 0.25)" stroke="#a1a1aa" stroke-width="1.5"/>
+                                <rect x="107" y="65" width="46" height="7" rx="2" fill="#18181b" stroke="#52525b" stroke-width="1"/>
+                            </g>
+                            <!-- Chamber -->
+                            <rect x="106" y="36" width="48" height="72" fill="rgba(255,255,255,0.06)" stroke="#d4d4d8" stroke-width="2"/>
+                            <rect id="altApChamberLiquid" x="108" y="68" width="44" height="34" fill="rgba(145, 68, 22, 0.82)" class="transition-all duration-300"/>
+                            <rect x="108" y="101" width="44" height="6" fill="#3b1b09"/>
+                            <rect x="102" y="108" width="56" height="6" rx="2" fill="#18181b"/>
+                            <rect x="88" y="104" width="84" height="3.5" rx="1.5" fill="#52525b"/>
+                            <!-- Cup below -->
+                            <rect x="98" y="112" width="64" height="56" rx="5" fill="rgba(255,255,255,0.03)" stroke="rgba(245, 232, 216, 0.45)" stroke-width="2"/>
+                            <rect id="altApCupLiquid" x="100" y="138" width="60" height="28" rx="4" fill="#3d1908" class="transition-all duration-300"/>
+                        </svg>
+
+                        <!-- Overload Protection Floating Banner (AeroPress Press Reminder) -->
+                        <div id="apOverloadBanner" class="hidden absolute bottom-2 inset-x-3 bg-rose-950/95 border border-rose-500/60 text-rose-200 px-3 py-1.5 rounded-lg text-[11px] font-mono flex items-center justify-between shadow-lg z-30">
+                            <span>⚠️ OCHRONA 2000g: Zdejmij z Lunara przed dociskiem!</span>
+                            <button onclick="toggleApOffScale()" id="apOffScaleBtn" class="px-2 py-0.5 rounded bg-emerald-500 text-espresso-950 font-bold text-[10px]">
+                                Zdjęto z wagi ✓
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =====================================================================
+                     2. ULTRA-REALISTIC ACAIA LUNAR 2021 (USB-C) INTERACTIVE SCALE PANEL
+                     ===================================================================== -->
+                <div class="acaia-lunar-chassis rounded-b-2xl p-3.5 sm:p-4 select-none">
+                    <!-- Top Heat-Resistant Silicone Pad Edge & Model Engraving -->
+                    <div class="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-2.5 pb-1.5 border-b border-zinc-800/90">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold tracking-widest text-zinc-300">acaia</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-400">LUNAR 2021 • 105×105mm</span>
+                        </div>
+                        <!-- USB-C Port & Battery Status Indicator -->
+                        <div class="flex items-center gap-2">
+                            <span class="flex items-center gap-1 text-emerald-400" title="Port ładowania USB-C PD">
+                                <i class="ph-fill ph-plugs-connected text-xs"></i>
+                                <span class="text-[9px]">USB-C 98%</span>
+                            </span>
+                            <span id="acaiaPrecisionTag" class="px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30 text-[9px]">
+                                0.1g
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- TOP 12-LED FLOW-RATE INDICATOR BAR -->
+                    <div class="bg-black/80 rounded-xl p-2.5 border border-zinc-800/90 mb-2.5">
+                        <div class="flex items-center justify-between text-[9px] font-mono text-zinc-400 mb-1.5">
+                            <span>FLOW-RATE INDICATOR (<span id="flowStepUnitLabel">0.5 g/s na diodę</span>)</span>
+                            <span id="liveFlowRateNumeric" class="text-sky-300 font-bold">1.5 g/s (Sweet Spot)</span>
+                        </div>
+                        <!-- 12 LEDs Array -->
+                        <div id="acaiaFlowLedsContainer" class="grid grid-cols-12 gap-1.5 items-center py-1">
+                            <!-- 12 LEDs dynamically updated via JS -->
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                            <div class="flow-led-dot h-2.5 rounded-full"></div>
+                        </div>
+                        <div id="flowScaleTicks" class="flex justify-between text-[8px] font-mono text-zinc-500 mt-1">
+                            <span>0.5 g/s</span>
+                            <span class="text-emerald-400/80">▲ Strefa Docelowa (Target Flow) ▲</span>
+                            <span>6.0+ g/s</span>
+                        </div>
+                    </div>
+
+                    <!-- MAIN 8-SEGMENT LED DISPLAY (TIME & WEIGHT + MODE ICONS) -->
+                    <div class="bg-black/95 rounded-xl px-4 py-3 border border-zinc-800 flex items-center justify-between relative overflow-hidden">
+                        <!-- Left: Timer Readout + Auto Mode Icons -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-1.5 text-[10px] font-mono h-4">
+                                <span id="acaiaModeBadge" class="text-zinc-400">MODE 4</span>
+                                <span id="acaiaIconDrop" class="text-sky-400" title="Auto-Start przy pierwszej kropli">💧</span>
+                                <span id="acaiaIconAutoTare" class="text-emerald-400 text-[9px] border border-emerald-400/60 px-1 rounded" title="Auto-Tara aktywna">AUTO-T</span>
+                            </div>
+                            <div id="acaiaTimerLed" class="font-mono text-2xl sm:text-3xl font-extrabold acaia-led-text tracking-wider mt-0.5">
+                                0:28
+                            </div>
+                        </div>
+
+                        <!-- Center: Flow / Tare Save Indicator -->
+                        <div class="hidden sm:flex flex-col items-center justify-center text-center">
+                            <span id="acaiaCenterStatus" class="text-[9px] font-mono uppercase tracking-widest text-zinc-500">RATIO</span>
+                            <span id="acaiaCenterRatio" class="font-mono text-xs font-bold text-zinc-300">1:2.0</span>
+                        </div>
+
+                        <!-- Right: Weight Readout (g / oz) -->
+                        <div class="flex flex-col items-end">
+                            <div class="flex items-center gap-1.5 text-[10px] font-mono h-4">
+                                <span id="acaiaTareIndicator" class="text-emerald-400 font-bold">T</span>
+                                <span class="text-zinc-400">GRAMS</span>
+                            </div>
+                            <div class="flex items-baseline gap-1 mt-0.5">
+                                <span id="acaiaWeightLed" class="font-mono text-2xl sm:text-3xl font-extrabold acaia-led-text tracking-wider">
+                                    36.0
+                                </span>
+                                <span class="font-mono text-xs text-sky-200/80">g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CAPACITIVE TOUCH BUTTONS: POWER/MODE (LEFT) & TARE/0.01g (RIGHT) -->
+                    <div class="grid grid-cols-3 gap-2 mt-3">
+                        <!-- Left Button: Power / Mode / Timer -->
+                        <button onclick="acaiaCycleMode()" class="py-2 px-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 border border-zinc-700/80 flex items-center justify-between text-xs font-mono text-zinc-200 transition">
+                            <span class="w-5 h-5 rounded-full border border-zinc-400 flex items-center justify-center text-[10px] font-bold">O</span>
+                            <div class="text-right">
+                                <span class="block text-[10px] font-bold text-crema-100">TRYB LUNAR</span>
+                                <span id="acaiaBtnModeSub" class="block text-[9px] text-sky-400">Mode 4: Auto</span>
+                            </div>
+                        </button>
+
+                        <!-- Middle Button: Weigh Beans (Dose Check on Scale) -->
+                        <button onclick="acaiaWeighDoseBeanMode()" class="py-2 px-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 border border-zinc-700/80 flex flex-col items-center justify-center text-xs font-mono text-zinc-200 transition">
+                            <span class="text-[10px] font-bold text-copper-300 flex items-center gap-1"><i class="ph-fill ph-coffee-bean"></i> ZWAŻ ZIARNA</span>
+                            <span class="text-[9px] text-zinc-400">Doza na wadze</span>
+                        </button>
+
+                        <!-- Right Button: Tare / High-Res 0.01g Toggle -->
+                        <button onclick="acaiaToggleHighRes()" class="py-2 px-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 border border-zinc-700/80 flex items-center justify-between text-xs font-mono text-zinc-200 transition">
+                            <div class="text-left">
+                                <span class="block text-[10px] font-bold text-crema-100">TARA / 0.01g</span>
+                                <span id="acaiaBtnResSub" class="block text-[9px] text-emerald-400">Dokł.: 0.1g</span>
+                            </div>
+                            <span class="w-5 h-5 rounded-full border border-zinc-400 flex items-center justify-center text-[10px] font-bold">T</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =====================================================================
+                 3A. CONTROLS FOR MODULE 1: ESPRESSO E61 SLIDERS
+                 ===================================================================== -->
+            <div id="controlsPanelEspresso" class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-espresso-800 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-faders text-copper-400 text-lg"></i>
+                        <h2 class="font-semibold text-sm sm:text-base text-crema-100">Parametry Młynka Espresso i Grupy E61</h2>
+                    </div>
+                    <span class="text-[11px] font-mono text-copper-300">Na żywo</span>
+                </div>
+
+                <!-- 1. Espresso Grind Size -->
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex justify-between items-baseline">
+                        <label for="espGrindSlider" class="text-xs sm:text-sm font-medium text-crema-200 flex items-center gap-1.5">
+                            <i class="ph ph-grains text-copper-400"></i> 1. Grubość mielenia (Espresso)
+                        </label>
+                        <div>
+                            <span id="espGrindVal" class="font-mono text-sm sm:text-base font-bold text-copper-400">3.5</span>
+                            <span id="espGrindMicrons" class="font-mono text-xs text-crema-300/70 ml-1">(275 µm)</span>
+                        </div>
+                    </div>
+                    <input type="range" id="espGrindSlider" min="1.0" max="10.0" step="0.1" value="3.5" oninput="updateAllModels()">
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-crema-300/50">1.0 (150µm Puder)</span>
+                        <span id="espGrindCategory" class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-medium">Idealne Espresso</span>
+                        <span class="text-crema-300/50">10.0 (600µm Grube)</span>
+                    </div>
+                </div>
+
+                <!-- 2. PID Water Temperature -->
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex justify-between items-baseline">
+                        <label for="espTempSlider" class="text-xs sm:text-sm font-medium text-crema-200 flex items-center gap-1.5">
+                            <i class="ph ph-thermometer-hot text-copper-400"></i> 2. Temperatura wody (PID)
+                        </label>
+                        <span id="espTempVal" class="font-mono text-sm sm:text-base font-bold text-copper-400">93.0°C</span>
+                    </div>
+                    <input type="range" id="espTempSlider" min="85.0" max="98.0" step="0.5" value="93.0" oninput="updateAllModels()">
+                    <div class="flex justify-between text-[10px] text-crema-300/50">
+                        <span>85°C (Ciemne palenie)</span>
+                        <span class="text-emerald-300">Optimum 92–94°C</span>
+                        <span>98°C (Jasne / Przeparzenie)</span>
+                    </div>
+                </div>
+
+                <!-- 3. Pump Pressure -->
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex justify-between items-baseline">
+                        <label for="espPressureSlider" class="text-xs sm:text-sm font-medium text-crema-200 flex items-center gap-1.5">
+                            <i class="ph ph-gauge text-copper-400"></i> 3. Ciśnienie pompy
+                        </label>
+                        <span id="espPressureVal" class="font-mono text-sm sm:text-base font-bold text-copper-400">9.0 bar</span>
+                    </div>
+                    <input type="range" id="espPressureSlider" min="4.0" max="12.0" step="0.5" value="9.0" oninput="updateAllModels()">
+                    <div class="flex justify-between text-[10px] text-crema-300/50">
+                        <span>4–6 bar (Turbo Shot)</span>
+                        <span class="text-emerald-300">Standard 9 bar</span>
+                        <span>12 bar (Kanałowanie!)</span>
+                    </div>
+                </div>
+
+                <!-- 4. Dose & Time Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-espresso-800">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-crema-300">Doza w sitku:</span>
+                            <span id="espDoseVal" class="font-mono font-bold text-crema-100">18.0 g</span>
+                        </div>
+                        <input type="range" id="espDoseSlider" min="14.0" max="22.0" step="0.1" value="18.0" oninput="updateAllModels()">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-crema-300">Czas parzenia:</span>
+                            <span id="espTimeVal" class="font-mono font-bold text-crema-100">28 s</span>
+                        </div>
+                        <input type="range" id="espTimeSlider" min="15" max="40" step="1" value="28" oninput="updateAllModels()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- =====================================================================
+                 3B. CONTROLS FOR MODULE 2: COMANDANTE C40 MK4 + V60 & AEROPRESS
+                 ===================================================================== -->
+            <div id="controlsPanelAlt" class="hidden glass-card rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+                <!-- Sub-switcher: Hario V60 vs AeroPress -->
+                <div class="flex items-center justify-between gap-2 border-b border-espresso-800 pb-3">
+                    <div class="flex items-center bg-espresso-950 p-1 rounded-xl border border-copper-500/30 w-full">
+                        <button id="altSubBtnV60" onclick="switchAltMethod('V60')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-copper-500 text-espresso-950 transition">
+                            Hario V60 (Przelew)
+                        </button>
+                        <button id="altSubBtnAP" onclick="switchAltMethod('AeroPress')" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-crema-300 hover:text-white transition">
+                            AeroPress (Imersja)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comandante C40 MK4 Nitro Blade Interactive Dial Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs sm:text-sm font-bold text-crema-100 flex items-center gap-1.5">
+                            <i class="ph-fill ph-gear-fine text-copper-400"></i> Comandante C40 MK4 Nitro Blade
+                        </h3>
+                        <p class="text-[10px] text-crema-300/60">Kliknij +/- na tarczy lub przesuń suwak klików</p>
+                    </div>
+                    <!-- Standard vs Red Clix RX35 Toggle -->
+                    <div class="flex items-center bg-espresso-950 p-1 rounded-lg border border-espresso-700 text-[10px] font-mono">
+                        <button id="c40AxleStd" onclick="setC40Axle('standard')" class="px-2 py-1 rounded bg-copper-500 text-espresso-950 font-bold transition">
+                            Std (30µm)
+                        </button>
+                        <button id="c40AxleRed" onclick="setC40Axle('redclix')" class="px-2 py-1 rounded text-crema-300 hover:text-white transition flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Red Clix (15µm)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive C40 Dial + Readout -->
+                <div class="grid grid-cols-12 gap-3 items-center bg-espresso-950/60 p-3 rounded-xl border border-espresso-800">
+                    <div class="col-span-5 flex flex-col items-center justify-center relative">
+                        <div class="relative w-24 h-24 flex items-center justify-center">
+                            <svg id="c40DialSvg" class="comandante-dial w-22 h-22" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="44" fill="#1e1612" stroke="#d48742" stroke-width="2"/>
+                                <g stroke="#e7a463" stroke-width="2" stroke-linecap="round">
+                                    <line x1="50" y1="6" x2="50" y2="14" />
+                                    <line x1="50" y1="86" x2="50" y2="94" />
+                                    <line x1="6" y1="50" x2="14" y2="50" />
+                                    <line x1="86" y1="50" x2="94" y2="50" />
+                                    <line x1="19" y1="19" x2="25" y2="25" />
+                                    <line x1="81" y1="81" x2="75" y2="75" />
+                                    <line x1="81" y1="19" x2="75" y2="25" />
+                                    <line x1="19" y1="81" x2="25" y2="75" />
+                                </g>
+                                <path d="M50 18 L57 42 L80 50 L57 58 L50 82 L43 58 L20 50 L43 42 Z" fill="#2b201a" stroke="#d48742" stroke-width="1.5"/>
+                                <circle cx="50" cy="24" r="3" fill="#f6d2b0"/>
+                                <circle cx="50" cy="50" r="10" id="c40CenterNut" fill="#d48742" stroke="#fdf9f5" stroke-width="1.5"/>
+                            </svg>
+                            <button onclick="stepC40Clicks(-1)" class="absolute -left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-espresso-800 hover:bg-espresso-700 border border-copper-500/40 text-crema-100 font-mono font-bold flex items-center justify-center active:scale-90 transition">-</button>
+                            <button onclick="stepC40Clicks(1)" class="absolute -right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-espresso-800 hover:bg-espresso-700 border border-copper-500/40 text-crema-100 font-mono font-bold flex items-center justify-center active:scale-90 transition">+</button>
+                        </div>
+                    </div>
+
+                    <div class="col-span-7 flex flex-col gap-1.5">
+                        <div class="flex items-baseline justify-between">
+                            <div>
+                                <span id="c40ClicksVal" class="font-mono text-2xl sm:text-3xl font-bold text-crema-100">22</span>
+                                <span class="text-xs font-mono text-copper-300 ml-1">kliki</span>
+                            </div>
+                            <span id="c40MicronsVal" class="font-mono text-sm font-bold text-copper-400">660 µm</span>
+                        </div>
+                        <div id="c40EquivalentText" class="text-[11px] font-mono text-emerald-300">
+                            Oś Red Clix: 44 kliki
+                        </div>
+                        <div id="c40MethodRecommendation" class="text-[10px] text-crema-300/70">
+                            Optimum pod V60 1 Cup (21–24 kl.)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C40 Clicks Slider -->
+                <input type="range" id="c40ClicksSlider" min="10" max="34" step="1" value="22" oninput="onC40SliderChange()">
+
+                <!-- Dose, Water & Temp Sliders for V60/AeroPress -->
+                <div class="flex flex-col gap-3 pt-2 border-t border-espresso-800">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-crema-200 flex items-center gap-1"><i class="ph ph-scales text-copper-400"></i> Doza ziaren (odważona na Lunarze):</span>
+                            <span id="altDoseVal" class="font-mono font-bold text-copper-400">15.0 g</span>
+                        </div>
+                        <input type="range" id="altDoseSlider" min="11" max="32" step="0.5" value="15" oninput="updateAllModels()">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-crema-200 flex items-center gap-1"><i class="ph ph-drop text-copper-400"></i> Ilość wody całkowita:</span>
+                            <div>
+                                <span id="altWaterVal" class="font-mono font-bold text-copper-400">250 ml</span>
+                                <span id="altRatioBadge" class="font-mono text-[11px] text-crema-300/70 ml-1">(1:16.7)</span>
+                            </div>
+                        </div>
+                        <input type="range" id="altWaterSlider" min="60" max="550" step="5" value="250" oninput="updateAllModels()">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-crema-200 flex items-center gap-1"><i class="ph ph-thermometer-hot text-copper-400"></i> Temperatura wody:</span>
+                            <span id="altTempVal" class="font-mono font-bold text-copper-400">94°C</span>
+                        </div>
+                        <input type="range" id="altTempSlider" min="82" max="98" step="1" value="94" oninput="updateAllModels()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================================================
+             RIGHT COLUMN (7 COLS): KPI CARDS, SCHEDULE, BARISTA AI, SENSORY & CHARTS
+             ========================================================================= -->
+        <div class="lg:col-span-7 flex flex-col gap-5">
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <!-- Extraction Yield -->
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-xs text-crema-300/80">
+                        <span>Ekstrakcja (EY)</span>
+                        <i class="ph ph-percent text-copper-400"></i>
+                    </div>
+                    <div class="my-1">
+                        <span id="metricEY" class="font-mono text-2xl sm:text-3xl font-bold text-crema-100">20.1%</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-crema-300/50">Cel: 18–22%</span>
+                        <span id="badgeEY" class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300">Sweet Spot</span>
+                    </div>
+                </div>
+
+                <!-- Flow Rate on Acaia Lunar -->
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-xs text-crema-300/80">
+                        <span>Przepływ Lunar</span>
+                        <i class="ph ph-activity text-sky-400"></i>
+                    </div>
+                    <div class="my-1">
+                        <span id="metricFlow" class="font-mono text-2xl sm:text-3xl font-bold text-crema-100">1.5</span>
+                        <span class="font-mono text-xs text-crema-300">g/s</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span id="subFlowTarget" class="text-crema-300/50">Cel: 1.2–1.8</span>
+                        <span id="badgeFlow" class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300">Stabilny</span>
+                    </div>
+                </div>
+
+                <!-- Beverage Weight / Time -->
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-xs text-crema-300/80">
+                        <span id="labelYieldCard">Uzysk na wadze</span>
+                        <i class="ph ph-scales text-copper-400"></i>
+                    </div>
+                    <div class="my-1">
+                        <span id="metricYield" class="font-mono text-2xl sm:text-3xl font-bold text-crema-100">36.2g</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span id="metricRatioSub" class="text-crema-300/60 font-mono">Ratio 1:2.0</span>
+                        <span id="metricTimeSub" class="text-copper-300 font-mono">0:28</span>
+                    </div>
+                </div>
+
+                <!-- TDS % Strength -->
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-xs text-crema-300/80">
+                        <span>Moc (TDS)</span>
+                        <i class="ph ph-eyedropper text-copper-400"></i>
+                    </div>
+                    <div class="my-1">
+                        <span id="metricTDS" class="font-mono text-2xl sm:text-3xl font-bold text-crema-100">10.0%</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span id="subTDSTarget" class="text-crema-300/50">Cel: 8–12%</span>
+                        <span id="badgeTDS" class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-copper-500/20 text-copper-300">Syropowe</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="baristaDiagnosisCard" class="glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-emerald-500 transition-all">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2.5">
+                        <span id="diagIcon" class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg shrink-0">
+                            <i class="ph-fill ph-seal-check"></i>
+                        </span>
+                        <div>
+                            <h3 id="diagTitle" class="font-serif font-bold text-base sm:text-lg text-crema-100">
+                                Idealny Balans (Sweet Spot Espresso)
+                            </h3>
+                        </div>
+                    </div>
+                    <span id="diagBadge" class="text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Wzorcowa Ekstrakcja
+                    </span>
+                </div>
+                <p id="diagDescription" class="text-xs sm:text-sm text-crema-200/90 leading-relaxed mb-3">
+                    Na pasku Flow-Rate wagi Acaia Lunar 2021 świecą się 3 zielone diody (1.5 g/s). Ciśnienie 9 bar i drobny przemiał dają gęste, kremowe body, w którym kwasowość jest zrównoważona słodyczą karmelu.
+                </p>
+                <div class="bg-espresso-950/80 rounded-xl p-2.5 border border-espresso-800 flex items-start gap-2 text-xs text-copper-300">
+                    <i class="ph-fill ph-lightbulb-filament text-base text-copper-400 shrink-0 mt-0.5"></i>
+                    <span id="diagTip">Wskazówka Acaia Lunar: W trybie Mode 4 postaw filiżankę na podkładce — waga sama wytaruje szkło i uruchomi stoper przy pierwszej kropli espresso.</span>
+                </div>
+            </div>
+
+            <!-- POURING SCHEDULE & ACAIA TARGET HELPER (Shown in Module 2: V60 & AeroPress) -->
+            <div id="altPourScheduleCard" class="hidden glass-card rounded-2xl p-4 sm:p-5">
+                <div class="flex items-center justify-between mb-3 pb-2 border-b border-espresso-800">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-list-numbers text-copper-400 text-lg"></i>
+                        <h3 class="text-xs sm:text-sm font-semibold text-crema-100">
+                            Harmonogram Zalewań na Acaia Lunar 2021 (Tryb 2 Dual Display)
+                        </h3>
+                    </div>
+                    <span id="altRecipeScheduleName" class="text-xs font-mono text-sky-300">V60: Hoffmann 1 Cup</span>
+                </div>
+                <div id="altStepsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- Dynamic steps injected via JS -->
+                </div>
+            </div>
+
+            <!-- SENSORY BALANCE BARS -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5">
+                <div class="flex items-center justify-between mb-2.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-crema-100 flex items-center gap-2">
+                        <i class="ph-fill ph-scales text-copper-400"></i>
+                        Równowaga Sensoryczna (Kwasowość — Słodycz — Gorycz)
+                    </h3>
+                    <span id="sensorySummaryLabel" class="text-xs font-mono text-copper-300">Pełna harmonia</span>
+                </div>
+
+                <!-- Stacked Progress Bar -->
+                <div class="w-full h-5 rounded-full bg-espresso-950 overflow-hidden flex p-0.5 border border-espresso-700 mb-3">
+                    <div id="barAcid" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-l-full transition-all duration-300 flex items-center justify-center text-[10px] font-mono font-bold text-espresso-950" style="width: 28%">28%</div>
+                    <div id="barSweet" class="h-full bg-gradient-to-r from-copper-400 to-emerald-400 transition-all duration-300 flex items-center justify-center text-[10px] font-mono font-bold text-espresso-950" style="width: 44%">44%</div>
+                    <div id="barBitter" class="h-full bg-gradient-to-r from-amber-900 to-stone-700 rounded-r-full transition-all duration-300 flex items-center justify-center text-[10px] font-mono font-bold text-crema-100" style="width: 28%">28%</div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 text-xs">
+                    <div class="bg-espresso-950/60 p-2.5 rounded-xl border border-espresso-800">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-amber-300 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Kwasowość</span>
+                            <span id="valAcid" class="font-mono text-crema-100">28%</span>
+                        </div>
+                        <p id="noteAcid" class="text-[11px] text-crema-300/60">Cytrusowa, żywa</p>
+                    </div>
+                    <div class="bg-espresso-950/60 p-2.5 rounded-xl border border-espresso-800">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-emerald-300 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Słodycz</span>
+                            <span id="valSweet" class="font-mono text-crema-100">44%</span>
+                        </div>
+                        <p id="noteSweet" class="text-[11px] text-crema-300/60">Karmel, nugat</p>
+                    </div>
+                    <div class="bg-espresso-950/60 p-2.5 rounded-xl border border-espresso-800">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-stone-300 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-800"></span>Gorycz</span>
+                            <span id="valBitter" class="font-mono text-crema-100">28%</span>
+                        </div>
+                        <p id="noteBitter" class="text-[11px] text-crema-300/60">Gorzka czekolada</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Chart 1: Real-time Flow & Extraction Curve -->
+                <div class="glass-card rounded-2xl p-4 flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 id="chart1Title" class="text-xs sm:text-sm font-semibold text-crema-100">Profil Ekstrakcji i Przepływu</h3>
+                            <p id="chart1Sub" class="text-[11px] text-crema-300/60">Wydajność EY (%) oraz Flow (g/s) na Acaia Lunar</p>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-espresso-950 text-sky-300 border border-sky-500/20">Krzywa Czasu</span>
+                    </div>
+                    <div class="relative h-52 w-full mt-auto">
+                        <canvas id="kineticsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Control Chart (Espresso 8-12% TDS or SCA Gold Cup 1.15-1.45% TDS) -->
+                <div class="glass-card rounded-2xl p-4 flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 id="chart2Title" class="text-xs sm:text-sm font-semibold text-crema-100">Mapa Ekstrakcji (Control Chart)</h3>
+                            <p id="chart2Sub" class="text-[11px] text-crema-300/60">Moc naparu (TDS %) vs Wydajność (EY %)</p>
+                        </div>
+                        <span id="chart2TargetBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">Cel: 18-22% EY</span>
+                    </div>
+                    <div class="relative h-52 w-full mt-auto">
+                        <canvas id="controlMatrixChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        /*************************************************************************
+         * BARISTA MASTER LAB PRO — CORE STATE & ACAIA LUNAR 2021 ENGINE
+         *************************************************************************/
+        let currentModule = 'espresso'; // 'espresso' | 'alt'
+        let altMethod = 'V60';          // 'V60' | 'AeroPress'
+        let c40Axle = 'standard';       // 'standard' (30µm) | 'redclix' (15µm)
+        let altRecipeKey = 'v60_hoffmann';
+        let apRemovedFromScale = false;
+
+        // Acaia Lunar 2021 Firmware State
+        let acaiaMode = 4;              // 1: Weigh Only, 2: Dual Display, 3: Timer Flow, 4: Auto-Tare + Flow
+        let acaiaHighRes = false;       // false = 0.1g, true = 0.01g
+        let acaiaWeighingBeans = false; // When true, shows dry bean weight on Lunar
+
+        // Simulation & Audio State
+        let audioEnabled = true;
+        let audioCtx = null;
+        let isSimRunning = false;
+        let simInterval = null;
+        let simElapsedSec = 0;
+
+        // Chart.js instances
+        let kineticsChart = null;
+        let controlChart = null;
+
+        // Presets for Module 1 (Espresso E61)
+        const ESPRESSO_PRESETS = {
+            italian:   { grind: 3.5, temp: 93.0, pressure: 9.0, dose: 18.0, time: 28 },
+            specialty: { grind: 3.8, temp: 95.0, pressure: 8.5, dose: 18.5, time: 27 },
+            turbo:     { grind: 5.5, temp: 94.0, pressure: 6.0, dose: 18.0, time: 17 },
+            ristretto: { grind: 2.7, temp: 92.0, pressure: 9.0, dose: 19.0, time: 30 },
+            choked:    { grind: 1.4, temp: 96.0, pressure: 11.5, dose: 20.5, time: 38 },
+            gusher:    { grind: 8.2, temp: 87.5, pressure: 9.0, dose: 16.5, time: 18 }
+        };
+
+        // Presets for Module 2 (Comandante C40 MK4 + V60 & AeroPress)
+        const ALT_PRESETS = {
+            v60_hoffmann: { method: 'V60', stdClicks: 22, dose: 15.0, water: 250, temp: 94, name: 'V60: James Hoffmann 1 Cup' },
+            v60_kasuya:   { method: 'V60', stdClicks: 28, dose: 20.0, water: 300, temp: 92, name: 'V60: Tetsu Kasuya 4:6' },
+            v60_carafe:   { method: 'V60', stdClicks: 26, dose: 30.0, water: 500, temp: 94, name: 'V60: Karafka 2 Filiżanki' },
+            ap_hoffmann:  { method: 'AeroPress', stdClicks: 18, dose: 11.5, water: 200, temp: 94, name: 'AeroPress: Klasyczny Hoffmann' },
+            ap_inverted:  { method: 'AeroPress', stdClicks: 21, dose: 15.0, water: 230, temp: 90, name: 'AeroPress: Odwrócony (Inverted)' },
+            ap_espresso:  { method: 'AeroPress', stdClicks: 13, dose: 18.0, water: 65,  temp: 88, name: 'AeroPress: Koncentrat Espresso' }
+        };
+
+        /*************************************************************************
+         * WEB AUDIO API: ACAIA BEEP, COMANDANTE CLICK & E61 VIBRATORY PUMP
+         *************************************************************************/
+        function ensureAudioCtx() {
+            if (!audioEnabled) return null;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return audioCtx;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Authentic Acaia Lunar high-pitched piezoelectric beep
+        function playAcaiaBeep(freq = 2750, duration = 0.065) {
+            const ctx = ensureAudioCtx();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.06, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + duration);
+        }
+
+        // Crisp metallic Comandante C40 burr detent click
+        function playComandanteClick() {
+            const ctx = ensureAudioCtx();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1350, now);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.028);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.032);
+        }
+
+        // E61 Vibratory Pump hum
+        function playE61PumpHum(durationSec = 2.8, pressure = 9) {
+            const ctx = ensureAudioCtx();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const filter = ctx.createBiquadFilter();
+            const gain = ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(48 + pressure * 1.4, now);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(155, now);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.exponentialRampToValueAtTime(0.045, now + 0.2);
+            gain.gain.setValueAtTime(0.04, now + durationSec - 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + durationSec);
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('soundIcon');
+            icon.className = audioEnabled
+                ? 'ph-fill ph-speaker-high text-base text-copper-400'
+                : 'ph ph-speaker-slash text-base text-zinc-500';
+            if (audioEnabled) playAcaiaBeep();
+        }
+
+        /*************************************************************************
+         * ACAIA LUNAR 2021 (USB-C) INTERACTIVE CONTROLS
+         *************************************************************************/
+        function acaiaCycleMode() {
+            acaiaWeighingBeans = false;
+            acaiaMode = (acaiaMode % 4) + 1;
+            playAcaiaBeep(2800, 0.06);
+            updateAcaiaDisplayUI();
+            updateAllModels();
+        }
+
+        function acaiaToggleHighRes() {
+            acaiaWeighingBeans = false;
+            acaiaHighRes = !acaiaHighRes;
+            playAcaiaBeep(acaiaHighRes ? 3200 : 2400, 0.08);
+            document.getElementById('acaiaPrecisionTag').textContent = acaiaHighRes ? '0.01g HIGH-RES' : '0.1g';
+            document.getElementById('acaiaBtnResSub').textContent = acaiaHighRes ? 'Dokł.: 0.01g' : 'Dokł.: 0.1g';
+            updateAllModels();
+        }
+
+        function acaiaWeighDoseBeanMode() {
+            acaiaWeighingBeans = !acaiaWeighingBeans;
+            if (acaiaWeighingBeans) {
+                acaiaHighRes = true; // Auto-enable 0.01g precision for weighing beans
+                document.getElementById('acaiaPrecisionTag').textContent = '0.01g HIGH-RES';
+                document.getElementById('acaiaBtnResSub').textContent = 'Dokł.: 0.01g';
+            }
+            playAcaiaBeep(2950, 0.07);
+            updateAllModels();
+        }
+
+        function updateAcaiaDisplayUI() {
+            const modeBadge = document.getElementById('acaiaModeBadge');
+            const iconDrop = document.getElementById('acaiaIconDrop');
+            const iconAutoTare = document.getElementById('acaiaIconAutoTare');
+            const timerLed = document.getElementById('acaiaTimerLed');
+            const btnModeSub = document.getElementById('acaiaBtnModeSub');
+
+            if (acaiaMode === 1) {
+                modeBadge.textContent = 'MODE 1';
+                iconDrop.classList.add('hidden');
+                iconAutoTare.classList.add('hidden');
+                timerLed.textContent = '----';
+                timerLed.classList.add('acaia-led-dim');
+                btnModeSub.textContent = 'Mode 1: Tylko waga';
+            } else if (acaiaMode === 2) {
+                modeBadge.textContent = 'MODE 2';
+                iconDrop.classList.add('hidden');
+                iconAutoTare.classList.add('hidden');
+                timerLed.classList.remove('acaia-led-dim');
+                btnModeSub.textContent = 'Mode 2: Dual (V60)';
+            } else if (acaiaMode === 3) {
+                modeBadge.textContent = 'MODE 3';
+                iconDrop.classList.remove('hidden');
+                iconAutoTare.classList.add('hidden');
+                timerLed.classList.remove('acaia-led-dim');
+                btnModeSub.textContent = 'Mode 3: Auto-Flow 💧';
+            } else {
+                modeBadge.textContent = 'MODE 4';
+                iconDrop.classList.remove('hidden');
+                iconAutoTare.classList.remove('hidden');
+                timerLed.classList.remove('acaia-led-dim');
+                btnModeSub.textContent = 'Mode 4: Auto-T + 💧';
+            }
+        }
+
+        /**
+         * Updates the 12-LED Flow-Rate Indicator Bar on the Acaia Lunar 2021
+         */
+        function updateAcaiaFlowLeds(flowRateGramsPerSec, isEspresso) {
+            const leds = document.querySelectorAll('#acaiaFlowLedsContainer .flow-led-dot');
+            const stepPerLed = isEspresso ? 0.5 : 1.0; // 0.5 g/s per LED for Espresso, 1.0 g/s for Pour-Over
+            const activeCount = Math.min(12, Math.max(0, Math.round(flowRateGramsPerSec / stepPerLed)));
+
+            document.getElementById('flowStepUnitLabel').textContent = isEspresso
+                ? '0.5 g/s na diodę (Espresso)'
+                : '1.0 g/s na diodę (Przelew V60/AP)';
+
+            leds.forEach((led, idx) => {
+                led.className = 'flow-led-dot h-2.5 rounded-full';
+                if (idx < activeCount) {
+                    if (isEspresso) {
+                        // Espresso sweet spot flow is LEDs 2 to 4 (1.0 - 2.0 g/s)
+                        if (idx >= 1 && idx <= 4) led.classList.add('active-sweet');
+                        else if (idx > 4) led.classList.add('active-high');
+                        else led.classList.add('active-low');
+                    } else {
+                        // Pour-over sweet spot pouring rate is LEDs 3 to 7 (3.0 - 7.0 g/s)
+                        if (idx >= 2 && idx <= 6) led.classList.add('active-sweet');
+                        else if (idx > 6) led.classList.add('active-high');
+                        else led.classList.add('active-low');
+                    }
+                }
+            });
+
+            const flowLabel = document.getElementById('liveFlowRateNumeric');
+            flowLabel.textContent = `${flowRateGramsPerSec.toFixed(1)} g/s`;
+        }
+
+        function formatSecondsToMMSS(totalSec) {
+            const s = Math.max(0, Math.round(totalSec));
+            const mins = Math.floor(s / 60);
+            const rem = s % 60;
+            return `${mins}:${rem < 10 ? '0' : ''}${rem}`;
+        }
+
+        /*************************************************************************
+         * MODULE SWITCHING & COMANDANTE C40 MK4 CONTROLS
+         *************************************************************************/
+        function switchLabModule(mod) {
+            if (isSimRunning) stopMasterSimulation();
+            currentModule = mod;
+            acaiaWeighingBeans = false;
+            playAcaiaBeep(2650, 0.05);
+
+            const btnEsp = document.getElementById('switchModEspresso');
+            const btnAlt = document.getElementById('switchModAlt');
+
+            if (mod === 'espresso') {
+                btnEsp.className = 'flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-copper-400 to-copper-600 text-espresso-950 shadow-md';
+                btnAlt.className = 'flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-crema-300 hover:text-crema-100';
+
+                document.getElementById('presetsBarEspresso').classList.remove('hidden');
+                document.getElementById('presetsBarAlt').classList.add('hidden');
+                document.getElementById('sceneEspresso').classList.remove('hidden');
+                document.getElementById('sceneAlt').classList.add('hidden');
+                document.getElementById('controlsPanelEspresso').classList.remove('hidden');
+                document.getElementById('controlsPanelAlt').classList.add('hidden');
+                document.getElementById('altPourScheduleCard').classList.add('hidden');
+
+                document.getElementById('visualizerHeaderTitle').textContent = 'Grupa E61 + Acaia Lunar 2021 (USB-C)';
+                // Default Acaia Mode 4 for Espresso
+                acaiaMode = 4;
+            } else {
+                btnAlt.className = 'flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-copper-400 to-copper-600 text-espresso-950 shadow-md';
+                btnEsp.className = 'flex-1 md:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-crema-300 hover:text-crema-100';
+
+                document.getElementById('presetsBarEspresso').classList.add('hidden');
+                document.getElementById('presetsBarAlt').classList.remove('hidden');
+                document.getElementById('sceneEspresso').classList.add('hidden');
+                document.getElementById('sceneAlt').classList.remove('hidden');
+                document.getElementById('controlsPanelEspresso').classList.add('hidden');
+                document.getElementById('controlsPanelAlt').classList.remove('hidden');
+                document.getElementById('altPourScheduleCard').classList.remove('hidden');
+
+                document.getElementById('visualizerHeaderTitle').textContent = `Comandante C40 • ${altMethod} + Acaia Lunar 2021`;
+                // Default Acaia Mode 2 (Dual Display) for V60/AeroPress so Rao spin doesn't pause timer
+                acaiaMode = 2;
+            }
+
+            updateAcaiaDisplayUI();
+            updateAllModels();
+        }
+
+        function switchAltMethod(method) {
+            altMethod = method;
+            playAcaiaBeep(2500, 0.05);
+            const btnV60 = document.getElementById('altSubBtnV60');
+            const btnAP = document.getElementById('altSubBtnAP');
+            const svgV60 = document.getElementById('svgV60');
+            const svgAP = document.getElementById('svgAeroPress');
+            const overloadBanner = document.getElementById('apOverloadBanner');
+
+            if (method === 'V60') {
+                btnV60.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold bg-copper-500 text-espresso-950 transition';
+                btnAP.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-crema-300 hover:text-white transition';
+                svgV60.classList.remove('hidden');
+                svgAP.classList.add('hidden');
+                overloadBanner.classList.add('hidden');
+            } else {
+                btnAP.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold bg-copper-500 text-espresso-950 transition';
+                btnV60.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-crema-300 hover:text-white transition';
+                svgV60.classList.add('hidden');
+                svgAP.classList.remove('hidden');
+                overloadBanner.classList.remove('hidden');
+            }
+            document.getElementById('visualizerHeaderTitle').textContent = `Comandante C40 • ${altMethod} + Acaia Lunar 2021`;
+            updateAllModels();
+        }
+
+        function toggleApOffScale() {
+            apRemovedFromScale = !apRemovedFromScale;
+            playAcaiaBeep(3100, 0.06);
+            const btn = document.getElementById('apOffScaleBtn');
+            if (apRemovedFromScale) {
+                btn.textContent = 'Na blacie (Bezpiecznie ✓)';
+                btn.className = 'px-2 py-0.5 rounded bg-emerald-500 text-espresso-950 font-bold text-[10px]';
+            } else {
+                btn.textContent = 'Na wadze (>2kg Ryzyko!)';
+                btn.className = 'px-2 py-0.5 rounded bg-rose-500 text-white font-bold text-[10px]';
+            }
+            updateAllModels();
+        }
+
+        function setC40Axle(axleType) {
+            if (c40Axle === axleType) return;
+            const slider = document.getElementById('c40ClicksSlider');
+            let currentVal = parseInt(slider.value, 10);
+
+            if (axleType === 'redclix') {
+                c40Axle = 'redclix';
+                slider.min = 20;
+                slider.max = 68;
+                slider.value = currentVal * 2;
+                document.getElementById('c40AxleRed').className = 'px-2 py-1 rounded bg-rose-600 text-white font-bold transition flex items-center gap-1';
+                document.getElementById('c40AxleStd').className = 'px-2 py-1 rounded text-crema-300 hover:text-white transition';
+                document.getElementById('c40CenterNut').setAttribute('fill', '#e11d48');
+            } else {
+                c40Axle = 'standard';
+                slider.min = 10;
+                slider.max = 34;
+                slider.value = Math.round(currentVal / 2);
+                document.getElementById('c40AxleStd').className = 'px-2 py-1 rounded bg-copper-500 text-espresso-950 font-bold transition';
+                document.getElementById('c40AxleRed').className = 'px-2 py-1 rounded text-crema-300 hover:text-white transition flex items-center gap-1';
+                document.getElementById('c40CenterNut').setAttribute('fill', '#d48742');
+            }
+            playComandanteClick();
+            updateAllModels();
+        }
+
+        function stepC40Clicks(delta) {
+            const slider = document.getElementById('c40ClicksSlider');
+            const nextVal = Math.min(parseInt(slider.max, 10), Math.max(parseInt(slider.min, 10), parseInt(slider.value, 10) + delta));
+            slider.value = nextVal;
+            onC40SliderChange();
+        }
+
+        function onC40SliderChange() {
+            playComandanteClick();
+            const clicks = parseInt(document.getElementById('c40ClicksSlider').value, 10);
+            const dial = document.getElementById('c40DialSvg');
+            dial.style.transform = `rotate(${clicks * 30}deg)`;
+            updateAllModels();
+        }
+
+        /*************************************************************************
+         * PHYSICS ENGINE 1: ESPRESSO E61 + ACAIA LUNAR
+         *************************************************************************/
+        function computeEspressoPhysics() {
+            const grind = parseFloat(document.getElementById('espGrindSlider').value);
+            const temp = parseFloat(document.getElementById('espTempSlider').value);
+            const pressure = parseFloat(document.getElementById('espPressureSlider').value);
+            const dose = parseFloat(document.getElementById('espDoseSlider').value);
+            const time = parseInt(document.getElementById('espTimeSlider').value, 10);
+
+            const microns = Math.round(100 + grind * 50);
+            const grindPermeability = Math.pow(grind / 3.5, 1.65);
+            const doseResistance = Math.pow(18.0 / dose, 1.25);
+
+            let effectivePressureFactor = pressure / 9.0;
+            let isChanneling = false;
+            if ((pressure > 10.0 && grind < 2.8) || pressure > 10.5) {
+                isChanneling = true;
+                effectivePressureFactor *= 0.85;
+            }
+
+            const preInfusionTime = Math.max(3.5, 7.5 - (pressure * 0.3) + (3.5 - grind) * 0.45);
+            const steadyFlowRate = Math.max(0.18, Math.min(4.8, 1.50 * grindPermeability * doseResistance * effectivePressureFactor));
+
+            const labels = [];
+            const flowSeries = [];
+            const eySeries = [];
+            let cumulativeYield = 0;
+            let yieldAtTime = 0;
+            let eyAtTime = 0;
+
+            const surfaceAreaFactor = Math.pow(3.5 / grind, 0.72);
+            const tempKineticFactor = 1.0 + (temp - 93.0) * 0.032;
+            const pressureKineticFactor = 0.88 + Math.min(pressure, 9.5) * 0.013;
+            const channelingPenalty = isChanneling ? 0.88 : 1.0;
+
+            const maxPotentialEY = 25.5 * Math.pow(3.5 / grind, 0.22) * tempKineticFactor * channelingPenalty;
+            const rateConstantK = 0.068 * surfaceAreaFactor * tempKineticFactor * pressureKineticFactor * Math.pow(steadyFlowRate / 1.5, 0.35);
+
+            for (let t = 0; t <= 35; t++) {
+                labels.push(t + 's');
+                let instFlow = 0;
+                if (t > 0) {
+                    if (t < preInfusionTime) {
+                        instFlow = steadyFlowRate * 0.15 * (t / preInfusionTime);
+                    } else {
+                        const erosion = 1 + (t - preInfusionTime) * 0.008;
+                        instFlow = steadyFlowRate * (1 - Math.exp(-(t - preInfusionTime + 1) * 0.85)) * erosion;
+                    }
+                }
+                instFlow = Math.min(5.0, Math.max(0, instFlow));
+                flowSeries.push(Number(instFlow.toFixed(2)));
+                cumulativeYield += instFlow;
+
+                let instEY = 0;
+                if (t > 1) {
+                    const effT = Math.max(0, t - (preInfusionTime * 0.55));
+                    instEY = maxPotentialEY * (1 - Math.exp(-rateConstantK * effT));
+                }
+                instEY = Math.min(27.5, Math.max(0, instEY));
+                eySeries.push(Number(instEY.toFixed(1)));
+
+                if (t === time) {
+                    yieldAtTime = cumulativeYield;
+                    eyAtTime = instEY;
+                }
+            }
+
+            yieldAtTime = Math.max(4.0, yieldAtTime);
+            let tds = (eyAtTime * dose) / yieldAtTime;
+            tds = Math.min(16.5, Math.max(2.5, tds));
+
+            // Sensory calculation
+            const tempDiff = temp - 93.0;
+            const eyDiff = eyAtTime - 20.0;
+            let rawAcid = Math.max(6, Math.min(80, 30 - (eyDiff * 3.8) - (tempDiff * 1.9)));
+            let rawBitter = Math.max(6, Math.min(80, 28 + (eyDiff * 4.2) + (tempDiff * 2.4) + (isChanneling ? 12 : 0)));
+            let rawSweet = Math.max(8, Math.min(75, 48 - Math.abs(eyDiff) * 5.2 - Math.abs(tempDiff) * 2.1 - (isChanneling ? 14 : 0)));
+
+            const sumS = rawAcid + rawSweet + rawBitter;
+            const acidPct = Math.round((rawAcid / sumS) * 100);
+            const sweetPct = Math.round((rawSweet / sumS) * 100);
+            const bitterPct = 100 - acidPct - sweetPct;
+
+            return {
+                grind, temp, pressure, dose, time, microns,
+                steadyFlowRate, yieldGrams: yieldAtTime, ey: eyAtTime, tds,
+                ratio: yieldAtTime / dose, isChanneling,
+                acidPct, sweetPct, bitterPct, labels, flowSeries, eySeries
+            };
+        }
+
+        /*************************************************************************
+         * PHYSICS ENGINE 2: COMANDANTE C40 MK4 + HARIO V60 & AEROPRESS
+         *************************************************************************/
+        function computeAltPhysics() {
+            const rawClicks = parseInt(document.getElementById('c40ClicksSlider').value, 10);
+            const stdClicks = c40Axle === 'redclix' ? rawClicks / 2 : rawClicks;
+            const microns = Math.round(stdClicks * 30);
+
+            const dose = parseFloat(document.getElementById('altDoseSlider').value);
+            const water = parseFloat(document.getElementById('altWaterSlider').value);
+            const temp = parseFloat(document.getElementById('altTempSlider').value);
+            const ratio = water / dose;
+
+            // Total brew time (seconds) and average pouring/drawdown flow rate (g/s)
+            let estTotalSec = 165;
+            let avgPourFlowRate = 4.2;
+
+            if (altMethod === 'V60') {
+                estTotalSec = Math.round(165 * Math.pow(22 / stdClicks, 1.32) * Math.pow(dose / 15, 0.25));
+                estTotalSec = Math.min(260, Math.max(105, estTotalSec));
+                avgPourFlowRate = Number(((water / (estTotalSec * 0.52))).toFixed(1));
+            } else {
+                // AeroPress immersion + 30s gentle press
+                estTotalSec = water < 100 ? 95 : 155;
+                avgPourFlowRate = water < 100 ? 2.5 : 4.5;
+            }
+
+            // Extraction Yield % for V60 / AeroPress
+            const optClicks = altMethod === 'V60' ? 22 : (water < 100 ? 13 : 18);
+            let targetEY = 20.0 + (optClicks - stdClicks) * 0.42 + (temp - 93) * 0.18 + (ratio - 16.5) * 0.22 + (altMethod === 'AeroPress' ? 0.45 : 0);
+            targetEY = Math.min(24.8, Math.max(14.2, targetEY));
+
+            // Liquid retained in filter & coffee grounds (~2.0g per gram of coffee for V60, ~1.4g for AeroPress)
+            const retentionFactor = altMethod === 'V60' ? 2.0 : 1.4;
+            const beverageWeight = Math.max(25, water - dose * retentionFactor);
+            const tds = (dose * (targetEY / 100) / beverageWeight) * 100;
+
+            // Time-series curve (0 to estTotalSec in 10 steps)
+            const labels = [];
+            const eySeries = [];
+            const flowSeries = [];
+            const stepSec = Math.max(10, Math.round(estTotalSec / 10));
+
+            for (let t = 0; t <= estTotalSec; t += stepSec) {
+                labels.push(formatSecondsToMMSS(t));
+                const progress = t / estTotalSec;
+                const instEY = targetEY * (1 - Math.exp(-3.3 * progress));
+                eySeries.push(Number(instEY.toFixed(1)));
+
+                // Simulate active gooseneck pouring spikes vs drawdown
+                let instFlow = progress < 0.65 ? avgPourFlowRate : avgPourFlowRate * 0.35;
+                if (t === 0) instFlow = 0;
+                flowSeries.push(Number(instFlow.toFixed(1)));
+            }
+
+            // Sensory balance
+            const eyDiff = targetEY - 20.0;
+            const tempDiff = temp - 93.0;
+            let rawAcid = Math.max(8, Math.min(78, 33 - (eyDiff * 4.1) - (tempDiff * 1.5)));
+            let rawBitter = Math.max(6, Math.min(78, 22 + (eyDiff * 4.5) + (tempDiff * 2.0)));
+            let rawSweet = Math.max(10, Math.min(78, 50 - Math.abs(eyDiff) * 5.4 - Math.abs(tempDiff) * 1.6));
+
+            const sumS = rawAcid + rawSweet + rawBitter;
+            const acidPct = Math.round((rawAcid / sumS) * 100);
+            const sweetPct = Math.round((rawSweet / sumS) * 100);
+            const bitterPct = 100 - acidPct - sweetPct;
+
+            return {
+                rawClicks, stdClicks, microns, dose, water, temp, ratio,
+                estTotalSec, avgPourFlowRate, beverageWeight, ey: targetEY, tds,
+                acidPct, sweetPct, bitterPct, labels, eySeries, flowSeries
+            };
+        }
+
+        /*************************************************************************
+         * MASTER UI SYNCHRONIZATION & RENDERING
+         *************************************************************************/
+        function updateAllModels(simProgressRatio = null) {
+            if (currentModule === 'espresso') {
+                const m = computeEspressoPhysics();
+                renderEspressoModule(m, simProgressRatio);
+            } else {
+                const m = computeAltPhysics();
+                renderAltModule(m, simProgressRatio);
+            }
+        }
+
+        function renderEspressoModule(m, simProgress) {
+            const p = simProgress !== null ? simProgress : 1;
+
+            // Update Sliders Text
+            document.getElementById('espGrindVal').textContent = m.grind.toFixed(1);
+            document.getElementById('espGrindMicrons').textContent = `(${m.microns} µm)`;
+            document.getElementById('espTempVal').textContent = `${m.temp.toFixed(1)}°C`;
+            document.getElementById('espPressureVal').textContent = `${m.pressure.toFixed(1)} bar`;
+            document.getElementById('e61GaugeBadge').textContent = `${m.pressure.toFixed(1)} bar`;
+            document.getElementById('espDoseVal').textContent = `${m.dose.toFixed(acaiaHighRes ? 2 : 1)} g`;
+            document.getElementById('espTimeVal').textContent = `${m.time} s`;
+
+            const grindCat = document.getElementById('espGrindCategory');
+            if (m.grind < 2.2) {
+                grindCat.textContent = 'Zbyt drobne (Ryzyko zatkania)';
+                grindCat.className = 'px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-medium';
+            } else if (m.grind <= 4.5) {
+                grindCat.textContent = 'Drobne (Idealne Espresso)';
+                grindCat.className = 'px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-medium';
+            } else {
+                grindCat.textContent = 'Grubsze (Turbo / Przelew)';
+                grindCat.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium';
+            }
+
+            // Update Acaia Lunar 2021 Display
+            const displayedSec = Math.round(m.time * p);
+            const displayedWeight = acaiaWeighingBeans ? m.dose : (m.yieldGrams * p);
+            const decimals = acaiaHighRes ? 2 : 1;
+
+            if (acaiaMode !== 1) {
+                document.getElementById('acaiaTimerLed').textContent = formatSecondsToMMSS(displayedSec);
+            }
+            document.getElementById('acaiaWeightLed').textContent = displayedWeight.toFixed(decimals);
+            document.getElementById('acaiaCenterStatus').textContent = acaiaWeighingBeans ? 'DOZA ZIAREN' : 'RATIO';
+            document.getElementById('acaiaCenterRatio').textContent = acaiaWeighingBeans ? 'SUCHE' : `1:${(m.ratio * p).toFixed(1)}`;
+
+            updateAcaiaFlowLeds(acaiaWeighingBeans ? 0 : m.steadyFlowRate, true);
+
+            // Update Cup Animation
+            document.getElementById('espCupLiquid').style.height = `${Math.min(68, Math.max(10, (m.yieldGrams / 60) * 65)) * p}%`;
+            document.getElementById('espCupCrema').style.height = `${(m.ey >= 18 && m.ey <= 22 ? 22 : 12) * p}%`;
+            const streamPx = Math.max(2, Math.min(9, Math.round(m.steadyFlowRate * 3)));
+            document.getElementById('espStreamLeft').style.width = `${streamPx}px`;
+            document.getElementById('espStreamRight').style.width = `${streamPx}px`;
+            document.getElementById('espChannelingBadge').classList.toggle('hidden', !m.isChanneling);
+
+            // Update KPI Cards
+            document.getElementById('metricEY').textContent = `${m.ey.toFixed(1)}%`;
+            document.getElementById('metricFlow').textContent = m.steadyFlowRate.toFixed(2);
+            document.getElementById('subFlowTarget').textContent = 'Cel: 1.2–1.8 g/s';
+            document.getElementById('labelYieldCard').textContent = 'Uzysk w filiżance';
+            document.getElementById('metricYield').textContent = `${m.yieldGrams.toFixed(1)}g`;
+            document.getElementById('metricRatioSub').textContent = `Ratio 1:${m.ratio.toFixed(1)}`;
+            document.getElementById('metricTimeSub').textContent = `w ${m.time}s`;
+            document.getElementById('metricTDS').textContent = `${m.tds.toFixed(1)}%`;
+            document.getElementById('subTDSTarget').textContent = 'Cel: 8–12%';
+
+            // Update Sensory & Barista Diagnosis
+            updateSensoryBars(m.acidPct, m.sweetPct, m.bitterPct, true);
+            updateEspressoDiagnosis(m);
+            updateChartsUI(m, true);
+        }
+
+        function renderAltModule(m, simProgress) {
+            const p = simProgress !== null ? simProgress : 1;
+
+            // Update C40 UI
+            document.getElementById('c40ClicksVal').textContent = m.rawClicks;
+            document.getElementById('c40MicronsVal').textContent = `${m.microns} µm`;
+            document.getElementById('c40EquivalentText').textContent = c40Axle === 'standard'
+                ? `Oś Red Clix: ${m.rawClicks * 2} klików`
+                : `Oś Standard: ${(m.rawClicks / 2).toFixed(1)} klików`;
+
+            document.getElementById('altDoseVal').textContent = `${m.dose.toFixed(acaiaHighRes ? 2 : 1)} g`;
+            document.getElementById('altWaterVal').textContent = `${m.water} ml`;
+            document.getElementById('altRatioBadge').textContent = `(1:${m.ratio.toFixed(1)})`;
+            document.getElementById('altTempVal').textContent = `${m.temp}°C`;
+
+            // Update Acaia Lunar 2021 Display (In Pour-Over, scale measures total poured water weight!)
+            const displayedSec = Math.round(m.estTotalSec * p);
+            const displayedWeight = acaiaWeighingBeans ? m.dose : (m.water * p);
+            const decimals = acaiaHighRes ? 2 : 1;
+
+            if (acaiaMode !== 1) {
+                document.getElementById('acaiaTimerLed').textContent = formatSecondsToMMSS(displayedSec);
+            }
+
+            if (altMethod === 'AeroPress' && !apRemovedFromScale && p > 0.75 && isSimRunning) {
+                // Show OVERLOAD warning if user presses AeroPress directly on scale
+                document.getElementById('acaiaWeightLed').textContent = 'OVER';
+            } else {
+                document.getElementById('acaiaWeightLed').textContent = displayedWeight.toFixed(decimals);
+            }
+
+            document.getElementById('acaiaCenterStatus').textContent = acaiaWeighingBeans ? 'ZIARNA C40' : 'PROPORCJA';
+            document.getElementById('acaiaCenterRatio').textContent = acaiaWeighingBeans ? `${m.rawClicks} KL` : `1:${m.ratio.toFixed(1)}`;
+
+            updateAcaiaFlowLeds(acaiaWeighingBeans ? 0 : m.avgPourFlowRate, false);
+
+            // Update V60 / AeroPress SVG Liquid Heights
+            const v60ServerRect = document.getElementById('altV60ServerLiquid');
+            const newY = 165 - Math.min(55, (m.beverageWeight / 450) * 55 * p);
+            v60ServerRect.setAttribute('y', newY);
+            v60ServerRect.setAttribute('height', 170 - newY);
+
+            const apPlunger = document.getElementById('altApPlunger');
+            apPlunger.setAttribute('transform', `translate(0, ${Math.round(p * 26)})`);
+
+            // Update KPI Cards
+            document.getElementById('metricEY').textContent = `${m.ey.toFixed(1)}%`;
+            document.getElementById('metricFlow').textContent = m.avgPourFlowRate.toFixed(1);
+            document.getElementById('subFlowTarget').textContent = 'Nalewanie: 3–6 g/s';
+            document.getElementById('labelYieldCard').textContent = 'Napar w serwerze';
+            document.getElementById('metricYield').textContent = `${Math.round(m.beverageWeight)}g`;
+            document.getElementById('metricRatioSub').textContent = `Woda: ${m.water}g`;
+            document.getElementById('metricTimeSub').textContent = formatSecondsToMMSS(m.estTotalSec);
+            document.getElementById('metricTDS').textContent = `${m.tds.toFixed(2)}%`;
+            document.getElementById('subTDSTarget').textContent = 'SCA: 1.15–1.45%';
+
+            // Render Pouring Schedule Steps
+            renderAltPourSchedule(m);
+
+            // Sensory, Diagnosis & Charts
+            updateSensoryBars(m.acidPct, m.sweetPct, m.bitterPct, false);
+            updateAltDiagnosis(m);
+            updateChartsUI(m, false);
+        }
+
+        function renderAltPourSchedule(m) {
+            const container = document.getElementById('altStepsList');
+            const bloomWater = Math.round(m.dose * 3);
+            const midWater = Math.round(m.water * 0.6);
+
+            let steps = [];
+            if (altMethod === 'V60') {
+                steps = [
+                    { time: '0:00 – 0:45', title: '1. Blooming (Preinfuzja)', weight: `${bloomWater} g`, flow: '4.5 g/s + Rao Spin' },
+                    { time: '0:45 – 1:15', title: '2. Główne zalanie (60%)', weight: `${midWater} g`, flow: '5.5 g/s (Środek LED)' },
+                    { time: '1:15 – 1:45', title: '3. Dopełnienie (100%)', weight: `${m.water} g`, flow: '3.5 g/s + lekki obrót' },
+                    { time: `1:45 – ${formatSecondsToMMSS(m.estTotalSec)}`, title: '4. Drawdown (Skapywanie)', weight: `Uzysk ~${Math.round(m.beverageWeight)} g`, flow: 'Płaskie łoże kawowe' }
+                ];
+            } else {
+                steps = [
+                    { time: '0:00 – 0:15', title: '1. Zalanie komory AP', weight: `${m.water} g`, flow: `${m.avgPourFlowRate} g/s na Lunarze` },
+                    { time: '0:15 – 2:00', title: '2. Imersja z tłokiem', weight: `${m.water} g (Stała)`, flow: 'Podciśnienie trzyma napar' },
+                    { time: '2:00 – 2:05', title: '3. Zakręcenie + Zdjęcie z wagi', weight: 'Zdejmij z Lunara!', flow: 'Ochrona tensometru 2000g' },
+                    { time: '2:05 – 2:35', title: '4. Powolny docisk tłoka', weight: `Uzysk ~${Math.round(m.beverageWeight)} g`, flow: 'Jednostajny nacisk dłoni' }
+                ];
+            }
+
+            container.innerHTML = steps.map(s => `
+                <div class="bg-espresso-950/80 border border-espresso-800 rounded-xl p-2.5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-[11px] font-mono text-copper-400 mb-0.5">
+                        <span>${s.time}</span>
+                        <span class="text-emerald-400 font-bold">Waga: ${s.weight}</span>
+                    </div>
+                    <div class="text-xs font-semibold text-crema-100">${s.title}</div>
+                    <div class="text-[10px] font-mono text-sky-300/80 mt-0.5">Pasek LED: ${s.flow}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateSensoryBars(acid, sweet, bitter, isEspresso) {
+            document.getElementById('barAcid').style.width = `${acid}%`;
+            document.getElementById('barAcid').textContent = `${acid}%`;
+            document.getElementById('valAcid').textContent = `${acid}%`;
+
+            document.getElementById('barSweet').style.width = `${sweet}%`;
+            document.getElementById('barSweet').textContent = `${sweet}%`;
+            document.getElementById('valSweet').textContent = `${sweet}%`;
+
+            document.getElementById('barBitter').style.width = `${bitter}%`;
+            document.getElementById('barBitter').textContent = `${bitter}%`;
+            document.getElementById('valBitter').textContent = `${bitter}%`;
+
+            document.getElementById('noteAcid').textContent = acid > 40 ? 'Ostra, cytrynowa' : (isEspresso ? 'Cytrusowa, żywa' : 'Bergamotka, brzoskwinia');
+            document.getElementById('noteSweet').textContent = sweet >= 40 ? (isEspresso ? 'Karmel, czekolada' : 'Miód, trzcinowy cukier') : 'Delikatna, w tle';
+            document.getElementById('noteBitter').textContent = bitter > 38 ? 'Cierpka, popielata' : (isEspresso ? 'Gorzka czekolada' : 'Czarna herbata');
+        }
+
+        function updateEspressoDiagnosis(m) {
+            const card = document.getElementById('baristaDiagnosisCard');
+            const title = document.getElementById('diagTitle');
+            const badge = document.getElementById('diagBadge');
+            const desc = document.getElementById('diagDescription');
+            const tip = document.getElementById('diagTip');
+            const badgeEY = document.getElementById('badgeEY');
+
+            if (m.steadyFlowRate < 0.65) {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-rose-500 transition-all';
+                title.textContent = 'Zatkana Kolba (Choked Shot) — Przepływ < 0.6 g/s';
+                badge.textContent = 'Zbyt drobny przemiał';
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                desc.textContent = `Na pasku Flow-Rate Acaia Lunar świeci się tylko pierwsza dioda (${m.steadyFlowRate.toFixed(2)} g/s). Kawa jest zmielona zbyt drobno (${m.microns} µm), co blokuje przepływ i powoduje gorzki, cierpki ekstrakt.`;
+                tip.textContent = 'Porada Baristy: Zwiększ grubość mielenia w okolice 3.2–3.8 lub zmniejsz dozę na wadze Acaia Lunar.';
+                badgeEY.textContent = 'Przeparzone';
+            } else if (m.isChanneling) {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-amber-500 transition-all';
+                title.textContent = 'Kanałowanie (Channeling) — Zbyt wysokie ciśnienie';
+                badge.textContent = `Ciśnienie ${m.pressure.toFixed(1)} bar`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                desc.textContent = 'Strumień wody przebija ciastko kawowe, powodując skoki na linijce diod LED Acaia Lunar. W filiżance mieszają się kwaśne i ostro-gorzkie frakcje.';
+                tip.textContent = 'Porada Baristy: Obniż ciśnienie pompy E61 do 8.5–9.0 bar i zastosuj igły WDT przed ubiciem.';
+                badgeEY.textContent = 'Nierówne';
+            } else if (m.ey < 18.0) {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-amber-400 transition-all';
+                title.textContent = 'Niedoparzone Espresso (Under-extracted)';
+                badge.textContent = `Niskie EY ${m.ey.toFixed(1)}%`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30';
+                desc.textContent = `Zbyt szybki przepływ (${m.steadyFlowRate.toFixed(2)} g/s zapala skrajne prawe diody LED na Lunarze). Napar jest wodnisty, kwaśny i pozbawiony słodyczy.`;
+                tip.textContent = 'Porada Baristy: Zmiel ziarna drobniej lub podnieś temperaturę PID do 93°C.';
+                badgeEY.textContent = 'Niedoparzone';
+            } else if (m.ey > 22.2) {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-rose-500 transition-all';
+                title.textContent = 'Przeparzone Espresso (Over-extracted)';
+                badge.textContent = `Wysokie EY ${m.ey.toFixed(1)}%`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                desc.textContent = 'Nadmierna ekstrakcja garbników i włókien kawowych. Dominuje suchość na języku oraz ciężka, ciemna gorycz.';
+                tip.textContent = 'Porada Baristy: Zakończ ekstrakcję wcześniej na stoperze Acaia Lunar lub zmiel kawę odrobinę grubiej.';
+                badgeEY.textContent = 'Przeparzone';
+            } else {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-emerald-500 transition-all';
+                title.textContent = 'Idealny Balans (Sweet Spot Espresso)';
+                badge.textContent = `Optimum EY ${m.ey.toFixed(1)}%`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                desc.textContent = `Wzorcowy przepływ ${m.steadyFlowRate.toFixed(2)} g/s utrzymuje się w zielonej strefie paska LED Acaia Lunar 2021. Syropowe body (${m.tds.toFixed(1)}% TDS) i pełna słodycz.`;
+                tip.textContent = 'Wskazówka Acaia Lunar: Użyj przycisku "ZWAŻ ZIARNA" (0.01g), aby powtarzalnie odważać 18.00 g przed wsypaniem do młynka.';
+                badgeEY.textContent = 'Sweet Spot';
+            }
+        }
+
+        function updateAltDiagnosis(m) {
+            const card = document.getElementById('baristaDiagnosisCard');
+            const title = document.getElementById('diagTitle');
+            const badge = document.getElementById('diagBadge');
+            const desc = document.getElementById('diagDescription');
+            const tip = document.getElementById('diagTip');
+            const badgeEY = document.getElementById('badgeEY');
+
+            if (m.ey < 18.2) {
+                const diffClicks = c40Axle === 'standard' ? '-2 kliki' : '-4 kliki Red Clix';
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-amber-400 transition-all';
+                title.textContent = `Niedoparzony ${altMethod} (Zbyt gruby przemiał C40)`;
+                badge.textContent = `Korekta C40: ${diffClicks}`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30';
+                desc.textContent = `Przy ${m.rawClicks} klikach (${m.microns} µm) woda przelatuje zbyt szybko (${formatSecondsToMMSS(m.estTotalSec)}), dając płaski, kwaśny napar o niskim EY (${m.ey.toFixed(1)}%).`;
+                tip.textContent = `Porada Comandante: Zmniejsz ustawienie o ${diffClicks} i utrzymuj tempo zalewania 4–5 g/s na pasku LED Acaia Lunar.`;
+                badgeEY.textContent = 'Niedoparzone';
+            } else if (m.ey > 21.8) {
+                const diffClicks = c40Axle === 'standard' ? '+2 kliki' : '+4 kliki Red Clix';
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-rose-500 transition-all';
+                title.textContent = `Przeparzony ${altMethod} (Cierpkość i długi czas)`;
+                badge.textContent = `Korekta C40: ${diffClicks}`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                desc.textContent = `Zbyt drobny przemiał (${m.microns} µm) przytyka papierowy filtr. Czas parzenia wydłuża się do ${formatSecondsToMMSS(m.estTotalSec)}, uwalniając suchą cierpkość.`;
+                tip.textContent = `Porada Comandante: Odkręć pokrętło o ${diffClicks} w prawo, aby oczyścić napar i skrócić drawdown.`;
+                badgeEY.textContent = 'Przeparzone';
+            } else {
+                card.className = 'glass-card rounded-2xl p-4 sm:p-5 border-l-4 border-l-emerald-500 transition-all';
+                title.textContent = `Wzorcowy ${altMethod} (SCA Gold Cup • Comandante C40)`;
+                badge.textContent = `Optimum: ${m.rawClicks} kl. (${m.microns}µm)`;
+                badge.className = 'text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                desc.textContent = `Żarna Nitro Blade przy ${m.microns} µm dają równomierny przemiał bez pyłu. Ekstrakcja ${m.ey.toFixed(1)}% i moc ${m.tds.toFixed(2)}% TDS trafiają w sam środek standardu SCA Gold Cup.`;
+                tip.textContent = altMethod === 'V60'
+                    ? 'Wskazówka Acaia Lunar: Korzystaj z Trybu 2 (Dual Display), aby Rao Spin nie zatrzymał stopera podczas unoszenia serwera.'
+                    : 'Wskazówka Acaia Lunar: Przed dociśnięciem tłoka AeroPressu zestaw naczynie z wagi na blat, aby nie przekroczyć limitu 2000 g.';
+                badgeEY.textContent = 'SCA Gold Cup';
+            }
+        }
+
+        /*************************************************************************
+         * CHART.JS INITIALIZATION & DYNAMIC UPDATES
+         *************************************************************************/
+        function initCharts() {
+            Chart.defaults.color = '#c9a986';
+            Chart.defaults.font.family = "'JetBrains Mono', monospace";
+            Chart.defaults.font.size = 10;
+
+            const ctxKinetics = document.getElementById('kineticsChart').getContext('2d');
+            kineticsChart = new Chart(ctxKinetics, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Ekstrakcja EY (%)',
+                            data: [],
+                            borderColor: '#e7a463',
+                            backgroundColor: 'rgba(231, 164, 99, 0.14)',
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 0,
+                            yAxisID: 'yEY'
+                        },
+                        {
+                            label: 'Przepływ Lunar (g/s)',
+                            data: [],
+                            borderColor: '#38bdf8',
+                            borderDash: [4, 3],
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.35,
+                            pointRadius: 0,
+                            yAxisID: 'yFlow'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 10, color: '#f5e8d8' } }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxTicksLimit: 7 } },
+                        yEY: { type: 'linear', position: 'left', min: 0, max: 28, title: { display: true, text: 'EY %', color: '#e7a463' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        yFlow: { type: 'linear', position: 'right', min: 0, max: 8, title: { display: true, text: 'g/s', color: '#38bdf8' }, grid: { drawOnChartArea: false } }
+                    }
+                }
+            });
+
+            // Sweet Spot Target Box Plugin (Adapts to Espresso vs Filter TDS range)
+            const sweetSpotPlugin = {
+                id: 'sweetSpotBox',
+                beforeDatasetsDraw(chart) {
+                    const { ctx, scales: { x, y } } = chart;
+                    const isEsp = currentModule === 'espresso';
+                    const tdsMin = isEsp ? 8.0 : 1.15;
+                    const tdsMax = isEsp ? 12.0 : 1.45;
+
+                    const left = x.getPixelForValue(18);
+                    const right = x.getPixelForValue(22);
+                    const top = y.getPixelForValue(tdsMax);
+                    const bottom = y.getPixelForValue(tdsMin);
+
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.14)';
+                    ctx.strokeStyle = 'rgba(16, 185, 129, 0.55)';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.fillRect(left, top, right - left, bottom - top);
+                    ctx.strokeRect(left, top, right - left, bottom - top);
+                    ctx.fillStyle = 'rgba(110, 231, 183, 0.9)';
+                    ctx.font = '600 9px "JetBrains Mono", monospace';
+                    ctx.fillText(isEsp ? 'ESPRESSO SWEET SPOT' : 'SCA GOLD CUP', left + 5, top + 12);
+                    ctx.restore();
+                }
+            };
+
+            const ctxControl = document.getElementById('controlMatrixChart').getContext('2d');
+            controlChart = new Chart(ctxControl, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Twój Napar',
+                        data: [{ x: 20.1, y: 10.0 }],
+                        backgroundColor: '#34d399',
+                        borderColor: '#059669',
+                        borderWidth: 3,
+                        pointRadius: 8
+                    }]
+                },
+                plugins: [sweetSpotPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (c) => `EY: ${c.parsed.x.toFixed(1)}% | TDS: ${c.parsed.y.toFixed(2)}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { min: 13, max: 26, title: { display: true, text: 'Wydajność Ekstrakcji (EY %)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { min: 4, max: 16, title: { display: true, text: 'Moc Naparu (TDS %)' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function updateChartsUI(m, isEspresso) {
+            if (!kineticsChart || !controlChart) return;
+
+            kineticsChart.data.labels = m.labels;
+            kineticsChart.data.datasets[0].data = m.eySeries;
+            kineticsChart.data.datasets[1].data = m.flowSeries;
+            kineticsChart.options.scales.yFlow.max = isEspresso ? 4.5 : 8.0;
+            kineticsChart.update('none');
+
+            controlChart.options.scales.y.min = isEspresso ? 4.0 : 0.7;
+            controlChart.options.scales.y.max = isEspresso ? 16.0 : 2.5;
+            controlChart.data.datasets[0].data = [{ x: m.ey, y: m.tds }];
+
+            const inSweetSpot = m.ey >= 18.0 && m.ey <= 22.0;
+            controlChart.data.datasets[0].backgroundColor = inSweetSpot ? '#34d399' : '#f59e0b';
+            controlChart.data.datasets[0].borderColor = inSweetSpot ? '#059669' : '#d97706';
+            controlChart.update('none');
+        }
+
+        /*************************************************************************
+         * PRESETS & LIVE BREW SIMULATION
+         *************************************************************************/
+        function applyEspressoPreset(key) {
+            const p = ESPRESSO_PRESETS[key];
+            if (!p) return;
+            document.getElementById('espGrindSlider').value = p.grind;
+            document.getElementById('espTempSlider').value = p.temp;
+            document.getElementById('espPressureSlider').value = p.pressure;
+            document.getElementById('espDoseSlider').value = p.dose;
+            document.getElementById('espTimeSlider').value = p.time;
+
+            document.querySelectorAll('.esp-preset-btn').forEach(b => {
+                b.className = 'esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5';
+            });
+            document.getElementById(`espPreset-${key}`).className = 'esp-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-copper-500/20 text-copper-300 border border-copper-500/50 transition flex items-center gap-1.5';
+
+            playAcaiaBeep(2700, 0.05);
+            updateAllModels();
+            startMasterSimulation();
+        }
+
+        function applyAltPreset(key) {
+            const p = ALT_PRESETS[key];
+            if (!p) return;
+            altRecipeKey = key;
+            switchAltMethod(p.method);
+
+            const slider = document.getElementById('c40ClicksSlider');
+            slider.value = c40Axle === 'redclix' ? p.stdClicks * 2 : p.stdClicks;
+            document.getElementById('altDoseSlider').value = p.dose;
+            document.getElementById('altWaterSlider').value = p.water;
+            document.getElementById('altTempSlider').value = p.temp;
+            document.getElementById('altRecipeScheduleName').textContent = p.name;
+
+            document.querySelectorAll('.alt-preset-btn').forEach(b => {
+                b.className = 'alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-espresso-800 hover:bg-espresso-700 text-crema-200 border border-transparent transition flex items-center gap-1.5';
+            });
+            document.getElementById(`altPreset-${key}`).className = 'alt-preset-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-copper-500/20 text-copper-300 border border-copper-500/50 transition flex items-center gap-1.5';
+
+            onC40SliderChange();
+            startMasterSimulation();
+        }
+
+        function toggleMasterSimulation() {
+            if (isSimRunning) {
+                stopMasterSimulation();
+            } else {
+                startMasterSimulation();
+            }
+        }
+
+        function startMasterSimulation() {
+            if (isSimRunning) clearInterval(simInterval);
+            acaiaWeighingBeans = false;
+            isSimRunning = true;
+            simElapsedSec = 0;
+
+            const btnText = document.getElementById('masterBrewText');
+            const btnIcon = document.getElementById('masterBrewIcon');
+            btnText.textContent = 'Parzenie... (Stop)';
+            btnIcon.className = 'ph-fill ph-stop-circle text-lg animate-spin';
+
+            playAcaiaBeep(2900, 0.08);
+            if (currentModule === 'espresso') {
+                const press = parseFloat(document.getElementById('espPressureSlider').value);
+                playE61PumpHum(3.0, press);
+            }
+
+            let step = 0;
+            const totalSteps = 60;
+            simInterval = setInterval(() => {
+                step++;
+                const ratio = step / totalSteps;
+                if (step >= totalSteps) {
+                    stopMasterSimulation();
+                    playAcaiaBeep(3100, 0.1);
+                } else {
+                    updateAllModels(ratio);
+                }
+            }, 45);
+        }
+
+        function stopMasterSimulation() {
+            if (simInterval) clearInterval(simInterval);
+            isSimRunning = false;
+            document.getElementById('masterBrewText').textContent = 'Start Parzenia';
+            document.getElementById('masterBrewIcon').className = 'ph-fill ph-play-circle text-lg';
+            updateAllModels(null);
+        }
+
+        window.onload = function () {
+            initCharts();
+            updateAcaiaDisplayUI();
+            updateAllModels();
+        };
+    </script>
+</body>
+</html>
