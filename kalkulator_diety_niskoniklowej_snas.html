@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NikielDiet Pro — Kalkulator Posiłków, Makroskładników i Niklu (SNAS)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            clinical: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* Progress Bar Smooth Transition */
+    .progress-fill {
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+    }
+    /* Print Styles */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .print-card {
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-teal-600 selection:text-white">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900">NikielDiet <span class="text-teal-600">Pro</span></h1>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
+              SNAS / Dieta Niskoniklowa
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 hidden md:block">Kalkulator posiłków, makroskładników i ładunku niklu w diecie</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <button onclick="openBmrModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 transition shadow-sm">
+          <i data-lucide="calculator" class="w-4 h-4 text-teal-600"></i>
+          <span>Oblicz moje zapotrzebowanie</span>
+        </button>
+
+        <button onclick="loadSampleDay()" class="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition" title="Wypełnij bezpieczny jadłospis na cały dzień">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+          <span>Przykładowy dzień</span>
+        </button>
+
+        <button onclick="openExportModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Drukuj / Eksportuj</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- 1. PANEL PODSUMOWANIA DZIENNEGO (DASHBOARD) -->
+    <section aria-label="Podsumowanie dzienne" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 print-card">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">Panel Podsumowania Dziennego</h2>
+            <span id="nickelStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Bezpieczny poziom niklu
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Monitoruj bilans kaloryczny oraz skumulowany ładunek niklu ze wszystkich 5 posiłków i obróbki kulinarnej.
+          </p>
+        </div>
+
+        <!-- Mobile Sample Day & Reset Buttons -->
+        <div class="flex flex-wrap items-center gap-2 no-print">
+          <button onclick="loadSampleDay()" class="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>Wczytaj przykładowy dzień niskoniklowy</span>
+          </button>
+          <button onclick="openCustomProductModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-teal-600"></i>
+            <span>Dodaj własny produkt</span>
+          </button>
+          <button onclick="openClearDayModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Wyczyść dzień</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nickel Main Gauge & Macros Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-5">
+        
+        <!-- Left/Main Card: Nickel Safety Indicator -->
+        <div id="nickelDashboardCard" class="lg:col-span-5 rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/90 via-teal-50/60 to-white border-2 border-emerald-200 flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Szacowane Spożycie Niklu</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span id="totalNickelValue" class="text-3xl sm:text-4xl font-extrabold text-slate-900">0.0</span>
+                  <span class="text-sm font-semibold text-slate-600">/ <span id="goalNickelValue">120</span> µg</span>
+                </div>
+              </div>
+              <div id="nickelIconBox" class="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center shrink-0">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <!-- Progress bar with threshold markers -->
+            <div class="mt-4">
+              <div class="w-full h-3.5 bg-slate-200/80 rounded-full overflow-hidden p-0.5 relative">
+                <div id="nickelProgressBar" class="progress-fill h-full rounded-full bg-emerald-500" style="width: 0%"></div>
+              </div>
+              <div class="flex justify-between text-[11px] font-medium text-slate-500 mt-1.5">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> &lt;100 µg (Bezpiecznie)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> 100–150 µg (Ostrożnie)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> &gt;150 µg (Alarm)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Nickel Alert Message -->
+          <div id="nickelAlertBox" class="mt-4 p-3 rounded-xl bg-white/90 border border-emerald-200/80 text-xs text-slate-700 flex items-start gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <div id="nickelAlertText">
+              Twój jadłospis mieści się w rygorystycznym progu diety niskoniklowej (&lt;100 µg). Ryzyko zaostrzenia objawów SNAS jest minimalne.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Card: 4 Macronutrient Progress Bars -->
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <!-- Kalorie -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <i data-lucide="flame" class="w-4 h-4 text-orange-500"></i> Energia (Kalorie)
+              </span>
+              <span id="kcalPercent" class="text-xs font-bold text-slate-600">0%</span>
+            </div>
+            <div class="my-2 flex items-baseline gap-1.5">
+              <span id="totalKcalValue" class="text-2xl font-extrabold text-slate-900">0</span>
+              <span class="text-xs font-semibold text-slate-500">/ <span id="goalKcalValue">2000</span> kcal</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="kcalProgressBar" class="progress-fill h-full bg-orange-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Białko -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <i data-lucide="dumbbell" class="w-4 h-4 text-sky-500"></i> Białko (B)
+              </span>
+              <span id="proteinPercent" class="text-xs font-bold text-slate-600">0%</span>
+            </div>
+            <div class="my-2 flex items-baseline gap-1.5">
+              <span id="totalProteinValue" class="text-2xl font-extrabold text-slate-900">0.0</span>
+              <span class="text-xs font-semibold text-slate-500">/ <span id="goalProteinValue">100</span> g</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="proteinProgressBar" class="progress-fill h-full bg-sky-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Tłuszcze -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <i data-lucide="droplet" class="w-4 h-4 text-amber-500"></i> Tłuszcze (T)
+              </span>
+              <span id="fatPercent" class="text-xs font-bold text-slate-600">0%</span>
+            </div>
+            <div class="my-2 flex items-baseline gap-1.5">
+              <span id="totalFatValue" class="text-2xl font-extrabold text-slate-900">0.0</span>
+              <span class="text-xs font-semibold text-slate-500">/ <span id="goalFatValue">65</span> g</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="fatProgressBar" class="progress-fill h-full bg-amber-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Węglowodany -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <i data-lucide="wheat" class="w-4 h-4 text-indigo-500"></i> Węglowodany (W)
+              </span>
+              <span id="carbsPercent" class="text-xs font-bold text-slate-600">0%</span>
+            </div>
+            <div class="my-2 flex items-baseline gap-1.5">
+              <span id="totalCarbsValue" class="text-2xl font-extrabold text-slate-900">0.0</span>
+              <span class="text-xs font-semibold text-slate-500">/ <span id="goalCarbsValue">250</span> g</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="carbsProgressBar" class="progress-fill h-full bg-indigo-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 4. INTERAKTYWNY MODYFIKATOR OBRÓBKI KULINARNEJ (QUICK BAR) -->
+      <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
+          <!-- Stainless Steel Switch -->
+          <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 cursor-pointer transition select-none flex-1">
+            <input type="checkbox" id="stainlessSteelToggle" onchange="toggleCulinaryModifier()" class="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-slate-300" />
+            <div class="text-xs">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <span>Gotowane w garnku ze stali nierdzewnej (szczególnie kwaśne potrawy)</span>
+                <span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-extrabold text-[10px]">+35 µg Ni</span>
+              </div>
+              <p class="text-slate-500 text-[11px] mt-0.5">Stal 18/10 uwalnia jony niklu pod wpływem kwasów (pomidory, cytryna, kiszonki). Zalecane: emalia, szkło, teflon, ceramika.</p>
+            </div>
+          </label>
+
+          <!-- Vitamin C & Iron Shield Switch -->
+          <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 cursor-pointer transition select-none flex-1">
+            <input type="checkbox" id="vitaminCShieldToggle" onchange="toggleCulinaryModifier()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 border-slate-300" />
+            <div class="text-xs">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <span>Osłona posiłków: Witamina C + prawidłowy poziom żelaza</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-extrabold text-[10px]">-15% wchłaniania</span>
+              </div>
+              <p class="text-slate-500 text-[11px] mt-0.5">Kwas askorbinowy oraz żelazo konkurują z niklem w transporcie jelitowym (DMT1), ograniczając jego biodostępność.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Warning Banner when Stainless Steel is checked -->
+      <div id="stainlessWarningBanner" class="hidden mt-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-3">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5"></i>
+        <div>
+          <span class="font-bold">Uwaga na migrację niklu z naczyń!</span> Gotowanie w garnkach ze stali nierdzewnej (zwłaszcza oznaczonych jako 18/10 lub 18/8, gdzie 10 i 8 oznaczają % niklu) powoduje przenikanie niklu do potrawy. Doliczono szacunkowe <strong>+35 µg niklu</strong> do dziennego bilansu. Wymień naczynia na <strong>szkło żaroodporne, ceramikę, nieuszkodzoną emalię, teflon lub stal bezoniklową (18/0)</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS (Kreator & Baza vs Zasady Diety i Checklista) -->
+    <div class="flex items-center gap-2 border-b border-slate-200 no-print">
+      <button id="tabBtnPlanner" onclick="switchMainTab('planner')" class="px-4 py-2.5 text-sm font-bold border-b-2 border-teal-600 text-teal-700 flex items-center gap-2 transition">
+        <i data-lucide="utensils" class="w-4 h-4"></i>
+        <span>Kreator Posiłków i Baza Produktów</span>
+      </button>
+      <button id="tabBtnRules" onclick="switchMainTab('rules')" class="px-4 py-2.5 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 flex items-center gap-2 transition">
+        <i data-lucide="book-open-check" class="w-4 h-4"></i>
+        <span>Zasady Diety Niskoniklowej i Checklista</span>
+        <span id="checklistBadgeCount" class="px-1.5 py-0.5 text-[11px] rounded-full bg-teal-100 text-teal-800 font-bold">0/6</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: KREATOR POSIŁKÓW + BAZA PRODUKTÓW Z ZAMIENNIKAMI -->
+    <div id="tabContentPlanner" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT COLUMN (7 cols on lg): KREATOR POSIŁKÓW (5 POSIŁKÓW) -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm no-print">
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-teal-600"></i>
+              <span>Twój Jadłospis Dzienny (5 Posiłków)</span>
+            </h3>
+            <p class="text-xs text-slate-500">Kliknij posiłek, aby go aktywować i dodawać do niego produkty z bazy po prawej stronie.</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-medium text-slate-500">Aktywny posiłek:</span>
+            <select id="activeMealSelect" onchange="setActiveMeal(this.value)" class="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-300 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="breakfast">1. Śniadanie</option>
+              <option value="second_breakfast">2. II Śniadanie</option>
+              <option value="lunch">3. Obiad</option>
+              <option value="snack">4. Podwieczorek</option>
+              <option value="dinner">5. Kolacja</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Meals Container rendered by JS -->
+        <div id="mealsContainer" class="space-y-4"></div>
+      </div>
+
+      <!-- RIGHT COLUMN (5 cols on lg): BOGATA BAZA PRODUKTÓW + ASYSTENT ZAMIENNIKÓW -->
+      <div class="lg:col-span-5 lg:sticky lg:top-20 space-y-4 no-print">
+        
+        <!-- INTELLIGENT SUBSTITUTE ASSISTANT BANNER (Dynamic) -->
+        <div id="substituteAssistantCard" class="hidden rounded-2xl p-4 bg-gradient-to-br from-rose-50 via-amber-50 to-white border-2 border-rose-300 shadow-md transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0">
+                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-700">Asystent Bezpiecznych Zamienników</h4>
+                <p id="subAlertProductName" class="text-sm font-bold text-slate-900">Wybrano produkt wysokoniklowy</p>
+              </div>
+            </div>
+            <button onclick="closeSubstituteAssistant()" class="text-slate-400 hover:text-slate-600 p-1">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <p id="subAlertReason" class="text-xs text-slate-700 mt-2.5 leading-relaxed"></p>
+
+          <div class="mt-3 pt-3 border-t border-rose-200/70">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block mb-2">
+              Kliknij, aby użyć bezpiecznego zamiennika niskoniklowego:
+            </span>
+            <div id="subButtonsContainer" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- PRODUCT DATABASE CARD -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <!-- Header & Quick Weight Bar -->
+          <div class="p-4 border-b border-slate-100 bg-slate-50/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="database" class="w-4 h-4 text-teal-600"></i>
+                <span>Baza Produktów i Zawartości Niklu</span>
+              </h3>
+              <span id="productCountBadge" class="text-xs font-semibold text-slate-500">0 produktów</span>
+            </div>
+
+            <!-- Grammage selector for adding -->
+            <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <label for="portionWeightInput" class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <i data-lucide="scale" class="w-3.5 h-3.5 text-teal-600"></i>
+                  <span>Gramatura dodawanej porcji:</span>
+                </label>
+                <div class="flex items-center gap-1">
+                  <input type="number" id="portionWeightInput" value="100" min="1" max="2000" step="5"
+                    class="w-20 text-right font-bold text-sm px-2.5 py-1 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                  <span class="text-xs font-bold text-slate-600">g</span>
+                </div>
+              </div>
+              <!-- Quick Gram Buttons: 30g, 50g, 100g, 150g, 200g -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[11px] text-slate-400 font-medium mr-1">Szybki wybór:</span>
+                <button type="button" onclick="setQuickWeight(30)" class="quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200 transition">30g</button>
+                <button type="button" onclick="setQuickWeight(50)" class="quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200 transition">50g</button>
+                <button type="button" onclick="setQuickWeight(100)" class="quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-600 text-white border border-teal-600 transition">100g</button>
+                <button type="button" onclick="setQuickWeight(150)" class="quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200 transition">150g</button>
+                <button type="button" onclick="setQuickWeight(200)" class="quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200 transition">200g</button>
+              </div>
+            </div>
+
+            <!-- Search Input -->
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="productSearchInput" oninput="renderProductDatabase()" placeholder="Szukaj produktu (np. płatki owsiane, kurczak, chleb...)"
+                class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white" />
+              <button id="clearSearchBtn" onclick="clearProductSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Nickel Level Filter Pills -->
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+              <button onclick="setNickelFilter('all')" id="niFilter_all" class="px-2 py-1.5 rounded-lg text-[11px] font-bold bg-slate-900 text-white text-center transition">
+                Wszystkie
+              </button>
+              <button onclick="setNickelFilter('low')" id="niFilter_low" class="px-2 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-center transition">
+                🟢 Niski &lt;10
+              </button>
+              <button onclick="setNickelFilter('medium')" id="niFilter_medium" class="px-2 py-1.5 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 text-center transition">
+                🟡 Średni
+              </button>
+              <button onclick="setNickelFilter('high')" id="niFilter_high" class="px-2 py-1.5 rounded-lg text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 text-center transition">
+                🔴 Wysoki
+              </button>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
+              <button onclick="setCategoryFilter('all')" id="catFilter_all" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-600 text-white transition">Wszystkie kategorie</button>
+              <button onclick="setCategoryFilter('meat_dairy')" id="catFilter_meat_dairy" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Mięso i nabiał</button>
+              <button onclick="setCategoryFilter('grains')" id="catFilter_grains" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Zboża i pieczywo</button>
+              <button onclick="setCategoryFilter('vegetables')" id="catFilter_vegetables" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Warzywa</button>
+              <button onclick="setCategoryFilter('fruits')" id="catFilter_fruits" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Owoce</button>
+              <button onclick="setCategoryFilter('fats_other')" id="catFilter_fats_other" class="cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Tłuszcze i inne</button>
+            </div>
+          </div>
+
+          <!-- Product List Scrollable Area -->
+          <div id="productDatabaseList" class="divide-y divide-slate-100 max-h-[540px] overflow-y-auto p-2 space-y-1.5"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: ZASADY DIETY NISKONIKLOWEJ I CHECKLISTA REDUKCJI NIKLU -->
+    <div id="tabContentRules" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Interactive Daily Safety Checklist -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="check-square" class="w-5 h-5 text-teal-600"></i>
+                <span>Codzienna Checklista Redukcji Niklu</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Odznaczaj nawyki, które realnie obniżają ekspozycję na nikiel w ciągu dnia.</p>
+            </div>
+          </div>
+
+          <div id="checklistContainer" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Comprehensive Clinical Guide Cards -->
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+              <i data-lucide="droplets" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">1. Spuszczanie pierwszej wody z kranu rano</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Przez noc w rurach oraz metalowych bateriach łazienkowych i kuchennych dochodzi do wypłukiwania jonów niklu do stojącej wody. <strong>Zawsze rano spuść wodę przez 1–2 minuty</strong> zanim użyjesz jej do zagotowania w czajniku, zaparzenia kawy, herbaty czy gotowania zupy. Używaj dzbanków filtrujących i czajników ze szkła lub ze skrytą grzałką.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+              <i data-lucide="scissors" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">2. Obieranie warzyw i owoców ze skórki</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Rośliny pobierają nikiel z gleby, a największe jego stężenie gromadzi się w <strong>zewnętrznej skórce oraz w zewnętrznych liściach</strong>. Obieranie ziemniaków, ogórków, cukinii, marchwi, jabłek czy brzoskwiń pozwala zredukować zawartość niklu w porcji nawet o 30–50%. W przypadku sałaty i kapusty zawsze odrzucaj pierwsze zewnętrzne liście.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center">
+              <i data-lucide="package-x" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">3. Unikanie żywności z puszek i stali 18/10</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Kukurydza konserwowa, tuńczyk w puszce, koncentraty pomidorowe czy owoce w syropie z puszki mają wielokrotnie wyższe stężenie niklu niż te same produkty świeże lub w <strong>szklanych słoikach</strong>. Do gotowania wybieraj garnki emaliowane (bez odprysków), szklane (żaroodporne), ceramiczne, teflonowe lub stal nierdzewną oznaczoną jako <strong>18/0 (bezniklowa)</strong>.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="pill" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">4. Rola Witaminy C i Żelaza w jelitach</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Nikiel wchłania się w jelicie cienkim przy udziale tego samego transportera co żelazo (DMT1). <strong>Niedobór żelaza (anemia) drastycznie zwiększa wchłanianie niklu!</strong> Z kolei dodatek <strong>Witaminy C</strong> (np. świeżej czerwonej papryki, natki w małej ilości lub kwasu askorbinowego do posiłku) chelatuje nikiel i istotnie hamuje jego przenikanie do krwiobiegu.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-6 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <i data-lucide="heart-pulse" class="w-4 h-4 text-teal-600"></i>
+        <span><strong>NikielDiet Pro</strong> — Narzędzie wspierające dietoterapię w Systemowej Alergii na Nikiel (SNAS).</span>
+      </div>
+      <p class="text-center sm:text-right">
+        Uwaga: Zawartość niklu w żywności zależy od jakości gleby i obróbki. Wskazania mają charakter edukacyjno-szacunkowy.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: OBLICZ MOJE ZAPOTRZEBOWANIE (BMR / CPM & LIMIT NIKLU)        -->
+  <!-- ===================================================================== -->
+  <div id="bmrModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <i data-lucide="calculator" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">Kalkulator BMR / CPM i Limitu Niklu</h3>
+            <p class="text-xs text-slate-500">Wylicz swoje zapotrzebowanie ze wzoru Mifflin-St Jeor lub ustaw własne cele</p>
+          </div>
+        </div>
+        <button onclick="closeBmrModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Anthropometric Parameters -->
+      <div class="mt-4 space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Płeć</label>
+            <select id="bmrGender" onchange="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="female">Kobieta</option>
+              <option value="male">Mężczyzna</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Waga (kg)</label>
+            <input type="number" id="bmrWeight" value="65" min="30" max="250" oninput="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Wzrost (cm)</label>
+            <input type="number" id="bmrHeight" value="168" min="120" max="230" oninput="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Wiek (lata)</label>
+            <input type="number" id="bmrAge" value="32" min="12" max="105" oninput="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Poziom aktywności fizycznej (PAL)</label>
+            <select id="bmrActivity" onchange="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="1.2">1.2 — Siedzący tryb życia (brak treningów)</option>
+              <option value="1.375" selected>1.375 — Lekka aktywność (spacery / 1-2 treningi)</option>
+              <option value="1.55">1.55 — Umiarkowana aktywność (3-4 treningi/tydz.)</option>
+              <option value="1.725">1.725 — Wysoka aktywność (praca fizyczna / codzienny sport)</option>
+              <option value="1.9">1.9 — Bardzo wysoka aktywność (sport zawodowy)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Cel sylwetkowy / dietetyczny</label>
+            <select id="bmrGoalType" onchange="calculateBmrPreview()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="-350">Redukcja masy ciała (-350 kcal)</option>
+              <option value="0" selected>Utrzymanie masy ciała (Zero kaloryczne)</option>
+              <option value="300">Budowanie masy (+300 kcal)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Calculated BMR & CPM Box -->
+        <div class="p-3.5 rounded-xl bg-teal-50/80 border border-teal-200 flex items-center justify-between">
+          <div class="text-xs text-teal-900">
+            <div>Podstawowa przemiana materii (BMR): <strong id="previewBmrVal">1415</strong> kcal</div>
+            <div class="mt-0.5">Całkowita przemiana materii (CPM): <strong id="previewCpmVal">1945</strong> kcal</div>
+          </div>
+          <button type="button" onclick="applyCalculatedBmrToInputs()" class="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-xs">
+            Przelicz i wstaw poniżej
+          </button>
+        </div>
+
+        <!-- Editable Daily Targets -->
+        <div class="pt-2 border-t border-slate-100">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Twoje docelowe limity dzienne (możesz edytować ręcznie)</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Kalorie (kcal)</label>
+              <input type="number" id="inputGoalKcal" value="2000" min="800" max="6000" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-bold text-slate-900" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Białko (g)</label>
+              <input type="number" id="inputGoalProtein" value="100" min="20" max="400" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-bold text-slate-900" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tłuszcze (g)</label>
+              <input type="number" id="inputGoalFat" value="65" min="15" max="300" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-bold text-slate-900" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Węglowodany (g)</label>
+              <input type="number" id="inputGoalCarbs" value="250" min="20" max="800" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-bold text-slate-900" />
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <label class="block text-[11px] font-bold text-emerald-700 mb-1">Limit Niklu (µg)</label>
+              <input type="number" id="inputGoalNickel" value="120" min="30" max="400" class="w-full rounded-xl border-2 border-emerald-400 bg-emerald-50/40 px-2.5 py-2 text-sm font-extrabold text-emerald-900" />
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-2">
+            💡 W zaostrzeniu objawów SNAS zaleca się rygorystyczny limit <strong>80–100 µg/dobę</strong>, a w fazie stabilizacji <strong>120–150 µg/dobę</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+        <button onclick="closeBmrModal()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">Anuluj</button>
+        <button onclick="saveGoalsFromModal()" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition">
+          Zapisz moje cele
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: DODAJ WŁASNY PRODUKT DO BAZY                                 -->
+  <!-- ===================================================================== -->
+  <div id="customProductModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">Dodaj własny produkt do bazy</h3>
+            <p class="text-xs text-slate-500">Wprowadź wartości odżywcze oraz szacowaną zawartość niklu w 100g</p>
+          </div>
+        </div>
+        <button onclick="closeCustomProductModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="customProductForm" onsubmit="saveCustomProduct(event)" class="mt-4 space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nazwa produktu *</label>
+          <input type="text" id="cpName" required placeholder="np. Domowy chleb orkiszowy jasny" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategoria</label>
+            <select id="cpCategory" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="meat_dairy">Mięso i nabiał</option>
+              <option value="grains">Zboża i pieczywo</option>
+              <option value="vegetables">Warzywa</option>
+              <option value="fruits">Owoce</option>
+              <option value="fats_other">Tłuszcze i inne</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-emerald-700 mb-1">Szacowany nikiel (µg / 100g) *</label>
+            <input type="number" id="cpNickel" required min="0" max="2000" step="0.5" value="5" class="w-full rounded-xl border-2 border-emerald-300 px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kalorie (kcal)</label>
+            <input type="number" id="cpKcal" required min="0" max="1000" step="1" value="150" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Białko (g)</label>
+            <input type="number" id="cpProtein" required min="0" max="100" step="0.1" value="5" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tłuszcze (g)</label>
+            <input type="number" id="cpFat" required min="0" max="100" step="0.1" value="3" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Węglowodany (g)</label>
+            <input type="number" id="cpCarbs" required min="0" max="100" step="0.1" value="25" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm font-semibold" />
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600">
+          Klasyfikacja niklu nastąpi automatycznie: <strong>&lt;10 µg/100g</strong> (Niski – Zielony), <strong>10–30 µg/100g</strong> (Średni – Żółty), <strong>&gt;30 µg/100g</strong> (Wysoki – Czerwony).
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeCustomProductModal()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100">Anuluj</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-sm">Dodaj do bazy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: DRUKUJ / EKSPORTUJ JADŁOSPIS                                 -->
+  <!-- ===================================================================== -->
+  <div id="exportModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">Eksportuj lub Drukuj Jadłospis</h3>
+            <p class="text-xs text-slate-500">Skopiuj podsumowanie tekstowe dla dietetyka/lekarza lub wydrukuj stronę</p>
+          </div>
+        </div>
+        <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <textarea id="exportTextarea" readonly rows="12" class="w-full font-mono text-xs p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none"></textarea>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100">
+        <button onclick="copyExportText()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 transition">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          <span>Kopiuj do schowka</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="closeExportModal()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100">Zamknij</button>
+          <button onclick="triggerPrint()" class="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white transition">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Drukuj jadłospis (PDF)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 4: POTWIERDZENIE WYCZYSZCZENIA DNIA (BEZ UŻYCIA CONFIRM())       -->
+  <!-- ===================================================================== -->
+  <div id="clearDayModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 no-print">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+          <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Wyczyścić cały jadłospis?</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Wszystkie składniki dodane do dzisiejszych 5 posiłków zostaną usunięte.</p>
+        </div>
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button onclick="closeClearDayModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Anuluj</button>
+        <button onclick="confirmClearDay()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-sm">Tak, wyczyść dzień</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0 no-print"></div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION LOGIC (JAVASCRIPT)                                        -->
+  <!-- ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. BOGATA BAZA PRODUKTÓW Z POZIOMAMI NIKLU I SYSTEMEM ZAMIENNIKÓW
+    // -----------------------------------------------------------------------
+    const INITIAL_PRODUCTS = [
+      // === NISKI POZIOM NIKLU (< 10 µg/100g) - BEZPIECZNE (ZIELONA ODZNAKA) ===
+      // Mięso i nabiał
+      { id: 'p_kurczak', name: 'Pierś z kurczaka (świeża)', category: 'meat_dairy', kcal: 99, p: 21.5, f: 1.3, c: 0, nickel: 2.5, level: 'low', note: 'Bezpieczne źródło pełnowartościowego białka.' },
+      { id: 'p_indyk', name: 'Pierś z indyka (świeża)', category: 'meat_dairy', kcal: 84, p: 19.2, f: 0.7, c: 0, nickel: 2.0, level: 'low', note: 'Bardzo niska zawartość niklu, chude mięso.' },
+      { id: 'p_wolowina', name: 'Wołowina (polędwica / ligawa)', category: 'meat_dairy', kcal: 117, p: 20.1, f: 4.1, c: 0, nickel: 3.5, level: 'low', note: 'Bogata w żelazo hemowe, które ogranicza wchłanianie niklu w jelitach!' },
+      { id: 'p_jajka', name: 'Jajka kurze (1 szt. ≈ 55g)', category: 'meat_dairy', kcal: 143, p: 12.6, f: 9.5, c: 0.7, nickel: 3.0, level: 'low', note: 'Doskonałe źródło białka i żelaza na diecie niskoniklowej.' },
+      { id: 'p_mleko', name: 'Mleko spożywcze 2%', category: 'meat_dairy', kcal: 50, p: 3.3, f: 2.0, c: 4.8, nickel: 1.5, level: 'low', note: 'Nabiał krowi ma naturalnie bardzo niski poziom niklu.' },
+      { id: 'p_jogurt', name: 'Jogurt naturalny', category: 'meat_dairy', kcal: 61, p: 4.3, f: 2.5, c: 5.2, nickel: 2.0, level: 'low', note: 'Bezpieczna baza do II śniadania zamiast mleka sojowego.' },
+      { id: 'p_twarog', name: 'Twaróg chudy / półtłusty', category: 'meat_dairy', kcal: 115, p: 18.5, f: 3.5, c: 3.5, nickel: 2.5, level: 'low', note: 'Świetny zamiennik past z roślin strączkowych i orzechów.' },
+      { id: 'p_mozzarella', name: 'Ser Mozzarella', category: 'meat_dairy', kcal: 248, p: 18.0, f: 19.0, c: 1.5, nickel: 3.0, level: 'low', note: 'Niskoniklowy ser podpuszczkowy, idealny do sałatek i kanapek.' },
+      { id: 'p_ser_zolty', name: 'Ser żółty (Gouda / Edamski)', category: 'meat_dairy', kcal: 345, p: 25.4, f: 27.0, c: 0.1, nickel: 4.5, level: 'low', note: 'Bogaty w wapń i bezpieczny w diecie SNAS.' },
+
+      // Zboża i pieczywo (oczyszczone - niskoniklowe)
+      { id: 'p_ryz_bialy', name: 'Biały ryż (basmati / jaśminowy)', category: 'grains', kcal: 348, p: 7.1, f: 0.7, c: 78.0, nickel: 4.0, level: 'low', note: 'Oczyszczone ziarno ryżu jest podstawą bezpiecznych obiadów.' },
+      { id: 'p_makaron_jasny', name: 'Makaron pszenny jasny', category: 'grains', kcal: 352, p: 12.0, f: 1.5, c: 72.5, nickel: 5.5, level: 'low', note: 'Bezpieczny wybór zamiast makaronu pełnoziarnistego i gryczanego.' },
+      { id: 'p_chleb_pszenny', name: 'Chleb pszenny biały (bez ziaren)', category: 'grains', kcal: 258, p: 8.2, f: 1.4, c: 53.0, nickel: 6.0, level: 'low', note: 'Nikiel gromadzi się w otrębach, dlatego białe pieczywo jest bezpieczne.' },
+      { id: 'p_bulka_pszenna', name: 'Bułka pszenna (kajzerka)', category: 'grains', kcal: 275, p: 8.5, f: 2.1, c: 56.0, nickel: 5.0, level: 'low', note: 'Sprawdź, by nie była posypana sezamem, makiem lub słonecznikiem.' },
+      { id: 'p_platki_ryzowe', name: 'Płatki ryżowe błyskawiczne', category: 'grains', kcal: 355, p: 6.9, f: 0.8, c: 79.5, nickel: 4.5, level: 'low', note: 'Najlepszy zamiennik wysokoniklowych płatków owsianych!' },
+      { id: 'p_kasza_manna', name: 'Kasza manna (pszenna)', category: 'grains', kcal: 348, p: 10.3, f: 1.1, c: 74.0, nickel: 5.0, level: 'low', note: 'Doskonała na ciepłe, niskoniklowe śniadanie.' },
+      { id: 'p_kasza_kukurydziana', name: 'Kasza kukurydziana (polenta)', category: 'grains', kcal: 345, p: 8.1, f: 1.5, c: 75.0, nickel: 6.0, level: 'low', note: 'Świetna alternatywa dla kaszy gryczanej i jaglanej.' },
+
+      // Warzywa (obrane / niskoniklowe)
+      { id: 'p_ziemniaki', name: 'Ziemniaki (obrane ze skórki)', category: 'vegetables', kcal: 77, p: 2.0, f: 0.1, c: 17.5, nickel: 5.0, level: 'low', note: 'Obowiązkowo obieraj ze skórki i gotuj w bezpiecznym garnku.' },
+      { id: 'p_bataty', name: 'Bataty (słodkie ziemniaki, obrane)', category: 'vegetables', kcal: 86, p: 1.6, f: 0.1, c: 20.1, nickel: 5.5, level: 'low', note: 'Niskoniklowe źródło węglowodanów złożonych i beta-karotenu.' },
+      { id: 'p_ogorek', name: 'Ogórek zielony (obrany)', category: 'vegetables', kcal: 14, p: 0.7, f: 0.1, c: 2.8, nickel: 2.5, level: 'low', note: 'Skórka ogórka kumuluje nikiel — po obraniu jest w pełni bezpieczny.' },
+      { id: 'p_papryka', name: 'Papryka czerwona (świeża)', category: 'vegetables', kcal: 31, p: 1.0, f: 0.3, c: 6.0, nickel: 3.5, level: 'low', note: 'Bogata w witaminę C, która hamuje wchłanianie niklu w jelicie!' },
+      { id: 'p_cukinia', name: 'Cukinia (młoda, obrana)', category: 'vegetables', kcal: 17, p: 1.2, f: 0.3, c: 3.1, nickel: 3.0, level: 'low', note: 'Bezpieczna baza do leczo, zup kremów i placków.' },
+      { id: 'p_marchew', name: 'Marchew (obrana)', category: 'vegetables', kcal: 41, p: 0.9, f: 0.2, c: 9.6, nickel: 5.0, level: 'low', note: 'Obierz grubszą warstwę skórki przed spożyciem.' },
+      { id: 'p_dynia', name: 'Dynia (miąższ bez skóry i pestek)', category: 'vegetables', kcal: 26, p: 1.0, f: 0.1, c: 6.5, nickel: 4.0, level: 'low', note: 'Miąższ dyni ma mało niklu (w przeciwieństwie do pestek dyni!).' },
+      { id: 'p_salata_lodowa', name: 'Sałata lodowa / masłowa', category: 'vegetables', kcal: 14, p: 0.9, f: 0.1, c: 2.9, nickel: 4.0, level: 'low', note: 'Bezpieczny zamiennik szpinaku i jarmużu. Odrzuć zewnętrzne liście.' },
+      { id: 'p_rzodkiewka', name: 'Rzodkiewka', category: 'vegetables', kcal: 16, p: 0.7, f: 0.1, c: 3.4, nickel: 3.5, level: 'low', note: 'Dobrze tolerowana w diecie niskoniklowej.' },
+
+      // Owoce (niskoniklowe)
+      { id: 'p_jablko', name: 'Jabłko (obrane ze skórki)', category: 'fruits', kcal: 52, p: 0.3, f: 0.2, c: 13.8, nickel: 3.0, level: 'low', note: 'Po obraniu ze skórki zawiera śladowe ilości niklu.' },
+      { id: 'p_banan', name: 'Banan', category: 'fruits', kcal: 89, p: 1.1, f: 0.3, c: 22.8, nickel: 4.5, level: 'low', note: 'Doskonała słodka przekąska i zagęszczacz do placuszków.' },
+      { id: 'p_truskawki', name: 'Truskawki (świeże)', category: 'fruits', kcal: 32, p: 0.7, f: 0.3, c: 7.7, nickel: 4.0, level: 'low', note: 'Dużo witaminy C i mało niklu (w przeciwieństwie do malin).' },
+      { id: 'p_borowki', name: 'Borówki amerykańskie', category: 'fruits', kcal: 57, p: 0.7, f: 0.3, c: 14.5, nickel: 4.5, level: 'low', note: 'Bezpieczne owoce jagodowe bogate w antyoksydanty.' },
+      { id: 'p_brzoskwinia', name: 'Brzoskwinia (świeża, obrana)', category: 'fruits', kcal: 39, p: 0.9, f: 0.3, c: 9.5, nickel: 5.0, level: 'low', note: 'Wybieraj świeżą i obraną — nigdy brzoskwiń z metalowej puszki!' },
+
+      // Tłuszcze i inne
+      { id: 'p_maslo', name: 'Masło ekstra 82%', category: 'fats_other', kcal: 735, p: 0.7, f: 82.0, c: 0.7, nickel: 1.0, level: 'low', note: 'Tłuszcze zwierzęce mleczne są niemal całkowicie wolne od niklu.' },
+      { id: 'p_oliwa', name: 'Oliwa z oliwek Extra Virgin', category: 'fats_other', kcal: 884, p: 0, f: 100.0, c: 0, nickel: 1.5, level: 'low', note: 'Kupuj w ciemnej szklanej butelce (nie w metalowej puszce).' },
+      { id: 'p_biala_czekolada', name: 'Biała czekolada (bez orzechów)', category: 'fats_other', kcal: 539, p: 5.9, f: 32.1, c: 59.2, nickel: 5.5, level: 'low', note: 'Powstaje z tłuszczu kakaowego i mleka (bez proszku kakaowego), więc ma mało niklu!' },
+      { id: 'p_miod', name: 'Miód pszczeli naturalny', category: 'fats_other', kcal: 304, p: 0.3, f: 0, c: 82.4, nickel: 3.0, level: 'low', note: 'Bezpieczny słodzik na diecie niskoniklowej.' },
+
+      // === ŚREDNI POZIOM NIKLU (10–30 µg/100g) - OSTROŻNIE (ŻÓŁTA ODZNAKA) ===
+      { id: 'p_dorsz', name: 'Dorsz świeży (filet)', category: 'meat_dairy', kcal: 82, p: 17.8, f: 0.7, c: 0, nickel: 12.0, level: 'medium', substitutes: ['p_kurczak', 'p_indyk'], reason: 'Ryby morskie mają umiarkowany poziom niklu — spożywaj w kontrolowanych porcjach, zawsze świeże (nie z puszki).' },
+      { id: 'p_losos', name: 'Łosoś świeży (filet)', category: 'meat_dairy', kcal: 208, p: 20.4, f: 13.4, c: 0, nickel: 16.0, level: 'medium', substitutes: ['p_kurczak', 'p_wolowina'], reason: 'Umiarkowana ilość niklu (16 µg/100g). Dobry w fazie stabilizacji diety.' },
+      { id: 'p_chleb_zytni', name: 'Chleb żytni jasny', category: 'grains', kcal: 242, p: 5.9, f: 1.3, c: 51.5, nickel: 18.0, level: 'medium', substitutes: ['p_chleb_pszenny', 'p_bulka_pszenna'], reason: 'Mąka żytnia zawiera więcej niklu niż oczyszczona mąka pszenna.' },
+      { id: 'p_brokuly', name: 'Brokuły (różyczki)', category: 'vegetables', kcal: 34, p: 2.8, f: 0.4, c: 6.6, nickel: 19.0, level: 'medium', substitutes: ['p_cukinia', 'p_papryka'], reason: 'Brokuły mają średni poziom niklu — dopuszczalne w małych porcjach (np. 50–80g).' },
+      { id: 'p_kalafior', name: 'Kalafior', category: 'vegetables', kcal: 25, p: 1.9, f: 0.3, c: 5.0, nickel: 14.0, level: 'medium', substitutes: ['p_cukinia', 'p_dynia'], reason: 'Średnia zawartość niklu, bezpieczniejszy niż brokuły, lecz wymaga umiaru.' },
+      { id: 'p_pomidor', name: 'Pomidor świeży (obrany, bez pestek)', category: 'vegetables', kcal: 18, p: 0.9, f: 0.2, c: 3.9, nickel: 18.0, level: 'medium', substitutes: ['p_papryka', 'p_ogorek'], reason: 'Pomidory (zwłaszcza sosy i koncentraty) mają średni/wysoki poziom niklu i są kwaśne.' },
+      { id: 'p_cebula', name: 'Cebula biała', category: 'vegetables', kcal: 40, p: 1.1, f: 0.1, c: 9.3, nickel: 13.0, level: 'medium', substitutes: ['p_papryka', 'p_rzodkiewka'], reason: 'Stosowana w niewielkiej ilości jako dodatek smakowy jest zazwyczaj bezpieczna.' },
+      { id: 'p_kawa', name: 'Kawa parzona (napar, 100ml)', category: 'fats_other', kcal: 2, p: 0.1, f: 0, c: 0.3, nickel: 12.0, level: 'medium', substitutes: ['p_mleko'], reason: 'Ziarna kawy zawierają nikiel. Ogranicz do 1 filiżanki dziennie i parz z przefiltrowanej wody.' },
+      { id: 'p_gruszka', name: 'Gruszka (obrana)', category: 'fruits', kcal: 57, p: 0.4, f: 0.1, c: 15.2, nickel: 20.0, level: 'medium', substitutes: ['p_jablko', 'p_banan'], reason: 'Gruszki kumulują wyraźnie więcej niklu niż jabłka czy banany.' },
+      { id: 'p_sliwki', name: 'Śliwki świeże', category: 'fruits', kcal: 46, p: 0.7, f: 0.3, c: 11.4, nickel: 22.0, level: 'medium', substitutes: ['p_borowki', 'p_truskawki'], reason: 'Śliwki mają średnią zawartość niklu (a suszone śliwki bardzo wysoką!).' },
+
+      // === WYSOKI POZIOM NIKLU (> 30–500 µg/100g) - UNIKAĆ! (CZERWONA ODZNAKA) ===
+      { id: 'p_platki_owsiane', name: 'Płatki owsiane', category: 'grains', kcal: 379, p: 13.2, f: 6.5, c: 67.7, nickel: 140.0, level: 'high', substitutes: ['p_platki_ryzowe', 'p_kasza_manna'], reason: 'Owies należy do zbóż najmocniej kumulujących nikiel (ok. 140 µg/100g)! Jedna porcja owsianki przekracza bezpieczny dzienny limit SNAS.' },
+      { id: 'p_kasza_gryczana', name: 'Kasza gryczana', category: 'grains', kcal: 343, p: 13.3, f: 3.4, c: 71.5, nickel: 160.0, level: 'high', substitutes: ['p_ryz_bialy', 'p_kasza_kukurydziana'], reason: 'Gryka ma bardzo wysokie stężenie niklu (ok. 160 µg/100g). Zastąp ją białym ryżem basmati lub kaszą kukurydzianą.' },
+      { id: 'p_chleb_razowy', name: 'Chleb pełnoziarnisty / razowy z ziarnami', category: 'grains', kcal: 247, p: 9.5, f: 3.5, c: 45.0, nickel: 85.0, level: 'high', substitutes: ['p_chleb_pszenny', 'p_bulka_pszenna'], reason: 'Otręby zbóż oraz dodatek pestek słonecznika, siemienia i owsa sprawiają, że chleb razowy jest bombą niklową.' },
+      { id: 'p_kakao_czekolada', name: 'Kakao i gorzka czekolada (70-85%)', category: 'fats_other', kcal: 598, p: 7.8, f: 42.6, c: 45.9, nickel: 260.0, level: 'high', substitutes: ['p_biala_czekolada', 'p_miod'], reason: 'Proszek kakaowy i gorzka czekolada mają jedno z najwyższych stężeń niklu w żywności (250–500 µg/100g)! Wybierz białą czekoladę.' },
+      { id: 'p_orzechy', name: 'Orzechy (ziemne, laskowe, migdały, włoskie)', category: 'fats_other', kcal: 607, p: 20.0, f: 54.0, c: 16.0, nickel: 210.0, level: 'high', substitutes: ['p_mozzarella', 'p_twarog'], reason: 'Wszystkie orzechy i migdały niezwykle silnie gromadzą nikiel (150–350 µg/100g) i są najczęstszym wyzwalaczem objawów SNAS.' },
+      { id: 'p_pestki', name: 'Pestki słonecznika i dyni', category: 'fats_other', kcal: 574, p: 24.5, f: 49.0, c: 15.0, nickel: 185.0, level: 'high', substitutes: ['p_ser_zolty', 'p_maslo'], reason: 'Pestki i nasiona zawierają bardzo dużo niklu. Unikaj ich w sałatkach i pieczywie.' },
+      { id: 'p_siemie_lniane', name: 'Siemię lniane', category: 'fats_other', kcal: 534, p: 18.3, f: 42.2, c: 28.9, nickel: 130.0, level: 'high', substitutes: ['p_oliwa', 'p_kasza_manna'], reason: 'Nasiona lnu gromadzą duże ilości niklu z gleby.' },
+      { id: 'p_soczewica', name: 'Soczewica (sucha / gotowana)', category: 'vegetables', kcal: 116, p: 9.0, f: 0.4, c: 20.1, nickel: 115.0, level: 'high', substitutes: ['p_indyk', 'p_twarog'], reason: 'Rośliny strączkowe wiążą azot przy udziale enzymów niklowych (ureazy) — mają bardzo wysoki poziom niklu.' },
+      { id: 'p_ciecierzyca', name: 'Ciecierzyca / Hummus', category: 'vegetables', kcal: 164, p: 8.9, f: 2.6, c: 27.4, nickel: 95.0, level: 'high', substitutes: ['p_twarog', 'p_jajka'], reason: 'Ciecierzyca i pasta tahini (sezam) w hummusie dostarczają bardzo dużej dawki niklu.' },
+      { id: 'p_fasola', name: 'Fasola biała / czerwona', category: 'vegetables', kcal: 127, p: 8.7, f: 0.5, c: 22.8, nickel: 90.0, level: 'high', substitutes: ['p_ziemniaki', 'p_kurczak'], reason: 'Wszystkie odmiany fasoli są przeciwwskazane na ścisłej diecie niskoniklowej.' },
+      { id: 'p_soja_tofu', name: 'Soja / Tofu / Napój sojowy', category: 'meat_dairy', kcal: 144, p: 15.7, f: 8.7, c: 2.3, nickel: 150.0, level: 'high', substitutes: ['p_twarog', 'p_mozzarella', 'p_mleko'], reason: 'Soja i tofu są jednymi z najbardziej obfitujących w nikiel produktów roślinnych. Zamień na nabiał krowi lub drób.' },
+      { id: 'p_szpinak', name: 'Szpinak (świeży / mrożony)', category: 'vegetables', kcal: 23, p: 2.9, f: 0.4, c: 3.6, nickel: 45.0, level: 'high', substitutes: ['p_salata_lodowa', 'p_cukinia'], reason: 'Ciemnozielone warzywa liściaste takie jak szpinak silnie kumulują nikiel. Zastąp sałatą lodową lub cukinią.' },
+      { id: 'p_jarmuz', name: 'Jarmuż', category: 'vegetables', kcal: 49, p: 4.3, f: 0.9, c: 8.8, nickel: 42.0, level: 'high', substitutes: ['p_salata_lodowa', 'p_papryka'], reason: 'Wysoka zawartość niklu w liściach jarmużu — zastąp bezpieczną sałatą lodową lub czerwoną papryką.' },
+      { id: 'p_kukurydza_puszka', name: 'Kukurydza z puszki', category: 'vegetables', kcal: 86, p: 3.2, f: 1.2, c: 19.0, nickel: 65.0, level: 'high', substitutes: ['p_papryka', 'p_kasza_kukurydziana'], reason: 'Kontakt z metalową puszką powoduje przenikanie jonów niklu do zalewy i ziaren kukurydzy.' },
+      { id: 'p_tunczyk_puszka', name: 'Tuńczyk z puszki', category: 'meat_dairy', kcal: 116, p: 25.5, f: 1.0, c: 0, nickel: 55.0, level: 'high', substitutes: ['p_kurczak', 'p_dorsz'], reason: 'Konserwy rybne mają wysoki poziom niklu wypłukiwanego z metalowego opakowania. Wybierz świeży drób lub świeżą rybę.' },
+      { id: 'p_maliny', name: 'Maliny', category: 'fruits', kcal: 52, p: 1.2, f: 0.7, c: 11.9, nickel: 38.0, level: 'high', substitutes: ['p_truskawki', 'p_borowki'], reason: 'W przeciwieństwie do truskawek i borówek, maliny oraz jeżyny mają wysoką zawartość niklu.' },
+      { id: 'p_suszone_owoce', name: 'Suszone owoce (daktyle, figi, morele, rodzynki)', category: 'fruits', kcal: 275, p: 2.5, f: 0.5, c: 68.0, nickel: 75.0, level: 'high', substitutes: ['p_jablko', 'p_banan'], reason: 'Odparowanie wody wielokrotnie zagęszcza zawartość niklu w owocach suszonych.' }
+    ];
+
+    // 5 Meals Definition
+    const MEAL_DEFINITIONS = [
+      { id: 'breakfast', name: 'Śniadanie', icon: 'sunrise', timeHint: '07:30 – 09:00' },
+      { id: 'second_breakfast', name: 'II Śniadanie', icon: 'coffee', timeHint: '10:30 – 11:30' },
+      { id: 'lunch', name: 'Obiad', icon: 'utensils', timeHint: '13:30 – 15:00' },
+      { id: 'snack', name: 'Podwieczorek', icon: 'apple', timeHint: '16:30 – 17:30' },
+      { id: 'dinner', name: 'Kolacja', icon: 'moon', timeHint: '19:00 – 20:30' }
+    ];
+
+    // Daily Checklist Items
+    const CHECKLIST_ITEMS = [
+      { id: 'chk_water', title: 'Spuściłem/am pierwszą wodę z kranu rano (1–2 min)', desc: 'Eliminuje nikiel wypłukany w nocy z metalowych rur i baterii kuchennej.' },
+      { id: 'chk_peel', title: 'Obrałem/am wszystkie warzywa korzeniowe, ogórki i owoce ze skórki', desc: 'Redukuje zawartość niklu w warzywach i owocach o 30–50%.' },
+      { id: 'chk_cookware', title: 'Gotowałem/am wyłącznie w szkle, emalii, ceramice lub teflonie', desc: 'Unikanie garnków ze stali nierdzewnej 18/10 (szczególnie przy kwaśnych daniach).' },
+      { id: 'chk_cans', title: 'Zero żywności z metalowych puszek i folii aluminiowej', desc: 'Wybór świeżych składników lub przetworów w szklanych słoikach.' },
+      { id: 'chk_vitc', title: 'Dodałem/am źródło Witaminy C do głównych posiłków', desc: 'Kwas askorbinowy chelatuje nikiel i zmniejsza jego wchłanianie w jelicie.' },
+      { id: 'chk_labels', title: 'Sprawdziłem/am skład pieczywa (brak owsa, soi, kakao, pestek)', desc: 'Ukryty dodatek mąki sojowej, słodu lub ziaren często podnosi nikiel w pieczywie.' }
+    ];
+
+    // -----------------------------------------------------------------------
+    // 2. STAN APLIKACJI I LOCALSTORAGE
+    // -----------------------------------------------------------------------
+    const STORAGE_KEY = 'nikieldiet_pro_state_v1';
+
+    let appState = {
+      activeMeal: 'breakfast',
+      nickelFilter: 'all',
+      categoryFilter: 'all',
+      goals: {
+        kcal: 2000,
+        protein: 100,
+        fat: 65,
+        carbs: 250,
+        nickel: 120 // Domyślny limit 120 µg
+      },
+      modifiers: {
+        stainlessSteel: false,
+        vitaminCShield: false
+      },
+      meals: {
+        breakfast: [],
+        second_breakfast: [],
+        lunch: [],
+        snack: [],
+        dinner: []
+      },
+      customProducts: [],
+      checklist: {}
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = {
+            ...appState,
+            ...parsed,
+            goals: { ...appState.goals, ...(parsed.goals || {}) },
+            modifiers: { ...appState.modifiers, ...(parsed.modifiers || {}) },
+            meals: { ...appState.meals, ...(parsed.meals || {}) },
+            customProducts: Array.isArray(parsed.customProducts) ? parsed.customProducts : [],
+            checklist: parsed.checklist || {}
+          };
+        } else {
+          // Przy pierwszym uruchomieniu wczytaj delikatny startowy posiłek, aby kalkulator od razu żył
+          populateSampleDayData(false);
+        }
+      } catch (e) {
+        console.error('Błąd odczytu localStorage:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error('Błąd zapisu localStorage:', e);
+      }
+    }
+
+    function getAllProducts() {
+      return [...appState.customProducts, ...INITIAL_PRODUCTS];
+    }
+
+    function getProductById(id) {
+      return getAllProducts().find(p => p.id === id);
+    }
+
+    // -----------------------------------------------------------------------
+    // 3. OBLICZENIA SUM DZIENNYCH I POSIŁKÓW
+    // -----------------------------------------------------------------------
+    function calculateMealTotals(mealKey) {
+      const items = appState.meals[mealKey] || [];
+      let kcal = 0, p = 0, f = 0, c = 0, nickel = 0;
+
+      items.forEach(item => {
+        const prod = getProductById(item.productId);
+        if (!prod) return;
+        const ratio = item.grams / 100;
+        kcal += prod.kcal * ratio;
+        p += prod.p * ratio;
+        f += prod.f * ratio;
+        c += prod.c * ratio;
+        nickel += prod.nickel * ratio;
+      });
+
+      return { kcal, p, f, c, nickel };
+    }
+
+    function calculateDailyTotals() {
+      let kcal = 0, p = 0, f = 0, c = 0, nickel = 0;
+      MEAL_DEFINITIONS.forEach(m => {
+        const t = calculateMealTotals(m.id);
+        kcal += t.kcal;
+        p += t.p;
+        f += t.f;
+        c += t.c;
+        nickel += t.nickel;
+      });
+
+      // Modyfikator: gotowanie w garnku ze stali nierdzewnej (szczególnie kwaśne potrawy)
+      if (appState.modifiers.stainlessSteel) {
+        nickel += 35; // Szacowany naddatek migracji jonów niklu
+      }
+
+      // Modyfikator: osłona witaminą C i żelazem (obniża efektywne wchłanianie niklu o ok. 15%)
+      if (appState.modifiers.vitaminCShield && nickel > 0) {
+        nickel = nickel * 0.85;
+      }
+
+      return { kcal, p, f, c, nickel };
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. RENDEROWANIE DASHBOARDU I WSKAŹNIKA BEZPIECZEŃSTWA NIKLU
+    // -----------------------------------------------------------------------
+    function renderDashboard() {
+      const totals = calculateDailyTotals();
+      const goals = appState.goals;
+
+      // Update Switches
+      document.getElementById('stainlessSteelToggle').checked = !!appState.modifiers.stainlessSteel;
+      document.getElementById('vitaminCShieldToggle').checked = !!appState.modifiers.vitaminCShield;
+      const warnBanner = document.getElementById('stainlessWarningBanner');
+      if (appState.modifiers.stainlessSteel) {
+        warnBanner.classList.remove('hidden');
+      } else {
+        warnBanner.classList.add('hidden');
+      }
+
+      // Update Macro Numbers
+      document.getElementById('totalKcalValue').textContent = Math.round(totals.kcal);
+      document.getElementById('goalKcalValue').textContent = goals.kcal;
+      const kcalPct = Math.min(100, Math.round((totals.kcal / Math.max(1, goals.kcal)) * 100));
+      document.getElementById('kcalPercent').textContent = `${ Math.round((totals.kcal / Math.max(1, goals.kcal)) * 100) }%`;
+      document.getElementById('kcalProgressBar').style.width = `${kcalPct}%`;
+
+      document.getElementById('totalProteinValue').textContent = totals.p.toFixed(1);
+      document.getElementById('goalProteinValue').textContent = goals.protein;
+      const pPct = Math.min(100, Math.round((totals.p / Math.max(1, goals.protein)) * 100));
+      document.getElementById('proteinPercent').textContent = `${ Math.round((totals.p / Math.max(1, goals.protein)) * 100) }%`;
+      document.getElementById('proteinProgressBar').style.width = `${pPct}%`;
+
+      document.getElementById('totalFatValue').textContent = totals.f.toFixed(1);
+      document.getElementById('goalFatValue').textContent = goals.fat;
+      const fPct = Math.min(100, Math.round((totals.f / Math.max(1, goals.fat)) * 100));
+      document.getElementById('fatPercent').textContent = `${ Math.round((totals.f / Math.max(1, goals.fat)) * 100) }%`;
+      document.getElementById('fatProgressBar').style.width = `${fPct}%`;
+
+      document.getElementById('totalCarbsValue').textContent = totals.c.toFixed(1);
+      document.getElementById('goalCarbsValue').textContent = goals.carbs;
+      const cPct = Math.min(100, Math.round((totals.c / Math.max(1, goals.carbs)) * 100));
+      document.getElementById('carbsPercent').textContent = `${ Math.round((totals.c / Math.max(1, goals.carbs)) * 100) }%`;
+      document.getElementById('carbsProgressBar').style.width = `${cPct}%`;
+
+      // Update Nickel Value & Safety Indicator (< 100 µg Zielony, 100-150 µg Żółty, > 150 µg Czerwony lub przekroczenie limitu)
+      const ni = totals.nickel;
+      document.getElementById('totalNickelValue').textContent = ni.toFixed(1);
+      document.getElementById('goalNickelValue').textContent = goals.nickel;
+
+      const niBarPct = Math.min(100, (ni / Math.max(150, goals.nickel)) * 100);
+      const niBar = document.getElementById('nickelProgressBar');
+      const niCard = document.getElementById('nickelDashboardCard');
+      const niBadge = document.getElementById('nickelStatusBadge');
+      const niIconBox = document.getElementById('nickelIconBox');
+      const niAlertBox = document.getElementById('nickelAlertBox');
+      const niAlertText = document.getElementById('nickelAlertText');
+
+      niBar.style.width = `${niBarPct}%`;
+
+      if (ni > 150 || ni > goals.nickel) {
+        // CZERWONY (> 150 µg lub przekroczony limit indywidualny)
+        niBar.className = 'progress-fill h-full rounded-full bg-rose-600';
+        niCard.className = 'lg:col-span-5 rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-rose-50 via-red-50/60 to-white border-2 border-rose-300 flex flex-col justify-between transition-colors duration-300';
+        niBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
+        niBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span> Przekroczono próg niklu!`;
+        niIconBox.className = 'w-11 h-11 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-sm';
+        niIconBox.innerHTML = `<i data-lucide="shield-alert" class="w-6 h-6"></i>`;
+        niAlertBox.className = 'mt-4 p-3 rounded-xl bg-rose-100/80 border border-rose-300 text-xs text-rose-950 flex items-start gap-2.5';
+        niAlertText.innerHTML = `<strong>Ostrzeżenie: Przekroczono bezpieczny próg diety niskoniklowej!</strong> Spożycie wynosi <strong>${ni.toFixed(1)} µg</strong> (limit: ${goals.nickel} µg, próg kliniczny: 150 µg). Sprawdź produkty oznaczone na czerwono w posiłkach i kliknij przycisk <em>„Zamień na bezpieczny odpowiednik”</em>.`;
+      } else if (ni >= 100) {
+        // ŻÓŁTY (100 - 150 µg)
+        niBar.className = 'progress-fill h-full rounded-full bg-amber-500';
+        niCard.className = 'lg:col-span-5 rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-amber-50/90 via-yellow-50/50 to-white border-2 border-amber-300 flex flex-col justify-between transition-colors duration-300';
+        niBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300';
+        niBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> Umiarkowany poziom niklu (100–150 µg)`;
+        niIconBox.className = 'w-11 h-11 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center shrink-0';
+        niIconBox.innerHTML = `<i data-lucide="alert-circle" class="w-6 h-6"></i>`;
+        niAlertBox.className = 'mt-4 p-3 rounded-xl bg-white/90 border border-amber-300 text-xs text-amber-950 flex items-start gap-2.5';
+        niAlertText.innerHTML = `<strong>Strefa ostrożności (100–150 µg):</strong> Jesteś blisko dziennego limitu (${goals.nickel} µg). W kolejne posiłki wkomponuj wyłącznie produkty zielone (&lt;10 µg/100g) oraz zadbaj o dodatek witaminy C.`;
+      } else {
+        // ZIELONY (< 100 µg)
+        niBar.className = 'progress-fill h-full rounded-full bg-emerald-500';
+        niCard.className = 'lg:col-span-5 rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/90 via-teal-50/60 to-white border-2 border-emerald-200 flex flex-col justify-between transition-colors duration-300';
+        niBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+        niBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Bezpieczny poziom niklu (&lt;100 µg)`;
+        niIconBox.className = 'w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center shrink-0';
+        niIconBox.innerHTML = `<i data-lucide="shield-check" class="w-6 h-6"></i>`;
+        niAlertBox.className = 'mt-4 p-3 rounded-xl bg-white/90 border border-emerald-200/80 text-xs text-slate-700 flex items-start gap-2.5';
+        niAlertText.innerHTML = `Twój jadłospis mieści się w rygorystycznym progu diety niskoniklowej (<strong>&lt;100 µg</strong>). Ryzyko zaostrzenia objawów alergii systemowej (SNAS) jest minimalne.`;
+      }
+
+      lucide.createIcons();
+    }
+
+    // -----------------------------------------------------------------------
+    // 5. RENDEROWANIE KREATORA POSIŁKÓW (5 POSIŁKÓW)
+    // -----------------------------------------------------------------------
+    function setActiveMeal(mealId) {
+      appState.activeMeal = mealId;
+      document.getElementById('activeMealSelect').value = mealId;
+      saveState();
+      renderMeals();
+    }
+
+    function renderMeals() {
+      const container = document.getElementById('mealsContainer');
+      document.getElementById('activeMealSelect').value = appState.activeMeal;
+
+      container.innerHTML = MEAL_DEFINITIONS.map(meal => {
+        const isActive = appState.activeMeal === meal.id;
+        const items = appState.meals[meal.id] || [];
+        const totals = calculateMealTotals(meal.id);
+
+        // Determine meal nickel badge color
+        let mealNiBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        if (totals.nickel > 40) {
+          mealNiBadgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+        } else if (totals.nickel >= 25) {
+          mealNiBadgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
+        }
+
+        const itemsHtml = items.length === 0
+          ? `<div onclick="setActiveMeal('${meal.id}')" class="py-5 px-4 text-center rounded-xl border border-dashed border-slate-200 text-xs text-slate-400 hover:border-teal-300 hover:text-teal-700 cursor-pointer transition">
+               Brak produktów w tym posiłku. Kliknij tutaj i wybierz składnik z bazy po prawej stronie.
+             </div>`
+          : `<div class="divide-y divide-slate-100">
+               ${items.map((item, idx) => {
+                 const prod = getProductById(item.productId);
+                 if (!prod) return '';
+                 const ratio = item.grams / 100;
+                 const itemKcal = Math.round(prod.kcal * ratio);
+                 const itemP = (prod.p * ratio).toFixed(1);
+                 const itemF = (prod.f * ratio).toFixed(1);
+                 const itemC = (prod.c * ratio).toFixed(1);
+                 const itemNi = (prod.nickel * ratio).toFixed(1);
+
+                 let badgeHtml = `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">${itemNi} µg Ni</span>`;
+                 if (prod.level === 'medium') {
+                   badgeHtml = `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">${itemNi} µg Ni (Średni)</span>`;
+                 } else if (prod.level === 'high') {
+                   badgeHtml = `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 animate-pulse">⚠️ ${itemNi} µg Ni (Wysoki!)</span>`;
+                 }
+
+                 // In-meal 1-click safe replacement button if high or medium nickel!
+                 let swapBtnHtml = '';
+                 if ((prod.level === 'high' || prod.level === 'medium') && prod.substitutes && prod.substitutes.length > 0) {
+                   const firstSub = getProductById(prod.substitutes[0]);
+                   if (firstSub) {
+                     swapBtnHtml = `
+                       <div class="mt-1.5 flex items-center gap-2 no-print">
+                         <button onclick="swapMealItemWithSubstitute('${meal.id}', ${idx}, '${firstSub.id}')"
+                           class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition">
+                           <i data-lucide="refresh-cw" class="w-3 h-3 text-emerald-600"></i>
+                           <span>Zamień w posiłku na bezpieczny: ${firstSub.name} (${(firstSub.nickel * ratio).toFixed(1)} µg Ni)</span>
+                         </button>
+                       </div>
+                     `;
+                   }
+                 }
+
+                 return `
+                   <div class="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 group">
+                     <div class="flex-1 min-w-0">
+                       <div class="flex items-center gap-2 flex-wrap">
+                         <span class="text-xs sm:text-sm font-semibold text-slate-800">${prod.name}</span>
+                         ${badgeHtml}
+                       </div>
+                       <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2.5">
+                         <span><strong>${itemKcal}</strong> kcal</span>
+                         <span>B: ${itemP}g</span>
+                         <span>T: ${itemF}g</span>
+                         <span>W: ${itemC}g</span>
+                       </div>
+                       ${swapBtnHtml}
+                     </div>
+
+                     <!-- Grammage Edit & Remove -->
+                     <div class="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+                       <div class="flex items-center border border-slate-200 rounded-lg bg-slate-50 px-1.5 py-0.5">
+                         <input type="number" value="${item.grams}" min="1" max="2000" step="5"
+                           onchange="updateMealItemGrams('${meal.id}', ${idx}, this.value)"
+                           class="w-14 text-right text-xs font-bold bg-transparent focus:outline-none text-slate-800" />
+                         <span class="text-[11px] text-slate-500 ml-0.5">g</span>
+                       </div>
+                       <button onclick="removeMealItem('${meal.id}', ${idx})" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition no-print" title="Usuń składnik">
+                         <i data-lucide="x" class="w-4 h-4"></i>
+                       </button>
+                     </div>
+                   </div>
+                 `;
+               }).join('')}
+             </div>`;
+
+        return `
+          <div class="bg-white rounded-2xl border-2 transition-all print-card ${isActive ? 'border-teal-500 shadow-md ring-2 ring-teal-500/10' : 'border-slate-200 shadow-xs'}">
+            <!-- Meal Header -->
+            <div onclick="setActiveMeal('${meal.id}')" class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2 cursor-pointer select-none ${isActive ? 'bg-teal-50/40' : 'hover:bg-slate-50/60'} rounded-t-2xl">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl ${isActive ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center transition">
+                  <i data-lucide="${meal.icon}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="text-sm sm:text-base font-bold text-slate-900">${meal.name}</h4>
+                    ${isActive ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800 no-print">Aktywny</span>` : ''}
+                  </div>
+                  <span class="text-[11px] text-slate-400">${meal.timeHint} • ${items.length} składników</span>
+                </div>
+              </div>
+
+              <!-- Meal Macros & Nickel Summary -->
+              <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <div class="text-right text-xs">
+                  <span class="font-bold text-slate-900">${Math.round(totals.kcal)} kcal</span>
+                  <span class="text-slate-400 hidden sm:inline ml-1">(B:${totals.p.toFixed(0)}g T:${totals.f.toFixed(0)}g W:${totals.c.toFixed(0)}g)</span>
+                </div>
+                <span class="px-2.5 py-1 rounded-xl text-xs font-extrabold border ${mealNiBadgeClass}">
+                  ${totals.nickel.toFixed(1)} µg Ni
+                </span>
+              </div>
+            </div>
+
+            <!-- Meal Ingredients List -->
+            <div class="p-4">
+              ${itemsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. DODAWANIE, EDYCJA, USUWANIE I ZAMIANA SKŁADNIKÓW W POSIŁKU
+    // -----------------------------------------------------------------------
+    function setQuickWeight(grams) {
+      const input = document.getElementById('portionWeightInput');
+      input.value = grams;
+
+      // Update visual highlight on quick buttons
+      document.querySelectorAll('.quick-weight-btn').forEach(btn => {
+        if (btn.textContent === `${grams}g`) {
+          btn.className = 'quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-600 text-white border border-teal-600 transition';
+        } else {
+          btn.className = 'quick-weight-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200 transition';
+        }
+      });
+    }
+
+    function addProductToActiveMeal(productId, forceAddHighNickel = false) {
+      const prod = getProductById(productId);
+      if (!prod) return;
+
+      const gramsInput = document.getElementById('portionWeightInput');
+      const grams = Math.max(1, parseFloat(gramsInput.value) || 100);
+
+      // Jeśli produkt ma wysoki poziom niklu i użytkownik kliknął go po raz pierwszy,
+      // wyświetl Inteligentnego Asystenta Zamienników z wyraźnym ostrzeżeniem!
+      if ((prod.level === 'high' || prod.level === 'medium') && prod.substitutes && prod.substitutes.length > 0) {
+        showSubstituteAssistant(prod, grams);
+      }
+
+      const mealKey = appState.activeMeal;
+      const existing = appState.meals[mealKey].find(i => i.productId === productId);
+      if (existing) {
+        existing.grams += grams;
+      } else {
+        appState.meals[mealKey].push({ productId, grams });
+      }
+
+      saveState();
+      renderDashboard();
+      renderMeals();
+
+      const mealObj = MEAL_DEFINITIONS.find(m => m.id === mealKey);
+      if (prod.level === 'high') {
+        showToast(`Uwaga: Dodano ${prod.name} (${grams}g) — wysoki poziom niklu! Sprawdź zamiennik powyżej.`, 'warning');
+      } else {
+        showToast(`Dodano: ${prod.name} (${grams}g) do: ${mealObj.name}`, 'success');
+      }
+    }
+
+    function updateMealItemGrams(mealId, itemIdx, newGrams) {
+      const g = Math.max(1, parseFloat(newGrams) || 1);
+      if (appState.meals[mealId] && appState.meals[mealId][itemIdx]) {
+        appState.meals[mealId][itemIdx].grams = g;
+        saveState();
+        renderDashboard();
+        renderMeals();
+      }
+    }
+
+    function removeMealItem(mealId, itemIdx) {
+      if (appState.meals[mealId]) {
+        appState.meals[mealId].splice(itemIdx, 1);
+        saveState();
+        renderDashboard();
+        renderMeals();
+      }
+    }
+
+    function swapMealItemWithSubstitute(mealId, itemIdx, substituteProductId) {
+      if (!appState.meals[mealId] || !appState.meals[mealId][itemIdx]) return;
+      const oldItem = appState.meals[mealId][itemIdx];
+      const oldProd = getProductById(oldItem.productId);
+      const newProd = getProductById(substituteProductId);
+      if (!newProd) return;
+
+      appState.meals[mealId][itemIdx].productId = substituteProductId;
+      saveState();
+      renderDashboard();
+      renderMeals();
+      closeSubstituteAssistant();
+      showToast(`Zamieniono „${oldProd ? oldProd.name : ''}” na bezpieczny: „${newProd.name}” (${oldItem.grams}g)!`, 'success');
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. INTELIGENTNY ASYSTENT ZAMIENNIKÓW
+    // -----------------------------------------------------------------------
+    function showSubstituteAssistant(highProduct, grams = 100) {
+      const card = document.getElementById('substituteAssistantCard');
+      const titleEl = document.getElementById('subAlertProductName');
+      const reasonEl = document.getElementById('subAlertReason');
+      const btnsEl = document.getElementById('subButtonsContainer');
+
+      const niInPortion = ((highProduct.nickel * grams) / 100).toFixed(1);
+      titleEl.textContent = `${highProduct.name} (${niInPortion} µg Ni w ${grams}g)`;
+      reasonEl.textContent = highProduct.reason || 'Ten produkt zawiera podwyższoną ilość niklu i może zaostrzać objawy alergii systemowej (SNAS).';
+
+      const subs = (highProduct.substitutes || []).map(id => getProductById(id)).filter(Boolean);
+      btnsEl.innerHTML = subs.map(sub => {
+        const subNi = ((sub.nickel * grams) / 100).toFixed(1);
+        return `
+          <button onclick="replaceOrAddSubstitute('${highProduct.id}', '${sub.id}', ${grams})"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span>Zamień na: ${sub.name} (tylko ${subNi} µg Ni)</span>
+          </button>
+        `;
+      }).join('');
+
+      card.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function replaceOrAddSubstitute(highProductId, substituteId, grams) {
+      const mealKey = appState.activeMeal;
+      const items = appState.meals[mealKey] || [];
+      const idx = items.findIndex(i => i.productId === highProductId);
+
+      if (idx !== -1) {
+        // Jeśli wysokoniklowy produkt został przed chwilą dodany do aktywnego posiłku, podmień go
+        swapMealItemWithSubstitute(mealKey, idx, substituteId);
+      } else {
+        // W przeciwnym razie dodaj bezpieczny zamiennik bezpośrednio do posiłku
+        addProductToActiveMeal(substituteId);
+        closeSubstituteAssistant();
+      }
+    }
+
+    function closeSubstituteAssistant() {
+      document.getElementById('substituteAssistantCard').classList.add('hidden');
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. FILTROWANIE I RENDEROWANIE BAZY PRODUKTÓW
+    // -----------------------------------------------------------------------
+    function setNickelFilter(level) {
+      appState.nickelFilter = level;
+      ['all', 'low', 'medium', 'high'].forEach(lvl => {
+        const btn = document.getElementById(`niFilter_${lvl}`);
+        if (!btn) return;
+        if (lvl === level) {
+          btn.className = 'px-2 py-1.5 rounded-lg text-[11px] font-bold bg-slate-900 text-white text-center transition shadow-xs';
+        } else if (lvl === 'low') {
+          btn.className = 'px-2 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-center transition';
+        } else if (lvl === 'medium') {
+          btn.className = 'px-2 py-1.5 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 text-center transition';
+        } else if (lvl === 'high') {
+          btn.className = 'px-2 py-1.5 rounded-lg text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 text-center transition';
+        } else {
+          btn.className = 'px-2 py-1.5 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 text-center transition';
+        }
+      });
+      renderProductDatabase();
+    }
+
+    function setCategoryFilter(cat) {
+      appState.categoryFilter = cat;
+      ['all', 'meat_dairy', 'grains', 'vegetables', 'fruits', 'fats_other'].forEach(c => {
+        const btn = document.getElementById(`catFilter_${c}`);
+        if (!btn) return;
+        if (c === cat) {
+          btn.className = 'cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-600 text-white transition';
+        } else {
+          btn.className = 'cat-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+        }
+      });
+      renderProductDatabase();
+    }
+
+    function clearProductSearch() {
+      const input = document.getElementById('productSearchInput');
+      input.value = '';
+      renderProductDatabase();
+    }
+
+    function renderProductDatabase() {
+      const query = (document.getElementById('productSearchInput').value || '').trim().toLowerCase();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (query.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      const allProds = getAllProducts();
+      const filtered = allProds.filter(p => {
+        if (appState.nickelFilter !== 'all' && p.level !== appState.nickelFilter) return false;
+        if (appState.categoryFilter !== 'all' && p.category !== appState.categoryFilter) return false;
+        if (query && !p.name.toLowerCase().includes(query) && !(p.note || '').toLowerCase().includes(query)) return false;
+        return true;
+      });
+
+      document.getElementById('productCountBadge').textContent = `${filtered.length} produktów`;
+
+      const listEl = document.getElementById('productDatabaseList');
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="py-10 px-4 text-center text-xs text-slate-400">
+            Nie znaleziono produktów pasujących do wybranych filtrów. Możesz dodać własny produkt przyciskiem powyżej.
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(prod => {
+        let levelBadge = '';
+        let borderAccent = 'border-slate-200/80 hover:border-teal-300';
+        if (prod.level === 'low') {
+          levelBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 Niski: ${prod.nickel} µg/100g</span>`;
+        } else if (prod.level === 'medium') {
+          levelBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">🟡 Średni: ${prod.nickel} µg/100g</span>`;
+          borderAccent = 'border-amber-200/80 hover:border-amber-400';
+        } else {
+          levelBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">🔴 Wysoki: ${prod.nickel} µg/100g (Unikać!)</span>`;
+          borderAccent = 'border-rose-200 hover:border-rose-400 bg-rose-50/20';
+        }
+
+        // Substitute hint inside database card for high-nickel items
+        let subHintHtml = '';
+        if (prod.level === 'high' && prod.substitutes && prod.substitutes.length > 0) {
+          const subNames = prod.substitutes.map(id => getProductById(id)).filter(Boolean);
+          if (subNames.length > 0) {
+            subHintHtml = `
+              <div class="mt-2 pt-2 border-t border-rose-200/60 flex flex-wrap items-center justify-between gap-1.5">
+                <span class="text-[11px] text-rose-800 font-medium">
+                  💡 Bezpieczny zamiennik: <strong>${subNames.map(s => s.name).join(' / ')}</strong>
+                </span>
+                <button onclick="addProductToActiveMeal('${subNames[0].id}')"
+                  class="px-2 py-1 rounded-lg text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                  + Dodaj zamiennik
+                </button>
+              </div>
+            `;
+          }
+        }
+
+        return `
+          <div class="p-3 rounded-xl border ${borderAccent} transition bg-white">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs sm:text-sm font-bold text-slate-900">${prod.name}</span>
+                  ${prod.isCustom ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-700 border border-teal-200">Własny</span>` : ''}
+                </div>
+                <div class="mt-1 flex items-center gap-2 flex-wrap">
+                  ${levelBadge}
+                  <span class="text-[11px] text-slate-500">100g: <strong>${prod.kcal}</strong> kcal | B:${prod.p}g T:${prod.f}g W:${prod.c}g</span>
+                </div>
+                ${prod.note ? `<p class="text-[11px] text-slate-500 mt-1 leading-snug">${prod.note}</p>` : ''}
+                ${prod.reason ? `<p class="text-[11px] text-rose-700 mt-1 leading-snug font-medium">${prod.reason}</p>` : ''}
+              </div>
+
+              <div class="flex flex-col items-end gap-1 shrink-0">
+                <button onclick="addProductToActiveMeal('${prod.id}')"
+                  class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold ${prod.level === 'high' ? 'bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300' : 'bg-teal-600 hover:bg-teal-700 text-white'} transition shadow-2xs">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Dodaj</span>
+                </button>
+                ${prod.level === 'high' ? `
+                  <button onclick="showSubstituteAssistant(getProductById('${prod.id}'), parseFloat(document.getElementById('portionWeightInput').value)||100)"
+                    class="text-[10px] font-bold text-emerald-700 hover:underline">
+                    Pokaż zamiennik
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            ${subHintHtml}
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // -----------------------------------------------------------------------
+    // 9. PRZYKŁADOWY DZIEŃ NISKONIKLOWY
+    // -----------------------------------------------------------------------
+    function populateSampleDayData(showNotification = true) {
+      appState.meals = {
+        breakfast: [
+          { productId: 'p_platki_ryzowe', grams: 60 },
+          { productId: 'p_mleko', grams: 200 },
+          { productId: 'p_banan', grams: 100 },
+          { productId: 'p_maslo', grams: 10 }
+        ],
+        second_breakfast: [
+          { productId: 'p_jogurt', grams: 150 },
+          { productId: 'p_borowki', grams: 80 },
+          { productId: 'p_biala_czekolada', grams: 20 }
+        ],
+        lunch: [
+          { productId: 'p_kurczak', grams: 150 },
+          { productId: 'p_ryz_bialy', grams: 80 },
+          { productId: 'p_cukinia', grams: 120 },
+          { productId: 'p_papryka', grams: 80 },
+          { productId: 'p_oliwa', grams: 15 }
+        ],
+        snack: [
+          { productId: 'p_jablko', grams: 150 },
+          { productId: 'p_twarog', grams: 80 },
+          { productId: 'p_miod', grams: 15 }
+        ],
+        dinner: [
+          { productId: 'p_chleb_pszenny', grams: 90 },
+          { productId: 'p_jajka', grams: 110 },
+          { productId: 'p_mozzarella', grams: 40 },
+          { productId: 'p_ogorek', grams: 100 }
+        ]
+      };
+      appState.modifiers.stainlessSteel = false;
+      appState.modifiers.vitaminCShield = true;
+      saveState();
+
+      if (showNotification) {
+        renderDashboard();
+        renderMeals();
+        closeSubstituteAssistant();
+        showToast('Wczytano bezpieczny, zbilansowany jadłospis niskoniklowy na cały dzień!', 'success');
+      }
+    }
+
+    function loadSampleDay() {
+      populateSampleDayData(true);
+    }
+
+    // -----------------------------------------------------------------------
+    // 10. MODYFIKATORY OBRÓBKI KULINARNEJ I CHECKLISTA ZASAD
+    // -----------------------------------------------------------------------
+    function toggleCulinaryModifier() {
+      appState.modifiers.stainlessSteel = document.getElementById('stainlessSteelToggle').checked;
+      appState.modifiers.vitaminCShield = document.getElementById('vitaminCShieldToggle').checked;
+      saveState();
+      renderDashboard();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklistContainer');
+      let completedCount = 0;
+
+      container.innerHTML = CHECKLIST_ITEMS.map(item => {
+        const checked = !!appState.checklist[item.id];
+        if (checked) completedCount++;
+        return `
+          <label class="flex items-start gap-3 p-3 rounded-xl border ${checked ? 'bg-emerald-50/70 border-emerald-300' : 'bg-slate-50 border-slate-200'} cursor-pointer hover:border-teal-400 transition select-none">
+            <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleChecklistItem('${item.id}', this.checked)"
+              class="mt-0.5 w-4 h-4 rounded text-teal-600 focus:ring-teal-500 border-slate-300" />
+            <div class="text-xs">
+              <div class="font-bold ${checked ? 'text-emerald-950 line-through' : 'text-slate-800'}">${item.title}</div>
+              <p class="text-slate-500 mt-0.5">${item.desc}</p>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      document.getElementById('checklistBadgeCount').textContent = `${completedCount}/${CHECKLIST_ITEMS.length}`;
+    }
+
+    function toggleChecklistItem(id, checked) {
+      appState.checklist[id] = checked;
+      saveState();
+      renderChecklist();
+    }
+
+    function switchMainTab(tab) {
+      const plannerContent = document.getElementById('tabContentPlanner');
+      const rulesContent = document.getElementById('tabContentRules');
+      const btnPlanner = document.getElementById('tabBtnPlanner');
+      const btnRules = document.getElementById('tabBtnRules');
+
+      if (tab === 'planner') {
+        plannerContent.classList.remove('hidden');
+        rulesContent.classList.add('hidden');
+        btnPlanner.className = 'px-4 py-2.5 text-sm font-bold border-b-2 border-teal-600 text-teal-700 flex items-center gap-2 transition';
+        btnRules.className = 'px-4 py-2.5 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 flex items-center gap-2 transition';
+      } else {
+        plannerContent.classList.add('hidden');
+        rulesContent.classList.remove('hidden');
+        btnRules.className = 'px-4 py-2.5 text-sm font-bold border-b-2 border-teal-600 text-teal-700 flex items-center gap-2 transition';
+        btnPlanner.className = 'px-4 py-2.5 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 flex items-center gap-2 transition';
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 11. KALKULATOR BMR / CPM I LIMITU NIKLU (MODAL)
+    // -----------------------------------------------------------------------
+    function openBmrModal() {
+      document.getElementById('inputGoalKcal').value = appState.goals.kcal;
+      document.getElementById('inputGoalProtein').value = appState.goals.protein;
+      document.getElementById('inputGoalFat').value = appState.goals.fat;
+      document.getElementById('inputGoalCarbs').value = appState.goals.carbs;
+      document.getElementById('inputGoalNickel').value = appState.goals.nickel;
+      calculateBmrPreview();
+      const modal = document.getElementById('bmrModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeBmrModal() {
+      const modal = document.getElementById('bmrModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function calculateBmrPreview() {
+      const gender = document.getElementById('bmrGender').value;
+      const weight = parseFloat(document.getElementById('bmrWeight').value) || 65;
+      const height = parseFloat(document.getElementById('bmrHeight').value) || 168;
+      const age = parseFloat(document.getElementById('bmrAge').value) || 32;
+      const pal = parseFloat(document.getElementById('bmrActivity').value) || 1.375;
+      const goalDelta = parseFloat(document.getElementById('bmrGoalType').value) || 0;
+
+      // Wzór Mifflin-St Jeor
+      let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+      bmr += (gender === 'male') ? 5 : -161;
+      const cpm = Math.round((bmr * pal) + goalDelta);
+
+      document.getElementById('previewBmrVal').textContent = Math.round(bmr);
+      document.getElementById('previewCpmVal').textContent = Math.max(1100, cpm);
+      return Math.max(1100, cpm);
+    }
+
+    function applyCalculatedBmrToInputs() {
+      const targetKcal = calculateBmrPreview();
+      // Rozkład makroskładników: 20% białko, 30% tłuszcze, 50% węglowodany
+      const pGrams = Math.round((targetKcal * 0.20) / 4);
+      const fGrams = Math.round((targetKcal * 0.30) / 9);
+      const cGrams = Math.round((targetKcal * 0.50) / 4);
+
+      document.getElementById('inputGoalKcal').value = targetKcal;
+      document.getElementById('inputGoalProtein').value = pGrams;
+      document.getElementById('inputGoalFat').value = fGrams;
+      document.getElementById('inputGoalCarbs').value = cGrams;
+      showToast('Wyliczono cele makroskładników na podstawie BMR/CPM!', 'info');
+    }
+
+    function saveGoalsFromModal() {
+      appState.goals = {
+        kcal: Math.max(800, parseInt(document.getElementById('inputGoalKcal').value) || 2000),
+        protein: Math.max(20, parseInt(document.getElementById('inputGoalProtein').value) || 100),
+        fat: Math.max(15, parseInt(document.getElementById('inputGoalFat').value) || 65),
+        carbs: Math.max(20, parseInt(document.getElementById('inputGoalCarbs').value) || 250),
+        nickel: Math.max(30, parseInt(document.getElementById('inputGoalNickel').value) || 120)
+      };
+      saveState();
+      renderDashboard();
+      closeBmrModal();
+      showToast('Zapisano nowe dzienne cele kaloryczne i limit niklu!', 'success');
+    }
+
+    // -----------------------------------------------------------------------
+    // 12. DODAWANIE WŁASNEGO PRODUKTU DO BAZY
+    // -----------------------------------------------------------------------
+    function openCustomProductModal() {
+      const modal = document.getElementById('customProductModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCustomProductModal() {
+      const modal = document.getElementById('customProductModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveCustomProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('cpName').value.trim();
+      const category = document.getElementById('cpCategory').value;
+      const nickel = parseFloat(document.getElementById('cpNickel').value) || 0;
+      const kcal = parseFloat(document.getElementById('cpKcal').value) || 0;
+      const p = parseFloat(document.getElementById('cpProtein').value) || 0;
+      const f = parseFloat(document.getElementById('cpFat').value) || 0;
+      const c = parseFloat(document.getElementById('cpCarbs').value) || 0;
+
+      if (!name) return;
+
+      let level = 'low';
+      if (nickel > 30) level = 'high';
+      else if (nickel >= 10) level = 'medium';
+
+      const newProd = {
+        id: 'custom_' + Date.now(),
+        name,
+        category,
+        kcal,
+        p,
+        f,
+        c,
+        nickel,
+        level,
+        isCustom: true,
+        note: 'Produkt dodany przez użytkownika.'
+      };
+
+      appState.customProducts.unshift(newProd);
+      saveState();
+      renderProductDatabase();
+      closeCustomProductModal();
+      document.getElementById('customProductForm').reset();
+      showToast(`Dodano „${name}” do bazy produktów!`, 'success');
+    }
+
+    // -----------------------------------------------------------------------
+    // 13. EKSPORT / DRUKOWANIE JADŁOSPISU ORAZ CZYSZCZENIE DNIA
+    // -----------------------------------------------------------------------
+    function openExportModal() {
+      const totals = calculateDailyTotals();
+      const lines = [];
+      lines.push('======================================================');
+      lines.push('   JADŁOSPIS DIETY NISKONIKLOWEJ (SNAS) - NIKIELDIET  ');
+      lines.push('======================================================');
+      lines.push(`Data wygenerowania: ${new Date().toLocaleDateString('pl-PL')}`);
+      lines.push(`Szacowany Nikiel: ${totals.nickel.toFixed(1)} µg / limit ${appState.goals.nickel} µg`);
+      lines.push(`Kalorie: ${Math.round(totals.kcal)} / ${appState.goals.kcal} kcal`);
+      lines.push(`Makro: Białko ${totals.p.toFixed(1)}g | Tłuszcze ${totals.f.toFixed(1)}g | Węglowodany ${totals.c.toFixed(1)}g`);
+      lines.push('------------------------------------------------------');
+
+      MEAL_DEFINITIONS.forEach(meal => {
+        const items = appState.meals[meal.id] || [];
+        const mt = calculateMealTotals(meal.id);
+        lines.push(`\n[${meal.name.toUpperCase()}] — ${Math.round(mt.kcal)} kcal | ${mt.nickel.toFixed(1)} µg Ni`);
+        if (items.length === 0) {
+          lines.push('  (Brak zapisanych produktów)');
+        } else {
+          items.forEach(item => {
+            const prod = getProductById(item.productId);
+            if (!prod) return;
+            const ratio = item.grams / 100;
+            lines.push(`  • ${prod.name}: ${item.grams}g (${Math.round(prod.kcal * ratio)} kcal, ${(prod.nickel * ratio).toFixed(1)} µg Ni)`);
+          });
+        }
+      });
+
+      lines.push('\n------------------------------------------------------');
+      lines.push(`Modyfikatory kulinarne:`);
+      lines.push(`  • Garnek ze stali nierdzewnej: ${appState.modifiers.stainlessSteel ? 'TAK (+35 µg Ni)' : 'NIE (Bezpieczne naczynia)'}`);
+      lines.push(`  • Osłona Witamina C + Żelazo: ${appState.modifiers.vitaminCShield ? 'TAK (-15% wchłaniania)' : 'NIE'}`);
+
+      document.getElementById('exportTextarea').value = lines.join('\n');
+      const modal = document.getElementById('exportModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeExportModal() {
+      const modal = document.getElementById('exportModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copyExportText() {
+      const textarea = document.getElementById('exportTextarea');
+      textarea.select();
+      document.execCommand('copy');
+      showToast('Jadłospis został skopiowany do schowka!', 'success');
+    }
+
+    function triggerPrint() {
+      closeExportModal();
+      setTimeout(() => window.print(), 150);
+    }
+
+    function openClearDayModal() {
+      const modal = document.getElementById('clearDayModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeClearDayModal() {
+      const modal = document.getElementById('clearDayModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmClearDay() {
+      appState.meals = {
+        breakfast: [],
+        second_breakfast: [],
+        lunch: [],
+        snack: [],
+        dinner: []
+      };
+      saveState();
+      renderDashboard();
+      renderMeals();
+      closeSubstituteAssistant();
+      closeClearDayModal();
+      showToast('Wyczyszczono wszystkie posiłki z dzisiejszego dnia.', 'info');
+    }
+
+    // -----------------------------------------------------------------------
+    // 14. SYSTEM POWIADOMIEŃ TOAST (BEZ UŻYCIA ALERT())
+    // -----------------------------------------------------------------------
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+
+      let colors = 'bg-slate-900 text-white border-slate-700';
+      let icon = 'check-circle-2';
+      if (type === 'warning') {
+        colors = 'bg-rose-600 text-white border-rose-700';
+        icon = 'alert-triangle';
+      } else if (type === 'info') {
+        colors = 'bg-teal-700 text-white border-teal-800';
+        icon = 'info';
+      }
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-lg text-xs font-semibold transition-all duration-300 ${colors}`;
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3600);
+    }
+
+    // -----------------------------------------------------------------------
+    // INICJALIZACJA APLIKACJI PO ZAŁADOWANIU OKNA
+    // -----------------------------------------------------------------------
+    window.onload = function () {
+      loadState();
+      renderDashboard();
+      renderMeals();
+      renderProductDatabase();
+      renderChecklist();
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>
