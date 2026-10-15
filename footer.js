@@ -439,7 +439,7 @@
                                currentPath.includes('data');
 
         if (!isExcludedPage && !document.getElementById('chat-toggle-btn')) {
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3T_TzlSpGWdkBDgGWHh9Jcvhg2Kmzc16cb0C2IW8Rs2pfNtcppyo1OwrLQZ8icyattg/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec';
 
             const chatWrapper = document.createElement('div');
             chatWrapper.id = 'dabu-chat-wrapper';
