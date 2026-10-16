@@ -177,7 +177,7 @@
         /* GRID Z REJONAMI */
         .regions-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(235px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(245px, 1fr)); 
             gap: 10px; 
             margin: 15px 0 25px; 
         }
@@ -193,19 +193,15 @@
             transition: all 0.15s ease; 
             user-select: none;
         }
-        .region-checkbox-label:hover { background: #2f2f2f; border-color: rgba(46, 204, 113, 0.4); }
+        .region-checkbox-label:hover:not(.disabled) { background: #2f2f2f; border-color: rgba(46, 204, 113, 0.4); }
         .region-checkbox-label.checked { border-color: var(--accent-green); background: rgba(46, 204, 113, 0.1); }
         .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-green); }
 
         .region-checkbox-label.disabled {
-            opacity: 0.4;
+            opacity: 0.45;
             cursor: not-allowed;
             border-color: #2a2a2a;
             background: #181818;
-        }
-        .region-checkbox-label.disabled:hover {
-            background: #181818;
-            border-color: #2a2a2a;
         }
         .region-checkbox-label.disabled input {
             cursor: not-allowed;
@@ -396,17 +392,17 @@
             <div class="plan-title">Abonament Roczny</div>
             <div class="plan-price-tag">4 zł / 1 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span></div>
             <div class="plan-desc">
-                • <b>Wycena wg liczby dni:</b> Płacisz tylko za rzeczywiste dni zbiórek w całym roku.<br>
-                <i>Automatyczne zliczanie terminów z bazy i wszystkie aktualizacje w cenie.</i>
+                • <b>Wycena wg liczby dni w rejonie:</b> Płacisz tylko za rzeczywiste terminy wywozów w całym 2027 roku.<br>
+                <i>Pełny dostęp do 365 dni i wszystkich aktualizacji terminów.</i>
             </div>
         </label>
 
         <label class="plan-card" id="cardPlanDay">
             <input type="radio" name="orderPlan" value="day">
             <div class="plan-title">Dostęp Dzienny</div>
-            <div class="plan-price-tag">40 zł / 10 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1. dzień), potem 25 zł / 6 €</span></div>
+            <div class="plan-price-tag">40 zł / 10 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | 25 zł / 6 € (od 2 dni)</span></div>
             <div class="plan-desc">
-                Wybierz dzień startu i liczbę dni wyjazdu. 1. dzień: 40 zł (10 €), każdy kolejny dzień: tylko 25 zł (6 €) za rejon[cite: 1].
+                Wybierz dzień startu i liczbę dni wyjazdu. 1 dzień: 40 zł (10 €)[cite: 1]. Przy wyborze 2 dni lub więcej: <b>każdy dzień po 25 zł (6 €)</b> za rejon[cite: 2].
             </div>
         </label>
     </div>
@@ -538,9 +534,6 @@
             "Zollernalb"
         ];
 
-        // Odblokowane rejony (dodawaj kolejne wg potrzeb)
-        const unlockedRegions = ["Wuppertal", "Münster"];
-
         const noScrappersRegions = ["Rhein-Neckar", "Freudenstadt", "Eschwege"];
         const onlyScrappersRegions = ["Zollernalb"];
 
@@ -548,17 +541,14 @@
         const ROCZNA_DZIEN_PLN = 4.00;
         const ROCZNA_DZIEN_EUR = 1.00;
 
-        const DZIENNA_START_PLN = 40.00;
-        const DZIENNA_KOLEJNY_PLN = 25.00;
+        const DZIENNA_1DZIEN_PLN = 40.00;
+        const DZIENNA_OD2DNI_PLN = 25.00;
 
-        const DZIENNA_START_EUR = 10.00;
-        const DZIENNA_KOLEJNY_EUR = 6.00;
+        const DZIENNA_1DZIEN_EUR = 10.00;
+        const DZIENNA_OD2DNI_EUR = 6.00;
 
-        // Pamięć podręczna na liczbę dni w rejonach
-        let regionDaysMap = {
-            "Münster": 232,
-            "Wuppertal": 220
-        };
+        // Dynamiczna mapa dni w rejonach zasilana z Apps Script
+        let regionDaysMap = {};
 
         let currentFormat = 'Raport'; // 'Raport' lub 'Mapa'
         let currentPlan = 'year';    // 'year' lub 'day'
@@ -595,20 +585,72 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        // Automatyczne pobranie liczby dni dla rejonów z backendu Apps Script
+        // Renderowanie kafelków rejonów (domyślnie wyszarzone przed pobraniem bazy)
+        regionsList.forEach(name => {
+            const label = document.createElement('label');
+            label.className = 'region-checkbox-label disabled';
+            label.setAttribute('data-region', name);
+            
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = name;
+            input.disabled = true;
+
+            input.addEventListener('change', () => {
+                if (input.checked) {
+                    selectedRegions.add(name);
+                    label.classList.add('checked');
+                } else {
+                    selectedRegions.delete(name);
+                    label.classList.remove('checked');
+                }
+                updateCalculation();
+            });
+
+            label.appendChild(input);
+            const textSpan = document.createElement('span');
+            textSpan.className = 'region-text-node';
+            textSpan.textContent = `${name} (wkrótce)`;
+            label.appendChild(textSpan);
+            
+            regionsGrid.appendChild(label);
+        });
+
+        // Automatyczne pobranie bazy dni z arkusza 'Linki'
         async function wczytajDniZApi(rok) {
             try {
-                const resp = await fetch(`${GOOGLE_SCRIPT_URL}?action=pobierz_wycene_roczna&rejon=all&rok=${rok}`);
+                const url = `${GOOGLE_SCRIPT_URL}?action=pobierz_wycene_roczna&rok=${rok}`;
+                const resp = await fetch(url);
                 const data = await resp.json();
+
                 if (data && data.status === "OK" && data.dni) {
-                    regionDaysMap = Object.assign(regionDaysMap, data.dni);
+                    regionDaysMap = data.dni;
+
+                    // Automatyczne odblokowanie rejonów z arkusza Linki
+                    document.querySelectorAll('.region-checkbox-label').forEach(labelEl => {
+                        const regName = labelEl.getAttribute('data-region');
+                        const inputEl = labelEl.querySelector('input');
+                        const textSpan = labelEl.querySelector('.region-text-node');
+
+                        if (regionDaysMap[regName] !== undefined && regionDaysMap[regName] > 0) {
+                            const dni = regionDaysMap[regName];
+                            inputEl.disabled = false;
+                            labelEl.classList.remove('disabled');
+                            textSpan.textContent = `${regName} (${dni} dni)`;
+                        }
+                    });
+
                     updateCalculation();
                 }
-            } catch(e) {
-                console.log("Wczytywanie dni z API w tle:", e);
+            } catch (err) {
+                console.error("Błąd automatycznego pobierania dni z arkusza:", err);
             }
         }
-        wczytajDniZApi(selectedYear);
+
+        // Uruchomienie pobierania przy załadowaniu strony
+        document.addEventListener("DOMContentLoaded", () => {
+            wczytajDniZApi(selectedYear);
+        });
 
         // Wybór formatu (Raport / Mapa)
         cardFormatReport.addEventListener('click', () => {
@@ -763,36 +805,6 @@
             }
         });
 
-        // Renderowanie kafelków rejonów
-        regionsList.forEach(name => {
-            const isUnlocked = unlockedRegions.includes(name);
-            const label = document.createElement('label');
-            label.className = `region-checkbox-label ${!isUnlocked ? 'disabled' : ''}`;
-            
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.value = name;
-            input.disabled = !isUnlocked;
-
-            if (isUnlocked) {
-                input.addEventListener('change', () => {
-                    if (input.checked) {
-                        selectedRegions.add(name);
-                        label.classList.add('checked');
-                    } else {
-                        selectedRegions.delete(name);
-                        label.classList.remove('checked');
-                    }
-                    updateCalculation();
-                });
-            }
-
-            label.appendChild(input);
-            const displayText = isUnlocked ? name : `${name} (wkrótce)`;
-            label.appendChild(document.createTextNode(displayText));
-            regionsGrid.appendChild(label);
-        });
-
         cardPlanYear.addEventListener('click', () => {
             currentPlan = 'year';
             cardPlanYear.classList.add('active');
@@ -835,20 +847,24 @@
                     ? `Dzień: ${selectedDate}` 
                     : `Od ${selectedDate} do ${endDateStr} (bez weekendów i świąt DE)`;
 
-                // 1. dzień = 40 zł / 10 €, kolejny = 25 zł / 6 €
-                const cenaJedenRejonPLN = DZIENNA_START_PLN + (daysCount - 1) * DZIENNA_KOLEJNY_PLN;
-                const cenaJedenRejonEUR = DZIENNA_START_EUR + (daysCount - 1) * DZIENNA_KOLEJNY_EUR;
+                let cenaJedenRejonPLN = 0;
+                let cenaJedenRejonEUR = 0;
+
+                // 1 dzień = 40 zł / 10 €, od 2 dni wzwyż = każdy dzień po 25 zł / 6 €
+                if (daysCount === 1) {
+                    cenaJedenRejonPLN = DZIENNA_1DZIEN_PLN;
+                    cenaJedenRejonEUR = DZIENNA_1DZIEN_EUR;
+                    calcUnitPrice.textContent = `40 zł (10 €) / rejon`;
+                } else {
+                    cenaJedenRejonPLN = daysCount * DZIENNA_OD2DNI_PLN;
+                    cenaJedenRejonEUR = daysCount * DZIENNA_OD2DNI_EUR;
+                    calcUnitPrice.textContent = `25 zł (6 €) / dzień w rejonie (${cenaJedenRejonPLN} zł / ${cenaJedenRejonEUR} € za ${daysCount} ${dayWord})`;
+                }
 
                 totalPLN = count * cenaJedenRejonPLN;
                 totalEUR = count * cenaJedenRejonEUR;
 
                 calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b> (${selectedYear})<br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
-                
-                if (daysCount === 1) {
-                    calcUnitPrice.textContent = `40 zł (10 €) / rejon`;
-                } else {
-                    calcUnitPrice.textContent = `${cenaJedenRejonPLN} zł (${cenaJedenRejonEUR} €) / rejon za ${daysCount} ${dayWord}`;
-                }
 
             } else {
                 // Abonament roczny: suma unikalnych dni zbiórek * 4 PLN / 1 EUR
