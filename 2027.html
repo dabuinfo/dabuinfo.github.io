@@ -119,6 +119,39 @@
         .plan-price-tag { font-size: 1.25rem; font-weight: 800; color: var(--accent-gold); margin-bottom: 6px; }
         .plan-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
 
+        /* WYBÓR PŁATNOŚCI */
+        .payment-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 15px 0 20px 0;
+        }
+
+        .payment-card {
+            background: var(--bg-input);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-card:hover { border-color: rgba(52, 152, 219, 0.6); }
+
+        .payment-card.active {
+            border-color: var(--accent-blue);
+            background: rgba(52, 152, 219, 0.12);
+        }
+
+        .payment-card input[type="radio"] {
+            accent-color: var(--accent-blue);
+            width: 17px;
+            height: 17px;
+        }
+
         .land-header { 
             color: var(--accent-gold); 
             border-bottom: 1px dashed #444; 
@@ -317,6 +350,7 @@
             .order-module { padding: 12px; }
             .format-selector-grid { grid-template-columns: 1fr; }
             .plan-selector-grid { grid-template-columns: 1fr; }
+            .payment-selector-grid { grid-template-columns: 1fr; }
             .regions-grid { grid-template-columns: 1fr; }
             .controls-row { flex-direction: column; align-items: flex-start; }
         }
@@ -402,7 +436,7 @@
             <div class="plan-title">Dostęp Dzienny</div>
             <div class="plan-price-tag">40 zł / 10 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | 25 zł / 6 € (od 2 dni)</span></div>
             <div class="plan-desc">
-                Wybierz dzień startu i liczbę dni wyjazdu. 1 dzień: 40 zł (10 €)[cite: 1]. Przy wyborze 2 dni lub więcej: <b>każdy dzień po 25 zł (6 €)</b> za rejon[cite: 2].
+                Wybierz dzień startu i liczbę dni wyjazdu. 1 dzień: 40 zł (10 €). Przy wyborze 2 dni lub więcej: <b>każdy dzień po 25 zł (6 €)</b> za rejon.
             </div>
         </label>
     </div>
@@ -471,6 +505,36 @@
             </div>
         </div>
 
+        <!-- 3. WYBÓR METODY PŁATNOŚCI -->
+        <div style="margin-bottom: 18px;">
+            <label class="field-label">💳 Wybierz metodę płatności:</label>
+            <div class="payment-selector-grid">
+                <label class="payment-card active" id="payBlik">
+                    <input type="radio" name="paymentMethodRadio" value="BLIK na telefon (+48 733 035 301)" checked>
+                    <div>
+                        <b style="color: #fff; font-size: 0.95rem;">📱 BLIK</b>
+                        <div style="font-size: 0.75rem; color: #aaa;">Szybki przelew na telefon</div>
+                    </div>
+                </label>
+
+                <label class="payment-card" id="payBank">
+                    <input type="radio" name="paymentMethodRadio" value="Przelew bankowy / IBAN">
+                    <div>
+                        <b style="color: #fff; font-size: 0.95rem;">🏦 Przelew / IBAN</b>
+                        <div style="font-size: 0.75rem; color: #aaa;">Konto w PLN lub EUR</div>
+                    </div>
+                </label>
+
+                <label class="payment-card" id="payPaypal">
+                    <input type="radio" name="paymentMethodRadio" value="PayPal (ewabu74@gmail.com)">
+                    <div>
+                        <b style="color: #fff; font-size: 0.95rem;">🅿️ PayPal</b>
+                        <div style="font-size: 0.75rem; color: #aaa;">Płatność online / Karta</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
         <div>
             <label class="field-label">Twój adres e-mail (do przesłania kodów i dostępu):</label>
             <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
@@ -501,7 +565,6 @@
 
 <script>
     (function() {
-        // Główny adres Web App z backendem Apps Script
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
         
         const regionsList = [
@@ -547,11 +610,11 @@
         const DZIENNA_1DZIEN_EUR = 10.00;
         const DZIENNA_OD2DNI_EUR = 6.00;
 
-        // Dynamiczna mapa dni w rejonach zasilana z Apps Script
         let regionDaysMap = {};
 
-        let currentFormat = 'Raport'; // 'Raport' lub 'Mapa'
-        let currentPlan = 'year';    // 'year' lub 'day'
+        let currentFormat = 'Raport'; 
+        let currentPlan = 'year';    
+        let currentPayment = 'BLIK na telefon (+48 733 035 301)';
         const selectedYear = '2027';
         let selectedDate = '';
         let daysCount = 1;
@@ -585,7 +648,18 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        // Renderowanie kafelków rejonów (domyślnie wyszarzone przed pobraniem bazy)
+        // Obsługa kart wyboru płatności
+        document.querySelectorAll('.payment-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                const radio = card.querySelector('input');
+                radio.checked = true;
+                currentPayment = radio.value;
+            });
+        });
+
+        // Renderowanie kafelków rejonów
         regionsList.forEach(name => {
             const label = document.createElement('label');
             label.className = 'region-checkbox-label disabled';
@@ -626,7 +700,6 @@
                 if (data && data.status === "OK" && data.dni) {
                     regionDaysMap = data.dni;
 
-                    // Automatyczne odblokowanie rejonów z arkusza Linki
                     document.querySelectorAll('.region-checkbox-label').forEach(labelEl => {
                         const regName = labelEl.getAttribute('data-region');
                         const inputEl = labelEl.querySelector('input');
@@ -643,16 +716,15 @@
                     updateCalculation();
                 }
             } catch (err) {
-                console.error("Błąd automatycznego pobierania dni z arkusza:", err);
+                console.error("Błąd automatycznego pobierania dni:", err);
             }
         }
 
-        // Uruchomienie pobierania przy załadowaniu strony
         document.addEventListener("DOMContentLoaded", () => {
             wczytajDniZApi(selectedYear);
         });
 
-        // Wybór formatu (Raport / Mapa)
+        // Wybór formatu
         cardFormatReport.addEventListener('click', () => {
             currentFormat = 'Raport';
             cardFormatReport.classList.add('active');
@@ -756,7 +828,6 @@
             return `${yyyy}-${mm}-${dd}`;
         }
 
-        // Dostęp dzienny w 2027 r.
         let initialStartDate = getNextWorkingDay(new Date('2027-01-01T00:00:00'));
         const minDateStr = formatDateISO(initialStartDate);
         const maxDateStr = '2027-12-31';
@@ -867,7 +938,6 @@
                 calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b> (${selectedYear})<br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
 
             } else {
-                // Abonament roczny: suma unikalnych dni zbiórek * 4 PLN / 1 EUR
                 let sumaDniWszystkichRejonow = 0;
                 selectedRegions.forEach(regName => {
                     sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
@@ -944,8 +1014,8 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify({ 
-                            action: 'register_init', 
-                            email: clientEmail 
+                            action: 'sendPin', 
+                            clientEmail: clientEmail 
                         })
                     });
 
@@ -976,10 +1046,14 @@
                 const regionsArr = Array.from(selectedRegions);
                 const orderId = `ZAM-${Date.now().toString().slice(-6)}`;
 
+                let okresOpis = "";
                 let endDateStr = null;
                 if (currentPlan === 'day') {
                     const startObj = new Date(selectedDate + 'T00:00:00');
                     endDateStr = formatDateISO(calculateEndDate(startObj, daysCount));
+                    okresOpis = `${daysCount} dni (${selectedDate} - ${endDateStr})`;
+                } else {
+                    okresOpis = `Cały rok ${selectedYear}`;
                 }
 
                 submitBtn.disabled = true;
@@ -993,14 +1067,16 @@
                     pin: pinVal,
                     format: currentFormat,
                     plan: currentPlan,
+                    paymentMethod: currentPayment,
                     year: selectedYear,
+                    weeks: okresOpis,
                     startDate: currentPlan === 'day' ? selectedDate : null,
                     endDate: endDateStr,
                     totalDays: currentPlan === 'day' ? daysCount : null,
                     regions: regionsArr,
                     totalPrice: calcTotalPrice.textContent,
                     currency: "PLN/EUR",
-                    rawSummary: `Format: ${currentFormat}. Plan: ${currentPlan}. Start: ${selectedDate}, Koniec: ${endDateStr || '-'}, Dni roboczych: ${daysCount}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    rawSummary: `Format: ${currentFormat}. Plan: ${currentPlan}. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
@@ -1010,7 +1086,15 @@
                         body: JSON.stringify(payload)
                     });
 
-                    alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły zostały przesłane na adres: ${clientEmail}.`);
+                    const res = await response.json();
+                    if (res.status === 'invalid_pin') {
+                        alert("❌ Podany kod PIN jest nieprawidłowy lub wygasł. Spróbuj ponownie.");
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam`;
+                        return;
+                    }
+
+                    alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły wraz z danymi do płatności (${currentPayment}) zostały przesłane na adres: ${clientEmail}.`);
 
                     selectedRegions.clear();
                     document.querySelectorAll('.region-checkbox-label input').forEach(i => {
