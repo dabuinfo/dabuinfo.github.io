@@ -424,7 +424,7 @@
         <label class="plan-card active" id="cardPlanYear">
             <input type="radio" name="orderPlan" value="year" checked>
             <div class="plan-title">Abonament Roczny</div>
-            <div class="plan-price-tag">4 zł / 1 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span></div>
+            <div class="plan-price-tag" id="labelPriceYear">4 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span></div>
             <div class="plan-desc">
                 • <b>Wycena wg liczby dni w rejonie:</b> Płacisz tylko za rzeczywiste terminy wywozów w całym 2027 roku.<br>
                 <i>Pełny dostęp do 365 dni i wszystkich aktualizacji terminów.</i>
@@ -434,7 +434,7 @@
         <label class="plan-card" id="cardPlanDay">
             <input type="radio" name="orderPlan" value="day">
             <div class="plan-title">Dostęp Dzienny</div>
-            <div class="plan-price-tag">40 zł / 10 € <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | 25 zł / 6 € (od 2 dni)</span></div>
+            <div class="plan-price-tag" id="labelPriceDay">40 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | 25 zł (od 2 dni)</span></div>
             <div class="plan-desc">
                 Wybierz dzień startu i liczbę dni wyjazdu. 1 dzień: 40 zł (10 €). Przy wyborze 2 dni lub więcej: <b>każdy dzień po 25 zł (6 €)</b> za rejon.
             </div>
@@ -497,15 +497,15 @@
             </div>
             <div class="price-line" id="unitPriceRow">
                 <span>Stawka jednostkowa:</span>
-                <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł (1 €) / dzień wywozu</span>
+                <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
             </div>
             <div class="price-total-line">
                 <span>ŁĄCZNA KWOTA:</span>
-                <span id="calcTotalPrice">0 zł (0 €)</span>
+                <span id="calcTotalPrice">0 zł</span>
             </div>
         </div>
 
-        <!-- 3. WYBÓR METODY PŁATNOŚCI -->
+        <!-- WYBÓR METODY PŁATNOŚCI -->
         <div style="margin-bottom: 18px;">
             <label class="field-label">💳 Wybierz metodę płatności:</label>
             <div class="payment-selector-grid">
@@ -521,7 +521,7 @@
                     <input type="radio" name="paymentMethodRadio" value="Przelew bankowy / IBAN">
                     <div>
                         <b style="color: #fff; font-size: 0.95rem;">🏦 Przelew / IBAN</b>
-                        <div style="font-size: 0.75rem; color: #aaa;">Konto w PLN lub EUR</div>
+                        <div style="font-size: 0.75rem; color: #aaa;">Konto bankowe</div>
                     </div>
                 </label>
 
@@ -567,6 +567,39 @@
     (function() {
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
         
+        // --- DETEKCJA JĘZYKA PRZEGLĄDARKI (PL = PLN, RESZTA = EUR) ---
+        const userLang = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
+        const isPolish = userLang.startsWith('pl');
+        const currencyCode = isPolish ? 'PLN' : 'EUR';
+        const currencySymbol = isPolish ? 'zł' : '€';
+
+        // --- CENNIK WG WALUTY ---
+        const ROCZNA_DZIEN = isPolish ? 4.00 : 1.00;
+        const DZIENNA_1DZIEN = isPolish ? 40.00 : 10.00;
+        const DZIENNA_OD2DNI = isPolish ? 25.00 : 6.00;
+
+        // Aktualizacja etykiet na kaflach wg waluty
+        const labelPriceYear = document.getElementById('labelPriceYear');
+        const labelPriceDay = document.getElementById('labelPriceDay');
+        if (labelPriceYear) {
+            labelPriceYear.innerHTML = `${ROCZNA_DZIEN} ${currencySymbol} <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span>`;
+        }
+        if (labelPriceDay) {
+            labelPriceDay.innerHTML = `${DZIENNA_1DZIEN} ${currencySymbol} <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | ${DZIENNA_OD2DNI} ${currencySymbol} (od 2 dni)</span>`;
+        }
+
+        // Ukrycie opcji BLIK dla użytkowników spoza Polski
+        const payBlikCard = document.getElementById('payBlik');
+        const payBankCard = document.getElementById('payBank');
+        if (!isPolish && payBlikCard) {
+            payBlikCard.style.display = 'none';
+            if (payBankCard) {
+                payBankCard.classList.add('active');
+                const radioBank = payBankCard.querySelector('input');
+                if (radioBank) radioBank.checked = true;
+            }
+        }
+
         const regionsList = [
             "Altmarkkreis Salzwedel",
             "Bonn",
@@ -600,26 +633,19 @@
         const noScrappersRegions = ["Rhein-Neckar", "Freudenstadt", "Eschwege"];
         const onlyScrappersRegions = ["Zollernalb"];
 
-        // --- CENNIK ---
-        const ROCZNA_DZIEN_PLN = 4.00;
-        const ROCZNA_DZIEN_EUR = 1.00;
-
-        const DZIENNA_1DZIEN_PLN = 40.00;
-        const DZIENNA_OD2DNI_PLN = 25.00;
-
-        const DZIENNA_1DZIEN_EUR = 10.00;
-        const DZIENNA_OD2DNI_EUR = 6.00;
-
         let regionDaysMap = {};
 
         let currentFormat = 'Raport'; 
         let currentPlan = 'year';    
-        let currentPayment = 'BLIK na telefon (+48 733 035 301)';
+        let currentPayment = isPolish ? 'BLIK na telefon (+48 733 035 301)' : 'Przelew bankowy / IBAN';
         const selectedYear = '2027';
         let selectedDate = '';
         let daysCount = 1;
         let selectedRegions = new Set();
         let currentStep = 'need_pin';
+
+        let calculatedTotal = 0;
+        let calculatedDays = 0;
 
         // Elementy DOM
         const regionsGrid = document.getElementById('regionsGrid');
@@ -905,9 +931,6 @@
 
             orderSection.style.display = 'block';
 
-            let totalPLN = 0;
-            let totalEUR = 0;
-
             if (currentPlan === 'day') {
                 const startObj = new Date(selectedDate + 'T00:00:00');
                 const endObj = calculateEndDate(startObj, daysCount);
@@ -918,22 +941,17 @@
                     ? `Dzień: ${selectedDate}` 
                     : `Od ${selectedDate} do ${endDateStr} (bez weekendów i świąt DE)`;
 
-                let cenaJedenRejonPLN = 0;
-                let cenaJedenRejonEUR = 0;
-
-                // 1 dzień = 40 zł / 10 €, od 2 dni wzwyż = każdy dzień po 25 zł / 6 €
+                let cenaJedenRejon = 0;
                 if (daysCount === 1) {
-                    cenaJedenRejonPLN = DZIENNA_1DZIEN_PLN;
-                    cenaJedenRejonEUR = DZIENNA_1DZIEN_EUR;
-                    calcUnitPrice.textContent = `40 zł (10 €) / rejon`;
+                    cenaJedenRejon = DZIENNA_1DZIEN;
+                    calcUnitPrice.textContent = `${DZIENNA_1DZIEN} ${currencySymbol} / rejon`;
                 } else {
-                    cenaJedenRejonPLN = daysCount * DZIENNA_OD2DNI_PLN;
-                    cenaJedenRejonEUR = daysCount * DZIENNA_OD2DNI_EUR;
-                    calcUnitPrice.textContent = `25 zł (6 €) / dzień w rejonie (${cenaJedenRejonPLN} zł / ${cenaJedenRejonEUR} € za ${daysCount} ${dayWord})`;
+                    cenaJedenRejon = daysCount * DZIENNA_OD2DNI;
+                    calcUnitPrice.textContent = `${DZIENNA_OD2DNI} ${currencySymbol} / dzień w rejonie (${cenaJedenRejon} ${currencySymbol} za ${daysCount} ${dayWord})`;
                 }
 
-                totalPLN = count * cenaJedenRejonPLN;
-                totalEUR = count * cenaJedenRejonEUR;
+                calculatedTotal = count * cenaJedenRejon;
+                calculatedDays = daysCount;
 
                 calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b> (${selectedYear})<br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
 
@@ -943,19 +961,19 @@
                     sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
                 });
 
-                totalPLN = sumaDniWszystkichRejonow * ROCZNA_DZIEN_PLN;
-                totalEUR = sumaDniWszystkichRejonow * ROCZNA_DZIEN_EUR;
+                calculatedTotal = sumaDniWszystkichRejonow * ROCZNA_DZIEN;
+                calculatedDays = sumaDniWszystkichRejonow;
 
                 calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
-                calcUnitPrice.textContent = `4 zł (1 €) / dzień wywozu`;
+                calcUnitPrice.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
             }
 
-            calcTotalPrice.textContent = `${totalPLN.toLocaleString('pl-PL')} zł (${totalEUR.toLocaleString('pl-PL')} €)`;
+            calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
 
             if (currentStep === 'need_pin') {
-                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${totalPLN} zł / ${totalEUR} €)`;
+                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${calculatedTotal} ${currencySymbol})`;
             } else {
-                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${totalPLN} zł / ${totalEUR} €)`;
+                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${calculatedTotal} ${currencySymbol})`;
             }
 
             const selectedArr = Array.from(selectedRegions);
@@ -1072,10 +1090,11 @@
                     weeks: okresOpis,
                     startDate: currentPlan === 'day' ? selectedDate : null,
                     endDate: endDateStr,
-                    totalDays: currentPlan === 'day' ? daysCount : null,
+                    totalDays: calculatedDays,
                     regions: regionsArr,
-                    totalPrice: calcTotalPrice.textContent,
-                    currency: "PLN/EUR",
+                    totalPrice: calculatedTotal,
+                    displayPrice: `${calculatedTotal} ${currencySymbol}`,
+                    currency: currencyCode,
                     rawSummary: `Format: ${currentFormat}. Plan: ${currentPlan}. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
