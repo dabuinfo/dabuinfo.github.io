@@ -47,6 +47,17 @@
             padding-bottom: 50px; 
         }
 
+        /* BANER BLOKADY PO 31 MARCA */
+        #salesClosedBanner {
+            display: none;
+            background: rgba(231, 76, 60, 0.12);
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
         /* WYBÓR FORMATU PRODUKTU: RAPORT VS MAPA */
         .format-selector-grid {
             display: grid;
@@ -91,11 +102,15 @@
             border-radius: 10px;
             padding: 18px 20px;
             margin-bottom: 22px;
+        }
+
+        .annual-banner-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
+            margin-bottom: 10px;
         }
 
         .annual-banner-title {
@@ -312,148 +327,170 @@
 <div class="order-module">
     <h2>📋 Abonament Roczny - Terminarze i Rejony DE (2027)</h2>
 
-    <!-- INFORMACJA O KALENDARZU DNI POJEDYNCZYCH -->
-    <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-        <span>Interesują Cię pojedyncze dni wyjazdowe lub zestaw na bieżący tydzień?</span>
-        <a href="https://dabu-info.com/kalendarz.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">
-            Przejdź do Kalendarza Wystawek ➔
+    <!-- PROPOZYCJA 2: BLOKADA PO 31 MARCA 2027 Z PRZEKIEROWANIEM DO ZESTAWU TYGODNIOWEGO -->
+    <div id="salesClosedBanner">
+        <h3 style="color: #e74c3c; margin: 0 0 10px 0; font-size: 1.3rem;">⚠️ Sprzedaż Abonamentów Rocznych na 2027 została zakończona</h3>
+        <p style="color: #ddd; font-size: 0.95rem; margin: 0 0 16px 0; line-height: 1.5;">
+            Abonamenty roczne na rok 2027 były dostępne w przedsprzedaży do <b>31 marca 2027 r.</b><br>
+            Wybierz interesujące Cię tygodnie w <b>Zestawie Tygodniowym</b> – możesz wybrać dowolne terminy z całego kalendarza, a <b>im więcej tygodni wybierzesz, tym większy rabat ilościowy otrzymasz</b>:
+        </p>
+        <a href="https://dabu-info.com/zestaw.html" target="_blank" style="display: inline-block; background: #2ecc71; color: #121212; padding: 13px 26px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 1rem;">
+            📦 Przejdź do Konfiguratora Zestawu Tygodniowego ➔
         </a>
     </div>
 
-    <!-- 1. WYBÓR FORMATU: RAPORT CZY MAPA -->
-    <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
-        1. Wybierz preferowaną formę dostępu:
-    </div>
-    <div class="format-selector-grid">
-        <label class="format-card active" id="cardFormatReport">
-            <input type="radio" name="orderProductFormat" value="Raport" checked>
-            <div class="plan-title">📑 Raport cyfrowy (Tabela / XLS)</div>
-            <div class="plan-desc">
-                Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie lub druku.
-            </div>
-        </label>
-
-        <label class="format-card" id="cardFormatMap">
-            <input type="radio" name="orderProductFormat" value="Mapa">
-            <div class="plan-title">🗺️ Interaktywna Mapa (GPS / Trasa)</div>
-            <div class="plan-desc">
-                Wizualizacja na mapie punktów i sektorów wywozu, ułatwiająca nawigację bezpośrednio w terenie dzień po dniu.
-            </div>
-        </label>
-    </div>
-
-    <!-- 2. BANER ABONAMENTU ROCZNEGO -->
-    <div class="annual-banner">
-        <div>
-            <div class="annual-banner-title">
-                <span>⭐</span> Abonament Roczny (Cały rok 2027)
-            </div>
-            <div style="font-size: 0.88rem; color: #cbd5e1; margin-top: 4px;">
-                Płacisz tylko za rzeczywiste dni wywozu w wybranym rejonie. Dostęp do pełnych 365 dni i wszystkich aktualizacji.
-            </div>
+    <div id="orderMainContainer">
+        <!-- LINK DO ZESTAWU TYGODNIOWEGO -->
+        <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <span>Chcesz wybrać konkretne tygodnie w sezonie z rabatem ilościowym?</span>
+            <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">
+                Zestaw Tygodniowy (im więcej tygodni, tym większy rabat) ➔
+            </a>
         </div>
-        <div class="annual-rate-tag" id="labelPriceYear">
-            4 zł / dzień wywozu
-        </div>
-    </div>
 
-    <!-- PREFERENCJE ODPADÓW -->
-    <div style="background: #1e1e1e; padding: 12px 16px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px;">
-        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-            <span style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">Opcje profilu:</span>
-            <label style="cursor: pointer; font-weight: bold; color: var(--accent-orange); display: flex; align-items: center; gap: 8px;">
-                <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy" style="accent-color: var(--accent-orange);"> 
-                🧲 Interesuje mnie opcja dla złomiarzy (Schrott)
+        <!-- 1. WYBÓR FORMATU: RAPORT CZY MAPA -->
+        <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
+            1. Wybierz preferowaną formę dostępu:
+        </div>
+        <div class="format-selector-grid">
+            <label class="format-card active" id="cardFormatReport">
+                <input type="radio" name="orderProductFormat" value="Raport" checked>
+                <div class="plan-title">📑 Raport cyfrowy (Tabela / XLS)</div>
+                <div class="plan-desc">
+                    Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie lub druku.
+                </div>
             </label>
-            <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
-        </div>
-    </div>
 
-    <div class="land-header">📍 Wybierz powiat / miasto (2027):</div>
-    <div class="group-desc">Zaznacz interesujące Cię rejony poniżej:</div>
-
-    <div class="regions-grid" id="regionsGrid"></div>
-
-    <!-- SEKCJA KOSZYKA I ZAMÓWIENIA -->
-    <div id="orderSection" class="cart-summary">
-        <div class="price-calculation-box">
-            <div class="price-line">
-                <span>Wybrany format:</span>
-                <b id="calcFormatName" style="color: var(--accent-green);">Raport cyfrowy (Tabela / XLS)</b>
-            </div>
-            <div class="price-line">
-                <span>Wybrany model:</span>
-                <b id="calcPlanName" style="color: #fff;">Abonament roczny (2027)</b>
-            </div>
-            <div class="price-line">
-                <span>Liczba wybranych rejonów:</span>
-                <b id="calcCount">0</b>
-            </div>
-            <div class="price-line" id="unitPriceRow">
-                <span>Stawka jednostkowa:</span>
-                <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
-            </div>
-            <div class="price-total-line">
-                <span>ŁĄCZNA KWOTA:</span>
-                <span id="calcTotalPrice">0 zł</span>
-            </div>
+            <label class="format-card" id="cardFormatMap">
+                <input type="radio" name="orderProductFormat" value="Mapa">
+                <div class="plan-title">🗺️ Interaktywna Mapa (GPS / Trasa)</div>
+                <div class="plan-desc">
+                    Wizualizacja na mapie punktów i sektorów wywozu, ułatwiająca nawigację bezpośrednio w terenie dzień po dniu.
+                </div>
+            </label>
         </div>
 
-        <!-- WYBÓR METODY PŁATNOŚCI -->
-        <div style="margin-bottom: 18px;">
-            <label class="field-label">💳 Wybierz metodę płatności:</label>
-            <div class="payment-selector-grid">
-                <label class="payment-card active" id="payBlik">
-                    <input type="radio" name="paymentMethodRadio" value="BLIK na telefon (+48 733 035 301)" checked>
-                    <div>
-                        <b style="color: #fff; font-size: 0.95rem;">📱 BLIK</b>
-                        <div style="font-size: 0.75rem; color: #aaa;">Szybki przelew na telefon</div>
+        <!-- 2. BANER ABONAMENTU ROCZNEGO -->
+        <div class="annual-banner">
+            <div class="annual-banner-header">
+                <div>
+                    <div class="annual-banner-title">
+                        <span>⭐</span> Abonament Roczny (Cały rocznik 2027)
                     </div>
-                </label>
-
-                <label class="payment-card" id="payBank">
-                    <input type="radio" name="paymentMethodRadio" value="Przelew bankowy / IBAN">
-                    <div>
-                        <b style="color: #fff; font-size: 0.95rem;">🏦 Przelew / IBAN</b>
-                        <div style="font-size: 0.75rem; color: #aaa;">Konto bankowe</div>
+                    <div style="font-size: 0.88rem; color: #cbd5e1; margin-top: 4px;">
+                        Gwarancja stałej, najniższej stawki za dzień w kompletnym kalendarzu rocznika 2027.
                     </div>
+                </div>
+                <div class="annual-rate-tag" id="labelPriceYear">
+                    4 zł / dzień wywozu
+                </div>
+            </div>
+
+            <!-- KLAUZULA REGULAMINOWA (PROPOZYCJE 1 & 3) -->
+            <div style="font-size: 0.83rem; color: #bbb; border-top: 1px dashed rgba(46, 204, 113, 0.4); padding-top: 10px; margin-top: 8px; line-height: 1.5;">
+                📌 <b>Zasada rozliczenia (Pełna Licencja Roczna):</b><br>
+                Abonament stanowi jednorazową opłatę licencyjną za kompletny rocznik bazy 2027 (wycena obejmuje wszystkie zaplanowane dni w roku z gwarancją bezpłatnych aktualizacji i korekt urzędowych). Cena nie podlega podziałowi na miesiące ani odliczeniom za miniony okres. Mniejsze pakiety tygodniowe z możliwością wyboru dowolnych terminów i progresywnym rabatem ilościowym zamawiane są w <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">Konfiguratorze Zestawu Tygodniowego</a>[cite: 1].
+            </div>
+        </div>
+
+        <!-- PREFERENCJE ODPADÓW -->
+        <div style="background: #1e1e1e; padding: 12px 16px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px;">
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <span style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">Opcje profilu:</span>
+                <label style="cursor: pointer; font-weight: bold; color: var(--accent-orange); display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy" style="accent-color: var(--accent-orange);"> 
+                    🧲 Interesuje mnie opcja dla złomiarzy (Schrott)
                 </label>
-
-                <label class="payment-card" id="payPaypal">
-                    <input type="radio" name="paymentMethodRadio" value="PayPal (ewabu74@gmail.com)">
-                    <div>
-                        <b style="color: #fff; font-size: 0.95rem;">🅿️ PayPal</b>
-                        <div style="font-size: 0.75rem; color: #aaa;">Płatność online / Karta</div>
-                    </div>
-                </label>
+                <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
             </div>
         </div>
 
-        <div>
-            <label class="field-label">Twój adres e-mail (do przesłania kodów i dostępu):</label>
-            <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
-        </div>
+        <div class="land-header">📍 Wybierz powiat / miasto (2027):</div>
+        <div class="group-desc">Zaznacz interesujące Cię rejony poniżej:</div>
 
-        <div>
-            <label class="field-label">Numer telefonu (kontakt i weryfikacja):</label>
-            <input type="tel" id="clientPhoneInput" class="email-field-input" placeholder="np. +48 600 000 000" required>
-        </div>
+        <div class="regions-grid" id="regionsGrid"></div>
 
-        <!-- BLOK WPROWADZENIA KODU PIN -->
-        <div id="pinStepBox" class="pin-box-container">
-            <div style="font-size: 0.95rem; color: var(--accent-blue); font-weight: bold;">
-                ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail!
+        <!-- SEKCJA KOSZYKA I ZAMÓWIENIA -->
+        <div id="orderSection" class="cart-summary">
+            <div class="price-calculation-box">
+                <div class="price-line">
+                    <span>Wybrany format:</span>
+                    <b id="calcFormatName" style="color: var(--accent-green);">Raport cyfrowy (Tabela / XLS)</b>
+                </div>
+                <div class="price-line">
+                    <span>Wybrany model:</span>
+                    <b id="calcPlanName" style="color: #fff;">Abonament roczny (2027)</b>
+                </div>
+                <div class="price-line">
+                    <span>Liczba wybranych rejonów:</span>
+                    <b id="calcCount">0</b>
+                </div>
+                <div class="price-line" id="unitPriceRow">
+                    <span>Stawka jednostkowa:</span>
+                    <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
+                </div>
+                <div class="price-total-line">
+                    <span>ŁĄCZNA KWOTA:</span>
+                    <span id="calcTotalPrice">0 zł</span>
+                </div>
             </div>
-            <div style="font-size: 0.84rem; color: #cbd5e1; margin-top: 4px;">
-                Sprawdź skrzynkę odbiorczą (oraz folder Spam) i wpisz kod poniżej:
-            </div>
-            <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
-                <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
-                <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.85rem; text-decoration: underline;">Zmień e-mail</a>
-            </div>
-        </div>
 
-        <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i potwierdź</button>
+            <!-- WYBÓR METODY PŁATNOŚCI -->
+            <div style="margin-bottom: 18px;">
+                <label class="field-label">💳 Wybierz metodę płatności:</label>
+                <div class="payment-selector-grid">
+                    <label class="payment-card active" id="payBlik">
+                        <input type="radio" name="paymentMethodRadio" value="BLIK na telefon (+48 733 035 301)" checked>
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">📱 BLIK</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Szybki przelew na telefon</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-card" id="payBank">
+                        <input type="radio" name="paymentMethodRadio" value="Przelew bankowy / IBAN">
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">🏦 Przelew / IBAN</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Konto bankowe</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-card" id="payPaypal">
+                        <input type="radio" name="paymentMethodRadio" value="PayPal (ewabu74@gmail.com)">
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">🅿️ PayPal</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Płatność online / Karta</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="field-label">Twój adres e-mail (do przesłania kodów i dostępu):</label>
+                <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
+            </div>
+
+            <div>
+                <label class="field-label">Numer telefonu (kontakt i weryfikacja):</label>
+                <input type="tel" id="clientPhoneInput" class="email-field-input" placeholder="np. +48 600 000 000" required>
+            </div>
+
+            <!-- BLOK WPROWADZENIA KODU PIN -->
+            <div id="pinStepBox" class="pin-box-container">
+                <div style="font-size: 0.95rem; color: var(--accent-blue); font-weight: bold;">
+                    ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail!
+                </div>
+                <div style="font-size: 0.84rem; color: #cbd5e1; margin-top: 4px;">
+                    Sprawdź skrzynkę odbiorczą (oraz folder Spam) i wpisz kod poniżej:
+                </div>
+                <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                    <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+                    <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.85rem; text-decoration: underline;">Zmień e-mail</a>
+                </div>
+            </div>
+
+            <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i potwierdź</button>
+        </div>
     </div>
 </div>
 
@@ -461,6 +498,15 @@
     (function() {
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
         
+        // --- PROPOZYCJA 2: BLOKADA SPRZEDAŻY ROCZNEJ PO 31 MARCA 2027 ---
+        const CUTOFF_DATE = new Date('2027-04-01T00:00:00');
+        const now = new Date();
+        if (now >= CUTOFF_DATE) {
+            document.getElementById('salesClosedBanner').style.display = 'block';
+            document.getElementById('orderMainContainer').style.display = 'none';
+            return;
+        }
+
         // --- DETEKCJA JĘZYKA PRZEGLĄDARKI (PL = PLN, RESZTA = EUR) ---
         const userLang = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
         const isPolish = userLang.startsWith('pl');
