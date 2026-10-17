@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zamówienie i Terminarz - Rejony DE 2027</title>
+    <title>Abonament Roczny - Rejony DE 2027</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQTCG26T1B"></script>
     <script>
@@ -81,43 +81,41 @@
             accent-color: var(--accent-green);
         }
 
-        /* WYBÓR TRYBU ZAMÓWIENIA (KAFLE) */
-        .plan-selector-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .plan-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .plan-card:hover { border-color: rgba(52, 152, 219, 0.6); }
-
-        .plan-card.active {
-            border-color: var(--accent-blue);
-            background: rgba(52, 152, 219, 0.08);
-        }
-
-        .plan-card input[type="radio"] {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-blue);
-        }
-
         .plan-title { font-size: 1.1rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .plan-price-tag { font-size: 1.25rem; font-weight: 800; color: var(--accent-gold); margin-bottom: 6px; }
         .plan-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* BANER ABONAMENTU ROCZNEGO */
+        .annual-banner {
+            background: rgba(46, 204, 113, 0.08);
+            border: 2px solid var(--accent-green);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .annual-banner-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .annual-rate-tag {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            background: #181818;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
 
         /* WYBÓR PŁATNOŚCI */
         .payment-selector-grid {
@@ -161,51 +159,6 @@
         }
 
         .group-desc { color: var(--accent-green); font-size: 0.92rem; margin-bottom: 12px; font-weight: bold; }
-
-        .controls-row {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            background: var(--bg-card);
-            padding: 14px 18px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .year-selector-container { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-        }
-        .year-selector-container label { 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            font-size: 0.95rem; 
-            font-weight: bold; 
-            color: var(--accent-gold); 
-        }
-        .year-selector-container input[type="radio"] { accent-color: var(--accent-green); cursor: pointer; }
-
-        .date-picker-container {
-            display: none;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .date-input {
-            background: var(--bg-input);
-            border: 1px solid #555;
-            color: #fff;
-            padding: 7px 10px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            outline: none;
-            cursor: pointer;
-        }
 
         /* GRID Z REJONAMI */
         .regions-grid { 
@@ -349,19 +302,25 @@
         @media (max-width: 650px) {
             .order-module { padding: 12px; }
             .format-selector-grid { grid-template-columns: 1fr; }
-            .plan-selector-grid { grid-template-columns: 1fr; }
             .payment-selector-grid { grid-template-columns: 1fr; }
             .regions-grid { grid-template-columns: 1fr; }
-            .controls-row { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 
 <div class="order-module">
-    <h2>📋 Zamówienie terminarzy i rejonów (Niemcy 2027)</h2>
+    <h2>📋 Abonament Roczny - Terminarze i Rejony DE (2027)</h2>
 
-    <!-- WYBÓR FORMATU: RAPORT CZY MAPA -->
+    <!-- INFORMACJA O KALENDARZU DNI POJEDYNCZYCH -->
+    <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <span>Interesują Cię pojedyncze dni wyjazdowe lub zestaw na bieżący tydzień?</span>
+        <a href="https://dabu-info.com/kalendarz.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">
+            Przejdź do Kalendarza Wystawek ➔
+        </a>
+    </div>
+
+    <!-- 1. WYBÓR FORMATU: RAPORT CZY MAPA -->
     <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
         1. Wybierz preferowaną formę dostępu:
     </div>
@@ -383,83 +342,18 @@
         </label>
     </div>
 
-    <!-- PORÓWNANIE ROZWIĄZAŃ -->
-    <div style="background: #181818; border: 1px solid #333; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
-        <h3 style="color: #f1c40f; margin-top: 0; margin-bottom: 15px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
-            <span>📊</span> Rozwiązanie cyfrowe vs. „Koledzy z kartkami w kratkę”
-        </h3>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
-            <div style="background: rgba(231, 76, 60, 0.08); border-left: 4px solid #e74c3c; padding: 14px 16px; border-radius: 4px;">
-                <div style="color: #e74c3c; font-weight: bold; margin-bottom: 8px; font-size: 0.95rem;">
-                    📄 Kserówki i zeszyty (po taniości):
-                </div>
-                <ul style="margin: 0; padding-left: 18px; font-size: 0.88rem; color: #bbb; line-height: 1.5;">
-                    <li>Wertujesz 50 stron notesu, żeby sprawdzić, co dzieje się za dwa tygodnie w danym landzie.</li>
-                    <li>Brak jakiejkolwiek filtracji – musisz ręcznie czytać każdą linijkę i kreślić markerem po papierze.</li>
-                    <li>Święta, dni wolne i przesunięcia terminów? Na kserówce tego nie ma – puste kilometry i strata paliwa.</li>
-                    <li>Zgubisz jedną stronę ze spisu i tracisz kluczowe terminy na cały miesiąc.</li>
-                </ul>
+    <!-- 2. BANER ABONAMENTU ROCZNEGO -->
+    <div class="annual-banner">
+        <div>
+            <div class="annual-banner-title">
+                <span>⭐</span> Abonament Roczny (Cały rok 2027)
             </div>
-
-            <div style="background: rgba(46, 204, 113, 0.08); border-left: 4px solid #2ecc71; padding: 14px 16px; border-radius: 4px;">
-                <div style="color: #2ecc71; font-weight: bold; margin-bottom: 8px; font-size: 0.95rem;">
-                    📑 Nasze raporty i mapy cyfrowe:
-                </div>
-                <ul style="margin: 0; padding-left: 18px; font-size: 0.88rem; color: #ddd; line-height: 1.5;">
-                    <li><b>Numeryczny podział na tygodnie (KW):</b> Wybierasz konkretny tydzień albo przeglądasz od razu cały rok.</li>
-                    <li><b>Błyskawiczne filtrowanie:</b> W sekundę widzisz, jakie miejscowości i ulice mają zbiórkę dokładnie wtedy, kiedy planujesz wyjazd.</li>
-                    <li><b>Korekta gratis:</b> Gmina zmieniła daty? Zgłaszasz to nam, nasz automat odświeża rejon i dostajesz świeży terminarz za 0 zł.</li>
-                    <li>Planujesz trasy w telefonie lub laptopie, bez sterty pogniecionych kartek w schowku.</li>
-                </ul>
+            <div style="font-size: 0.88rem; color: #cbd5e1; margin-top: 4px;">
+                Płacisz tylko za rzeczywiste dni wywozu w wybranym rejonie. Dostęp do pełnych 365 dni i wszystkich aktualizacji.
             </div>
         </div>
-    </div>
-
-    <!-- WYBÓR MODELU ROZLICZENIA -->
-    <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
-        2. Wybierz model rozliczenia:
-    </div>
-    <div class="plan-selector-grid">
-        <label class="plan-card active" id="cardPlanYear">
-            <input type="radio" name="orderPlan" value="year" checked>
-            <div class="plan-title">Abonament Roczny</div>
-            <div class="plan-price-tag" id="labelPriceYear">4 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span></div>
-            <div class="plan-desc">
-                • <b>Wycena wg liczby dni w rejonie:</b> Płacisz tylko za rzeczywiste terminy wywozów w całym 2027 roku.<br>
-                <i>Pełny dostęp do 365 dni i wszystkich aktualizacji terminów.</i>
-            </div>
-        </label>
-
-        <label class="plan-card" id="cardPlanDay">
-            <input type="radio" name="orderPlan" value="day">
-            <div class="plan-title">Dostęp Dzienny</div>
-            <div class="plan-price-tag" id="labelPriceDay">40 zł <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | 25 zł (od 2 dni)</span></div>
-            <div class="plan-desc">
-                Wybierz dzień startu i liczbę dni wyjazdu. 1 dzień: 40 zł (10 €). Przy wyborze 2 dni lub więcej: <b>każdy dzień po 25 zł (6 €)</b> za rejon.
-            </div>
-        </label>
-    </div>
-
-    <!-- PAS KONTROLNY: ROK 2027 LUB WYBÓR DNI 2027 -->
-    <div class="controls-row">
-        <div class="year-selector-container" id="yearBox">
-            <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dotyczy roku:</span>
-            <label><input type="radio" name="orderYear" value="2027" checked> 2027</label>
-        </div>
-
-        <div class="date-picker-container" id="dayBox">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="color: #ffffff; font-size: 0.9rem; font-weight: bold;">Dzień startu (2027):</span>
-                <input type="date" id="selectedDateInput" class="date-input">
-            </div>
-
-            <div style="display: flex; align-items: center; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; padding: 3px 6px;">
-                <span style="color: #bbb; font-size: 0.85rem; margin-right: 8px; font-weight: 600;">Dni robocze:</span>
-                <button type="button" id="btnMinusDay" style="width: 32px; height: 32px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">–</button>
-                <span id="daysCountDisplay" style="min-width: 36px; text-align: center; color: var(--accent-gold); font-weight: bold; font-size: 1.1rem;">1</span>
-                <button type="button" id="btnPlusDay" style="width: 32px; height: 32px; background: var(--accent-green); color: #121212; border: none; border-radius: 4px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
-            </div>
+        <div class="annual-rate-tag" id="labelPriceYear">
+            4 zł / dzień wywozu
         </div>
     </div>
 
@@ -475,8 +369,8 @@
         </div>
     </div>
 
-    <div class="land-header">📍 Wybierz powiat / miasto:</div>
-    <div class="group-desc">Wybierz interesujące Cię rejony poniżej:</div>
+    <div class="land-header">📍 Wybierz powiat / miasto (2027):</div>
+    <div class="group-desc">Zaznacz interesujące Cię rejony poniżej:</div>
 
     <div class="regions-grid" id="regionsGrid"></div>
 
@@ -573,22 +467,16 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
-        // --- CENNIK WG WALUTY ---
+        // Stawka roczna wg waluty: 4 PLN lub 1 EUR za dzień wywozu
         const ROCZNA_DZIEN = isPolish ? 4.00 : 1.00;
-        const DZIENNA_1DZIEN = isPolish ? 40.00 : 10.00;
-        const DZIENNA_OD2DNI = isPolish ? 25.00 : 6.00;
 
-        // Aktualizacja etykiet na kaflach wg waluty
+        // Aktualizacja etykiety w banerze
         const labelPriceYear = document.getElementById('labelPriceYear');
-        const labelPriceDay = document.getElementById('labelPriceDay');
         if (labelPriceYear) {
-            labelPriceYear.innerHTML = `${ROCZNA_DZIEN} ${currencySymbol} <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">/ dzień wywozu</span>`;
-        }
-        if (labelPriceDay) {
-            labelPriceDay.innerHTML = `${DZIENNA_1DZIEN} ${currencySymbol} <span style="font-size: 0.85rem; font-weight: normal; color: #aaa;">(1 dzień) | ${DZIENNA_OD2DNI} ${currencySymbol} (od 2 dni)</span>`;
+            labelPriceYear.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
         }
 
-        // Ukrycie opcji BLIK dla użytkowników spoza Polski
+        // Ukrycie BLIK dla klientów spoza Polski
         const payBlikCard = document.getElementById('payBlik');
         const payBankCard = document.getElementById('payBank');
         if (!isPolish && payBlikCard) {
@@ -634,13 +522,9 @@
         const onlyScrappersRegions = ["Zollernalb"];
 
         let regionDaysMap = {};
-
         let currentFormat = 'Raport'; 
-        let currentPlan = 'year';    
-        let currentPayment = isPolish ? 'BLIK na telefon (+48 733 035 301)' : 'Przelew bankowy / IBAN';
         const selectedYear = '2027';
-        let selectedDate = '';
-        let daysCount = 1;
+        let currentPayment = isPolish ? 'BLIK na telefon (+48 733 035 301)' : 'Przelew bankowy / IBAN';
         let selectedRegions = new Set();
         let currentStep = 'need_pin';
 
@@ -655,16 +539,8 @@
         const calcPlanName = document.getElementById('calcPlanName');
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
-        const yearBox = document.getElementById('yearBox');
-        const dayBox = document.getElementById('dayBox');
-        const cardPlanYear = document.getElementById('cardPlanYear');
-        const cardPlanDay = document.getElementById('cardPlanDay');
         const cardFormatReport = document.getElementById('cardFormatReport');
         const cardFormatMap = document.getElementById('cardFormatMap');
-        const dateInput = document.getElementById('selectedDateInput');
-        const btnMinusDay = document.getElementById('btnMinusDay');
-        const btnPlusDay = document.getElementById('btnPlusDay');
-        const daysCountDisplay = document.getElementById('daysCountDisplay');
         const emailInput = document.getElementById('clientEmailInput');
         const phoneInput = document.getElementById('clientPhoneInput');
         const pinBox = document.getElementById('pinStepBox');
@@ -674,7 +550,7 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        // Obsługa kart wyboru płatności
+        // Obsługa wyboru płatności
         document.querySelectorAll('.payment-card').forEach(card => {
             card.addEventListener('click', () => {
                 document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
@@ -716,7 +592,7 @@
             regionsGrid.appendChild(label);
         });
 
-        // Automatyczne pobranie bazy dni z arkusza 'Linki'
+        // Automatyczne pobranie liczby dni z arkusza Linki
         async function wczytajDniZApi(rok) {
             try {
                 const url = `${GOOGLE_SCRIPT_URL}?action=pobierz_wycene_roczna&rok=${rok}`;
@@ -750,7 +626,7 @@
             wczytajDniZApi(selectedYear);
         });
 
-        // Wybór formatu
+        // Wybór formatu: Raport / Mapa
         cardFormatReport.addEventListener('click', () => {
             currentFormat = 'Raport';
             cardFormatReport.classList.add('active');
@@ -767,159 +643,6 @@
             calcFormatName.textContent = 'Interaktywna Mapa (GPS / Trasa)';
         });
 
-        // Kalendarz świąt DE
-        function getEasterDate(year) {
-            const a = year % 19;
-            const b = Math.floor(year / 100);
-            const c = year % 100;
-            const d = Math.floor(b / 4);
-            const e = b % 4;
-            const f = Math.floor((b + 8) / 25);
-            const g = Math.floor((b - f + 1) / 3);
-            const h = (19 * a + b - d - g + 15) % 30;
-            const i = Math.floor(c / 4);
-            const k = c % 4;
-            const l = (32 + 2 * e + 2 * i - h - k) % 7;
-            const m = Math.floor((a + 11 * h + 22 * l) / 451);
-            const month = Math.floor((h + l - 7 * m + 114) / 31);
-            const day = ((h + l - 7 * m + 114) % 31) + 1;
-            return new Date(year, month - 1, day);
-        }
-
-        function getGermanHolidays(year) {
-            const holidays = new Set();
-            const pad = (n) => String(n).padStart(2, '0');
-            const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
-            holidays.add(`${year}-01-01`);
-            holidays.add(`${year}-05-01`);
-            holidays.add(`${year}-10-03`);
-            holidays.add(`${year}-12-25`);
-            holidays.add(`${year}-12-26`);
-
-            const easter = getEasterDate(year);
-            const addDays = (base, days) => {
-                const res = new Date(base);
-                res.setDate(res.getDate() + days);
-                return res;
-            };
-
-            holidays.add(fmt(addDays(easter, -2)));
-            holidays.add(fmt(addDays(easter, 1)));
-            holidays.add(fmt(addDays(easter, 39)));
-            holidays.add(fmt(addDays(easter, 50)));
-
-            return holidays;
-        }
-
-        const holidaysCache = {};
-        function isHoliday(dateObj) {
-            const y = dateObj.getFullYear();
-            if (!holidaysCache[y]) holidaysCache[y] = getGermanHolidays(y);
-            const pad = (n) => String(n).padStart(2, '0');
-            return holidaysCache[y].has(`${y}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`);
-        }
-
-        function isWorkingDay(dateObj) {
-            const day = dateObj.getDay();
-            if (day === 0 || day === 6) return false;
-            return !isHoliday(dateObj);
-        }
-
-        function getNextWorkingDay(dateObj) {
-            let cur = new Date(dateObj);
-            while (!isWorkingDay(cur)) {
-                cur.setDate(cur.getDate() + 1);
-            }
-            return cur;
-        }
-
-        function calculateEndDate(startDateObj, workDaysCount) {
-            let cur = new Date(startDateObj);
-            let counted = 0;
-            while (counted < workDaysCount) {
-                if (isWorkingDay(cur)) {
-                    counted++;
-                    if (counted === workDaysCount) break;
-                }
-                cur.setDate(cur.getDate() + 1);
-            }
-            return cur;
-        }
-
-        function formatDateISO(d) {
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
-        }
-
-        let initialStartDate = getNextWorkingDay(new Date('2027-01-01T00:00:00'));
-        const minDateStr = formatDateISO(initialStartDate);
-        const maxDateStr = '2027-12-31';
-
-        dateInput.min = minDateStr;
-        dateInput.max = maxDateStr;
-        dateInput.value = minDateStr;
-        selectedDate = minDateStr;
-
-        dateInput.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if (val < minDateStr || val > maxDateStr) {
-                alert("Dostęp dzienny dotyczy wyłącznie roku 2027.");
-                e.target.value = minDateStr;
-                selectedDate = minDateStr;
-                updateCalculation();
-                return;
-            }
-
-            const chosen = new Date(val + 'T00:00:00');
-            if (!isWorkingDay(chosen)) {
-                const corrected = getNextWorkingDay(chosen);
-                const correctedStr = formatDateISO(corrected);
-                alert("Wybrana data wypada w weekend lub święto w Niemczech.\nPrzesunięto na najbliższy dzień roboczy: " + correctedStr);
-                e.target.value = correctedStr;
-                selectedDate = correctedStr;
-            } else {
-                selectedDate = val;
-            }
-            updateCalculation();
-        });
-
-        btnMinusDay.addEventListener('click', () => {
-            if (daysCount > 1) {
-                daysCount--;
-                daysCountDisplay.textContent = daysCount;
-                updateCalculation();
-            }
-        });
-
-        btnPlusDay.addEventListener('click', () => {
-            if (daysCount < 30) {
-                daysCount++;
-                daysCountDisplay.textContent = daysCount;
-                updateCalculation();
-            }
-        });
-
-        cardPlanYear.addEventListener('click', () => {
-            currentPlan = 'year';
-            cardPlanYear.classList.add('active');
-            cardPlanDay.classList.remove('active');
-            yearBox.style.display = 'flex';
-            dayBox.style.display = 'none';
-            updateCalculation();
-        });
-
-        cardPlanDay.addEventListener('click', () => {
-            currentPlan = 'day';
-            cardPlanDay.classList.add('active');
-            cardPlanYear.classList.remove('active');
-            yearBox.style.display = 'none';
-            dayBox.style.display = 'flex';
-            updateCalculation();
-        });
-
         function updateCalculation() {
             const count = selectedRegions.size;
             calcCount.textContent = count;
@@ -931,43 +654,16 @@
 
             orderSection.style.display = 'block';
 
-            if (currentPlan === 'day') {
-                const startObj = new Date(selectedDate + 'T00:00:00');
-                const endObj = calculateEndDate(startObj, daysCount);
-                const endDateStr = formatDateISO(endObj);
+            let sumaDniWszystkichRejonow = 0;
+            selectedRegions.forEach(regName => {
+                sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
+            });
 
-                const dayWord = daysCount === 1 ? 'dzień roboczy' : (daysCount < 5 ? 'dni robocze' : 'dni roboczych');
-                const dayRangeDetail = daysCount === 1 
-                    ? `Dzień: ${selectedDate}` 
-                    : `Od ${selectedDate} do ${endDateStr} (bez weekendów i świąt DE)`;
+            calculatedTotal = sumaDniWszystkichRejonow * ROCZNA_DZIEN;
+            calculatedDays = sumaDniWszystkichRejonow;
 
-                let cenaJedenRejon = 0;
-                if (daysCount === 1) {
-                    cenaJedenRejon = DZIENNA_1DZIEN;
-                    calcUnitPrice.textContent = `${DZIENNA_1DZIEN} ${currencySymbol} / rejon`;
-                } else {
-                    cenaJedenRejon = daysCount * DZIENNA_OD2DNI;
-                    calcUnitPrice.textContent = `${DZIENNA_OD2DNI} ${currencySymbol} / dzień w rejonie (${cenaJedenRejon} ${currencySymbol} za ${daysCount} ${dayWord})`;
-                }
-
-                calculatedTotal = count * cenaJedenRejon;
-                calculatedDays = daysCount;
-
-                calcPlanName.innerHTML = `Dostęp na <b>${daysCount} ${dayWord}</b> (${selectedYear})<br><span style="font-size:0.82rem; color:#aaa;">${dayRangeDetail}</span>`;
-
-            } else {
-                let sumaDniWszystkichRejonow = 0;
-                selectedRegions.forEach(regName => {
-                    sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
-                });
-
-                calculatedTotal = sumaDniWszystkichRejonow * ROCZNA_DZIEN;
-                calculatedDays = sumaDniWszystkichRejonow;
-
-                calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
-                calcUnitPrice.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
-            }
-
+            calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
+            calcUnitPrice.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
             calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
 
             if (currentStep === 'need_pin') {
@@ -1063,16 +759,7 @@
 
                 const regionsArr = Array.from(selectedRegions);
                 const orderId = `ZAM-${Date.now().toString().slice(-6)}`;
-
-                let okresOpis = "";
-                let endDateStr = null;
-                if (currentPlan === 'day') {
-                    const startObj = new Date(selectedDate + 'T00:00:00');
-                    endDateStr = formatDateISO(calculateEndDate(startObj, daysCount));
-                    okresOpis = `${daysCount} dni (${selectedDate} - ${endDateStr})`;
-                } else {
-                    okresOpis = `Cały rok ${selectedYear}`;
-                }
+                const okresOpis = `Cały rok ${selectedYear}`;
 
                 submitBtn.disabled = true;
                 submitBtn.textContent = "⏳ Rejestrowanie zamówienia...";
@@ -1084,18 +771,17 @@
                     clientId: clientPhone,
                     pin: pinVal,
                     format: currentFormat,
-                    plan: currentPlan,
+                    plan: 'year',
                     paymentMethod: currentPayment,
                     year: selectedYear,
                     weeks: okresOpis,
-                    startDate: currentPlan === 'day' ? selectedDate : null,
-                    endDate: endDateStr,
+                    startDate: null,
+                    endDate: null,
                     totalDays: calculatedDays,
                     regions: regionsArr,
                     totalPrice: calculatedTotal,
-                    displayPrice: `${calculatedTotal} ${currencySymbol}`,
                     currency: currencyCode,
-                    rawSummary: `Format: ${currentFormat}. Plan: ${currentPlan}. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
@@ -1125,12 +811,6 @@
                     pinInput.value = '';
                     pinBox.style.display = 'none';
                     currentStep = 'need_pin';
-                    daysCount = 1;
-                    daysCountDisplay.textContent = '1';
-
-                    let resetStartDate = getNextWorkingDay(new Date('2027-01-01T00:00:00'));
-                    selectedDate = formatDateISO(resetStartDate);
-                    dateInput.value = selectedDate;
 
                     submitBtn.disabled = false;
                     updateCalculation();
