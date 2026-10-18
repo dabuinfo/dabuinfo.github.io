@@ -405,8 +405,6 @@
             margin-bottom: 12px; 
             box-sizing: border-box; 
         }
-        .option-box { padding: 8px 6px; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
-        .option-box:last-child { border-bottom: none; margin-bottom: 0; }
 
         .report-format-options-grid {
             display: grid;
@@ -416,7 +414,7 @@
         }
         @media (min-width: 768px) {
             .report-format-options-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         .format-card-radio {
@@ -471,7 +469,6 @@
             border-color: var(--primary-accent);
         }
 
-        /* --- STYL DLA WYBORU FORMY ZAMÓWIENIA ORAZ KAFELKÓW OPCJI I PŁATNOŚCI --- */
         .order-channel-box {
             background: rgba(15, 23, 42, 0.65);
             border: 1px solid var(--border-subtle);
@@ -644,10 +641,10 @@
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li>Dla raportów PRO obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka). Dodatek Interaktywnej Mapy Online to dodatkowa wycena jednostkowa bez rabatu.</li>
+                        <li>Dla wszystkich formatów (Raport Jasny, Ciemny lub Interaktywna Mapa GPS) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
-                        <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu raportu PRO / mapy).</li>
+                        <li>💡 <b>Samodzielna konfiguracja:</b> Wycena i dobór rejonów w formularzu na stronie są w 100% bezpłatne. Zlecenia indywidualnej weryfikacji i ręcznego przygotowania rejonów poza formularzem objęte są zadatkiem <b>40 PLN / 10 € za rejon</b> (odliczanym w całości przy opłaceniu zamówienia).</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
@@ -664,7 +661,7 @@
                                 <li><strong>Podział logistyczny:</strong> Wykaz podzielony na gminy, dzielnice, sołectwa oraz zliczone punkty odbioru.</li>
                             </ul>
                             <ul class="benefit-list">
-                                <li><strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo (opcja dodatkowa).</li>
+                                <li><strong>Interaktywna Mapa Online:</strong> Pełna wizualizacja przestrzenna z podziałem na dni tygodnia i podkładami Topo.</li>
                                 <li><strong>Gotowość do druku A4:</strong> Zintegrowana funkcja ekonomicznego wydruku (czysty tekst na białym tle).</li>
                             </ul>
                         </div>
@@ -721,7 +718,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM 2026/2027) -->
+                    <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM) -->
                     <div class="selection-col-right" id="step2Wrapper">
                         <div class="form-header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box" id="weeksContainer">
@@ -737,11 +734,11 @@
 
                 </div>
 
-                <!-- KROK 3: WYBÓR MOTYWU RAPORTU PRO -->
-                <div class="form-header">📄 3. Standard realizacji zamówienia:</div>
+                <!-- KROK 3: WYBÓR FORMATU ZAMÓWIENIA (W TEJ SAMEJ CENIE) -->
+                <div class="form-header">📄 3. Wybierz format zamówienia (w tej samej cenie):</div>
                 <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 12px;">
                     <div style="font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; line-height: 1.4;">
-                        Wybierz preferowany motyw graficzny Raportu Operacyjnego PRO:
+                        Wybierz preferowaną formę opracowania trasy (obowiązuje ten sam cennik i rabaty):
                     </div>
 
                     <div class="report-format-options-grid">
@@ -768,6 +765,17 @@
                             </div>
                         </div>
 
+                        <!-- OPCJA 3: INTERAKTYWNA MAPA GPS -->
+                        <div class="format-card-radio" onclick="wybierzFormat('Mapa Online', this)">
+                            <div class="format-card-header">
+                                <input type="radio" name="reportTheme" value="Mapa Online" style="accent-color: #38bdf8; margin: 0; width: 18px; height: 18px;">
+                                <span style="color: #38bdf8;">🗺️ Interaktywna Mapa GPS</span>
+                            </div>
+                            <div class="format-card-desc">
+                                Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia i szybką nawigacją.
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -777,11 +785,6 @@
                         💾 4. Opcje dodatkowe:
                     </div>
                     <div class="order-channel-options">
-                        <label class="order-channel-label" id="mapAddonBox" title="Interaktywna mapa HTML na telefon z punktami zbiórek i nawigacją">
-                            <input id="mapOnlineOption" type="checkbox" style="accent-color: #38bdf8;" />
-                            <span style="color: #38bdf8; font-weight: 600;">🗺️️ Interaktywna Mapa GPS</span> <span style="font-size: 0.72rem; color: #94a3b8; font-weight: normal; margin-left: 2px;">(Gratis)</span>
-                        </label>
-
                         <label class="order-channel-label" id="pickupBox">
                             <input id="pickupOption" type="checkbox" />
                             <span>🏪 Odbiór osobisty</span>
@@ -911,7 +914,7 @@
                     <!-- POLE: ADRES E-MAIL KLIENTA -->
                     <div>
                         <label style="color: #93c5fd; font-weight: bold; font-size: 0.92rem; display: block; margin-bottom: 6px;">
-                            ✉️️ Twój adres e-mail (do przesłania potwierdzenia i zestawienia):
+                            ✉ Twój adres e-mail (do przesłania potwierdzenia i zestawienia):
                         </label>
                         <input type="email" id="mainClientEmailInput" class="client-input" placeholder="np. jan.kowalski@gmail.com" style="margin-bottom: 0; background: #0f172a; border: 1px solid #334155; color: #f8fafc;">
                         <div id="emailErrorMsg" style="color: #ef4444; font-size: 0.84rem; margin-top: 6px; display: none; font-weight: bold;">
@@ -921,7 +924,7 @@
 
                 </div>
 
-                <!-- STREFA STAŁEGO KLIENTA / KOD RABATOWY (TUŻ PRZED WYSYŁKĄ) -->
+                <!-- STREFA STAŁEGO KLIENTA / KOD RABATOWY -->
                 <div id="regularCustomerBox" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px;">
                     <label class="region-label" style="min-height: auto; padding: 0; cursor: pointer;">
                         <div class="region-left-side">
@@ -945,7 +948,7 @@
                 
                 <button class="submit-btn" id="btnSubmit" type="button">🛒 WYŚLIJ ZAMÓWIENIE</button>
 
-                <!-- BOKS SUKCESU PO POPRAWNYM WYSŁANIU ZAMÓWIENIA -->
+                <!-- BOKS SUKCESU -->
                 <div id="orderSuccessBox" style="display: none; background: rgba(34, 197, 94, 0.15); border: 2px solid #22c55e; border-radius: 8px; padding: 18px; margin-top: 20px; text-align: center;">
                     <h3 style="color: #22c55e; margin: 0 0 8px 0; font-size: 1.25rem;">✅ Zamówienie zostało wysłane pomyślnie!</h3>
                     <p style="color: #f8fafc; font-size: 0.95rem; margin: 0 0 8px 0;" id="successBoxDetails">
@@ -959,7 +962,7 @@
 
     </div>
 
-    <!-- MODAL INPOST Z TOKENEM PRODUKCYJNYM -->
+    <!-- MODAL INPOST -->
     <div id="inpostModal" class="inpost-modal-overlay">
         <div class="inpost-modal-content">
             <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
@@ -1290,11 +1293,9 @@
             let clean = cleanNameForCompare(rKey);
             let keys = new Set([clean]);
 
-            // Tylko rejon zbiorczy (powiat) zaciąga dane ze swoich podległych gmin
             if (REGION_SUB_AREAS_MAP[clean]) {
                 REGION_SUB_AREAS_MAP[clean].forEach(sub => keys.add(cleanNameForCompare(sub)));
             }
-            // Pojedyncza gmina reprezentuje wyłącznie siebie samą (nie dziedziczy powiatu)
             return Array.from(keys);
         }
 
@@ -1651,16 +1652,16 @@
                 leftSpan.className = "region-left-side";
                 leftSpan.appendChild(input);
 
-const weekTextSpan = document.createElement('span');
-weekTextSpan.textContent = `Tydzień ${weekNum}`;
-leftSpan.appendChild(weekTextSpan);
+                const weekTextSpan = document.createElement('span');
+                weekTextSpan.textContent = `Tydzień ${weekNum}`;
+                leftSpan.appendChild(weekTextSpan);
 
-const dateSpan = document.createElement('span');
-dateSpan.className = "notranslate";
-dateSpan.setAttribute('translate', 'no');
-dateSpan.style.marginLeft = "6px"; // Gwarantuje identyczny, sztywny odstęp przed nawiasem
-dateSpan.textContent = dateRangeFormatted;
-leftSpan.appendChild(dateSpan);
+                const dateSpan = document.createElement('span');
+                dateSpan.className = "notranslate";
+                dateSpan.setAttribute('translate', 'no');
+                dateSpan.style.marginLeft = "6px";
+                dateSpan.textContent = dateRangeFormatted;
+                leftSpan.appendChild(dateSpan);
 
                 label.appendChild(leftSpan);
                 weeksContainer.appendChild(label);
@@ -1908,7 +1909,6 @@ leftSpan.appendChild(dateSpan);
             let checkedBoxes = Array.from(document.querySelectorAll('.region-chk:checked'));
             if (checkedBoxes.length === 0) return;
 
-            // Zbieramy wszystkie klucze gmin już objętych przez zaznaczone rejony (w tym zbiorcze)
             let allCoveredKeys = new Set();
             checkedBoxes.forEach(c => {
                 let k = cleanNameForCompare(c.value);
@@ -1922,7 +1922,6 @@ leftSpan.appendChild(dateSpan);
             checkedBoxes.forEach(chk => {
                 let rKey = cleanNameForCompare(chk.value);
 
-                // 1. DLA REJONÓW ZBIORCZYCH (POWIATÓW) CAŁKOWICIE POMIJAMY "Trasa w okolicy"
                 let isCollective = (typeof REGION_SUB_AREAS_MAP !== 'undefined') && Boolean(REGION_SUB_AREAS_MAP[rKey]);
                 if (isCollective) return;
 
@@ -1937,12 +1936,10 @@ leftSpan.appendChild(dateSpan);
                     neighbors.forEach(nKey => {
                         let cleanNKey = cleanNameForCompare(nKey);
 
-                        // Nie proponuj rejonów zbiorczych jako okolic dla innych gmin
                         if ((typeof REGION_SUB_AREAS_MAP !== 'undefined') && REGION_SUB_AREAS_MAP[cleanNKey]) {
                             return;
                         }
 
-                        // Nie proponuj miejscowości, która już wchodzi w skład zaznaczonego rejonu zbiorczego
                         if (allCoveredKeys.has(cleanNKey)) {
                             return;
                         }
@@ -2110,7 +2107,8 @@ leftSpan.appendChild(dateSpan);
         }
 
         // ========================================================
-        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR + 10 EUR)
+        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR / 6 EUR)
+        // GWARANTOWANE MINIMUM: 8 PLN / 2 EUR ZA DZIEŃ
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2123,8 +2121,8 @@ leftSpan.appendChild(dateSpan);
             let isEuro = (userLang !== 'pl');
             let currencySymbol = isEuro ? 'EUR' : 'PLN';
 
-            let mapAddonChk = document.getElementById('mapOnlineOption');
-            let isMapAddonChecked = mapAddonChk ? mapAddonChk.checked : false;
+            let selectedThemeRadio = document.querySelector('input[name="reportTheme"]:checked');
+            let isMapSelected = selectedThemeRadio ? (selectedThemeRadio.value === 'Mapa Online') : false;
 
             let pickupChk = document.getElementById('pickupOption');
             let isPickup = pickupChk ? pickupChk.checked : false;
@@ -2135,7 +2133,7 @@ leftSpan.appendChild(dateSpan);
                 return { 
                     totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, isPickup: isPickup, totalPrice: 0, finalPrice: 0, 
                     regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, 
-                    isMapAddonChecked: isMapAddonChecked, isPaypal: false, paypalFee: 0, loyaltyDeduction: 0
+                    isMapSelected: isMapSelected, isPaypal: false, paypalFee: 0, loyaltyDeduction: 0
                 };
             }
 
@@ -2216,127 +2214,69 @@ leftSpan.appendChild(dateSpan);
                 billableDaysTotal += clusterDatesUnion.size;
             });
 
-// ========================================================
-            // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR / 6 EUR)
-            // ========================================================
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
             let regularBaseReference;
             if (isEuro) {
-                // 6 € dla pojedynczego rejonu (odpowiednik 25 zł), 10 € dla korytarza wspólnego (odpowiednik 40 zł)
                 regularBaseReference = czyKorytarzWspolny ? 10.00 : 6.00;
             } else {
                 regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
             }
 
             let ratePerDay;
-            let totalPriceNetto;
             let reportRateNoMap;
 
-            // Obliczamy stawkę raportu bez dodatku mapy
+            // Obliczamy stawkę za dzień z dynamicznym rabatem (GWARANTOWANE MINIMUM: 4.00 PLN / 1.00 EUR)
             if (isEuro) {
                 if (czyKorytarzWspolny) {
-                    if (totalDays >= 250) reportRateNoMap = 3.50;
-                    else if (totalDays >= 181) reportRateNoMap = 4.50;
-                    else if (totalDays >= 121) reportRateNoMap = 5.50;
-                    else if (totalDays >= 81)  reportRateNoMap = 6.50;
-                    else if (totalDays >= 51)  reportRateNoMap = 7.50;
-                    else if (totalDays >= 31)  reportRateNoMap = 8.25;
-                    else if (totalDays >= 16)  reportRateNoMap = 9.00;
-                    else if (totalDays >= 6)   reportRateNoMap = 9.50;
+                    if (totalDays >= 250) reportRateNoMap = 1.00;
+                    else if (totalDays >= 181) reportRateNoMap = 2.00;
+                    else if (totalDays >= 121) reportRateNoMap = 3.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 4.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 5.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 6.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 7.50;
+                    else if (totalDays >= 6)   reportRateNoMap = 9.00;
                     else                       reportRateNoMap = 10.00;
                 } else {
-                    if (totalDays >= 250) reportRateNoMap = 2.00;
-                    else if (totalDays >= 181) reportRateNoMap = 2.50;
-                    else if (totalDays >= 121) reportRateNoMap = 3.00;
-                    else if (totalDays >= 81)  reportRateNoMap = 3.75;
-                    else if (totalDays >= 51)  reportRateNoMap = 4.50;
-                    else if (totalDays >= 31)  reportRateNoMap = 5.00;
-                    else if (totalDays >= 16)  reportRateNoMap = 5.50;
-                    else if (totalDays >= 6)   reportRateNoMap = 5.75;
+                    if (totalDays >= 250) reportRateNoMap = 1.00;
+                    else if (totalDays >= 181) reportRateNoMap = 1.50;
+                    else if (totalDays >= 121) reportRateNoMap = 2.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 2.75;
+                    else if (totalDays >= 51)  reportRateNoMap = 3.50;
+                    else if (totalDays >= 31)  reportRateNoMap = 4.25;
+                    else if (totalDays >= 16)  reportRateNoMap = 5.00;
+                    else if (totalDays >= 6)   reportRateNoMap = 5.50;
                     else                       reportRateNoMap = 6.00;
                 }
             } else {
                 if (czyKorytarzWspolny) {
-                    if (totalDays >= 250) reportRateNoMap = 15.00;
-                    else if (totalDays >= 181) reportRateNoMap = 18.00;
-                    else if (totalDays >= 121) reportRateNoMap = 22.00;
-                    else if (totalDays >= 81)  reportRateNoMap = 26.00;
-                    else if (totalDays >= 51)  reportRateNoMap = 30.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 33.00;
-                    else if (totalDays >= 16)  reportRateNoMap = 36.00;
-                    else if (totalDays >= 6)   reportRateNoMap = 38.00;
+                    if (totalDays >= 250) reportRateNoMap = 4.00;
+                    else if (totalDays >= 181) reportRateNoMap = 8.00;
+                    else if (totalDays >= 121) reportRateNoMap = 12.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 16.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 20.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 25.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 30.00;
+                    else if (totalDays >= 6)   reportRateNoMap = 36.00;
                     else                       reportRateNoMap = 40.00;
                 } else {
-                    if (totalDays >= 250) reportRateNoMap = 8.00;
-                    else if (totalDays >= 181) reportRateNoMap = 10.00;
-                    else if (totalDays >= 121) reportRateNoMap = 12.00;
-                    else if (totalDays >= 81)  reportRateNoMap = 15.00;
-                    else if (totalDays >= 51)  reportRateNoMap = 18.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 20.00;
-                    else if (totalDays >= 16)  reportRateNoMap = 22.00;
+                    if (totalDays >= 250) reportRateNoMap = 4.00;
+                    else if (totalDays >= 181) reportRateNoMap = 6.00;
+                    else if (totalDays >= 121) reportRateNoMap = 8.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 11.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 14.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 17.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 20.00;
                     else if (totalDays >= 6)   reportRateNoMap = 22.50;
                     else                       reportRateNoMap = 25.00;
                 }
             }
-            let baseReportPrice = Math.round((totalDays * reportRateNoMap) * 100) / 100;
 
-            if (isMapAddonChecked) {
-                ratePerDay = regularBaseReference;
-                totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-            } else {
-                if (isEuro) {
-                    if (czyKorytarzWspolny) {
-                        // Korytarz wspólny EUR (baza: 10 €)
-                        if (totalDays >= 250) ratePerDay = 3.50;
-                        else if (totalDays >= 181) ratePerDay = 4.50;
-                        else if (totalDays >= 121) ratePerDay = 5.50;
-                        else if (totalDays >= 81)  ratePerDay = 6.50;
-                        else if (totalDays >= 51)  ratePerDay = 7.50;
-                        else if (totalDays >= 31)  ratePerDay = 8.25;
-                        else if (totalDays >= 16)  ratePerDay = 9.00;
-                        else if (totalDays >= 6)   ratePerDay = 9.50;
-                        else                       ratePerDay = 10.00;
-                    } else {
-                        // Pojedynczy rejon EUR (baza: 6 € odpowiadająca 25 zł)
-                        if (totalDays >= 250) ratePerDay = 2.00;
-                        else if (totalDays >= 181) ratePerDay = 2.50;
-                        else if (totalDays >= 121) ratePerDay = 3.00;
-                        else if (totalDays >= 81)  ratePerDay = 3.75;
-                        else if (totalDays >= 51)  ratePerDay = 4.50;
-                        else if (totalDays >= 31)  ratePerDay = 5.00;
-                        else if (totalDays >= 16)  ratePerDay = 5.50;
-                        else if (totalDays >= 6)   ratePerDay = 5.75;
-                        else                       ratePerDay = 6.00;
-                    }
-                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-                } else {
-                    if (czyKorytarzWspolny) {
-                        if (totalDays >= 250) ratePerDay = 15.00;
-                        else if (totalDays >= 181) ratePerDay = 18.00;
-                        else if (totalDays >= 121) ratePerDay = 22.00;
-                        else if (totalDays >= 81)  ratePerDay = 26.00;
-                        else if (totalDays >= 51)  ratePerDay = 30.00;
-                        else if (totalDays >= 31)  ratePerDay = 33.00;
-                        else if (totalDays >= 16)  ratePerDay = 36.00;
-                        else if (totalDays >= 6)   ratePerDay = 38.00;
-                        else                       ratePerDay = 40.00;
-                    } else {
-                        if (totalDays >= 250) ratePerDay = 8.00;
-                        else if (totalDays >= 181) ratePerDay = 10.00;
-                        else if (totalDays >= 121) ratePerDay = 12.00;
-                        else if (totalDays >= 81)  ratePerDay = 15.00;
-                        else if (totalDays >= 51)  ratePerDay = 18.00;
-                        else if (totalDays >= 31)  ratePerDay = 20.00;
-                        else if (totalDays >= 16)  ratePerDay = 22.00;
-                        else if (totalDays >= 6)   ratePerDay = 22.50;
-                        else                       ratePerDay = 25.00;
-                    }
-                    totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-                }
-            }
+            ratePerDay = reportRateNoMap;
+            let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
 
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
@@ -2349,8 +2289,8 @@ leftSpan.appendChild(dateSpan);
             }
 
             let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let savings = isMapAddonChecked ? 0 : Math.round((regularPrice - totalPriceNetto) * 100) / 100;
-            let discountPercent = (isMapAddonChecked || regularPrice === 0) ? 0 : Math.round((savings / regularPrice) * 100);
+            let savings = Math.round((regularPrice - totalPriceNetto) * 100) / 100;
+            let discountPercent = regularPrice === 0 ? 0 : Math.round((savings / regularPrice) * 100);
 
             let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
             let paypalFixed = isEuro ? 0.35 : 1.35;
@@ -2378,9 +2318,8 @@ leftSpan.appendChild(dateSpan);
                 paypalFee: paypalFee,
                 isPaypal: isPaypal,
                 ratePerDay: ratePerDay,
-                baseReportPrice: baseReportPrice || 0,
                 currency: currencySymbol,
-                isMapAddonChecked: isMapAddonChecked,
+                isMapSelected: isMapSelected,
                 loyaltyDeduction: loyaltyDeduction
             };
         }
@@ -2535,31 +2474,6 @@ leftSpan.appendChild(dateSpan);
 
             let calc = calculateActiveDaysAndPrice();
 
-            // Warunek dostępności mapy: minimum 125 zł (lub 30 EUR)
-            var mapAddonBox = document.getElementById('mapAddonBox');
-            var mapAddonChk = document.getElementById('mapOnlineOption');
-            if (mapAddonBox && mapAddonChk) {
-                var minMapThreshold = (calc.currency === 'EUR') ? 30.00 : 125.00;
-                var currentBaseVal = (typeof calc.baseReportPrice !== 'undefined') ? calc.baseReportPrice : calc.totalPrice;
-                var isMapEligible = (calc.totalDays > 0) && (currentBaseVal >= minMapThreshold);
-
-                if (!isMapEligible) {
-                    if (mapAddonChk.checked) {
-                        mapAddonChk.checked = false;
-                        calc = calculateActiveDaysAndPrice();
-                    }
-                    mapAddonChk.disabled = true;
-                    mapAddonBox.style.opacity = '0.45';
-                    mapAddonBox.style.cursor = 'not-allowed';
-                    mapAddonBox.title = '🗺️ Interaktywna Mapa GPS dostępna przy zamówieniu od minimum ' + minMapThreshold + ' ' + calc.currency + ' (od 5 dni wyjazdu)';
-                } else {
-                    mapAddonChk.disabled = false;
-                    mapAddonBox.style.opacity = '1';
-                    mapAddonBox.style.cursor = 'pointer';
-                    mapAddonBox.title = '🗺️ Interaktywna mapa HTML na smartfon z punktami zbiórek i nawigacją GPS';
-                }
-            }
-
             var cashBox = document.getElementById('cashOptionBox');
             if (cashBox) {
                 var pickupChk = document.getElementById('pickupOption');
@@ -2696,7 +2610,7 @@ leftSpan.appendChild(dateSpan);
             searchBoxEl.addEventListener('input', applyRegionSearchFilter);
         }
 
-                function getParentCollectiveRegion(cleanKey) {
+        function getParentCollectiveRegion(cleanKey) {
             if (typeof REGION_SUB_AREAS_MAP === 'undefined') return null;
             for (let parent in REGION_SUB_AREAS_MAP) {
                 let subList = REGION_SUB_AREAS_MAP[parent].map(cleanNameForCompare);
@@ -2710,20 +2624,20 @@ leftSpan.appendChild(dateSpan);
         function updateMutualFiltering() {
             if (Object.keys(availabilityMatrix).length === 0) return;
 
-var dzisiaj = new Date();
-var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-if (chkObecny) {
-    var parentLabel = chkObecny.closest('.region-label');
-    if (parentLabel) {
-        if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-            parentLabel.style.display = 'none';
-            chkObecny.checked = false; 
-        } else {
-            parentLabel.style.display = 'flex';
-        }
-    }
-}
+            var dzisiaj = new Date();
+            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
+            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
+            if (chkObecny) {
+                var parentLabel = chkObecny.closest('.region-label');
+                if (parentLabel) {
+                    if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
+                        parentLabel.style.display = 'none';
+                        chkObecny.checked = false; 
+                    } else {
+                        parentLabel.style.display = 'flex';
+                    }
+                }
+            }
             
             let allAvailableRegionsInDb = new Set();
             for (let w in availabilityMatrix) {
@@ -2764,7 +2678,6 @@ if (chkObecny) {
                 let parentCollective = getParentCollectiveRegion(rKey);
 
                 if (parentCollective) {
-                    // Pojedyncza gmina należąca do powiatu zbiorczego NIE jest oferowana osobno
                     label.style.opacity = '0.55';
                     chk.disabled = true;
                     if (chk.checked) chk.checked = false;
@@ -2798,7 +2711,6 @@ if (chkObecny) {
                         colBtn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            // Znajdź checkbox powiatu nadrzędnego i go zaznacz
                             let targetParentChk = Array.from(document.querySelectorAll('.region-chk')).find(
                                 c => cleanNameForCompare(c.value) === parentCollective
                             );
@@ -2981,7 +2893,7 @@ if (chkObecny) {
         });
 
         document.querySelector('#formContent').addEventListener('change', function(e) {
-            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'mapOnlineOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment' || e.target.name === 'orderChannel')) {
+            if(e.target && (e.target.classList.contains('region-chk') || e.target.classList.contains('week-chk') || e.target.id === 'schrottOption' || e.target.id === 'dhlOption' || e.target.id === 'pickupOption' || e.target.id === 'regularCustomerOption' || e.target.name === 'reportTheme' || e.target.name === 'payment' || e.target.name === 'orderChannel')) {
                 if (e.target.id === 'pickupOption') {
                     var cashRadio = document.querySelector('input[name="payment"][value="GOTÓWKA PRZY ODBIORZE"]');
                     if (e.target.checked && cashRadio) {
@@ -3019,7 +2931,6 @@ if (chkObecny) {
             var emailVal = emailInput ? emailInput.value.trim() : '';
             var emailError = document.getElementById('emailErrorMsg');
 
-            // 1. Walidacja telefonu dla WhatsApp i SMS
             if ((selectedOrderChannel === 'whatsapp' || selectedOrderChannel === 'sms') && phoneVal === '') {
                 if (phoneError) phoneError.style.display = 'block';
                 if (phoneInput) phoneInput.style.borderColor = '#ef4444';
@@ -3031,7 +2942,6 @@ if (chkObecny) {
                 if (phoneInput) phoneInput.style.borderColor = '#334155';
             }
 
-            // 2. Walidacja adresu e-mail dla kanału E-mail
             if (selectedOrderChannel === 'email' && (!emailVal || emailVal.indexOf('@') === -1 || emailVal.indexOf('.') === -1)) {
                 if (emailError) emailError.style.display = 'block';
                 if (emailInput) emailInput.style.borderColor = '#ef4444';
@@ -3042,7 +2952,6 @@ if (chkObecny) {
                 if (emailError) emailError.style.display = 'none';
                 if (emailInput) emailInput.style.borderColor = '#334155';
             }
-            // ===============================================
                     
             var nr = new Date().toISOString().slice(0,10).replace(/-/g, '') + "-" + Math.floor(1000 + Math.random() * 9000);
             var calc = calculateActiveDaysAndPrice();
@@ -3066,15 +2975,13 @@ if (chkObecny) {
                 "Dni w trasie: " + calc.totalDays + "\n" +
                 "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
                 "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
-                "Motyw: " + selectedThemeVal + "\n" +
+                "Format: " + selectedThemeVal + "\n" +
                 "Płatność: " + platnoscTekst;
 
-function obsluzSukcesWysylki() {
-                // 1. Zawsze ukrywamy przycisk wysyłki
+            function obsluzSukcesWysylki() {
                 var btn = document.getElementById('btnSubmit');
                 if (btn) btn.style.display = 'none';
 
-                // 2. Przygotowujemy i pokazujemy zieloną ramkę z numerem zamówienia
                 var successBox = document.getElementById('orderSuccessBox');
                 var orderDisplay = document.getElementById('successOrderIdDisplay');
                 var boxDetails = document.getElementById('successBoxDetails');
@@ -3098,7 +3005,6 @@ function obsluzSukcesWysylki() {
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
-                // 3. Po pokazaniu ramki wywołujemy przekierowanie do WhatsApp lub SMS
                 if (selectedOrderChannel === "whatsapp") {
                     var waUrl = "https://wa.me/" + MOJ_NUMER_TEL + "?text=" + encodeURIComponent(krotkaWiadomosc);
                     setTimeout(function() { window.open(waUrl, "_blank"); }, 300);
@@ -3127,7 +3033,7 @@ function obsluzSukcesWysylki() {
                 totalDays: calc.totalDays,
                 paymentMethod: selectedPaymentMethod ? selectedPaymentMethod.value : "Nie wybrano",
                 reportTheme: selectedThemeVal,
-                mapAddon: document.getElementById('mapOnlineOption')?.checked || false,
+                mapAddon: (selectedThemeVal === 'Mapa Online'),
                 regions: Array.from(wR).map(cb => cb.value.trim()),
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
