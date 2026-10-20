@@ -2153,9 +2153,11 @@
             }
 
             let todayObj = new Date();
+            let tomorrow = new Date(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate() + 1, 0, 0, 0);
             let todayStr = todayObj.getFullYear() + "-" + 
                            String(todayObj.getMonth() + 1).padStart(2, '0') + "-" + 
                            String(todayObj.getDate()).padStart(2, '0');
+            let currentWeekNum = getWeekNumber(todayObj).toString();
             let matrixToUse = availabilityMatrix;
 
             let regionDatesMap = {};
@@ -2174,7 +2176,7 @@
                         let itemName = cleanNameForCompare(rawItemName);
                         if (!rAssociatedKeys.includes(itemName)) return;
 
-                        // Obsługa wszystkich wariantów klucza z datami w bazie
+                        // NAPRAWIONE: Obsługa obu wariantów klucza z datami w bazie (item.daty oraz item["DATA (PN-SOB)"])
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         if (!dStr || dStr === "-") return;
 
@@ -2183,7 +2185,11 @@
                             let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
                             if (match) {
                                 let pelnaDataWpisu = match[0];
-                                if (pelnaDataWpisu > todayStr) {
+                                let dObj = new Date(match[1], match[2] - 1, match[3]);
+
+                                // Prawidłowe filtrowanie od jutra dla bieżącego tygodnia, a dla przyszłych tygodni wszystkie daty
+                                let allowDate = (w === currentWeekNum) ? (dObj >= tomorrow) : (pelnaDataWpisu > todayStr);
+                                if (allowDate) {
                                     datesSet.add(pelnaDataWpisu);
                                 }
                             }
