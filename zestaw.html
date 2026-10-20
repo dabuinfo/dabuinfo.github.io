@@ -1293,6 +1293,17 @@
             let clean = cleanNameForCompare(rKey);
             let keys = new Set([clean]);
 
+            // Automatyczne dopasowanie wariantów z "kreis" / "landkreis" (gdy w bazie nazwa jest krótsza lub dłuższa)
+            let baseWithoutKreis = clean.replace(/\b(landkreis|kreis)\b/g, '').replace(/\s+/g, ' ').trim();
+            if (baseWithoutKreis && baseWithoutKreis !== clean) {
+                // Dodajemy samą nazwę bazową tylko jeśli nie ma osobnego rejonu "Stadt" o tej samej nazwie
+                if (!SPECIAL_REGIONS_LAND_MAP[formatNazwaRejonu(baseWithoutKreis + ' stadt')]) {
+                    keys.add(baseWithoutKreis);
+                }
+            }
+            keys.add(clean + ' kreis');
+            keys.add('landkreis ' + clean);
+
             if (REGION_SUB_AREAS_MAP[clean]) {
                 REGION_SUB_AREAS_MAP[clean].forEach(sub => keys.add(cleanNameForCompare(sub)));
             }
