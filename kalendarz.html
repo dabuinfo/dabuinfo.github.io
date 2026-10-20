@@ -894,8 +894,7 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            // CENNIK PROGRESYWNY: 1. dzień = 40 PLN / 10 €, kolejne = 25 PLN / 6 €
-// CENNIK: 1 dzień = 40 PLN / 10 €, od 2 dni wzwyż = każdy dzień po 25 PLN / 6 €
+            // CENNIK: Stała cena za każdy rejon / termin = 40 PLN / 10 €
 function calculateTotals() {
     // Liczba wszystkich wybranych rejonów / terminów w koszyku
     const totalTermsCount = globalCart.size;
@@ -909,15 +908,11 @@ function calculateTotals() {
     });
     const selectedDays = uniqueDates.size;
 
-    // Kalkulacja za KAŻDY zaznaczony rejon / termin:
-    // 1 rejon = 40 PLN / 10 €
-    // 2 lub więcej rejonów = każdy po 25 PLN / 6 €
+    // Kalkulacja za KAŻDY zaznaczony rejon / termin: stała cena 40 PLN / 10 €
     let rawNetto = 0;
-    if (totalTermsCount === 1) {
-        rawNetto = isPolish ? 40.00 : 10.00;
-    } else if (totalTermsCount >= 2) {
-        const discountRate = isPolish ? 25.00 : 6.00;
-        rawNetto = totalTermsCount * discountRate;
+    if (totalTermsCount > 0) {
+        const unitPrice = isPolish ? 40.00 : 10.00;
+        rawNetto = totalTermsCount * unitPrice;
     }
 
     const totalNetto = Math.round(rawNetto * 100) / 100;
