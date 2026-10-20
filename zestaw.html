@@ -1689,7 +1689,7 @@
 
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
-                    let n = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
+                    let rName = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
                     let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
                         ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
                         : "";
@@ -1725,7 +1725,7 @@
 
             for (let w in regionsData) {
                 (regionsData[w] || []).forEach(item => {
-                    const n = typeof item === 'string' ? item : item.nazwa;
+                    const n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
                     if (n) dodajRejon(n);
                 });
             }
