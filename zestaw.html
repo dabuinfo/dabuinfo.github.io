@@ -1975,7 +1975,10 @@
                         addBtn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            neighborCheckboxesToToggle.forEach(c => { c.checked = true; });
+                            neighborCheckboxesToToggle.forEach(c => { 
+                                c.disabled = false;
+                                c.checked = true; 
+                            });
                             updateMutualFiltering();
                             updatePriceDisplay();
                         });
@@ -2107,8 +2110,9 @@
         }
 
         // ========================================================
-        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR / 6 EUR)
-        // GWARANTOWANE MINIMUM: 8 PLN / 2 EUR ZA DZIEŃ
+        // KALKULACJA:
+        // - Zwykły wybór: obowiązują progi rabatowe ilościowe
+        // - Pakiet "Dodaj okolice" (połączone sąsiednie rejony): stała stawka 40 PLN / 10 EUR bez rabatów ilościowych
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2137,9 +2141,10 @@
                 };
             }
 
-            let now = new Date();
-            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            let currentWeekNum = getWeekNumber(now).toString();
+            let todayObj = new Date();
+            let todayStr = todayObj.getFullYear() + "-" + 
+                           String(todayObj.getMonth() + 1).padStart(2, '0') + "-" + 
+                           String(todayObj.getDate()).padStart(2, '0');
             let matrixToUse = availabilityMatrix;
 
             let regionDatesMap = {};
@@ -2154,21 +2159,21 @@
 
                     let rAssociatedKeys = getAssociatedKeys(rKey);
                     matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
+                        let rawItemName = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"] || "");
+                        let itemName = cleanNameForCompare(rawItemName);
                         if (!rAssociatedKeys.includes(itemName)) return;
 
-                        let dStr = typeof item === 'string' ? "" : (item.daty || "");
+                        // Obsługa wszystkich wariantów klucza z datami w bazie
+                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         if (!dStr || dStr === "-") return;
 
-                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
+                        let datyArr = dStr.split(/[\r\n,]+/).map(x => x.trim()).filter(x => x);
                         datyArr.forEach(d => {
                             let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
                             if (match) {
-                                let dObj = new Date(match[1], match[2] - 1, match[3]);
-                                if (w === currentWeekNum) {
-                                    if (dObj >= tomorrow) datesSet.add(match[0]);
-                                } else {
-                                    datesSet.add(match[0]);
+                                let pelnaDataWpisu = match[0];
+                                if (pelnaDataWpisu > todayStr) {
+                                    datesSet.add(pelnaDataWpisu);
                                 }
                             }
                         });
@@ -2216,31 +2221,19 @@
 
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
-            let czyKorytarzWspolny = (selectedRegions.length > 1);
+            
+            // Sprawdzamy, czy klient dodał pakiet okolicy (tzn. co najmniej 2 wybrane rejony sąsiadują ze sobą w jednym klastrze)
+            let czyPakietOkolicy = clusters.some(clusterGroup => clusterGroup.length > 1);
 
-            let regularBaseReference;
-            if (isEuro) {
-                regularBaseReference = 10.00;
-            } else {
-                regularBaseReference = 40.00;
-            }
-
-            let ratePerDay;
+            let regularBaseReference = isEuro ? 10.00 : 40.00;
             let reportRateNoMap;
 
-            // Obliczamy stawkę za dzień z dynamicznym rabatem (Maksymalny rabat do 30%)
             if (isEuro) {
-                if (czyKorytarzWspolny) {
-                    if (totalDays >= 250) reportRateNoMap = 7.00;
-                    else if (totalDays >= 181) reportRateNoMap = 7.30;
-                    else if (totalDays >= 121) reportRateNoMap = 7.60;
-                    else if (totalDays >= 81)  reportRateNoMap = 8.00;
-                    else if (totalDays >= 51)  reportRateNoMap = 8.50;
-                    else if (totalDays >= 31)  reportRateNoMap = 9.00;
-                    else if (totalDays >= 16)  reportRateNoMap = 9.30;
-                    else if (totalDays >= 6)   reportRateNoMap = 9.70;
-                    else                       reportRateNoMap = 10.00;
+                if (czyPakietOkolicy) {
+                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 10 EUR za każdy dostępny dzień
+                    reportRateNoMap = 10.00;
                 } else {
+                    // Pojedynczy rejon lub osobne niesąsiadujące rejony -> normalne progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 7.00;
                     else if (totalDays >= 181) reportRateNoMap = 7.30;
                     else if (totalDays >= 121) reportRateNoMap = 7.60;
@@ -2252,17 +2245,11 @@
                     else                       reportRateNoMap = 10.00;
                 }
             } else {
-                if (czyKorytarzWspolny) {
-                    if (totalDays >= 250) reportRateNoMap = 28.00;
-                    else if (totalDays >= 181) reportRateNoMap = 29.30;
-                    else if (totalDays >= 121) reportRateNoMap = 30.60;
-                    else if (totalDays >= 81)  reportRateNoMap = 32.00;
-                    else if (totalDays >= 51)  reportRateNoMap = 34.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 36.00;
-                    else if (totalDays >= 16)  reportRateNoMap = 37.30;
-                    else if (totalDays >= 6)   reportRateNoMap = 38.70;
-                    else                       reportRateNoMap = 40.00;
+                if (czyPakietOkolicy) {
+                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 40 PLN za każdy dostępny dzień
+                    reportRateNoMap = 40.00;
                 } else {
+                    // Pojedynczy rejon lub osobne niesąsiadujące rejony -> normalne progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 28.00;
                     else if (totalDays >= 181) reportRateNoMap = 29.30;
                     else if (totalDays >= 121) reportRateNoMap = 30.60;
@@ -2275,7 +2262,7 @@
                 }
             }
 
-            ratePerDay = reportRateNoMap;
+            let ratePerDay = reportRateNoMap;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
 
             let loyaltyDeduction = 0;
