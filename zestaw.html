@@ -1689,7 +1689,7 @@
 
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
-                    let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
+                    let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
                     let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
                         ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
                         : "";
@@ -1837,7 +1837,7 @@
                     if (!matrixToUse[w]) return;
                     let rAssociatedKeys = getAssociatedKeys(rName);
                     matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"] || ""));
                         if (!rAssociatedKeys.includes(itemName)) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
@@ -2640,7 +2640,7 @@
             let allAvailableRegionsInDb = new Set();
             for (let w in availabilityMatrix) {
                 availabilityMatrix[w].forEach(rObj => {
-                    let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
+                    let nazwaRejonu = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
                     if (nazwaRejonu) allAvailableRegionsInDb.add(cleanNameForCompare(nazwaRejonu));
                 });
             }
@@ -2664,7 +2664,7 @@
                 } else if (!isSpecial && selectedWeeks.length > 0) {
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
-                            let n = typeof item === 'string' ? item : item.nazwa;
+                            let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
                             return rAssociatedKeys.includes(cleanNameForCompare(n));
                         });
                     });
