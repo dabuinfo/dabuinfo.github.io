@@ -2,8 +2,8 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zamówienie Bazy Danych | dabu-info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zamówienie Mapy Serwisów w Europie i Baz Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -22,18 +22,33 @@
         :root {
             --bg-color: #f4f4f9;
             --box-bg: #ffffff;
-            --text-color: #333;
-            --accent-color: #000;
-            --border-color: #ccc;
-            --info-bg: #f8f9fa;
-            --info-border: #adb5bd;
-            --atv-color: #c0392b;        /* Quady / ATV / UTV Multibrand */
-            --hq-color: #f39c12;        /* Husqvarna */
-            --karcher-color: #ffcc00;   /* Kärcher */
-            --karcher-btn-text: #111;   /* Kontrastowy napis Kärcher */
-            --bike-color: #0077b6;      /* Rowery: Bosch eBike */
-            --kringloop-color: #27ae60; /* Kringloop / Vintage Benelux */
-            --wacker-color: #d97706;    /* Wacker Neuson */
+            --text-color: #1e293b;
+            --muted-text: #64748b;
+            --accent-color: #0f172a;
+            --border-color: #cbd5e1;
+            --info-bg: #f8fafc;
+            --info-border: #94a3b8;
+            
+            /* Kolory spójne z mapa_serwisow_europa.html */
+            --srv-bike: #0077b6;        /* Rowery Bosch eBike */
+            --srv-mower: #d35400;       /* Kosiarki Husqvarna */
+            --srv-washer: #ffcc00;      /* Myjki Kärcher */
+            --srv-atv: #15803d;         /* Quady / ATV */
+            
+            /* Kolory pakietów czasowych */
+            --plan-week: #0077b6;
+            --plan-month: #15803d;
+            --plan-year: #d97706;
+            --hero-bg: rgba(0, 119, 182, 0.05);
+
+            /* Kolory kart pojedynczych baz */
+            --atv-color: #c0392b;
+            --hq-color: #f39c12;
+            --karcher-color: #ffcc00;
+            --karcher-btn-text: #111;
+            --bike-color: #0077b6;
+            --kringloop-color: #27ae60;
+            --wacker-color: #d97706;
         }
 
         /* Dark Mode */
@@ -42,16 +57,16 @@
                 --bg-color: #121212;
                 --box-bg: #1e1e1e;
                 --text-color: #e0e0e6;
+                --muted-text: #a0aec0;
                 --accent-color: #ffffff;
-                --border-color: #444;
-                --info-bg: #2d2d2d;
+                --border-color: #383838;
+                --info-bg: #262626;
                 --info-border: #555;
+                --hero-bg: rgba(0, 119, 182, 0.12);
             }
         }
 
-        html, body {
-            top: 0px !important;
-        }
+        html, body { top: 0px !important; }
 
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
@@ -63,12 +78,13 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .main-container {
             width: 100%;
             max-width: 1250px;
-            padding: 30px 20px 20px 20px;
+            padding: 25px 16px 20px 16px;
             box-sizing: border-box;
             flex: 1;
         }
@@ -76,95 +92,300 @@
         .box { 
             width: 100%;
             background-color: var(--box-bg);
-            padding: 35px 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+            padding: 32px 28px; 
+            border-radius: 14px; 
+            box-shadow: 0 4px 25px rgba(0,0,0,0.12); 
             box-sizing: border-box;
         }
 
-        .header-graphic { text-align: center; margin-bottom: 25px; }
-        .header-graphic svg { fill: var(--accent-color); width: 64px; height: 64px; }
+        .header-graphic { text-align: center; margin-bottom: 22px; }
+        .header-graphic svg { fill: var(--accent-color); width: 54px; height: 54px; }
 
-        h2 { margin: 10px 0 5px 0; color: var(--accent-color); text-align: center; font-size: 1.8rem; }
-        .subtitle { text-align: center; font-size: 1rem; color: #888; margin-bottom: 30px; }
+        h2 { margin: 8px 0 6px 0; color: var(--accent-color); text-align: center; font-size: 1.75rem; line-height: 1.25; }
+        .subtitle { text-align: center; font-size: 1rem; color: var(--muted-text); margin-bottom: 24px; line-height: 1.4; }
 
-        /* Siatka pakietów */
+        /* =========================================================
+           SEKCJA GŁÓWNA: DOSTĘP DO CAŁEJ MAPY SERWISÓW W EUROPIE
+           ========================================================= */
+        .importer-hero {
+            background: var(--hero-bg);
+            border: 2px solid var(--srv-bike);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 35px;
+        }
+
+        .hero-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .hero-title-wrap {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .hero-title-wrap h3 {
+            margin: 0 0 6px 0;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            line-height: 1.3;
+        }
+
+        .hero-title-wrap p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--muted-text);
+            line-height: 1.45;
+        }
+
+        /* Przełącznik waluty PLN / EUR */
+        .currency-toggle {
+            display: inline-flex;
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .currency-btn {
+            margin: 0;
+            padding: 10px 18px;
+            font-size: 0.92rem;
+            border-radius: 7px;
+            background: transparent;
+            color: var(--text-color);
+            width: auto;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.2s;
+        }
+
+        .currency-btn.active {
+            background: var(--srv-bike);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 119, 182, 0.35);
+        }
+
+        /* Informacja o pełnym dostępie i filtrach wewnątrz mapy */
+        .map-capabilities-box {
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--srv-bike);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .map-capabilities-box strong {
+            color: var(--accent-color);
+        }
+
+        /* Pigułki z kategoriami z mapa_serwisow_europa.html */
+        .features-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .pill {
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.2;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .dot-bike { background: #0077b6; }
+        .dot-mower { background: #d35400; }
+        .dot-washer { background: #ffcc00; border: 1px solid #111; }
+        .dot-atv { background: #15803d; }
+
+        /* 3 Karty Cenowe (Tydzień / Miesiąc / Rok) */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
+
+        @media (min-width: 920px) {
+            .pricing-grid {
+                grid-template-columns: repeat(3, 1fr);
+                align-items: stretch;
+            }
+        }
+
+        .pricing-card {
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pricing-card.popular {
+            border: 2px solid var(--plan-month);
+            box-shadow: 0 6px 18px rgba(21, 128, 61, 0.14);
+        }
+
+        .pricing-card.vip {
+            border: 2px solid var(--plan-year);
+            box-shadow: 0 6px 18px rgba(217, 119, 6, 0.14);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .badge-popular { background: var(--plan-month); }
+        .badge-vip { background: var(--plan-year); }
+
+        .plan-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        .plan-desc {
+            font-size: 0.86rem;
+            color: var(--muted-text);
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .plan-price {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .plan-price .amount {
+            font-size: 2.25rem;
+            font-weight: 900;
+            color: var(--accent-color);
+        }
+
+        .plan-price .period {
+            font-size: 0.92rem;
+            color: var(--muted-text);
+            font-weight: 600;
+        }
+
+        .plan-subprice {
+            text-align: center;
+            font-size: 0.84rem;
+            color: #16a34a;
+            font-weight: 700;
+            margin-bottom: 16px;
+            min-height: 18px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 15px 0 0 0;
+            margin: 0 0 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .plan-features li {
+            margin-bottom: 9px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .plan-btn-week { background: var(--plan-week); color: #fff; }
+        .plan-btn-month { background: var(--plan-month); color: #fff; }
+        .plan-btn-year { background: var(--plan-year); color: #fff; }
+
+        /* =========================================================
+           STYLE PAKIETÓW JEDNORAZOWYCH (POJEDYNCZE BRANŻE)
+           ========================================================= */
         .packages-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 18px;
             margin-bottom: 25px;
         }
 
         @media (min-width: 768px) and (max-width: 1199px) {
-            .packages-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .packages-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (min-width: 1200px) {
-            .packages-grid {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            }
+            .packages-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* Ramki pakietów */
         .package-card {
             padding: 20px;
-            border-radius: 8px;
-            font-size: 0.9em;
+            border-radius: 10px;
+            font-size: 0.92em;
             line-height: 1.5;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .atv-box {
-            background-color: rgba(192, 57, 43, 0.08);
-            border: 1px solid var(--atv-color);
-            border-left: 5px solid var(--atv-color);
-        }
-
-        .bike-box {
-            background-color: rgba(0, 119, 182, 0.08);
-            border: 1px solid var(--bike-color);
-            border-left: 5px solid var(--bike-color);
-        }
-
-        .karcher-box {
-            background-color: rgba(255, 204, 0, 0.12);
-            border: 1px solid var(--karcher-color);
-            border-left: 5px solid var(--karcher-color);
-        }
-
-        .hq-box {
-            background-color: rgba(243, 156, 18, 0.08);
-            border: 1px solid var(--hq-color);
-            border-left: 5px solid var(--hq-color);
-        }
-
-        .kringloop-box {
-            background-color: rgba(39, 174, 96, 0.08);
-            border: 1px solid var(--kringloop-color);
-            border-left: 5px solid var(--kringloop-color);
-        }
-
-        .wacker-box {
-            background-color: rgba(217, 119, 6, 0.08);
-            border: 1px solid var(--wacker-color);
-            border-left: 5px solid var(--wacker-color);
-        }
+        .atv-box { background-color: rgba(192, 57, 43, 0.08); border: 1px solid var(--atv-color); border-left: 5px solid var(--atv-color); }
+        .bike-box { background-color: rgba(0, 119, 182, 0.08); border: 1px solid var(--bike-color); border-left: 5px solid var(--bike-color); }
+        .karcher-box { background-color: rgba(255, 204, 0, 0.12); border: 1px solid var(--karcher-color); border-left: 5px solid var(--karcher-color); }
+        .hq-box { background-color: rgba(243, 156, 18, 0.08); border: 1px solid var(--hq-color); border-left: 5px solid var(--hq-color); }
+        .kringloop-box { background-color: rgba(39, 174, 96, 0.08); border: 1px solid var(--kringloop-color); border-left: 5px solid var(--kringloop-color); }
+        .wacker-box { background-color: rgba(217, 119, 6, 0.08); border: 1px solid var(--wacker-color); border-left: 5px solid var(--wacker-color); }
 
         .divider {
             display: flex;
             align-items: center;
             text-align: center;
             margin: 35px 0 25px 0;
-            color: #888;
-            font-size: 0.95em;
-            font-weight: bold;
+            color: var(--muted-text);
+            font-size: 0.9em;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
         .divider::before, .divider::after {
             content: '';
@@ -177,7 +398,7 @@
         .custom-order-layout {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 25px;
+            gap: 22px;
         }
 
         @media (min-width: 992px) {
@@ -199,9 +420,10 @@
         .info-box ul { margin: 0; padding-left: 20px; }
         .info-box li { margin-bottom: 6px; }
 
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 18px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
 
+        /* Font-size 16px zapobiega niechcianemu zoomowaniu na iOS/Android */
         input, select { 
             width: 100%; 
             padding: 14px; 
@@ -210,24 +432,25 @@
             background-color: var(--box-bg);
             color: var(--text-color);
             box-sizing: border-box;
-            font-size: 15px; 
+            font-size: 16px; 
             font-family: inherit;
         }
         
-        input:focus, select:focus { outline: none; border-color: var(--accent-color); }
+        input:focus, select:focus { outline: none; border-color: var(--srv-bike); }
 
         button { 
             background: var(--accent-color); 
             color: var(--bg-color); 
-            padding: 15px; 
+            padding: 15px 16px; 
             border: none; 
             cursor: pointer; 
             width: 100%; 
             font-size: 16px; 
             border-radius: 8px; 
-            font-weight: bold;
+            font-weight: 800;
             transition: opacity 0.2s, transform 0.1s;
-            margin-top: 10px;
+            margin-top: 6px;
+            touch-action: manipulation;
         }
 
         button.atv-btn { background: var(--atv-color); color: #fff; }
@@ -237,14 +460,14 @@
         button.kringloop-btn { background: var(--kringloop-color); color: #fff; }
         button.wacker-btn { background: var(--wacker-color); color: #fff; }
 
-        button:active { opacity: 0.8; transform: scale(0.98); }
+        button:active { opacity: 0.85; transform: scale(0.98); }
 
         #wynik { 
             margin-top: 25px; 
-            padding: 20px; 
+            padding: 22px 18px; 
             background: #2e7d32; 
             color: white;
-            border-radius: 8px; 
+            border-radius: 10px; 
             display: none; 
             text-align: center;
         }
@@ -253,30 +476,49 @@
             display: inline-block;
             background-color: #ffffff;
             color: #2e7d32;
-            padding: 14px 24px;
+            padding: 15px 26px;
             margin-top: 15px;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 800;
             font-size: 1.1em;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
         }
-        
-        .sms-btn:active { background-color: #f0f0f0; }
 
-        /* UKRYWANIE DOMYŚLNEJ BELKI I WIDŻETU GOOGLE TRANSLATE */
+        /* UKRYWANIE BELKI GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-icon,
         #goog-gt-tt,
-        .goog-te-balloon-frame {
-            display: none !important;
-        }
-        body { top: 0px !important; }
+        .goog-te-balloon-frame,
         .skiptranslate { display: none !important; }
 
-        @media (max-width: 768px) {
-            .box { padding: 25px 15px; }
+        /* =========================================================
+           OPTYMALIZACJA POD SMARTFONY (MOBILE VIEW)
+           ========================================================= */
+        @media (max-width: 640px) {
+            .main-container { padding: 12px 10px 20px 10px; }
+            .box { padding: 20px 14px; border-radius: 12px; }
+            .header-graphic { margin-bottom: 16px; }
+            .header-graphic svg { width: 46px; height: 46px; }
+            h2 { font-size: 1.4rem; }
+            .subtitle { font-size: 0.92rem; margin-bottom: 18px; }
+
+            .importer-hero { padding: 16px 12px; margin-bottom: 28px; }
+            .hero-top-bar { flex-direction: column; align-items: stretch; gap: 12px; }
+            .hero-title-wrap h3 { font-size: 1.2rem; text-align: center; }
+            .hero-title-wrap p { font-size: 0.88rem; text-align: center; }
+
+            .currency-toggle { width: 100%; box-sizing: border-box; }
+            .currency-btn { flex: 1; text-align: center; padding: 10px 8px; }
+
+            .map-capabilities-box { padding: 12px; font-size: 0.86rem; }
+            .features-pills { gap: 6px; margin-bottom: 20px; }
+            .pill { font-size: 0.78rem; padding: 6px 10px; width: 100%; box-sizing: border-box; justify-content: flex-start; }
+
+            .pricing-grid { gap: 24px; }
+            .pricing-card { padding: 22px 16px 16px 16px; }
+            .plan-price .amount { font-size: 2rem; }
+            .plan-features { font-size: 0.86rem; }
         }
     </style>
 </head>
@@ -288,11 +530,109 @@
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
                 </svg>
-                <h2>Data Mining Service</h2>
-                <div class="subtitle">Bazy danych dopasowane do Twoich potrzeb.</div>
+                <h2>Mapa Serwisów w Europie & Bazy B2B</h2>
+                <div class="subtitle">Narzędzie dla importerów (Rowery, Kosiarki, Myjki, Quady/ATV) na smartfon i laptop.</div>
             </div>
 
-            <!-- SIATKA GOTOWYCH PAKIETÓW -->
+            <!-- =========================================================
+                 SEKCJA GŁÓWNA: DOSTĘP DO CAŁEJ MAPY SERWISÓW W EUROPIE
+                 ========================================================= -->
+            <div class="importer-hero">
+                <div class="hero-top-bar">
+                    <div class="hero-title-wrap">
+                        <h3>🌍 Interaktywna Mapa Serwisów w Europie (31 766 punktów)</h3>
+                        <p>W każdym pakiecie otrzymujesz <strong>pełną mapę całej Europy</strong> oraz <strong>wszystkie serwisy</strong> – sam filtrujesz państwa i branże na ekranie telefonu lub komputera.</p>
+                    </div>
+                    <div class="currency-toggle">
+                        <button type="button" class="currency-btn active" id="btnPLN" onclick="ustawWalute('PLN')">🇵🇱 PLN (zł)</button>
+                        <button type="button" class="currency-btn" id="btnEUR" onclick="ustawWalute('EUR')">🇪🇺 EUR (€)</button>
+                    </div>
+                </div>
+
+                <!-- Opis działania filtrów bezpośrednio w mapie -->
+                <div class="map-capabilities-box">
+                    📱 <strong>Pełna swoboda w trasie (Smartfon & Desktop):</strong> Na mapie jednym kliknięciem wybierasz interesujące Cię <strong>państwo</strong> (lub całą Europę), włączasz/wyłączasz wybrane <strong>kategorie serwisów</strong> oraz konkretne <strong>marki quadów ATV</strong>, przełączasz widok na <strong>Satelitę</strong>, zapisujesz punkty do <strong>⭐ Ulubionych</strong> i uruchamiasz nawigację <strong>Google Maps</strong>.
+                </div>
+
+                <!-- Pigułki z kategoriami dokładnie z mapa_serwisow_europa.html -->
+                <div class="features-pills">
+                    <span class="pill"><span class="dot dot-bike"></span> 🚲 Rowery: Bosch eBike (13 841 serwisów)</span>
+                    <span class="pill"><span class="dot dot-mower"></span> 🚜 Kosiarki: Husqvarna (8 718 serwisów)</span>
+                    <span class="pill"><span class="dot dot-washer"></span> ⚡ Myjki: Kärcher (7 647 punktów)</span>
+                    <span class="pill"><span class="dot dot-atv"></span> 🏍️ Quady / ATV: Yamaha, Can-Am, Polaris, CFMOTO, Segway (1 560)</span>
+                </div>
+
+                <!-- 3 PAKIETY DOSTĘPU: TYDZIEŃ (450 PLN) / MIESIĄC (990 PLN) / ROK (3000 PLN) -->
+                <div class="pricing-grid">
+                    
+                    <!-- PAKIET 1: TYDZIEŃ (NA WYJAZD) -->
+                    <div class="pricing-card">
+                        <div>
+                            <div class="plan-name">🚐 Wyjazd w Tygodniu</div>
+                            <div class="plan-desc">Pełny dostęp na 7 dni (1 trasa)</div>
+                            <div class="plan-price">
+                                <span class="amount" id="priceWeek">450 PLN</span>
+                                <span class="period">/ tydzień</span>
+                            </div>
+                            <div class="plan-subprice" id="subWeek">Idealny na pojedynczy wyjazd po sprzęt</div>
+                            <ul class="plan-features">
+                                <li>✅ <strong>Cała Europa i wszystkie 31 766 serwisów</strong> bez blokad regionalnych</li>
+                                <li>✅ Filtrowanie dowolnego państwa i kategorii (Rowery, Kosiarki, Myjki, ATV)</li>
+                                <li>✅ Szybki kontakt (telefon 1-klik, e-mail, www) i nawigacja Google Maps</li>
+                                <li>✅ Zapisywanie własnej listy punktów (⭐ Ulubione) na telefonie</li>
+                            </ul>
+                        </div>
+                        <button class="plan-btn-week" onclick="zamowMapeEuropy('TYDZIEN')">Zamów na wyjazd (7 dni)</button>
+                    </div>
+
+                    <!-- PAKIET 2: MIESIĄC (NAJCZĘŚCIEJ WYBIERANY) -->
+                    <div class="pricing-card popular">
+                        <div class="plan-badge badge-popular">🔥 Najczęściej wybierany</div>
+                        <div>
+                            <div class="plan-name">📦 Dostęp Miesięczny</div>
+                            <div class="plan-desc">Pełny dostęp na 30 dni (bez limitu tras)</div>
+                            <div class="plan-price">
+                                <span class="amount" id="priceMonth">990 PLN</span>
+                                <span class="period">/ miesiąc</span>
+                            </div>
+                            <div class="plan-subprice" id="subMonth">Oszczędzasz 45% (tylko ~247 PLN za tydzień!)</div>
+                            <ul class="plan-features">
+                                <li>✅ <strong>Cała Europa i wszystkie serwisy</strong> przez pełne 30 dni</li>
+                                <li>✅ Zwraca się już przy <strong>drugim wyjeździe w miesiącu</strong></li>
+                                <li>✅ Eksport i wczytywanie zapisanych punktów (⭐ plik .json) między urządzeniami</li>
+                                <li>✅ Podkład OSM, Terenowy oraz Satelita + przycisk lokalizacji GPS w trasie</li>
+                            </ul>
+                        </div>
+                        <button class="plan-btn-month" onclick="zamowMapeEuropy('MIESIAC')">Zamów na miesiąc (30 dni)</button>
+                    </div>
+
+                    <!-- PAKIET 3: ROK (3000 PLN) -->
+                    <div class="pricing-card vip">
+                        <div class="plan-badge badge-vip">👑 Najlepsza inwestycja</div>
+                        <div>
+                            <div class="plan-name">🏆 Pakiet Roczny PRO</div>
+                            <div class="plan-desc">Pełny dostęp na 365 dni + aktualizacje</div>
+                            <div class="plan-price">
+                                <span class="amount" id="priceYear">3 000 PLN</span>
+                                <span class="period">/ rok</span>
+                            </div>
+                            <div class="plan-subprice" id="subYear">Tylko 250 PLN / mies. (ok. 57 PLN na tydzień!)</div>
+                            <ul class="plan-features">
+                                <li>✅ <strong>365 dni nielimitowanego dostępu</strong> do całej Mapy Europy</li>
+                                <li>✅ <strong>Płacisz jak za 3 miesiące – kolejne 9 miesięcy masz gratis!</strong></li>
+                                <li>✅ Wszystkie aktualizacje serwisów i nowych marek w cenie</li>
+                                <li>✅ Stały dostęp na smartfonie i komputerze przez cały rok</li>
+                            </ul>
+                        </div>
+                        <button class="plan-btn-year" onclick="zamowMapeEuropy('ROK')">Zamów na cały rok (365 dni)</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="divider">LUB ZAMÓW POJEDYNCZĄ BAZĘ BRANŻOWĄ</div>
+
+            <!-- SIATKA GOTOWYCH PAKIETÓW JEDNORAZOWYCH -->
             <div class="packages-grid">
                 
                 <!-- KRINGLOOP, VINTAGE & BROCANTE (BENELUX) -->
@@ -402,7 +742,7 @@
                 <div class="package-card wacker-box">
                     <div>
                         <strong style="color: var(--wacker-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🚜 Maszyny Wacker Neuson</strong>
-                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i dilerzy maszyn budowlanych z dane B2B i mapą.</p>
+                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i dilerzy maszyn budowlanych z danymi B2B i mapą.</p>
                         <div class="form-group" style="margin-bottom: 12px;">
                             <select id="wackerKraj">
                                 <option value="">-- Wybierz pakiet (Wacker Neuson) --</option>
@@ -422,18 +762,6 @@
                                 <option value="Finlandia">Finlandia (10)</option>
                                 <option value="Bułgaria">Bułgaria (9)</option>
                                 <option value="Dania">Dania (5)</option>
-                                <option value="Irlandia">Irlandia (4)</option>
-                                <option value="Słowenia">Słowenia (3)</option>
-                                <option value="Chorwacja">Chorwacja (3)</option>
-                                <option value="Słowacja">Słowacja (2)</option>
-                                <option value="Węgry">Węgry (2)</option>
-                                <option value="Estonia">Estonia (2)</option>
-                                <option value="Łotwa">Łotwa (2)</option>
-                                <option value="Litwa">Litwa (2)</option>
-                                <option value="Belgia">Belgia (2)</option>
-                                <option value="Hiszpania">Hiszpania (1)</option>
-                                <option value="Portugalia">Portugalia (1)</option>
-                                <option value="Grecja">Grecja (1)</option>
                             </select>
                         </div>
                     </div>
@@ -475,7 +803,7 @@
                         <li>Dokładny adres i lokalizacja GPS</li>
                         <li>Dane Publiczne i Rejestrowe B2B</li>
                     </ul>
-                    <p style="margin: 15px 0 0 0; font-size: 0.9em; color: #888;">
+                    <p style="margin: 15px 0 0 0; font-size: 0.9em; color: var(--muted-text);">
                         Dane pobieramy prosto z oficjalnych rejestrów i map przestrzennych.
                     </p>
                 </div>
@@ -496,19 +824,53 @@
             </div>
 
             <div id="wynik">
-                <p style="margin-top:0;"><strong>Zapytanie gotowe do wysłania!</strong></p>
-                <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-                <p style="font-size: 0.95em; margin-bottom:0;">Cena zostanie potwierdzona SMS-em po przygotowaniu zestawienia.</p>
+                <p style="margin-top:0;"><strong>Zamówienie gotowe do wysłania!</strong></p>
+                <p>Twój numer zamówienia: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Kliknij poniżej, aby wysłać gotowego SMS-a i otrzymać dane dostępowe.</p>
                 <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
             </div>
         </div>
     </div>
 
-    <!-- NIEWIDOCZNY KONTENER DLA GOOGLE TRANSLATE -->
     <div id="google_translate_element" style="display:none;"></div>
 
     <script>
-        function przygotujSMS(nr, trescSms) {
+        let aktualnaWaluta = 'PLN';
+
+        const cennikMapaEuropy = {
+            PLN: {
+                week: '450 PLN',
+                month: '990 PLN',
+                year: '3 000 PLN',
+                subWeek: 'Idealny na pojedynczy wyjazd po sprzęt',
+                subMonth: 'Oszczędzasz 45% (tylko ~247 PLN za tydzień!)',
+                subYear: 'Tylko 250 PLN / mies. (ok. 57 PLN na tydzień!)'
+            },
+            EUR: {
+                week: '100 €',
+                month: '220 €',
+                year: '690 €',
+                subWeek: 'Idealny na pojedynczy wyjazd po sprzęt',
+                subMonth: 'Oszczędzasz 45% (tylko ~55 € za tydzień!)',
+                subYear: 'Tylko ~57 € / mies. (ok. 13 € na tydzień!)'
+            }
+        };
+
+        function ustawWalute(waluta) {
+            aktualnaWaluta = waluta;
+            document.getElementById('btnPLN').classList.toggle('active', waluta === 'PLN');
+            document.getElementById('btnEUR').classList.toggle('active', waluta === 'EUR');
+
+            document.getElementById('priceWeek').innerText = cennikMapaEuropy[waluta].week;
+            document.getElementById('priceMonth').innerText = cennikMapaEuropy[waluta].month;
+            document.getElementById('priceYear').innerText = cennikMapaEuropy[waluta].year;
+
+            document.getElementById('subWeek').innerText = cennikMapaEuropy[waluta].subWeek;
+            document.getElementById('subMonth').innerText = cennikMapaEuropy[waluta].subMonth;
+            document.getElementById('subYear').innerText = cennikMapaEuropy[waluta].subYear;
+        }
+
+        function przygotujSMS(nr, trescSms, czyZnamyCene = false) {
             const numerTelefonu = "+48600812820";
             const encodedTresc = encodeURIComponent(trescSms);
             
@@ -517,11 +879,13 @@
             const smsLink = `sms:${numerTelefonu}${smsSeparator}body=${encodedTresc}`;
 
             document.getElementById('nrZamowienia').innerText = nr;
+            document.getElementById('infoCenaSms').innerText = czyZnamyCene 
+                ? "Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do Mapy Serwisów w Europie."
+                : "Cena zostanie potwierdzona SMS-em po przygotowaniu zestawienia.";
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
-
             window.location.href = smsLink;
         }
 
@@ -532,6 +896,30 @@
             const dzien = now.getDate().toString().padStart(2, '0');
             const losowy = Math.floor(1000 + Math.random() * 9000);
             return `${rok}${miesiac}${dzien}-${losowy}`;
+        }
+
+        function zamowMapeEuropy(okres) {
+            let nazwaPakietu = '';
+            let cena = '';
+            let prefix = '';
+
+            if (okres === 'TYDZIEN') {
+                nazwaPakietu = 'Wyjazd w Tygodniu (7 dni)';
+                cena = cennikMapaEuropy[aktualnaWaluta].week;
+                prefix = 'MAP7';
+            } else if (okres === 'MIESIAC') {
+                nazwaPakietu = 'Dostęp Miesięczny (30 dni)';
+                cena = cennikMapaEuropy[aktualnaWaluta].month;
+                prefix = 'MAP30';
+            } else if (okres === 'ROK') {
+                nazwaPakietu = 'Pakiet Roczny PRO (365 dni + aktualizacje)';
+                cena = cennikMapaEuropy[aktualnaWaluta].year;
+                prefix = 'MAP365';
+            }
+
+            const nr = `${prefix}-${pobierzKluczCzasu()}`;
+            const trescSms = `Zamówienie: Pełna Mapa Serwisów w Europie (Rowery, Kosiarki, Myjki, ATV - 31 766 pkt).\nNr: ${nr}\nPakiet: ${nazwaPakietu}\nCena: ${cena}`;
+            przygotujSMS(nr, trescSms, true);
         }
 
         function generujZamowienieKringloop() {
@@ -603,7 +991,6 @@
 
         (function() {
             var userLang = (navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase();
-
             if (userLang === 'pl') return;
 
             var matchCookie = document.cookie.match(/(^|;) ?googtrans=([^;]*)(;|$)/);
