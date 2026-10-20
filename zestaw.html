@@ -2664,7 +2664,7 @@
                 } else if (!isSpecial && selectedWeeks.length > 0) {
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
-                            let n = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
+                            let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
                             return rAssociatedKeys.includes(cleanNameForCompare(n));
                         });
                     });
@@ -2718,6 +2718,149 @@
                                 updateMutualFiltering();
                                 updatePriceDisplay();
                             }
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(colBtn);
+                        }
+                    }
+                    return;
+                } else {
+                    if (existingCollectiveBtn) existingCollectiveBtn.remove();
+                }
+
+                if (isSpecial) {
+                    if (existingAskBtn) existingAskBtn.remove();
+
+                    if (!existingSpecialBtn) {
+                        let specialBtn = document.createElement('a');
+                        specialBtn.className = 'special-region-btn';
+                        specialBtn.innerText = "🔒 Wycena indywidualna";
+                        specialBtn.title = "Kliknij, aby wysłać szybkie zapytanie o wycenę indywidualną bez tygodnia";
+                        specialBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
+
+                        let mailSubject = encodeURIComponent(`Zapytanie o wycenę indywidualną (Rejon zastrzeżony): ${rName}`);
+                        let mailBody = encodeURIComponent(
+                            `Dzień dobry,\n\n` +
+                            `Zwracam się z zapytaniem o wycenę indywidualną i przygotowanie terminów zbiórek dla rejonu zastrzeżonego: ${rName}.\n\n` +
+                            `Proszę o informację o dostępnych terminach, możliwości wygenerowania Raportu Operacyjnego PRO oraz o kalkulację kosztów.\n\n` +
+                            `Pozdrawiam,\n`
+                        );
+
+                        specialBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+                        specialBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(specialBtn);
+                        }
+                    }
+                } else if (!isAvailable) {
+                    if (existingSpecialBtn) existingSpecialBtn.remove();
+
+                    if (!existingAskBtn) {
+                        let askBtn = document.createElement('a');
+                        askBtn.className = 'ask-region-btn';
+                        askBtn.innerText = "🔔 Zapytaj o terminy";
+                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
+                        
+                        let mailSubject = encodeURIComponent(`Weryfikacja terminów: ${rName}`);
+                        let mailBody = encodeURIComponent(
+                            `Dzień dobry,\n\n` +
+                            `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
+                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
+                            `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
+                        );
+                        
+                        askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+                        
+                        askBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        let topSide = label.querySelector('.region-left-side');
+                        if (topSide) {
+                            topSide.appendChild(askBtn);
+                        }
+                    }
+                } else {
+                    if (existingAskBtn) existingAskBtn.remove();
+                    if (existingSpecialBtn) existingSpecialBtn.remove();
+                }
+            });
+
+            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
+            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cleanNameForCompare(cb.value));
+            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
+
+            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
+                let chk = label.querySelector('.week-chk');
+                if (!chk) return;
+                let wNum = chk.getAttribute('data-week');
+                let isAvailable = true;
+
+                if (selectedRegularRegions.length > 0) {
+                    let hasMatchingRegion = selectedRegularRegions.some(r => {
+                        let rAssociatedKeys = getAssociatedKeys(r);
+                        return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
+                            let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
+                            return rAssociatedKeys.includes(cleanNameForCompare(n));
+                        });
+                    });
+
+                    if (!hasMatchingRegion) {
+                        isAvailable = false;
+                    }
+                }
+
+                if (isAvailable && selectedRegularRegions.length > 0) {
+                    label.style.opacity = '1';
+                    label.style.background = 'rgba(46, 204, 113, 0.12)';
+                    label.style.border = '1px solid rgba(46, 204, 113, 0.4)';
+                    label.style.borderRadius = '6px';
+                    label.style.pointerEvents = 'auto';
+                    chk.disabled = false;
+                } else if (!isAvailable && selectedRegularRegions.length > 0) {
+                    label.style.opacity = '0.22';
+                    label.style.background = 'transparent';
+                    label.style.border = '1px solid transparent';
+                    label.style.pointerEvents = 'none';
+                    chk.disabled = true;
+                    if (chk.checked) {
+                        chk.checked = false;
+                    }
+                } else {
+                    label.style.opacity = '1';
+                    label.style.background = 'transparent';
+                    label.style.border = '1px solid transparent';
+                    label.style.pointerEvents = 'auto';
+                    chk.disabled = false;
+                }
+            });
+
+            document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
+                let nextEl = header.nextElementSibling;
+                var hasVisible = false;
+                while (nextEl && nextEl.classList.contains('region-label')) {
+                    if (nextEl.style.opacity !== '0.22' && nextEl.style.opacity !== '0.45' && nextEl.style.opacity !== '0.5') {
+                        hasVisible = true;
+                        break;
+                    }
+                    nextEl = nextEl.nextElementSibling;
+                }
+                header.style.opacity = hasVisible ? '1' : '0.4';
+            });
+
+            applyRegionSearchFilter();
+            updateDynamicOptions();
+            updateScheduleBadges();
+            renderNeighborClusterSuggestions();
+            updatePriceDisplay();
+        }
                         });
 
                         let topSide = label.querySelector('.region-left-side');
