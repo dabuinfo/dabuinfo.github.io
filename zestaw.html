@@ -2152,12 +2152,6 @@
                 };
             }
 
-            let todayObj = new Date();
-            let tomorrow = new Date(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate() + 1, 0, 0, 0);
-            let todayStr = todayObj.getFullYear() + "-" + 
-                           String(todayObj.getMonth() + 1).padStart(2, '0') + "-" + 
-                           String(todayObj.getDate()).padStart(2, '0');
-            let currentWeekNum = getWeekNumber(todayObj).toString();
             let matrixToUse = availabilityMatrix;
 
             let regionDatesMap = {};
@@ -2176,7 +2170,7 @@
                         let itemName = cleanNameForCompare(rawItemName);
                         if (!rAssociatedKeys.includes(itemName)) return;
 
-                        // NAPRAWIONE: Obsługa obu wariantów klucza z datami w bazie (item.daty oraz item["DATA (PN-SOB)"])
+                        // Obsługa obu wariantów klucza z datami w bazie
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
                         if (!dStr || dStr === "-") return;
 
@@ -2185,13 +2179,8 @@
                             let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
                             if (match) {
                                 let pelnaDataWpisu = match[0];
-                                let dObj = new Date(match[1], match[2] - 1, match[3]);
-
-                                // Prawidłowe filtrowanie od jutra dla bieżącego tygodnia, a dla przyszłych tygodni wszystkie daty
-                                let allowDate = (w === currentWeekNum) ? (dObj >= tomorrow) : (pelnaDataWpisu > todayStr);
-                                if (allowDate) {
-                                    datesSet.add(pelnaDataWpisu);
-                                }
+                                // Pobieramy wszystkie dni z wybranego tygodnia do testów
+                                datesSet.add(pelnaDataWpisu);
                             }
                         });
                     });
@@ -2239,7 +2228,7 @@
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             
-            // Sprawdzamy, czy klient dodał pakiet okolicy (tzn. co najmniej 2 wybrane rejony sąsiadują ze sobą w jednym klastrze)
+            // Sprawdzamy, czy klient dodał pakiet okolicy (tzn. co najmniej 2 wybrane rejony sąsiadują ze sobą)
             let czyPakietOkolicy = clusters.some(clusterGroup => clusterGroup.length > 1);
 
             let regularBaseReference = isEuro ? 10.00 : 40.00;
@@ -2247,10 +2236,10 @@
 
             if (isEuro) {
                 if (czyPakietOkolicy) {
-                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 10 EUR za każdy dostępny dzień
+                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 10 EUR za każdy dzień
                     reportRateNoMap = 10.00;
                 } else {
-                    // Pojedynczy rejon lub osobne niesąsiadujące rejony -> normalne progi rabatowe
+                    // Pojedynczy rejon -> progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 7.00;
                     else if (totalDays >= 181) reportRateNoMap = 7.30;
                     else if (totalDays >= 121) reportRateNoMap = 7.60;
@@ -2263,10 +2252,10 @@
                 }
             } else {
                 if (czyPakietOkolicy) {
-                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 40 PLN za każdy dostępny dzień
+                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 40 PLN za każdy dzień
                     reportRateNoMap = 40.00;
                 } else {
-                    // Pojedynczy rejon lub osobne niesąsiadujące rejony -> normalne progi rabatowe
+                    // Pojedynczy rejon -> progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 28.00;
                     else if (totalDays >= 181) reportRateNoMap = 29.30;
                     else if (totalDays >= 121) reportRateNoMap = 30.60;
