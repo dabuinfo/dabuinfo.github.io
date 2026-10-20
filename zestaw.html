@@ -1293,17 +1293,6 @@
             let clean = cleanNameForCompare(rKey);
             let keys = new Set([clean]);
 
-            // Automatyczne dopasowanie wariantów z "kreis" / "landkreis" (gdy w bazie nazwa jest krótsza lub dłuższa)
-            let baseWithoutKreis = clean.replace(/\b(landkreis|kreis)\b/g, '').replace(/\s+/g, ' ').trim();
-            if (baseWithoutKreis && baseWithoutKreis !== clean) {
-                // Dodajemy samą nazwę bazową tylko jeśli nie ma osobnego rejonu "Stadt" o tej samej nazwie
-                if (!SPECIAL_REGIONS_LAND_MAP[formatNazwaRejonu(baseWithoutKreis + ' stadt')]) {
-                    keys.add(baseWithoutKreis);
-                }
-            }
-            keys.add(clean + ' kreis');
-            keys.add('landkreis ' + clean);
-
             if (REGION_SUB_AREAS_MAP[clean]) {
                 REGION_SUB_AREAS_MAP[clean].forEach(sub => keys.add(cleanNameForCompare(sub)));
             }
@@ -1689,7 +1678,7 @@
 
             for (let w in regionsData) {
                 regionsData[w].forEach(rObj => {
-                    let rName = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
+                    let rName = typeof rObj === 'string' ? rObj : rObj.nazwa;
                     let rLand = (typeof rObj === 'object' && (rObj.land || rObj.Land || rObj["Nazwa Landu"])) 
                         ? String(rObj.land || rObj.Land || rObj["Nazwa Landu"]).trim() 
                         : "";
@@ -1725,7 +1714,7 @@
 
             for (let w in regionsData) {
                 (regionsData[w] || []).forEach(item => {
-                    const n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
+                    const n = typeof item === 'string' ? item : item.nazwa;
                     if (n) dodajRejon(n);
                 });
             }
@@ -1837,7 +1826,7 @@
                     if (!matrixToUse[w]) return;
                     let rAssociatedKeys = getAssociatedKeys(rName);
                     matrixToUse[w].forEach(item => {
-                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"] || ""));
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
                         if (!rAssociatedKeys.includes(itemName)) return;
 
                         let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
@@ -1986,10 +1975,7 @@
                         addBtn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            neighborCheckboxesToToggle.forEach(c => { 
-                                c.disabled = false;
-                                c.checked = true; 
-                            });
+                            neighborCheckboxesToToggle.forEach(c => { c.checked = true; });
                             updateMutualFiltering();
                             updatePriceDisplay();
                         });
@@ -2121,9 +2107,8 @@
         }
 
         // ========================================================
-        // KALKULACJA:
-        // - Zwykły wybór: obowiązują progi rabatowe ilościowe
-        // - Pakiet "Dodaj okolice" (połączone sąsiednie rejony): stała stawka 40 PLN / 10 EUR bez rabatów ilościowych
+        // KALKULACJA - KORYTARZ WSPÓLNY (40 PLN / 25 PLN / 10 EUR / 6 EUR)
+        // GWARANTOWANE MINIMUM: 8 PLN / 2 EUR ZA DZIEŃ
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2152,6 +2137,9 @@
                 };
             }
 
+            let now = new Date();
+            let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+            let currentWeekNum = getWeekNumber(now).toString();
             let matrixToUse = availabilityMatrix;
 
             let regionDatesMap = {};
@@ -2166,21 +2154,22 @@
 
                     let rAssociatedKeys = getAssociatedKeys(rKey);
                     matrixToUse[w].forEach(item => {
-                        let rawItemName = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"] || "");
-                        let itemName = cleanNameForCompare(rawItemName);
+                        let itemName = cleanNameForCompare(typeof item === 'string' ? item : item.nazwa || "");
                         if (!rAssociatedKeys.includes(itemName)) return;
 
-                        // Obsługa obu wariantów klucza z datami w bazie
-                        let dStr = typeof item === 'string' ? "" : (item.daty || item["DATA (PN-SOB)"] || "");
+                        let dStr = typeof item === 'string' ? "" : (item.daty || "");
                         if (!dStr || dStr === "-") return;
 
-                        let datyArr = dStr.split(/[\r\n,]+/).map(x => x.trim()).filter(x => x);
+                        let datyArr = dStr.split(/[\n,]+/).map(x => x.trim()).filter(x => x);
                         datyArr.forEach(d => {
                             let match = d.match(/(\d{4})-(\d{2})-(\d{2})/);
                             if (match) {
-                                let pelnaDataWpisu = match[0];
-                                // Pobieramy wszystkie dni z wybranego tygodnia do testów
-                                datesSet.add(pelnaDataWpisu);
+                                let dObj = new Date(match[1], match[2] - 1, match[3]);
+                                if (w === currentWeekNum) {
+                                    if (dObj >= tomorrow) datesSet.add(match[0]);
+                                } else {
+                                    datesSet.add(match[0]);
+                                }
                             }
                         });
                     });
@@ -2227,19 +2216,31 @@
 
             let totalDays = billableDaysTotal;
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
-            
-            // Sprawdzamy, czy klient dodał pakiet okolicy (tzn. co najmniej 2 wybrane rejony sąsiadują ze sobą)
-            let czyPakietOkolicy = clusters.some(clusterGroup => clusterGroup.length > 1);
+            let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            let regularBaseReference = isEuro ? 10.00 : 40.00;
+            let regularBaseReference;
+            if (isEuro) {
+                regularBaseReference = 10.00;
+            } else {
+                regularBaseReference = 40.00;
+            }
+
+            let ratePerDay;
             let reportRateNoMap;
 
+            // Obliczamy stawkę za dzień z dynamicznym rabatem (Maksymalny rabat do 30%)
             if (isEuro) {
-                if (czyPakietOkolicy) {
-                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 10 EUR za każdy dzień
-                    reportRateNoMap = 10.00;
+                if (czyKorytarzWspolny) {
+                    if (totalDays >= 250) reportRateNoMap = 7.00;
+                    else if (totalDays >= 181) reportRateNoMap = 7.30;
+                    else if (totalDays >= 121) reportRateNoMap = 7.60;
+                    else if (totalDays >= 81)  reportRateNoMap = 8.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 8.50;
+                    else if (totalDays >= 31)  reportRateNoMap = 9.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 9.30;
+                    else if (totalDays >= 6)   reportRateNoMap = 9.70;
+                    else                       reportRateNoMap = 10.00;
                 } else {
-                    // Pojedynczy rejon -> progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 7.00;
                     else if (totalDays >= 181) reportRateNoMap = 7.30;
                     else if (totalDays >= 121) reportRateNoMap = 7.60;
@@ -2251,11 +2252,17 @@
                     else                       reportRateNoMap = 10.00;
                 }
             } else {
-                if (czyPakietOkolicy) {
-                    // Pakiet z okolicą ("+ Dodaj okolice") -> bez rabatów ilościowych, zawsze 40 PLN za każdy dzień
-                    reportRateNoMap = 40.00;
+                if (czyKorytarzWspolny) {
+                    if (totalDays >= 250) reportRateNoMap = 28.00;
+                    else if (totalDays >= 181) reportRateNoMap = 29.30;
+                    else if (totalDays >= 121) reportRateNoMap = 30.60;
+                    else if (totalDays >= 81)  reportRateNoMap = 32.00;
+                    else if (totalDays >= 51)  reportRateNoMap = 34.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 36.00;
+                    else if (totalDays >= 16)  reportRateNoMap = 37.30;
+                    else if (totalDays >= 6)   reportRateNoMap = 38.70;
+                    else                       reportRateNoMap = 40.00;
                 } else {
-                    // Pojedynczy rejon -> progi rabatowe
                     if (totalDays >= 250) reportRateNoMap = 28.00;
                     else if (totalDays >= 181) reportRateNoMap = 29.30;
                     else if (totalDays >= 121) reportRateNoMap = 30.60;
@@ -2268,7 +2275,7 @@
                 }
             }
 
-            let ratePerDay = reportRateNoMap;
+            ratePerDay = reportRateNoMap;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
 
             let loyaltyDeduction = 0;
@@ -2635,7 +2642,7 @@
             let allAvailableRegionsInDb = new Set();
             for (let w in availabilityMatrix) {
                 availabilityMatrix[w].forEach(rObj => {
-                    let nazwaRejonu = typeof rObj === 'string' ? rObj : (rObj.nazwa || rObj["NAZWA REJONU"]);
+                    let nazwaRejonu = typeof rObj === 'string' ? rObj : rObj.nazwa;
                     if (nazwaRejonu) allAvailableRegionsInDb.add(cleanNameForCompare(nazwaRejonu));
                 });
             }
@@ -2659,7 +2666,7 @@
                 } else if (!isSpecial && selectedWeeks.length > 0) {
                     let presentInAnySelectedWeek = selectedWeeks.some(w => {
                         return availabilityMatrix[w] && availabilityMatrix[w].some(item => {
-                            let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
+                            let n = typeof item === 'string' ? item : item.nazwa;
                             return rAssociatedKeys.includes(cleanNameForCompare(n));
                         });
                     });
@@ -2713,149 +2720,6 @@
                                 updateMutualFiltering();
                                 updatePriceDisplay();
                             }
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(colBtn);
-                        }
-                    }
-                    return;
-                } else {
-                    if (existingCollectiveBtn) existingCollectiveBtn.remove();
-                }
-
-                if (isSpecial) {
-                    if (existingAskBtn) existingAskBtn.remove();
-
-                    if (!existingSpecialBtn) {
-                        let specialBtn = document.createElement('a');
-                        specialBtn.className = 'special-region-btn';
-                        specialBtn.innerText = "🔒 Wycena indywidualna";
-                        specialBtn.title = "Kliknij, aby wysłać szybkie zapytanie o wycenę indywidualną bez tygodnia";
-                        specialBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-
-                        let mailSubject = encodeURIComponent(`Zapytanie o wycenę indywidualną (Rejon zastrzeżony): ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Zwracam się z zapytaniem o wycenę indywidualną i przygotowanie terminów zbiórek dla rejonu zastrzeżonego: ${rName}.\n\n` +
-                            `Proszę o informację o dostępnych terminach, możliwości wygenerowania Raportu Operacyjnego PRO oraz o kalkulację kosztów.\n\n` +
-                            `Pozdrawiam,\n`
-                        );
-
-                        specialBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-
-                        specialBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(specialBtn);
-                        }
-                    }
-                } else if (!isAvailable) {
-                    if (existingSpecialBtn) existingSpecialBtn.remove();
-
-                    if (!existingAskBtn) {
-                        let askBtn = document.createElement('a');
-                        askBtn.className = 'ask-region-btn';
-                        askBtn.innerText = "🔔 Zapytaj o terminy";
-                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-                        
-                        let mailSubject = encodeURIComponent(`Weryfikacja terminów: ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
-                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
-                            `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
-                        );
-                        
-                        askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-                        
-                        askBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(askBtn);
-                        }
-                    }
-                } else {
-                    if (existingAskBtn) existingAskBtn.remove();
-                    if (existingSpecialBtn) existingSpecialBtn.remove();
-                }
-            });
-
-            let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
-            let selectedRegions = Array.from(selectedRegionNodes).map(cb => cleanNameForCompare(cb.value));
-            let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
-
-            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
-                let chk = label.querySelector('.week-chk');
-                if (!chk) return;
-                let wNum = chk.getAttribute('data-week');
-                let isAvailable = true;
-
-                if (selectedRegularRegions.length > 0) {
-                    let hasMatchingRegion = selectedRegularRegions.some(r => {
-                        let rAssociatedKeys = getAssociatedKeys(r);
-                        return availabilityMatrix[wNum] && availabilityMatrix[wNum].some(item => {
-                            let n = typeof item === 'string' ? item : (item.nazwa || item["NAZWA REJONU"]);
-                            return rAssociatedKeys.includes(cleanNameForCompare(n));
-                        });
-                    });
-
-                    if (!hasMatchingRegion) {
-                        isAvailable = false;
-                    }
-                }
-
-                if (isAvailable && selectedRegularRegions.length > 0) {
-                    label.style.opacity = '1';
-                    label.style.background = 'rgba(46, 204, 113, 0.12)';
-                    label.style.border = '1px solid rgba(46, 204, 113, 0.4)';
-                    label.style.borderRadius = '6px';
-                    label.style.pointerEvents = 'auto';
-                    chk.disabled = false;
-                } else if (!isAvailable && selectedRegularRegions.length > 0) {
-                    label.style.opacity = '0.22';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
-                    label.style.pointerEvents = 'none';
-                    chk.disabled = true;
-                    if (chk.checked) {
-                        chk.checked = false;
-                    }
-                } else {
-                    label.style.opacity = '1';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
-                    label.style.pointerEvents = 'auto';
-                    chk.disabled = false;
-                }
-            });
-
-            document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
-                let nextEl = header.nextElementSibling;
-                var hasVisible = false;
-                while (nextEl && nextEl.classList.contains('region-label')) {
-                    if (nextEl.style.opacity !== '0.22' && nextEl.style.opacity !== '0.45' && nextEl.style.opacity !== '0.5') {
-                        hasVisible = true;
-                        break;
-                    }
-                    nextEl = nextEl.nextElementSibling;
-                }
-                header.style.opacity = hasVisible ? '1' : '0.4';
-            });
-
-            applyRegionSearchFilter();
-            updateDynamicOptions();
-            updateScheduleBadges();
-            renderNeighborClusterSuggestions();
-            updatePriceDisplay();
-        }
                         });
 
                         let topSide = label.querySelector('.region-left-side');
