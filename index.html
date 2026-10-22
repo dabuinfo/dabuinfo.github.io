@@ -608,7 +608,7 @@
                                 <span>📦 Zestaw Tygodniowy PRO</span>
                             </h3>
                             <div>
-                                <span class="price-badge-green">💰 40 PLN / 10€ za dzień • + Rabaty ilościowe</span>
+                                <span class="price-badge-green">💰 <span class="dynamic-price-pro">25 PLN za dzień</span> • + Rabaty ilościowe</span>
                             </div>
                             <ul class="action-features-list">
                                 <li>Ceny naliczane <strong>automatycznie</strong> z rabatami ilościowymi</li>
@@ -627,7 +627,7 @@
                                 <span>📅 Kalendarz Wystawek</span>
                             </h3>
                             <div>
-                                <span class="price-badge-blue">💰 1 dzień: 40 PLN / 10€ za dzień</span>
+                                <span class="price-badge-blue">💰 1 dzień: <span class="dynamic-price-cal">25 PLN za dzień</span></span>
                             </div>
                             <ul class="action-features-list">
                                 <li>Swobodny wybór dat z kalendarza na pół roku wprzód (<strong>bez rabatów ilościowych</strong>)</li>
@@ -691,6 +691,36 @@
             var seasonEls = document.querySelectorAll('.dynamic-season-text');
             seasonEls.forEach(function(el) {
                 el.textContent = currentYear + ' / ' + (currentYear + 1);
+            });
+        })();
+    </script>
+
+    <!-- SKRYPT DYNAMICZNYCH CEN WEDŁUG JĘZYKA PRZEGLĄDARKI -->
+    <script>
+        (function() {
+            var userLang = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
+            var langCode = userLang.substring(0, 2);
+
+            var priceProText = '10 € / Tag';
+            var priceCalText = '10 € / Tag';
+
+            if (langCode === 'pl') {
+                priceProText = '25 PLN za dzień';
+                priceCalText = '25 PLN za dzień';
+            } else if (langCode === 'de') {
+                priceProText = '10 € pro Tag';
+                priceCalText = '10 € pro Tag';
+            } else {
+                priceProText = '10 € / day';
+                priceCalText = '10 € / day';
+            }
+
+            document.querySelectorAll('.dynamic-price-pro').forEach(function(el) {
+                el.textContent = priceProText;
+            });
+
+            document.querySelectorAll('.dynamic-price-cal').forEach(function(el) {
+                el.textContent = priceCalText;
             });
         })();
     </script>
