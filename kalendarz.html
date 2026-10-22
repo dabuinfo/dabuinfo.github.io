@@ -135,6 +135,16 @@
         letter-spacing: 1px;
     }
 
+    .price-hero-pill {
+        background: rgba(46, 204, 113, 0.15);
+        border: 1px solid rgba(46, 204, 113, 0.45);
+        color: #2ecc71;
+        font-size: 0.85rem;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
     .hero-features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -313,9 +323,10 @@
     }
 
     .quick-add-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
         width: 100%;
         margin-top: 6px;
     }
@@ -326,14 +337,15 @@
         color: #2ecc71;
         font-size: 0.8125rem;
         font-weight: 600;
-        padding: 10px 8px;
+        padding: 8px 12px;
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
         text-align: center;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 5px;
         line-height: 1.2;
     }
 
@@ -342,6 +354,80 @@
         background: #2ecc71;
         color: #000;
         border-color: #2ecc71;
+    }
+
+    .btn-quick-remove {
+        background: #2a1f1f;
+        border: 1px solid #5c2b2b;
+        color: #f87171;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        padding: 8px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2;
+    }
+
+    .btn-quick-remove:hover {
+        background: #ef4444;
+        color: #fff;
+        border-color: #ef4444;
+    }
+
+    /* Okienko pokazujące ile dni dodano od dnia wybranego */
+    .added-days-window {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid #334155;
+        color: #94a3b8;
+        font-size: 0.79rem;
+        font-weight: 700;
+        padding: 7px 12px;
+        border-radius: 6px;
+        font-family: var(--font-main);
+        transition: all 0.2s ease;
+    }
+
+    .added-days-window.is-active {
+        background: rgba(46, 204, 113, 0.14);
+        border-color: rgba(46, 204, 113, 0.55);
+        color: #6aeb95;
+        box-shadow: 0 0 10px rgba(46, 204, 113, 0.15);
+    }
+
+    .added-dates-pills {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+        padding-left: 37px;
+        font-size: 0.76rem;
+    }
+
+    .added-dates-pills.is-visible {
+        display: flex;
+    }
+
+    .date-pill-badge {
+        background: rgba(59, 130, 246, 0.16);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: #93c5fd;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.73rem;
+    }
+
+    .date-pill-badge.extra-day {
+        background: rgba(46, 204, 113, 0.16);
+        border-color: rgba(46, 204, 113, 0.45);
+        color: #6aeb95;
     }
 
     /* Pasek koszyka (Mobile-first) */
@@ -481,10 +567,8 @@
         .month-table th { font-size: 0.8125rem; }
         
         .quick-add-container {
-            display: flex;
-            width: auto;
             padding-left: 37px;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn-quick-add {
@@ -518,6 +602,7 @@
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026/2027</span>
+                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 25 PLN / dzień</span>
                 </div>
                 
                 <div class="hero-features-grid" id="cal-hint">
@@ -526,12 +611,12 @@
                         <div class="hero-feature-text"><strong>Wybierz dzień wywozu</strong> w kalendarzu, aby sprawdzić rejony oficjalnej zbiórki odpadów.</div>
                     </div>
                     <div class="hero-feature-item">
-                        <span class="hero-feature-icon">🌙</span>
-                        <div class="hero-feature-text"><strong>Wystawki:</strong> mieszkańcy wystawiają gabaryty <strong>dzień wcześniej</strong> wieczorem.</div>
+                        <span class="hero-feature-icon">➕</span>
+                        <div class="hero-feature-text"><strong>Dodawaj kolejne dni:</strong> użyj przycisku z plusem, a w okienku zobaczysz ile dni dodano od dnia wybranego.</div>
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">🛒</span>
-                        <div class="hero-feature-text"><strong>Wspólny koszyk:</strong> zaznaczaj rejony i zrealizuj zamówienie na dolnej belce.</div>
+                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">25 PLN / dzień</span>):</strong> zaznaczaj rejony i zrealizuj zamówienie na dolnej belce.</div>
                     </div>
                 </div>
             </div>
@@ -703,6 +788,12 @@
             return `${p[2]}.${p[1]}.${p[0]}`;
         }
 
+        function displayToYMD(dmy) {
+            const p = dmy.split('.');
+            if (p.length !== 3) return dmy;
+            return `${p[2]}-${p[1]}-${p[0]}`;
+        }
+
         function odmienSlowo(liczba, pojedyncza, kilka, wiele) {
             const abs = Math.abs(liczba);
             if (abs === 1) return `${liczba} ${pojedyncza}`;
@@ -720,11 +811,22 @@
             const isPolish = (userLang === 'pl');
 
             const currencyUnit = isPolish ? "PLN" : "€";
+            const unitRateValue = isPolish ? 25.00 : 10.00;
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Metody płatności z ograniczeniem dla PL / DE
+            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki
+            const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
+            const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
+            if (priceBadgeEl) {
+                priceBadgeEl.textContent = isPolish ? '💰 25 PLN / dzień' : (userLang === 'de' ? '💰 10 € / Tag' : '💰 10 € / day');
+            }
+            if (rateInlineEl) {
+                rateInlineEl.textContent = isPolish ? '25 PLN / dzień' : (userLang === 'de' ? '10 € / Tag' : '10 € / day');
+            }
+
+            // Metody płatności z ograniczeniem dla PL / Zagranica
             const paymentOptionsContainer = document.getElementById('payment-options-container');
             if (paymentOptionsContainer) {
                 if (isPolish) {
@@ -894,53 +996,113 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            // CENNIK: Stała cena za każdy rejon / termin = 40 PLN / 10 €
-function calculateTotals() {
-    // Liczba wszystkich wybranych rejonów / terminów w koszyku
-    const totalTermsCount = globalCart.size;
+            // CENNIK: Stała cena za każdy rejon / termin = 25 PLN (PL) / 10 € (Zagranica)
+            function calculateTotals() {
+                const totalTermsCount = globalCart.size;
 
-    // Zliczanie unikalnych dni (do celów podsumowania/SMS)
-    const uniqueDates = new Set();
-    globalCart.forEach(item => {
-        if (item.date) {
-            uniqueDates.add(item.date);
-        }
-    });
-    const selectedDays = uniqueDates.size;
+                const uniqueDates = new Set();
+                globalCart.forEach(item => {
+                    if (item.date) {
+                        uniqueDates.add(item.date);
+                    }
+                });
+                const selectedDays = uniqueDates.size;
 
-    // Kalkulacja za KAŻDY zaznaczony rejon / termin: stała cena 40 PLN / 10 €
-    let rawNetto = 0;
-    if (totalTermsCount > 0) {
-        const unitPrice = isPolish ? 40.00 : 10.00;
-        rawNetto = totalTermsCount * unitPrice;
-    }
+                let rawNetto = 0;
+                if (totalTermsCount > 0) {
+                    rawNetto = totalTermsCount * unitRateValue;
+                }
 
-    const totalNetto = Math.round(rawNetto * 100) / 100;
+                const totalNetto = Math.round(rawNetto * 100) / 100;
 
-    const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
-    const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
-    const isPaypal = (selectedPayment === "PAYPAL");
+                const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+                const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
+                const isPaypal = (selectedPayment === "PAYPAL");
 
-    let finalAmount = totalNetto;
-    let paypalFee = 0;
+                let finalAmount = totalNetto;
+                let paypalFee = 0;
 
-    if (isPaypal && totalNetto > 0) {
-        const paypalFixed = isPolish ? 1.35 : 0.35;
-        const paypalPercent = 0.029;
-        finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
-        paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
-    }
+                if (isPaypal && totalNetto > 0) {
+                    const paypalFixed = isPolish ? 1.35 : 0.35;
+                    const paypalPercent = 0.029;
+                    finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
+                    paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
+                }
 
-    return {
-        termsCount: totalTermsCount,
-        selectedDays: selectedDays,
-        totalNetto: totalNetto,
-        finalAmount: finalAmount,
-        paypalFee: paypalFee,
-        isPaypal: isPaypal,
-        paymentMethod: selectedPayment
-    };
-}
+                return {
+                    termsCount: totalTermsCount,
+                    selectedDays: selectedDays,
+                    totalNetto: totalNetto,
+                    finalAmount: finalAmount,
+                    paypalFee: paypalFee,
+                    isPaypal: isPaypal,
+                    paymentMethod: selectedPayment
+                };
+            }
+
+            // Aktualizacja okienek "+X dni dodano od dnia wybranego" we wszystkich wierszach
+            function updateRowAddedDaysWindows() {
+                const rows = resultsContent.querySelectorAll('.zebra-row');
+                rows.forEach(row => {
+                    const chk = row.querySelector('.region-checkbox');
+                    const statusWin = row.querySelector('.added-days-window');
+                    const removeBtn = row.querySelector('.btn-quick-remove');
+                    const pillsContainer = row.querySelector('.added-dates-pills');
+                    if (!chk || !statusWin) return;
+
+                    const rName = decodeURIComponent(chk.getAttribute('data-region'));
+                    const baseDisplayDate = chk.getAttribute('data-date'); // DD.MM.RRRR
+                    const baseYMD = displayToYMD(baseDisplayDate);
+
+                    // Zbieramy wszystkie daty w koszyku dla tego rejonu
+                    const regionDatesDisplay = [];
+                    for (let item of globalCart.values()) {
+                        if (item.region === rName) {
+                            regionDatesDisplay.push(item.date);
+                        }
+                    }
+
+                    // Sortujemy chronologicznie po YMD
+                    regionDatesDisplay.sort((a, b) => displayToYMD(a).localeCompare(displayToYMD(b)));
+
+                    // Ile dni dodano ponad dzień wybrany (lub późniejszych od dnia wybranego)
+                    const extraDates = regionDatesDisplay.filter(d => d !== baseDisplayDate);
+                    const extraCount = extraDates.length;
+                    const totalForRegion = regionDatesDisplay.length;
+
+                    if (totalForRegion === 0) {
+                        chk.checked = false;
+                        statusWin.classList.remove('is-active');
+                        statusWin.innerHTML = isPolish 
+                            ? `📅 Dodano od dnia: <strong>+0 dni</strong>` 
+                            : `📅 Hinzugefügt: <strong>+0 Tage</strong>`;
+                        if (removeBtn) removeBtn.style.display = 'none';
+                        if (pillsContainer) {
+                            pillsContainer.classList.remove('is-visible');
+                            pillsContainer.innerHTML = '';
+                        }
+                    } else {
+                        chk.checked = true;
+                        statusWin.classList.toggle('is-active', extraCount > 0);
+                        const extraLabelPl = odmienSlowo(extraCount, "dzień", "dni", "dni");
+                        statusWin.innerHTML = isPolish
+                            ? `📅 Dodano od dnia: <strong>+${extraLabelPl}</strong> <span style="opacity:0.8;">(łącznie: ${totalForRegion})</span>`
+                            : `📅 Hinzugefügt: <strong>+${extraCount} Tage</strong> <span style="opacity:0.8;">(Gesamt: ${totalForRegion})</span>`;
+
+                        if (removeBtn) {
+                            removeBtn.style.display = extraCount > 0 ? 'inline-flex' : 'none';
+                        }
+
+                        if (pillsContainer) {
+                            pillsContainer.innerHTML = regionDatesDisplay.map(dDisp => {
+                                const isBase = (dDisp === baseDisplayDate);
+                                return `<span class="date-pill-badge ${isBase ? '' : 'extra-day'} notranslate" translate="no">${isBase ? '📍 ' + dDisp : '➕ ' + dDisp}</span>`;
+                            }).join('');
+                            pillsContainer.classList.add('is-visible');
+                        }
+                    }
+                });
+            }
 
             function refreshCartUI() {
                 const calc = calculateTotals();
@@ -1023,6 +1185,8 @@ function calculateTotals() {
                     submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '📱 Gebiete auswählen';
                     submitBtn.onclick = null;
                 }
+
+                updateRowAddedDaysWindows();
             }
 
             const paymentContainer = document.getElementById('payment-options-container');
@@ -1122,6 +1286,9 @@ function calculateTotals() {
                                                 <span style="font-size: 1.15rem;">📋</span>
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
+                                            <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                                💰 ${isPolish ? 'Stawka: 25 PLN / dzień' : 'Preis: 10 € / Tag'}
+                                            </div>
                                         </div>
 
                                         ${logisticsBanner}
@@ -1129,11 +1296,11 @@ function calculateTotals() {
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0;">
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #60a5fa; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">1. ${isPolish ? 'Wybierz' : 'Auswählen'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Zaznacz <strong>pole wyboru</strong> przy rejonie, aby dodać termin do zamówienia.' : 'Markieren Sie das <strong>Kontrollkästchen</strong>, um das Gebiet hinzuzufügen.'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Zaznacz <strong>pole wyboru</strong> przy rejonie, aby dodać dzień do zamówienia.' : 'Markieren Sie das <strong>Kontrollkästchen</strong>, um das Gebiet hinzuzufügen.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. ${isPolish ? 'Przyspiesz' : 'Schnellwahl'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Użyj <strong>➕ Następny dzień</strong> lub <strong>📅 Cały tydzień</strong> dla powiatu.' : 'Nutzen Sie <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong>.'}</div>
+                                                <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. ${isPolish ? 'Dodaj kolejne dni (+)' : 'Tage hinzufügen (+)'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Klikaj <strong>➕ Kolejny dzień</strong> lub <strong>📅 Cały tydzień</strong> – okienko obok pokaże ile dni dodano.' : 'Klicken Sie auf <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong>.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. ${isPolish ? 'Podsumuj' : 'Bestellen'}</div>
@@ -1192,7 +1359,7 @@ function calculateTotals() {
                                     const checkedAttr = isRegionSelected ? 'checked' : '';
 
                                     let infoPart = cleanItem
-                                        .replace(/\[(?:Sprawdź\vert{}Sprawdz\vert{}Prüfen\vert{}Check\vert{}Vérifier\vert{}Zkontrolovat\vert{}Zamów)\]\([^)]+\)/gi, '')
+                                        .replace(/\[(?:Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat|Zamów)\]\([^)]+\)/gi, '')
                                         .replace(/<a\b[^>]*>(?:Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat|Zamów)<\/a>/gi, '')
                                         .replace(/👉/g, '')
                                         .replace(/(Sprawdź|Sprawdz|Prüfen|Check|Vérifier|Zkontrolovat)/gi, '')
@@ -1265,9 +1432,20 @@ function calculateTotals() {
                                             <div class="notranslate" translate="no" style="flex:1;">${infoPart}</div>
                                         </label>
                                         <div class="quick-add-container">
-                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">➕ ${isPolish ? 'Następny dzień' : 'Nächster Tag'}</button>
-                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">📅 ${isPolish ? 'Cały tydzień' : 'Ganze Woche'}</button>
+                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
+                                                ➕ ${isPolish ? 'Kolejny dzień' : 'Nächster Tag'}
+                                            </button>
+                                            <button type="button" class="btn-quick-remove" data-base="${displayDate}" data-region="${encodeURIComponent(regionName)}" title="${isPolish ? 'Odejmij ostatnio dodany dzień' : 'Letzten Tag entfernen'}">
+                                                ➖
+                                            </button>
+                                            <div class="added-days-window">
+                                                📅 ${isPolish ? 'Dodano od dnia: <strong>+0 dni</strong>' : 'Hinzugefügt: <strong>+0 Tage</strong>'}
+                                            </div>
+                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
+                                                📅 ${isPolish ? 'Cały tydzień' : 'Ganze Woche'}
+                                            </button>
                                         </div>
+                                        <div class="added-dates-pills"></div>
                                     </div>`;
                                 }).join('');
 
@@ -1294,32 +1472,65 @@ function calculateTotals() {
                                     });
                                 });
 
+                                // Przycisk ➕ Kolejny dzień (dodaje kaskadowo kolejny nieobecny jeszcze w koszyku termin po wybranym dniu)
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        const curDate = this.getAttribute('data-current');
-                                        const availableDates = this.getAttribute('data-dates').split(',').sort();
+                                        const curDate = this.getAttribute('data-current'); // RRRR-MM-DD
+                                        const availableDates = this.getAttribute('data-dates')
+                                            .split(',')
+                                            .map(s => s.trim())
+                                            .filter(Boolean)
+                                            .sort();
                                         const rName = decodeURIComponent(this.getAttribute('data-region'));
 
-                                        globalCart.set(`${formatDateDisplay(curDate)}_${rName}`, { date: formatDateDisplay(curDate), region: rName });
+                                        // Upewniamy się, że dzień bazowy jest w koszyku
+                                        const baseDisp = formatDateDisplay(curDate);
+                                        globalCart.set(`${baseDisp}_${rName}`, { date: baseDisp, region: rName });
 
-                                        const nextAvailable = availableDates.find(d => d > curDate);
+                                        // Szukamy pierwszego dostępnego terminu > curDate, którego jeszcze nie ma w koszyku
+                                        const nextAvailable = availableDates.find(d => {
+                                            if (d <= curDate) return false;
+                                            const dDisp = formatDateDisplay(d);
+                                            return !globalCart.has(`${dDisp}_${rName}`);
+                                        });
+
                                         if (nextAvailable) {
                                             const nextDisp = formatDateDisplay(nextAvailable);
                                             globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
-                                            alert(`✅ Dodano kolejny termin: ${nextDisp} dla rejonu ${rName}`);
                                         } else {
-                                            alert(`ℹ Rejon ${rName} nie ma dalszych terminów w tym tygodniu.`);
+                                            alert(isPolish 
+                                                ? `ℹ️ Wszystkie dostępne kolejne terminy z tego okresu dla rejonu ${rName} zostały już dodane.` 
+                                                : `ℹ️ Alle weiteren verfügbaren Termine für ${rName} wurden bereits hinzugefügt.`);
                                         }
-
-                                        const parentRow = this.closest('.zebra-row');
-                                        const chk = parentRow.querySelector('.region-checkbox');
-                                        if (chk) chk.checked = true;
 
                                         refreshCartUI();
                                     });
                                 });
 
+                                // Przycisk ➖ (odejmuje ostatni dodany dzień ponad dzień bazowy)
+                                resultsContent.querySelectorAll('.btn-quick-remove').forEach(btn => {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        const baseDisp = this.getAttribute('data-base');
+                                        const rName = decodeURIComponent(this.getAttribute('data-region'));
+
+                                        const extraEntries = [];
+                                        for (let [k, val] of globalCart.entries()) {
+                                            if (val.region === rName && val.date !== baseDisp) {
+                                                extraEntries.push({ key: k, ymd: displayToYMD(val.date) });
+                                            }
+                                        }
+
+                                        if (extraEntries.length > 0) {
+                                            extraEntries.sort((a, b) => b.ymd.localeCompare(a.ymd));
+                                            globalCart.delete(extraEntries[0].key);
+                                            refreshCartUI();
+                                        }
+                                    });
+                                });
+
+                                // Przycisk 📅 Cały tydzień
                                 resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -1350,21 +1561,17 @@ function calculateTotals() {
                                             return;
                                         }
 
-                                        let addedCount = 0;
                                         validDates.forEach(dStr => {
                                             const dDisp = formatDateDisplay(dStr);
                                             globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
-                                            addedCount++;
                                         });
 
-                                        const parentRow = this.closest('.zebra-row');
-                                        const chk = parentRow.querySelector('.region-checkbox');
-                                        if (chk) chk.checked = true;
-
-                                        alert(`✅ Dodano ${addedCount} aktualny/e termin(y) do końca tygodnia dla: ${rName}`);
                                         refreshCartUI();
                                     });
                                 });
+
+                                // Odśwież stan okienek zaraz po załadowaniu listy
+                                updateRowAddedDaysWindows();
 
                                 function scrollToRegion(query) {
                                     if (!query) return;
