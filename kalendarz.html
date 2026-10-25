@@ -602,7 +602,7 @@
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026/2027</span>
-                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 25 PLN / dzień</span>
+                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 25 PLN (1 rejon) | 40 PLN (pakiet)</span>
                 </div>
                 
                 <div class="hero-features-grid" id="cal-hint">
@@ -616,7 +616,7 @@
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">🛒</span>
-                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">25 PLN / dzień</span>):</strong> zaznaczaj rejony i zrealizuj zamówienie na dolnej belce.</div>
+                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">25 PLN / dzień lub 40 PLN / dzień w pakiecie</span>):</strong> zaznaczaj rejony i korzystaj z automatycznych rabatów ilościowych.</div>
                     </div>
                 </div>
             </div>
@@ -686,6 +686,226 @@
             m: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
             d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"]
         };
+
+        // Mapa sąsiedztwa rejonów (korytarze wspólne zgodne z zestaw.html)
+        const NEIGHBOR_CLUSTERS_MAP = {
+            'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
+            'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
+            'heidelberg': ['rhein-neckar-kreis', 'karlsruhe kreis', 'heilbronn'],
+            'heilbronn': ['heidelberg', 'rhein-neckar-kreis', 'karlsruhe kreis'],
+            'karlsruhe kreis': ['karlsruhe stadt', 'heidelberg', 'rhein-neckar-kreis', 'calw'],
+            'karlsruhe stadt': ['karlsruhe kreis', 'rhein-neckar-kreis', 'calw'],
+            'konstanz': ['tuttlingen', 'zollernalb'],
+            'ortenau': ['freudenstadt', 'karlsruhe kreis', 'calw'],
+            'rhein-neckar-kreis': ['heidelberg', 'karlsruhe kreis', 'karlsruhe stadt', 'heilbronn'],
+            'tuttlingen': ['konstanz', 'zollernalb', 'freudenstadt'],
+            'zollernalb': ['tuttlingen', 'freudenstadt', 'calw', 'konstanz'],
+            'amberg': ['regensburg', 'neustadt a.d. waldnaab', 'bayreuth', 'fürth'],
+            'augsburg kreis': ['augsburg stadt', 'gräfelfing', 'kirchheim', 'monachium-południowy wschód'],
+            'augsburg stadt': ['augsburg kreis', 'gräfelfing', 'kirchheim', 'monachium-południowy wschód'],
+            'bamberg': ['bayreuth', 'kulmbach', 'fürth', 'amberg'],
+            'bayreuth': ['kulmbach', 'bamberg', 'amberg', 'neustadt a.d. waldnaab'],
+            'fürth': ['bamberg', 'amberg', 'bayreuth'],
+            'gräfelfing': ['kirchheim', 'monachium-południowy wschód', 'augsburg kreis', 'augsburg stadt'],
+            'kirchheim': ['gräfelfing', 'monachium-południowy wschód', 'augsburg kreis'],
+            'kulmbach': ['bayreuth', 'bamberg', 'neustadt a.d. waldnaab'],
+            'monachium-południowy wschód': ['kirchheim', 'gräfelfing', 'regensburg', 'augsburg kreis', 'augsburg stadt'],
+            'neustadt a.d. waldnaab': ['amberg', 'bayreuth', 'regensburg', 'kulmbach'],
+            'regensburg': ['straubing-bogen', 'amberg', 'neustadt a.d. waldnaab', 'monachium-południowy wschód'],
+            'straubing-bogen': ['regensburg', 'amberg', 'monachium-południowy wschód'],
+            'berlin': ['barnim', 'oder-spree'],
+            'barnim': ['berlin', 'oder-spree', 'schwedt/oder'],
+            'elbe-elster': ['spree-neiße', 'nordsachsen', 'leipzig'],
+            'oder-spree': ['berlin', 'barnim', 'spree-neiße', 'schwedt/oder'],
+            'schwedt/oder': ['barnim', 'oder-spree'],
+            'spree-neiße': ['oder-spree', 'elbe-elster'],
+            'bad homburg': ['friedrichsdorf', 'oberursel (taunus)', 'steinbach', 'frankfurt', 'usingen'],
+            'bad orb': ['bad soden-salmünster', 'biebergemünd', 'gelnhausen', 'jossgrund', 'flörsbachtal'],
+            'bad soden-salmünster': ['bad orb', 'schlüchtern', 'sinntal', 'biebergemünd', 'gelnhausen'],
+            'biebergemünd': ['gelnhausen', 'bad orb', 'flörsbachtal', 'linsengericht', 'jossgrund'],
+            'eppstein': ['hofheim am taunus', 'kelkheim (taunus)', 'glashütten', 'wiesbaden-naurod'],
+            'eschwege': ['werra-meissner', 'hersfeld-rotenburg', 'fulda'],
+            'flörsbachtal': ['jossgrund', 'biebergemünd', 'bad orb', 'sinntal'],
+            'flörsheim am main': ['hattersheim', 'hattersheim am main', 'hofheim am taunus', 'gross-gerau'],
+            'frankfurt': ['bad homburg', 'oberursel (taunus)', 'steinbach', 'hattersheim', 'gross-gerau'],
+            'freigericht': ['hasselroth', 'gelnhausen', 'rodenbach', 'linsengericht'],
+            'friedrichsdorf': ['bad homburg', 'rosbach', 'usingen', 'wehrheim'],
+            'fulda': ['hersfeld-rotenburg', 'schlüchtern', 'sinntal', 'bad soden-salmünster'],
+            'gelnhausen': ['linsengericht', 'gründau', 'biebergemünd', 'bad orb', 'hasselroth'],
+            'giessen': ['giessen stadt', 'hersfeld-rotenburg', 'limburg-weilburg', 'usingen'],
+            'giessen stadt': ['giessen', 'usingen', 'limburg-weilburg'],
+            'glashütten': ['königstein (taunus)', 'schmitten', 'schmitten im taunus', 'eppstein'],
+            'grävenwiesbach': ['usingen', 'weilrod', 'wehrheim', 'schmitten'],
+            'gross-gerau': ['walldorf-mörfelden', 'frankfurt', 'flörsheim am main', 'hattersheim'],
+            'gründau': ['gelnhausen', 'nidderau', 'ronneburg', 'hasselroth', 'linsengericht'],
+            'hasselroth': ['freigericht', 'gelnhausen', 'gründau', 'rodenbach', 'linsengericht'],
+            'hattersheim': ['hofheim am taunus', 'kelkheim (taunus)', 'flörsheim am main', 'frankfurt'],
+            'hattersheim am main': ['hattersheim', 'hofheim am taunus', 'flörsheim am main', 'frankfurt'],
+            'hersfeld-rotenburg': ['fulda', 'werra-meissner', 'eschwege', 'giessen'],
+            'hofheim am taunus': ['hattersheim', 'kelkheim (taunus)', 'eppstein', 'flörsheim am main', 'wiesbaden-naurod'],
+            'jossgrund': ['bad orb', 'flörsbachtal', 'biebergemünd', 'sinntal'],
+            'kelkheim (taunus)': ['hofheim am taunus', 'königstein (taunus)', 'hattersheim', 'eppstein', 'kronberg'],
+            'kelkheim am taunus': ['kelkheim (taunus)', 'hofheim am taunus', 'königstein (taunus)'],
+            'königstein (taunus)': ['kronberg', 'kronberg im taunus', 'kelkheim (taunus)', 'schwalbach', 'glashütten'],
+            'kronberg': ['kronberg im taunus', 'königstein (taunus)', 'schwalbach', 'steinbach', 'oberursel (taunus)'],
+            'kronberg im taunus': ['kronberg', 'königstein (taunus)', 'schwalbach', 'oberursel (taunus)'],
+            'liederbach': ['kelkheim (taunus)', 'bad soden am taunus', 'frankfurt', 'sulzbach'],
+            'limburg-weilburg': ['weilrod', 'usingen', 'giessen', 'rheingau-taunus', 'westerwald'],
+            'linsengericht': ['gelnhausen', 'biebergemünd', 'freigericht', 'hasselroth'],
+            'neu-anspach': ['usingen', 'wehrheim', 'schmitten', 'bad homburg'],
+            'nidderau': ['gründau', 'ronneburg', 'rodenbach', 'frankfurt'],
+            'oberursel (taunus)': ['bad homburg', 'steinbach', 'kronberg', 'frankfurt'],
+            'rheingau-taunus': ['wiesbaden-naurod', 'limburg-weilburg', 'eppstein'],
+            'rodenbach': ['ronneburg', 'freigericht', 'hasselroth', 'nidderau', 'gelnhausen'],
+            'ronneburg': ['gründau', 'rodenbach', 'nidderau', 'gelnhausen'],
+            'schlüchtern': ['sinntal', 'bad soden-salmünster', 'fulda', 'bad orb'],
+            'schmitten': ['schmitten im taunus', 'weilrod', 'usingen', 'glashütten', 'königstein (taunus)'],
+            'schmitten im taunus': ['schmitten', 'weilrod', 'usingen', 'glashütten', 'königstein (taunus)'],
+            'schwalbach': ['eschborn', 'kronberg', 'königstein (taunus)', 'sulzbach', 'frankfurt'],
+            'sinntal': ['schlüchtern', 'bad soden-salmünster', 'jossgrund', 'flörsbachtal', 'fulda'],
+            'steinbach': ['oberursel (taunus)', 'kronberg', 'frankfurt', 'schwalbach'],
+            'usingen': ['neu-anspach', 'wehrheim', 'grävenwiesbach', 'weilrod', 'schmitten'],
+            'walldorf-mörfelden': ['gross-gerau', 'frankfurt', 'flörsheim am main'],
+            'wehrheim': ['usingen', 'neu-anspach', 'friedrichsdorf', 'bad homburg'],
+            'weilrod': ['usingen', 'schmitten', 'grävenwiesbach', 'limburg-weilburg'],
+            'werra-meissner': ['eschwege', 'hersfeld-rotenburg', 'göttingen'],
+            'wiesbaden-naurod': ['hofheim am taunus', 'eppstein', 'rheingau-taunus'],
+            'braunschweig': ['wolfsburg', 'gifhorn', 'hannover'],
+            'diepholz': ['osnabrück', 'hannover'],
+            'emsland': ['osnabrück'],
+            'gifhorn': ['wolfsburg', 'braunschweig', 'hannover', 'heidekreis'],
+            'göttingen': ['holzminden', 'werra-meissner', 'eschwege'],
+            'hannover': ['braunschweig', 'heidekreis', 'diepholz', 'gifhorn'],
+            'harburg': ['lüneburg', 'heidekreis', 'stade'],
+            'heidekreis': ['hannover', 'harburg', 'lüneburg', 'gifhorn'],
+            'holzminden': ['göttingen', 'hannover'],
+            'lüneburg': ['harburg', 'heidekreis'],
+            'osnabrück': ['diepholz', 'emsland', 'münster'],
+            'stade': ['harburg', 'lüneburg'],
+            'wolfsburg': ['gifhorn', 'braunschweig', 'altmarkkreis-salzwedel'],
+            'aldenhoven': ['jülich', 'merzenich', 'eschweiler', 'geilenkirchen', 'baesweiler', 'düren'],
+            'alpen': ['rheinberg', 'issum', 'sonsbeck', 'xanten', 'kamp-lintfort', 'wesel kreis'],
+            'altena': ['werdohl', 'nachrodt-wiblingwerde', 'iserlohn', 'plettenberg', 'ludenscheid'],
+            'bad münstereifel': ['bad-munstereifel', 'euskirchen', 'mechernich', 'zülpich', 'blankenheim', 'euskirchen kreis'],
+            'bad-munstereifel': ['bad münstereifel', 'euskirchen', 'mechernich', 'zülpich', 'euskirchen kreis'],
+            'balve': ['menden', 'iserlohn', 'neuenrade', 'sundern', 'arnsberg'],
+            'bedburg': ['bergheim', 'jüchen', 'rommerskirchen', 'grevenbroich', 'düren'],
+            'bedburg-hau': ['kleve', 'kalkar', 'goch', 'emmerich am rhein', 'kranenburg', 'kleve kreis'],
+            'blankenheim': ['dahlem', 'nettersheim', 'schleiden', 'bad münstereifel', 'kall', 'euskirchen kreis'],
+            'bonn': ['rhein-sieg', 'brühl', 'bornheim', 'alfter', 'wesseling', 'euskirchen kreis'],
+            'breckerfeld': ['ennepetal', 'schwelm', 'hagen', 'halver'],
+            'brühl': ['wesseling', 'hürth', 'erftstadt', 'bonn', 'köln', 'euskirchen kreis'],
+            'dahlem': ['blankenheim', 'hellenthal', 'schleiden', 'kall', 'euskirchen kreis'],
+            'dormagen': ['neuss', 'rommerskirchen', 'pulheim', 'köln', 'monheim am rhein', 'rhein-kreis neuss'],
+            'dortmund': ['bochum', 'castrop-rauxel', 'lünen', 'schwerte', 'unna', 'witten'],
+            'dülmen': ['haltern am see', 'coesfeld', 'lüdinghausen', 'münster', 'wesel kreis'],
+            'düsseldorf': ['meerbusch', 'ratingen', 'neuss', 'erkrath', 'hilden', 'dormagen', 'duisburg', 'rhein-kreis neuss'],
+            'düren': ['euskirchen kreis', 'heinsberg kreis', 'euskirchen', 'merzenich', 'jülich', 'aldenhoven', 'zülpich', 'aachen', 'rhein-erft-kreis'],
+            'euskirchen kreis': ['düren', 'euskirchen', 'bad münstereifel', 'bad-munstereifel', 'mechernich', 'zülpich', 'weilerswist', 'kall', 'schleiden', 'blankenheim', 'dahlem', 'hellenthal', 'rhein-sieg', 'brühl', 'erftstadt', 'bonn'],
+            'emmerich am rhein': ['rees', 'kleve', 'bedburg-hau', 'kleve kreis'],
+            'ennepetal': ['schwelm', 'gevelsberg', 'breckerfeld', 'sprockhövel'],
+            'erftstadt': ['hürth', 'brühl', 'kerpen', 'zülpich', 'weilerswist', 'euskirchen kreis', 'düren'],
+            'erkrath': ['düsseldorf', 'haan', 'mettmann', 'hilden', 'wülfrath', 'rhein-kreis neuss'],
+            'euskirchen': ['weilerswist', 'bad münstereifel', 'zülpich', 'mechernich', 'rhein-sieg', 'euskirchen kreis', 'düren'],
+            'geilenkirchen': ['übach-palenberg', 'heinsberg kreis', 'hückelhoven', 'gangelt', 'aldenhoven', 'düren'],
+            'geldern': ['kevelaer', 'straelen', 'issum', 'kerken', 'sonsbeck', 'kleve kreis', 'wesel kreis'],
+            'goch': ['bedburg-hau', 'kleve', 'uedem', 'weeze', 'kevelaer', 'kleve kreis'],
+            'grefrath': ['nettetal', 'kempen', 'tönisvorst', 'viersen kreis'],
+            'grevenbroich': ['jüchen', 'rommerskirchen', 'neuss', 'bedburg', 'korschenbroich', 'rhein-kreis neuss'],
+            'haan': ['solingen', 'hilden', 'erkrath', 'mettmann', 'wuppertal'],
+            'heiligenhaus': ['velbert', 'ratingen', 'wülfrath', 'essen'],
+            'heinsberg kreis': ['düren', 'viersen kreis', 'rhein-kreis neuss', 'geilenkirchen', 'hückelhoven', 'selfkant', 'aldenhoven', 'jülich', 'aachen', 'mönchengladbach', 'waldfeucht', 'wassenberg'],
+            'hellenthal': ['schleiden', 'kall', 'dahlem', 'blankenheim', 'euskirchen kreis'],
+            'hückelhoven': ['heinsberg kreis', 'geilenkirchen', 'erkelenz', 'wassenberg', 'jüchen', 'rhein-kreis neuss'],
+            'hürth': ['köln', 'brühl', 'erftstadt', 'frechen'],
+            'iserlohn': ['menden', 'hemer', 'schwerte', 'altena', 'nachrodt-wiblingwerde'],
+            'issum': ['geldern', 'kamp-lintfort', 'alpen', 'kerken', 'sonsbeck', 'wesel kreis', 'kleve kreis'],
+            'jüchen': ['grevenbroich', 'korschenbroich', 'mönchengladbach', 'bedburg', 'rhein-kreis neuss'],
+            'jülich': ['aldenhoven', 'titz', 'linnich', 'niederzier', 'merzenich', 'düren', 'heinsberg kreis'],
+            'kaarst': ['neuss', 'meerbusch', 'korschenbroich', 'willich', 'krefeld', 'rhein-kreis neuss', 'viersen kreis'],
+            'kall': ['mechernich', 'schleiden', 'hellenthal', 'blankenheim', 'nettersheim', 'euskirchen kreis'],
+            'kamp-lintfort': ['moers', 'neukirchen-vluyn', 'rheinberg', 'issum', 'alpen', 'wesel kreis'],
+            'kerken': ['geldern', 'straelen', 'kempen', 'wachtendonk', 'issum', 'kleve kreis', 'wesel kreis'],
+            'kevelaer': ['geldern', 'weeze', 'sonsbeck', 'straelen', 'goch', 'kleve kreis', 'wesel kreis'],
+            'kleve kreis': ['wesel kreis', 'viersen kreis', 'geldern', 'kevelaer', 'goch', 'weeze', 'uedem', 'straelen', 'kerken', 'bedburg-hau', 'emmerich am rhein', 'rees'],
+            'korschenbroich': ['mönchengladbach', 'kaarst', 'jüchen', 'neuss', 'willich', 'rhein-kreis neuss', 'viersen kreis'],
+            'köln': ['leverkusen', 'bergisch gladbach', 'hürth', 'brühl', 'pulheim', 'dormagen', 'rhein-kreis neuss'],
+            'krefeld': ['moers', 'meerbusch', 'tönisvorst', 'willich', 'duisburg', 'viersen kreis', 'rhein-kreis neuss', 'wesel kreis'],
+            'leverkusen': ['köln', 'monheim am rhein', 'leichlingen', 'burscheid', 'bergisch gladbach'],
+            'mechernich': ['euskirchen', 'kall', 'zülpich', 'bad münstereifel', 'schleiden', 'euskirchen kreis'],
+            'meerbusch': ['düsseldorf', 'krefeld', 'kaarst', 'neuss', 'duisburg', 'rhein-kreis neuss'],
+            'menden': ['iserlohn', 'merzenich', 'hemer', 'fröndenberg', 'wickede'],
+            'merzenich': ['düren', 'nörvenich', 'jülich', 'aldenhoven'],
+            'monheim am rhein': ['leverkusen', 'düsseldorf', 'dormagen', 'langenfeld', 'hilden', 'rhein-kreis neuss'],
+            'münster': ['greven', 'telgte', 'everswinkel', 'senden', 'dülmen'],
+            'nachrodt-wiblingwerde': ['altena', 'iserlohn', 'lüdenscheid', 'werdohl'],
+            'nettetal': ['viersen kreis', 'grefrath', 'schwalmtal', 'brüggen', 'kleve kreis'],
+            'neukirchen-vluyn': ['kamp-lintfort', 'moers', 'krefeld', 'rheurdt', 'wesel kreis'],
+            'neuss': ['düsseldorf', 'dormagen', 'kaarst', 'meerbusch', 'korschenbroich', 'grevenbroich', 'rhein-kreis neuss'],
+            'oberberg': ['gummersbach', 'wiehl', 'wipperfürth', 'lindlar', 'rheinisch-bergischer'],
+            'olpe': ['attendorn', 'drolshagen', 'lennestadt', 'kreuztal', 'plettenberg'],
+            'plettenberg': ['attendorn', 'finnentrop', 'werdohl', 'altena', 'olpe'],
+            'pulheim': ['köln', 'bergheim', 'rommerskirchen', 'dormagen', 'frechen', 'rhein-kreis neuss'],
+            'ratingen': ['düsseldorf', 'heiligenhaus', 'mülheim an der ruhr', 'duisburg', 'mettmann'],
+            'rees': ['emmerich am rhein', 'kalkar', 'wesel kreis', 'haldern', 'bocholt', 'kleve kreis'],
+            'rhein-kreis neuss': ['neuss', 'grevenbroich', 'dormagen', 'kaarst', 'korschenbroich', 'jüchen', 'rommerskirchen', 'meerbusch', 'viersen kreis', 'heinsberg kreis', 'düsseldorf', 'mönchengladbach', 'krefeld', 'köln'],
+            'rhein-sieg': ['bonn', 'troisdorf', 'sankt augustin', 'hennef', 'euskirchen', 'euskirchen kreis'],
+            'rheinisch-bergischer': ['bergisch gladbach', 'overath', 'leverkusen', 'köln', 'oberberg'],
+            'rheurdt': ['neukirchen-vluyn', 'kamp-lintfort', 'kerken', 'issum', 'wesel kreis'],
+            'rommerskirchen': ['dormagen', 'grevenbroich', 'pulheim', 'bedburg', 'köln', 'rhein-kreis neuss'],
+            'schleiden': ['hellenthal', 'kall', 'simmerath', 'heimbach', 'blankenheim', 'euskirchen kreis'],
+            'selfkant': ['waldfeucht', 'gangelt', 'heinsberg kreis'],
+            'solingen': ['remscheid', 'wuppertal', 'haan', 'hilden', 'leichlingen'],
+            'sonsbeck': ['xanten', 'geldern', 'kevelaer', 'alpen', 'issum', 'wesel kreis', 'kleve kreis'],
+            'sprockhövel': ['hattingen', 'gevelsberg', 'wuppertal', 'witten', 'ennepetal'],
+            'straelen': ['wachtendonk', 'geldern', 'kerken', 'nettetal', 'kleve kreis', 'viersen kreis'],
+            'tönisvorst': ['krefeld', 'kempen', 'viersen kreis', 'willich', 'grefrath'],
+            'übach-palenberg': ['geilenkirchen', 'baesweiler', 'herzogenrath', 'aldenhoven', 'heinsberg kreis'],
+            'uedem': ['goch', 'weeze', 'kalkar', 'sonsbeck', 'xanten', 'kleve kreis', 'wesel kreis'],
+            'viersen kreis': ['kleve kreis', 'wesel kreis', 'rhein-kreis neuss', 'heinsberg kreis', 'nettetal', 'grefrath', 'tönisvorst', 'straelen', 'krefeld', 'mönchengladbach', 'willich', 'schwalmtal'],
+            'voerde': ['dinslaken', 'wesel kreis', 'hünxe', 'rheinberg'],
+            'weeze': ['kevelaer', 'goch', 'uedem', 'geldern', 'kleve kreis'],
+            'weilerswist': ['erftstadt', 'brühl', 'euskirchen', 'zülpich', 'bornheim', 'euskirchen kreis'],
+            'werdohl': ['altena', 'plettenberg', 'neuenrade', 'lüdenscheid'],
+            'wesel kreis': ['kleve kreis', 'viersen kreis', 'alpen', 'sonsbeck', 'xanten', 'voerde', 'rees', 'kamp-lintfort', 'issum', 'neukirchen-vluyn', 'rheurdt', 'krefeld', 'duisburg', 'oberhausen', 'dülmen', 'borken', 'recklinghausen'],
+            'wesseling': ['brühl', 'köln', 'bonn', 'niederkassel'],
+            'wülfrath': ['velbert', 'mettmann', 'heiligenhaus', 'wuppertal'],
+            'wuppertal': ['solingen', 'remscheid', 'schwelm', 'sprockhövel', 'haan'],
+            'xanten': ['sonsbeck', 'alpen', 'wesel kreis', 'kalkar', 'uedem', 'kleve kreis'],
+            'zülpich': ['euskirchen', 'mechernich', 'weilerswist', 'nörvenich', 'erftstadt', 'düren', 'euskirchen kreis'],
+            'alzey-worms': ['worms', 'bad-kreuznach', 'mainz-bingen'],
+            'altenkirchen (westerwald)': ['westerwald', 'neuwied', 'rhein-sieg'],
+            'bad-kreuznach': ['alzey-worms', 'birkenfeld', 'rhein-hunsrück', 'mainz-bingen'],
+            'bernkastel-wittlich': ['cochem-zell', 'trier-saarburg', 'vulkaneifel', 'eifelkreis bitburg-prüm'],
+            'cochem-zell': ['bernkastel-wittlich', 'mayen-koblenz', 'rhein-hunsrück', 'vulkaneifel'],
+            'eifelkreis bitburg-prüm': ['vulkaneifel', 'trier-saarburg', 'bernkastel-wittlich'],
+            'mayen-koblenz': ['koblenz', 'neu-wied', 'cochem-zell', 'ahrweiler', 'rhein-lahn'],
+            'trier-saarburg': ['trier-stadt', 'bernkastel-wittlich', 'eifelkreis bitburg-prüm'],
+            'trier-stadt': ['trier-saarburg', 'bernkastel-wittlich', 'eifelkreis bitburg-prüm'],
+            'vulkaneifel': ['eifelkreis bitburg-prüm', 'bernkastel-wittlich', 'cochem-zell', 'ahrweiler'],
+            'westerwald': ['altenkirchen (westerwald)', 'neuwied', 'mayen-koblenz', 'limburg-weilburg'],
+            'altmarkkreis-salzwedel': ['wolfsburg', 'stendal', 'lüchow-dannenberg'],
+            'burgenland': ['leipzig', 'weissenfels', 'naumburg', 'zeitz', 'nordsachsen'],
+            'leipzig': ['nordsachsen', 'burgenland', 'elbe-elster'],
+            'nordsachsen': ['leipzig', 'torgau', 'oschatz', 'delitzsch', 'elbe-elster', 'burgenland'],
+            'lübeck': ['ostholstein', 'herzogtum lauenburg', 'stormarn', 'nordwestmecklenburg'],
+            'rendsburg-eckernförde': ['kiel', 'schleswig-flensburg', 'dithmarschen', 'steinburg', 'neumünster']
+        };
+
+        function cleanNameForCompare(str) {
+            return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
+        }
+
+        function areRegionsNeighbors(rA, rB) {
+            let keyA = cleanNameForCompare(rA);
+            let keyB = cleanNameForCompare(rB);
+            if (keyA === keyB) return true;
+
+            let neighborsA = (NEIGHBOR_CLUSTERS_MAP[keyA] || []).map(cleanNameForCompare);
+            let neighborsB = (NEIGHBOR_CLUSTERS_MAP[keyB] || []).map(cleanNameForCompare);
+
+            return neighborsA.includes(keyB) || neighborsB.includes(keyA);
+        }
 
         // Algorytm obliczania świąt w Niemczech
         function getGermanHolidaysForYear(y) {
@@ -811,19 +1031,22 @@
             const isPolish = (userLang === 'pl');
 
             const currencyUnit = isPolish ? "PLN" : "€";
-            const unitRateValue = isPolish ? 25.00 : 10.00;
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki
+            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki (25/40 PLN oraz 10/15 €)
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
-                priceBadgeEl.textContent = isPolish ? '💰 25 PLN / dzień' : (userLang === 'de' ? '💰 10 € / Tag' : '💰 10 € / day');
+                priceBadgeEl.textContent = isPolish 
+                    ? '💰 25 PLN (1 rejon) | 40 PLN (pakiet)' 
+                    : (userLang === 'de' ? '💰 10 € (1 Gebiet) | 15 € (Paket)' : '💰 10 € (1 region) | 15 € (package)');
             }
             if (rateInlineEl) {
-                rateInlineEl.textContent = isPolish ? '25 PLN / dzień' : (userLang === 'de' ? '10 € / Tag' : '10 € / day');
+                rateInlineEl.textContent = isPolish 
+                    ? '25 PLN / dzień lub 40 PLN / dzień w pakiecie' 
+                    : (userLang === 'de' ? '10 € / Tag oder 15 € / Tag im Paket' : '10 € / day or 15 € / day in package');
             }
 
             // Metody płatności z ograniczeniem dla PL / Zagranica
@@ -996,24 +1219,157 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            // CENNIK: Stała cena za każdy rejon / termin = 25 PLN (PL) / 10 € (Zagranica)
+            // =========================================================================
+            // CENNIK ZGODNY Z ZESTAW.HTML:
+            // Pojedynczy rejon: 25 PLN / 10 € | Pakiet tras (korytarz): 40 PLN / 15 €
+            // Dynamiczne rabaty ilościowe wg liczby dni w trasie + grupowanie sąsiadów
+            // =========================================================================
             function calculateTotals() {
                 const totalTermsCount = globalCart.size;
+                const isEuro = !isPolish;
 
                 const uniqueDates = new Set();
+                const regionDatesMap = {};
+
                 globalCart.forEach(item => {
                     if (item.date) {
                         uniqueDates.add(item.date);
                     }
+                    const rKey = cleanNameForCompare(item.region);
+                    if (!regionDatesMap[rKey]) {
+                        regionDatesMap[rKey] = new Set();
+                    }
+                    if (item.date) {
+                        regionDatesMap[rKey].add(item.date);
+                    }
                 });
-                const selectedDays = uniqueDates.size;
 
-                let rawNetto = 0;
-                if (totalTermsCount > 0) {
-                    rawNetto = totalTermsCount * unitRateValue;
+                const selectedDays = uniqueDates.size;
+                const selectedRegionsCount = Object.keys(regionDatesMap).length;
+
+                if (totalTermsCount === 0) {
+                    const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+                    const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
+                    return {
+                        termsCount: 0,
+                        selectedDays: 0,
+                        billableDays: 0,
+                        clustersCount: 0,
+                        isSingleCluster: false,
+                        czyKorytarzWspolny: false,
+                        ratePerDay: 0,
+                        regularPrice: 0,
+                        savings: 0,
+                        discountPercent: 0,
+                        totalNetto: 0,
+                        finalAmount: 0,
+                        paypalFee: 0,
+                        isPaypal: (selectedPayment === "PAYPAL"),
+                        paymentMethod: selectedPayment
+                    };
                 }
 
-                const totalNetto = Math.round(rawNetto * 100) / 100;
+                // Grupowanie sąsiadujących rejonów w korytarze wspólne
+                let unassigned = Object.keys(regionDatesMap);
+                let clusters = [];
+
+                while (unassigned.length > 0) {
+                    let seed = unassigned.shift();
+                    let currentCluster = [seed];
+
+                    let changed = true;
+                    while (changed) {
+                        changed = false;
+                        for (let i = 0; i < unassigned.length; i++) {
+                            let candidate = unassigned[i];
+                            let canJoin = currentCluster.some(inCluster => areRegionsNeighbors(inCluster, candidate));
+
+                            if (canJoin) {
+                                currentCluster.push(candidate);
+                                unassigned.splice(i, 1);
+                                changed = true;
+                                break;
+                            }
+                        }
+                    }
+                    clusters.push(currentCluster);
+                }
+
+                let billableDaysTotal = 0;
+                clusters.forEach(clusterGroup => {
+                    let clusterDatesUnion = new Set();
+                    clusterGroup.forEach(rKey => {
+                        (regionDatesMap[rKey] || []).forEach(d => clusterDatesUnion.add(d));
+                    });
+                    billableDaysTotal += clusterDatesUnion.size;
+                });
+
+                const totalDays = billableDaysTotal;
+                const isSingleCluster = (clusters.length === 1 && selectedRegionsCount > 1);
+                const czyKorytarzWspolny = (selectedRegionsCount > 1);
+
+                let regularBaseReference;
+                if (isEuro) {
+                    regularBaseReference = czyKorytarzWspolny ? 15.00 : 10.00;
+                } else {
+                    regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
+                }
+
+                let ratePerDay;
+                if (isEuro) {
+                    if (czyKorytarzWspolny) {
+                        // Korytarz wspólny (zagranica): baza 15.00 €
+                        if (totalDays >= 250)      ratePerDay = 3.00;  // -80%
+                        else if (totalDays >= 181) ratePerDay = 4.20;  // -72%
+                        else if (totalDays >= 121) ratePerDay = 5.40;  // -64%
+                        else if (totalDays >= 81)  ratePerDay = 7.05;  // -53%
+                        else if (totalDays >= 51)  ratePerDay = 9.00;  // -40%
+                        else if (totalDays >= 31)  ratePerDay = 10.95; // -27%
+                        else if (totalDays >= 16)  ratePerDay = 12.30; // -18%
+                        else if (totalDays >= 6)   ratePerDay = 13.80; // -8%
+                        else                       ratePerDay = 15.00; // 0%
+                    } else {
+                        // Pojedynczy rejon (zagranica): baza 10.00 €
+                        if (totalDays >= 250)      ratePerDay = 2.00;  // -80%
+                        else if (totalDays >= 181) ratePerDay = 2.80;  // -72%
+                        else if (totalDays >= 121) ratePerDay = 3.60;  // -64%
+                        else if (totalDays >= 81)  ratePerDay = 4.70;  // -53%
+                        else if (totalDays >= 51)  ratePerDay = 6.00;  // -40%
+                        else if (totalDays >= 31)  ratePerDay = 7.30;  // -27%
+                        else if (totalDays >= 16)  ratePerDay = 8.20;  // -18%
+                        else if (totalDays >= 6)   ratePerDay = 9.20;  // -8%
+                        else                       ratePerDay = 10.00; // 0%
+                    }
+                } else {
+                    if (czyKorytarzWspolny) {
+                        // Korytarz wspólny (Polska): baza 40.00 PLN
+                        if (totalDays >= 250)      ratePerDay = 8.00;  // -80%
+                        else if (totalDays >= 181) ratePerDay = 11.20; // -72%
+                        else if (totalDays >= 121) ratePerDay = 14.40; // -64%
+                        else if (totalDays >= 81)  ratePerDay = 18.80; // -53%
+                        else if (totalDays >= 51)  ratePerDay = 24.00; // -40%
+                        else if (totalDays >= 31)  ratePerDay = 29.20; // -27%
+                        else if (totalDays >= 16)  ratePerDay = 32.80; // -18%
+                        else if (totalDays >= 6)   ratePerDay = 36.80; // -8%
+                        else                       ratePerDay = 40.00; // 0%
+                    } else {
+                        // Pojedynczy rejon (Polska): baza 25.00 PLN
+                        if (totalDays >= 250)      ratePerDay = 5.00;  // -80%
+                        else if (totalDays >= 181) ratePerDay = 7.00;  // -72%
+                        else if (totalDays >= 121) ratePerDay = 9.00;  // -64%
+                        else if (totalDays >= 81)  ratePerDay = 11.75; // -53%
+                        else if (totalDays >= 51)  ratePerDay = 15.00; // -40%
+                        else if (totalDays >= 31)  ratePerDay = 18.25; // -27%
+                        else if (totalDays >= 16)  ratePerDay = 20.50; // -18%
+                        else if (totalDays >= 6)   ratePerDay = 23.00; // -8%
+                        else                       ratePerDay = 25.00; // 0%
+                    }
+                }
+
+                const totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+                const regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
+                const savings = Math.round((regularPrice - totalNetto) * 100) / 100;
+                const discountPercent = regularPrice === 0 ? 0 : Math.round((savings / regularPrice) * 100);
 
                 const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
                 const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
@@ -1032,6 +1388,14 @@
                 return {
                     termsCount: totalTermsCount,
                     selectedDays: selectedDays,
+                    billableDays: totalDays,
+                    clustersCount: clusters.length,
+                    isSingleCluster: isSingleCluster,
+                    czyKorytarzWspolny: czyKorytarzWspolny,
+                    ratePerDay: ratePerDay,
+                    regularPrice: regularPrice,
+                    savings: savings,
+                    discountPercent: discountPercent,
                     totalNetto: totalNetto,
                     finalAmount: finalAmount,
                     paypalFee: paypalFee,
@@ -1052,7 +1416,6 @@
 
                     const rName = decodeURIComponent(chk.getAttribute('data-region'));
                     const baseDisplayDate = chk.getAttribute('data-date'); // DD.MM.RRRR
-                    const baseYMD = displayToYMD(baseDisplayDate);
 
                     // Zbieramy wszystkie daty w koszyku dla tego rejonu
                     const regionDatesDisplay = [];
@@ -1065,7 +1428,7 @@
                     // Sortujemy chronologicznie po YMD
                     regionDatesDisplay.sort((a, b) => displayToYMD(a).localeCompare(displayToYMD(b)));
 
-                    // Ile dni dodano ponad dzień wybrany (lub późniejszych od dnia wybranego)
+                    // Ile dni dodano ponad dzień wybrany
                     const extraDates = regionDatesDisplay.filter(d => d !== baseDisplayDate);
                     const extraCount = extraDates.length;
                     const totalForRegion = regionDatesDisplay.length;
@@ -1121,22 +1484,43 @@
                 if (isPolish) {
                     const rejonyOdmiana = odmienSlowo(uniqueRegionsCount, "rejon", "rejony", "rejonów");
                     const terminyOdmiana = odmienSlowo(calc.termsCount, "termin", "terminy", "terminów");
-                    const dniOdmiana = odmienSlowo(calc.selectedDays, "dzień", "dni", "dni");
-                    cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniOdmiana})`;
+                    const dniTrasyOdmiana = odmienSlowo(calc.billableDays, "dzień w trasie", "dni w trasie", "dni w trasie");
+                    let modeTag = '';
+                    if (calc.isSingleCluster) {
+                        modeTag = ' | Korytarz wspólny';
+                    } else if (calc.clustersCount > 1) {
+                        modeTag = ` | ${calc.clustersCount} osobne trasy`;
+                    }
+                    cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniTrasyOdmiana}${modeTag})`;
                 } else {
-                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.selectedDays} Tage)`;
+                    let modeTagDe = '';
+                    if (calc.isSingleCluster) {
+                        modeTagDe = ' | Gemeinsamer Korridor';
+                    } else if (calc.clustersCount > 1) {
+                        modeTagDe = ` | ${calc.clustersCount} Routen`;
+                    }
+                    cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
                 }
 
+                let discountTag = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
+
                 if (calc.isPaypal && calc.paypalFee > 0) {
-                    cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}`;
+                    cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}${discountTag}`;
                     cartFeeNoteEl.style.display = "inline";
                     cartFeeNoteEl.textContent = isPolish
                         ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN)`
                         : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €)`;
                 } else {
-                    cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}`;
-                    cartFeeNoteEl.style.display = "none";
-                    cartFeeNoteEl.textContent = "";
+                    cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}${discountTag}`;
+                    if (calc.savings > 0) {
+                        cartFeeNoteEl.style.display = "inline";
+                        cartFeeNoteEl.textContent = isPolish
+                            ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN)`
+                            : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €)`;
+                    } else {
+                        cartFeeNoteEl.style.display = "none";
+                        cartFeeNoteEl.textContent = "";
+                    }
                 }
 
                 if (calc.termsCount > 0) {
@@ -1149,7 +1533,7 @@
                     }
 
                     if (isPolish) {
-                        submitBtn.innerHTML = `📱 Zamów wybrane (${calc.finalAmount.toFixed(2)} PLN)`;
+                        submitBtn.innerHTML = `📱 Zamów pakiet (${calc.finalAmount.toFixed(2)} PLN${discountTag})`;
                         
                         let paymentInfoText = `Forma płatności: ${calc.paymentMethod}`;
                         if (calc.isPaypal) {
@@ -1160,12 +1544,13 @@
                             paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.selectedDays} dni).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
+                        let trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
+                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
                     } else {
-                        submitBtn.innerHTML = `💬 Bestellen (${calc.finalAmount.toFixed(2)} €)`;
+                        submitBtn.innerHTML = `💬 Bestellen (${calc.finalAmount.toFixed(2)} €${discountTag})`;
 
                         let paymentInfoText = `Zahlung: ${calc.paymentMethod}`;
                         if (calc.isPaypal) {
@@ -1174,7 +1559,7 @@
                             paymentInfoText += ` (Betrag: ${calc.finalAmount.toFixed(2)} € auf IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
                         }
 
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.selectedDays} Tage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
                         };
@@ -1287,7 +1672,7 @@
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
                                             <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                💰 ${isPolish ? 'Stawka: 25 PLN / dzień' : 'Preis: 10 € / Tag'}
+                                                💰 ${isPolish ? '25 PLN / dzień (1 rejon) | 40 PLN / dzień (korytarz wspólny)' : '10 € / Tag (1 Gebiet) | 15 € / Tag (Korridor-Paket)'}
                                             </div>
                                         </div>
 
@@ -1300,11 +1685,11 @@
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. ${isPolish ? 'Dodaj kolejne dni (+)' : 'Tage hinzufügen (+)'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Klikaj <strong>➕ Kolejny dzień</strong> lub <strong>📅 Cały tydzień</strong> – okienko obok pokaże ile dni dodano.' : 'Klicken Sie auf <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong>.'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Klikaj <strong>➕ Kolejny dzień</strong> lub <strong>📅 Cały tydzień</strong> – im więcej dni, tym wyższy rabat.' : 'Klicken Sie auf <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong>.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
-                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. ${isPolish ? 'Podsumuj' : 'Bestellen'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Sprawdź wyliczoną kwotę i zamów na dolnym pasku koszyka.' : 'Prüfen Sie den Gesamtbetrag und bestellen Sie direkt unten.'}</div>
+                                                <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. ${isPolish ? 'Pakiet / Korytarz' : 'Korridor-Paket'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Sąsiednie rejony łączą się we <strong>wspólny korytarz (40 PLN / dzień)</strong> z rabatami do -80%.' : 'Nachbargebiete werden als <strong>Korridor-Paket (15 € / Tag)</strong> mit bis zu -80% Rabatt berechnet.'}</div>
                                             </div>
                                         </div>
 
@@ -1472,7 +1857,7 @@
                                     });
                                 });
 
-                                // Przycisk ➕ Kolejny dzień (dodaje kaskadowo kolejny nieobecny jeszcze w koszyku termin po wybranym dniu)
+                                // Przycisk ➕ Kolejny dzień
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -1484,11 +1869,9 @@
                                             .sort();
                                         const rName = decodeURIComponent(this.getAttribute('data-region'));
 
-                                        // Upewniamy się, że dzień bazowy jest w koszyku
                                         const baseDisp = formatDateDisplay(curDate);
                                         globalCart.set(`${baseDisp}_${rName}`, { date: baseDisp, region: rName });
 
-                                        // Szukamy pierwszego dostępnego terminu > curDate, którego jeszcze nie ma w koszyku
                                         const nextAvailable = availableDates.find(d => {
                                             if (d <= curDate) return false;
                                             const dDisp = formatDateDisplay(d);
