@@ -227,7 +227,7 @@
                     <div class="dabu-footer-col">
                         <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                         <ul class="dabu-footer-contact">
-                            <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a> (od 16:00, pn-pt)</li>
+                            <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a> (od 16:00)</li>
                             <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
                             <li><a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">📍 56-300 Milicz (umów spotkanie)</a></li>
                         </ul>
