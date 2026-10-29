@@ -55,11 +55,56 @@
                 }
                 .dabu-footer-text { font-size: 0.95em; line-height: 1.6; margin: 0; color: #aaa; }
                 .dabu-footer-contact { list-style: none; padding: 0; margin: 0; font-size: 0.9em; line-height: 1.9; }
+                .dabu-footer-contact li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
                 .dabu-footer-contact li a { color: #3498db; text-decoration: none; transition: color 0.3s ease; }
                 .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
                 .dabu-footer-contact strong { color: #e0e0e0; }
 
-                /* STREFA KLIENTA W STOPCE */
+                /* PRZYCISK KOPIOWANIA IBAN - OBOK NUMERU */
+                .iban-row {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    flex-wrap: nowrap !important;
+                    white-space: nowrap !important;
+                    gap: 6px !important;
+                }
+                .copy-iban-btn {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.25);
+                    color: #2ecc71;
+                    padding: 3px 6px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    line-height: 1;
+                    flex-shrink: 0;
+                    width: auto !important;
+                    height: auto !important;
+                    transition: all 0.2s ease;
+                }
+                .copy-iban-btn:hover {
+                    background: rgba(46, 204, 113, 0.15);
+                    border-color: #2ecc71;
+                    transform: scale(1.05);
+                }
+                .copy-iban-btn svg {
+                    width: 14px;
+                    height: 14px;
+                    stroke: currentColor;
+                    fill: none;
+                    display: block;
+                }
+                .copy-tooltip {
+                    display: none;
+                    color: #2ecc71;
+                    font-size: 0.82em;
+                    font-weight: 600;
+                    margin-left: 4px;
+                }
+
+                /* JEDYNA STREFA KLIENTA W STOPCE */
                 .dabu-footer-client-bar {
                     max-width: 1200px;
                     margin: 32px auto 0;
@@ -107,40 +152,6 @@
                     box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
                 }
 
-                /* PRZYCISK KOPIOWANIA IBAN */
-                .copy-iban-btn {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: transparent;
-                    border: 1px solid rgba(255, 255, 255, 0.18);
-                    color: #2ecc71;
-                    padding: 3px 6px;
-                    margin-left: 6px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    vertical-align: middle;
-                    transition: all 0.2s ease;
-                }
-                .copy-iban-btn:hover {
-                    background: rgba(46, 204, 113, 0.15);
-                    border-color: #2ecc71;
-                    transform: scale(1.05);
-                }
-                .copy-iban-btn svg {
-                    width: 14px;
-                    height: 14px;
-                    stroke: currentColor;
-                    fill: none;
-                }
-                .copy-tooltip {
-                    display: none;
-                    color: #2ecc71;
-                    font-size: 0.82em;
-                    margin-left: 6px;
-                    font-weight: 600;
-                }
-
                 .dabu-footer-nav {
                     max-width: 1200px;
                     margin: 25px auto 0;
@@ -174,17 +185,6 @@
                     border-color: #2ecc71;
                     transform: translateY(-2px);
                     box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
-                }
-                .dabu-footer-boxes li a.client-zone-pill {
-                    background: #162231;
-                    border-color: #0284c7;
-                    color: #7dd3fc;
-                    font-weight: 600;
-                }
-                .dabu-footer-boxes li a.client-zone-pill:hover {
-                    background: #0284c7;
-                    color: #ffffff;
-                    border-color: #38bdf8;
                 }
 
                 .dabu-footer-bottom {
@@ -261,6 +261,7 @@
                 @media (max-width: 768px) {
                     .dabu-footer { padding: 35px 15px 15px; }
                     .dabu-footer-container { flex-direction: column; gap: 25px; text-align: center; }
+                    .dabu-footer-contact li { justify-content: center; }
                     .dabu-footer-client-bar { flex-direction: column; align-items: stretch; text-align: center; }
                     .dabu-footer-client-info { justify-content: center; }
                     .dabu-btn-client-footer { justify-content: center; }
@@ -301,20 +302,22 @@
                             <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
                             <li>💳 Płatności: BLIK, PayPal</li>
                             <li>
-                                🏦 IBAN: <span id="iban-number">PL33 1020 5297 0000 1702 0290 9323</span>
-                                <button type="button" class="copy-iban-btn" id="copy-iban-trigger" title="Skopiuj numer konta">
-                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                </button>
-                                <span class="copy-tooltip" id="iban-copied-msg">Skopiowano!</span>
+                                <span class="iban-row">
+                                    🏛️ IBAN: <span id="iban-number">PL33 1020 5297 0000 1702 0290 9323</span>
+                                    <button type="button" class="copy-iban-btn" id="copy-iban-trigger" title="Skopiuj numer konta">
+                                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                    <span class="copy-tooltip" id="iban-copied-msg">Skopiowano!</span>
+                                </span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- PASEK STREFY KLIENTA W STOPCE -->
+                <!-- JEDYNA BELKA STREFY KLIENTA W STOPCE -->
                 <div class="dabu-footer-client-bar">
                     <div class="dabu-footer-client-info">
                         <span>📂</span>
@@ -325,10 +328,10 @@
                     </a>
                 </div>
 
+                <!-- NAWIGACJA (BEZ DUBLOWANIA STREFY KLIENTA) -->
                 <div class="dabu-footer-nav">
                     <ul class="dabu-footer-boxes">
                         <li><a href="https://dabu-info.com/">Strona Główna</a></li>
-                        <li><a href="https://dabu-info.com/raporty.html" class="client-zone-pill">🔑 Strefa Klienta (Raporty)</a></li>
                         <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
                         <li><a href="https://dabu-info.com/plan-de.html">Mapa Wystawek</a></li>
                         <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
@@ -354,7 +357,7 @@
                         ? "33102052970000170202909323" 
                         : "PL33102052970000170202909323";
 
-                    const msgText = isPoland ? "Skopiowano (krajowy)!" : "Copied (IBAN)!";
+                    const msgText = isPoland ? "Skopiowano!" : "Copied!";
 
                     function showSuccess() {
                         const msg = document.getElementById('iban-copied-msg');
@@ -414,7 +417,7 @@
                     title: "Dovolená:",
                     text: IS_SINGLE_DAY
                         ? `Dne <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`
-                        : `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`,
+                        : `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na wszystkie zprávy odpovíme ihned po návratu!`,
                     close: "✕ Zavřít"
                 },
                 sk: {
