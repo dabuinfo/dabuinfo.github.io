@@ -1,696 +1,119 @@
-// footer.js - Centralna stopka oraz inteligentny asystent z automatycznym tłumaczem Google
-(function() {
-    function initFooterAndAssistant() {
-        // ========================================================
-        // KONFIGURACJA URLOPU
-        // true = pasek widoczny | false = pasek całkowicie wyłączony
-        // ========================================================
-        const IS_VACATION_ACTIVE = false;
-
-        // Jeśli urlop trwa 1 dzień, wpisz tylko datę do VACATION_FROM, a VACATION_TO zostaw puste: ''
-        // Jeśli urlop to zakres, wpisz obie daty (np. '03.10' i '10.10.2026')
-        const VACATION_FROM = '03.10.2026';
-        const VACATION_TO   = '';
-
-        // Automatyczne wykrywanie czy to jeden dzień oraz formatowanie zapisu
-        const IS_SINGLE_DAY = !VACATION_TO || VACATION_TO.trim() === '' || VACATION_FROM.trim() === VACATION_TO.trim();
-        const VACATION_DATES = IS_SINGLE_DAY ? VACATION_FROM.trim() : `${VACATION_FROM.trim()} – ${VACATION_TO.trim()}`;
-
-        // Wykrywanie języka przeglądarki
-        const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
-
-        // 1. STYLE CSS
-        if (!document.getElementById('dabu-footer-styles')) {
-            const style = document.createElement('style');
-            style.id = 'dabu-footer-styles';
-            style.textContent = `
-                .dabu-footer {
-                    background-color: #121212;
-                    border-top: 1px solid #333;
-                    color: #ccc;
-                    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                    padding: 50px 20px 20px;
-                    width: 100%;
-                    box-sizing: border-box;
-                    margin-top: 40px;
-                    text-align: left;
-                }
-                .dabu-footer-container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 40px;
-                    justify-content: space-between;
-                }
-                .dabu-footer-col { flex: 1; min-width: 280px; }
-                .dabu-footer-heading {
-                    color: #2ecc71;
-                    font-size: 1.25em;
-                    margin-top: 0;
-                    margin-bottom: 18px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.8px;
-                    font-weight: 700;
-                }
-                .dabu-footer-text { font-size: 0.95em; line-height: 1.6; margin: 0; color: #aaa; }
-                .dabu-footer-contact { list-style: none; padding: 0; margin: 0; font-size: 0.9em; line-height: 1.9; }
-                .dabu-footer-contact li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-                .dabu-footer-contact li a { color: #3498db; text-decoration: none; transition: color 0.3s ease; }
-                .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
-                .dabu-footer-contact strong { color: #e0e0e0; }
-
-                /* PRZYCISK KOPIOWANIA IBAN - OBOK NUMERU */
-                .iban-row {
-                    display: inline-flex !important;
-                    align-items: center !important;
-                    flex-wrap: nowrap !important;
-                    white-space: nowrap !important;
-                    gap: 6px !important;
-                }
-                .copy-iban-btn {
-                    display: inline-flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    background: transparent;
-                    border: 1px solid rgba(255, 255, 255, 0.25);
-                    color: #2ecc71;
-                    padding: 3px 6px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    line-height: 1;
-                    flex-shrink: 0;
-                    width: auto !important;
-                    height: auto !important;
-                    transition: all 0.2s ease;
-                }
-                .copy-iban-btn:hover {
-                    background: rgba(46, 204, 113, 0.15);
-                    border-color: #2ecc71;
-                    transform: scale(1.05);
-                }
-                .copy-iban-btn svg {
-                    width: 14px;
-                    height: 14px;
-                    stroke: currentColor;
-                    fill: none;
-                    display: block;
-                }
-                .copy-tooltip {
-                    display: none;
-                    color: #2ecc71;
-                    font-size: 0.82em;
-                    font-weight: 600;
-                    margin-left: 4px;
-                }
-
-                /* JEDYNA STREFA KLIENTA W STOPCE */
-                .dabu-footer-client-bar {
-                    max-width: 1200px;
-                    margin: 32px auto 0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    flex-wrap: wrap;
-                    gap: 14px;
-                    background: linear-gradient(90deg, #162231 0%, #111823 100%);
-                    border: 1px solid #1e3a5f;
-                    border-left: 4px solid #38bdf8;
-                    border-radius: 10px;
-                    padding: 14px 20px;
-                    box-sizing: border-box;
-                }
-                .dabu-footer-client-info {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    font-size: 0.94rem;
-                    color: #cbd5e1;
-                }
-                .dabu-footer-client-info strong {
-                    color: #f8fafc;
-                }
-                .dabu-btn-client-footer {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: #0284c7;
-                    color: #ffffff !important;
-                    font-weight: 700;
-                    font-size: 0.88rem;
-                    padding: 10px 20px;
-                    border-radius: 6px;
-                    text-decoration: none;
-                    text-transform: uppercase;
-                    letter-spacing: 0.4px;
-                    transition: all 0.2s ease;
-                    white-space: nowrap;
-                }
-                .dabu-btn-client-footer:hover {
-                    background: #2563eb;
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-                }
-
-                .dabu-footer-nav {
-                    max-width: 1200px;
-                    margin: 25px auto 0;
-                    padding-top: 25px;
-                    border-top: 1px solid #222;
-                }
-                .dabu-footer-boxes {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    gap: 12px;
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
-                .dabu-footer-boxes li a {
-                    display: inline-block;
-                    background: #1a1a1a;
-                    color: #ddd;
-                    text-decoration: none;
-                    font-size: 0.85em;
-                    font-weight: 500;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    border: 1px solid #2d2d2d;
-                    transition: all 0.25s ease-in-out;
-                }
-                .dabu-footer-boxes li a:hover {
-                    background: #242424;
-                    color: #2ecc71;
-                    border-color: #2ecc71;
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
-                }
-
-                .dabu-footer-bottom {
-                    max-width: 1200px;
-                    margin: 20px auto 0;
-                    text-align: center;
-                    font-size: 0.82em;
-                    color: #666;
-                }
-                .dabu-footer-bottom a { color: #2ecc71; text-decoration: none; font-weight: bold; }
-
-                /* STYLE ASYSTENTA */
-                :root { --theme-color: #4CAF50; }
-                .chat-button {
-                    position: fixed !important; bottom: 25px !important; right: 20px !important; width: 55px !important; height: 55px !important;
-                    border-radius: 30px !important; background-color: var(--theme-color) !important; color: white !important;
-                    border: none !important; cursor: pointer !important; z-index: 99999 !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
-                    display: flex !important; align-items: center !important; justify-content: center !important; transition: all 0.2s ease !important;
-                }
-                .chat-button:hover { transform: scale(1.1); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
-                #chat-main-window {
-                    position: fixed !important; bottom: 90px !important; right: 20px !important; width: 360px !important; max-width: 92vw !important;
-                    height: 520px !important; max-height: 75vh !important; background: white !important; border-radius: 12px !important;
-                    box-shadow: 0 8px 30px rgba(0,0,0,0.35) !important; display: none; flex-direction: column !important;
-                    z-index: 100000 !important; overflow: hidden !important; font-size: 14px !important; line-height: 1.4 !important; color: #000 !important;
-                }
-                .chat-header { background: var(--theme-color); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-                #chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
-                .chat-bubble-sent { background: var(--theme-color); color: white; padding: 10px 14px; border-radius: 15px 15px 2px 15px; max-width: 85%; align-self: flex-end; text-align: left; word-wrap: break-word; font-size: 14px; }
-                .chat-bubble-received { background: #ffffff; color: #1e293b; padding: 12px 14px; border-radius: 15px 15px 15px 2px; max-width: 90%; align-self: flex-start; word-wrap: break-word; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13.5px; }
-                
-                .chat-bubble-received a { color: #16a34a !important; font-weight: bold !important; text-decoration: underline !important; }
-                .chat-bubble-received strong { color: #0f172a !important; }
-
-                .chat-input-area { 
-                    display: flex !important; 
-                    padding: 10px !important; 
-                    border-top: 1px solid #ddd !important; 
-                    background: #ffffff !important; 
-                    align-items: stretch !important; 
-                    box-sizing: border-box !important;
-                }
-                #chat-user-input { 
-                    flex: 1 1 auto !important; 
-                    width: 100% !important;
-                    min-width: 0 !important;
-                    background: #ffffff !important; 
-                    color: #0f172a !important; 
-                    padding: 10px 12px !important; 
-                    border: 1px solid #cbd5e1 !important; 
-                    border-radius: 6px !important; 
-                    font-size: 14px !important; 
-                    outline: none !important; 
-                    box-sizing: border-box !important;
-                }
-                #chat-user-input:focus { 
-                    border-color: var(--theme-color) !important; 
-                }
-                #chat-user-input::placeholder {
-                    color: #94a3b8 !important;
-                }
-                .chat-send-button { 
-                    margin-left: 10px !important; 
-                    padding: 0 16px !important; 
-                    background: var(--theme-color) !important; 
-                    color: white !important; 
-                    border: none !important; 
-                    border-radius: 6px !important; 
-                    cursor: pointer !important; 
-                    font-weight: bold !important; 
-                    flex-shrink: 0 !important;
-                }
-
-                @media (max-width: 768px) {
-                    .dabu-footer { padding: 35px 15px 15px; }
-                    .dabu-footer-container { flex-direction: column; gap: 25px; text-align: center; }
-                    .dabu-footer-contact li { justify-content: center; }
-                    .dabu-footer-client-bar { flex-direction: column; align-items: stretch; text-align: center; }
-                    .dabu-footer-client-info { justify-content: center; }
-                    .dabu-btn-client-footer { justify-content: center; }
-                    .dabu-footer-boxes { gap: 8px; }
-                    .dabu-footer-boxes li a { font-size: 0.8em; padding: 7px 12px; }
-                    #chat-main-window { bottom: 85px !important; left: 12px !important; right: 12px !important; width: auto !important; max-width: none !important; }
-                    #vacation-bar { font-size: 13px !important; padding: 10px 14px !important; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        const currentYear = new Date().getFullYear();
-
-        // 2. TWORZENIE STOPKI
-        if (!document.querySelector('.dabu-footer')) {
-            const footerElement = document.createElement('footer');
-            footerElement.className = 'dabu-footer';
-            footerElement.innerHTML = `
-                <div class="dabu-footer-container">
-                    <div class="dabu-footer-col">
-                        <h4 class="dabu-footer-heading">DABU-INFO</h4>
-                        <p class="dabu-footer-text">Twój Nawigator po Wystawkach na terenie Niemiec. Najdokładniejsze plany, rozpiski i terminy wywozu gabarytów na rok ${currentYear}.</p>
-                    </div>
-
-                    <div class="dabu-footer-col">
-                        <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
-                        <ul class="dabu-footer-contact">
-                            <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
-                            <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
-                            <li><a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">📍 56-300 Milicz (umów spotkanie)</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="dabu-footer-col">
-                        <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
-                        <ul class="dabu-footer-contact">
-                            <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
-                            <li>💳 Płatności: BLIK, PayPal</li>
-                            <li>
-                                <span class="iban-row">
-                                    🏛️ IBAN: <span id="iban-number">PL33 1020 5297 0000 1702 0290 9323</span>
-                                    <button type="button" class="copy-iban-btn" id="copy-iban-trigger" title="Skopiuj numer konta">
-                                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                        </svg>
-                                    </button>
-                                    <span class="copy-tooltip" id="iban-copied-msg">Skopiowano!</span>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- JEDYNA BELKA STREFY KLIENTA W STOPCE -->
-                <div class="dabu-footer-client-bar">
-                    <div class="dabu-footer-client-info">
-                        <span>📂</span>
-                        <span><strong>Strefa Klienta:</strong> Posiadasz już aktywne zamówienie lub kod dostępu?</span>
-                    </div>
-                    <a href="https://dabu-info.com/raporty.html" class="dabu-btn-client-footer">
-                        🔑 Otwórz Swoje Raporty &raquo;
-                    </a>
-                </div>
-
-                <!-- NAWIGACJA (BEZ DUBLOWANIA STREFY KLIENTA) -->
-                <div class="dabu-footer-nav">
-                    <ul class="dabu-footer-boxes">
-                        <li><a href="https://dabu-info.com/">Strona Główna</a></li>
-                        <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
-                        <li><a href="https://dabu-info.com/plan-de.html">Mapa Wystawek</a></li>
-                        <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
-                        <li><a href="https://dabu-info.com/data.html">Bazy Danych</a></li>
-                        <li><a href="https://dabu-info.com/gieldy.html">Adresy Giełd</a></li>
-                        <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
-                        <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
-                    </ul>
-                </div>
-                
-                <div class="dabu-footer-bottom">
-                    <p>&copy; <span>${currentYear}</span> <a href="https://dabu-info.com/">dabu-info</a>. Wszelkie prawa zastrzeżone.</p>
-                </div>
-            `;
-            document.body.appendChild(footerElement);
-
-            // Obsługa inteligentnego kopiowania (Polska bez PL, Zagranica z PL)
-            const copyBtn = document.getElementById('copy-iban-trigger');
-            if (copyBtn) {
-                copyBtn.onclick = function() {
-                    const isPoland = (browserLang === 'pl');
-                    const ibanText = isPoland 
-                        ? "33102052970000170202909323" 
-                        : "PL33102052970000170202909323";
-
-                    const msgText = isPoland ? "Skopiowano!" : "Copied!";
-
-                    function showSuccess() {
-                        const msg = document.getElementById('iban-copied-msg');
-                        if (msg) {
-                            msg.textContent = msgText;
-                            msg.style.display = 'inline';
-                            setTimeout(() => { msg.style.display = 'none'; }, 2500);
-                        }
-                    }
-
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(ibanText).then(showSuccess).catch(fallbackCopy);
-                    } else {
-                        fallbackCopy();
-                    }
-
-                    function fallbackCopy() {
-                        const tempInput = document.createElement("input");
-                        tempInput.value = ibanText;
-                        document.body.appendChild(tempInput);
-                        tempInput.select();
-                        document.execCommand("copy");
-                        document.body.removeChild(tempInput);
-                        showSuccess();
-                    }
-                };
-            }
-        }
-
-        // ========================================================
-        // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
-        // ========================================================
-        if (IS_VACATION_ACTIVE && !document.getElementById('vacation-bar')) {
-            const vacationTranslations = {
-                pl: {
-                    title: "Przerwa urlopowa:",
-                    text: IS_SINGLE_DAY 
-                        ? `W dniu <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`
-                        : `W dniach <strong>${VACATION_DATES}</strong> przebywamy na urlopie. Na wiadomości odpowiemy po powrocie!`,
-                    close: "✕ Zamknij"
-                },
-                de: {
-                    title: "Betriebsurlaub:",
-                    text: IS_SINGLE_DAY
-                        ? `Am <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`
-                        : `Vom <strong>${VACATION_DATES}</strong> befinden wir uns im Urlaub. Wir melden uns umgehend nach unserer Rückkehr!`,
-                    close: "✕ Schließen"
-                },
-                en: {
-                    title: "Vacation notice:",
-                    text: IS_SINGLE_DAY
-                        ? `On <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`
-                        : `From <strong>${VACATION_DATES}</strong> we are on vacation. We will reply to your inquiries as soon as we return!`,
-                    close: "✕ Close"
-                },
-                cs: {
-                    title: "Dovolená:",
-                    text: IS_SINGLE_DAY
-                        ? `Dne <strong>${VACATION_DATES}</strong> máme dovolenou. Na všechny zprávy odpovíme ihned po návratu!`
-                        : `V termínu <strong>${VACATION_DATES}</strong> máme dovolenou. Na wszystkie zprávy odpovíme ihned po návratu!`,
-                    close: "✕ Zavřít"
-                },
-                sk: {
-                    title: "Dovolenka:",
-                    text: IS_SINGLE_DAY
-                        ? `Dňa <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`
-                        : `V termíne <strong>${VACATION_DATES}</strong> máme dovolenku. Na správy odpovieme hneď po návrate!`,
-                    close: "✕ Zavrieť"
-                },
-                hu: {
-                    title: "Szabadság:",
-                    text: IS_SINGLE_DAY
-                        ? `<strong>${VACATION_DATES}</strong> napon szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`
-                        : `<strong>${VACATION_DATES}</strong> között szabadságon vagyunk. Visszatérésünk után azonnal válaszolunk!`,
-                    close: "✕ Bezárás"
-                },
-                ro: {
-                    title: "Concediu:",
-                    text: IS_SINGLE_DAY
-                        ? `În data de <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`
-                        : `În perioada <strong>${VACATION_DATES}</strong> suntem în concediu. Vă vom răspunde la mesaje imediat după întoarcere!`,
-                    close: "✕ Închide"
-                },
-                bg: {
-                    title: "В отпуск:",
-                    text: IS_SINGLE_DAY
-                        ? `На <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенията ви веднага след завръщането си!`
-                        : `В периода <strong>${VACATION_DATES}</strong> сме в отпуск. Ще отговорим на съобщенияta ви веднага след завръщането си!`,
-                    close: "✕ Затвори"
-                },
-                uk: {
-                    title: "Відпустка:",
-                    text: IS_SINGLE_DAY
-                        ? `<strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`
-                        : `У період <strong>${VACATION_DATES}</strong> ми у відпустці. Відповімо на всі повідомлення одразу після повернення!`,
-                    close: "✕ Закрити"
-                },
-                lt: {
-                    title: "Atostogos:",
-                    text: IS_SINGLE_DAY
-                        ? `<strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`
-                        : `Nuo <strong>${VACATION_DATES}</strong> atostogaujame. Į žinutes atsakysime grįžę!`,
-                    close: "✕ Uždaryti"
-                },
-                nl: {
-                    title: "Vakantie:",
-                    text: IS_SINGLE_DAY
-                        ? `Op <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`
-                        : `Van <strong>${VACATION_DATES}</strong> zijn wij met vakantie. Wij beantwoorden berichten na terugkomst!`,
-                    close: "✕ Sluiten"
-                }
-            };
-
-            const tVac = vacationTranslations[browserLang] || vacationTranslations['de'];
-
-            const vacationBar = document.createElement('div');
-            vacationBar.id = 'vacation-bar';
-            vacationBar.style.cssText = `
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: #1e293b;
-                color: #f8fafc;
-                padding: 12px 20px;
-                box-shadow: 0 -4px 16px rgba(0,0,0,0.35);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 16px;
-                z-index: 99998;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                font-size: 14px;
-                box-sizing: border-box;
-                border-top: 1px solid #334155;
-            `;
-            vacationBar.innerHTML = `
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:18px;">🌴</span>
-                    <span><strong>${tVac.title}</strong> ${tVac.text}</span>
-                </div>
-                <button onclick="document.getElementById('vacation-bar').remove()" style="background:#334155; border:none; color:#ffffff; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap; transition:0.2s;">
-                    ${tVac.close}
-                </button>
-            `;
-            document.body.appendChild(vacationBar);
-        }
-
-        // 3. TWORZENIE ASYSTENTA
-        const currentPath = window.location.pathname.toLowerCase();
-        const isExcludedPage = currentPath.includes('kalendarz') || 
-                               currentPath.includes('gieldy') || 
-                               currentPath.includes('mapa2026') || 
-                               currentPath.includes('mapa') ||
-                               currentPath.includes('data');
-
-        if (!isExcludedPage && !document.getElementById('chat-toggle-btn')) {
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec';
-
-            const chatWrapper = document.createElement('div');
-            chatWrapper.id = 'dabu-chat-wrapper';
-            chatWrapper.innerHTML = `
-                <button class="chat-button" id="chat-toggle-btn" title="Otwórz asystenta">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                </button>
-                <div id="chat-main-window" style="display:none;">
-                    <div class="chat-header" id="chat-header-title"></div>
-                    <div id="chat-messages-area"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chat-user-input" placeholder="..." />
-                        <button class="chat-send-button" id="chat-send-btn">Wyślij</button>
-                    </div>
-                    <div style="text-align: center; color: #94a3b8; font-family: sans-serif; padding: 8px 0 12px 0; background: white; font-size: 11.5px; letter-spacing: 0.5px;">
-                        © ${currentYear} dabu-info
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(chatWrapper);
-
-            const chatMainWindow = document.getElementById('chat-main-window');
-            const toggleBtn = document.getElementById('chat-toggle-btn');
-            const messagesArea = document.getElementById('chat-messages-area');
-            const userInput = document.getElementById('chat-user-input');
-            const sendBtn = document.getElementById('chat-send-btn');
-            const headerTitle = document.getElementById('chat-header-title');
-
-            const fallbackLang = {
-                pl: { powitanie: "Cześć! Wpisz nazwę miejscowości lub adres, aby sprawdzić dostępne terminy.", placeholder: "Wpisz miejscowość lub adres...", wyslij: "Wyślij", ladowanie: "🤔 Szukam...", blad: "❌ Błąd serwera." },
-                de: { powitanie: "Hallo! Geben Sie den Namen der Stadt oder die Adresse ein, um Termine zu prüfen.", placeholder: "Stadt oder Adresse eingeben...", wyslij: "Senden", ladowanie: "🤔 Suche...", blad: "❌ Serverfehler." },
-                en: { powitanie: "Hi! Enter the city name or address to check available dates.", placeholder: "Enter city or address...", wyslij: "Send", ladowanie: "🤔 Searching...", blad: "❌ Server error." }
-            };
-
-            let tChat = fallbackLang[browserLang] || fallbackLang['de'];
-
-            headerTitle.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span style="font-family:Arial Black, sans-serif; font-size:15px; letter-spacing:0.5px;">DABU-INFO ASYSTENT</span>
-                </div>
-                <span id="close-chat-btn" style="cursor:pointer; font-size: 16px; padding: 4px;">❌</span>
-            `;
-
-            userInput.placeholder = tChat.placeholder;
-            sendBtn.innerText = tChat.wyslij;
-            messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
-
-            if (!fallbackLang[browserLang]) {
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify({ akcja: 'pobierz_powitanie', jezyk: browserLang })
-                })
-                .then(r => r.json())
-                .then(d => {
-                    if (d && d.powitanie) {
-                        tChat.powitanie = d.powitanie;
-                        tChat.placeholder = d.placeholder || tChat.placeholder;
-                        tChat.wyslij = d.wyslij || tChat.wyslij;
-                        tChat.ladowanie = d.ladowanie || tChat.ladowanie;
-                        
-                        userInput.placeholder = tChat.placeholder;
-                        sendBtn.innerText = tChat.wyslij;
-                        messagesArea.innerHTML = `<div class="chat-bubble-received">${tChat.powitanie}</div>`;
-                    }
-                })
-                .catch(() => {});
-            }
-
-            document.getElementById('close-chat-btn').onclick = () => chatMainWindow.style.display = 'none';
-
-            toggleBtn.onclick = function() {
-                if (chatMainWindow.style.display === 'none' || chatMainWindow.style.display === '') {
-                    chatMainWindow.style.display = 'flex';
-                    if (window.innerWidth > 768) userInput.focus();
-                } else {
-                    chatMainWindow.style.display = 'none';
-                }
-            };
-
-            userInput.addEventListener("keypress", function(event) {
-                if (event.key === "Enter") { event.preventDefault(); sendBtn.click(); }
-            });
-
-            sendBtn.onclick = async function() {
-                const text = userInput.value.trim();
-                if (!text) return;
-
-                appendMessage(text, 'sent');
-                userInput.value = '';
-
-                const loadingId = 'loading-' + Date.now();
-                appendMessage(tChat.ladowanie, 'received', loadingId);
-
-                try {
-                    const resp = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                        body: JSON.stringify({ akcja: 'szukaj_terminow', zapytanie: text, jezyk: browserLang })
-                    });
-                    const data = await resp.json();
-                    
-                    const el = document.getElementById(loadingId);
-                    if(el) el.remove();
-                    
-                    if (data && data.odpowiedz) {
-                        appendMessage(data.odpowiedz, 'received', null, data.infoRejon);
-                    } else {
-                        appendMessage(tChat.blad, 'received');
-                    }
-                } catch(e) {
-                    const el = document.getElementById(loadingId);
-                    if(el) el.remove();
-                    appendMessage(tChat.blad, 'received');
-                }
-            };
-
-            function appendMessage(text, type, id = null, infoRejon = null) {
-                const bubble = document.createElement('div');
-                bubble.className = type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-received';
-                if(id) bubble.id = id;
-                
-                let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                bubble.innerHTML = formattedText.replace(/\n/g, '<br>');
-
-                if (infoRejon && infoRejon.trim() !== '') {
-                    const uniqueId = 'info-' + Math.random().toString(36).substring(2, 9);
-                    const infoBlock = document.createElement('div');
-                    infoBlock.style.marginTop = '10px';
-                    infoBlock.style.paddingTop = '8px';
-                    infoBlock.style.borderTop = '1px dashed #cbd5e1';
-
-                    infoBlock.innerHTML = `
-                        <a href="javascript:void(0)" id="btn-${uniqueId}" style="color: #16a34a; font-weight: bold; text-decoration: underline; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
-                            ℹ️ Pokaż informację o tym rejonie
-                        </a>
-                        <div id="content-${uniqueId}" style="display: none; margin-top: 8px; padding: 10px; background: #f1f5f9; border-left: 3px solid #16a34a; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #1e293b;">
-                            ${infoRejon.replace(/\n/g, '<br>')}
+<!-- KONFIGURATOR WYJAZDU 7 DNI: DOWOLNE NAKŁADKI NA WYBRANE PAŃSTWO (100 PLN / 25 € ZA NAKŁADKĘ) -->
+                <div class="single-trip-promo">
+                    <div class="single-trip-header">
+                        <div>
+                            <div class="single-trip-title">🎯 Konfigurator na 1 Państwo (7 dni) – wybierz dowolne nakładki na jedną mapę!</div>
+                            <div style="font-size: 0.9rem; color: var(--muted-text); margin-top: 3px;">
+                                Zaznacz jedną lub kilka branż, które chcesz widzieć naraz na wspólnej mapie wybranego kraju (np. Rowery + Kosiarki + Myjki na Niemcy).
+                            </div>
                         </div>
-                    `;
+                        <div class="single-trip-price-badge">
+                            +<span id="priceSingleTrip">100 PLN</span> / 1 nakładka (7 dni)
+                        </div>
+                    </div>
 
-                    bubble.appendChild(infoBlock);
+                    <div>
+                        <label style="margin-bottom: 10px; font-size: 0.92rem;">1. Zaznacz nakładki serwisowe, które mają znaleźć się na Twojej mapie (możesz zaznaczyć kilka):</label>
+                        <div class="overlays-grid" id="overlaysGrid">
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Rowery Bosch eBike" data-countries="Niemcy,Włochy,Francja,Szwajcaria,Holandia,Austria,Belgia,Polska,Czechy,Dania,Norwegia,Szwecja,Islandia,Luksemburg,Wielka Brytania,Hiszpania,Finlandia" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🚲 Rowery: Bosch eBike</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Kosiarki Husqvarna" data-countries="Niemcy,Francja,Włochy,Austria,Szwajcaria,Polska,Szwecja,Norwegia,Wielka Brytania,Holandia,Czechy,Belgia,Dania,Hiszpania,Finlandia" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🚜 Kosiarki: Husqvarna</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Serwisy STIHL" data-countries="Niemcy,Polska,Francja,Wielka Brytania,Włochy,San Marino,Malta,Szwajcaria,Liechtenstein,Austria,Dania,Norwegia,Szwecja,Finlandia,Belgia,Holandia,Luksemburg,Hiszpania,Czechy" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🪚 Serwisy i Dilerzy: STIHL</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Złomowiska Schrottplätze DE" data-countries="Niemcy" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>♻️ Złomowiska: Schrottplätze DE</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Niemcy</span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Wypożyczalnie maszyn Bauma DE" data-countries="Niemcy" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🏗️ Wypożyczalnie maszyn: Bauma DE</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Niemcy</span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Myjki Kärcher" data-countries="Niemcy,Polska,Norwegia,Holandia,Dania,Hiszpania,Szwajcaria,Włochy,Czechy,Belgia,Austria,Wielka Brytania,Francja,Finlandia,Szwecja" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>⚡ Myjki: Kärcher</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Maszyny Wacker Neuson" data-countries="Niemcy,Włochy,Francja,Wielka Brytania,Polska,Norwegia,Rumunia,Szwajcaria,Holandia,Austria,Szwecja,Czechy,Finlandia,Bułgaria,Dania,Hiszpania" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🏗️ Maszyny: Wacker Neuson</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Quady / ATV Multibrand" data-countries="Polska,Niemcy,Francja,Austria,Szwajcaria,Belgia,Holandia,Luksemburg,Szwecja,Norwegia,Finlandia,Czechy,Hiszpania,Wielka Brytania,Włochy" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🏍️ Quady / ATV Multibrand</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
+                                </span>
+                            </label>
+                            <label class="overlay-checkbox-card">
+                                <input type="checkbox" name="tripOverlay" value="Kringloop & Vintage" data-countries="Holandia,Belgia" onchange="przeliczNakladkiWyjazd(this)">
+                                <span class="overlay-card-text">
+                                    <span>🏺 Kringloop & Vintage</span>
+                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Holandia / Belgia</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
 
-                    const btn = infoBlock.querySelector(`#btn-${uniqueId}`);
-                    const content = infoBlock.querySelector(`#content-${uniqueId}`);
+                    <div class="single-trip-bottom-bar">
+                        <div>
+                            <select id="singleTripCountry" onchange="zmianaKrajuKonfiguratora()">
+                                <option value="">2. Wybierz państwo docelowe wyjazdu...</option>
+                                <option value="Austria">🇦🇹 Austria</option>
+                                <option value="Belgia">🇧🇪 Belgia</option>
+                                <option value="Czechy">🇨🇿 Czechy</option>
+                                <option value="Dania">🇩🇰 Dania</option>
+                                <option value="Finlandia">🇫🇮 Finlandia</option>
+                                <option value="Francja">🇫🇷 Francja</option>
+                                <option value="Hiszpania">🇪🇸 Hiszpania</option>
+                                <option value="Holandia">🇳🇱 Holandia</option>
+                                <option value="Luksemburg">🇱🇺 Luksemburg</option>
+                                <option value="Niemcy">🇩🇪 Niemcy</option>
+                                <option value="Norwegia">🇳🇴 Norwegia</option>
+                                <option value="Polska">🇵🇱 Polska</option>
+                                <option value="Szwajcaria">🇨🇭 Szwajcaria</option>
+                                <option value="Szwecja">🇸🇪 Szwecja</option>
+                                <option value="Wielka Brytania">🇬🇧 Wielka Brytania</option>
+                                <option value="Włochy">🇮🇹 Włochy</option>
+                            </select>
+                            <div id="countryLockHint" class="country-lock-hint"></div>
+                        </div>
 
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const isOpen = content.style.display === 'block';
-                        content.style.display = isOpen ? 'none' : 'block';
-                        btn.innerHTML = isOpen ? 'ℹ️ Pokaż informację o tym rejonie' : '🔼 Ukryj informację o rejonie';
-                        messagesArea.scrollTop = messagesArea.scrollHeight;
-                    });
-                }
-                
-                messagesArea.appendChild(bubble);
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            }
-        }
-    }
+                        <div class="trip-summary-box" id="tripSummaryBox">
+                            Wybrane nakładki: <strong id="tripCount">0</strong><br>
+                            Suma za 7 dni: <span class="trip-summary-total" id="tripTotalAmount">0 PLN</span>
+                        </div>
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFooterAndAssistant);
-    } else {
-        initFooterAndAssistant();
-    }
-})();
+                        <div>
+                            <button type="button" class="single-trip-btn" id="btnOrderSingleTrip" onclick="zamowJedenSerwisKraj()">
+                                Zamów wybrane nakładki (7 dni)
+                            </button>
+                        </div>
+                    </div>
+                </div>
