@@ -59,6 +59,54 @@
                 .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
                 .dabu-footer-contact strong { color: #e0e0e0; }
 
+                /* STREFA KLIENTA W STOPCE */
+                .dabu-footer-client-bar {
+                    max-width: 1200px;
+                    margin: 32px auto 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 14px;
+                    background: linear-gradient(90deg, #162231 0%, #111823 100%);
+                    border: 1px solid #1e3a5f;
+                    border-left: 4px solid #38bdf8;
+                    border-radius: 10px;
+                    padding: 14px 20px;
+                    box-sizing: border-box;
+                }
+                .dabu-footer-client-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 0.94rem;
+                    color: #cbd5e1;
+                }
+                .dabu-footer-client-info strong {
+                    color: #f8fafc;
+                }
+                .dabu-btn-client-footer {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    background: #0284c7;
+                    color: #ffffff !important;
+                    font-weight: 700;
+                    font-size: 0.88rem;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    text-decoration: none;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                }
+                .dabu-btn-client-footer:hover {
+                    background: #2563eb;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+                }
+
                 /* PRZYCISK KOPIOWANIA IBAN */
                 .copy-iban-btn {
                     display: inline-flex;
@@ -95,7 +143,7 @@
 
                 .dabu-footer-nav {
                     max-width: 1200px;
-                    margin: 35px auto 0;
+                    margin: 25px auto 0;
                     padding-top: 25px;
                     border-top: 1px solid #222;
                 }
@@ -126,6 +174,17 @@
                     border-color: #2ecc71;
                     transform: translateY(-2px);
                     box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
+                }
+                .dabu-footer-boxes li a.client-zone-pill {
+                    background: #162231;
+                    border-color: #0284c7;
+                    color: #7dd3fc;
+                    font-weight: 600;
+                }
+                .dabu-footer-boxes li a.client-zone-pill:hover {
+                    background: #0284c7;
+                    color: #ffffff;
+                    border-color: #38bdf8;
                 }
 
                 .dabu-footer-bottom {
@@ -202,6 +261,9 @@
                 @media (max-width: 768px) {
                     .dabu-footer { padding: 35px 15px 15px; }
                     .dabu-footer-container { flex-direction: column; gap: 25px; text-align: center; }
+                    .dabu-footer-client-bar { flex-direction: column; align-items: stretch; text-align: center; }
+                    .dabu-footer-client-info { justify-content: center; }
+                    .dabu-btn-client-footer { justify-content: center; }
                     .dabu-footer-boxes { gap: 8px; }
                     .dabu-footer-boxes li a { font-size: 0.8em; padding: 7px 12px; }
                     #chat-main-window { bottom: 85px !important; left: 12px !important; right: 12px !important; width: auto !important; max-width: none !important; }
@@ -252,9 +314,21 @@
                     </div>
                 </div>
 
+                <!-- PASEK STREFY KLIENTA W STOPCE -->
+                <div class="dabu-footer-client-bar">
+                    <div class="dabu-footer-client-info">
+                        <span>📂</span>
+                        <span><strong>Strefa Klienta:</strong> Posiadasz już aktywne zamówienie lub kod dostępu?</span>
+                    </div>
+                    <a href="https://dabu-info.com/raporty.html" class="dabu-btn-client-footer">
+                        🔑 Otwórz Swoje Raporty &raquo;
+                    </a>
+                </div>
+
                 <div class="dabu-footer-nav">
                     <ul class="dabu-footer-boxes">
                         <li><a href="https://dabu-info.com/">Strona Główna</a></li>
+                        <li><a href="https://dabu-info.com/raporty.html" class="client-zone-pill">🔑 Strefa Klienta (Raporty)</a></li>
                         <li><a href="https://dabu-info.com/zestaw.html">Zestaw Tygodniowy</a></li>
                         <li><a href="https://dabu-info.com/plan-de.html">Mapa Wystawek</a></li>
                         <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
@@ -275,7 +349,6 @@
             const copyBtn = document.getElementById('copy-iban-trigger');
             if (copyBtn) {
                 copyBtn.onclick = function() {
-                    // Jeśli język to 'pl', kopiuje same 26 cyfr, w przeciwnym razie dodaje 'PL'
                     const isPoland = (browserLang === 'pl');
                     const ibanText = isPoland 
                         ? "33102052970000170202909323" 
@@ -309,7 +382,7 @@
                     }
                 };
             }
-      }
+        }
 
         // ========================================================
         // PŁYWAJĄCY PASEK URLOPOWY (WIELOJĘZYCZNY Z PRZEŁĄCZNIKIEM)
