@@ -67,7 +67,7 @@
         color: #e0e0e0;
         width: 100%;
         max-width: 1200px;
-        padding: 24px 16px 140px 16px;
+        padding: 24px 16px 35px 16px;
         box-sizing: border-box;
         border-radius: 12px;
         border: 1px solid #2d2d2d;
@@ -430,22 +430,19 @@
         color: #6aeb95;
     }
 
-    /* Pasek koszyka (Mobile-first) */
+    /* Pasek koszyka - Przeniesiony pod kalendarz/wyniki (nie zasłania stopki) */
     .summary-cart-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(20, 20, 20, 0.98);
-        backdrop-filter: blur(12px);
+        display: none; /* Ukryty na start, pokazuje się podczas zamawiania */
+        background: #141414;
+        border: 1px solid #333;
         border-top: 2px solid #2ecc71;
-        padding: 10px 14px;
-        display: flex;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 20px;
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
-        box-shadow: 0 -8px 25px rgba(0,0,0,0.85);
-        z-index: 1000;
+        gap: 12px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.5);
     }
 
     .cart-info {
@@ -478,8 +475,8 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 10px 14px;
-        background: #141414;
-        padding: 6px 12px;
+        background: #1a1a1a;
+        padding: 8px 14px;
         border-radius: 6px;
         border: 1px solid #2d2d2d;
         font-size: 0.8125rem;
@@ -559,7 +556,7 @@
     /* Desktop & Tablety (od 769px wzwyż) */
     @media (min-width: 769px) {
         body { padding: 24px 20px 0 20px; }
-        .offer-wrapper { padding: 45px 35px 120px 35px; margin: 20px 0; }
+        .offer-wrapper { padding: 45px 35px 45px 35px; margin: 20px 0; }
         #calendar-wrapper { padding: 25px; }
         
         .month-table { font-size: 0.875rem; padding: 8px; }
@@ -580,7 +577,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 30px;
+            padding: 18px 25px;
         }
 
         .cart-info { text-align: left; font-size: 0.9rem; }
@@ -636,6 +633,28 @@
                 <div id="cal-res-desc" style="font-size: 13.5px; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; display: none; line-height: 1.5;"></div>
                 <div id="cal-res-content"></div>
             </div>
+
+            <!-- PASEK ZAMÓWIENIA POD KALENDARZEM I WYNIKAMI (WIDOCZNY PODCZAS ZAMAWIANIA) -->
+            <div class="summary-cart-bar" id="global-cart-bar">
+                <div class="cart-info">
+                    ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
+                    Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
+                    Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
+                    <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
+                </div>
+
+                <!-- WYBÓR METODY PŁATNOŚCI -->
+                <div class="payment-select-group">
+                    <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
+                    <span id="payment-options-container" style="display:inline-flex; gap: 10px; align-items:center;">
+                        <!-- Generowane dynamicznie wg kraju -->
+                    </span>
+                </div>
+
+                <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
+                    📱 Wybierz rejony, aby zamówić
+                </button>
+            </div>
         </div>
 
         <div class="seo-tags-container">
@@ -652,28 +671,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- Stały pasek zamówień na dole strony z wyborem płatności i obsługą PayPal Gross-up -->
-    <div class="summary-cart-bar" id="global-cart-bar">
-        <div class="cart-info">
-            ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
-            Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
-            Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
-            <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
-        </div>
-
-        <!-- WYBÓR METODY PŁATNOŚCI -->
-        <div class="payment-select-group">
-            <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
-            <span id="payment-options-container" style="display:inline-flex; gap: 10px; align-items:center;">
-                <!-- Generowane dynamicznie wg kraju -->
-            </span>
-        </div>
-
-        <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
-            📱 Wybierz rejony, aby zamówić
-        </button>
     </div>
 
     <!-- NIEWIDOCZNY KONTENER DLA GOOGLE TRANSLATE -->
@@ -1078,11 +1075,10 @@
             if (!grid) return;
             grid.innerHTML = '';
 
-            const monthsCount = 3;
-            const holidayCache = {};
-
             const startYear = now.getFullYear();
             const startMonth = now.getMonth();
+            const monthsCount = 12 - startMonth; // Generuje kalendarz do końca bieżącego roku
+            const holidayCache = {};
 
             const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
             const yearsBadge = document.getElementById('header-years-badge');
@@ -1214,6 +1210,7 @@
             const resultsBox = document.getElementById('calendar-results');
             const resultsContent = document.getElementById('cal-res-content');
             const resultsTitle = document.getElementById('cal-res-title');
+            const globalCartBar = document.getElementById('global-cart-bar');
             const cartCountEl = document.getElementById('cart-count');
             const cartTotalEl = document.getElementById('cart-total');
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
@@ -1318,7 +1315,6 @@
                 let ratePerDay;
                 if (isEuro) {
                     if (czyKorytarzWspolny) {
-                        // Korytarz wspólny (zagranica): baza 15.00 €
                         if (totalDays >= 250)      ratePerDay = 3.00;  // -80%
                         else if (totalDays >= 181) ratePerDay = 4.20;  // -72%
                         else if (totalDays >= 121) ratePerDay = 5.40;  // -64%
@@ -1329,7 +1325,6 @@
                         else if (totalDays >= 6)   ratePerDay = 13.80; // -8%
                         else                       ratePerDay = 15.00; // 0%
                     } else {
-                        // Pojedynczy rejon (zagranica): baza 10.00 €
                         if (totalDays >= 250)      ratePerDay = 2.00;  // -80%
                         else if (totalDays >= 181) ratePerDay = 2.80;  // -72%
                         else if (totalDays >= 121) ratePerDay = 3.60;  // -64%
@@ -1342,7 +1337,6 @@
                     }
                 } else {
                     if (czyKorytarzWspolny) {
-                        // Korytarz wspólny (Polska): baza 40.00 PLN
                         if (totalDays >= 250)      ratePerDay = 8.00;  // -80%
                         else if (totalDays >= 181) ratePerDay = 11.20; // -72%
                         else if (totalDays >= 121) ratePerDay = 14.40; // -64%
@@ -1353,7 +1347,6 @@
                         else if (totalDays >= 6)   ratePerDay = 36.80; // -8%
                         else                       ratePerDay = 40.00; // 0%
                     } else {
-                        // Pojedynczy rejon (Polska): baza 25.00 PLN
                         if (totalDays >= 250)      ratePerDay = 5.00;  // -80%
                         else if (totalDays >= 181) ratePerDay = 7.00;  // -72%
                         else if (totalDays >= 121) ratePerDay = 9.00;  // -64%
@@ -1417,7 +1410,6 @@
                     const rName = decodeURIComponent(chk.getAttribute('data-region'));
                     const baseDisplayDate = chk.getAttribute('data-date'); // DD.MM.RRRR
 
-                    // Zbieramy wszystkie daty w koszyku dla tego rejonu
                     const regionDatesDisplay = [];
                     for (let item of globalCart.values()) {
                         if (item.region === rName) {
@@ -1425,10 +1417,8 @@
                         }
                     }
 
-                    // Sortujemy chronologicznie po YMD
                     regionDatesDisplay.sort((a, b) => displayToYMD(a).localeCompare(displayToYMD(b)));
 
-                    // Ile dni dodano ponad dzień wybrany
                     const extraDates = regionDatesDisplay.filter(d => d !== baseDisplayDate);
                     const extraCount = extraDates.length;
                     const totalForRegion = regionDatesDisplay.length;
@@ -1610,6 +1600,7 @@
                     const prevDisplayDate = `${ddPrev}.${mmPrev}.${yyyyPrev}`;
 
                     resultsBox.style.display = 'block';
+                    if (globalCartBar) globalCartBar.style.display = 'flex';
                     resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
                     if (isPolish) {
@@ -2048,6 +2039,10 @@
     </script>
 
     <!-- Centralna stopka wraz z asystentem wczytywane z footer.js -->
-    <script src="/footer.js"></script>    
+    <script>
+        const script = document.createElement('script');
+        script.src = 'footer.js?t=' + Date.now();
+        document.body.appendChild(script);
+    </script>
 </body>
 </html>
