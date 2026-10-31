@@ -2230,7 +2230,7 @@
 
             let regularBaseReference;
             if (isEuro) {
-                regularBaseReference = czyKorytarzWspolny ? 15.00 : 10.00;
+                regularBaseReference = czyKorytarzWspolny ? 10.00 : 8.00;
             } else {
                 regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
             }
@@ -2240,29 +2240,29 @@
 
             // Obliczamy stawkę za dzień z dynamicznym rabatem (Maksymalny rabat do 80%)
             if (isEuro) {
-                if (czyKorytarzWspolny) {
-                    // Korytarz wspólny z zagranicy: baza 15.00 €
-                    if (totalDays >= 250)      reportRateNoMap = 3.00;  // -80%
-                    else if (totalDays >= 181) reportRateNoMap = 4.20;  // -72%
-                    else if (totalDays >= 121) reportRateNoMap = 5.40;  // -64%
-                    else if (totalDays >= 81)  reportRateNoMap = 7.05;  // -53%
-                    else if (totalDays >= 51)  reportRateNoMap = 9.00;  // -40%
-                    else if (totalDays >= 31)  reportRateNoMap = 10.95; // -27%
-                    else if (totalDays >= 16)  reportRateNoMap = 12.30; // -18%
-                    else if (totalDays >= 6)   reportRateNoMap = 13.80; // -8%
-                    else                       reportRateNoMap = 15.00; // 0%
-                } else {
-                    // Pojedynczy rejon z zagranicy: baza 10.00 €
-                    if (totalDays >= 250)      reportRateNoMap = 2.00;  // -80%
-                    else if (totalDays >= 181) reportRateNoMap = 2.80;  // -72%
-                    else if (totalDays >= 121) reportRateNoMap = 3.60;  // -64%
-                    else if (totalDays >= 81)  reportRateNoMap = 4.70;  // -53%
-                    else if (totalDays >= 51)  reportRateNoMap = 6.00;  // -40%
-                    else if (totalDays >= 31)  reportRateNoMap = 7.30;  // -27%
-                    else if (totalDays >= 16)  reportRateNoMap = 8.20;  // -18%
-                    else if (totalDays >= 6)   reportRateNoMap = 9.20;  // -8%
-                    else                       reportRateNoMap = 10.00; // 0%
-                }
+    if (czyKorytarzWspolny) {
+        // Korytarz wspólny z zagranicy: baza 10.00 €
+        if (totalDays >= 250)      reportRateNoMap = 2.00;  // -80%
+        else if (totalDays >= 181) reportRateNoMap = 2.80;  // -72%
+        else if (totalDays >= 121) reportRateNoMap = 3.60;  // -64%
+        else if (totalDays >= 81)  reportRateNoMap = 4.70;  // -53%
+        else if (totalDays >= 51)  reportRateNoMap = 6.00;  // -40%
+        else if (totalDays >= 31)  reportRateNoMap = 7.30;  // -27%
+        else if (totalDays >= 16)  reportRateNoMap = 8.20;  // -18%
+        else if (totalDays >= 6)   reportRateNoMap = 9.20;  // -8%
+        else                       reportRateNoMap = 10.00; // 0%
+    } else {
+        // Pojedynczy rejon z zagranicy: baza 8.00 €
+        if (totalDays >= 250)      reportRateNoMap = 1.60;  // -80%
+        else if (totalDays >= 181) reportRateNoMap = 2.24;  // -72%
+        else if (totalDays >= 121) reportRateNoMap = 2.88;  // -64%
+        else if (totalDays >= 81)  reportRateNoMap = 3.76;  // -53%
+        else if (totalDays >= 51)  reportRateNoMap = 4.80;  // -40%
+        else if (totalDays >= 31)  reportRateNoMap = 5.84;  // -27%
+        else if (totalDays >= 16)  reportRateNoMap = 6.56;  // -18%
+        else if (totalDays >= 6)   reportRateNoMap = 7.36;  // -8%
+        else                       reportRateNoMap = 8.00;  // 0%
+    }
             } else {
                 if (czyKorytarzWspolny) {
                     // Korytarz wspólny dla Polski: baza 40.00 PLN
