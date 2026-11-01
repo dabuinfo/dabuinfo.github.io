@@ -58,11 +58,13 @@
             text-align: center;
         }
 
-        /* WYBÓR FORMATU PRODUKTU: RAPORT
+        /* WYBÓR FORMATU PRODUKTU: RAPORT VS RAPORT + MAPA */
         .format-selector-grid {
-    display: block; /* zamiast grid-template-columns: 1fr 1fr */
-    margin: 15px 0 25px 0;
-}
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0 25px 0;
+        }
 
         .format-card {
             background: var(--bg-card);
@@ -90,8 +92,19 @@
             accent-color: var(--accent-green);
         }
 
-        .plan-title { font-size: 1.1rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .plan-title { font-size: 1.1rem; font-weight: bold; color: #fff; margin-bottom: 4px; padding-right: 28px; }
         .plan-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+        .plan-surcharge-badge {
+            display: inline-block;
+            margin-top: 8px;
+            background: rgba(241, 196, 15, 0.15);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
 
         /* BANER ABONAMENTU ROCZNEGO */
         .annual-banner {
@@ -346,7 +359,7 @@
             </a>
         </div>
 
-        <!-- 1. WYBÓR FORMATU: RAPORT CZY MAPA -->
+        <!-- 1. WYBÓR FORMATU: RAPORT CZY RAPORT + MAPA -->
         <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
             1. Wybierz preferowaną formę dostępu:
         </div>
@@ -357,8 +370,21 @@
                 <div class="plan-desc">
                     Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku.
                 </div>
+                <div class="plan-surcharge-badge" id="badgeReportPrice" style="border-color: var(--accent-green); color: var(--accent-green); background: rgba(46, 204, 113, 0.12);">
+                    Stawka bazowa: 4 zł / dzień
+                </div>
             </label>
-            
+
+            <label class="format-card" id="cardFormatMap">
+                <input type="radio" name="orderProductFormat" value="Raport + Mapa">
+                <div class="plan-title">🗺️ Raport + Interaktywna Mapa (GPS)</div>
+                <div class="plan-desc">
+                    Pełny raport cyfrowy rozszerzony o interaktywną wizualizację punktów i sektorów wywozu na mapie GPS dzień po dniu.
+                </div>
+                <div class="plan-surcharge-badge" id="badgeMapSurcharge">
+                    Dopłata do raportu: +4 zł / dzień (łącznie 8 zł / dzień)
+                </div>
+            </label>
         </div>
 
         <!-- 2. BANER ABONAMENTU ROCZNEGO -->
@@ -418,7 +444,7 @@
                 </div>
                 <div class="price-line" id="unitPriceRow">
                     <span>Stawka jednostkowa:</span>
-                    <span id="calcUnitPrice" style="color: var(--accent-green);">8 zł / dzień wywozu</span>
+                    <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
                 </div>
                 <div class="price-total-line">
                     <span>ŁĄCZNA KWOTA:</span>
@@ -504,13 +530,24 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
-        // Stawka roczna wg waluty: 8 PLN lub 2 EUR za dzień wywozu
-        const ROCZNA_DZIEN = isPolish ? 4.00 : 2.00;
+        // Stawka bazowa raportu: 4 PLN lub 2 EUR za dzień wywozu
+        // Dopłata za opcję mapy: +4 PLN lub +1 EUR za dzień wywozu
+        const BASE_RATE_DAY = isPolish ? 4.00 : 2.00;
+        const MAP_SURCHARGE_DAY = isPolish ? 4.00 : 1.00;
 
-        // Aktualizacja etykiety w banerze
+        // Aktualizacja etykiet cenowych w kafelkach wyboru formatu
+        const badgeReportPrice = document.getElementById('badgeReportPrice');
+        const badgeMapSurcharge = document.getElementById('badgeMapSurcharge');
         const labelPriceYear = document.getElementById('labelPriceYear');
+
+        if (badgeReportPrice) {
+            badgeReportPrice.textContent = `Stawka bazowa: ${BASE_RATE_DAY} ${currencySymbol} / dzień`;
+        }
+        if (badgeMapSurcharge) {
+            badgeMapSurcharge.textContent = `Dopłata do raportu: +${MAP_SURCHARGE_DAY} ${currencySymbol} / dzień (łącznie ${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / dzień)`;
+        }
         if (labelPriceYear) {
-            labelPriceYear.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
+            labelPriceYear.textContent = `${BASE_RATE_DAY} ${currencySymbol} / dzień wywozu`;
         }
 
         // Ukrycie BLIK dla klientów spoza Polski
@@ -531,12 +568,14 @@
             "Bernkastel-Wittlich",
             "Bitburg-Prüm",
             "Erftstadt",
+            "Eschwege",
             "Fulda Miasto",
             "Gifhorn",
             "Heilbronn",
             "Holzminden",
             "Limburg-Weilburg",
             "Lüneburg",
+            "Main-Taunus (Eppstein, Hofheim, Kelkheim, Königstein)",
             "Mayen-Koblenz",
             "Monachium-Południowy Wschód",
             "Münster",
@@ -575,6 +614,7 @@
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
         const cardFormatReport = document.getElementById('cardFormatReport');
+        const cardFormatMap = document.getElementById('cardFormatMap');
         const emailInput = document.getElementById('clientEmailInput');
         const phoneInput = document.getElementById('clientPhoneInput');
         const pinBox = document.getElementById('pinStepBox');
@@ -583,6 +623,12 @@
         const submitBtn = document.getElementById('submitOrderBtn');
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
+
+        function getActiveRatePerDay() {
+            return currentFormat === 'Raport + Mapa' 
+                ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) 
+                : BASE_RATE_DAY;
+        }
 
         // Obsługa wyboru płatności
         document.querySelectorAll('.payment-card').forEach(card => {
@@ -660,12 +706,29 @@
             wczytajDniZApi(selectedYear);
         });
 
-        // Wybór formatu: Raport / Mapa
+        // Wybór formatu: Raport / Raport + Mapa
         cardFormatReport.addEventListener('click', () => {
             currentFormat = 'Raport';
             cardFormatReport.classList.add('active');
+            cardFormatMap.classList.remove('active');
             cardFormatReport.querySelector('input').checked = true;
             calcFormatName.textContent = 'Raport cyfrowy (Tabela / XLS)';
+            if (labelPriceYear) {
+                labelPriceYear.textContent = `${BASE_RATE_DAY} ${currencySymbol} / dzień wywozu`;
+            }
+            updateCalculation();
+        });
+
+        cardFormatMap.addEventListener('click', () => {
+            currentFormat = 'Raport + Mapa';
+            cardFormatMap.classList.add('active');
+            cardFormatReport.classList.remove('active');
+            cardFormatMap.querySelector('input').checked = true;
+            calcFormatName.textContent = `Raport + Interaktywna Mapa (+${MAP_SURCHARGE_DAY} ${currencySymbol}/dzień)`;
+            if (labelPriceYear) {
+                labelPriceYear.textContent = `${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / dzień wywozu`;
+            }
+            updateCalculation();
         });
 
         function updateCalculation() {
@@ -684,11 +747,16 @@
                 sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
             });
 
-            calculatedTotal = sumaDniWszystkichRejonow * ROCZNA_DZIEN;
+            const activeRate = getActiveRatePerDay();
+            calculatedTotal = sumaDniWszystkichRejonow * activeRate;
             calculatedDays = sumaDniWszystkichRejonow;
 
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
-            calcUnitPrice.textContent = `${ROCZNA_DZIEN} ${currencySymbol} / dzień wywozu`;
+            if (currentFormat === 'Raport + Mapa') {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień (${BASE_RATE_DAY} ${currencySymbol} raport + ${MAP_SURCHARGE_DAY} ${currencySymbol} mapa)`;
+            } else {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień wywozu`;
+            }
             calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
 
             if (currentStep === 'need_pin') {
@@ -697,23 +765,25 @@
                 submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${calculatedTotal} ${currencySymbol})`;
             }
 
-            const selectedArr = Array.from(selectedRegions);
-            let hasForbidden = selectedArr.some(r => noScrappersRegions.includes(r));
-            let hasMandatory = selectedArr.some(r => onlyScrappersRegions.includes(r));
+            if (scrappersFilter && scrappersNote) {
+                const selectedArr = Array.from(selectedRegions);
+                let hasForbidden = selectedArr.some(r => noScrappersRegions.includes(r));
+                let hasMandatory = selectedArr.some(r => onlyScrappersRegions.includes(r));
 
-            if (hasForbidden) {
-                scrappersFilter.checked = false;
-                scrappersFilter.disabled = true;
-                scrappersNote.textContent = "⚠️ W co najmniej jednym z wybranych rejonów brak opcji dla złomiarzy.";
-                scrappersNote.style.display = "inline";
-            } else if (hasMandatory) {
-                scrappersFilter.checked = true;
-                scrappersFilter.disabled = true;
-                scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy.";
-                scrappersNote.style.display = "inline";
-            } else {
-                scrappersFilter.disabled = false;
-                scrappersNote.style.display = "none";
+                if (hasForbidden) {
+                    scrappersFilter.checked = false;
+                    scrappersFilter.disabled = true;
+                    scrappersNote.textContent = "⚠️ W co najmniej jednym z wybranych rejonów brak opcji dla złomiarzy.";
+                    scrappersNote.style.display = "inline";
+                } else if (hasMandatory) {
+                    scrappersFilter.checked = true;
+                    scrappersFilter.disabled = true;
+                    scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy.";
+                    scrappersNote.style.display = "inline";
+                } else {
+                    scrappersFilter.disabled = false;
+                    scrappersNote.style.display = "none";
+                }
             }
         }
 
