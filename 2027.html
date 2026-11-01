@@ -58,13 +58,11 @@
             text-align: center;
         }
 
-        /* WYBÓR FORMATU PRODUKTU: RAPORT VS MAPA */
+        /* WYBÓR FORMATU PRODUKTU: RAPORT
         .format-selector-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 15px 0 25px 0;
-        }
+    display: block; /* zamiast grid-template-columns: 1fr 1fr */
+    margin: 15px 0 25px 0;
+}
 
         .format-card {
             background: var(--bg-card);
@@ -360,14 +358,7 @@
                     Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku.
                 </div>
             </label>
-
-            <label class="format-card" id="cardFormatMap">
-                <input type="radio" name="orderProductFormat" value="Mapa">
-                <div class="plan-title">🗺️ Interaktywna Mapa (GPS / Trasa)</div>
-                <div class="plan-desc">
-                    Wizualizacja na mapie punktów i sektorów wywozu, ułatwiająca nawigację bezpośrednio w terenie dzień po dniu.
-                </div>
-            </label>
+            
         </div>
 
         <!-- 2. BANER ABONAMENTU ROCZNEGO -->
@@ -586,7 +577,6 @@
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
         const cardFormatReport = document.getElementById('cardFormatReport');
-        const cardFormatMap = document.getElementById('cardFormatMap');
         const emailInput = document.getElementById('clientEmailInput');
         const phoneInput = document.getElementById('clientPhoneInput');
         const pinBox = document.getElementById('pinStepBox');
@@ -676,17 +666,8 @@
         cardFormatReport.addEventListener('click', () => {
             currentFormat = 'Raport';
             cardFormatReport.classList.add('active');
-            cardFormatMap.classList.remove('active');
             cardFormatReport.querySelector('input').checked = true;
             calcFormatName.textContent = 'Raport cyfrowy (Tabela / XLS)';
-        });
-
-        cardFormatMap.addEventListener('click', () => {
-            currentFormat = 'Mapa';
-            cardFormatMap.classList.add('active');
-            cardFormatReport.classList.remove('active');
-            cardFormatMap.querySelector('input').checked = true;
-            calcFormatName.textContent = 'Interaktywna Mapa (GPS / Trasa)';
         });
 
         function updateCalculation() {
