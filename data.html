@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zamówienie Mapy Serwisów w Europie i Baz Danych | dabu-info</title>
+    <title>Zamówienie Mapy Serwisów i Baz Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -30,22 +30,16 @@
             --info-border: #94a3b8;
             
             /* Kolory spójne z mapa_serwisow_europa.html */
-            --srv-bike: #0077b6;
-            --srv-mower: #d35400;
-            --srv-washer: #ffcc00;
-            --srv-atv: #15803d;
-            
-            /* Kolory pakietów czasowych */
-            --plan-week: #0077b6;
-            --plan-month: #15803d;
-            --plan-year: #d97706;
+            --srv-bike: #0077b6;        /* Rowery Bosch eBike */
+            --srv-mower: #d35400;       /* Kosiarki Husqvarna */
+            --srv-washer: #ffcc00;      /* Myjki Kärcher */
+            --srv-atv: #15803d;         /* Quady / ATV */
             --hero-bg: rgba(0, 119, 182, 0.05);
 
-            /* Kolory kart pojedynczych baz */
+            /* Kolory baz */
             --atv-color: #c0392b;
             --hq-color: #f39c12;
             --karcher-color: #ffcc00;
-            --karcher-btn-text: #111;
             --bike-color: #0077b6;
             --kringloop-color: #27ae60;
             --wacker-color: #d97706;
@@ -54,6 +48,7 @@
             --bauma-color: #e84118;
         }
 
+        /* Dark Mode */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #121212;
@@ -85,7 +80,7 @@
 
         .main-container {
             width: 100%;
-            max-width: 1250px;
+            max-width: 1100px;
             padding: 25px 16px 20px 16px;
             box-sizing: border-box;
             flex: 1;
@@ -106,12 +101,15 @@
         h2 { margin: 8px 0 6px 0; color: var(--accent-color); text-align: center; font-size: 1.75rem; line-height: 1.25; }
         .subtitle { text-align: center; font-size: 1rem; color: var(--muted-text); margin-bottom: 24px; line-height: 1.4; }
 
+        /* =========================================================
+           SEKCJA GŁÓWNA: KONFIGURATOR TRASY
+           ========================================================= */
         .importer-hero {
             background: var(--hero-bg);
             border: 2px solid var(--srv-bike);
             border-radius: 14px;
             padding: 24px;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         .hero-top-bar {
@@ -144,6 +142,7 @@
             line-height: 1.45;
         }
 
+        /* Przełącznik waluty PLN / EUR */
         .currency-toggle {
             display: inline-flex;
             background: var(--info-bg);
@@ -174,6 +173,7 @@
             box-shadow: 0 2px 6px rgba(0, 119, 182, 0.35);
         }
 
+        /* Informacja o możliwościach mapy */
         .map-capabilities-box {
             background: var(--box-bg);
             border: 1px solid var(--border-color);
@@ -189,11 +189,12 @@
             color: var(--accent-color);
         }
 
+        /* Pigułki z kategoriami */
         .features-pills {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .pill {
@@ -224,123 +225,10 @@
         .dot-schrott { background: #8c7ae6; }
         .dot-bauma { background: #e84118; }
 
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 22px;
-        }
-
-        @media (min-width: 920px) {
-            .pricing-grid {
-                grid-template-columns: repeat(3, 1fr);
-                align-items: stretch;
-            }
-        }
-
-        .pricing-card {
-            background: var(--box-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px 20px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .pricing-card.popular {
-            border: 2px solid var(--plan-month);
-            box-shadow: 0 6px 18px rgba(21, 128, 61, 0.14);
-        }
-
-        .pricing-card.vip {
-            border: 2px solid var(--plan-year);
-            box-shadow: 0 6px 18px rgba(217, 119, 6, 0.14);
-        }
-
-        .plan-badge {
-            position: absolute;
-            top: -13px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #fff;
-            white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        .badge-popular { background: var(--plan-month); }
-        .badge-vip { background: var(--plan-year); }
-
-        .plan-name {
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-            text-align: center;
-            color: var(--accent-color);
-        }
-
-        .plan-desc {
-            font-size: 0.86rem;
-            color: var(--muted-text);
-            text-align: center;
-            margin-bottom: 14px;
-        }
-
-        .plan-price {
-            text-align: center;
-            margin-bottom: 6px;
-        }
-
-        .plan-price .amount {
-            font-size: 2.25rem;
-            font-weight: 900;
-            color: var(--accent-color);
-        }
-
-        .plan-price .period {
-            font-size: 0.92rem;
-            color: var(--muted-text);
-            font-weight: 600;
-        }
-
-        .plan-subprice {
-            text-align: center;
-            font-size: 0.84rem;
-            color: #16a34a;
-            font-weight: 700;
-            margin-bottom: 16px;
-            min-height: 18px;
-        }
-
-        .plan-features {
-            list-style: none;
-            padding: 15px 0 0 0;
-            margin: 0 0 20px 0;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .plan-features li {
-            margin-bottom: 9px;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .plan-btn-week { background: var(--plan-week); color: #fff; }
-        .plan-btn-month { background: var(--plan-month); color: #fff; }
-        .plan-btn-year { background: var(--plan-year); color: #fff; }
-
+        /* =========================================================
+           KONFIGURATOR WYJAZDU 7 DNI (1 PAŃSTWO + NAKŁADKI)
+           ========================================================= */
         .single-trip-promo {
-            margin-top: 24px;
             background: var(--box-bg);
             border: 2px dashed var(--srv-bike);
             border-radius: 12px;
@@ -482,25 +370,6 @@
             width: 100%;
         }
 
-        .pkg-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .btn-trip-outline {
-            background: transparent !important;
-            color: var(--text-color) !important;
-            border: 2px solid var(--border-color) !important;
-            font-size: 0.9rem !important;
-            padding: 11px 12px !important;
-            margin-top: 0 !important;
-        }
-        .btn-trip-outline:hover {
-            border-color: var(--srv-bike) !important;
-        }
-
         .overlay-checkbox-card.locked-card {
             opacity: 0.45;
             cursor: not-allowed;
@@ -521,47 +390,6 @@
             display: none;
             line-height: 1.35;
         }
-        select:disabled {
-            opacity: 0.85;
-            cursor: not-allowed;
-            background-color: var(--info-bg);
-            font-weight: 700;
-        }
-
-        .packages-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        @media (min-width: 768px) and (max-width: 1199px) {
-            .packages-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (min-width: 1200px) {
-            .packages-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        .package-card {
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 0.92em;
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .atv-box { background-color: rgba(192, 57, 43, 0.08); border: 1px solid var(--atv-color); border-left: 5px solid var(--atv-color); }
-        .bike-box { background-color: rgba(0, 119, 182, 0.08); border: 1px solid var(--bike-color); border-left: 5px solid var(--bike-color); }
-        .karcher-box { background-color: rgba(255, 204, 0, 0.12); border: 1px solid var(--karcher-color); border-left: 5px solid var(--karcher-color); }
-        .hq-box { background-color: rgba(243, 156, 18, 0.08); border: 1px solid var(--hq-color); border-left: 5px solid var(--hq-color); }
-        .kringloop-box { background-color: rgba(39, 174, 96, 0.08); border: 1px solid var(--kringloop-color); border-left: 5px solid var(--kringloop-color); }
-        .wacker-box { background-color: rgba(217, 119, 6, 0.08); border: 1px solid var(--wacker-color); border-left: 5px solid var(--wacker-color); }
-        .stihl-box { background-color: rgba(243, 112, 33, 0.09); border: 1px solid var(--stihl-color); border-left: 5px solid var(--stihl-color); }
-        .schrott-box { background-color: rgba(140, 122, 230, 0.09); border: 1px solid var(--schrott-color); border-left: 5px solid var(--schrott-color); }
-        .bauma-box { background-color: rgba(232, 65, 24, 0.09); border: 1px solid var(--bauma-color); border-left: 5px solid var(--bauma-color); }
 
         .divider {
             display: flex;
@@ -639,16 +467,6 @@
             touch-action: manipulation;
         }
 
-        button.atv-btn { background: var(--atv-color); color: #fff; }
-        button.bike-btn { background: var(--bike-color); color: #fff; }
-        button.karcher-btn { background: var(--karcher-color); color: var(--karcher-btn-text); }
-        button.hq-btn { background: var(--hq-color); color: #fff; }
-        button.kringloop-btn { background: var(--kringloop-color); color: #fff; }
-        button.wacker-btn { background: var(--wacker-color); color: #fff; }
-        button.stihl-btn { background: var(--stihl-color); color: #fff; }
-        button.schrott-btn { background: var(--schrott-color); color: #fff; }
-        button.bauma-btn { background: var(--bauma-color); color: #fff; }
-
         button:active { opacity: 0.85; transform: scale(0.98); }
 
         #wynik { 
@@ -674,6 +492,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.25);
         }
 
+        /* UKRYWANIE BELKI GOOGLE TRANSLATE */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-icon,
         #goog-gt-tt,
@@ -688,7 +507,7 @@
             h2 { font-size: 1.4rem; }
             .subtitle { font-size: 0.92rem; margin-bottom: 18px; }
 
-            .importer-hero { padding: 16px 12px; margin-bottom: 28px; }
+            .importer-hero { padding: 16px 12px; margin-bottom: 24px; }
             .hero-top-bar { flex-direction: column; align-items: stretch; gap: 12px; }
             .hero-title-wrap h3 { font-size: 1.2rem; text-align: center; }
             .hero-title-wrap p { font-size: 0.88rem; text-align: center; }
@@ -699,11 +518,6 @@
             .map-capabilities-box { padding: 12px; font-size: 0.86rem; }
             .features-pills { gap: 6px; margin-bottom: 20px; }
             .pill { font-size: 0.78rem; padding: 6px 10px; width: 100%; box-sizing: border-box; justify-content: flex-start; }
-
-            .pricing-grid { gap: 24px; }
-            .pricing-card { padding: 22px 16px 16px 16px; }
-            .plan-price .amount { font-size: 2rem; }
-            .plan-features { font-size: 0.86rem; }
         }
     </style>
 </head>
@@ -715,16 +529,18 @@
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
                 </svg>
-                <h2>Mapa Serwisów w Europie & Bazy B2B</h2>
-                <div class="subtitle">Interaktywna Mapa Serwisów w Europie (Rowery Bosch eBike, Kosiarki Husqvarna, Stihl, Myjki Kärcher, Quady/ATV, Wacker Neuson) oraz specjalistyczne bazy regionalne B2B (Złomowiska DE, Wypożyczalnie maszyn budowlanych DE, Kringloop Benelux).</div>
+                <h2>Mapa Serwisów & Bazy B2B</h2>
+                <div class="subtitle">Interaktywna mapa serwisów pod trasy handlowe (Rowery Bosch eBike, Kosiarki Husqvarna, STIHL, Myjki Kärcher, Quady/ATV, Wacker Neuson, Złomowiska DE, Wypożyczalnie maszyn Bauma DE, Kringloop Benelux).</div>
             </div>
 
-            <!-- SEKCJA GŁÓWNA -->
+            <!-- =========================================================
+                 SEKCJA GŁÓWNA: KONFIGURATOR NA WYJAZD (1 PAŃSTWO)
+                 ========================================================= -->
             <div class="importer-hero">
                 <div class="hero-top-bar">
                     <div class="hero-title-wrap">
-                        <h3>🌍 Interaktywna Mapa Serwisów w Europie</h3>
-                        <p>W każdym pakiecie czasowym otrzymujesz <strong>pełną mapę całej Europy</strong> obejmującą <strong>4 główne branże (Rowery Bosch eBike, Kosiarki Husqvarna, Myjki Kärcher oraz Quady/ATV)</strong> – sam filtrujesz państwa, kategorie i marki na ekranie telefonu lub komputera.</p>
+                        <h3>🎯 Mapa Serwisowa na Wyjazd (Konfigurator Tras)</h3>
+                        <p>Wybierz interesujące Cię <strong>państwo docelowe</strong> oraz <strong>dowolne nakładki serwisowe</strong> (np. Rowery + Kosiarki + Myjki na Niemcy) – pełny dostęp na telefonie i komputerze na czas wyjazdu.</p>
                     </div>
                     <div class="currency-toggle">
                         <button type="button" class="currency-btn active" id="btnPLN" onclick="ustawWalute('PLN')">🇵🇱 PLN (zł)</button>
@@ -732,90 +548,29 @@
                     </div>
                 </div>
 
+                <!-- Opis działania filtrów w mapie -->
                 <div class="map-capabilities-box">
-                    📱 <strong>Pełna swoboda w trasie (Smartfon & Desktop):</strong> Na mapie jednym kliknięciem wybierasz interesujące Cię <strong>państwo</strong> (lub całą Europę), włączasz/wyłączasz wybrane <strong>kategorie serwisów</strong> oraz konkretne <strong>marki quadów ATV</strong>, przełączasz widok na <strong>Satelitę</strong>, zapisujesz punkty do <strong>⭐ Ulubionych</strong> i uruchamiasz nawigację <strong>Google Maps</strong>.
+                    📱 <strong>Pełna swoboda w trasie (Smartfon & Desktop):</strong> Na mapie jednym kliknięciem włączasz/wyłączasz wybrane <strong>kategorie serwisów</strong> oraz konkretne <strong>marki quadów ATV</strong>, przełączasz widok na <strong>Satelitę</strong>, zapisujesz punkty do <strong>⭐ Ulubionych</strong> i uruchamiasz nawigację <strong>Google Maps</strong>.
                 </div>
 
+                <!-- Pigułki z kategoriami -->
                 <div class="features-pills">
                     <span class="pill"><span class="dot dot-bike"></span> 🚲 Rowery (Bosch eBike)</span>
                     <span class="pill"><span class="dot dot-mower"></span> 🚜 Kosiarki (Husqvarna)</span>
                     <span class="pill"><span class="dot dot-washer"></span> ⚡ Myjki (Kärcher)</span>
                     <span class="pill"><span class="dot dot-atv"></span> 🏍️ Quady / ATV (CFMOTO, Can-Am, Linhai/TGB, Polaris, Segway, Yamaha)</span>
+                    <span class="pill"><span class="dot dot-stihl"></span> 🪚 Serwisy STIHL</span>
+                    <span class="pill"><span class="dot dot-schrott"></span> ♻️ Złomowiska DE</span>
+                    <span class="pill"><span class="dot dot-bauma"></span> 🏗️ Wypożyczalnie Bauma DE</span>
                 </div>
 
-                <div class="pricing-grid">
-                    
-                    <!-- PAKIET 1: TYDZIEŃ -->
-                    <div class="pricing-card">
-                        <div>
-                            <div class="plan-name">🚐 Wyjazd w Tygodniu</div>
-                            <div class="plan-desc">Pełny dostęp na 7 dni (1 trasa)</div>
-                            <div class="plan-price">
-                                <span class="amount" id="priceWeek">450 PLN</span>
-                                <span class="period">/ tydzień</span>
-                            </div>
-                            <div class="plan-subprice" id="subWeek">Idealny na pojedynczy wyjazd po sprzęt</div>
-                            <ul class="plan-features">
-                                <li>✅ <strong>Cała Europa i wszystkie serwisy</strong> bez blokad regionalnych</li>
-                                <li>✅ Filtrowanie dowolnego państwa i 4 kategorii głównych (Rowery Bosch eBike, Kosiarki Husqvarna, Myjki Kärcher, Quady / ATV z podziałem na 6 marek)</li>
-                                <li>✅ Szybki kontakt (telefon 1-klik, e-mail, www) i nawigacja Google Maps</li>
-                                <li>✅ Zapisywanie własnej listy punktów (⭐ Ulubione) na telefonie</li>
-                            </ul>
-                        </div>
-                        <button class="plan-btn-week" onclick="zamowMapeEuropy('TYDZIEN')">Zamów na wyjazd (7 dni)</button>
-                    </div>
-
-                    <!-- PAKIET 2: MIESIĄC -->
-                    <div class="pricing-card popular">
-                        <div class="plan-badge badge-popular">🔥 Najczęściej wybierany</div>
-                        <div>
-                            <div class="plan-name">📦 Dostęp Miesięczny</div>
-                            <div class="plan-desc">Pełny dostęp na 30 dni (bez limitu tras)</div>
-                            <div class="plan-price">
-                                <span class="amount" id="priceMonth">990 PLN</span>
-                                <span class="period">/ miesiąc</span>
-                            </div>
-                            <div class="plan-subprice" id="subMonth">Oszczędzasz 45% (tylko ~247 PLN za tydzień!)</div>
-                            <ul class="plan-features">
-                                <li>✅ <strong>Cała Europa i wszystkie serwisy</strong> przez pełne 30 dni</li>
-                                <li>✅ Zwraca się już przy <strong>drugim wyjeździe w miesiącu</strong></li>
-                                <li>✅ Eksport i wczytywanie zapisanych punktów (⭐ plik .json) między urządzeniami</li>
-                                <li>✅ Podkład OSM, Terenowy oraz Satelita + przycisk lokalizacji GPS w trasie</li>
-                            </ul>
-                        </div>
-                        <button class="plan-btn-month" onclick="zamowMapeEuropy('MIESIAC')">Zamów na miesiąc (30 dni)</button>
-                    </div>
-
-                    <!-- PAKIET 3: ROK -->
-                    <div class="pricing-card vip">
-                        <div class="plan-badge badge-vip">👑 Najlepsza inwestycja</div>
-                        <div>
-                            <div class="plan-name">🏆 Pakiet Roczny PRO</div>
-                            <div class="plan-desc">Pełny dostęp na 365 dni + aktualizacje</div>
-                            <div class="plan-price">
-                                <span class="amount" id="priceYear">3 000 PLN</span>
-                                <span class="period">/ rok</span>
-                            </div>
-                            <div class="plan-subprice" id="subYear">Tylko 250 PLN / mies. (ok. 57 PLN na tydzień!)</div>
-                            <ul class="plan-features">
-                                <li>✅ <strong>365 dni nielimitowanego dostępu</strong> do całej Mapy Europy</li>
-                                <li>✅ <strong>Płacisz jak za 3 miesiące – kolejne 9 miesięcy masz gratis!</strong></li>
-                                <li>✅ Wszystkie aktualizacje serwisów i nowych marek w cenie</li>
-                                <li>✅ Stały dostęp na smartfonie i komputerze przez cały rok</li>
-                            </ul>
-                        </div>
-                        <button class="plan-btn-year" onclick="zamowMapeEuropy('ROK')">Zamów na cały rok (365 dni)</button>
-                    </div>
-
-                </div>
-
-                <!-- KONFIGURATOR WYJAZDU 7 DNI -->
+                <!-- KONFIGURATOR WYJAZDU 7 DNI DLA 1 KRAJU -->
                 <div class="single-trip-promo">
                     <div class="single-trip-header">
                         <div>
                             <div class="single-trip-title">🎯 Konfigurator na 1 Państwo (7 dni) – wybierz dowolne nakładki na jedną mapę!</div>
                             <div style="font-size: 0.9rem; color: var(--muted-text); margin-top: 3px;">
-                                Zaznacz jedną lub kilka branż, które chcesz widzieć naraz na wspólnej mapie wybranego kraju (np. Rowery + Kosiarki + Myjki na Niemcy).
+                                Zaznacz jedną lub kilka branż, które chcesz widzieć naraz na wspólnej mapie wybranego kraju.
                             </div>
                         </div>
                         <div class="single-trip-price-badge">
@@ -929,261 +684,21 @@
                     </div>
                 </div>
 
-            <div class="divider">LUB ZAMÓW POJEDYNCZĄ BAZĘ BRANŻOWĄ</div>
-
-            <!-- SIATKA GOTOWYCH PAKIETÓW JEDNORAZOWYCH -->
-            <div class="packages-grid">
-                
-                <!-- KRINGLOOP, VINTAGE & BROCANTE (BENELUX) -->
-                <div class="package-card kringloop-box">
-                    <div>
-                        <strong style="color: var(--kringloop-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏺 Kringloop & Vintage (Benelux)</strong>
-                        <p style="margin: 0 0 12px 0;">Sklepy z rzeczami używanymi, Kringwinkels, Brocante i hale meblowe pod nawigację i trasy handlowe.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="kringloopRegion">
-                                <option value="">-- 🔒 Wybierz kraj (Tylko Holandia lub Belgia) --</option>
-                                <option value="Holandia - Cały Kraj">🇳🇱 Holandia (Tylko Holandia – Kringloop & Vintage)</option>
-                                <option value="Belgia - Cały Kraj">🇧🇪 Belgia (Tylko Belgia – Kringwinkels & Brocante)</option>
-                                <option value="Holandia + Belgia - Wycena">🇳🇱+🇧🇪 Holandia + Belgia (Pakiet Kompletny – Wycena indywidualna)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="kringloop-btn" onclick="generujZamowienieKringloop('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieKringloop('TYDZIEN')">🚐 Wyjazd na 7 dni – Holandia lub Belgia (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- ROWERY: BOSCH EBIKE -->
-                <div class="package-card bike-box">
-                    <div>
-                        <strong style="color: var(--bike-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🚲 Serwisy Bosch eBike</strong>
-                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i dilerzy rowerów elektrycznych Bosch eBike z całej Europy.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="bikeKraj">
-                                <option value="">-- Wybierz pakiet (Bosch eBike) --</option>
-                                <option value="Niemcy">Niemcy</option>
-                                <option value="Włochy">Włochy</option>
-                                <option value="Francja">Francja</option>
-                                <option value="Szwajcaria">Szwajcaria</option>
-                                <option value="Holandia">Holandia</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Belgia">Belgia</option>
-                                <option value="Polska">Polska</option>
-                                <option value="Czechy">Czechy</option>
-                                <option value="Dania">Dania</option>
-                                <option value="Norwegia">Norwegia</option>
-                                <option value="Szwecja">Szwecja</option>
-                                <option value="Islandia">Islandia</option>
-                                <option value="Luksemburg">Luksemburg</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="bike-btn" onclick="generujZamowienieBike('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieBike('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- KÄRCHER -->
-                <div class="package-card karcher-box">
-                    <div>
-                        <strong style="color: #b8860b; font-size: 1.05em; display: block; margin-bottom: 8px;">⚡ Serwisy i Salony Kärcher</strong>
-                        <p style="margin: 0 0 12px 0;">Kompletna baza punktów Kärcher w Europie (Centra, Serwisy i Sklepy).</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="karcherKraj">
-                                <option value="">-- Wybierz pakiet (Kärcher) --</option>
-                                <option value="Niemcy">Niemcy</option>
-                                <option value="Polska">Polska</option>
-                                <option value="Norwegia">Norwegia</option>
-                                <option value="Holandia">Holandia</option>
-                                <option value="Dania">Dania</option>
-                                <option value="Hiszpania">Hiszpania</option>
-                                <option value="Szwajcaria">Szwajcaria</option>
-                                <option value="Włochy">Włochy</option>
-                                <option value="Czechy">Czechy</option>
-                                <option value="Belgia">Belgia</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Wielka Brytania">Wielka Brytania</option>
-                                <option value="Francja">Francja</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="karcher-btn" onclick="generujZamowienieKarcher('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieKarcher('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- ZŁOMOWISKA SCHROTTPLÄTZE DE -->
-                <div class="package-card schrott-box">
-                    <div>
-                        <strong style="color: var(--stihl-color); font-size: 1.05em; display: block; margin-bottom: 8px;">♻️ Złomowiska (Schrottplätze DE)</strong>
-                        <p style="margin: 0 0 12px 0;">Kompletna baza złomowisk i skupów złomu w Niemczech z interaktywną mapą pod trasy handlowe.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="schrottKraj" disabled>
-                                <option value="Niemcy" selected>🔒 🇩🇪 Niemcy (Tylko Niemcy – inne kraje niedostępne)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="schrott-btn" onclick="generujZamowienieSchrott('STAŁA')">Zapytaj o wycenę bazy Schrottplätze</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieSchrott('TYDZIEN')">🚐 Wyjazd na 7 dni – tylko Niemcy (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- WYPOŻYCZALNIE MASZYN BAUMA DE -->
-                <div class="package-card bauma-box">
-                    <div>
-                        <strong style="color: var(--bauma-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏗️ Wypożyczalnie Maszyn (Bauma DE)</strong>
-                        <p style="margin: 0 0 12px 0;">Baza wypożyczalni sprzętu i maszyn budowlanych w Niemczech z interaktywną mapą.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="baumaKraj" disabled>
-                                <option value="Niemcy" selected>🔒 🇩🇪 Niemcy (Tylko Niemcy – inne kraje niedostępne)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="bauma-btn" onclick="generujZamowienieBauma('STAŁA')">Zapytaj o wycenę bazy Bauma</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieBauma('TYDZIEN')">🚐 Wyjazd na 7 dni – tylko Niemcy (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- STIHL -->
-                <div class="package-card stihl-box">
-                    <div>
-                        <strong style="color: var(--stihl-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🪚 Serwisy i Dilerzy STIHL</strong>
-                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i punkty sprzedaży maszyn ogrodowych, leśnych oraz pilarek STIHL z interaktywną mapą.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="stihlKraj">
-                                <option value="">-- Wybierz kraj (STIHL) --</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Belgia">Belgia</option>
-                                <option value="Czechy">Czechy</option>
-                                <option value="Dania">Dania</option>
-                                <option value="Finlandia">Finlandia</option>
-                                <option value="Francja">Francja</option>
-                                <option value="Hiszpania">Hiszpania</option>
-                                <option value="Holandia">Holandia</option>
-                                <option value="Luksemburg">Luksemburg</option>
-                                <option value="Niemcy">Niemcy</option>
-                                <option value="Norwegia">Norwegia</option>
-                                <option value="Polska">Polska</option>
-                                <option value="Szwajcaria + Liechtenstein">Szwajcaria i Liechtenstein</option>
-                                <option value="Szwecja">Szwecja</option>
-                                <option value="Wielka Brytania">Wielka Brytania</option>
-                                <option value="Włochy + San Marino + Malta">Włochy, San Marino i Malta</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="stihl-btn" onclick="generujZamowienieStihl('STAŁA')">Zapytaj o wycenę bazy STIHL</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieStihl('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- HUSQVARNA -->
-                <div class="package-card hq-box">
-                    <div>
-                        <strong style="color: var(--hq-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🔥 Dilerzy Husqvarna</strong>
-                        <p style="margin: 0 0 12px 0;">Kompletne zestawienia punktów sprzedaży i autoryzowanych serwisów maszyn ogrodowych.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="husqvarnaKraj">
-                                <option value="">-- Wybierz pakiet (Husqvarna) --</option>
-                                <option value="Niemcy">Niemcy</option>
-                                <option value="Francja">Francja</option>
-                                <option value="Włochy">Włochy</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Szwajcaria">Szwajcaria</option>
-                                <option value="Polska">Polska</option>
-                                <option value="Szwecja">Szwecja</option>
-                                <option value="Norwegia">Norwegia</option>
-                                <option value="Wielka Brytania">Wielka Brytania</option>
-                                <option value="Holandia">Holandia</option>
-                                <option value="Czechy">Czechy</option>
-                                <option value="Belgia">Belgia</option>
-                                <option value="Dania">Dania</option>
-                                <option value="Hiszpania">Hiszpania</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="hq-btn" onclick="generujZamowienieHusqvarna('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieHusqvarna('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- WACKER NEUSON -->
-                <div class="package-card wacker-box">
-                    <div>
-                        <strong style="color: var(--wacker-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🚜 Maszyny Wacker Neuson</strong>
-                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i dilerzy maszyn budowlanych z danymi B2B i mapą.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="wackerKraj">
-                                <option value="">-- Wybierz pakiet (Wacker Neuson) --</option>
-                                <option value="Niemcy">Niemcy</option>
-                                <option value="Włochy">Włochy</option>
-                                <option value="Francja">Francja</option>
-                                <option value="Wielka Brytania">Wielka Brytania</option>
-                                <option value="Polska">Polska</option>
-                                <option value="Norwegia">Norwegia</option>
-                                <option value="Rumunia">Rumunia</option>
-                                <option value="Szwajcaria">Szwajcaria</option>
-                                <option value="Holandia">Holandia</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Szwecja">Szwecja</option>
-                                <option value="Czechy">Czechy</option>
-                                <option value="Finlandia">Finlandia</option>
-                                <option value="Bułgaria">Bułgaria</option>
-                                <option value="Dania">Dania</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="wacker-btn" onclick="generujZamowienieWacker('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieWacker('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
-                <!-- QUADY / ATV / SIDE-BY-SIDE MULTIBRAND -->
-                <div class="package-card atv-box">
-                    <div>
-                        <strong style="color: var(--atv-color); font-size: 1.05em; display: block; margin-bottom: 8px;">🏍️ Quady & UTV Multibrand</strong>
-                        <p style="margin: 0 0 12px 0;">Autoryzowane serwisy i salony Yamaha, Can-Am (BRP), Polaris, CFMOTO oraz Segway/TGB.</p>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <select id="atvKraj">
-                                <option value="">-- Wybierz pakiet (Quady / UTV) --</option>
-                                <option value="Polska - Multibrand">Polska (Multibrand)</option>
-                                <option value="Niemcy - Multibrand">Niemcy (Multibrand)</option>
-                                <option value="Francja - Multibrand">Francja (Multibrand)</option>
-                                <option value="Austria + Szwajcaria">Austria i Szwajcaria (Pakiet Alpejski)</option>
-                                <option value="Kraje Beneluksu">Benelux (Belgia, Holandia, Luksemburg)</option>
-                                <option value="Skandynawia">Skandynawia (Szwecja, Norwegia, Finlandia)</option>
-                                <option value="Czechy i Słowacja">Czechy i Słowacja (ASP Group / Dilerzy)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="pkg-actions">
-                        <button class="atv-btn" onclick="generujZamowienieAtv('STAŁA')">Zapytaj o wycenę bazy</button>
-                        <button class="btn-trip-outline" onclick="generujZamowienieAtv('TYDZIEN')">🚐 Wyjazd na 7 dni – wybrany kraj (<span class="lblSinglePrice">100 PLN</span>)</button>
-                    </div>
-                </div>
-
             </div>
 
-            <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ</div>
+            <!-- SEKCJA: ZAMÓW WŁASNĄ BAZĘ NIESTANDARDOWĄ -->
+            <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ NA ZAMÓWIENIE</div>
             
-            <!-- SEKCJA NIESTANDARDOWA -->
             <div class="custom-order-layout">
                 <div class="info-box">
                     <strong>Baza firm z wyszukiwarek branżowych:</strong>
                     <ul>
                         <li>Nazwa firmy i kategoria (branża)</li>
-                        <li>Dokładny adres i lokalizacja GPS</li>
+                        <li>Dokładny adres i lokalizacja GPS pod nawigację</li>
                         <li>Dane Publiczne i Rejestrowe B2B</li>
                     </ul>
                     <p style="margin: 15px 0 0 0; font-size: 0.9em; color: var(--muted-text);">
-                        Dane pobieramy prosto z oficjalnych rejestrów i map przestrzennych.
+                        Przygotowujemy dedykowane bazy dla dowolnej branży i regionu na indywidualne zlecenie.
                     </p>
                 </div>
                 
@@ -1198,14 +713,15 @@
                         <input type="text" id="obszar" placeholder="np. Antwerpia + 50 km / Belgia / Zagłębie Ruhry" required>
                     </div>
 
-                    <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie</button>
+                    <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie o bazę</button>
                 </div>
             </div>
 
+            <!-- PODSUMOWANIE / WYSYŁKA SMS -->
             <div id="wynik">
-                <p style="margin-top:0;"><strong>Zamówienie gotowe do wysłania!</strong></p>
+                <p style="margin-top:0;"><strong>Wiadomość gotowa do wysłania!</strong></p>
                 <p>Twój numer zamówienia: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Kliknij poniżej, aby wysłać gotowego SMS-a i otrzymać dane dostępowe.</p>
+                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Kliknij poniżej, aby otworzyć gotowego SMS-a i otrzymać dane dostępowe.</p>
                 <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
             </div>
         </div>
@@ -1216,28 +732,16 @@
     <script>
         let aktualnaWaluta = 'PLN';
 
-        const cennikMapaEuropy = {
+        const cennikKonfiguratora = {
             PLN: {
                 singleTripVal: 100,
                 singleTripUnit: 'PLN',
-                singleTrip: '100 PLN',
-                week: '450 PLN',
-                month: '990 PLN',
-                year: '3 000 PLN',
-                subWeek: 'Wszystkie branże i cała Europa bez limitu',
-                subMonth: 'Oszczędzasz 45% (tylko ~247 PLN za tydzień!)',
-                subYear: 'Tylko 250 PLN / mies. (ok. 57 PLN na tydzień!)'
+                singleTrip: '100 PLN'
             },
             EUR: {
                 singleTripVal: 25,
                 singleTripUnit: '€',
-                singleTrip: '25 €',
-                week: '100 €',
-                month: '220 €',
-                year: '690 €',
-                subWeek: 'Wszystkie branże i cała Europa bez limitu',
-                subMonth: 'Oszczędzasz 45% (tylko ~55 € za tydzień!)',
-                subYear: 'Tylko ~57 € / mies. (ok. 13 € na tydzień!)'
+                singleTrip: '25 €'
             }
         };
 
@@ -1246,18 +750,10 @@
             document.getElementById('btnPLN').classList.toggle('active', waluta === 'PLN');
             document.getElementById('btnEUR').classList.toggle('active', waluta === 'EUR');
 
-            document.getElementById('priceWeek').innerText = cennikMapaEuropy[waluta].week;
-            document.getElementById('priceMonth').innerText = cennikMapaEuropy[waluta].month;
-            document.getElementById('priceYear').innerText = cennikMapaEuropy[waluta].year;
-            document.getElementById('priceSingleTrip').innerText = cennikMapaEuropy[waluta].singleTrip;
-
+            document.getElementById('priceSingleTrip').innerText = cennikKonfiguratora[waluta].singleTrip;
             document.querySelectorAll('.lblSinglePrice').forEach(el => {
-                el.innerText = cennikMapaEuropy[waluta].singleTrip;
+                el.innerText = cennikKonfiguratora[waluta].singleTrip;
             });
-
-            document.getElementById('subWeek').innerText = cennikMapaEuropy[waluta].subWeek;
-            document.getElementById('subMonth').innerText = cennikMapaEuropy[waluta].subMonth;
-            document.getElementById('subYear').innerText = cennikMapaEuropy[waluta].subYear;
 
             przeliczNakladkiWyjazd();
         }
@@ -1281,7 +777,7 @@
 
             if (dozwoloneKraje !== null && dozwoloneKraje.length === 0 && ostatnioKliknietyCb) {
                 ostatnioKliknietyCb.checked = false;
-                alert('Blokada wyboru: Te dwie bazy nie występują w tym samym kraju. Zamów je osobno.');
+                alert('Blokada wyboru: Te bazy nie występują w tym samym kraju. Wybierz bazy dostępne dla tego samego państwa.');
                 dozwoloneKraje = pobierzDozwoloneKrajeDlaZaznaczonych();
             }
 
@@ -1314,7 +810,7 @@
                     hintEl.innerText = `🔒 Dla bazy Kringloop & Vintage dostępna jest wyłącznie Holandia lub Belgia (inne kraje zostały zablokowane).`;
                 } else {
                     hintEl.style.display = 'block';
-                    hintEl.innerText = `ℹ️ Lista państw została ograniczona tylko do krajów, w których posiadamy wybrane bazy.`;
+                    hintEl.innerText = `ℹ️ Lista państw została ograniczona do krajów, w których posiadamy wybrane bazy.`;
                 }
             } else {
                 hintEl.style.display = 'none';
@@ -1380,8 +876,8 @@
 
             const wybrane = pobierzWybraneNakladki();
             const ilosc = wybrane.length;
-            const stawka = cennikMapaEuropy[aktualnaWaluta].singleTripVal;
-            const jednostka = cennikMapaEuropy[aktualnaWaluta].singleTripUnit;
+            const stawka = cennikKonfiguratora[aktualnaWaluta].singleTripVal;
+            const jednostka = cennikKonfiguratora[aktualnaWaluta].singleTripUnit;
             const suma = ilosc * stawka;
             const sumaTekst = `${suma} ${jednostka}`;
 
@@ -1401,7 +897,7 @@
             const kraj = document.getElementById('singleTripCountry').value;
 
             if (wybrane.length === 0) {
-                alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową (np. Rowery, Kosiarki, Myjki)!');
+                alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową!');
                 return;
             }
             if (!kraj) {
@@ -1410,22 +906,18 @@
             }
             const dozwolone = pobierzDozwoloneKrajeDlaZaznaczonych();
             if (dozwolone !== null && !dozwolone.includes(kraj)) {
-                alert(`Wybrane nakładki nie są dostępne dla kraju: ${kraj}. Dostępne kraje dla tego zestawu to: ${dozwolone.join(', ')}.`);
+                alert(`Wybrane nakładki nie są dostępne dla kraju: ${kraj}.`);
                 return;
             }
 
             const ilosc = wybrane.length;
-            const sumaPLN = ilosc * cennikMapaEuropy.PLN.singleTripVal;
-            const sumaEUR = ilosc * cennikMapaEuropy.EUR.singleTripVal;
+            const sumaPLN = ilosc * cennikKonfiguratora.PLN.singleTripVal;
+            const sumaEUR = ilosc * cennikKonfiguratora.EUR.singleTripVal;
             const cenaGlowna = aktualnaWaluta === 'PLN' ? `${sumaPLN} PLN` : `${sumaEUR} EUR`;
 
             const nr = `TRIP7-${pobierzKluczCzasu()}`;
             const listaNakladek = wybrane.join(' + ');
-            const trescSms = `Zamówienie: Mapa na wyjazd 7 dni (1 państwo).
-Nr: ${nr}
-Państwo: ${kraj}
-Nakładki (${ilosc}): ${listaNakladek}
-Suma: ${cenaGlowna} (${sumaPLN} PLN / ${sumaEUR} EUR)`;
+            const trescSms = `Zamówienie: Mapa na wyjazd 7 dni (1 państwo).\nNr: ${nr}\nPaństwo: ${kraj}\nNakładki (${ilosc}): ${listaNakladek}\nSuma: ${cenaGlowna} (${sumaPLN} PLN / ${sumaEUR} EUR)`;
             przygotujSMS(nr, trescSms, true);
         }
 
@@ -1439,8 +931,8 @@ Suma: ${cenaGlowna} (${sumaPLN} PLN / ${sumaEUR} EUR)`;
 
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('infoCenaSms').innerText = czyZnamyCene 
-                ? "Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do bazy."
-                : "Cena za bazę na całą Europę zostanie przedstawiona indywidualnie SMS-em/telefonicznie po przesłaniu zgłoszenia.";
+                ? "Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do mapy."
+                : "Szczegółowa wycena oraz warunki dostępu zostaną przekazane w odpowiedzi na zgłoszenie SMS.";
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
@@ -1457,101 +949,17 @@ Suma: ${cenaGlowna} (${sumaPLN} PLN / ${sumaEUR} EUR)`;
             return `${rok}${miesiac}${dzien}-${losowy}`;
         }
 
-        function zamowMapeEuropy(okres) {
-            let nazwaPakietu = '';
-            let cena = '';
-            let prefix = '';
-
-            if (okres === 'TYDZIEN') {
-                nazwaPakietu = 'Wyjazd w Tygodniu (7 dni)';
-                cena = cennikMapaEuropy[aktualnaWaluta].week;
-                prefix = 'MAP7';
-            } else if (okres === 'MIESIAC') {
-                nazwaPakietu = 'Dostęp Miesięczny (30 dni)';
-                cena = cennikMapaEuropy[aktualnaWaluta].month;
-                prefix = 'MAP30';
-            } else if (okres === 'ROK') {
-                nazwaPakietu = 'Pakiet Roczny PRO (365 dni + aktualizacje)';
-                cena = cennikMapaEuropy[aktualnaWaluta].year;
-                prefix = 'MAP365';
-            }
-
-            const nr = `${prefix}-${pobierzKluczCzasu()}`;
-            const trescSms = `Zamówienie: Pełna Mapa Serwisów w Europie (Rowery Bosch, Kosiarki Husqvarna, Myjki Karcher, Quady/ATV).\nNr: ${nr}\nPakiet: ${nazwaPakietu}\nCena: ${cena}`;
-            przygotujSMS(nr, trescSms, true);
-        }
-
-        function obsluzZamowienieKarty(selectId, kodPrefix, nazwaBazy, tryb) {
-            const select = document.getElementById(selectId);
-            if(!select.value) { alert(`Proszę wybrać państwo/pakiet z listy dla bazy: ${nazwaBazy}!`); return; }
-            const wybranyTekst = select.options[select.selectedIndex].text;
-
-            if (tryb === 'TYDZIEN') {
-                if (select.value.includes('Cała Europa') || select.value.includes('Holandia + Belgia')) {
-                    alert('Pakiet za 100 PLN / 25 € dotyczy jednego wybranego państwa na 7 dni. Wybierz konkretny kraj z listy.');
-                    return;
-                }
-                const cena = cennikMapaEuropy[aktualnaWaluta].singleTrip;
-                const nr = `${kodPrefix}7-${pobierzKluczCzasu()}`;
-                const trescSms = `Zamówienie: Wyjazd 7 dni (1 serwis / 1 państwo).\nNr: ${nr}\nSerwis: ${nazwaBazy}\nPaństwo: ${wybranyTekst}\nCena: ${cena}`;
-                przygotujSMS(nr, trescSms, true);
-            } else {
-                const czyCalaEuropa = select.value.includes('Cała Europa') || select.value.includes('Wycena');
-                const nr = `${kodPrefix}-${pobierzKluczCzasu()}`;
-                const trescSms = czyCalaEuropa 
-                    ? `Zapytanie o wycenę bazy (Cała Europa).\nNr: ${nr}\nBaza: ${nazwaBazy}\nZakres: Cała Europa (Proszę o kontakt z wyceną)`
-                    : `Zamówienie gotowej bazy.\nNr: ${nr}\nBaza: ${nazwaBazy}\nPakiet: ${wybranyTekst}`;
-                
-                przygotujSMS(nr, trescSms, false);
-            }
-        }
-
-        function generujZamowienieKringloop(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('kringloopRegion', 'KRING', 'Kringloop, Vintage & Brocante', tryb);
-        }
-
-        function generujZamowienieBike(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('bikeKraj', 'BIKE', 'Bosch eBike Serwisy & Dilerzy', tryb);
-        }
-
-        function generujZamowienieKarcher(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('karcherKraj', 'KAR', 'Kärcher Serwisy i Salony', tryb);
-        }
-
-        function generujZamowienieSchrott(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('schrottKraj', 'SCHROTT', 'Złomowiska Schrottplätze DE', tryb);
-        }
-
-        function generujZamowienieBauma(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('baumaKraj', 'BAUMA', 'Wypożyczalnie maszyn Bauma DE', tryb);
-        }
-
-        function generujZamowienieStihl(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('stihlKraj', 'STIHL', 'STIHL Serwisy i Dilerzy', tryb);
-        }
-
-        function generujZamowienieHusqvarna(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('husqvarnaKraj', 'HQ', 'Husqvarna Dilerzy i Serwisy', tryb);
-        }
-
-        function generujZamowienieWacker(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('wackerKraj', 'WN', 'Wacker Neuson Serwisy & Dilerzy', tryb);
-        }
-
-        function generujZamowienieAtv(tryb = 'STAŁA') {
-            obsluzZamowienieKarty('atvKraj', 'ATV', 'Quady & UTV Multibrand', tryb);
-        }
-
         function generujZamowienieNiestandardowe() {
             const branza = document.getElementById('branza').value.trim();
             const obszar = document.getElementById('obszar').value.trim();
             if(!branza || !obszar) { alert('Proszę wypełnić wszystkie pola!'); return; }
             const nr = `CUST-${pobierzKluczCzasu()}`;
             const trescSms = `Zapytanie o Bazę Niestandardową.\nNr: ${nr}\nBranża: ${branza}\nObszar: ${obszar}\n(Wycena po przygotowaniu)`;
-            przygotujSMS(nr, trescSms);
+            przygotujSMS(nr, trescSms, false);
         }
     </script>
 
+    <!-- SKRYPT TŁUMACZENIA -->
     <script>
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
