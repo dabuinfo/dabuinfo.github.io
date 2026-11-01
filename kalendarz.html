@@ -678,11 +678,20 @@
 
     <script>
     (function() {
-        const calData = {
+        const calLang = ((navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase());
+        const calData = calLang === 'de' ? {
+            wk: "KW",
+            m: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+            d: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+        } : (calLang === 'pl' ? {
             wk: "Ty",
             m: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
             d: ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"]
-        };
+        } : {
+            wk: "Wk",
+            m: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            d: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+        });
 
         // Mapa sąsiedztwa rejonów (korytarze wspólne zgodne z zestaw.html)
         const NEIGHBOR_CLUSTERS_MAP = {
@@ -1077,7 +1086,7 @@
 
             const startYear = now.getFullYear();
             const startMonth = now.getMonth();
-            const monthsCount = 12 - startMonth; // Generuje kalendarz do końca bieżącego roku
+            const monthsCount = 3; // Generuje kalendarz zawsze na 3 miesiące do przodu
             const holidayCache = {};
 
             const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
@@ -1618,7 +1627,7 @@
                         const resp = await fetch(SCRIPT_URL, {
                             method: 'POST',
                             headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: isPolish ? 'pl' : 'de' })
+                            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: targetDateFormatted, jezyk: 'pl' })
                         });
                         
                         const data = await resp.json();
@@ -1801,27 +1810,27 @@
                                     }
 
                                     return `
-${landHeaderHtml}
-<div class="zebra-row notranslate" translate="no">
-    <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
-        <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
-        <div style="flex:1;">${infoPart}</div>
-    </label>
-                                        <div class="quick-add-container">
-                                            <button type="button" class="btn-quick-add btn-add-next" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
+                                    ${landHeaderHtml}
+                                    <div class="zebra-row notranslate" translate="no" data-row-idx="${idx}">
+                                        <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
+                                            <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-idx="${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
+                                            <div class="notranslate" translate="no" style="flex:1;">${infoPart}</div>
+                                        </label>
+                                        <div class="quick-add-container notranslate" translate="no">
+                                            <button type="button" class="btn-quick-add btn-add-next" data-idx="${idx}" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
                                                 ➕ ${isPolish ? 'Kolejny dzień' : 'Nächster Tag'}
                                             </button>
-                                            <button type="button" class="btn-quick-remove" data-base="${displayDate}" data-region="${encodeURIComponent(regionName)}" title="${isPolish ? 'Odejmij ostatnio dodany dzień' : 'Letzten Tag entfernen'}">
+                                            <button type="button" class="btn-quick-remove" data-idx="${idx}" data-base="${displayDate}" data-region="${encodeURIComponent(regionName)}" title="${isPolish ? 'Odejmij ostatnio dodany dzień' : 'Letzten Tag entfernen'}">
                                                 ➖
                                             </button>
-                                            <div class="added-days-window">
+                                            <div class="added-days-window notranslate" translate="no">
                                                 📅 ${isPolish ? 'Dodano od dnia: <strong>+0 dni</strong>' : 'Hinzugefügt: <strong>+0 Tage</strong>'}
                                             </div>
-                                            <button type="button" class="btn-quick-add btn-add-week" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
+                                            <button type="button" class="btn-quick-add btn-add-week" data-idx="${idx}" data-current="${targetDateFormatted}" data-dates="${allAvailableDates}" data-region="${encodeURIComponent(regionName)}">
                                                 📅 ${isPolish ? 'Cały tydzień' : 'Ganze Woche'}
                                             </button>
                                         </div>
-                                        <div class="added-dates-pills"></div>
+                                        <div class="added-dates-pills notranslate" translate="no"></div>
                                     </div>`;
                                 }).join('');
 
