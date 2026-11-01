@@ -1089,7 +1089,7 @@
             if (userLangInit === 'pl') {
                 baseRateInfoEl.textContent = '25 PLN / dzień (pojedynczy rejon) lub 40 PLN / dzień (korytarz wspólny)';
             } else {
-                baseRateInfoEl.textContent = '8 € / dzień (pojedynczy rejon) lub 10 € / dzień (korytarz wspólny)';
+                baseRateInfoEl.textContent = '10 € / dzień (pojedynczy rejon) lub 15 € / dzień (korytarz wspólny)';
             }
         }
 
@@ -2116,34 +2116,9 @@
             });
         }
 
-        const DISCOUNT_TIERS = [
-            { minDays: 250, discount: 0.80 },
-            { minDays: 181, discount: 0.72 },
-            { minDays: 121, discount: 0.64 },
-            { minDays: 81,  discount: 0.53 },
-            { minDays: 51,  discount: 0.40 },
-            { minDays: 31,  discount: 0.27 },
-            { minDays: 16,  discount: 0.18 },
-            { minDays: 6,   discount: 0.08 }
-        ];
-
-        /**
-         * Zwraca stawkę dzienną po uwzględnieniu waluty, typu rejonu oraz rabatu wolumenowego.
-         */
-        function calculateReportRate(totalDays, isEuro, czyKorytarzWspolny) {
-            const baseRate = isEuro
-                ? (czyKorytarzWspolny ? 10.00 : 8.00)
-                : (czyKorytarzWspolny ? 40.00 : 25.00);
-
-            const activeTier = DISCOUNT_TIERS.find(tier => totalDays >= tier.minDays);
-            const discount = activeTier ? activeTier.discount : 0;
-
-            return Math.round(baseRate * (1 - discount) * 100) / 100;
-        }
-
         // ========================================================
-        // KALKULACJA - POJEDYNCZY REJON (25 PLN / 8 EUR) | KORYTARZ WSPÓLNY (40 PLN / 10 EUR)
-        // GWARANTOWANE MINIMUM: 5 PLN / 1.60 EUR ZA DZIEŃ (dla pojedynczego) lub 8 PLN / 2.00 EUR (wspólny)
+        // KALKULACJA - POJEDYNCZY REJON (25 PLN / 10 EUR) | KORYTARZ WSPÓLNY (40 PLN / 15 EUR)
+        // GWARANTOWANE MINIMUM: 8 PLN / 2 EUR ZA DZIEŃ
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2260,10 +2235,61 @@
                 regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
             }
 
+            let ratePerDay;
+            let reportRateNoMap;
+
             // Obliczamy stawkę za dzień z dynamicznym rabatem (Maksymalny rabat do 80%)
-            let reportRateNoMap = calculateReportRate(totalDays, isEuro, czyKorytarzWspolny);
-            let ratePerDay = reportRateNoMap;
-            
+            if (isEuro) {
+    if (czyKorytarzWspolny) {
+        // Korytarz wspólny z zagranicy: baza 10.00 €
+        if (totalDays >= 250)      reportRateNoMap = 2.00;  // -80%
+        else if (totalDays >= 181) reportRateNoMap = 2.80;  // -72%
+        else if (totalDays >= 121) reportRateNoMap = 3.60;  // -64%
+        else if (totalDays >= 81)  reportRateNoMap = 4.70;  // -53%
+        else if (totalDays >= 51)  reportRateNoMap = 6.00;  // -40%
+        else if (totalDays >= 31)  reportRateNoMap = 7.30;  // -27%
+        else if (totalDays >= 16)  reportRateNoMap = 8.20;  // -18%
+        else if (totalDays >= 6)   reportRateNoMap = 9.20;  // -8%
+        else                       reportRateNoMap = 10.00; // 0%
+    } else {
+        // Pojedynczy rejon z zagranicy: baza 8.00 €
+        if (totalDays >= 250)      reportRateNoMap = 1.60;  // -80%
+        else if (totalDays >= 181) reportRateNoMap = 2.24;  // -72%
+        else if (totalDays >= 121) reportRateNoMap = 2.88;  // -64%
+        else if (totalDays >= 81)  reportRateNoMap = 3.76;  // -53%
+        else if (totalDays >= 51)  reportRateNoMap = 4.80;  // -40%
+        else if (totalDays >= 31)  reportRateNoMap = 5.84;  // -27%
+        else if (totalDays >= 16)  reportRateNoMap = 6.56;  // -18%
+        else if (totalDays >= 6)   reportRateNoMap = 7.36;  // -8%
+        else                       reportRateNoMap = 8.00;  // 0%
+    }
+            } else {
+                if (czyKorytarzWspolny) {
+                    // Korytarz wspólny dla Polski: baza 40.00 PLN
+                    if (totalDays >= 250)      reportRateNoMap = 8.00;  // -80%
+                    else if (totalDays >= 181) reportRateNoMap = 11.20; // -72%
+                    else if (totalDays >= 121) reportRateNoMap = 14.40; // -64%
+                    else if (totalDays >= 81)  reportRateNoMap = 18.80; // -53%
+                    else if (totalDays >= 51)  reportRateNoMap = 24.00; // -40%
+                    else if (totalDays >= 31)  reportRateNoMap = 29.20; // -27%
+                    else if (totalDays >= 16)  reportRateNoMap = 32.80; // -18%
+                    else if (totalDays >= 6)   reportRateNoMap = 36.80; // -8%
+                    else                       reportRateNoMap = 40.00; // 0%
+                } else {
+                    // Pojedynczy rejon dla Polski: baza 25.00 PLN
+                    if (totalDays >= 250)      reportRateNoMap = 5.00;  // -80%
+                    else if (totalDays >= 181) reportRateNoMap = 7.00;  // -72%
+                    else if (totalDays >= 121) reportRateNoMap = 9.00;  // -64%
+                    else if (totalDays >= 81)  reportRateNoMap = 11.75; // -53%
+                    else if (totalDays >= 51)  reportRateNoMap = 15.00; // -40%
+                    else if (totalDays >= 31)  reportRateNoMap = 18.25; // -27%
+                    else if (totalDays >= 16)  reportRateNoMap = 20.50; // -18%
+                    else if (totalDays >= 6)   reportRateNoMap = 23.00; // -8%
+                    else                       reportRateNoMap = 25.00; // 0%
+                }
+            }
+
+            ratePerDay = reportRateNoMap;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
 
             let loyaltyDeduction = 0;
