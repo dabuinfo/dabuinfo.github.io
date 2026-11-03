@@ -414,7 +414,7 @@
         }
         @media (min-width: 768px) {
             .report-format-options-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         .format-card-radio {
@@ -642,7 +642,7 @@
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
                         <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">25 PLN / dzień (pojedynczy rejon) lub 40 PLN / dzień (korytarz wspólny)</span></b>.</li>
-                        <li>Dla wszystkich formatów (Raport Jasny, Ciemny lub Interaktywna Mapa GPS) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
+                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
                     </ul>
@@ -734,49 +734,42 @@
 
                 </div>
 
-                <!-- KROK 3: WYBÓR FORMATU ZAMÓWIENIA (W TEJ SAMEJ CENIE) -->
-                <div class="form-header">📄 3. Wybierz format zamówienia (w tej samej cenie):</div>
+                <!-- KROK 3: WYBÓR FORMATU ZAMÓWIENIA -->
+                <div class="form-header">📄 3. Wybierz wariant pakietu:</div>
                 <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 12px;">
                     <div style="font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; line-height: 1.4;">
-                        Wybierz preferowaną formę opracowania trasy (obowiązuje ten sam cennik i rabaty):
+                        Otrzymujesz jeden uniwersalny plik z wbudowanym <b>przełącznikiem motywu ☀️ Jasny / 🌙 Ciemny</b> wewnątrz dokumentu. Możesz zamówić sam raport lub rozszerzyć go o Mapę Online (+100%):
                     </div>
 
                     <div class="report-format-options-grid">
-                        
-                        <!-- OPCJA 1: RAPORT JASNY -->
-                        <div class="format-card-radio active" onclick="wybierzFormat('Light Mode', this)">
+
+                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMENCIE) -->
+                        <div class="format-card-radio active" onclick="wybierzFormat('Raport Interaktywny (Jasny/Ciemny)', this)">
                             <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Light Mode" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
-                                <span>☀️ Raport Jasny (A4 Druk)</span>
+                                <input type="radio" name="reportTheme" value="Raport Interaktywny (Jasny/Ciemny)" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
+                                <span>📑 Raport PRO (☀️ Jasny / 🌙 Ciemny)</span>
                             </div>
                             <div class="format-card-desc">
-                                Czysty, biały podkład zoptymalizowany pod wydruk na kartkach A4 oraz czytanie w pełnym słońcu w szoferce.
+                                Jeden interaktywny raport z przełącznikiem motywu Jasny (do druku A4 i w słońcu) / Ciemny (OLED na noc) wewnątrz pliku oraz aktywnymi linkami nawigacji (cena standardowa).
                             </div>
                         </div>
 
-                        <!-- OPCJA 2: RAPORT CIEMNY -->
-                        <div class="format-card-radio" onclick="wybierzFormat('Dark Mode', this)">
-                            <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Dark Mode" style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
-                                <span>🌙 Raport Ciemny (OLED)</span>
+                        <!-- OPCJA 2: RAPORT + MAPA ONLINE (+100%) -->
+                        <div class="format-card-radio" onclick="wybierzFormat('Raport+Mapa', this)">
+                            <div class="format-card-header" style="justify-content: space-between; width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="radio" name="reportTheme" value="Raport+Mapa" style="accent-color: #38bdf8; margin: 0; width: 18px; height: 18px;">
+                                    <span style="color: #38bdf8;">🗺️ Raport PRO + Mapa Online</span>
+                                </div>
+                                <span style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;">+100% ceny</span>
                             </div>
                             <div class="format-card-desc">
-                                Nowoczesny ciemny motyw oszczędzający baterię telefonu i wzrok podczas planowania tras wieczorem i nocą.
-                            </div>
-                        </div>
-
-                        <!-- OPCJA 3: INTERAKTYWNA MAPA GPS -->
-                        <div class="format-card-radio" onclick="wybierzFormat('Mapa Online', this)">
-                            <div class="format-card-header">
-                                <input type="radio" name="reportTheme" value="Mapa Online" style="accent-color: #38bdf8; margin: 0; width: 18px; height: 18px;">
-                                <span style="color: #38bdf8;">🗺️ Interaktywna Mapa GPS</span>
-                            </div>
-                            <div class="format-card-desc">
-                                Interaktywna mapa HTML na telefon z naniesionymi punktami zbiórek, podziałem na dni tygodnia i szybką nawigacją.
+                                Pełny pakiet: <b>Raport z przełącznikiem trybów + Interaktywna Mapa GPS</b> z naniesionymi punktami wywozów, podziałem na dni tygodnia i warstwami podkładu.
                             </div>
                         </div>
 
                     </div>
+                </div>
                 </div>
 
                 <!-- KROK 4: OPCJE DODATKOWE (KOMPAKTOWE) -->
@@ -2132,7 +2125,7 @@
             let currencySymbol = isEuro ? 'EUR' : 'PLN';
 
             let selectedThemeRadio = document.querySelector('input[name="reportTheme"]:checked');
-            let isMapSelected = selectedThemeRadio ? (selectedThemeRadio.value === 'Mapa Online') : false;
+            let isMapSelected = selectedThemeRadio ? (selectedThemeRadio.value === 'Raport+Mapa' || selectedThemeRadio.value === 'Mapa Online') : false;
 
             let pickupChk = document.getElementById('pickupOption');
             let isPickup = pickupChk ? pickupChk.checked : false;
@@ -2289,8 +2282,19 @@
                 }
             }
 
-            ratePerDay = reportRateNoMap;
+            // Doliczenie +100% dla wariantu Raport+Mapa
+            ratePerDay = isMapSelected ? Math.round((reportRateNoMap * 2.0) * 100) / 100 : reportRateNoMap;
+            regularBaseReference = isMapSelected ? Math.round((regularBaseReference * 2.0) * 100) / 100 : regularBaseReference;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+
+            // Doliczenie prowizji PayPal
+            window.aktualnaProwizjaPayPal = 0;
+            let paymentEl = document.querySelector('input[name="paymentMethod"]:checked');
+            if (paymentEl && paymentEl.value.toLowerCase().includes('paypal')) {
+                let fixedFee = (typeof currentCurrency !== 'undefined' && currentCurrency === 'EUR') ? 0.35 : 1.35;
+                window.aktualnaProwizjaPayPal = Math.round(((totalPriceNetto * 0.034) + fixedFee) * 100) / 100;
+                totalPriceNetto = Math.round((totalPriceNetto + window.aktualnaProwizjaPayPal) * 100) / 100;
+            }
 
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
@@ -2549,6 +2553,13 @@
                 }
                 
                 let loyaltyNotice = '';
+                if (calc.isMapSelected) {
+                    loyaltyNotice += ` | <b style="color:#38bdf8;">Pakiet: Raport+Mapa (+100%)</b>`;
+                }
+                if (window.aktualnaProwizjaPayPal && window.aktualnaProwizjaPayPal > 0) {
+                    let curr = (typeof currentCurrency !== 'undefined') ? currentCurrency : 'PLN';
+                    loyaltyNotice += ` | <b style="color:#eab308;">Prowizja PayPal: +${window.aktualnaProwizjaPayPal.toFixed(2)} ${curr}</b>`;
+                }
                 if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
                     loyaltyNotice = ` | <b style="color:#2ecc71;">Rabat z kodu: -${calc.loyaltyDeduction.toFixed(2)} ${calc.currency}</b>`;
                 }
@@ -3047,7 +3058,8 @@
                 totalDays: calc.totalDays,
                 paymentMethod: selectedPaymentMethod ? selectedPaymentMethod.value : "Nie wybrano",
                 reportTheme: selectedThemeVal,
-                mapAddon: (selectedThemeVal === 'Mapa Online'),
+                mapAddon: (selectedThemeVal === 'Raport+Mapa' || selectedThemeVal === 'Mapa Online'),
+                paypalFee: (window.aktualnaProwizjaPayPal || 0),
                 regions: Array.from(wR).map(cb => cb.value.trim()),
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
