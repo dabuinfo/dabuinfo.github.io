@@ -2110,8 +2110,8 @@
         }
 
         // ========================================================
-        // KALKULACJA - POJEDYNCZY REJON (25 PLN / 10 EUR) | KORYTARZ WSPÓLNY (40 PLN / 15 EUR)
-        // GWARANTOWANE MINIMUM: 8 PLN / 2 EUR ZA DZIEŃ
+        // KALKULACJA - POJEDYNCZY REJON (25 PLN / 8 EUR) | KORYTARZ WSPÓLNY (40 PLN / 10 EUR)
+        // DYNAMICZNE RABATY ILOŚCIOWE Z WARIANTEM MAPY (+100%)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2136,7 +2136,7 @@
                 return { 
                     totalDays: 0, totalRegionDaysSum: 0, isSingleCluster: false, isPickup: isPickup, totalPrice: 0, finalPrice: 0, 
                     regularPrice: 0, discountPercent: 0, savings: 0, ratePerDay: 0, currency: currencySymbol, 
-                    isMapSelected: isMapSelected, isPaypal: false, paypalFee: 0, loyaltyDeduction: 0
+                    isMapSelected: isMapSelected, isPaypal: false, paypalFee: 0, loyaltyDeduction: 0, clustersCount: 0
                 };
             }
 
@@ -2221,81 +2221,78 @@
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            let regularBaseReference;
-            if (isEuro) {
-                regularBaseReference = czyKorytarzWspolny ? 10.00 : 8.00;
-            } else {
-                regularBaseReference = czyKorytarzWspolny ? 40.00 : 25.00;
-            }
+            // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (BEZ RABATU)
+            let baseRateStandard = czyKorytarzWspolny ? (isEuro ? 10.00 : 40.00) : (isEuro ? 8.00 : 25.00);
 
-            let ratePerDay;
+            // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO
+            let discountPercent = 0;
+            if (totalDays >= 250)      discountPercent = 80;
+            else if (totalDays >= 181) discountPercent = 72;
+            else if (totalDays >= 121) discountPercent = 64;
+            else if (totalDays >= 81)  discountPercent = 53;
+            else if (totalDays >= 51)  discountPercent = 40;
+            else if (totalDays >= 31)  discountPercent = 27;
+            else if (totalDays >= 16)  discountPercent = 18;
+            else if (totalDays >= 6)   discountPercent = 8;
+            else                       discountPercent = 0;
+
+            // Stawka bazowa za dzień po rabacie ilościowym
             let reportRateNoMap;
-
-            // Obliczamy stawkę za dzień z dynamicznym rabatem (Maksymalny rabat do 80%)
             if (isEuro) {
-    if (czyKorytarzWspolny) {
-        // Korytarz wspólny z zagranicy: baza 10.00 €
-        if (totalDays >= 250)      reportRateNoMap = 2.00;  // -80%
-        else if (totalDays >= 181) reportRateNoMap = 2.80;  // -72%
-        else if (totalDays >= 121) reportRateNoMap = 3.60;  // -64%
-        else if (totalDays >= 81)  reportRateNoMap = 4.70;  // -53%
-        else if (totalDays >= 51)  reportRateNoMap = 6.00;  // -40%
-        else if (totalDays >= 31)  reportRateNoMap = 7.30;  // -27%
-        else if (totalDays >= 16)  reportRateNoMap = 8.20;  // -18%
-        else if (totalDays >= 6)   reportRateNoMap = 9.20;  // -8%
-        else                       reportRateNoMap = 10.00; // 0%
-    } else {
-        // Pojedynczy rejon z zagranicy: baza 8.00 €
-        if (totalDays >= 250)      reportRateNoMap = 1.60;  // -80%
-        else if (totalDays >= 181) reportRateNoMap = 2.24;  // -72%
-        else if (totalDays >= 121) reportRateNoMap = 2.88;  // -64%
-        else if (totalDays >= 81)  reportRateNoMap = 3.76;  // -53%
-        else if (totalDays >= 51)  reportRateNoMap = 4.80;  // -40%
-        else if (totalDays >= 31)  reportRateNoMap = 5.84;  // -27%
-        else if (totalDays >= 16)  reportRateNoMap = 6.56;  // -18%
-        else if (totalDays >= 6)   reportRateNoMap = 7.36;  // -8%
-        else                       reportRateNoMap = 8.00;  // 0%
-    }
+                if (czyKorytarzWspolny) {
+                    if (totalDays >= 250)      reportRateNoMap = 2.00;
+                    else if (totalDays >= 181) reportRateNoMap = 2.80;
+                    else if (totalDays >= 121) reportRateNoMap = 3.60;
+                    else if (totalDays >= 81)  reportRateNoMap = 4.70;
+                    else if (totalDays >= 51)  reportRateNoMap = 6.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 7.30;
+                    else if (totalDays >= 16)  reportRateNoMap = 8.20;
+                    else if (totalDays >= 6)   reportRateNoMap = 9.20;
+                    else                       reportRateNoMap = 10.00;
+                } else {
+                    if (totalDays >= 250)      reportRateNoMap = 1.60;
+                    else if (totalDays >= 181) reportRateNoMap = 2.24;
+                    else if (totalDays >= 121) reportRateNoMap = 2.88;
+                    else if (totalDays >= 81)  reportRateNoMap = 3.76;
+                    else if (totalDays >= 51)  reportRateNoMap = 4.80;
+                    else if (totalDays >= 31)  reportRateNoMap = 5.84;
+                    else if (totalDays >= 16)  reportRateNoMap = 6.56;
+                    else if (totalDays >= 6)   reportRateNoMap = 7.36;
+                    else                       reportRateNoMap = 8.00;
+                }
             } else {
                 if (czyKorytarzWspolny) {
-                    // Korytarz wspólny dla Polski: baza 40.00 PLN
-                    if (totalDays >= 250)      reportRateNoMap = 8.00;  // -80%
-                    else if (totalDays >= 181) reportRateNoMap = 11.20; // -72%
-                    else if (totalDays >= 121) reportRateNoMap = 14.40; // -64%
-                    else if (totalDays >= 81)  reportRateNoMap = 18.80; // -53%
-                    else if (totalDays >= 51)  reportRateNoMap = 24.00; // -40%
-                    else if (totalDays >= 31)  reportRateNoMap = 29.20; // -27%
-                    else if (totalDays >= 16)  reportRateNoMap = 32.80; // -18%
-                    else if (totalDays >= 6)   reportRateNoMap = 36.80; // -8%
-                    else                       reportRateNoMap = 40.00; // 0%
+                    if (totalDays >= 250)      reportRateNoMap = 8.00;
+                    else if (totalDays >= 181) reportRateNoMap = 11.20;
+                    else if (totalDays >= 121) reportRateNoMap = 14.40;
+                    else if (totalDays >= 81)  reportRateNoMap = 18.80;
+                    else if (totalDays >= 51)  reportRateNoMap = 24.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 29.20;
+                    else if (totalDays >= 16)  reportRateNoMap = 32.80;
+                    else if (totalDays >= 6)   reportRateNoMap = 36.80;
+                    else                       reportRateNoMap = 40.00;
                 } else {
-                    // Pojedynczy rejon dla Polski: baza 25.00 PLN
-                    if (totalDays >= 250)      reportRateNoMap = 5.00;  // -80%
-                    else if (totalDays >= 181) reportRateNoMap = 7.00;  // -72%
-                    else if (totalDays >= 121) reportRateNoMap = 9.00;  // -64%
-                    else if (totalDays >= 81)  reportRateNoMap = 11.75; // -53%
-                    else if (totalDays >= 51)  reportRateNoMap = 15.00; // -40%
-                    else if (totalDays >= 31)  reportRateNoMap = 18.25; // -27%
-                    else if (totalDays >= 16)  reportRateNoMap = 20.50; // -18%
-                    else if (totalDays >= 6)   reportRateNoMap = 23.00; // -8%
-                    else                       reportRateNoMap = 25.00; // 0%
+                    if (totalDays >= 250)      reportRateNoMap = 5.00;
+                    else if (totalDays >= 181) reportRateNoMap = 7.00;
+                    else if (totalDays >= 121) reportRateNoMap = 9.00;
+                    else if (totalDays >= 81)  reportRateNoMap = 11.75;
+                    else if (totalDays >= 51)  reportRateNoMap = 15.00;
+                    else if (totalDays >= 31)  reportRateNoMap = 18.25;
+                    else if (totalDays >= 16)  reportRateNoMap = 20.50;
+                    else if (totalDays >= 6)   reportRateNoMap = 23.00;
+                    else                       reportRateNoMap = 25.00;
                 }
             }
 
-            // Doliczenie +100% dla wariantu Raport+Mapa
-            ratePerDay = isMapSelected ? Math.round((reportRateNoMap * 2.0) * 100) / 100 : reportRateNoMap;
-            regularBaseReference = isMapSelected ? Math.round((regularBaseReference * 2.0) * 100) / 100 : regularBaseReference;
+            // Dopłata +100% dla pakietu z Mapą (mnożnik 2.0)
+            let multiplier = isMapSelected ? 2.0 : 1.0;
+            let ratePerDay = Math.round((reportRateNoMap * multiplier) * 100) / 100;
+            let regularBaseReference = Math.round((baseRateStandard * multiplier) * 100) / 100;
+
+            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
             let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
 
-            // Doliczenie prowizji PayPal
-            window.aktualnaProwizjaPayPal = 0;
-            let paymentEl = document.querySelector('input[name="paymentMethod"]:checked');
-            if (paymentEl && paymentEl.value.toLowerCase().includes('paypal')) {
-                let fixedFee = (typeof currentCurrency !== 'undefined' && currentCurrency === 'EUR') ? 0.35 : 1.35;
-                window.aktualnaProwizjaPayPal = Math.round(((totalPriceNetto * 0.034) + fixedFee) * 100) / 100;
-                totalPriceNetto = Math.round((totalPriceNetto + window.aktualnaProwizjaPayPal) * 100) / 100;
-            }
-
+            // Kod rabatowy stałego klienta (jeśli aktywny)
             let loyaltyDeduction = 0;
             if (activeLoyaltyDiscount && totalPriceNetto > 0) {
                 if (activeLoyaltyDiscount.type === 'PROCENT') {
@@ -2306,21 +2303,22 @@
                 totalPriceNetto = Math.max(0, Math.round((totalPriceNetto - loyaltyDeduction) * 100) / 100);
             }
 
-            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let savings = Math.round((regularPrice - totalPriceNetto) * 100) / 100;
-            let discountPercent = regularPrice === 0 ? 0 : Math.round((savings / regularPrice) * 100);
+            let savings = Math.max(0, Math.round((regularPrice - totalPriceNetto) * 100) / 100);
 
+            // Wykrywanie wyboru bramki PayPal (zgodnie z polem name="payment")
             let isPaypal = selectedPaymentRadio && selectedPaymentRadio.value.toUpperCase().includes("PAYPAL");
             let paypalFixed = isEuro ? 0.35 : 1.35;
-            let paypalPercent = 0.029;
+            let paypalPercent = 0.034; // standard 3.4%
 
             let finalPayAmount = totalPriceNetto;
             let paypalFee = 0;
 
             if (isPaypal && totalPriceNetto > 0) {
-                finalPayAmount = Math.round(((totalPriceNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
-                paypalFee = Math.round((finalPayAmount - totalPriceNetto) * 100) / 100;
+                paypalFee = Math.round(((totalPriceNetto * paypalPercent) + paypalFixed) * 100) / 100;
+                finalPayAmount = Math.round((totalPriceNetto + paypalFee) * 100) / 100;
             }
+
+            window.aktualnaProwizjaPayPal = paypalFee;
 
             return {
                 totalDays: totalDays,
@@ -2341,7 +2339,7 @@
                 loyaltyDeduction: loyaltyDeduction
             };
         }
-
+        
         function renderOrderLiveBreakdown() {
             var box = document.getElementById('orderSummaryBreakdown');
             var details = document.getElementById('orderSummaryDetails');
