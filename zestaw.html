@@ -409,12 +409,15 @@
         .report-format-options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 10px;
+            gap: 16px;
+            margin: 14px auto 4px auto;
+            max-width: 880px;
+            justify-content: center;
+            align-items: stretch;
         }
         @media (min-width: 768px) {
             .report-format-options-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, minmax(280px, 420px));
             }
         }
         .format-card-radio {
@@ -441,15 +444,18 @@
         .format-card-header {
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             gap: 8px;
             font-weight: 700;
             font-size: 0.94rem;
             color: #f8fafc;
         }
         .format-card-desc {
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
-            line-height: 1.4;
+            line-height: 1.45;
+            text-align: center;
         }
 
         .client-input { 
@@ -639,11 +645,22 @@
                     <div class="price-tag-large" id="configPrice">Wycena automatyczna</div>
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
+                    <!-- BANER AKTUALIZACJI CENNIKA 2027 -->
+                    <div style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.14) 0%, rgba(56, 189, 248, 0.14) 100%); border: 1px solid rgba(46, 204, 113, 0.45); border-radius: 8px; padding: 12px 16px; margin: 0 auto 18px auto; max-width: 820px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                        <div style="color: #2ecc71; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            📢 Aktualizacja cennika na sezon 2027 (obowiązuje od dziś)
+                        </div>
+                        <div style="color: #f0f6fc; font-size: 0.9rem; line-height: 1.45;">
+                            • <b>Raport Operacyjny PRO:</b> <b style="color: #fbbf24;">40 zł / dzień</b> (zamówienia w PL) lub <b style="color: #fbbf24;">10 € / dzień</b> (zamówienia spoza Polski)<br>
+                            • <b>Interaktywna Mapa Online GPS:</b> opcjonalnie tylko <b style="color: #38bdf8;">+40 zł (lub +10 €)</b> jednorazowo za <b>całe zamówienie!</b>
+                        </div>
+                    </div>
+
                     <ul class="strategy-list" style="margin-bottom: 20px;">
                         <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
-                        <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">25 PLN / dzień (pojedynczy rejon) lub 40 PLN / dzień (korytarz wspólny)</span></b>.</li>
-                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
-                        <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
+                        <li>Stawka bazowa na rok 2027: <b><span id="dynamicBaseRateInfo">40 PLN / dzień (w Polsce) | 10 € / dzień (poza Polską)</span></b>.</li>
+                        <li><b>Interaktywna Mapa Online GPS:</b> stała dopłata <b>+40 PLN / +10 € za cały pakiet</b> (niezależnie od liczby zamówionych dni!).</li>
+                        <li>Dla zamówień wielodniowych obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka dzienna).</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
                     </ul>
 
@@ -736,40 +753,47 @@
 
                 <!-- KROK 3: WYBÓR FORMATU ZAMÓWIENIA -->
                 <div class="form-header">📄 3. Wybierz wariant pakietu:</div>
-                <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 12px;">
-                    <div style="font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; line-height: 1.4;">
-                        Otrzymujesz jeden uniwersalny plik z wbudowanym <b>przełącznikiem motywu ☀️ Jasny / 🌙 Ciemny</b> wewnątrz dokumentu. Możesz zamówić sam raport lub rozszerzyć go o Mapę Online (+100%):
+                <div class="extra-options-group" id="formatBox" style="background: rgba(10, 14, 20, 0.45); border: 1px solid rgba(46, 204, 113, 0.35); border-radius: var(--radius-sm); padding: 16px;">
+                    <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 12px; line-height: 1.45; text-align: center;">
+                        Otrzymujesz uniwersalny plik z wbudowanym <b>przełącznikiem motywu ☀️ Jasny / 🌙 Ciemny</b>.<br>
+                        Wybierz sam Raport PRO lub dobierz <b>Mapę Online GPS</b> w stałej cenie <b>+40 zł / +10 € za całe zamówienie</b>:
                     </div>
 
                     <div class="report-format-options-grid">
 
-                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMENCIE) -->
+                        <!-- OPCJA 1: SAM RAPORT PRO -->
                         <div class="format-card-radio active" onclick="wybierzFormat('Raport Interaktywny (Jasny/Ciemny)', this)">
                             <div class="format-card-header">
                                 <input type="radio" name="reportTheme" value="Raport Interaktywny (Jasny/Ciemny)" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
                                 <span>📑 Raport PRO (☀️ Jasny / 🌙 Ciemny)</span>
                             </div>
+                            <div style="text-align: center; margin: 4px 0;">
+                                <span style="background: rgba(46, 204, 113, 0.15); border: 1px solid #2ecc71; color: #2ecc71; font-size: 0.76rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">
+                                    40 zł / dzień (PL) • 10 € / dzień (UE)
+                                </span>
+                            </div>
                             <div class="format-card-desc">
-                                Jeden interaktywny raport z przełącznikiem motywu Jasny (do druku A4 i w słońcu) / Ciemny (OLED na noc) wewnątrz pliku oraz aktywnymi linkami nawigacji (cena standardowa).
+                                Interaktywny raport z przełącznikiem motywu Jasny (do druku A4) / Ciemny (OLED na noc) oraz aktywnymi linkami nawigacji Google Maps.
                             </div>
                         </div>
 
-                        <!-- OPCJA 2: RAPORT + MAPA ONLINE (+100%) -->
+                        <!-- OPCJA 2: RAPORT + MAPA ONLINE (+40 ZŁ / +10 € ZA CAŁOŚĆ) -->
                         <div class="format-card-radio" onclick="wybierzFormat('Raport+Mapa', this)">
-                            <div class="format-card-header" style="justify-content: space-between; width: 100%;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="radio" name="reportTheme" value="Raport+Mapa" style="accent-color: #38bdf8; margin: 0; width: 18px; height: 18px;">
-                                    <span style="color: #38bdf8;">🗺️ Raport PRO + Mapa Online</span>
-                                </div>
-                                <span style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;">+100% ceny</span>
+                            <div class="format-card-header">
+                                <input type="radio" name="reportTheme" value="Raport+Mapa" style="accent-color: #38bdf8; margin: 0; width: 18px; height: 18px;">
+                                <span style="color: #38bdf8;">🗺️ Raport PRO + Mapa Online</span>
+                            </div>
+                            <div style="text-align: center; margin: 4px 0;">
+                                <span id="mapAddonPriceBadge" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-size: 0.76rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">
+                                    +40 zł / +10 € za całe zamówienie
+                                </span>
                             </div>
                             <div class="format-card-desc">
-                                Pełny pakiet: <b>Raport z przełącznikiem trybów + Interaktywna Mapa GPS</b> z naniesionymi punktami wywozów, podziałem na dni tygodnia i warstwami podkładu.
+                                Pełny pakiet: <b>Raport PRO + Interaktywna Mapa GPS</b> z naniesionymi punktami wywozów, podziałem na dni tygodnia i warstwami podkładu.
                             </div>
                         </div>
 
                     </div>
-                </div>
                 </div>
 
                 <!-- KROK 4: OPCJE DODATKOWE (KOMPAKTOWE) -->
@@ -1080,9 +1104,9 @@
         var baseRateInfoEl = document.getElementById('dynamicBaseRateInfo');
         if (baseRateInfoEl) {
             if (userLangInit === 'pl') {
-                baseRateInfoEl.textContent = '25 PLN / dzień (pojedynczy rejon) lub 40 PLN / dzień (korytarz wspólny)';
+                baseRateInfoEl.textContent = '40 PLN / dzień (+ opcjonalnie Mapa Online 40 PLN za całe zamówienie)';
             } else {
-                baseRateInfoEl.textContent = '8 € / dzień (pojedynczy rejon) lub 10 € / dzień (korytarz wspólny)';
+                baseRateInfoEl.textContent = '10 € / dzień (+ opcjonalnie Mapa Online 10 € za całe zamówienie)';
             }
         }
 
@@ -2218,8 +2242,8 @@
             let isSingleCluster = (clusters.length === 1 && selectedRegions.length > 1);
             let czyKorytarzWspolny = (selectedRegions.length > 1);
 
-            // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (BEZ RABATU)
-            let baseRateStandard = czyKorytarzWspolny ? (isEuro ? 10.00 : 40.00) : (isEuro ? 8.00 : 25.00);
+            // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ NA ROK 2027 (40 PLN w PL / 10 EUR poza PL)
+            let baseRateStandard = isEuro ? 10.00 : 40.00;
 
             // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO
             let discountPercent = 0;
@@ -2233,61 +2257,36 @@
             else if (totalDays >= 6)   discountPercent = 8;
             else                       discountPercent = 0;
 
-            // Stawka bazowa za dzień po rabacie ilościowym
+            // Stawka dzienna po rabacie ilościowym (jednolita baza 40 PLN / 10 EUR)
             let reportRateNoMap;
             if (isEuro) {
-                if (czyKorytarzWspolny) {
-                    if (totalDays >= 250)      reportRateNoMap = 2.00;
-                    else if (totalDays >= 181) reportRateNoMap = 2.80;
-                    else if (totalDays >= 121) reportRateNoMap = 3.60;
-                    else if (totalDays >= 81)  reportRateNoMap = 4.70;
-                    else if (totalDays >= 51)  reportRateNoMap = 6.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 7.30;
-                    else if (totalDays >= 16)  reportRateNoMap = 8.20;
-                    else if (totalDays >= 6)   reportRateNoMap = 9.20;
-                    else                       reportRateNoMap = 10.00;
-                } else {
-                    if (totalDays >= 250)      reportRateNoMap = 1.60;
-                    else if (totalDays >= 181) reportRateNoMap = 2.24;
-                    else if (totalDays >= 121) reportRateNoMap = 2.88;
-                    else if (totalDays >= 81)  reportRateNoMap = 3.76;
-                    else if (totalDays >= 51)  reportRateNoMap = 4.80;
-                    else if (totalDays >= 31)  reportRateNoMap = 5.84;
-                    else if (totalDays >= 16)  reportRateNoMap = 6.56;
-                    else if (totalDays >= 6)   reportRateNoMap = 7.36;
-                    else                       reportRateNoMap = 8.00;
-                }
+                if (totalDays >= 250)      reportRateNoMap = 2.00;
+                else if (totalDays >= 181) reportRateNoMap = 2.80;
+                else if (totalDays >= 121) reportRateNoMap = 3.60;
+                else if (totalDays >= 81)  reportRateNoMap = 4.70;
+                else if (totalDays >= 51)  reportRateNoMap = 6.00;
+                else if (totalDays >= 31)  reportRateNoMap = 7.30;
+                else if (totalDays >= 16)  reportRateNoMap = 8.20;
+                else if (totalDays >= 6)   reportRateNoMap = 9.20;
+                else                       reportRateNoMap = 10.00;
             } else {
-                if (czyKorytarzWspolny) {
-                    if (totalDays >= 250)      reportRateNoMap = 8.00;
-                    else if (totalDays >= 181) reportRateNoMap = 11.20;
-                    else if (totalDays >= 121) reportRateNoMap = 14.40;
-                    else if (totalDays >= 81)  reportRateNoMap = 18.80;
-                    else if (totalDays >= 51)  reportRateNoMap = 24.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 29.20;
-                    else if (totalDays >= 16)  reportRateNoMap = 32.80;
-                    else if (totalDays >= 6)   reportRateNoMap = 36.80;
-                    else                       reportRateNoMap = 40.00;
-                } else {
-                    if (totalDays >= 250)      reportRateNoMap = 5.00;
-                    else if (totalDays >= 181) reportRateNoMap = 7.00;
-                    else if (totalDays >= 121) reportRateNoMap = 9.00;
-                    else if (totalDays >= 81)  reportRateNoMap = 11.75;
-                    else if (totalDays >= 51)  reportRateNoMap = 15.00;
-                    else if (totalDays >= 31)  reportRateNoMap = 18.25;
-                    else if (totalDays >= 16)  reportRateNoMap = 20.50;
-                    else if (totalDays >= 6)   reportRateNoMap = 23.00;
-                    else                       reportRateNoMap = 25.00;
-                }
+                if (totalDays >= 250)      reportRateNoMap = 8.00;
+                else if (totalDays >= 181) reportRateNoMap = 11.20;
+                else if (totalDays >= 121) reportRateNoMap = 14.40;
+                else if (totalDays >= 81)  reportRateNoMap = 18.80;
+                else if (totalDays >= 51)  reportRateNoMap = 24.00;
+                else if (totalDays >= 31)  reportRateNoMap = 29.20;
+                else if (totalDays >= 16)  reportRateNoMap = 32.80;
+                else if (totalDays >= 6)   reportRateNoMap = 36.80;
+                else                       reportRateNoMap = 40.00;
             }
 
-            // Dopłata +100% dla pakietu z Mapą (mnożnik 2.0)
-            let multiplier = isMapSelected ? 2.0 : 1.0;
-            let ratePerDay = Math.round((reportRateNoMap * multiplier) * 100) / 100;
-            let regularBaseReference = Math.round((baseRateStandard * multiplier) * 100) / 100;
+            // Jednorazowa dopłata za Mapę Online za całe zamówienie (40 PLN lub 10 EUR)
+            let mapFlatAddon = (isMapSelected && totalDays > 0) ? (isEuro ? 10.00 : 40.00) : 0.00;
+            let ratePerDay = reportRateNoMap;
 
-            let regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-            let totalPriceNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+            let regularPrice = Math.round(((totalDays * baseRateStandard) + mapFlatAddon) * 100) / 100;
+            let totalPriceNetto = Math.round(((totalDays * ratePerDay) + mapFlatAddon) * 100) / 100;
 
             // Kod rabatowy stałego klienta (jeśli aktywny)
             let loyaltyDeduction = 0;
@@ -2549,7 +2548,8 @@
                 
                 let loyaltyNotice = '';
                 if (calc.isMapSelected) {
-                    loyaltyNotice += ` | <b style="color:#38bdf8;">Pakiet: Raport+Mapa (+100%)</b>`;
+                    let mapFeeTxt = (calc.currency === "EUR") ? "+10 €" : "+40 PLN";
+                    loyaltyNotice += ` | <b style="color:#38bdf8;">Mapa Online (${mapFeeTxt} za całość)</b>`;
                 }
                 if (window.aktualnaProwizjaPayPal && window.aktualnaProwizjaPayPal > 0) {
                     let curr = (typeof currentCurrency !== 'undefined') ? currentCurrency : 'PLN';
@@ -2794,7 +2794,7 @@
                         let mailBody = encodeURIComponent(
                             `Dzień dobry,\n\n` +
                             `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
-                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 25 PLN / 8 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
+                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
                             `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
                         );
                         
