@@ -599,12 +599,9 @@
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026/2027</span>
-                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka 2027: 40 PLN / dzień (PL) | 10 € / dzień (UE)</span>
+                    <span class="price-hero-pill" id="dynamic-cal-price-badge">📩 Indywidualna wycena trasy | Rabaty ilościowe</span>
                 </div>
                 
-                                <div style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.14) 0%, rgba(56, 189, 248, 0.14) 100%); border: 1px solid rgba(46, 204, 113, 0.45); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; text-align: center; font-size: 0.85rem; color: #f0f6fc;">
-                    📢 <strong style="color: #2ecc71;">Aktualizacja cennika na sezon 2027 (od dziś):</strong> Jednolita stawka <strong style="color: #fbbf24;">40 zł / dzień</strong> (w PL) lub <strong style="color: #fbbf24;">10 € / dzień</strong> (poza PL). Interaktywna Mapa Online GPS: opcjonalnie</strong>
-                </div>
                 <div class="hero-features-grid" id="cal-hint">
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">📅</span>
@@ -616,7 +613,7 @@
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">🛒</span>
-                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">40 PLN / dzień w PL lub 10 € / dzień poza PL (+ opcjonalnie Mapa</span>):</strong> zaznaczaj rejony i korzystaj z automatycznych rabatów ilościowych.</div>
+                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">wycena indywidualna z rabatami ilościowymi</span>):</strong> zaznaczaj rejony i korzystaj z automatycznych rabatów ilościowych.</div>
                     </div>
                 </div>
             </div>
@@ -642,7 +639,7 @@
                 <div class="cart-info">
                     ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
                     Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
-                    Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
+                    Wycena: <span class="cart-total-badge notranslate" translate="no" id="cart-total">Wycena indywidualna</span>
                     <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
                 </div>
 
@@ -1044,18 +1041,18 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki (Stawka 2027: 40 PLN / 10 € za dzień + opcjonalnie)
+            // Inicjalizacja etykiet nagłówka
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
                 priceBadgeEl.textContent = isPolish 
-                    ? '💰 Stawka 2027: 40 PLN / dzień | Mapa: opcjonalnie' 
-                    : (userLang === 'de' ? '💰 Preis 2027: 10 € / Tag | Karte: +10 € gesamt' : '💰 Rate 2027: 10 € / day | Map: Option');
+                    ? '📩 Indywidualna wycena trasy | Rabaty ilościowe' 
+                    : (userLang === 'de' ? '📩 Individuelle Routen-Kalkulation | Mengenrabatte' : '📩 Custom Route Quote | Volume Discounts');
             }
             if (rateInlineEl) {
                 rateInlineEl.textContent = isPolish 
-                    ? '40 PLN / dzień za raport (+ opcjonalnie Mapa)' 
-                    : (userLang === 'de' ? '10 € / Tag für Bericht (+ optional Karte)' : '10 € / day for report (+ optional Map)');
+                    ? 'wycena indywidualna z rabatami ilościowymi oraz korytarzami wspólnymi' 
+                    : (userLang === 'de' ? 'individuelle Kalkulation mit Mengenrabatt und Korridor-Paketen' : 'custom quote with volume discounts and shared corridors');
             }
 
             // Metody płatności z ograniczeniem dla PL / Zagranica
@@ -1230,8 +1227,8 @@
 
             // =========================================================================
             // CENNIK:
-            // Pojedynczy rejon (2027): jednolita stawka 40 PLN / 10 € za każdy dzień
-            // Pakiet tras / Korytarz wspólny: 40 PLN / 10 € za dzień
+            // Kalkulacja pojedynczego rejonu
+            // Kalkulacja korytarza wspólnego
             // Dynamiczne rabaty ilościowe wg liczby dni w trasie + grupowanie sąsiadów
             // =========================================================================
             function calculateTotals() {
@@ -1324,7 +1321,7 @@
 
                 if (isEuro) {
                     if (czyKorytarzWspolny) {
-                        // Pakiet / korytarz wspólny: baza 10 € / dzień
+                        // Kalkulacja pakietu
                         const basePkg = 10.00;
                         if (totalDays >= 250)      ratePerDay = 2.00; // -80%
                         else if (totalDays >= 181) ratePerDay = 2.80; // -72%
@@ -1339,7 +1336,7 @@
                         regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
                         totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                     } else {
-                        // Pojedynczy rejon (Cennik 2027): jednolita stawka 10 € / dzień
+                        // Kalkulacja pojedynczego rejonu
                         const firstDayBase = 10.00;
                         const nextDayBase = 10.00;
                         regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
@@ -1367,7 +1364,7 @@
                     }
                 } else {
                     if (czyKorytarzWspolny) {
-                        // Pakiet / korytarz wspólny: baza 40 PLN / dzień
+                        // Kalkulacja pakietu
                         const basePkg = 40.00;
                         if (totalDays >= 250)      ratePerDay = 8.00;  // -80%
                         else if (totalDays >= 181) ratePerDay = 11.20; // -72%
@@ -1382,7 +1379,7 @@
                         regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
                         totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                     } else {
-                        // Pojedynczy rejon (Cennik 2027): jednolita stawka 40 PLN / dzień
+                        // Kalkulacja pojedynczego rejonu
                         const firstDayBase = 40.00;
                         const nextDayBase = 40.00;
                         regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
@@ -1541,72 +1538,53 @@
                     cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
                 }
 
-                let discountTag = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
-
-                if (calc.isPaypal && calc.paypalFee > 0) {
-                    cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}${discountTag}`;
+                if (calc.termsCount > 0) {
+                    cartTotalEl.textContent = isPolish
+                        ? `Wycena indywidualna (${calc.billableDays} dni w trasie)`
+                        : `Individuelle Anfrage (${calc.billableDays} Fahrtage)`;
                     cartFeeNoteEl.style.display = "inline";
                     cartFeeNoteEl.textContent = isPolish
-                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN)`
-                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €)`;
-                } else {
-                    cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}${discountTag}`;
-                    if (calc.savings > 0) {
-                        cartFeeNoteEl.style.display = "inline";
-                        cartFeeNoteEl.textContent = isPolish
-                            ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN)`
-                            : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €)`;
-                    } else {
-                        cartFeeNoteEl.style.display = "none";
-                        cartFeeNoteEl.textContent = "";
-                    }
-                }
+                        ? `(Preferowana płatność: ${calc.paymentMethod})`
+                        : `(Zahlungsart: ${calc.paymentMethod})`;
 
-                if (calc.termsCount > 0) {
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
                     let detailsText = "";
                     for (let date in grouped) {
-                        detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
+                        detailsText += `
+• ${date}: ${grouped[date].join(', ')}`;
                     }
 
                     if (isPolish) {
-                        submitBtn.innerHTML = `📱 Zamów pakiet (${calc.finalAmount.toFixed(2)} PLN${discountTag})`;
-                        
-                        let paymentInfoText = `Forma płatności: ${calc.paymentMethod}`;
-                        if (calc.isPaypal) {
-                            paymentInfoText += ` (Łącznie z prowizją PayPal: ${calc.finalAmount.toFixed(2)} PLN, kwota netto: ${calc.totalNetto.toFixed(2)} PLN). PayPal: ewabu74@gmail.com`;
-                        } else if (calc.paymentMethod === 'BLIK') {
-                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na BLIK nr 733035301)`;
-                        } else {
-                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
-                        }
-
+                        submitBtn.innerHTML = `📩 Wyślij zapytanie o wycenę (${calc.billableDays} dni w trasie)`;
                         let trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
+                        let smsBody = `Dzień dobry, proszę o wycenę dostępu do rejonów [ID: ${globalOrderId}].
+Tryb: ${trybPakietu}
+Łącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).
+Wybrane terminy zbiórek:${detailsText}
+Preferowana płatność: ${calc.paymentMethod}
+Pozdrawiam.`;
                         submitBtn.onclick = function() {
                             window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
                         };
                     } else {
-                        submitBtn.innerHTML = `💬 Bestellen (${calc.finalAmount.toFixed(2)} €${discountTag})`;
-
-                        let paymentInfoText = `Zahlung: ${calc.paymentMethod}`;
-                        if (calc.isPaypal) {
-                            paymentInfoText += ` (Inkl. PayPal-Gebühr: ${calc.finalAmount.toFixed(2)} €, Netto: ${calc.totalNetto.toFixed(2)} €). PayPal: ewabu74@gmail.com`;
-                        } else {
-                            paymentInfoText += ` (Betrag: ${calc.finalAmount.toFixed(2)} € auf IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
-                        }
-
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                        submitBtn.innerHTML = `💬 Preis anfragen (${calc.billableDays} Fahrtage)`;
+                        let waBody = `Hallo, ich bitte um ein Preisangebot für folgende Gebiete [Anfrage-Nr: ${globalOrderId}]:
+Gesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)
+Termine:${detailsText}
+Bevorzugte Zahlung: ${calc.paymentMethod}. Danke!`;
                         submitBtn.onclick = function() {
                             window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
                         };
                     }
                 } else {
+                    cartTotalEl.textContent = isPolish ? "Wycena indywidualna" : "Individuelle Anfrage";
+                    cartFeeNoteEl.style.display = "none";
+                    cartFeeNoteEl.textContent = "";
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '📱 Gebiete auswählen';
+                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony do wyceny' : '📱 Gebiete zur Anfrage auswählen';
                     submitBtn.onclick = null;
                 }
 
@@ -1712,7 +1690,7 @@
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
                                             <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                💰 ${isPolish ? 'Stawka 2027: 40 PLN / dzień (z rabatami ilościowymi) | Mapa GPS: Opcjonalnie' : 'Preis 2027: 10 € / Tag (mit Mengenrabatt) | GPS-Karte: Option'}
+                                                📩 ${isPolish ? 'Wycena indywidualna (z rabatami ilościowymi i korytarzami wspólnymi)' : 'Individuelle Kalkulation (mit Mengenrabatt & Korridor-Paket)'}
                                             </div>
                                         </div>
 
@@ -1725,11 +1703,11 @@
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #2ecc71; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">2. ${isPolish ? 'Dodaj kolejne dni (+)' : 'Tage hinzufügen (+)'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Klikaj <strong>➕ Kolejny dzień</strong> (40 PLN / dzień) lub <strong>📅 Cały tydzień</strong> – im więcej dni, tym wyższy rabat.' : 'Klicken Sie auf <strong>➕ Nächster Tag</strong> (10 € / Tag) oder <strong>📅 Ganze Woche</strong>.'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Klikaj <strong>➕ Kolejny dzień</strong> lub <strong>📅 Cały tydzień</strong> – im więcej dni, tym korzystniejsza wycena.' : 'Klicken Sie auf <strong>➕ Nächster Tag</strong> oder <strong>📅 Ganze Woche</strong> für Mengenrabatte.'}</div>
                                             </div>
                                             <div style="background: #1c1c1c; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px;">
                                                 <div style="color: #f59e0b; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">3. ${isPolish ? 'Pakiet / Korytarz' : 'Korridor-Paket'}</div>
-                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Sąsiednie rejony łączą się we <strong>wspólny korytarz (40 PLN / dzień)</strong> z rabatami do -80%.' : 'Nachbargebiete werden als <strong>Korridor-Paket (10 € / Tag)</strong> mit bis zu -80% Rabatt berechnet.'}</div>
+                                                <div style="color: #ccc; font-size: 0.81rem; line-height: 1.4;">${isPolish ? 'Sąsiednie rejony łączą się we <strong>wspólny korytarz</strong> z dodatkowymi rabatami ilościowymi.' : 'Nachbargebiete werden als <strong>Korridor-Paket</strong> mit Mengenrabatt zusammengefasst.'}</div>
                                             </div>
                                         </div>
 
