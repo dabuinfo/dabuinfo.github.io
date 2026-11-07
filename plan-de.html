@@ -1202,13 +1202,9 @@
                 let fLines = (item.rawFrakcje || item.frakcje || "Sperrmüll").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
                 let uniqueFractions = new Set();
                 fLines.forEach(line => {
-                    let parts = line.split('+').map(s => s.trim().toLowerCase());
+                    let parts = line.split('+').map(s => s.trim()).filter(Boolean);
                     parts.forEach(p => {
-                        if (p.includes("sperr")) uniqueFractions.add("Sperrmüll");
-                        else if (p.includes("metall") || p.includes("kühlgeräte")) uniqueFractions.add("Metall");
-                        else if (p.includes("elektro") || p.includes("schrott")) uniqueFractions.add("E-Schrott");
-                        else if (p.includes("holz")) uniqueFractions.add("Holz");
-                        else if (p.length > 0) uniqueFractions.add(p.charAt(0).toUpperCase() + p.slice(1));
+                        uniqueFractions.add(p.charAt(0).toUpperCase() + p.slice(1));
                     });
                 });
                 if (uniqueFractions.size === 0) uniqueFractions.add("Sperrmüll");
@@ -1414,15 +1410,8 @@
                 if (fLines.length === 0) fLines = ["Sperrmüll"];
 
                 const extractFractions = (line) => {
-                    let parts = line.split('+').map(s => s.trim().toLowerCase());
-                    let result = new Set();
-                    parts.forEach(p => {
-                        if (p.includes("sperr")) result.add("Sperrmüll");
-                        else if (p.includes("metall") || p.includes("kühlgeräte")) result.add("Metall");
-                        else if (p.includes("elektro") || p.includes("schrott")) result.add("E-Schrott");
-                        else if (p.includes("holz")) result.add("Holz");
-                        else if (p.length > 0) result.add(p.charAt(0).toUpperCase() + p.slice(1));
-                    });
+                    let parts = line.split('+').map(s => s.trim()).filter(Boolean).map(p => p.charAt(0).toUpperCase() + p.slice(1));
+                    let result = new Set(parts);
                     if (result.size === 0) result.add("Sperrmüll");
                     return Array.from(result);
                 };
@@ -1454,7 +1443,7 @@
                 } else if (fractionFilter === 'METAL_ELEKTRO') {
                     for (let fKey in fMap) {
                         let kl = fKey.toLowerCase();
-                        if (kl.includes('metall') || kl.includes('schrott') || kl.includes('elektro')) {
+                        if (kl.includes('metall') || kl.includes('schrott') || kl.includes('szrott') || kl.includes('elektro') || kl.includes('kühlgeräte') || kl.includes('altgeräte')) {
                             if (Array.from(fMap[fKey]).some(d => aktywneDni[d])) pasujeFrakcjaIDzien = true;
                         }
                     }
