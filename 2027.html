@@ -371,7 +371,7 @@
                     Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku.
                 </div>
                 <div class="plan-surcharge-badge" id="badgeReportPrice" style="border-color: var(--accent-green); color: var(--accent-green); background: rgba(46, 204, 113, 0.12);">
-                    Indywidualna wycena (z rabatami ilościowymi)
+                    Stawka bazowa: 4 zł / dzień
                 </div>
             </label>
 
@@ -382,7 +382,7 @@
                     Pełny raport cyfrowy rozszerzony o interaktywną wizualizację punktów i sektorów wywozu na mapie GPS dzień po dniu.
                 </div>
                 <div class="plan-surcharge-badge" id="badgeMapSurcharge">
-                    Pełny pakiet z Interaktywną Mapą GPS
+                    Dopłata do raportu: +4 zł / dzień (łącznie 8 zł / dzień)
                 </div>
             </label>
         </div>
@@ -398,8 +398,8 @@
                         Gwarancja stałej, najniższej stawki za dzień w kompletnym kalendarzu rocznika 2027.
                     </div>
                 </div>
-                <div class="annual-rate-tag" id="labelPriceYear" style="color: var(--accent-green);">
-                    Wycena indywidualna
+                <div class="annual-rate-tag" id="labelPriceYear">
+                    4 zł / dzień wywozu
                 </div>
             </div>
 
@@ -444,11 +444,11 @@
                 </div>
                 <div class="price-line" id="unitPriceRow">
                     <span>Stawka jednostkowa:</span>
-                    <span id="calcUnitPrice" style="color: var(--accent-green);">Wycena indywidualna (z rabatami ilościowymi)</span>
+                    <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
                 </div>
                 <div class="price-total-line">
                     <span>ŁĄCZNA KWOTA:</span>
-                    <span id="calcTotalPrice">Wycena indywidualna</span>
+                    <span id="calcTotalPrice">0 zł</span>
                 </div>
             </div>
 
@@ -506,7 +506,7 @@
                 </div>
             </div>
 
-            <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i wyślij zapytanie</button>
+            <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i potwierdź</button>
         </div>
     </div>
 </div>
@@ -522,6 +522,44 @@
             document.getElementById('salesClosedBanner').style.display = 'block';
             document.getElementById('orderMainContainer').style.display = 'none';
             return;
+        }
+
+        // --- DETEKCJA JĘZYKA PRZEGLĄDARKI (PL = PLN, RESZTA = EUR) ---
+        const userLang = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
+        const isPolish = userLang.startsWith('pl');
+        const currencyCode = isPolish ? 'PLN' : 'EUR';
+        const currencySymbol = isPolish ? 'zł' : '€';
+
+        // Stawka bazowa raportu: 4 PLN lub 2 EUR za dzień wywozu
+        // Dopłata za opcję mapy: +4 PLN lub +1 EUR za dzień wywozu
+        const BASE_RATE_DAY = isPolish ? 4.00 : 2.00;
+        const MAP_SURCHARGE_DAY = isPolish ? 4.00 : 1.00;
+
+        // Aktualizacja etykiet cenowych w kafelkach wyboru formatu
+        const badgeReportPrice = document.getElementById('badgeReportPrice');
+        const badgeMapSurcharge = document.getElementById('badgeMapSurcharge');
+        const labelPriceYear = document.getElementById('labelPriceYear');
+
+        if (badgeReportPrice) {
+            badgeReportPrice.textContent = `Stawka bazowa: ${BASE_RATE_DAY} ${currencySymbol} / dzień`;
+        }
+        if (badgeMapSurcharge) {
+            badgeMapSurcharge.textContent = `Dopłata do raportu: +${MAP_SURCHARGE_DAY} ${currencySymbol} / dzień (łącznie ${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / dzień)`;
+        }
+        if (labelPriceYear) {
+            labelPriceYear.textContent = `${BASE_RATE_DAY} ${currencySymbol} / dzień wywozu`;
+        }
+
+        // Ukrycie BLIK dla klientów spoza Polski
+        const payBlikCard = document.getElementById('payBlik');
+        const payBankCard = document.getElementById('payBank');
+        if (!isPolish && payBlikCard) {
+            payBlikCard.style.display = 'none';
+            if (payBankCard) {
+                payBankCard.classList.add('active');
+                const radioBank = payBankCard.querySelector('input');
+                if (radioBank) radioBank.checked = true;
+            }
         }
 
         const regionsList = [
@@ -560,10 +598,11 @@
         let regionDaysMap = {};
         let currentFormat = 'Raport'; 
         const selectedYear = '2027';
-        let currentPayment = 'BLIK na telefon (+48 733 035 301)';
+        let currentPayment = isPolish ? 'BLIK na telefon (+48 733 035 301)' : 'Przelew bankowy / IBAN';
         let selectedRegions = new Set();
         let currentStep = 'need_pin';
 
+        let calculatedTotal = 0;
         let calculatedDays = 0;
 
         // Elementy DOM
@@ -584,6 +623,12 @@
         const submitBtn = document.getElementById('submitOrderBtn');
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
+
+        function getActiveRatePerDay() {
+            return currentFormat === 'Raport + Mapa' 
+                ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) 
+                : BASE_RATE_DAY;
+        }
 
         // Obsługa wyboru płatności
         document.querySelectorAll('.payment-card').forEach(card => {
@@ -668,6 +713,9 @@
             cardFormatMap.classList.remove('active');
             cardFormatReport.querySelector('input').checked = true;
             calcFormatName.textContent = 'Raport cyfrowy (Tabela / XLS)';
+            if (labelPriceYear) {
+                labelPriceYear.textContent = `${BASE_RATE_DAY} ${currencySymbol} / dzień wywozu`;
+            }
             updateCalculation();
         });
 
@@ -676,7 +724,10 @@
             cardFormatMap.classList.add('active');
             cardFormatReport.classList.remove('active');
             cardFormatMap.querySelector('input').checked = true;
-            calcFormatName.textContent = `Raport + Interaktywna Mapa (GPS)`;
+            calcFormatName.textContent = `Raport + Interaktywna Mapa (+${MAP_SURCHARGE_DAY} ${currencySymbol}/dzień)`;
+            if (labelPriceYear) {
+                labelPriceYear.textContent = `${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / dzień wywozu`;
+            }
             updateCalculation();
         });
 
@@ -696,16 +747,22 @@
                 sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
             });
 
+            const activeRate = getActiveRatePerDay();
+            calculatedTotal = sumaDniWszystkichRejonow * activeRate;
             calculatedDays = sumaDniWszystkichRejonow;
 
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
-            calcUnitPrice.textContent = `Wycena indywidualna (z rabatami ilościowymi)`;
-            calcTotalPrice.textContent = "Wycena indywidualna";
+            if (currentFormat === 'Raport + Mapa') {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień (${BASE_RATE_DAY} ${currencySymbol} raport + ${MAP_SURCHARGE_DAY} ${currencySymbol} mapa)`;
+            } else {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień wywozu`;
+            }
+            calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
 
             if (currentStep === 'need_pin') {
-                submitBtn.textContent = `📩 1. Pobierz kod PIN i wyślij zapytanie (${count} rejonów)`;
+                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${calculatedTotal} ${currencySymbol})`;
             } else {
-                submitBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zapytanie (${count} rejonów)`;
+                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${calculatedTotal} ${currencySymbol})`;
             }
 
             if (scrappersFilter && scrappersNote) {
@@ -800,7 +857,7 @@
                 const okresOpis = `Cały rok ${selectedYear}`;
 
                 submitBtn.disabled = true;
-                submitBtn.textContent = "⏳ Rejestrowanie zapytania...";
+                submitBtn.textContent = "⏳ Rejestrowanie zamówienia...";
 
                 const payload = {
                     akcja: 'zapisz_zamowienie',
@@ -817,9 +874,9 @@
                     endDate: null,
                     totalDays: calculatedDays,
                     regions: regionsArr,
-                    totalPrice: 0,
-                    currency: 'PLN',
-                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny (Zapytanie o wycenę). Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    totalPrice: calculatedTotal,
+                    currency: currencyCode,
+                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
@@ -833,11 +890,11 @@
                     if (res.status === 'invalid_pin') {
                         alert("❌ Podany kod PIN jest nieprawidłowy lub wygasł. Spróbuj ponownie.");
                         submitBtn.disabled = false;
-                        submitBtn.textContent = `✉️ 2. Potwierdź PIN i wyślij zapytanie`;
+                        submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam`;
                         return;
                     }
 
-                    alert(`✅ Dziękujemy! Twoje zapytanie o wycenę (${orderId}) zostało pomyślnie wysłane.\n\nSzczegóły zapytania zostały przesłane na adres: ${clientEmail}. Wkrótce prześlemy indywidualną ofertę.`);
+                    alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły wraz z danymi do płatności (${currentPayment}) zostały przesłane na adres: ${clientEmail}.`);
 
                     selectedRegions.clear();
                     document.querySelectorAll('.region-checkbox-label input').forEach(i => {
@@ -855,7 +912,7 @@
 
                 } catch (err) {
                     console.error("Błąd zapisu:", err);
-                    alert("Błąd podczas wysyłania zapytania. Spróbuj ponownie za chwilę.");
+                    alert("Błąd podczas wysyłania zamówienia. Spróbuj ponownie za chwilę.");
                     submitBtn.disabled = false;
                     updateCalculation();
                 }
