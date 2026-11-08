@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zamówienie Mapy Serwisów i Baz Danych | dabu-info</title>
+    <title>Zapytanie o Wycenę Mapy Serwisów i Baz Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -142,35 +142,14 @@
             line-height: 1.45;
         }
 
-        /* Przełącznik waluty PLN / EUR */
-        .currency-toggle {
-            display: inline-flex;
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 4px;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .currency-btn {
-            margin: 0;
-            padding: 10px 18px;
-            font-size: 0.92rem;
-            border-radius: 7px;
-            background: transparent;
-            color: var(--text-color);
-            width: auto;
-            border: none;
-            cursor: pointer;
-            font-weight: 800;
-            transition: all 0.2s;
-        }
-
-        .currency-btn.active {
+        .quote-badge-top {
             background: var(--srv-bike);
             color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 119, 182, 0.35);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            white-space: nowrap;
         }
 
         /* Informacja o możliwościach mapy */
@@ -226,7 +205,7 @@
         .dot-bauma { background: #e84118; }
 
         /* =========================================================
-           KONFIGURATOR WYJAZDU 7 DNI (1 PAŃSTWO + NAKŁADKI)
+           KONFIGURATOR WYJAZDU: WYBRANY OKRES (1 PAŃSTWO + NAKŁADKI)
            ========================================================= */
         .single-trip-promo {
             background: var(--box-bg);
@@ -328,35 +307,57 @@
 
         .overlay-card-sub {
             font-size: 0.78rem;
-            color: var(--muted-text);
-            font-weight: 600;
+            color: #d97706;
+            font-weight: 700;
             margin-top: 2px;
+        }
+
+        /* Pola wyboru parametrów trasy */
+        .trip-params-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-top: 4px;
+        }
+
+        @media (min-width: 768px) {
+            .trip-params-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .param-field-wrap label {
+            font-size: 0.88rem;
+            margin-bottom: 6px;
+            color: var(--accent-color);
+            font-weight: 700;
         }
 
         .single-trip-bottom-bar {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 14px;
             align-items: center;
             background: var(--info-bg);
-            padding: 14px;
+            padding: 16px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
+            margin-top: 6px;
         }
 
         @media (min-width: 820px) {
             .single-trip-bottom-bar {
-                grid-template-columns: 1.1fr 1fr auto;
+                grid-template-columns: 1.2fr auto;
             }
         }
 
         .trip-summary-box {
             font-size: 0.92rem;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .trip-summary-total {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: var(--srv-bike);
         }
@@ -512,12 +513,10 @@
             .hero-title-wrap h3 { font-size: 1.2rem; text-align: center; }
             .hero-title-wrap p { font-size: 0.88rem; text-align: center; }
 
-            .currency-toggle { width: 100%; box-sizing: border-box; }
-            .currency-btn { flex: 1; text-align: center; padding: 10px 8px; }
-
             .map-capabilities-box { padding: 12px; font-size: 0.86rem; }
             .features-pills { gap: 6px; margin-bottom: 20px; }
             .pill { font-size: 0.78rem; padding: 6px 10px; width: 100%; box-sizing: border-box; justify-content: flex-start; }
+            .single-trip-btn { width: 100%; }
         }
     </style>
 </head>
@@ -534,17 +533,16 @@
             </div>
 
             <!-- =========================================================
-                 SEKCJA GŁÓWNA: KONFIGURATOR NA WYJAZD (1 PAŃSTWO)
+                 SEKCJA GŁÓWNA: KONFIGURATOR NA WYJAZD (1 PAŃSTWO + DOWOLNY OKRES)
                  ========================================================= -->
             <div class="importer-hero">
                 <div class="hero-top-bar">
                     <div class="hero-title-wrap">
-                        <h3>🎯 Mapa Serwisowa na Wyjazd (Konfigurator Tras)</h3>
-                        <p>Wybierz interesujące Cię <strong>państwo docelowe</strong> oraz <strong>dowolne nakładki serwisowe</strong> (np. Rowery + Kosiarki + Myjki na Niemcy) – pełny dostęp na telefonie i komputerze na czas wyjazdu.</p>
+                        <h3>🎯 Mapa Serwisowa na Trasę (Konfigurator Wyjazdu)</h3>
+                        <p>Wybierz <strong>państwo docelowe</strong>, <strong>interesujące Cię nakładki serwisowe</strong> oraz <strong>planowany okres wyjazdu</strong> – przygotujemy indywidualną wycenę i pełny dostęp do mapy pod Twoją trasę.</p>
                     </div>
-                    <div class="currency-toggle">
-                        <button type="button" class="currency-btn active" id="btnPLN" onclick="ustawWalute('PLN')">🇵🇱 PLN (zł)</button>
-                        <button type="button" class="currency-btn" id="btnEUR" onclick="ustawWalute('EUR')">🇪🇺 EUR (€)</button>
+                    <div>
+                        <span class="quote-badge-top">📋 Wycena indywidualna</span>
                     </div>
                 </div>
 
@@ -564,93 +562,89 @@
                     <span class="pill"><span class="dot dot-bauma"></span> 🏗️ Wypożyczalnie Bauma DE</span>
                 </div>
 
-                <!-- KONFIGURATOR WYJAZDU 7 DNI DLA 1 KRAJU -->
+                <!-- KONFIGURATOR WYJAZDU: DOWOLNY OKRES DLA 1 KRAJU -->
                 <div class="single-trip-promo">
                     <div class="single-trip-header">
                         <div>
-                            <div class="single-trip-title">🎯 Konfigurator na 1 Państwo (7 dni) – wybierz dowolne nakładki na jedną mapę!</div>
+                            <div class="single-trip-title">🎯 Konfigurator trasy: wybierz nakładki, kraj i okres dostępu</div>
                             <div style="font-size: 0.9rem; color: var(--muted-text); margin-top: 3px;">
-                                Zaznacz jedną lub kilka branż, które chcesz widzieć naraz na wspólnej mapie wybranego kraju.
+                                Zaznacz branże, które chcesz mieć aktywne na wspólnej mapie oraz wskaż planowany czas trwania wyjazdu.
                             </div>
                         </div>
                         <div class="single-trip-price-badge">
-                            +<span id="priceSingleTrip">100 PLN</span> / 1 nakładka (7 dni)
+                            Wycena pod wyjazd
                         </div>
                     </div>
 
                     <div>
-                        <label style="margin-bottom: 10px; font-size: 0.92rem;">1. Zaznacz nakładki serwisowe, które mają znaleźć się na Twojej mapie (możesz zaznaczyć kilka):</label>
+                        <label style="margin-bottom: 10px; font-size: 0.92rem;">1. Zaznacz nakładki serwisowe pod Twoją trasę (możesz zaznaczyć kilka):</label>
                         <div class="overlays-grid" id="overlaysGrid">
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Rowery Bosch eBike" data-countries="Niemcy,Włochy,Francja,Szwajcaria,Holandia,Austria,Belgia,Polska,Czechy,Dania,Norwegia,Szwecja,Islandia,Luksemburg,Wielka Brytania,Hiszpania,Finlandia" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🚲 Rowery: Bosch eBike</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Kosiarki Husqvarna" data-countries="Niemcy,Francja,Włochy,Austria,Szwajcaria,Polska,Szwecja,Norwegia,Wielka Brytania,Holandia,Czechy,Belgia,Dania,Hiszpania,Finlandia" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🚜 Kosiarki: Husqvarna</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Serwisy STIHL" data-countries="Niemcy,Polska,Francja,Wielka Brytania,Włochy,San Marino,Malta,Szwajcaria,Liechtenstein,Austria,Dania,Norwegia,Szwecja,Finlandia,Belgia,Holandia,Luksemburg,Hiszpania,Czechy" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🪚 Serwisy i Dilerzy: STIHL</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Złomowiska Schrottplätze DE" data-countries="Niemcy" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>♻️ Złomowiska: Schrottplätze DE</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Niemcy</span>
+                                    <span class="overlay-card-sub">🔒 Tylko Niemcy</span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Wypożyczalnie maszyn Bauma DE" data-countries="Niemcy" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🏗️ Wypożyczalnie maszyn: Bauma DE</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Niemcy</span>
+                                    <span class="overlay-card-sub">🔒 Tylko Niemcy</span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Myjki Kärcher" data-countries="Niemcy,Polska,Norwegia,Holandia,Dania,Hiszpania,Szwajcaria,Włochy,Czechy,Belgia,Austria,Wielka Brytania,Francja,Finlandia,Szwecja" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>⚡ Myjki: Kärcher</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Maszyny Wacker Neuson" data-countries="Niemcy,Włochy,Francja,Wielka Brytania,Polska,Norwegia,Rumunia,Szwajcaria,Holandia,Austria,Szwecja,Czechy,Finlandia,Bułgaria,Dania,Hiszpania" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🏗️ Maszyny: Wacker Neuson</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Quady / ATV Multibrand" data-countries="Polska,Niemcy,Francja,Austria,Szwajcaria,Belgia,Holandia,Luksemburg,Szwecja,Norwegia,Finlandia,Czechy,Hiszpania,Wielka Brytania,Włochy" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🏍️ Quady / ATV Multibrand</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span></span>
                                 </span>
                             </label>
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Kringloop & Vintage" data-countries="Holandia,Belgia" onchange="przeliczNakladkiWyjazd(this)">
                                 <span class="overlay-card-text">
                                     <span>🏺 Kringloop & Vintage</span>
-                                    <span class="overlay-card-sub">+<span class="lblSinglePrice">100 PLN</span> 🔒 Tylko Holandia / Belgia</span>
+                                    <span class="overlay-card-sub">🔒 Tylko Holandia / Belgia</span>
                                 </span>
                             </label>
                         </div>
                     </div>
 
-                    <div class="single-trip-bottom-bar">
-                        <div>
+                    <!-- Parametry wyjazdu: Kraj + Okres + Termin -->
+                    <div class="trip-params-grid">
+                        <div class="param-field-wrap">
+                            <label for="singleTripCountry">2. Państwo docelowe:</label>
                             <select id="singleTripCountry" onchange="zmianaKrajuKonfiguratora()">
-                                <option value="">2. Wybierz państwo docelowe wyjazdu...</option>
+                                <option value="">Wybierz państwo...</option>
                                 <option value="Austria">🇦🇹 Austria</option>
                                 <option value="Belgia">🇧🇪 Belgia</option>
                                 <option value="Czechy">🇨🇿 Czechy</option>
@@ -671,14 +665,36 @@
                             <div id="countryLockHint" class="country-lock-hint"></div>
                         </div>
 
+                        <div class="param-field-wrap">
+                            <label for="singleTripPeriod">3. Czas trwania / okres:</label>
+                            <select id="singleTripPeriod" onchange="przeliczNakladkiWyjazd()">
+                                <option value="">Wybierz okres dostępu...</option>
+                                <option value="Weekend (3-4 dni)">Weekend (3–4 dni)</option>
+                                <option value="1 tydzień (7 dni)">1 tydzień (7 dni)</option>
+                                <option value="10 dni">10 dni</option>
+                                <option value="2 tygodnie (14 dni)">2 tygodnie (14 dni)</option>
+                                <option value="1 miesiąc (30 dni)">1 miesiąc (30 dni)</option>
+                                <option value="Dłuższy / Sezonowy">Dłuższy okres / Sezon</option>
+                                <option value="Inny okres">Inny okres (wg dat poniżej)</option>
+                            </select>
+                        </div>
+
+                        <div class="param-field-wrap">
+                            <label for="singleTripDates">4. Przybliżony termin (opcjonalnie):</label>
+                            <input type="text" id="singleTripDates" placeholder="np. od 15 maja, od zaraz...">
+                        </div>
+                    </div>
+
+                    <div class="single-trip-bottom-bar">
                         <div class="trip-summary-box" id="tripSummaryBox">
-                            Wybrane nakładki: <strong id="tripCount">0</strong><br>
-                            Suma za 7 dni: <span class="trip-summary-total" id="tripTotalAmount">0 PLN</span>
+                            Wybrane nakładki: <strong id="tripCount">0</strong> | 
+                            Okres: <strong id="tripPeriodLabel">nie wybrano</strong><br>
+                            Wycena: <span class="trip-summary-total" id="tripTotalAmount">Indywidualna (do wyceny)</span>
                         </div>
 
                         <div>
                             <button type="button" class="single-trip-btn" id="btnOrderSingleTrip" onclick="zamowJedenSerwisKraj()">
-                                Zamów wybrane nakładki (7 dni)
+                                Wyślij zapytanie o wycenę mapy
                             </button>
                         </div>
                     </div>
@@ -720,8 +736,8 @@
             <!-- PODSUMOWANIE / WYSYŁKA SMS -->
             <div id="wynik">
                 <p style="margin-top:0;"><strong>Wiadomość gotowa do wysłania!</strong></p>
-                <p>Twój numer zamówienia: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Kliknij poniżej, aby otworzyć gotowego SMS-a i otrzymać dane dostępowe.</p>
+                <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Szczegółowa wycena oraz warunki dostępu zostaną przekazane w odpowiedzi na zgłoszenie SMS.</p>
                 <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
             </div>
         </div>
@@ -730,34 +746,6 @@
     <div id="google_translate_element" style="display:none;"></div>
 
     <script>
-        let aktualnaWaluta = 'PLN';
-
-        const cennikKonfiguratora = {
-            PLN: {
-                singleTripVal: 100,
-                singleTripUnit: 'PLN',
-                singleTrip: '100 PLN'
-            },
-            EUR: {
-                singleTripVal: 25,
-                singleTripUnit: '€',
-                singleTrip: '25 €'
-            }
-        };
-
-        function ustawWalute(waluta) {
-            aktualnaWaluta = waluta;
-            document.getElementById('btnPLN').classList.toggle('active', waluta === 'PLN');
-            document.getElementById('btnEUR').classList.toggle('active', waluta === 'EUR');
-
-            document.getElementById('priceSingleTrip').innerText = cennikKonfiguratora[waluta].singleTrip;
-            document.querySelectorAll('.lblSinglePrice').forEach(el => {
-                el.innerText = cennikKonfiguratora[waluta].singleTrip;
-            });
-
-            przeliczNakladkiWyjazd();
-        }
-
         function pobierzDozwoloneKrajeDlaZaznaczonych() {
             const zaznaczone = Array.from(document.querySelectorAll('input[name="tripOverlay"]:checked'));
             if (zaznaczone.length === 0) return null;
@@ -876,25 +864,24 @@
 
             const wybrane = pobierzWybraneNakladki();
             const ilosc = wybrane.length;
-            const stawka = cennikKonfiguratora[aktualnaWaluta].singleTripVal;
-            const jednostka = cennikKonfiguratora[aktualnaWaluta].singleTripUnit;
-            const suma = ilosc * stawka;
-            const sumaTekst = `${suma} ${jednostka}`;
+            const okresVal = document.getElementById('singleTripPeriod').value;
 
             document.getElementById('tripCount').innerText = ilosc;
-            document.getElementById('tripTotalAmount').innerText = sumaTekst;
+            document.getElementById('tripPeriodLabel').innerText = okresVal ? okresVal : 'do ustalenia';
 
             const btn = document.getElementById('btnOrderSingleTrip');
             if (ilosc > 0) {
-                btn.innerText = `Zamów na 7 dni (${sumaTekst})`;
+                btn.innerText = `Wyślij zapytanie o wycenę (${ilosc} ${ilosc === 1 ? 'nakładka' : (ilosc < 5 ? 'nakładki' : 'nakładek')})`;
             } else {
-                btn.innerText = `Zamów wybrane nakładki (7 dni)`;
+                btn.innerText = `Wyślij zapytanie o wycenę mapy`;
             }
         }
 
         function zamowJedenSerwisKraj() {
             const wybrane = pobierzWybraneNakladki();
             const kraj = document.getElementById('singleTripCountry').value;
+            const okres = document.getElementById('singleTripPeriod').value;
+            const termin = document.getElementById('singleTripDates').value.trim();
 
             if (wybrane.length === 0) {
                 alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową!');
@@ -911,14 +898,19 @@
             }
 
             const ilosc = wybrane.length;
-            const sumaPLN = ilosc * cennikKonfiguratora.PLN.singleTripVal;
-            const sumaEUR = ilosc * cennikKonfiguratora.EUR.singleTripVal;
-            const cenaGlowna = aktualnaWaluta === 'PLN' ? `${sumaPLN} PLN` : `${sumaEUR} EUR`;
-
-            const nr = `TRIP7-${pobierzKluczCzasu()}`;
+            const nr = `WYCENA-${pobierzKluczCzasu()}`;
             const listaNakladek = wybrane.join(' + ');
-            const trescSms = `Zamówienie: Mapa na wyjazd 7 dni (1 państwo).\nNr: ${nr}\nPaństwo: ${kraj}\nNakładki (${ilosc}): ${listaNakladek}\nSuma: ${cenaGlowna} (${sumaPLN} PLN / ${sumaEUR} EUR)`;
-            przygotujSMS(nr, trescSms, true);
+            const okresTekst = okres ? okres : 'do ustalenia';
+            const terminLinia = termin ? `
+Termin: ${termin}` : '';
+
+            const trescSms = `Zapytanie o wycenę mapy na trasę.
+Nr: ${nr}
+Państwo: ${kraj}
+Okres: ${okresTekst}${terminLinia}
+Nakładki (${ilosc}): ${listaNakladek}
+(Proszę o przygotowanie wyceny)`;
+            przygotujSMS(nr, trescSms, false);
         }
 
         function przygotujSMS(nr, trescSms, czyZnamyCene = false) {
@@ -954,7 +946,11 @@
             const obszar = document.getElementById('obszar').value.trim();
             if(!branza || !obszar) { alert('Proszę wypełnić wszystkie pola!'); return; }
             const nr = `CUST-${pobierzKluczCzasu()}`;
-            const trescSms = `Zapytanie o Bazę Niestandardową.\nNr: ${nr}\nBranża: ${branza}\nObszar: ${obszar}\n(Wycena po przygotowaniu)`;
+            const trescSms = `Zapytanie o Bazę Niestandardową.
+Nr: ${nr}
+Branża: ${branza}
+Obszar: ${obszar}
+(Wycena po przygotowaniu)`;
             przygotujSMS(nr, trescSms, false);
         }
     </script>
