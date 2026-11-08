@@ -519,6 +519,13 @@
             'wesel', 'xanten'
         ];
 
+        const GMINY_MAERKISCHER = [
+            'altena', 'balve', 'halver', 'hemer', 'iserlohn', 'kierspe',
+            'lüdenscheid', 'luedenscheid', 'meinerzhagen', 'menden',
+            'nachrodt-wiblingwerde', 'neuenrade', 'plettenberg',
+            'schalksmühle', 'schalksmuehle', 'werdohl'
+        ];
+
         const SPECIAL_REGIONS_LAND_MAP = {
             'hildesheim': 'Niedersachsen', 'kreis hildesheim': 'Niedersachsen', 'hildesheim kreis': 'Niedersachsen',
             'landkreis hildesheim': 'Niedersachsen',
@@ -603,7 +610,9 @@
             'leipzig': 'Sachsen', 'nordsachsen': 'Sachsen', 'lübeck': 'Schleswig-Holstein',
             'rendsburg-eckernförde': 'Schleswig-Holstein',
             'bodensee': 'Baden-Württemberg', 'bodenseekreis': 'Baden-Württemberg', 'kreis bodensee': 'Baden-Württemberg',
-            'flörsheim am main': 'Hessen'
+            'flörsheim am main': 'Hessen',
+            'märkischer kreis': 'Nordrhein-Westfalen', 'kreis märkischer': 'Nordrhein-Westfalen', 
+            'märkischer': 'Nordrhein-Westfalen', 'maerkischer kreis': 'Nordrhein-Westfalen', 'maerkischer': 'Nordrhein-Westfalen'
         };
 
         const KOORDYNATY_CENTRA = {
@@ -667,7 +676,8 @@
             "lüneburg": [53.2464, 10.4116], 
             "main-taunus-kreis": [50.0833, 8.4500], "main-taunus kreis": [50.0833, 8.4500], "kreis main-taunus": [50.0833, 8.4500],
             "main-kinzig-kreis": [50.2167, 9.2833], "main-kinzig kreis": [50.2167, 9.2833], "kreis main-kinzig": [50.2167, 9.2833],
-            "märkischer kreis": [51.2167, 7.7333],
+            "märkischer kreis": [51.2167, 7.6333], "kreis märkischer": [51.2167, 7.6333], "märkischer": [51.2167, 7.6333],
+            "maerkischer kreis": [51.2167, 7.6333], "maerkischer": [51.2167, 7.6333],
             "mayen-koblenz": [50.3569, 7.3789], "mechernich": [50.5953, 6.6528], "meerbusch": [51.2647, 6.6694],
             "menden": [51.4367, 7.7944], "merzenich": [50.8283, 6.5261], "mettmann": [51.2500, 6.9667],
             "moers": [51.4508, 6.6264], "monachium-południowy wschód": [48.0667, 11.6833], "monheim am rhein": [51.0917, 6.8917],
@@ -695,9 +705,7 @@
             "trier-saarburg": [49.6456, 6.5750], "trier-stadt": [49.7567, 6.6414], "tübingen": [48.5216, 9.0576],
             "tuttlingen": [47.9844, 8.8189], "übach-palenberg": [50.9197, 6.1186], "uedem": [51.6667, 6.2833],
             "viersen": [51.2558, 6.3917], "kreis viersen": [51.2558, 6.3917], "viersen kreis": [51.2558, 6.3917],
-            "voerde": [51.5989, 6.6853], "voerde (niederrhein)": [51.5989, 6.6853], "vulkaneifel": [50.2500, 6.8333], 
-            "walldorf-mörfelden": [49.9889, 8.5708], "walldorf-morfelden": [49.9889, 8.5708], "mörfelden-walldorf": [49.9889, 8.5708],
-            "weeze": [51.6264, 6.1956], "weilerswist": [50.7606, 6.8367],
+            "voerde": [51.5989, 6.6853], "voerde (niederrhein)": [51.5989, 6.6853], "weeze": [51.6264, 6.1956], "weilerswist": [50.7606, 6.8367],
             "werdohl": [51.2589, 7.7619], "werra-meissner": [51.2167, 9.9333],
             "wesel": [51.6586, 6.6175], "kreis wesel": [51.6586, 6.6175], "wesel kreis": [51.6586, 6.6175],
             "wesseling": [50.8258, 6.9744], "westerwald": [50.4350, 7.8286], "wiesbaden-naurod": [50.1306, 8.3039],
@@ -902,6 +910,7 @@
                 let monachiumGroup = null;
                 let grossGerauGroup = null;
                 let weselGroup = null;
+                let maerkischerGroup = null;
 
                 function dodajDoGrupy(groupObj, datyStr, frakcjaStr, parsedInfo, dniSet, gminaNazwa) {
                     let dLines = (datyStr && datyStr !== "-") ? datyStr.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean) : [];
@@ -1065,6 +1074,21 @@
                         return;
                     }
 
+                    const czyMaerkischer = cleanKey === 'märkischer kreis' || cleanKey === 'märkischer' || 
+                                           cleanKey === 'kreis märkischer' || cleanKey === 'maerkischer kreis' || cleanKey === 'maerkischer' ||
+                                           GMINY_MAERKISCHER.includes(cleanKey) || GMINY_MAERKISCHER.includes(strippedKey);
+                    if (czyMaerkischer) {
+                        if (!maerkischerGroup) {
+                            maerkischerGroup = {
+                                rejon: "Märkischer Kreis", land: "Nordrhein-Westfalen", pairs: [], frakcjeSet: new Set(),
+                                hasCall: false, hasFixed: false, freqSet: new Set(), dniSet: new Set(), gminySet: new Set(),
+                                lat: KOORDYNATY_CENTRA["märkischer kreis"][0], lon: KOORDYNATY_CENTRA["märkischer kreis"][1]
+                            };
+                        }
+                        dodajDoGrupy(maerkischerGroup, datyStr, rawFrakcja, parsedInfo, dniSet, rName);
+                        return;
+                    }
+
                     let land = (typeof item === 'object' && (item.land || item.Land)) 
                         ? item.land 
                         : (SPECIAL_REGIONS_LAND_MAP[cleanKey] || SPECIAL_REGIONS_LAND_MAP[strippedKey] || "Niemcy");
@@ -1085,7 +1109,7 @@
                     });
                 });
 
-                [mainTaunusGroup, mainKinzigGroup, hochtaunusGroup, monachiumGroup, grossGerauGroup, weselGroup].forEach(grp => {
+                [mainTaunusGroup, mainKinzigGroup, hochtaunusGroup, monachiumGroup, grossGerauGroup, weselGroup, maerkischerGroup].forEach(grp => {
                     if (grp) {
                         let dateToFractions = new Map();
                         let fallbackFractions = new Set();
