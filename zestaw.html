@@ -295,14 +295,55 @@
             transition: opacity 0.3s ease; 
         }
         .loader-video-section { flex: 2; display: flex; align-items: center; justify-content: center; background: #000; padding: 6px; }
-        .loader-video-wrapper { aspect-ratio: 16/9; height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; }
-        .loader-video-wrapper img, .loader-video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
         .loader-text-section { flex: 1; background: rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(46, 204, 113, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 10px; }
         .loader-title-inline { color: var(--primary-accent); font-size: clamp(0.9rem, 1.8vw, 1.05rem); font-weight: 800; text-transform: uppercase; }
         .loader-desc-inline { color: var(--text-muted); font-size: clamp(0.78rem, 1.4vw, 0.85rem); }
         .pro-spinner { width: 26px; height: 26px; min-width: 26px; border: 3px solid rgba(46, 204, 113, 0.2); border-left-color: var(--primary-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- TERMINAL LOADER --- */
+        .terminal-loader {
+            width: 85%;
+            background: #0d1117;
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            color: #2ecc71;
+            padding: 12px 16px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin: 0 auto;
+        }
+        .terminal-header {
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            font-size: 0.75rem;
+            color: #8b949e;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .terminal-line {
+            font-size: 0.85rem;
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 6px 0;
+            width: 0;
+        }
+        .line1 { animation: type 1s steps(40, end) forwards; }
+        .line2 { animation: type 1s steps(40, end) forwards; animation-delay: 1s; opacity: 0; }
+        .line3 { animation: blink 1s step-end infinite; animation-delay: 2s; opacity: 0; font-weight: bold;}
+
+        @keyframes type {
+            0% { width: 0; opacity: 1; }
+            100% { width: 100%; opacity: 1; }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        /* ----------------------- */
 
         .land-group-header {
             background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
@@ -694,11 +735,11 @@
                         <div class="regions-scroll-box is-loading notranslate" translate="no" id="regionsContainer">
                             <div id="regionsLoading" class="pro-loader-overlay">
                                 <div class="loader-video-section">
-                                    <div class="loader-video-wrapper">
-                                        <img src="loader.webp" alt="Dabu-Info Scraper" onerror="this.style.display='none'; document.getElementById('splashVideoFallback').style.display='block';">
-                                        <video id="splashVideoFallback" autoplay loop muted playsinline style="display: none; width: 100%; height: 100%; object-fit: contain;">
-                                            <source src="1000064135.mp4" type="video/mp4">
-                                        </video>
+                                    <div class="terminal-loader">
+                                        <div class="terminal-header">bash - dabu_sync</div>
+                                        <div class="terminal-line line1">> Nawiązywanie połączenia...</div>
+                                        <div class="terminal-line line2">> Pobieranie rejonów [OK]</div>
+                                        <div class="line3">_</div>
                                     </div>
                                 </div>
                                 <div class="loader-text-section">
@@ -819,7 +860,7 @@
                         </div>
                         <div id="externalMapTriggerBox" style="display: none; margin-bottom: 8px;">
                             <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.84rem; display: inline-block;">
-                                🔍 Otwórz wyszukiwarkę punktów &raquo;
+                                🔍 Otwórz wyszukiwarkę punktów »
                             </a>
                         </div>
                         <input type="text" id="paczkomatInput" class="client-input" placeholder="Wpisz kod i adres punktu..." style="margin-bottom: 4px;">
@@ -959,7 +1000,7 @@
         <div class="inpost-modal-content">
             <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
                 <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
-                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
+                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">×</button>
             </div>
             <div style="flex: 1; width: 100%; height: 100%; position: relative;">
                 <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIxMDQzMzU0OTcsImlhdCI6MTc4ODk3NTQ5NywianRpIjoiOTE3ZTZlNTAtMzM1NC00Yzg1LThlZjAtNjcyYzVkNzg1YzU2IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpZQXRHZkFJR2llTzA1b055TWtsdWxxeU1UZFF1Mnk1VXFjZHpJaGo2QTVBIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiMTE0MmY1MzUtZWJhZS00MTNjLWIzZGEtN2RmMzFmNjc1OTkzIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjExNDJmNTM1LWViYWUtNDEzYy1iM2RhLTdkZjMxZjY3NTk5MyIsImFsbG93ZWRfcmVmZXJyZXJzIjoiZGFidS1pbmZvLmNvbSIsInV1aWQiOiI0YjJkZjdmMi00MzYxLTRiODItODA1MC02ZDdhNTM3NTI3ZTYifQ.ggwtWyuokYjZ_HKl54jOADkIZ5i6cUxbY6CBDs3JwpC2OTIRYxxfVloLt6urXBgzHikNEg2stOXwYeUb6dIEYVpQuRC8GB-WhcAYzLr9c7bpQcj1175j9Gz1QHsdIijgrnR--dcsJv1nU_GrqGDCosrhMBHN94vfa6aHbYtCC0OvlPj7jZlqkGipT_ps8EWlCaMCWA3aelloZroy7yXNhrA_CIPGcoi-CZZVp7bqTuU1-yjJsXb6MOC1LqMdQlS9vySSQYvDouyGEIsYEPEl3pba47wVFvcBmHWOvncrprPkIMnugnRwE4U0kdd8nBFemXqwu3timNpEFpuJ_nj4Bw" language="pl" config="parcelCollect"></inpost-geowidget>
@@ -2002,11 +2043,6 @@
             var dzisiaj = d.getFullYear() + month + day;
             var dynamicznyToken = "Dabu" + dzisiaj;
 
-            var fallbackVideo = document.getElementById('splashVideoFallback');
-            if (fallbackVideo && fallbackVideo.style.display !== 'none') {
-                fallbackVideo.play().catch(function() {});
-            }
-
             fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
                 .then(res => res.json())
                 .then(data => {
@@ -2046,7 +2082,6 @@
                         loaderOverlay.style.opacity = '0';
                         setTimeout(() => { 
                             loaderOverlay.style.display = 'none'; 
-                            if (fallbackVideo) fallbackVideo.pause();
                         }, 400); 
                     }
                     updatePriceDisplay();
@@ -2090,7 +2125,7 @@
                     inpostBtnBox.style.display = 'none';
                     extBox.style.display = 'block';
                     extLink.href = carrierUrls[selectedCarrier] || '#';
-                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie &raquo;";
+                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie »";
                     paczInput.placeholder = "Wklej kod/adres punktu " + selectedCarrier + " (np. z mapy operatora)";
                 }
                 paczInput.value = '';
