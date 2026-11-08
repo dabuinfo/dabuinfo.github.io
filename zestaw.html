@@ -283,6 +283,7 @@
             color: #64748b;
         }
         
+        /* --- CZYSTA NAKŁADKA CLI --- */
         .pro-loader-overlay { 
             position: absolute; 
             top: 0; left: 0; width: 100%; height: 100%; 
@@ -290,39 +291,47 @@
             backdrop-filter: blur(4px); 
             z-index: 10; 
             display: flex; 
-            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            padding: 16px;
+            box-sizing: border-box;
             border-radius: var(--radius-sm); 
             transition: opacity 0.3s ease; 
         }
-        .loader-video-section { flex: 2; display: flex; align-items: center; justify-content: center; background: #000; padding: 6px; }
-        .loader-text-section { flex: 1; background: rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(46, 204, 113, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 10px; }
-        .loader-title-inline { color: var(--primary-accent); font-size: clamp(0.9rem, 1.8vw, 1.05rem); font-weight: 800; text-transform: uppercase; }
-        .loader-desc-inline { color: var(--text-muted); font-size: clamp(0.78rem, 1.4vw, 0.85rem); }
-        .pro-spinner { width: 26px; height: 26px; min-width: 26px; border: 3px solid rgba(46, 204, 113, 0.2); border-left-color: var(--primary-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- TERMINAL LOADER --- */
         .terminal-loader {
-            width: 85%;
-            background: #0d1117;
-            border: 1px solid rgba(46, 204, 113, 0.4);
+            width: 100%;
+            max-width: 380px;
+            background: #090d11;
+            border: 1px solid rgba(46, 204, 113, 0.45);
             border-radius: var(--radius-sm);
-            font-family: monospace;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
             color: #2ecc71;
-            padding: 12px 16px;
+            padding: 14px 18px;
             text-align: left;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            margin: 0 auto;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.65);
         }
         .terminal-header {
-            border-bottom: 1px solid #334155;
-            padding-bottom: 6px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
             margin-bottom: 10px;
-            font-size: 0.75rem;
+            font-size: 0.76rem;
             color: #8b949e;
-            font-weight: bold;
+            font-weight: 700;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .terminal-dots {
+            display: inline-flex;
+            gap: 5px;
+        }
+        .terminal-dots i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
         }
         .terminal-line {
             font-size: 0.85rem;
@@ -331,9 +340,9 @@
             margin: 6px 0;
             width: 0;
         }
-        .line1 { animation: type 1s steps(40, end) forwards; }
-        .line2 { animation: type 1s steps(40, end) forwards; animation-delay: 1s; opacity: 0; }
-        .line3 { animation: blink 1s step-end infinite; animation-delay: 2s; opacity: 0; font-weight: bold;}
+        .line1 { animation: type 0.9s steps(35, end) forwards; }
+        .line2 { animation: type 0.9s steps(35, end) forwards; animation-delay: 0.9s; opacity: 0; }
+        .line3 { animation: blink 1s step-end infinite; animation-delay: 1.8s; opacity: 0; font-weight: bold; }
 
         @keyframes type {
             0% { width: 0; opacity: 1; }
@@ -343,7 +352,6 @@
             50% { opacity: 0; }
             100% { opacity: 1; }
         }
-        /* ----------------------- */
 
         .land-group-header {
             background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
@@ -733,21 +741,15 @@
                         <div class="form-header">👇 1. Wybierz Rejony:</div>
 
                         <div class="regions-scroll-box is-loading notranslate" translate="no" id="regionsContainer">
-                            <div id="regionsLoading" class="pro-loader-overlay">
-                                <div class="loader-video-section">
-                                    <div class="terminal-loader">
-                                        <div class="terminal-header">bash - dabu_sync</div>
-                                        <div class="terminal-line line1">> Nawiązywanie połączenia...</div>
-                                        <div class="terminal-line line2">> Pobieranie rejonów [OK]</div>
-                                        <div class="line3">_</div>
+                            <div id="regionsLoading" class="pro-loader-overlay translate" translate="yes">
+                                <div class="terminal-loader">
+                                    <div class="terminal-header">
+                                        <span class="notranslate" translate="no">bash - dabu_sync</span>
+                                        <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
                                     </div>
-                                </div>
-                                <div class="loader-text-section">
-                                    <div class="loader-bottom-text">
-                                        <div class="loader-title-inline">Synchronizacja Danych</div>
-                                        <div class="loader-desc-inline">Trwa łączenie z bazą...</div>
-                                    </div>
-                                    <div class="pro-spinner"></div>
+                                    <div class="terminal-line line1">> Nawiązywanie połączenia...</div>
+                                    <div class="terminal-line line2">> Pobieranie rejonów [OK]</div>
+                                    <div class="line3">_</div>
                                 </div>
                             </div>
 
@@ -762,10 +764,20 @@
                     <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM) -->
                     <div class="selection-col-right" id="step2Wrapper">
                         <div class="form-header">📅 2. Wybierz Tygodnie:</div>
-                        <div class="regions-scroll-box" id="weeksContainer">
-                            <div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">
-                                ⏳ Wczytywanie dostępnych tygodni z bazy...
+                        <div class="regions-scroll-box is-loading notranslate" translate="no" id="weeksContainer">
+                            <div id="weeksLoading" class="pro-loader-overlay translate" translate="yes">
+                                <div class="terminal-loader">
+                                    <div class="terminal-header">
+                                        <span class="notranslate" translate="no">bash - dabu_cal</span>
+                                        <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
+                                    </div>
+                                    <div class="terminal-line line1">> Inicjalizacja harmonogramu...</div>
+                                    <div class="terminal-line line2">> Wczytywanie tygodni [OK]</div>
+                                    <div class="line3">_</div>
+                                </div>
                             </div>
+
+                            <div id="weeksCheckboxes" class="notranslate" translate="no"></div>
                         </div>
 
                         <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-top: 12px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
@@ -784,7 +796,7 @@
 
                     <div class="report-format-options-grid">
 
-                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMENCIE) -->
+                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMUMENCIE) -->
                         <div class="format-card-radio active" onclick="wybierzFormat('Raport Interaktywny (Jasny/Ciemny)', this)">
                             <div class="format-card-header">
                                 <input type="radio" name="reportTheme" value="Raport Interaktywny (Jasny/Ciemny)" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
@@ -1615,17 +1627,17 @@
         }
 
         function renderWeeksFromData(matrix) {
-            const weeksContainer = document.getElementById('weeksContainer');
-            if (!weeksContainer) return;
+            const weeksCheckboxes = document.getElementById('weeksCheckboxes');
+            if (!weeksCheckboxes) return;
 
             const previouslyChecked = Array.from(document.querySelectorAll('.week-chk:checked')).map(cb => cb.getAttribute('data-week'));
-            weeksContainer.innerHTML = '';
+            weeksCheckboxes.innerHTML = '';
             weekYearsMap = {};
 
             const availableWeeks = Object.keys(matrix).filter(w => matrix[w] && matrix[w].length > 0);
 
             if (availableWeeks.length === 0) {
-                weeksContainer.innerHTML = '<div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">Brak zaplanowanych zbiórek w bazie.</div>';
+                weeksCheckboxes.innerHTML = '<div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">Brak zaplanowanych zbiórek w bazie.</div>';
                 return;
             }
 
@@ -1682,7 +1694,8 @@
                 const dateRangeFormatted = `(${mD}.${mM} - ${fD}.${fM}${yearSuffix})`;
 
                 const label = document.createElement('label');
-                label.className = "region-label";
+                label.className = "region-label notranslate";
+                label.setAttribute('translate', 'no');
 
                 const input = document.createElement('input');
                 input.type = "checkbox";
@@ -1697,10 +1710,13 @@
                 }
 
                 const leftSpan = document.createElement('span');
-                leftSpan.className = "region-left-side";
+                leftSpan.className = "region-left-side notranslate";
+                leftSpan.setAttribute('translate', 'no');
                 leftSpan.appendChild(input);
 
                 const weekTextSpan = document.createElement('span');
+                weekTextSpan.className = "notranslate";
+                weekTextSpan.setAttribute('translate', 'no');
                 weekTextSpan.textContent = `Tydzień ${weekNum}`;
                 leftSpan.appendChild(weekTextSpan);
 
@@ -1712,7 +1728,7 @@
                 leftSpan.appendChild(dateSpan);
 
                 label.appendChild(leftSpan);
-                weeksContainer.appendChild(label);
+                weeksCheckboxes.appendChild(label);
             });
         }
 
@@ -2074,16 +2090,21 @@
                 })
                 .finally(() => {
                     let loaderOverlay = document.getElementById('regionsLoading');
+                    let weeksLoader = document.getElementById('weeksLoading');
                     let regionsCont = document.getElementById('regionsContainer');
-                    if (regionsCont) {
-                        regionsCont.classList.remove('is-loading');
-                    }
-                    if(loaderOverlay) { 
-                        loaderOverlay.style.opacity = '0';
-                        setTimeout(() => { 
-                            loaderOverlay.style.display = 'none'; 
-                        }, 400); 
-                    }
+                    let weeksCont = document.getElementById('weeksContainer');
+
+                    if (regionsCont) regionsCont.classList.remove('is-loading');
+                    if (weeksCont) weeksCont.classList.remove('is-loading');
+
+                    if(loaderOverlay) loaderOverlay.style.opacity = '0';
+                    if(weeksLoader) weeksLoader.style.opacity = '0';
+
+                    setTimeout(() => { 
+                        if(loaderOverlay) loaderOverlay.style.display = 'none'; 
+                        if(weeksLoader) weeksLoader.style.display = 'none'; 
+                    }, 400); 
+                    
                     updatePriceDisplay();
                 });
         }
