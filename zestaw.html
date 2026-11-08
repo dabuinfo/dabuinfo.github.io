@@ -340,9 +340,34 @@
             margin: 6px 0;
             width: 0;
         }
-        .line1 { animation: type 0.9s steps(35, end) forwards; }
-        .line2 { animation: type 0.9s steps(35, end) forwards; animation-delay: 0.9s; opacity: 0; }
-        .line3 { animation: blink 1s step-end infinite; animation-delay: 1.8s; opacity: 0; font-weight: bold; }
+        .terminal-loader {
+    width: 100%;
+    max-width: 420px;
+    background: #090d11;
+    border: 1px solid rgba(46, 204, 113, 0.45);
+    border-radius: var(--radius-sm);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    color: #2ecc71;
+    padding: 14px 18px;
+    text-align: left;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.65);
+}
+.terminal-line {
+    font-size: 0.84rem;
+    white-space: nowrap;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+.cli-cursor {
+    display: inline-block;
+    animation: blink 0.8s step-end infinite;
+    color: #2ecc71;
+    font-weight: bold;
+}
+@keyframes blink {
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
 
         @keyframes type {
             0% { width: 0; opacity: 1; }
@@ -742,16 +767,18 @@
 
                         <div class="regions-scroll-box is-loading notranslate" translate="no" id="regionsContainer">
                             <div id="regionsLoading" class="pro-loader-overlay translate" translate="yes">
-                                <div class="terminal-loader">
-                                    <div class="terminal-header">
-                                        <span class="notranslate" translate="no">bash - dabu_sync</span>
-                                        <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
-                                    </div>
-                                    <div class="terminal-line line1">> Nawiązywanie połączenia...</div>
-                                    <div class="terminal-line line2">> Pobieranie rejonów [OK]</div>
-                                    <div class="line3">_</div>
-                                </div>
-                            </div>
+    <div class="terminal-loader">
+        <div class="terminal-header">
+            <span class="notranslate" translate="no">bash - dabu_sync</span>
+            <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
+        </div>
+        <div id="cliLogRegions">
+            <div class="terminal-line">> Nawiązywanie bezpiecznego połączenia...</div>
+            <div class="terminal-line" id="cliStatusRegions" style="color: #fbbf24;">> Pobieranie bazy rejonów <span id="cliTimerRegions">[CZEKAJ... 0s]</span></div>
+        </div>
+        <div class="terminal-line"><span class="cli-cursor">_</span></div>
+    </div>
+</div>
 
                             <div class="region-search-sticky-box">
                                 <input type="text" id="regionSearchInput" class="region-search-input" placeholder="🔍 Szukaj rejonów (np. Konstanz, Freudenstadt)..." autocomplete="off">
@@ -766,16 +793,18 @@
                         <div class="form-header">📅 2. Wybierz Tygodnie:</div>
                         <div class="regions-scroll-box is-loading notranslate" translate="no" id="weeksContainer">
                             <div id="weeksLoading" class="pro-loader-overlay translate" translate="yes">
-                                <div class="terminal-loader">
-                                    <div class="terminal-header">
-                                        <span class="notranslate" translate="no">bash - dabu_cal</span>
-                                        <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
-                                    </div>
-                                    <div class="terminal-line line1">> Inicjalizacja harmonogramu...</div>
-                                    <div class="terminal-line line2">> Wczytywanie tygodni [OK]</div>
-                                    <div class="line3">_</div>
-                                </div>
-                            </div>
+    <div class="terminal-loader">
+        <div class="terminal-header">
+            <span class="notranslate" translate="no">bash - dabu_cal</span>
+            <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
+        </div>
+        <div id="cliLogWeeks">
+            <div class="terminal-line">> Inicjalizacja harmonogramu ISO...</div>
+            <div class="terminal-line" id="cliStatusWeeks" style="color: #fbbf24;">> Wczytywanie kalendarza zbiórek <span id="cliTimerWeeks">[CZEKAJ... 0s]</span></div>
+        </div>
+        <div class="terminal-line"><span class="cli-cursor">_</span></div>
+    </div>
+</div>
 
                             <div id="weeksCheckboxes" class="notranslate" translate="no"></div>
                         </div>
@@ -2059,6 +2088,43 @@
             var dzisiaj = d.getFullYear() + month + day;
             var dynamicznyToken = "Dabu" + dzisiaj;
 
+            // --- ŻYWY LICZNIK CLI NA CZAS POBIERANIA ---
+            var startTime = Date.now();
+            var cliInterval = setInterval(function() {
+                var elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+                
+                var timerR = document.getElementById('cliTimerRegions');
+                var timerW = document.getElementById('cliTimerWeeks');
+                if (timerR) timerR.textContent = '[CZEKAJ... ' + elapsedSec + 's]';
+                if (timerW) timerW.textContent = '[CZEKAJ... ' + elapsedSec + 's]';
+
+                // Po 5 sekundach dopisujemy dodatkowy techniczny log w rejonach
+                if (elapsedSec === 5) {
+                    var logR = document.getElementById('cliLogRegions');
+                    if (logR && !document.getElementById('cliExtraR1')) {
+                        var l1 = document.createElement('div');
+                        l1.id = 'cliExtraR1';
+                        l1.className = 'terminal-line';
+                        l1.style.color = '#38bdf8';
+                        l1.innerHTML = '> Parsowanie klastrów i stref logistycznych...';
+                        logR.appendChild(l1);
+                    }
+                }
+
+                // Po 10 sekundach kolejny log w oknie tygodni
+                if (elapsedSec === 10) {
+                    var logW = document.getElementById('cliLogWeeks');
+                    if (logW && !document.getElementById('cliExtraW1')) {
+                        var l2 = document.createElement('div');
+                        l2.id = 'cliExtraW1';
+                        l2.className = 'terminal-line';
+                        l2.style.color = '#38bdf8';
+                        l2.innerHTML = '> Przetwarzanie terminów z podziałem na frakcje...';
+                        logW.appendChild(l2);
+                    }
+                }
+            }, 1000);
+
             fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
                 .then(res => res.json())
                 .then(data => {
@@ -2089,6 +2155,15 @@
                     rebuildRegionsCheckboxesWithLands({});
                 })
                 .finally(() => {
+                    // Zatrzymanie tykania licznika
+                    clearInterval(cliInterval);
+
+                    // Podświetlenie na zielono sukcesu tuż przed zamknięciem
+                    var stR = document.getElementById('cliStatusRegions');
+                    var stW = document.getElementById('cliStatusWeeks');
+                    if (stR) { stR.style.color = '#2ecc71'; stR.innerHTML = '> Baza rejonów: [ZAKOŃCZONO 100%]'; }
+                    if (stW) { stW.style.color = '#2ecc71'; stW.innerHTML = '> Harmonogram dat: [ZAKOŃCZONO 100%]'; }
+
                     let loaderOverlay = document.getElementById('regionsLoading');
                     let weeksLoader = document.getElementById('weeksLoading');
                     let regionsCont = document.getElementById('regionsContainer');
@@ -2097,13 +2172,16 @@
                     if (regionsCont) regionsCont.classList.remove('is-loading');
                     if (weeksCont) weeksCont.classList.remove('is-loading');
 
-                    if(loaderOverlay) loaderOverlay.style.opacity = '0';
-                    if(weeksLoader) weeksLoader.style.opacity = '0';
+                    // Odczekanie chwili, żeby użytkownik zobaczył zielone [ZAKOŃCZONO 100%]
+                    setTimeout(() => {
+                        if(loaderOverlay) loaderOverlay.style.opacity = '0';
+                        if(weeksLoader) weeksLoader.style.opacity = '0';
 
-                    setTimeout(() => { 
-                        if(loaderOverlay) loaderOverlay.style.display = 'none'; 
-                        if(weeksLoader) weeksLoader.style.display = 'none'; 
-                    }, 400); 
+                        setTimeout(() => { 
+                            if(loaderOverlay) loaderOverlay.style.display = 'none'; 
+                            if(weeksLoader) weeksLoader.style.display = 'none'; 
+                        }, 400); 
+                    }, 500);
                     
                     updatePriceDisplay();
                 });
