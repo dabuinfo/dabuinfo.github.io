@@ -71,32 +71,47 @@
             color: #38bdf8; font-size: 12px; margin-left: 8px; flex-shrink: 0;
         }
 
-        /* BOTTOM SHEET / MODAL DLA SMARTFONÓW (WERSJA 2) */
+        /* DEDYKOWANY MODAL WYBORU TYGODNIA - IDEALNIE NA ŚRODKU EKRANU */
         .week-sheet-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(5px);
-            z-index: 5000; display: none; align-items: flex-end; justify-content: center;
-        }
-        @media (min-width: 600px) {
-            .week-sheet-overlay {
-                align-items: center; padding: 20px;
-            }
-        }
-        .week-sheet-container {
-            background: #111827; border: 1px solid #334155; border-top: 3px solid #38bdf8;
-            border-radius: 18px 18px 0 0; width: 100%; max-width: 520px;
-            max-height: 82vh; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.85); animation: sheetSlideUp 0.22s ease-out;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.82); 
+            backdrop-filter: blur(6px);
+            z-index: 5000; 
+            display: none; 
+            align-items: center;      /* Centrowanie w pionie */
+            justify-content: center;  /* Centrowanie w poziomie */
+            padding: 16px;            /* Margines od krawędzi ekranu */
             box-sizing: border-box;
         }
-        @media (min-width: 600px) {
-            .week-sheet-container {
-                border-radius: 14px; max-height: 85vh; border: 1px solid #38bdf8;
-            }
+
+        .week-sheet-container {
+            background: #111827; 
+            border: 1.5px solid #38bdf8;
+            border-radius: 14px;      /* Pełne zaokrąglenie ze wszystkich stron */
+            width: 100%; 
+            max-width: 460px;
+            max-height: 80vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9); 
+            animation: modalPopCenter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
         }
-        @keyframes sheetSlideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+
+        @keyframes modalPopCenter {
+            from { 
+                transform: scale(0.92); 
+                opacity: 0; 
+            }
+            to { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
         }
         .week-sheet-header {
             display: flex; justify-content: space-between; align-items: center;
