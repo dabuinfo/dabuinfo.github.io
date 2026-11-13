@@ -430,30 +430,37 @@
         color: #6aeb95;
     }
 
-    /* Pasek koszyka - Przeniesiony pod kalendarz/wyniki (nie zasłania stopki) */
+    /* Pasek koszyka i formularza zamówienia pod kalendarzem/wynikami */
     .summary-cart-bar {
-        display: none; /* Ukryty na start, pokazuje się podczas zamawiania */
+        display: none;
         background: #141414;
         border: 1px solid #333;
         border-top: 2px solid #2ecc71;
         border-radius: 10px;
-        padding: 16px 18px;
+        padding: 18px;
         margin-top: 20px;
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 14px;
         box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+        text-align: left;
+    }
+
+    .cart-top-row {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
 
     .cart-info {
         text-align: center;
-        font-size: 0.85rem;
+        font-size: 0.88rem;
         color: #d1d5db;
-        line-height: 1.4;
+        line-height: 1.45;
     }
 
     .cart-total-badge {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 800;
         color: #2ecc71;
     }
@@ -468,18 +475,18 @@
         border: 1px solid #333;
     }
 
-    /* Wybór metody płatności w belce */
+    /* Wybór metody płatności i kanału w belce */
     .payment-select-group {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
-        gap: 10px 14px;
+        gap: 10px 16px;
         background: #1a1a1a;
-        padding: 8px 14px;
-        border-radius: 6px;
+        padding: 10px 14px;
+        border-radius: 8px;
         border: 1px solid #2d2d2d;
-        font-size: 0.8125rem;
+        font-size: 0.83rem;
     }
 
     .payment-label {
@@ -496,6 +503,49 @@
         cursor: pointer;
     }
 
+    .cart-client-fields {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        background: #1a1a1a;
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #2d2d2d;
+    }
+
+    .cart-field-group label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #93c5fd;
+        margin-bottom: 5px;
+    }
+
+    .cart-client-input {
+        width: 100%;
+        padding: 10px 12px;
+        background: #111827;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        color: #f8fafc;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        font-family: var(--font-main);
+    }
+
+    .cart-client-input:focus {
+        outline: none;
+        border-color: #2ecc71;
+    }
+
+    .cart-field-error {
+        color: #ef4444;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-top: 4px;
+        display: none;
+    }
+
     .direct-contact-btn {
         display: inline-flex;
         align-items: center;
@@ -503,24 +553,38 @@
         gap: 8px;
         background: linear-gradient(90deg, #2ecc71, #27ae60);
         color: #000 !important;
-        font-weight: 700;
-        font-size: 0.9375rem;
-        padding: 12px 20px;
+        font-weight: 800;
+        font-size: 0.96rem;
+        padding: 13px 22px;
         border-radius: 8px;
         text-decoration: none;
         transition: all 0.2s ease;
         cursor: pointer;
         border: none;
         width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
     }
 
-    .direct-contact-btn:hover {
+    .direct-contact-btn:hover:not(:disabled) {
         background: linear-gradient(90deg, #27ae60, #2ecc71);
+        transform: translateY(-1px);
     }
-    .direct-contact-btn.disabled {
+    .direct-contact-btn.disabled,
+    .direct-contact-btn:disabled {
         background: #333;
         color: #777 !important;
         cursor: not-allowed;
+        transform: none;
+    }
+
+    .cal-order-success-box {
+        display: none;
+        background: rgba(34, 197, 94, 0.14);
+        border: 2px solid #22c55e;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
     }
 
     .calendar-info { 
@@ -574,14 +638,17 @@
         }
 
         .summary-cart-bar {
+            padding: 20px 25px;
+        }
+
+        .cart-top-row {
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 25px;
         }
 
-        .cart-info { text-align: left; font-size: 0.9rem; }
-        .direct-contact-btn { width: auto; font-size: 0.95rem; padding: 11px 26px; border-radius: 25px; }
+        .cart-info { text-align: left; font-size: 0.92rem; }
+        .cart-client-fields { grid-template-columns: 1fr 1fr; }
     }
 </style>
 </head>
@@ -602,8 +669,8 @@
                     <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień (PL) | 10 € / dzień (UE)</span>
                 </div>
                 
-                                <div style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.14) 0%, rgba(56, 189, 248, 0.14) 100%); border: 1px solid rgba(46, 204, 113, 0.45); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; text-align: center; font-size: 0.85rem; color: #f0f6fc;">
-                    📢 <strong style="color: #2ecc71;">Aktualizacja cennika:</strong> Jednolita stawka <strong style="color: #fbbf24;">40 zł / dzień</strong> (w PL) lub <strong style="color: #fbbf24;">10 € / dzień</strong> (poza PL).</strong>
+                <div style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.14) 0%, rgba(56, 189, 248, 0.14) 100%); border: 1px solid rgba(46, 204, 113, 0.45); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; text-align: center; font-size: 0.85rem; color: #f0f6fc;">
+                    📢 <strong style="color: #2ecc71;">Aktualizacja cennika:</strong> Jednolita stawka <strong style="color: #fbbf24;">40 zł / dzień</strong> (w PL) lub <strong style="color: #fbbf24;">10 € / dzień</strong> (poza PL).
                 </div>
                 <div class="hero-features-grid" id="cal-hint">
                     <div class="hero-feature-item">
@@ -637,26 +704,66 @@
                 <div id="cal-res-content"></div>
             </div>
 
-            <!-- PASEK ZAMÓWIENIA POD KALENDARZEM I WYNIKAMI (WIDOCZNY PODCZAS ZAMAWIANIA) -->
+            <!-- PASEK ZAMÓWIENIA POD KALENDARZEM I WYNIKAMI -->
             <div class="summary-cart-bar" id="global-cart-bar">
-                <div class="cart-info">
-                    ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
-                    Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
-                    Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
-                    <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
+                <div class="cart-top-row">
+                    <div class="cart-info">
+                        ID: <span class="cart-order-badge notranslate" translate="no" id="global-order-id">---</span> | 
+                        Łącznie: <strong id="cart-count">0 rejonów (0 terminów)</strong><br>
+                        Do zapłaty: <span class="cart-total-badge notranslate" translate="no" id="cart-total">0 PLN</span>
+                        <span id="cart-fee-note" style="display:none; font-size: 0.78rem; color: #fbbf24; margin-left: 6px;"></span>
+                    </div>
+
+                    <!-- WYBÓR METODY PŁATNOŚCI -->
+                    <div class="payment-select-group">
+                        <span style="color: #94a3b8; font-weight: 600;">💳 Płatność:</span>
+                        <span id="payment-options-container" style="display:inline-flex; flex-wrap:wrap; gap: 10px; align-items:center;">
+                            <!-- Generowane dynamicznie wg kraju -->
+                        </span>
+                    </div>
                 </div>
 
-                <!-- WYBÓR METODY PŁATNOŚCI -->
-                <div class="payment-select-group">
-                    <span style="color: #94a3b8; font-weight: 600;">Płatność:</span>
-                    <span id="payment-options-container" style="display:inline-flex; gap: 10px; align-items:center;">
-                        <!-- Generowane dynamicznie wg kraju -->
-                    </span>
+                <!-- WYBÓR KANAŁU PRZEKAZANIA ZAMÓWIENIA -->
+                <div class="payment-select-group" style="justify-content: flex-start;">
+                    <span style="color: #94a3b8; font-weight: 600;">📲 Przekazanie zamówienia:</span>
+                    <label class="payment-label">
+                        <input type="radio" name="cartOrderChannel" value="email" id="channelRadioEmail" />
+                        <span>✉️ E-mail</span>
+                    </label>
+                    <label class="payment-label">
+                        <input type="radio" name="cartOrderChannel" value="whatsapp" id="channelRadioWa" />
+                        <span>💬 WhatsApp</span>
+                    </label>
+                    <label class="payment-label">
+                        <input type="radio" name="cartOrderChannel" value="sms" id="channelRadioSms" />
+                        <span>📱 SMS</span>
+                    </label>
+                </div>
+
+                <!-- DANE KLIENTA DO ZAPISU W BAZIE -->
+                <div class="cart-client-fields">
+                    <div class="cart-field-group">
+                        <label for="calClientIdInput">📞 Twój numer telefonu (identyfikator):</label>
+                        <input type="text" id="calClientIdInput" class="cart-client-input" placeholder="Podaj swój numer telefonu..." />
+                        <div id="calPhoneErrorMsg" class="cart-field-error">⚠️ Wpisz numer telefonu (wymagane dla WhatsApp / SMS).</div>
+                    </div>
+                    <div class="cart-field-group">
+                        <label for="calClientEmailInput">✉️ Twój adres e-mail (potwierdzenie i raport):</label>
+                        <input type="email" id="calClientEmailInput" class="cart-client-input" placeholder="np. jan.kowalski@gmail.com" />
+                        <div id="calEmailErrorMsg" class="cart-field-error">⚠️ Wpisz poprawny adres e-mail.</div>
+                    </div>
                 </div>
 
                 <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
-                    📱 Wybierz rejony, aby zamówić
+                    🛒 Wybierz rejony, aby zamówić
                 </button>
+
+                <!-- POTWIERDZENIE ZAPISU W BAZIE -->
+                <div id="calOrderSuccessBox" class="cal-order-success-box">
+                    <h4 style="color: #22c55e; margin: 0 0 6px 0; font-size: 1.1rem;">✅ Zamówienie zostało zapisane i wysłane!</h4>
+                    <p id="calSuccessDetails" style="color: #f8fafc; font-size: 0.88rem; margin: 0 0 6px 0;"></p>
+                    <div id="calSuccessOrderId" style="font-size: 0.82rem; color: #94a3b8; font-weight: 700;"></div>
+                </div>
             </div>
         </div>
 
@@ -699,7 +806,7 @@
         // Mapa sąsiedztwa rejonów (korytarze wspólne zgodne z zestaw.html)
         const NEIGHBOR_CLUSTERS_MAP = {
             'märkischer kreis': ['olpe', 'oberberg', 'iserlohn', 'ennepetal', 'dortmund', 'plettenberg'],
-'märkischer': ['olpe', 'oberberg', 'iserlohn', 'ennepetal', 'dortmund', 'plettenberg'],
+            'märkischer': ['olpe', 'oberberg', 'iserlohn', 'ennepetal', 'dortmund', 'plettenberg'],
             'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
             'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
             'heidelberg': ['rhein-neckar-kreis', 'karlsruhe kreis', 'heilbronn'],
@@ -1042,11 +1149,12 @@
             const isPolish = (userLang === 'pl');
 
             const currencyUnit = isPolish ? "PLN" : "€";
+            const currencyCode = isPolish ? "PLN" : "EUR";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki (Stawka: 40 PLN / 10 € za dzień)
+            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
@@ -1060,28 +1168,37 @@
                     : (userLang === 'de' ? '10 € / Tag' : '10 € / day for report');
             }
 
-            // Metody płatności z ograniczeniem dla PL / Zagranica
+            // Metody płatności z ograniczeniem dla PL / Zagranica (wartości zgodne z zestaw.html)
             const paymentOptionsContainer = document.getElementById('payment-options-container');
             if (paymentOptionsContainer) {
                 if (isPolish) {
                     paymentOptionsContainer.innerHTML = `
-                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="BLIK" checked> BLIK</label>
-                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN"> Przelew (IBAN)</label>
-                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL"> PayPal</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="BLIK (+48 733 035 301)" checked> BLIK</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)"> Przelew (IBAN)</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL (ewabu74@gmail.com)"> PayPal</label>
                     `;
                 } else {
                     paymentOptionsContainer.innerHTML = `
-                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL" checked> PayPal</label>
-                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN"> Überweisung (IBAN)</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="PAYPAL (ewabu74@gmail.com)" checked> PayPal</label>
+                        <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)"> Überweisung (IBAN)</label>
                     `;
                 }
+            }
+
+            // Domyślny kanał przekazania zamówienia (SMS dla PL, WhatsApp dla zagranicy, z możliwością przełączenia na E-mail)
+            const chEmail = document.getElementById('channelRadioEmail');
+            const chWa = document.getElementById('channelRadioWa');
+            const chSms = document.getElementById('channelRadioSms');
+            if (isPolish) {
+                if (chSms) chSms.checked = true;
+            } else {
+                if (chWa) chWa.checked = true;
             }
 
             const globalOrderBadge = document.getElementById('global-order-id');
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
 
             const now = new Date();
-            // Data graniczna: jutro o północy. Wszystkie daty mniejsze od tomorrowMidnight są zablokowane.
             const tomorrowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
             tomorrowMidnight.setHours(0, 0, 0, 0);
 
@@ -1091,7 +1208,7 @@
 
             const startYear = now.getFullYear();
             const startMonth = now.getMonth();
-            const monthsCount = 2; // Generuje kalendarz zawsze na 2 miesiące do przodu
+            const monthsCount = 2;
             const holidayCache = {};
 
             const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
@@ -1164,7 +1281,6 @@
                     
                     let isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
 
-                    // Blokada dni przeszłych oraz dnia bieżącego (klikalne wyłącznie od jutra)
                     const cellDate = new Date(curY, curM, d);
                     cellDate.setHours(0, 0, 0, 0);
                     const isPastOrToday = cellDate < tomorrowMidnight;
@@ -1230,12 +1346,6 @@
             const cartFeeNoteEl = document.getElementById('cart-fee-note');
             const submitBtn = document.getElementById('cart-submit-btn');
 
-            // =========================================================================
-            // CENNIK:
-            // Pojedynczy rejon: jednolita stawka 40 PLN / 10 € za każdy dzień
-            // Pakiet tras / Korytarz wspólny: 40 PLN / 10 € za dzień
-            // Dynamiczne rabaty ilościowe wg liczby dni w trasie + grupowanie sąsiadów
-            // =========================================================================
             function calculateTotals() {
                 const totalTermsCount = globalCart.size;
                 const isEuro = !isPolish;
@@ -1260,7 +1370,7 @@
                 const selectedRegionsCount = Object.keys(regionDatesMap).length;
 
                 if (totalTermsCount === 0) {
-                    const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+                    const defaultMethod = isPolish ? "BLIK (+48 733 035 301)" : "PAYPAL (ewabu74@gmail.com)";
                     const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
                     return {
                         termsCount: 0,
@@ -1276,7 +1386,7 @@
                         totalNetto: 0,
                         finalAmount: 0,
                         paypalFee: 0,
-                        isPaypal: (selectedPayment === "PAYPAL"),
+                        isPaypal: selectedPayment.toUpperCase().includes("PAYPAL"),
                         paymentMethod: selectedPayment
                     };
                 }
@@ -1326,22 +1436,20 @@
 
                 if (isEuro) {
                     if (czyKorytarzWspolny) {
-                        // Pakiet / korytarz wspólny: baza 10 € / dzień
                         const basePkg = 10.00;
-                        if (totalDays >= 250)      ratePerDay = 2.00; // -80%
-                        else if (totalDays >= 181) ratePerDay = 2.80; // -72%
-                        else if (totalDays >= 121) ratePerDay = 3.60; // -64%
-                        else if (totalDays >= 81)  ratePerDay = 4.70; // -53%
-                        else if (totalDays >= 51)  ratePerDay = 6.00; // -40%
-                        else if (totalDays >= 31)  ratePerDay = 7.30; // -27%
-                        else if (totalDays >= 16)  ratePerDay = 8.20; // -18%
-                        else if (totalDays >= 6)   ratePerDay = 9.20; // -8%
-                        else                       ratePerDay = 10.00; // 0%
+                        if (totalDays >= 250)      ratePerDay = 2.00;
+                        else if (totalDays >= 181) ratePerDay = 2.80;
+                        else if (totalDays >= 121) ratePerDay = 3.60;
+                        else if (totalDays >= 81)  ratePerDay = 4.70;
+                        else if (totalDays >= 51)  ratePerDay = 6.00;
+                        else if (totalDays >= 31)  ratePerDay = 7.30;
+                        else if (totalDays >= 16)  ratePerDay = 8.20;
+                        else if (totalDays >= 6)   ratePerDay = 9.20;
+                        else                       ratePerDay = 10.00;
 
                         regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
                         totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                     } else {
-                        // Pojedynczy rejon: jednolita stawka 10 € / dzień
                         const firstDayBase = 10.00;
                         const nextDayBase = 10.00;
                         regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
@@ -1354,14 +1462,14 @@
                             ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
                         } else {
                             let discFactor = 1.0;
-                            if (totalDays >= 250)      discFactor = 0.20; // -80%
-                            else if (totalDays >= 181) discFactor = 0.28; // -72%
-                            else if (totalDays >= 121) discFactor = 0.36; // -64%
-                            else if (totalDays >= 81)  discFactor = 0.47; // -53%
-                            else if (totalDays >= 51)  discFactor = 0.60; // -40%
-                            else if (totalDays >= 31)  discFactor = 0.73; // -27%
-                            else if (totalDays >= 16)  discFactor = 0.82; // -18%
-                            else if (totalDays >= 6)   discFactor = 0.92; // -8%
+                            if (totalDays >= 250)      discFactor = 0.20;
+                            else if (totalDays >= 181) discFactor = 0.28;
+                            else if (totalDays >= 121) discFactor = 0.36;
+                            else if (totalDays >= 81)  discFactor = 0.47;
+                            else if (totalDays >= 51)  discFactor = 0.60;
+                            else if (totalDays >= 31)  discFactor = 0.73;
+                            else if (totalDays >= 16)  discFactor = 0.82;
+                            else if (totalDays >= 6)   discFactor = 0.92;
 
                             totalNetto = Math.round((regularPrice * discFactor) * 100) / 100;
                             ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
@@ -1369,22 +1477,20 @@
                     }
                 } else {
                     if (czyKorytarzWspolny) {
-                        // Pakiet / korytarz wspólny: baza 40 PLN / dzień
                         const basePkg = 40.00;
-                        if (totalDays >= 250)      ratePerDay = 8.00;  // -80%
-                        else if (totalDays >= 181) ratePerDay = 11.20; // -72%
-                        else if (totalDays >= 121) ratePerDay = 14.40; // -64%
-                        else if (totalDays >= 81)  ratePerDay = 18.80; // -53%
-                        else if (totalDays >= 51)  ratePerDay = 24.00; // -40%
-                        else if (totalDays >= 31)  ratePerDay = 29.20; // -27%
-                        else if (totalDays >= 16)  ratePerDay = 32.80; // -18%
-                        else if (totalDays >= 6)   ratePerDay = 36.80; // -8%
-                        else                       ratePerDay = 40.00; // 0%
+                        if (totalDays >= 250)      ratePerDay = 8.00;
+                        else if (totalDays >= 181) ratePerDay = 11.20;
+                        else if (totalDays >= 121) ratePerDay = 14.40;
+                        else if (totalDays >= 81)  ratePerDay = 18.80;
+                        else if (totalDays >= 51)  ratePerDay = 24.00;
+                        else if (totalDays >= 31)  ratePerDay = 29.20;
+                        else if (totalDays >= 16)  ratePerDay = 32.80;
+                        else if (totalDays >= 6)   ratePerDay = 36.80;
+                        else                       ratePerDay = 40.00;
 
                         regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
                         totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
                     } else {
-                        // Pojedynczy rejon: jednolita stawka 40 PLN / dzień
                         const firstDayBase = 40.00;
                         const nextDayBase = 40.00;
                         regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
@@ -1397,14 +1503,14 @@
                             ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
                         } else {
                             let discFactor = 1.0;
-                            if (totalDays >= 250)      discFactor = 0.20; // -80%
-                            else if (totalDays >= 181) discFactor = 0.28; // -72%
-                            else if (totalDays >= 121) discFactor = 0.36; // -64%
-                            else if (totalDays >= 81)  discFactor = 0.47; // -53%
-                            else if (totalDays >= 51)  discFactor = 0.60; // -40%
-                            else if (totalDays >= 31)  discFactor = 0.73; // -27%
-                            else if (totalDays >= 16)  discFactor = 0.82; // -18%
-                            else if (totalDays >= 6)   discFactor = 0.92; // -8%
+                            if (totalDays >= 250)      discFactor = 0.20;
+                            else if (totalDays >= 181) discFactor = 0.28;
+                            else if (totalDays >= 121) discFactor = 0.36;
+                            else if (totalDays >= 81)  discFactor = 0.47;
+                            else if (totalDays >= 51)  discFactor = 0.60;
+                            else if (totalDays >= 31)  discFactor = 0.73;
+                            else if (totalDays >= 16)  discFactor = 0.82;
+                            else if (totalDays >= 6)   discFactor = 0.92;
 
                             totalNetto = Math.round((regularPrice * discFactor) * 100) / 100;
                             ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
@@ -1415,9 +1521,9 @@
                 const savings = Math.round((regularPrice - totalNetto) * 100) / 100;
                 const discountPercent = regularPrice === 0 ? 0 : Math.round((savings / regularPrice) * 100);
 
-                const defaultMethod = isPolish ? "BLIK" : "PAYPAL";
+                const defaultMethod = isPolish ? "BLIK (+48 733 035 301)" : "PAYPAL (ewabu74@gmail.com)";
                 const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
-                const isPaypal = (selectedPayment === "PAYPAL");
+                const isPaypal = selectedPayment.toUpperCase().includes("PAYPAL");
 
                 let finalAmount = totalNetto;
                 let paypalFee = 0;
@@ -1459,7 +1565,7 @@
                     if (!chk || !statusWin) return;
 
                     const rName = decodeURIComponent(chk.getAttribute('data-region'));
-                    const baseDisplayDate = chk.getAttribute('data-date'); // DD.MM.RRRR
+                    const baseDisplayDate = chk.getAttribute('data-date');
 
                     const regionDatesDisplay = [];
                     for (let item of globalCart.values()) {
@@ -1568,47 +1674,171 @@
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
-                    let detailsText = "";
-                    for (let date in grouped) {
-                        detailsText += `\n• ${date}: ${grouped[date].join(', ')}`;
-                    }
+                    submitBtn.innerHTML = isPolish 
+                        ? `🛒 ZAMÓW PAKIET (${calc.finalAmount.toFixed(2)} PLN${discountTag})` 
+                        : `🛒 BESTELLEN (${calc.finalAmount.toFixed(2)} €${discountTag})`;
 
-                    if (isPolish) {
-                        submitBtn.innerHTML = `📱 Zamów pakiet (${calc.finalAmount.toFixed(2)} PLN${discountTag})`;
-                        
+                    submitBtn.onclick = function() {
+                        const selectedOrderChannel = document.querySelector('input[name="cartOrderChannel"]:checked')?.value || (isPolish ? 'sms' : 'whatsapp');
+                        const phoneInput = document.getElementById('calClientIdInput');
+                        const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+                        const phoneError = document.getElementById('calPhoneErrorMsg');
+
+                        const emailInput = document.getElementById('calClientEmailInput');
+                        const emailVal = emailInput ? emailInput.value.trim() : '';
+                        const emailError = document.getElementById('calEmailErrorMsg');
+
+                        // Walidacja numeru telefonu dla WA / SMS
+                        if ((selectedOrderChannel === 'whatsapp' || selectedOrderChannel === 'sms') && phoneVal === '') {
+                            if (phoneError) phoneError.style.display = 'block';
+                            if (phoneInput) {
+                                phoneInput.style.borderColor = '#ef4444';
+                                phoneInput.focus();
+                            }
+                            alert(isPolish 
+                                ? "Proszę wpisać Twój numer telefonu (identyfikator), abyśmy mogli zrealizować zamówienie przez WhatsApp/SMS." 
+                                : "Bitte geben Sie Ihre Telefonnummer ein, um per WhatsApp/SMS zu bestellen.");
+                            return;
+                        } else {
+                            if (phoneError) phoneError.style.display = 'none';
+                            if (phoneInput) phoneInput.style.borderColor = '#334155';
+                        }
+
+                        // Walidacja adresu e-mail dla kanału E-mail
+                        if (selectedOrderChannel === 'email' && (!emailVal || emailVal.indexOf('@') === -1 || emailVal.indexOf('.') === -1)) {
+                            if (emailError) emailError.style.display = 'block';
+                            if (emailInput) {
+                                emailInput.style.borderColor = '#ef4444';
+                                emailInput.focus();
+                            }
+                            alert(isPolish 
+                                ? "Proszę wpisać poprawny adres e-mail, abyśmy mogli przesłać potwierdzenie i zestawienie." 
+                                : "Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+                            return;
+                        } else {
+                            if (emailError) emailError.style.display = 'none';
+                            if (emailInput) emailInput.style.borderColor = '#334155';
+                        }
+
+                        // Przygotowanie listy dat i tygodni do zapisu w bazie
+                        const sortedDatesDisplay = Object.keys(grouped).sort((a, b) => displayToYMD(a).localeCompare(displayToYMD(b)));
+                        let detailsText = "";
+                        const weeksAndDatesList = [];
+
+                        sortedDatesDisplay.forEach(dateDisp => {
+                            detailsText += `\n• ${dateDisp}: ${grouped[dateDisp].join(', ')}`;
+                            const ymd = displayToYMD(dateDisp);
+                            const p = ymd.split('-');
+                            const dObj = new Date(p[0], p[1] - 1, p[2]);
+                            const wNum = getISOWeekNumber(dObj);
+                            weeksAndDatesList.push(`${dateDisp} (Tydzień ${wNum})`);
+                        });
+
                         let paymentInfoText = `Forma płatności: ${calc.paymentMethod}`;
                         if (calc.isPaypal) {
-                            paymentInfoText += ` (Łącznie z prowizją PayPal: ${calc.finalAmount.toFixed(2)} PLN, kwota netto: ${calc.totalNetto.toFixed(2)} PLN). PayPal: ewabu74@gmail.com`;
-                        } else if (calc.paymentMethod === 'BLIK') {
-                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na BLIK nr 733035301)`;
+                            paymentInfoText += isPolish
+                                ? ` (Łącznie z prowizją PayPal: ${calc.finalAmount.toFixed(2)} PLN, netto: ${calc.totalNetto.toFixed(2)} PLN)`
+                                : ` (Inkl. PayPal-Gebühr: ${calc.finalAmount.toFixed(2)} €, Netto: ${calc.totalNetto.toFixed(2)} €)`;
+                        } else if (calc.paymentMethod.toUpperCase().includes('BLIK')) {
+                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN)`;
                         } else {
-                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} PLN na IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
+                            paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} ${currencyUnit})`;
                         }
 
-                        let trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
-                        let smsBody = `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`;
-                        submitBtn.onclick = function() {
-                            window.location.href = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(smsBody)}`;
-                        };
-                    } else {
-                        submitBtn.innerHTML = `💬 Bestellen (${calc.finalAmount.toFixed(2)} €${discountTag})`;
+                        const trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
+                        const krotkaWiadomosc = isPolish
+                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
+                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
 
-                        let paymentInfoText = `Zahlung: ${calc.paymentMethod}`;
-                        if (calc.isPaypal) {
-                            paymentInfoText += ` (Inkl. PayPal-Gebühr: ${calc.finalAmount.toFixed(2)} €, Netto: ${calc.totalNetto.toFixed(2)} €). PayPal: ewabu74@gmail.com`;
-                        } else {
-                            paymentInfoText += ` (Betrag: ${calc.finalAmount.toFixed(2)} € auf IBAN: PL33 1020 5297 0000 1702 0290 9323)`;
+                        // Payload identyczny ze strukturą zapisu w zestaw.html
+                        const orderPayload = {
+                            akcja: 'zapisz_zamowienie',
+                            orderId: globalOrderId,
+                            clientId: phoneVal || "Brak",
+                            clientEmail: emailVal || "",
+                            channel: selectedOrderChannel,
+                            totalPrice: calc.totalNetto,
+                            finalPrice: calc.finalAmount,
+                            currency: currencyCode,
+                            totalDays: calc.billableDays,
+                            paymentMethod: calc.paymentMethod,
+                            reportTheme: "Raport Interaktywny (Jasny/Ciemny)",
+                            mapAddon: false,
+                            paypalFee: calc.paypalFee || 0,
+                            regions: Array.from(uniqueRegions),
+                            weeks: weeksAndDatesList,
+                            isRegularCustomer: false,
+                            loyaltyClientId: "",
+                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Terminy:${detailsText.replace(/\n/g, ' ')}`
+                        };
+
+                        const staryTekstBtn = submitBtn.innerHTML;
+                        submitBtn.innerHTML = isPolish ? "⏳ ZAPISYWANIE I WYSYŁANIE ZAMÓWIENIA..." : "⏳ BESTELLUNG WIRD GESPEICHERT...";
+                        submitBtn.disabled = true;
+
+                        function obsluzSukcesWysylkiKalendarz() {
+                            const successBox = document.getElementById('calOrderSuccessBox');
+                            const successIdEl = document.getElementById('calSuccessOrderId');
+                            const successDetailsEl = document.getElementById('calSuccessDetails');
+
+                            if (successIdEl) {
+                                successIdEl.innerText = (isPolish ? "Numer Twojego zamówienia: #" : "Bestellnummer: #") + globalOrderId;
+                            }
+
+                            if (successDetailsEl) {
+                                if (selectedOrderChannel === "whatsapp") {
+                                    successDetailsEl.innerHTML = isPolish
+                                        ? "Zamówienie zostało zapisane w systemie. Otwarto aplikację WhatsApp z przygotowanym zestawieniem."
+                                        : "Ihre Bestellung wurde gespeichert. WhatsApp wurde mit der Zusammenfassung geöffnet.";
+                                } else if (selectedOrderChannel === "sms") {
+                                    successDetailsEl.innerHTML = isPolish
+                                        ? "Zamówienie zostało zapisane w systemie. Otwarto aplikację SMS z przygotowanym zestawieniem."
+                                        : "Ihre Bestellung wurde gespeichert. Die SMS-App wurde geöffnet.";
+                                } else {
+                                    successDetailsEl.innerHTML = isPolish
+                                        ? `Zamówienie zostało zapisane w naszym systemie.${emailVal ? ` Na adres <b>${emailVal}</b> wyślemy potwierdzenie oraz zestawienie.` : ''}`
+                                        : `Ihre Bestellung wurde erfolgreich gespeichert.${emailVal ? ` Bestätigung an <b>${emailVal}</b>.` : ''}`;
+                                }
+                            }
+
+                            if (successBox) {
+                                successBox.style.display = 'block';
+                                successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+
+                            if (selectedOrderChannel === "whatsapp") {
+                                const waUrl = `https://wa.me/48600812820?text=${encodeURIComponent(krotkaWiadomosc)}`;
+                                setTimeout(function() { window.open(waUrl, '_blank'); }, 300);
+                            } else if (selectedOrderChannel === "sms") {
+                                const smsUrl = `sms:${phoneOrder}${smsSeparator}body=${encodeURIComponent(krotkaWiadomosc)}`;
+                                setTimeout(function() { window.location.href = smsUrl; }, 300);
+                            }
                         }
 
-                        let waBody = `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
-                        submitBtn.onclick = function() {
-                            window.open(`https://wa.me/48600812820?text=${encodeURIComponent(waBody)}`, '_blank');
-                        };
-                    }
+                        fetch(SCRIPT_URL, {
+                            method: "POST",
+                            mode: "no-cors",
+                            headers: { "Content-Type": "text/plain" },
+                            body: JSON.stringify(orderPayload)
+                        })
+                        .then(function() {
+                            obsluzSukcesWysylkiKalendarz();
+                        })
+                        .catch(function(err) {
+                            console.warn("Błąd zapisu zamówienia w arkuszu:", err);
+                            obsluzSukcesWysylkiKalendarz();
+                        })
+                        .finally(function() {
+                            setTimeout(function() {
+                                submitBtn.innerHTML = staryTekstBtn;
+                                submitBtn.disabled = false;
+                            }, 2000);
+                        });
+                    };
                 } else {
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish ? '📱 Wybierz rejony, aby zamówić' : '📱 Gebiete auswählen';
+                    submitBtn.innerHTML = isPolish ? '🛒 Wybierz rejony, aby zamówić' : '🛒 Gebiete auswählen';
                     submitBtn.onclick = null;
                 }
 
@@ -1626,7 +1856,6 @@
                     return;
                 }
 
-                // Całkowite odrzucenie kliknięć w przeszłość i dzień dzisiejszy
                 if (e.target.classList.contains('past-day')) {
                     return;
                 }
@@ -1638,11 +1867,10 @@
                     const parts = clickedDateStr.split('-');
                     const collectionDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
-                    const targetDateFormatted = clickedDateStr; // RRRR-MM-DD
-                    const displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // DD.MM.RRRR
+                    const targetDateFormatted = clickedDateStr;
+                    const displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
                     const weekNumber = getISOWeekNumber(collectionDate);
 
-                    // Data wystawienia (dzień wcześniej)
                     const eveningBefore = new Date(collectionDate);
                     eveningBefore.setDate(eveningBefore.getDate() - 1);
                     const ddPrev = String(eveningBefore.getDate()).padStart(2, '0');
@@ -1903,7 +2131,7 @@
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        const curDate = this.getAttribute('data-current'); // RRRR-MM-DD
+                                        const curDate = this.getAttribute('data-current');
                                         const availableDates = this.getAttribute('data-dates')
                                             .split(',')
                                             .map(s => s.trim())
@@ -1995,7 +2223,6 @@
                                     });
                                 });
 
-                                // Odśwież stan okienek zaraz po załadowaniu listy
                                 updateRowAddedDaysWindows();
 
                                 function scrollToRegion(query) {
