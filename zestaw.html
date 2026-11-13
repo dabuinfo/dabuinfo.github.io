@@ -692,7 +692,7 @@
                         <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">40 PLN / dzień (w Polsce) lub 10 € / dzień (poza Polską)</span></b>.</li>
                         <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
                         <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
-                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
+                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. O rejony aktualnie niedostępne lub spoza bazy możesz zapytać bezpośrednio przez SMS!</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
@@ -1235,12 +1235,7 @@
             });
         }
  
-        const GLOBAL_SPECIAL_REGIONS = [
-    'Eppstein', 'Flörsbachtal', 'Giessen Stadt', 'Gräfelfing', 'Gründau', 
-    'Hattersheim am Main', 'Hofheim am Taunus', 'Kamp-Lintfort', 
-    'Kelkheim am Taunus', 'Kirchheim', 'Königstein am Taunus', 
-    'Kronberg am Taunus', 'Trier-Stadt'
-];
+        const GLOBAL_SPECIAL_REGIONS = [];
 
         const SPECIAL_REGIONS_LAND_MAP = {
             'Calw': 'Baden-Württemberg', 'Freudenstadt': 'Baden-Württemberg', 'Heidelberg': 'Baden-Württemberg',
@@ -2760,6 +2755,10 @@
 
             let selectedWeekNodes = document.querySelectorAll('.week-chk:checked');
             let selectedWeeks = Array.from(selectedWeekNodes).map(cb => cb.getAttribute('data-week'));
+            let selectedWeeksLabels = Array.from(selectedWeekNodes).map(cb => cb.value.trim());
+
+            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            var smsSeparator = isIOS ? "&" : "?";
 
             document.querySelectorAll('#regionsContainer .region-label').forEach(label => {
                 let chk = label.querySelector('.region-chk');
@@ -2807,90 +2806,26 @@
                 let existingSpecialBtn = label.querySelector('.special-region-btn');
                 let existingCollectiveBtn = label.querySelector('.collective-sub-btn');
 
-                if (parentCollective) {
-                    if (existingAskBtn) existingAskBtn.remove();
+                if (existingCollectiveBtn) existingCollectiveBtn.remove();
+
+                if (parentCollective || !isAvailable) {
                     if (existingSpecialBtn) existingSpecialBtn.remove();
 
-                    let parentFormatted = formatNazwaRejonu(parentCollective);
-                    if (!existingCollectiveBtn) {
-                        let colBtn = document.createElement('a');
-                        colBtn.className = 'collective-sub-btn';
-                        colBtn.innerText = "📦 Pakiet: " + parentFormatted;
-                        colBtn.title = "Ta gmina wchodzi w skład całego tygodnia powiatu " + parentFormatted + ". Kliknij, aby zaznaczyć cały powiat.";
-                        colBtn.style.cssText = "margin-left: auto; font-size: 0.74rem; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); padding: 2px 7px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-
-                        colBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            let targetParentChk = Array.from(document.querySelectorAll('.region-chk')).find(
-                                c => cleanNameForCompare(c.value) === parentCollective
-                            );
-                            if (targetParentChk) {
-                                targetParentChk.checked = true;
-                                targetParentChk.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                updateMutualFiltering();
-                                updatePriceDisplay();
-                            }
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(colBtn);
-                        }
-                    }
-                    return;
-                } else {
-                    if (existingCollectiveBtn) existingCollectiveBtn.remove();
-                }
-
-                if (isSpecial) {
-                    if (existingAskBtn) existingAskBtn.remove();
-
-                    if (!existingSpecialBtn) {
-                        let specialBtn = document.createElement('a');
-                        specialBtn.className = 'special-region-btn';
-                        specialBtn.innerText = "🔒 Wycena indywidualna";
-                        specialBtn.title = "Kliknij, aby wysłać szybkie zapytanie o wycenę indywidualną bez tygodnia";
-                        specialBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-
-                        let mailSubject = encodeURIComponent(`Zapytanie o wycenę indywidualną (Rejon zastrzeżony): ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Zwracam się z zapytaniem o wycenę indywidualną i przygotowanie terminów zbiórek dla rejonu zastrzeżonego: ${rName}.\n\n` +
-                            `Proszę o informację o dostępnych terminach, możliwości wygenerowania Raportu Operacyjnego PRO oraz o kalkulację kosztów.\n\n` +
-                            `Pozdrawiam,\n`
-                        );
-
-                        specialBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-
-                        specialBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                        });
-
-                        let topSide = label.querySelector('.region-left-side');
-                        if (topSide) {
-                            topSide.appendChild(specialBtn);
-                        }
-                    }
-                } else if (!isAvailable) {
-                    if (existingSpecialBtn) existingSpecialBtn.remove();
+                    let weeksInfoText = selectedWeeksLabels.length > 0 ? ` (${selectedWeeksLabels.join(', ')})` : '';
+                    let parentInfoText = parentCollective ? ` (obszar: ${formatNazwaRejonu(parentCollective)})` : '';
+                    let smsBody = encodeURIComponent(
+                        `Dzień dobry, proszę o sprawdzenie dostępności i możliwości pobrania terminów zbiórek dla rejonu: ${rName}${parentInfoText}${weeksInfoText}.`
+                    );
+                    let smsHref = `sms:+48600812820${smsSeparator}body=${smsBody}`;
 
                     if (!existingAskBtn) {
                         let askBtn = document.createElement('a');
                         askBtn.className = 'ask-region-btn';
-                        askBtn.innerText = "🔔 Zapytaj o terminy";
-                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2;";
-                        
-                        let mailSubject = encodeURIComponent(`Weryfikacja terminów: ${rName}`);
-                        let mailBody = encodeURIComponent(
-                            `Dzień dobry,\n\n` +
-                            `Proszę o ręczną weryfikację dostępności i przygotowanie terminów zbiórek dla rejonu: ${rName}.\n\n` +
-                            `Akceptuję warunki: ręczne przygotowanie i weryfikacja terminów poza automatycznym formularzem wiąże się z zadatkiem w wysokości 40 PLN / 10 € za rejon (odliczanym w 100% od ostatecznej ceny zamówionego raportu PRO / mapy).\n\n` +
-                            `Proszę o potwierdzenie przyjęcia zgłoszenia oraz dane do wpłaty zadatku.\n`
-                        );
-                        
-                        askBtn.href = `mailto:wystawki@gmail.com?subject=${mailSubject}&body=${mailBody}`;
-                        
+                        askBtn.innerText = "📱 Zapytaj przez SMS";
+                        askBtn.title = "Kliknij, aby zapytać przez SMS o możliwość pobrania tego rejonu";
+                        askBtn.style.cssText = "margin-left: auto; font-size: 0.75rem; color: #2ecc71; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.45); padding: 3px 8px; border-radius: 4px; text-decoration: none; cursor: pointer; white-space: nowrap; z-index: 2; font-weight: 600;";
+                        askBtn.href = smsHref;
+
                         askBtn.addEventListener('click', function(e) {
                             e.stopPropagation();
                         });
@@ -2899,6 +2834,8 @@
                         if (topSide) {
                             topSide.appendChild(askBtn);
                         }
+                    } else {
+                        existingAskBtn.href = smsHref;
                     }
                 } else {
                     if (existingAskBtn) existingAskBtn.remove();
