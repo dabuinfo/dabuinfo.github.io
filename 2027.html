@@ -189,7 +189,7 @@
         /* GRID Z REJONAMI */
         .regions-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); 
             gap: 10px; 
             margin: 15px 0 25px; 
         }
@@ -218,13 +218,10 @@
         .region-checkbox-label.disabled input {
             cursor: not-allowed;
         }
-        .region-checkbox-label.disabled .promo-badge-inline {
-            display: none;
-        }
 
         .promo-badge-inline {
             display: block;
-            font-size: 0.74rem;
+            font-size: 0.75rem;
             color: var(--accent-orange);
             font-weight: 700;
             margin-top: 3px;
@@ -365,4 +362,638 @@
 
     <div id="orderMainContainer">
         <!-- LINK DO ZESTAWU TYGODNIOWEGO -->
-        <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 2
+        <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <span>Chcesz wybrać konkretne tygodnie w sezonie z rabatem ilościowym?</span>
+            <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">
+                Zestaw Tygodniowy (im więcej tygodni, tym większy rabat) ➔
+            </a>
+        </div>
+
+        <!-- 1. WYBÓR FORMATU: RAPORT CZY RAPORT + MAPA -->
+        <div style="font-size: 0.95rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 8px;">
+            1. Wybierz preferowaną formę dostępu:
+        </div>
+        <div class="format-selector-grid">
+            <label class="format-card active" id="cardFormatReport">
+                <input type="radio" name="orderProductFormat" value="Raport" checked>
+                <div class="plan-title">📑 Raport cyfrowy (Tabela / XLS)</div>
+                <div class="plan-desc">
+                    Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku.
+                </div>
+                <div class="plan-surcharge-badge" id="badgeReportPrice" style="border-color: var(--accent-green); color: var(--accent-green); background: rgba(46, 204, 113, 0.12);">
+                    Stawka bazowa: 8 zł / dzień
+                </div>
+            </label>
+
+            <label class="format-card" id="cardFormatMap">
+                <input type="radio" name="orderProductFormat" value="Raport + Mapa">
+                <div class="plan-title">🗺️ Raport + Interaktywna Mapa (GPS)</div>
+                <div class="plan-desc">
+                    Pełny raport cyfrowy rozszerzony o interaktywną wizualizację punktów i sektorów wywozu na mapie GPS dzień po dniu.
+                </div>
+                <div class="plan-surcharge-badge" id="badgeMapSurcharge">
+                    Dopłata do raportu: +8 zł / dzień (łącznie 16 zł / dzień)
+                </div>
+            </label>
+        </div>
+
+        <!-- 2. BANER ABONAMENTU ROCZNEGO -->
+        <div class="annual-banner">
+            <div class="annual-banner-header">
+                <div>
+                    <div class="annual-banner-title">
+                        <span>⭐</span> Abonament Roczny (Cały rocznik 2027)
+                    </div>
+                    <div id="annualBannerSubtitle" style="font-size: 0.88rem; color: #cbd5e1; margin-top: 4px;">
+                        🔥 Promocja tylko do końca stycznia 2027 r. – później zamówienia wyłącznie w cenie 40 zł / 10 € za termin (+40 zł / 10 € za mapę online).
+                    </div>
+                </div>
+                <div class="annual-rate-tag" id="labelPriceYear">
+                    8 zł / dzień wywozu
+                </div>
+            </div>
+
+            <!-- KLAUZULA REGULAMINOWA -->
+            <div style="font-size: 0.83rem; color: #bbb; border-top: 1px dashed rgba(46, 204, 113, 0.4); padding-top: 10px; margin-top: 8px; line-height: 1.5;">
+                📌 <b>Zasada rozliczenia (Pełna Licencja Roczna):</b><br>
+                Abonament stanowi jednorazową opłatę licencyjną za kompletny rocznik bazy 2027 (wycena obejmuje wszystkie zaplanowane dni w roku z gwarancją bezpłatnych aktualizacji i korekt urzędowych). Cena nie podlega podziałowi na miesiące ani odliczeniom za miniony okres. Mniejsze pakiety tygodniowe z możliwością wyboru dowolnych terminów i progresywnym rabatem ilościowym zamawiane są w <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">Konfiguratorze Zestawu Tygodniowego</a>.
+            </div>
+        </div>
+
+        <!-- PREFERENCJE ODPADÓW -->
+        <div style="background: #1e1e1e; padding: 12px 16px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px;">
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <span style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">Opcje profilu:</span>
+                <!---- <label style="cursor: pointer; font-weight: bold; color: var(--accent-orange); display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy" style="accent-color: var(--accent-orange);"> 
+                    🧲 Interesuje mnie opcja dla złomiarzy (Schrott)
+                </label> ---->
+                <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
+            </div>
+        </div>
+
+        <div class="land-header">📍 Wybierz powiat / miasto (2027):</div>
+        <div class="group-desc">Zaznacz interesujące Cię rejony poniżej:</div>
+
+        <div class="regions-grid" id="regionsGrid"></div>
+
+        <!-- SEKCJA KOSZYKA I ZAMÓWIENIA -->
+        <div id="orderSection" class="cart-summary">
+            <div class="price-calculation-box">
+                <div class="price-line">
+                    <span>Wybrany format:</span>
+                    <b id="calcFormatName" style="color: var(--accent-green);">Raport cyfrowy (Tabela / XLS)</b>
+                </div>
+                <div class="price-line">
+                    <span>Wybrany model:</span>
+                    <b id="calcPlanName" style="color: #fff;">Abonament roczny (2027)</b>
+                </div>
+                <div class="price-line">
+                    <span>Liczba wybranych rejonów:</span>
+                    <b id="calcCount">0</b>
+                </div>
+                <div class="price-line" id="unitPriceRow">
+                    <span>Stawka jednostkowa:</span>
+                    <span id="calcUnitPrice" style="color: var(--accent-green); text-align: right;">8 zł / dzień wywozu</span>
+                </div>
+                <div id="specialPromoInfoRow" style="display: none; font-size: 0.82rem; color: var(--accent-orange); background: rgba(230, 126, 34, 0.12); border: 1px solid rgba(230, 126, 34, 0.4); border-radius: 6px; padding: 8px 10px; margin-top: 8px; line-height: 1.4;"></div>
+                <div class="price-total-line">
+                    <span>ŁĄCZNA KWOTA:</span>
+                    <span id="calcTotalPrice">0 zł</span>
+                </div>
+            </div>
+
+            <!-- WYBÓR METODY PŁATNOŚCI -->
+            <div style="margin-bottom: 18px;">
+                <label class="field-label">💳 Wybierz metodę płatności:</label>
+                <div class="payment-selector-grid">
+                    <label class="payment-card active" id="payBlik">
+                        <input type="radio" name="paymentMethodRadio" value="BLIK na telefon (+48 733 035 301)" checked>
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">📱 BLIK</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Szybki przelew na telefon</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-card" id="payBank">
+                        <input type="radio" name="paymentMethodRadio" value="Przelew bankowy / IBAN">
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">🏦 Przelew / IBAN</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Konto bankowe</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-card" id="payPaypal">
+                        <input type="radio" name="paymentMethodRadio" value="PayPal (ewabu74@gmail.com)">
+                        <div>
+                            <b style="color: #fff; font-size: 0.95rem;">🅿️ PayPal</b>
+                            <div style="font-size: 0.75rem; color: #aaa;">Płatność online / Karta</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="field-label">Twój adres e-mail (do przesłania kodów i dostępu):</label>
+                <input type="email" id="clientEmailInput" class="email-field-input" placeholder="Wpisz swój adres e-mail..." required>
+            </div>
+
+            <div>
+                <label class="field-label">Numer telefonu (kontakt i weryfikacja):</label>
+                <input type="tel" id="clientPhoneInput" class="email-field-input" placeholder="np. +48 600 000 000" required>
+            </div>
+
+            <!-- BLOK WPROWADZENIA KODU PIN -->
+            <div id="pinStepBox" class="pin-box-container">
+                <div style="font-size: 0.95rem; color: var(--accent-blue); font-weight: bold;">
+                    ✉️ Wysłaliśmy 4-cyfrowy kod PIN na Twój adres e-mail!
+                </div>
+                <div style="font-size: 0.84rem; color: #cbd5e1; margin-top: 4px;">
+                    Sprawdź skrzynkę odbiorczą (oraz folder Spam) i wpisz kod poniżej:
+                </div>
+                <div style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                    <input type="text" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+                    <a href="javascript:void(0)" id="btnChangeEmail" style="color: #38bdf8; font-size: 0.85rem; text-decoration: underline;">Zmień e-mail</a>
+                </div>
+            </div>
+
+            <button id="submitOrderBtn" class="btn-order">📩 1. Pobierz kod PIN i potwierdź</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
+        
+        // --- BLOKADA SPRZEDAŻY ROCZNEJ PO 31 MARCA 2027 ---
+        const CUTOFF_DATE = new Date('2027-04-01T00:00:00');
+        const now = new Date();
+        if (now >= CUTOFF_DATE) {
+            document.getElementById('salesClosedBanner').style.display = 'block';
+            document.getElementById('orderMainContainer').style.display = 'none';
+            return;
+        }
+
+        // --- DETEKCJA JĘZYKA PRZEGLĄDARKI (PL = PLN, RESZTA = EUR) ---
+        const userLang = (navigator.language || navigator.userLanguage || 'pl').toLowerCase();
+        const isPolish = userLang.startsWith('pl');
+        const currencyCode = isPolish ? 'PLN' : 'EUR';
+        const currencySymbol = isPolish ? 'zł' : '€';
+
+        // Promocja do końca stycznia 2027 (8 PLN / 2 EUR + tyle samo za mapę)
+        // Od 1 lutego 2027: 40 PLN / 10 EUR za termin + tyle samo za mapę online
+        const PROMO_CUTOFF_DATE = new Date('2027-02-01T00:00:00');
+        const isAfterJanPromo = now >= PROMO_CUTOFF_DATE;
+
+        const PROMO_BASE_RATE = isPolish ? 8.00 : 2.00;
+        const PROMO_MAP_SURCHARGE = isPolish ? 8.00 : 2.00;
+
+        const STANDARD_BASE_RATE = isPolish ? 40.00 : 10.00;
+        const STANDARD_MAP_SURCHARGE = isPolish ? 40.00 : 10.00;
+
+        const BASE_RATE_DAY = isAfterJanPromo ? STANDARD_BASE_RATE : PROMO_BASE_RATE;
+        const MAP_SURCHARGE_DAY = isAfterJanPromo ? STANDARD_MAP_SURCHARGE : PROMO_MAP_SURCHARGE;
+        const unitLabel = isAfterJanPromo ? 'termin' : 'dzień';
+
+        // Aktualizacja etykiet cenowych w kafelkach wyboru formatu oraz banerze
+        const badgeReportPrice = document.getElementById('badgeReportPrice');
+        const badgeMapSurcharge = document.getElementById('badgeMapSurcharge');
+        const labelPriceYear = document.getElementById('labelPriceYear');
+        const annualBannerSubtitle = document.getElementById('annualBannerSubtitle');
+
+        if (badgeReportPrice) {
+            badgeReportPrice.textContent = isAfterJanPromo
+                ? `Stawka standardowa: ${BASE_RATE_DAY} ${currencySymbol} / termin`
+                : `Stawka promocyjna (do 31.01): ${BASE_RATE_DAY} ${currencySymbol} / dzień`;
+        }
+        if (badgeMapSurcharge) {
+            badgeMapSurcharge.textContent = `Dopłata do raportu: +${MAP_SURCHARGE_DAY} ${currencySymbol} / ${unitLabel} (łącznie ${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / ${unitLabel})`;
+        }
+        if (labelPriceYear) {
+            labelPriceYear.textContent = isAfterJanPromo
+                ? `${BASE_RATE_DAY} ${currencySymbol} / termin wywozu`
+                : `${BASE_RATE_DAY} ${currencySymbol} / dzień (Promocja do 31.01)`;
+        }
+        if (annualBannerSubtitle) {
+            annualBannerSubtitle.innerHTML = isAfterJanPromo
+                ? `Promocja zakończyła się z końcem stycznia – obowiązuje stawka standardowa <b>${STANDARD_BASE_RATE} ${currencySymbol} / termin</b> (+<b>${STANDARD_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online).`
+                : `🔥 <b>Promocja tylko do końca stycznia 2027 r.!</b> Później zamówienia wyłącznie w cenie <b>${STANDARD_BASE_RATE} ${currencySymbol} za termin</b> i dodatkowo <b>${STANDARD_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online.`;
+        }
+
+        // Ukrycie BLIK dla klientów spoza Polski
+        const payBlikCard = document.getElementById('payBlik');
+        const payBankCard = document.getElementById('payBank');
+        if (!isPolish && payBlikCard) {
+            payBlikCard.style.display = 'none';
+            if (payBankCard) {
+                payBankCard.classList.add('active');
+                const radioBank = payBankCard.querySelector('input');
+                if (radioBank) radioBank.checked = true;
+            }
+        }
+
+        const regionsList = [
+            "Altmarkkreis Salzwedel",
+            "Bonn",
+            "Bernkastel-Wittlich",
+            "Eifelkreis Bitburg-Prüm",
+            "Erftstadt",
+            "Eschwege",
+            "Fulda Miasto",
+            "Gifhorn",
+            "Heilbronn",
+            "Holzminden",
+            "Limburg-Weilburg",
+            "Lüneburg",
+            "Kelkheim (Taunus)",
+            "Mayen-Koblenz",
+            "Monachium-Południowy Wschód",
+            "Münster",
+            "Neustadt a.d. Waldnaab",
+            "Ortenau (Offenburg)",
+            "Rendsburg-Eckenförde",
+            "Rheingau-Taunus",
+            "Rhein-Neckar",
+            "Trier-Saarburg",
+            "Trier Miasto",
+            "Vulkaneifel",
+            "Westerwald",
+            "Wuppertal",
+            "Zollernalb"
+        ];
+
+        const noScrappersRegions = ["Rhein-Neckar", "Freudenstadt", "Eschwege"];
+        const onlyScrappersRegions = ["Zollernalb"];
+
+        let regionDaysMap = {};
+        let currentFormat = 'Raport'; 
+        const selectedYear = '2027';
+        let currentPayment = isPolish ? 'BLIK na telefon (+48 733 035 301)' : 'Przelew bankowy / IBAN';
+        let selectedRegions = new Set();
+        let currentStep = 'need_pin';
+
+        let calculatedTotal = 0;
+        let calculatedDays = 0;
+
+        // Elementy DOM
+        const regionsGrid = document.getElementById('regionsGrid');
+        const orderSection = document.getElementById('orderSection');
+        const calcCount = document.getElementById('calcCount');
+        const calcFormatName = document.getElementById('calcFormatName');
+        const calcPlanName = document.getElementById('calcPlanName');
+        const calcUnitPrice = document.getElementById('calcUnitPrice');
+        const calcTotalPrice = document.getElementById('calcTotalPrice');
+        const specialPromoInfoRow = document.getElementById('specialPromoInfoRow');
+        const cardFormatReport = document.getElementById('cardFormatReport');
+        const cardFormatMap = document.getElementById('cardFormatMap');
+        const emailInput = document.getElementById('clientEmailInput');
+        const phoneInput = document.getElementById('clientPhoneInput');
+        const pinBox = document.getElementById('pinStepBox');
+        const pinInput = document.getElementById('pinInput');
+        const btnChangeEmail = document.getElementById('btnChangeEmail');
+        const submitBtn = document.getElementById('submitOrderBtn');
+        const scrappersFilter = document.getElementById('scrappersFilter');
+        const scrappersNote = document.getElementById('scrappersNote');
+
+        function getActiveRatePerDay() {
+            return currentFormat === 'Raport + Mapa' 
+                ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) 
+                : BASE_RATE_DAY;
+        }
+
+        function getDaysForRegion(regName) {
+            if (regionDaysMap[regName] !== undefined) return regionDaysMap[regName];
+            if (regName === "Eifelkreis Bitburg-Prüm" && regionDaysMap["Bitburg-Prüm"] !== undefined) {
+                return regionDaysMap["Bitburg-Prüm"];
+            }
+            return 0;
+        }
+
+        // Obsługa wyboru płatności
+        document.querySelectorAll('.payment-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                const radio = card.querySelector('input');
+                radio.checked = true;
+                currentPayment = radio.value;
+            });
+        });
+
+        // Renderowanie kafelków rejonów
+        regionsList.forEach(name => {
+            const label = document.createElement('label');
+            label.className = 'region-checkbox-label disabled';
+            label.setAttribute('data-region', name);
+            
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = name;
+            input.disabled = true;
+
+            input.addEventListener('change', () => {
+                if (input.checked) {
+                    selectedRegions.add(name);
+                    label.classList.add('checked');
+                } else {
+                    selectedRegions.delete(name);
+                    label.classList.remove('checked');
+                }
+                updateCalculation();
+            });
+
+            label.appendChild(input);
+
+            const contentWrap = document.createElement('div');
+            contentWrap.className = 'region-content-wrap';
+            contentWrap.style.lineHeight = '1.3';
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'region-text-node';
+            textSpan.textContent = `${name} (wkrótce)`;
+            contentWrap.appendChild(textSpan);
+
+            label.appendChild(contentWrap);
+            regionsGrid.appendChild(label);
+        });
+
+        // Automatyczne pobranie liczby dni z arkusza Linki
+        async function wczytajDniZApi(rok) {
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=pobierz_wycene_roczna&rok=${rok}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                if (data && data.status === "OK" && data.dni) {
+                    regionDaysMap = data.dni;
+
+                    document.querySelectorAll('.region-checkbox-label').forEach(labelEl => {
+                        const regName = labelEl.getAttribute('data-region');
+                        const inputEl = labelEl.querySelector('input');
+                        const textSpan = labelEl.querySelector('.region-text-node');
+                        const contentWrap = labelEl.querySelector('.region-content-wrap');
+                        const dni = getDaysForRegion(regName);
+
+                        if (dni > 0) {
+                            inputEl.disabled = false;
+                            labelEl.classList.remove('disabled');
+                            textSpan.textContent = `${regName} (${dni} dni)`;
+
+                            // Dodaj informację o promocji do każdego aktywnego rejonu
+                            if (contentWrap && !contentWrap.querySelector('.promo-badge-inline')) {
+                                const promoSpan = document.createElement('span');
+                                promoSpan.className = 'promo-badge-inline';
+                                if (!isAfterJanPromo) {
+                                    promoSpan.textContent = `🔥 Promocja do 31.01 (później ${STANDARD_BASE_RATE} ${currencySymbol}/termin + ${STANDARD_MAP_SURCHARGE} ${currencySymbol} mapa)`;
+                                } else {
+                                    promoSpan.textContent = `⚠️ Stawka standardowa: ${STANDARD_BASE_RATE} ${currencySymbol}/termin (+${STANDARD_MAP_SURCHARGE} ${currencySymbol} mapa)`;
+                                }
+                                contentWrap.appendChild(promoSpan);
+                            }
+                        }
+                    });
+
+                    updateCalculation();
+                }
+            } catch (err) {
+                console.error("Błąd automatycznego pobierania dni:", err);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            wczytajDniZApi(selectedYear);
+        });
+
+        // Wybór formatu: Raport / Raport + Mapa
+        cardFormatReport.addEventListener('click', () => {
+            currentFormat = 'Raport';
+            cardFormatReport.classList.add('active');
+            cardFormatMap.classList.remove('active');
+            cardFormatReport.querySelector('input').checked = true;
+            calcFormatName.textContent = 'Raport cyfrowy (Tabela / XLS)';
+            if (labelPriceYear) {
+                labelPriceYear.textContent = isAfterJanPromo
+                    ? `${BASE_RATE_DAY} ${currencySymbol} / termin wywozu`
+                    : `${BASE_RATE_DAY} ${currencySymbol} / dzień (Promocja do 31.01)`;
+            }
+            updateCalculation();
+        });
+
+        cardFormatMap.addEventListener('click', () => {
+            currentFormat = 'Raport + Mapa';
+            cardFormatMap.classList.add('active');
+            cardFormatReport.classList.remove('active');
+            cardFormatMap.querySelector('input').checked = true;
+            calcFormatName.textContent = `Raport + Interaktywna Mapa (+${MAP_SURCHARGE_DAY} ${currencySymbol}/${unitLabel})`;
+            if (labelPriceYear) {
+                labelPriceYear.textContent = isAfterJanPromo
+                    ? `${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / termin wywozu`
+                    : `${BASE_RATE_DAY + MAP_SURCHARGE_DAY} ${currencySymbol} / dzień (Promocja do 31.01)`;
+            }
+            updateCalculation();
+        });
+
+        function updateCalculation() {
+            const count = selectedRegions.size;
+            calcCount.textContent = count;
+
+            if (count === 0) {
+                orderSection.style.display = 'none';
+                return;
+            }
+
+            orderSection.style.display = 'block';
+
+            let sumaDniWszystkichRejonow = 0;
+            selectedRegions.forEach(regName => {
+                sumaDniWszystkichRejonow += getDaysForRegion(regName);
+            });
+
+            const activeRate = getActiveRatePerDay();
+            calculatedTotal = sumaDniWszystkichRejonow * activeRate;
+            calculatedDays = sumaDniWszystkichRejonow;
+
+            calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
+            if (currentFormat === 'Raport + Mapa') {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / ${unitLabel} (${BASE_RATE_DAY} ${currencySymbol} raport + ${MAP_SURCHARGE_DAY} ${currencySymbol} mapa)`;
+            } else {
+                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / ${unitLabel} wywozu`;
+            }
+
+            if (specialPromoInfoRow) {
+                specialPromoInfoRow.style.display = 'block';
+                if (!isAfterJanPromo) {
+                    specialPromoInfoRow.innerHTML = `🔥 <b>Promocja do 31 stycznia 2027 r.!</b> Korzystasz z promocyjnej stawki ${activeRate} ${currencySymbol}/${unitLabel}. Po zakończeniu promocji zamówienia będą dostępne wyłącznie w cenie <b>${STANDARD_BASE_RATE} ${currencySymbol}</b> za termin (+<b>${STANDARD_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online).`;
+                } else {
+                    specialPromoInfoRow.innerHTML = `ℹ️ Promocja wygasła z końcem stycznia – obowiązuje stawka <b>${STANDARD_BASE_RATE} ${currencySymbol}</b> za termin (+<b>${STANDARD_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online).`;
+                }
+            }
+
+            calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
+
+            if (currentStep === 'need_pin') {
+                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${calculatedTotal} ${currencySymbol})`;
+            } else {
+                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${calculatedTotal} ${currencySymbol})`;
+            }
+
+            if (scrappersFilter && scrappersNote) {
+                const selectedArr = Array.from(selectedRegions);
+                let hasForbidden = selectedArr.some(r => noScrappersRegions.includes(r));
+                let hasMandatory = selectedArr.some(r => onlyScrappersRegions.includes(r));
+
+                if (hasForbidden) {
+                    scrappersFilter.checked = false;
+                    scrappersFilter.disabled = true;
+                    scrappersNote.textContent = "⚠️ W co najmniej jednym z wybranych rejonów brak opcji dla złomiarzy.";
+                    scrappersNote.style.display = "inline";
+                } else if (hasMandatory) {
+                    scrappersFilter.checked = true;
+                    scrappersFilter.disabled = true;
+                    scrappersNote.textContent = "ℹ️ Wybrany rejon posiada wyłącznie opcję dla złomiarzy.";
+                    scrappersNote.style.display = "inline";
+                } else {
+                    scrappersFilter.disabled = false;
+                    scrappersNote.style.display = "none";
+                }
+            }
+        }
+
+        btnChangeEmail.addEventListener('click', () => {
+            currentStep = 'need_pin';
+            pinBox.style.display = 'none';
+            emailInput.disabled = false;
+            pinInput.value = '';
+            updateCalculation();
+        });
+
+        submitBtn.addEventListener('click', async () => {
+            const count = selectedRegions.size;
+            if (count === 0) return;
+
+            const clientEmail = (emailInput.value || '').trim().toLowerCase();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!clientEmail || !emailRegex.test(clientEmail)) {
+                alert("Proszę podać poprawny adres e-mail.");
+                emailInput.focus();
+                return;
+            }
+
+            const clientPhone = (phoneInput.value || '').trim();
+            if (!clientPhone || clientPhone.length < 7) {
+                alert("Proszę podać poprawny numer telefonu do kontaktu.");
+                phoneInput.focus();
+                return;
+            }
+
+            if (currentStep === 'need_pin') {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "⏳ Wysyłanie kodu PIN...";
+
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ 
+                            action: 'sendPin', 
+                            clientEmail: clientEmail 
+                        })
+                    });
+
+                    currentStep = 'verify_pin';
+                    emailInput.disabled = true;
+                    pinBox.style.display = 'block';
+                    pinInput.focus();
+                    submitBtn.disabled = false;
+                    updateCalculation();
+
+                } catch (err) {
+                    console.error("Błąd PIN:", err);
+                    alert("Wystąpił problem z wysyłką kodu. Spróbuj ponownie.");
+                    submitBtn.disabled = false;
+                    updateCalculation();
+                }
+                return;
+            }
+
+            if (currentStep === 'verify_pin') {
+                const pinVal = pinInput.value.trim();
+                if (pinVal.length !== 4) {
+                    alert("Wpisz 4-cyfrowy kod PIN otrzymany w wiadomości e-mail.");
+                    pinInput.focus();
+                    return;
+                }
+
+                const regionsArr = Array.from(selectedRegions);
+                const orderId = `ZAM-${Date.now().toString().slice(-6)}`;
+                const okresOpis = `Cały rok ${selectedYear}`;
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "⏳ Rejestrowanie zamówienia...";
+
+                const payload = {
+                    akcja: 'zapisz_zamowienie',
+                    orderId: orderId,
+                    clientEmail: clientEmail,
+                    clientId: clientPhone,
+                    pin: pinVal,
+                    format: currentFormat,
+                    plan: 'year',
+                    paymentMethod: currentPayment,
+                    year: selectedYear,
+                    weeks: okresOpis,
+                    startDate: null,
+                    endDate: null,
+                    totalDays: calculatedDays,
+                    regions: regionsArr,
+                    totalPrice: calculatedTotal,
+                    currency: currencyCode,
+                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny. Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                };
+
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const res = await response.json();
+                    if (res.status === 'invalid_pin') {
+                        alert("❌ Podany kod PIN jest nieprawidłowy lub wygasł. Spróbuj ponownie.");
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam`;
+                        return;
+                    }
+
+                    alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły wraz z danymi do płatności (${currentPayment}) zostały przesłane na adres: ${clientEmail}.`);
+
+                    selectedRegions.clear();
+                    document.querySelectorAll('.region-checkbox-label input').forEach(i => {
+                        i.checked = false;
+                        i.parentElement.classList.remove('checked');
+                    });
+                    emailInput.value = '';
+                    emailInput.disabled = false;
+                    pinInput.value = '';
+                    pinBox.style.display = 'none';
+                    currentStep = 'need_pin';
+
+                    submitBtn.disabled = false;
+                    updateCalculation();
+
+                } catch (err) {
+                    console.error("Błąd zapisu:", err);
+                    alert("Błąd podczas wysyłania zamówienia. Spróbuj ponownie za chwilę.");
+                    submitBtn.disabled = false;
+                    updateCalculation();
+                }
+            }
+        });
+    })();
+</script>
+
+<script src="/footer.js"></script>
+</body>
+</html>
