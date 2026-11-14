@@ -203,8 +203,8 @@
         .form-header:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         
         .selection-grid-container {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 20px;
             width: 100%;
         }
@@ -217,33 +217,97 @@
             margin-bottom: 12px !important;
         }
 
-        @media (min-width: 992px) {
-            .selection-grid-container {
-                grid-template-columns: 1fr 1fr;
-                align-items: start;
-            }
-            .regions-scroll-box {
-                min-height: 520px !important;
-                max-height: 520px !important;
-                margin: 0 !important;
-            }
-            .selection-col-right {
-                margin-top: 0px; 
-            }
-        }
-
         .regions-scroll-box { 
             position: relative; 
             min-height: 280px; 
-            max-height: 380px; 
+            max-height: 440px; 
             overflow-y: scroll; 
             background: rgba(10, 14, 20, 0.65); 
             border: 1px solid var(--border-subtle); 
             border-radius: var(--radius-sm); 
             padding: 8px 12px; 
-            margin: 0 auto 15px auto; 
+            margin: 0 auto 6px auto; 
             box-sizing: border-box; 
             width: 100%; 
+        }
+
+        /* Kompaktowa siatka 2x2 dla 4 najbliższych tygodni pod rejonami */
+        .weeks-compact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .weeks-compact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .week-card-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 14, 20, 0.65);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 54px;
+            box-sizing: border-box;
+        }
+        .week-card-label:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(15, 23, 42, 0.9);
+        }
+        .week-card-label.is-checked {
+            border-color: var(--primary-accent);
+            background: rgba(46, 204, 113, 0.14);
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.18);
+        }
+        .week-badge-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            white-space: nowrap;
+        }
+        .other-weeks-inquiry-bar {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px dashed rgba(148, 163, 184, 0.35);
+            border-radius: var(--radius-sm);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 0.86rem;
+            color: #cbd5e1;
+        }
+        .other-weeks-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-ask-weeks {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: filter 0.15s ease;
+        }
+        .btn-ask-weeks:hover {
+            filter: brightness(1.12);
         }
 
         .regions-scroll-box.is-loading { overflow: hidden !important; touch-action: none; }
@@ -688,10 +752,18 @@
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
-                        <li>Wybierz interesujące Cię <b>rejony</b> i <b>tygodnie</b> (dowolna liczba kombinacji).</li>
+                        <li>Wybierz interesujące Cię <b>rejony</b> oraz <b>tygodnie z najbliższych 4 tygodni</b> (harmonogram przesuwa się automatycznie w każdy piątek o 18:00; o dalsze terminy zapytasz jednym kliknięciem przez SMS lub WhatsApp).</li>
                         <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">40 PLN / dzień (w Polsce) lub 10 € / dzień (poza Polską)</span></b>.</li>
-                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
-                        <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
+                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>rabaty ilościowe do 20%</b> (pierwszy rabat już od <b>6. dnia</b>, czyli od 2. tygodnia):
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 0.84rem;">
+                                <span style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(148, 163, 184, 0.25); padding: 3px 8px; border-radius: 5px; color: #cbd5e1;">1–5 dni: <b>0%</b></span>
+                                <span style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.35); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">6–10 dni: <b>-5%</b></span>
+                                <span style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">11–15 dni: <b>-10%</b></span>
+                                <span style="background: rgba(46, 204, 113, 0.18); border: 1px solid rgba(46, 204, 113, 0.45); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">16–19 dni: <b>-15%</b></span>
+                                <span style="background: rgba(46, 204, 113, 0.24); border: 1px solid #2ecc71; padding: 3px 8px; border-radius: 5px; color: #ffffff;">20+ dni: <b style="color:#2ecc71;">-20% (MAX)</b></span>
+                            </div>
+                        </li>
+                        <li>Sąsiadujące rejony łączymy w <b>korytarz wspólny</b> – płacisz tylko raz za dany dzień wyjazdu.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. O rejony aktualnie niedostępne lub spoza bazy możesz zapytać bezpośrednio przez SMS!</li>
                     </ul>
 
@@ -735,7 +807,7 @@
 
                 <div class="selection-grid-container">
                     
-                    <!-- 1. WYBIERZ REJONY -->
+                    <!-- 1. WYBIERZ REJONY (PEŁNA SZEROKOŚĆ) -->
                     <div class="selection-col-left">
                         <div class="form-header">👇 1. Wybierz Rejony:</div>
 
@@ -762,25 +834,25 @@
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE (DYNAMICZNIE ŁADOWANE Z ROKIEM) -->
+                    <!-- 2. WYBIERZ TYGODNIE (TYLKO 4 NAJBLIŻSZE, POD REJONAMI) -->
                     <div class="selection-col-right" id="step2Wrapper">
-                        <div class="form-header">📅 2. Wybierz Tygodnie:</div>
-                        <div class="regions-scroll-box is-loading notranslate" translate="no" id="weeksContainer">
-                            <div id="weeksLoading" class="pro-loader-overlay translate" translate="yes">
-    <div class="terminal-loader">
-        <div class="terminal-header">
-            <span class="notranslate" translate="no">bash - dabu_cal</span>
-            <span class="terminal-dots"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></span>
-        </div>
-        <div id="cliLogWeeks">
-            <div class="terminal-line">> Inicjalizacja harmonogramu ISO...</div>
-            <div class="terminal-line" id="cliStatusWeeks" style="color: #fbbf24;">> Wczytywanie kalendarza zbiórek <span id="cliTimerWeeks">[CZEKAJ... 0s]</span></div>
-        </div>
-        <div class="terminal-line"><span class="cli-cursor">_</span></div>
-    </div>
-</div>
+                        <div class="form-header">📅 2. Wybierz Tygodnie (dostępne 4 najbliższe):</div>
+                        
+                        <div id="weeksContainer" class="notranslate" translate="no">
+                            <div id="weeksCheckboxes" class="weeks-compact-grid notranslate" translate="no"></div>
+                        </div>
 
-                            <div id="weeksCheckboxes" class="notranslate" translate="no"></div>
+                        <!-- ZAPYTANIE O INNE TYGODNIE -->
+                        <div class="other-weeks-inquiry-bar">
+                            <span>🗓️ Planujesz wyjazd w <b>innym terminie</b> (dalsze tygodnie)?</span>
+                            <div class="other-weeks-actions">
+                                <a href="sms:+48600812820" id="btnAskOtherWeeksSms" class="btn-ask-weeks" style="background: rgba(46, 204, 113, 0.16); border: 1px solid rgba(46, 204, 113, 0.45); color: #2ecc71;">
+                                    📱 Zapytaj przez SMS
+                                </a>
+                                <a href="https://wa.me/48600812820" target="_blank" id="btnAskOtherWeeksWa" class="btn-ask-weeks" style="background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8;">
+                                    💬 Zapytaj na WhatsApp
+                                </a>
+                            </div>
                         </div>
 
                         <div id="specialDateContainer" class="hidden" style="background: rgba(46, 204, 113, 0.1); border: 1px dashed #2ecc71; padding: 15px; text-align: center; border-radius: 6px; margin-top: 12px; margin-bottom: 15px; color: #2ecc71; font-weight: bold;">
@@ -1624,7 +1696,60 @@
             return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
         }
 
-        function renderWeeksFromData(matrix) {
+        function getISOWeekInfo(dateObj) {
+            var d = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate()));
+            var dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            return { week: weekNo, year: d.getUTCFullYear() };
+        }
+
+        function getFourNearestWeeks() {
+            var now = new Date();
+            var day = now.getDay(); // 0 = Niedziela, 5 = Piątek, 6 = Sobota
+            var hour = now.getHours();
+
+            // Zmiana tygodni zawsze w piątek od godziny 18:00
+            var isAfterFridaySwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
+
+            var diffToMonday = (day === 0 ? -6 : 1 - day);
+            var baseMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+
+            if (isAfterFridaySwitch) {
+                baseMonday.setDate(baseMonday.getDate() + 7);
+            }
+
+            var weeksList = [];
+            for (var i = 0; i < 4; i++) {
+                var monday = new Date(baseMonday);
+                monday.setDate(baseMonday.getDate() + (i * 7));
+
+                var friday = new Date(monday);
+                friday.setDate(monday.getDate() + 4);
+
+                var info = getISOWeekInfo(monday);
+                var badgeLabel = '';
+                if (i === 0) {
+                    badgeLabel = isAfterFridaySwitch ? 'Najbliższy tydzień' : 'Bieżący tydzień';
+                } else if (i === 1) {
+                    badgeLabel = 'Następny tydzień';
+                } else {
+                    badgeLabel = '+' + i + ' tyg.';
+                }
+
+                weeksList.push({
+                    week: info.week,
+                    year: info.year,
+                    monday: monday,
+                    friday: friday,
+                    badge: badgeLabel
+                });
+            }
+            return weeksList;
+        }
+
+        function renderFourNearestWeeks() {
             const weeksCheckboxes = document.getElementById('weeksCheckboxes');
             if (!weeksCheckboxes) return;
 
@@ -1632,68 +1757,31 @@
             weeksCheckboxes.innerHTML = '';
             weekYearsMap = {};
 
-            const availableWeeks = Object.keys(matrix).filter(w => matrix[w] && matrix[w].length > 0);
-
-            if (availableWeeks.length === 0) {
-                weeksCheckboxes.innerHTML = '<div style="color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 20px;">Brak zaplanowanych zbiórek w bazie.</div>';
-                return;
-            }
-
             const currentYear = new Date().getFullYear();
+            const fourWeeks = getFourNearestWeeks();
 
-            availableWeeks.forEach(w => {
-                let detectedYear = null;
-                const items = matrix[w] || [];
+            fourWeeks.forEach(item => {
+                const weekNum = item.week;
+                const targetYear = item.year;
+                weekYearsMap[String(weekNum)] = targetYear;
 
-                for (let i = 0; i < items.length; i++) {
-                    const dStr = (typeof items[i] === 'object') ? (items[i].daty || items[i]["DATA (PN-SOB)"] || "") : "";
-                    if (dStr) {
-                        const m = dStr.match(/\d{4}-\d{2}-\d{2}/);
-                        if (m) {
-                            detectedYear = parseInt(m[0].split('-')[0], 10);
-                            break;
-                        }
-                    }
-                }
-
-                if (!detectedYear) {
-                    const wNum = parseInt(w, 10);
-                    const nowW = getWeekNumber(new Date());
-                    detectedYear = (wNum < 10 && nowW > 35) ? (currentYear + 1) : currentYear;
-                }
-
-                weekYearsMap[w] = detectedYear;
-            });
-
-            availableWeeks.sort((a, b) => {
-                const yA = weekYearsMap[a] || currentYear;
-                const yB = weekYearsMap[b] || currentYear;
-                if (yA !== yB) {
-                    return yA - yB;
-                }
-                return parseInt(a, 10) - parseInt(b, 10);
-            });
-
-            availableWeeks.forEach(w => {
-                const weekNum = parseInt(w, 10);
-                const targetYear = weekYearsMap[w] || currentYear;
-
-                const monday = getMondayOfISOWeek(weekNum, targetYear);
-                const friday = new Date(monday);
-                friday.setDate(monday.getDate() + 4);
-
-                const mD = String(monday.getDate()).padStart(2, '0');
-                const mM = String(monday.getMonth() + 1).padStart(2, '0');
-                const fD = String(friday.getDate()).padStart(2, '0');
-                const fM = String(friday.getMonth() + 1).padStart(2, '0');
-                const fY = friday.getFullYear();
+                const mD = String(item.monday.getDate()).padStart(2, '0');
+                const mM = String(item.monday.getMonth() + 1).padStart(2, '0');
+                const fD = String(item.friday.getDate()).padStart(2, '0');
+                const fM = String(item.friday.getMonth() + 1).padStart(2, '0');
+                const fY = item.friday.getFullYear();
 
                 const yearSuffix = (targetYear > currentYear) ? `.${fY}` : '';
                 const dateRangeFormatted = `(${mD}.${mM} - ${fD}.${fM}${yearSuffix})`;
 
                 const label = document.createElement('label');
-                label.className = "region-label notranslate";
+                label.className = "week-card-label region-label notranslate";
                 label.setAttribute('translate', 'no');
+
+                const leftSpan = document.createElement('span');
+                leftSpan.className = "region-left-side notranslate";
+                leftSpan.setAttribute('translate', 'no');
+                leftSpan.style.width = "auto";
 
                 const input = document.createElement('input');
                 input.type = "checkbox";
@@ -1701,33 +1789,52 @@
                 input.name = "tygodnie[]";
                 input.setAttribute('data-week', weekNum);
                 input.setAttribute('data-year', targetYear);
-
                 input.value = `Tydzień ${weekNum} ${dateRangeFormatted}`;
+
                 if (previouslyChecked.includes(String(weekNum))) {
                     input.checked = true;
+                    label.classList.add('is-checked');
                 }
 
-                const leftSpan = document.createElement('span');
-                leftSpan.className = "region-left-side notranslate";
-                leftSpan.setAttribute('translate', 'no');
+                input.addEventListener('change', function() {
+                    label.classList.toggle('is-checked', this.checked);
+                });
+
+                const textWrap = document.createElement('span');
+                textWrap.innerHTML = `<b>Tydzień ${weekNum}</b> <span style="color:#94a3b8; margin-left:4px;">${dateRangeFormatted}</span>`;
+
                 leftSpan.appendChild(input);
+                leftSpan.appendChild(textWrap);
 
-                const weekTextSpan = document.createElement('span');
-                weekTextSpan.className = "notranslate";
-                weekTextSpan.setAttribute('translate', 'no');
-                weekTextSpan.textContent = `Tydzień ${weekNum}`;
-                leftSpan.appendChild(weekTextSpan);
-
-                const dateSpan = document.createElement('span');
-                dateSpan.className = "notranslate";
-                dateSpan.setAttribute('translate', 'no');
-                dateSpan.style.marginLeft = "6px";
-                dateSpan.textContent = dateRangeFormatted;
-                leftSpan.appendChild(dateSpan);
+                const badgeSpan = document.createElement('span');
+                badgeSpan.className = "week-badge-tag notranslate";
+                badgeSpan.setAttribute('translate', 'no');
+                badgeSpan.textContent = item.badge;
 
                 label.appendChild(leftSpan);
+                label.appendChild(badgeSpan);
                 weeksCheckboxes.appendChild(label);
             });
+        }
+
+        function updateOtherWeeksInquiryLinks() {
+            var smsBtn = document.getElementById('btnAskOtherWeeksSms');
+            var waBtn = document.getElementById('btnAskOtherWeeksWa');
+            if (!smsBtn && !waBtn) return;
+
+            var selectedRegions = Array.from(document.querySelectorAll('.region-chk:checked')).map(cb => cb.value.trim());
+            var regionsPart = selectedRegions.length > 0
+                ? ` dla rejonów: ${selectedRegions.join(', ')}`
+                : '';
+
+            var msgText = `Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 4 tygodniami)${regionsPart}.`;
+            var encodedMsg = encodeURIComponent(msgText);
+
+            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            var smsSeparator = isIOS ? "&" : "?";
+
+            if (smsBtn) smsBtn.href = `sms:+48600812820${smsSeparator}body=${encodedMsg}`;
+            if (waBtn) waBtn.href = `https://wa.me/48600812820?text=${encodedMsg}`;
         }
 
         function rebuildRegionsCheckboxesWithLands(regionsData) {
@@ -2051,23 +2158,21 @@
         }
 
         function fetchAvailableRegions() {
+            renderFourNearestWeeks();
+            updateOtherWeeksInquiryLinks();
+
             var d = new Date();
             var month = String(d.getMonth() + 1).padStart(2, '0');
             var day = String(d.getDate()).padStart(2, '0');
             var dzisiaj = d.getFullYear() + month + day;
             var dynamicznyToken = "Dabu" + dzisiaj;
 
-            // --- ŻYWY LICZNIK CLI NA CZAS POBIERANIA ---
             var startTime = Date.now();
             var cliInterval = setInterval(function() {
                 var elapsedSec = Math.floor((Date.now() - startTime) / 1000);
-                
                 var timerR = document.getElementById('cliTimerRegions');
-                var timerW = document.getElementById('cliTimerWeeks');
                 if (timerR) timerR.textContent = '[CZEKAJ... ' + elapsedSec + 's]';
-                if (timerW) timerW.textContent = '[CZEKAJ... ' + elapsedSec + 's]';
 
-                // Po 5 sekundach dopisujemy dodatkowy techniczny log w rejonach
                 if (elapsedSec === 5) {
                     var logR = document.getElementById('cliLogRegions');
                     if (logR && !document.getElementById('cliExtraR1')) {
@@ -2079,19 +2184,6 @@
                         logR.appendChild(l1);
                     }
                 }
-
-                // Po 10 sekundach kolejny log w oknie tygodni
-                if (elapsedSec === 10) {
-                    var logW = document.getElementById('cliLogWeeks');
-                    if (logW && !document.getElementById('cliExtraW1')) {
-                        var l2 = document.createElement('div');
-                        l2.id = 'cliExtraW1';
-                        l2.className = 'terminal-line';
-                        l2.style.color = '#38bdf8';
-                        l2.innerHTML = '> Przetwarzanie terminów z podziałem na frakcje...';
-                        logW.appendChild(l2);
-                    }
-                }
             }, 1000);
 
             fetch(apiURL + "?action=getAllAvailability&token=" + dynamicznyToken)
@@ -2101,21 +2193,10 @@
                         availabilityMatrixAll = data.data;
                         if (data.dataScrap) availabilityMatrixScrap = data.dataScrap;
                 
-                        var now = new Date();
-                        var currentDay = now.getDay();
-                        var currentHour = now.getHours();
-                        var currentWeek = getWeekNumber(now).toString();
-       
-                        if (currentDay === 6 || currentDay === 0 || (currentDay === 5 && currentHour >= 18)) {
-                            delete availabilityMatrixAll[currentWeek];
-                            delete availabilityMatrixScrap[currentWeek];
-                        }
-                        
                         let isScrapChecked = document.getElementById('schrottOption') && document.getElementById('schrottOption').checked;
                         availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
 
                         rebuildRegionsCheckboxesWithLands(availabilityMatrixAll);
-                        renderWeeksFromData(availabilityMatrix);
                         updateMutualFiltering();
                     }
                 })
@@ -2124,33 +2205,22 @@
                     rebuildRegionsCheckboxesWithLands({});
                 })
                 .finally(() => {
-                    // Zatrzymanie tykania licznika
                     clearInterval(cliInterval);
 
-                    // Podświetlenie na zielono sukcesu tuż przed zamknięciem
                     var stR = document.getElementById('cliStatusRegions');
-                    var stW = document.getElementById('cliStatusWeeks');
                     if (stR) { stR.style.color = '#2ecc71'; stR.innerHTML = '> Baza rejonów: [ZAKOŃCZONO 100%]'; }
-                    if (stW) { stW.style.color = '#2ecc71'; stW.innerHTML = '> Harmonogram dat: [ZAKOŃCZONO 100%]'; }
 
                     let loaderOverlay = document.getElementById('regionsLoading');
-                    let weeksLoader = document.getElementById('weeksLoading');
                     let regionsCont = document.getElementById('regionsContainer');
-                    let weeksCont = document.getElementById('weeksContainer');
 
                     if (regionsCont) regionsCont.classList.remove('is-loading');
-                    if (weeksCont) weeksCont.classList.remove('is-loading');
 
-                    // Odczekanie chwili, żeby użytkownik zobaczył zielone [ZAKOŃCZONO 100%]
                     setTimeout(() => {
                         if(loaderOverlay) loaderOverlay.style.opacity = '0';
-                        if(weeksLoader) weeksLoader.style.opacity = '0';
-
                         setTimeout(() => { 
                             if(loaderOverlay) loaderOverlay.style.display = 'none'; 
-                            if(weeksLoader) weeksLoader.style.display = 'none'; 
                         }, 400); 
-                    }, 500);
+                    }, 400);
                     
                     updatePriceDisplay();
                 });
@@ -2331,41 +2401,16 @@
             // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
             let baseRateStandard = isEuro ? 10.00 : 40.00;
 
-            // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO
+            // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO (pierwszy rabat od 6 dnia / 2. tygodnia, max 20%)
             let discountPercent = 0;
-            if (totalDays >= 250)      discountPercent = 80;
-            else if (totalDays >= 181) discountPercent = 72;
-            else if (totalDays >= 121) discountPercent = 64;
-            else if (totalDays >= 81)  discountPercent = 53;
-            else if (totalDays >= 51)  discountPercent = 40;
-            else if (totalDays >= 31)  discountPercent = 27;
-            else if (totalDays >= 16)  discountPercent = 18;
-            else if (totalDays >= 6)   discountPercent = 8;
-            else                       discountPercent = 0;
+            if (totalDays >= 20)      discountPercent = 20;
+            else if (totalDays >= 16) discountPercent = 15;
+            else if (totalDays >= 11) discountPercent = 10;
+            else if (totalDays >= 6)  discountPercent = 5;
+            else                      discountPercent = 0;
 
             // Stawka bazowa za dzień po rabacie ilościowym (baza 40 PLN / 10 EUR)
-            let reportRateNoMap;
-            if (isEuro) {
-                if (totalDays >= 250)      reportRateNoMap = 2.00;
-                else if (totalDays >= 181) reportRateNoMap = 2.80;
-                else if (totalDays >= 121) reportRateNoMap = 3.60;
-                else if (totalDays >= 81)  reportRateNoMap = 4.70;
-                else if (totalDays >= 51)  reportRateNoMap = 6.00;
-                else if (totalDays >= 31)  reportRateNoMap = 7.30;
-                else if (totalDays >= 16)  reportRateNoMap = 8.20;
-                else if (totalDays >= 6)   reportRateNoMap = 9.20;
-                else                       reportRateNoMap = 10.00;
-            } else {
-                if (totalDays >= 250)      reportRateNoMap = 8.00;
-                else if (totalDays >= 181) reportRateNoMap = 11.20;
-                else if (totalDays >= 121) reportRateNoMap = 14.40;
-                else if (totalDays >= 81)  reportRateNoMap = 18.80;
-                else if (totalDays >= 51)  reportRateNoMap = 24.00;
-                else if (totalDays >= 31)  reportRateNoMap = 29.20;
-                else if (totalDays >= 16)  reportRateNoMap = 32.80;
-                else if (totalDays >= 6)   reportRateNoMap = 36.80;
-                else                       reportRateNoMap = 40.00;
-            }
+            let reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
 
             // Dopłata +100% dla pakietu z Mapą (mnożnik 2.0)
             let multiplier = isMapSelected ? 2.0 : 1.0;
@@ -2728,21 +2773,9 @@
         }
 
         function updateMutualFiltering() {
-            if (Object.keys(availabilityMatrix).length === 0) return;
-
-            var dzisiaj = new Date();
-            var obecnyTydzien = getWeekNumber(dzisiaj).toString();
-            var chkObecny = document.querySelector('.week-chk[data-week="' + obecnyTydzien + '"]');
-            if (chkObecny) {
-                var parentLabel = chkObecny.closest('.region-label');
-                if (parentLabel) {
-                    if (!availabilityMatrix[obecnyTydzien] || availabilityMatrix[obecnyTydzien].length === 0) {
-                        parentLabel.style.display = 'none';
-                        chkObecny.checked = false; 
-                    } else {
-                        parentLabel.style.display = 'flex';
-                    }
-                }
+            if (Object.keys(availabilityMatrix).length === 0) {
+                updateOtherWeeksInquiryLinks();
+                return;
             }
             
             let allAvailableRegionsInDb = new Set();
@@ -2847,7 +2880,7 @@
             let selectedRegions = Array.from(selectedRegionNodes).map(cb => cleanNameForCompare(cb.value));
             let selectedRegularRegions = selectedRegions.filter(r => !GLOBAL_SPECIAL_REGIONS.some(sr => cleanNameForCompare(sr) === r));
 
-            document.querySelectorAll('#weeksContainer .region-label').forEach(label => {
+            document.querySelectorAll('#weeksContainer .week-card-label').forEach(label => {
                 let chk = label.querySelector('.week-chk');
                 if (!chk) return;
                 let wNum = chk.getAttribute('data-week');
@@ -2869,15 +2902,10 @@
 
                 if (isAvailable && selectedRegularRegions.length > 0) {
                     label.style.opacity = '1';
-                    label.style.background = 'rgba(46, 204, 113, 0.12)';
-                    label.style.border = '1px solid rgba(46, 204, 113, 0.4)';
-                    label.style.borderRadius = '6px';
                     label.style.pointerEvents = 'auto';
                     chk.disabled = false;
                 } else if (!isAvailable && selectedRegularRegions.length > 0) {
-                    label.style.opacity = '0.22';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
+                    label.style.opacity = '0.35';
                     label.style.pointerEvents = 'none';
                     chk.disabled = true;
                     if (chk.checked) {
@@ -2885,11 +2913,10 @@
                     }
                 } else {
                     label.style.opacity = '1';
-                    label.style.background = 'transparent';
-                    label.style.border = '1px solid transparent';
                     label.style.pointerEvents = 'auto';
                     chk.disabled = false;
                 }
+                label.classList.toggle('is-checked', chk.checked);
             });
 
             document.querySelectorAll('#regionsContainer .land-group-header').forEach(header => {
@@ -2909,6 +2936,7 @@
             updateDynamicOptions();
             updateScheduleBadges();
             renderNeighborClusterSuggestions();
+            updateOtherWeeksInquiryLinks();
             updatePriceDisplay();
         }
 
@@ -2932,7 +2960,8 @@
         }
 
         document.getElementById('btnUnselectAll').addEventListener('click', function() {
-            document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false); 
+            document.querySelectorAll('.region-chk, .week-chk').forEach(c => c.checked = false);
+            document.querySelectorAll('.week-card-label').forEach(el => el.classList.remove('is-checked')); 
             var sInput = document.getElementById('regionSearchInput');
             if (sInput) { sInput.value = ''; }
             document.querySelectorAll('.cluster-suggestion-box').forEach(el => el.remove());
