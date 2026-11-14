@@ -134,7 +134,7 @@
         }
 
         .annual-rate-tag {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: var(--accent-gold);
             background: #181818;
@@ -189,7 +189,7 @@
         /* GRID Z REJONAMI */
         .regions-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
             gap: 10px; 
             margin: 15px 0 25px; 
         }
@@ -456,6 +456,10 @@
                     <span>Dzisiejsza stawka jednostkowa:</span>
                     <span id="calcUnitPrice" style="color: var(--accent-green); text-align: right;">...</span>
                 </div>
+                <div class="price-line" id="capStatusRow" style="display: none;">
+                    <span>Ochrona maksymalnej ceny (sufit):</span>
+                    <span id="calcCapSavings" style="color: var(--accent-gold); font-weight: bold; text-align: right;"></span>
+                </div>
                 <div id="specialPromoInfoRow" style="display: block; font-size: 0.82rem; color: var(--accent-orange); background: rgba(230, 126, 34, 0.12); border: 1px solid rgba(230, 126, 34, 0.4); border-radius: 6px; padding: 8px 10px; margin-top: 8px; line-height: 1.4;"></div>
                 <div class="price-total-line">
                     <span>ŁĄCZNA KWOTA:</span>
@@ -548,10 +552,8 @@
             });
         }
 
-        // --- DYNAMICZNA CENA ROSNĄCA CODZIENNIE OD 14.11.2026 DO 31.01.2027 ---
-        // Start: 4,00 zł / 1,00 € | Koniec (31.01.2027): 40,00 zł / 10,00 €
-        // Dopłata za mapę: identyczna jak stawka bazowa za raport
-        const START_DATE = new Date(2026, 10, 14); // 14 listopada 2026 (miesiące 0-indeksowane)
+        // --- OPCJA A: WZROST 4 -> 16 ZŁ (1 -> 4 €) DO 31.01.2027 + SUFIT 1 490 ZŁ / 375 € ZA REJON ---
+        const START_DATE = new Date(2026, 10, 14); // 14 listopada 2026
         const LAST_PROMO_DAY = new Date(2027, 0, 31); // 31 stycznia 2027
         const TODAY_MIDNIGHT = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -562,7 +564,9 @@
         const nextDayIndex = Math.min(totalRampDays, clampedDayIndex + 1);
 
         const MIN_RATE = isPolish ? 4.00 : 1.00;
-        const MAX_RATE = isPolish ? 40.00 : 10.00;
+        const MAX_RATE = isPolish ? 16.00 : 4.00;
+        const REGION_CAP_REPORT = isPolish ? 1490.00 : 375.00;
+        const REGION_CAP_COMBO = REGION_CAP_REPORT * 2; // 2 980 zł / 750 € z mapą online
 
         function getRateForDayIndex(dayIdx) {
             const raw = MIN_RATE + ((MAX_RATE - MIN_RATE) * (dayIdx / totalRampDays));
@@ -570,7 +574,7 @@
         }
 
         const BASE_RATE_DAY = getRateForDayIndex(clampedDayIndex);
-        const MAP_SURCHARGE_DAY = BASE_RATE_DAY; // tyle samo za mapę online
+        const MAP_SURCHARGE_DAY = BASE_RATE_DAY; // dopłata za mapę online = 100% stawki bazowej
         const TOMORROW_BASE_RATE = getRateForDayIndex(nextDayIndex);
         const isLastDay = clampedDayIndex >= totalRampDays;
 
@@ -578,6 +582,8 @@
         const todayComboStr = formatMoney(BASE_RATE_DAY + MAP_SURCHARGE_DAY);
         const tomorrowStr = formatMoney(TOMORROW_BASE_RATE);
         const maxStr = formatMoney(MAX_RATE);
+        const capReportStr = formatMoney(REGION_CAP_REPORT);
+        const capComboStr = formatMoney(REGION_CAP_COMBO);
 
         // Aktualizacja dynamicznych opisów i etykiet cenowych w całym interfejsie
         const badgeReportPrice = document.getElementById('badgeReportPrice');
@@ -589,29 +595,29 @@
         const regionsGroupDesc = document.getElementById('regionsGroupDesc');
 
         if (badgeReportPrice) {
-            badgeReportPrice.textContent = `Dzisiejsza stawka: ${todayStr} ${currencySymbol} / dzień`;
+            badgeReportPrice.textContent = `Dziś: ${todayStr} ${currencySymbol} / dzień (maks. ${capReportStr} ${currencySymbol} / rejon)`;
         }
         if (badgeMapSurcharge) {
-            badgeMapSurcharge.textContent = `Dopłata za mapę: +${todayStr} ${currencySymbol} / dzień (łącznie ${todayComboStr} ${currencySymbol} / dzień)`;
+            badgeMapSurcharge.textContent = `Dopłata za mapę: +${todayStr} ${currencySymbol} / dzień (łącznie ${todayComboStr} ${currencySymbol} / dzień, maks. ${capComboStr} ${currencySymbol} / rejon)`;
         }
         if (descFormatReport) {
-            descFormatReport.innerHTML = `Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku. <b>Dziś: ${todayStr} ${currencySymbol}/dzień</b> (cena rośnie codziennie do ${maxStr} ${currencySymbol}).`;
+            descFormatReport.innerHTML = `Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic bez możliwości druku. <b>Dziś: ${todayStr} ${currencySymbol}/dzień</b> (limit roczny za powiat: maks. <b>${capReportStr} ${currencySymbol}</b>).`;
         }
         if (descFormatMap) {
-            descFormatMap.innerHTML = `Pełny raport cyfrowy rozszerzony o interaktywną wizualizację punktów i sektorów wywozu na mapie GPS dzień po dniu. <b>Dziś: ${todayComboStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę).`;
+            descFormatMap.innerHTML = `Pełny raport cyfrowy rozszerzony o interaktywną mapę GPS dzień po dniu. <b>Dziś: ${todayComboStr} ${currencySymbol}/dzień</b> (limit roczny za powiat: maks. <b>${capComboStr} ${currencySymbol}</b>).`;
         }
         if (labelPriceYear) {
             labelPriceYear.textContent = `Dziś: ${todayStr} ${currencySymbol} / dzień`;
         }
         if (annualBannerSubtitle) {
             if (!isLastDay) {
-                annualBannerSubtitle.innerHTML = `📈 <b>Cena rośnie codziennie aż do 31 stycznia 2027 r.!</b> Dzisiejsza stawka to <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę), <b>jutro wzrośnie do ${tomorrowStr} ${currencySymbol}</b>, a w ostatnim dniu akcji (31.01) osiągnie <b>${maxStr} ${currencySymbol}</b> — po tym terminie sprzedaż abonamentów rocznych zostanie zakończona.`;
+                annualBannerSubtitle.innerHTML = `📈 <b>Cena rośnie codziennie aż do 31 stycznia 2027 r.!</b> Dzisiejsza stawka to <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę), <b>jutro wzrośnie do ${tomorrowStr} ${currencySymbol}</b>, a 31.01 osiągnie <b>${maxStr} ${currencySymbol}/dzień</b> (gwarantowany sufit: maks. <b>${capReportStr} ${currencySymbol}</b> za raport lub <b>${capComboStr} ${currencySymbol}</b> z mapą za 1 rejon). Od 1 lutego sprzedaż roczna zostanie zamknięta.`;
             } else {
-                annualBannerSubtitle.innerHTML = `⏰ <b>Ostatni dzień akcji sprzedażowej (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę). Od jutra abonamenty roczne nie będą już dostępne.`;
+                annualBannerSubtitle.innerHTML = `⏰ <b>Ostatni dzień akcji sprzedażowej (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę, maks. <b>${capReportStr} ${currencySymbol}</b> / <b>${capComboStr} ${currencySymbol}</b> za 1 rejon). Od jutra abonamenty roczne nie będą już dostępne.`;
             }
         }
         if (regionsGroupDesc) {
-            regionsGroupDesc.textContent = `Zaznacz interesujące Cię rejony poniżej (dzisiejsza stawka: ${todayStr} ${currencySymbol}/dzień):`;
+            regionsGroupDesc.textContent = `Zaznacz interesujące Cię rejony poniżej (dzisiejsza stawka: ${todayStr} ${currencySymbol}/dzień, sufit: ${capReportStr} ${currencySymbol}/rejon):`;
         }
 
         // Ukrycie BLIK dla klientów spoza Polski
@@ -677,6 +683,8 @@
         const calcPlanName = document.getElementById('calcPlanName');
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
+        const capStatusRow = document.getElementById('capStatusRow');
+        const calcCapSavings = document.getElementById('calcCapSavings');
         const specialPromoInfoRow = document.getElementById('specialPromoInfoRow');
         const cardFormatReport = document.getElementById('cardFormatReport');
         const cardFormatMap = document.getElementById('cardFormatMap');
@@ -693,6 +701,12 @@
             return currentFormat === 'Raport + Mapa' 
                 ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) 
                 : BASE_RATE_DAY;
+        }
+
+        function getActiveRegionCap() {
+            return currentFormat === 'Raport + Mapa' 
+                ? REGION_CAP_COMBO 
+                : REGION_CAP_REPORT;
         }
 
         function getDaysForRegion(regName) {
@@ -776,10 +790,13 @@
                             if (contentWrap && !contentWrap.querySelector('.promo-badge-inline')) {
                                 const promoSpan = document.createElement('span');
                                 promoSpan.className = 'promo-badge-inline';
+                                const regionPriceToday = Math.min(dni * BASE_RATE_DAY, REGION_CAP_REPORT);
+                                const regionPriceTodayStr = formatMoney(regionPriceToday);
+
                                 if (!isLastDay) {
-                                    promoSpan.textContent = `🔥 Dziś: ${todayStr} ${currencySymbol}/dzień (jutro ${tomorrowStr} ${currencySymbol}, do 31.01 rośnie do ${maxStr} ${currencySymbol})`;
+                                    promoSpan.textContent = `🔥 Dziś: ${regionPriceTodayStr} ${currencySymbol}/rok (${todayStr} ${currencySymbol}/dzień, jutro ${tomorrowStr} ${currencySymbol}, maks. 31.01: ${maxStr} ${currencySymbol}/dzień)`;
                                 } else {
-                                    promoSpan.textContent = `⏰ Ostatni dzień sprzedaży: ${todayStr} ${currencySymbol}/dzień (+${todayStr} ${currencySymbol} mapa)`;
+                                    promoSpan.textContent = `⏰ Ostatni dzień (31.01): ${regionPriceTodayStr} ${currencySymbol}/rok (${todayStr} ${currencySymbol}/dzień)`;
                                 }
                                 contentWrap.appendChild(promoSpan);
                             }
@@ -833,31 +850,58 @@
 
             orderSection.style.display = 'block';
 
+            const activeRate = getActiveRatePerDay();
+            const activeCap = getActiveRegionCap();
+            const activeRateStr = formatMoney(activeRate);
+            const activeCapStr = formatMoney(activeCap);
+
             let sumaDniWszystkichRejonow = 0;
+            let sumaBezSufitu = 0;
+            let sumaZSufitem = 0;
+            let ileRejonowZSufitem = 0;
+
             selectedRegions.forEach(regName => {
-                sumaDniWszystkichRejonow += getDaysForRegion(regName);
+                const dni = getDaysForRegion(regName);
+                const kosztSurowy = dni * activeRate;
+                const kosztPoSuficie = Math.min(kosztSurowy, activeCap);
+
+                if (kosztSurowy > activeCap) {
+                    ileRejonowZSufitem++;
+                }
+
+                sumaDniWszystkichRejonow += dni;
+                sumaBezSufitu += kosztSurowy;
+                sumaZSufitem += kosztPoSuficie;
             });
 
-            const activeRate = getActiveRatePerDay();
-            const activeRateStr = formatMoney(activeRate);
-            calculatedTotal = Math.round(sumaDniWszystkichRejonow * activeRate * 100) / 100;
+            calculatedTotal = Math.round(sumaZSufitem * 100) / 100;
             const totalFormatted = formatMoney(calculatedTotal);
+            const oszczednoscSufit = Math.round((sumaBezSufitu - sumaZSufitem) * 100) / 100;
             calculatedDays = sumaDniWszystkichRejonow;
 
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
             if (currentFormat === 'Raport + Mapa') {
-                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień (${todayStr} ${currencySymbol} raport + ${todayStr} ${currencySymbol} mapa)`;
+                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień (${todayStr} ${currencySymbol} raport + ${todayStr} ${currencySymbol} mapa) • sufit ${activeCapStr} ${currencySymbol}/rej.`;
             } else {
-                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień wywozu`;
+                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień wywozu • sufit ${activeCapStr} ${currencySymbol}/rej.`;
+            }
+
+            if (capStatusRow && calcCapSavings) {
+                if (oszczednoscSufit > 0) {
+                    capStatusRow.style.display = 'flex';
+                    calcCapSavings.textContent = `Aktywny limit ${activeCapStr} ${currencySymbol}/rej. (-${formatMoney(oszczednoscSufit)} ${currencySymbol})`;
+                } else {
+                    capStatusRow.style.display = 'none';
+                }
             }
 
             if (specialPromoInfoRow) {
                 if (!isLastDay) {
                     const tomorrowActiveStr = formatMoney(currentFormat === 'Raport + Mapa' ? TOMORROW_BASE_RATE * 2 : TOMORROW_BASE_RATE);
                     const maxActiveStr = formatMoney(currentFormat === 'Raport + Mapa' ? MAX_RATE * 2 : MAX_RATE);
-                    specialPromoInfoRow.innerHTML = `📈 <b>Gwarancja dzisiejszej ceny (${activeRateStr} ${currencySymbol}/dzień):</b> Stawka rośnie codziennie — jutro wyniesie <b>${tomorrowActiveStr} ${currencySymbol}/dzień</b>, a do 31 stycznia 2027 r. wzrośnie do <b>${maxActiveStr} ${currencySymbol}/dzień</b>, po czym sprzedaż abonamentów rocznych zostanie zakończona.`;
+                    specialPromoInfoRow.innerHTML = `📈 <b>Gwarancja dzisiejszej ceny (${activeRateStr} ${currencySymbol}/dzień):</b> Stawka rośnie codziennie — jutro wyniesie <b>${tomorrowActiveStr} ${currencySymbol}/dzień</b>, a 31 stycznia 2027 r. osiągnie <b>${maxActiveStr} ${currencySymbol}/dzień</b> (maks. <b>${activeCapStr} ${currencySymbol}</b> za 1 rejon na cały rok). Po 31 stycznia sprzedaż rocznych terminów zostanie zakończona.`;
                 } else {
-                    specialPromoInfoRow.innerHTML = `⏰ <b>Ostatni dzień sprzedaży abonamentów rocznych (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${activeRateStr} ${currencySymbol}/dzień</b>.`;
+                    specialPromoInfoRow.innerHTML = `⏰ <b>Ostatni dzień sprzedaży abonamentów rocznych (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${activeRateStr} ${currencySymbol}/dzień</b> (sufit <b>${activeCapStr} ${currencySymbol}</b> za rejon).`;
                 }
             }
 
@@ -980,7 +1024,7 @@
                     regions: regionsArr,
                     totalPrice: calculatedTotal,
                     currency: currencyCode,
-                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny (stawka dzienna: ${todayStr} ${currencySymbol}). Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny (stawka: ${todayStr} ${currencySymbol}/dzień, sufit: ${formatMoney(getActiveRegionCap())} ${currencySymbol}/rej.). Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
