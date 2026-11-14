@@ -207,7 +207,7 @@
         }
         .region-checkbox-label:hover:not(.disabled) { background: #2f2f2f; border-color: rgba(46, 204, 113, 0.4); }
         .region-checkbox-label.checked { border-color: var(--accent-green); background: rgba(46, 204, 113, 0.1); }
-        .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-green); }
+        .region-checkbox-label input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-green); flex-shrink: 0; }
 
         .region-checkbox-label.disabled {
             opacity: 0.45;
@@ -217,6 +217,15 @@
         }
         .region-checkbox-label.disabled input {
             cursor: not-allowed;
+        }
+
+        .promo-badge-inline {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            font-weight: 700;
+            margin-top: 3px;
+            line-height: 1.25;
         }
 
         /* PODSUMOWANIE I KOSZYK */
@@ -253,6 +262,7 @@
             align-items: center;
             font-size: 0.95rem;
             margin-bottom: 6px;
+            gap: 10px;
         }
 
         .price-total-line {
@@ -338,7 +348,7 @@
 <div class="order-module">
     <h2>📋 Abonament Roczny - Terminarze i Rejony DE (2027)</h2>
 
-    <!-- PROPOZYCJA 2: BLOKADA PO 31 MARCA 2027 Z PRZEKIEROWANIEM DO ZESTAWU TYGODNIOWEGO -->
+    <!-- BLOKADA PO 31 MARCA 2027 Z PRZEKIEROWANIEM DO ZESTAWU TYGODNIOWEGO -->
     <div id="salesClosedBanner">
         <h3 style="color: #e74c3c; margin: 0 0 10px 0; font-size: 1.3rem;">⚠️ Sprzedaż Abonamentów Rocznych na 2027 została zakończona</h3>
         <p style="color: #ddd; font-size: 0.95rem; margin: 0 0 16px 0; line-height: 1.5;">
@@ -371,7 +381,7 @@
                     Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic, gotowe do przeglądania na telefonie bez możliwości druku.
                 </div>
                 <div class="plan-surcharge-badge" id="badgeReportPrice" style="border-color: var(--accent-green); color: var(--accent-green); background: rgba(46, 204, 113, 0.12);">
-                    Stawka bazowa: 4 zł / dzień
+                    Stawka bazowa: 8 zł / dzień
                 </div>
             </label>
 
@@ -382,7 +392,7 @@
                     Pełny raport cyfrowy rozszerzony o interaktywną wizualizację punktów i sektorów wywozu na mapie GPS dzień po dniu.
                 </div>
                 <div class="plan-surcharge-badge" id="badgeMapSurcharge">
-                    Dopłata do raportu: +4 zł / dzień (łącznie 8 zł / dzień)
+                    Dopłata do raportu: +8 zł / dzień (łącznie 16 zł / dzień)
                 </div>
             </label>
         </div>
@@ -399,11 +409,11 @@
                     </div>
                 </div>
                 <div class="annual-rate-tag" id="labelPriceYear">
-                    4 zł / dzień wywozu
+                    8 zł / dzień wywozu
                 </div>
             </div>
 
-            <!-- KLAUZULA REGULAMINOWA (PROPOZYCJE 1 & 3) -->
+            <!-- KLAUZULA REGULAMINOWA -->
             <div style="font-size: 0.83rem; color: #bbb; border-top: 1px dashed rgba(46, 204, 113, 0.4); padding-top: 10px; margin-top: 8px; line-height: 1.5;">
                 📌 <b>Zasada rozliczenia (Pełna Licencja Roczna):</b><br>
                 Abonament stanowi jednorazową opłatę licencyjną za kompletny rocznik bazy 2027 (wycena obejmuje wszystkie zaplanowane dni w roku z gwarancją bezpłatnych aktualizacji i korekt urzędowych). Cena nie podlega podziałowi na miesiące ani odliczeniom za miniony okres. Mniejsze pakiety tygodniowe z możliwością wyboru dowolnych terminów i progresywnym rabatem ilościowym zamawiane są w <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">Konfiguratorze Zestawu Tygodniowego</a>.
@@ -444,8 +454,9 @@
                 </div>
                 <div class="price-line" id="unitPriceRow">
                     <span>Stawka jednostkowa:</span>
-                    <span id="calcUnitPrice" style="color: var(--accent-green);">4 zł / dzień wywozu</span>
+                    <span id="calcUnitPrice" style="color: var(--accent-green); text-align: right;">8 zł / dzień wywozu</span>
                 </div>
+                <div id="specialPromoInfoRow" style="display: none; font-size: 0.82rem; color: var(--accent-orange); background: rgba(230, 126, 34, 0.12); border: 1px solid rgba(230, 126, 34, 0.4); border-radius: 6px; padding: 8px 10px; margin-top: 8px; line-height: 1.4;"></div>
                 <div class="price-total-line">
                     <span>ŁĄCZNA KWOTA:</span>
                     <span id="calcTotalPrice">0 zł</span>
@@ -515,7 +526,7 @@
     (function() {
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec";
         
-        // --- PROPOZYCJA 2: BLOKADA SPRZEDAŻY ROCZNEJ PO 31 MARCA 2027 ---
+        // --- BLOKADA SPRZEDAŻY ROCZNEJ PO 31 MARCA 2027 ---
         const CUTOFF_DATE = new Date('2027-04-01T00:00:00');
         const now = new Date();
         if (now >= CUTOFF_DATE) {
@@ -530,10 +541,17 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
-        // Stawka bazowa raportu: 4 PLN lub 2 EUR za dzień wywozu
-        // Dopłata za opcję mapy: +4 PLN lub +1 EUR za dzień wywozu
-        const BASE_RATE_DAY = isPolish ? 4.00 : 2.00;
-        const MAP_SURCHARGE_DAY = isPolish ? 4.00 : 1.00;
+        // Stawka bazowa raportu: 8 PLN lub 2 EUR za dzień wywozu
+        // Dopłata za opcję mapy: +8 PLN lub +2 EUR za dzień wywozu
+        const BASE_RATE_DAY = isPolish ? 8.00 : 2.00;
+        const MAP_SURCHARGE_DAY = isPolish ? 8.00 : 2.00;
+
+        // Specjalne zasady dla Eifelkreis Bitburg-Prüm (promocja tylko do końca stycznia 2027)
+        const SPECIAL_REGION = "Eifelkreis Bitburg-Prüm";
+        const PROMO_CUTOFF_DATE = new Date('2027-02-01T00:00:00');
+        const isAfterJanPromo = now >= PROMO_CUTOFF_DATE;
+        const SPECIAL_BASE_RATE = isPolish ? 40.00 : 10.00;
+        const SPECIAL_MAP_SURCHARGE = isPolish ? 40.00 : 10.00;
 
         // Aktualizacja etykiet cenowych w kafelkach wyboru formatu
         const badgeReportPrice = document.getElementById('badgeReportPrice');
@@ -566,7 +584,7 @@
             "Altmarkkreis Salzwedel",
             "Bonn",
             "Bernkastel-Wittlich",
-            "Bitburg-Prüm",
+            "Eifelkreis Bitburg-Prüm",
             "Erftstadt",
             "Eschwege",
             "Fulda Miasto",
@@ -613,6 +631,7 @@
         const calcPlanName = document.getElementById('calcPlanName');
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
+        const specialPromoInfoRow = document.getElementById('specialPromoInfoRow');
         const cardFormatReport = document.getElementById('cardFormatReport');
         const cardFormatMap = document.getElementById('cardFormatMap');
         const emailInput = document.getElementById('clientEmailInput');
@@ -624,10 +643,20 @@
         const scrappersFilter = document.getElementById('scrappersFilter');
         const scrappersNote = document.getElementById('scrappersNote');
 
-        function getActiveRatePerDay() {
-            return currentFormat === 'Raport + Mapa' 
-                ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) 
-                : BASE_RATE_DAY;
+        function getRateForRegion(regName) {
+            const isMap = currentFormat === 'Raport + Mapa';
+            if (regName === SPECIAL_REGION && isAfterJanPromo) {
+                return isMap ? (SPECIAL_BASE_RATE + SPECIAL_MAP_SURCHARGE) : SPECIAL_BASE_RATE;
+            }
+            return isMap ? (BASE_RATE_DAY + MAP_SURCHARGE_DAY) : BASE_RATE_DAY;
+        }
+
+        function getDaysForRegion(regName) {
+            if (regionDaysMap[regName] !== undefined) return regionDaysMap[regName];
+            if (regName === SPECIAL_REGION && regionDaysMap["Bitburg-Prüm"] !== undefined) {
+                return regionDaysMap["Bitburg-Prüm"];
+            }
+            return 0;
         }
 
         // Obsługa wyboru płatności
@@ -664,11 +693,27 @@
             });
 
             label.appendChild(input);
+
+            const contentWrap = document.createElement('div');
+            contentWrap.style.lineHeight = '1.3';
+
             const textSpan = document.createElement('span');
             textSpan.className = 'region-text-node';
             textSpan.textContent = `${name} (wkrótce)`;
-            label.appendChild(textSpan);
-            
+            contentWrap.appendChild(textSpan);
+
+            if (name === SPECIAL_REGION) {
+                const promoSpan = document.createElement('span');
+                promoSpan.className = 'promo-badge-inline';
+                if (!isAfterJanPromo) {
+                    promoSpan.textContent = `🔥 Promocja do 31.01 (później ${SPECIAL_BASE_RATE} ${currencySymbol}/termin + ${SPECIAL_MAP_SURCHARGE} ${currencySymbol} mapa)`;
+                } else {
+                    promoSpan.textContent = `⚠️ Stawka standardowa: ${SPECIAL_BASE_RATE} ${currencySymbol}/termin (+${SPECIAL_MAP_SURCHARGE} ${currencySymbol} mapa)`;
+                }
+                contentWrap.appendChild(promoSpan);
+            }
+
+            label.appendChild(contentWrap);
             regionsGrid.appendChild(label);
         });
 
@@ -686,9 +731,9 @@
                         const regName = labelEl.getAttribute('data-region');
                         const inputEl = labelEl.querySelector('input');
                         const textSpan = labelEl.querySelector('.region-text-node');
+                        const dni = getDaysForRegion(regName);
 
-                        if (regionDaysMap[regName] !== undefined && regionDaysMap[regName] > 0) {
-                            const dni = regionDaysMap[regName];
+                        if (dni > 0) {
                             inputEl.disabled = false;
                             labelEl.classList.remove('disabled');
                             textSpan.textContent = `${regName} (${dni} dni)`;
@@ -743,20 +788,51 @@
             orderSection.style.display = 'block';
 
             let sumaDniWszystkichRejonow = 0;
+            let sumaKwotyWszystkichRejonow = 0;
+            const hasSpecialRegion = selectedRegions.has(SPECIAL_REGION);
+
             selectedRegions.forEach(regName => {
-                sumaDniWszystkichRejonow += (regionDaysMap[regName] || 0);
+                const dni = getDaysForRegion(regName);
+                const stawka = getRateForRegion(regName);
+                sumaDniWszystkichRejonow += dni;
+                sumaKwotyWszystkichRejonow += (dni * stawka);
             });
 
-            const activeRate = getActiveRatePerDay();
-            calculatedTotal = sumaDniWszystkichRejonow * activeRate;
+            calculatedTotal = sumaKwotyWszystkichRejonow;
             calculatedDays = sumaDniWszystkichRejonow;
 
+            const standardRate = getRateForRegion('DEFAULT');
+            const specialRate = getRateForRegion(SPECIAL_REGION);
+
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
-            if (currentFormat === 'Raport + Mapa') {
-                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień (${BASE_RATE_DAY} ${currencySymbol} raport + ${MAP_SURCHARGE_DAY} ${currencySymbol} mapa)`;
+
+            if (hasSpecialRegion && isAfterJanPromo) {
+                if (count === 1) {
+                    calcUnitPrice.textContent = currentFormat === 'Raport + Mapa'
+                        ? `${specialRate} ${currencySymbol} / termin (${SPECIAL_BASE_RATE} ${currencySymbol} raport + ${SPECIAL_MAP_SURCHARGE} ${currencySymbol} mapa)`
+                        : `${specialRate} ${currencySymbol} / termin`;
+                } else {
+                    calcUnitPrice.textContent = `Pozostałe: ${standardRate} ${currencySymbol}/dzień | ${SPECIAL_REGION}: ${specialRate} ${currencySymbol}/termin`;
+                }
             } else {
-                calcUnitPrice.textContent = `${activeRate} ${currencySymbol} / dzień wywozu`;
+                if (currentFormat === 'Raport + Mapa') {
+                    calcUnitPrice.textContent = `${standardRate} ${currencySymbol} / dzień (${BASE_RATE_DAY} ${currencySymbol} raport + ${MAP_SURCHARGE_DAY} ${currencySymbol} mapa)`;
+                } else {
+                    calcUnitPrice.textContent = `${standardRate} ${currencySymbol} / dzień wywozu`;
+                }
             }
+
+            if (hasSpecialRegion && specialPromoInfoRow) {
+                specialPromoInfoRow.style.display = 'block';
+                if (!isAfterJanPromo) {
+                    specialPromoInfoRow.innerHTML = `🔥 <b>${SPECIAL_REGION} – Promocja do 31 stycznia 2027 r.!</b> Korzystasz z promocyjnej stawki ${standardRate} ${currencySymbol}/dzień. Po zakończeniu promocji zamówienia będą dostępne wyłącznie w cenie <b>${SPECIAL_BASE_RATE} ${currencySymbol}</b> za termin (+<b>${SPECIAL_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online).`;
+                } else {
+                    specialPromoInfoRow.innerHTML = `ℹ️ Dla rejonu <b>${SPECIAL_REGION}</b> promocja wygasła z końcem stycznia – obowiązuje stawka <b>${SPECIAL_BASE_RATE} ${currencySymbol}</b> za termin (+<b>${SPECIAL_MAP_SURCHARGE} ${currencySymbol}</b> za mapę online).`;
+                }
+            } else if (specialPromoInfoRow) {
+                specialPromoInfoRow.style.display = 'none';
+            }
+
             calcTotalPrice.textContent = `${calculatedTotal.toLocaleString('pl-PL')} ${currencySymbol}`;
 
             if (currentStep === 'need_pin') {
