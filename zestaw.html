@@ -915,9 +915,9 @@
                             <span>🧲 Złom / E-Złom</span>
                         </label>
                         
-                        <label class="order-channel-label" id="dhlBox" style="display: none;">
+                        <label class="order-channel-label" id="dhlBox">
                             <input id="dhlOption" type="checkbox" />
-                            <span>📦 Darmowa wysyłka wydruku</span>
+                            <span id="dhlLabelText">📦 Wysyłka wydruku (Paczkomat / Punkt)</span>
                         </label>
                     </div>
 
@@ -2236,6 +2236,12 @@
         var paczSection = document.getElementById('paczkomatSection');
         if (dhlOpt) {
             dhlOpt.addEventListener('change', function() {
+                if (this.checked) {
+                    var pickupChk = document.getElementById('pickupOption');
+                    if (pickupChk && pickupChk.checked) {
+                        pickupChk.checked = false;
+                    }
+                }
                 if (paczSection) {
                     paczSection.style.display = this.checked ? 'block' : 'none';
                 }
@@ -2636,9 +2642,15 @@
             }
 
             var dhlContainer = document.getElementById('dhlBox');
+            var dhlLabelText = document.getElementById('dhlLabelText');
             if (dhlContainer) {
-                if (calc.totalDays >= 5 && !calc.isPickup) {
-                    dhlContainer.style.display = 'block';
+                if (!calc.isPickup) {
+                    dhlContainer.style.display = 'flex';
+                    if (dhlLabelText) {
+                        dhlLabelText.textContent = (calc.totalDays >= 5)
+                            ? '📦 Darmowa wysyłka wydruku (Paczkomat / Punkt)'
+                            : '📦 Wysyłka wydruku (Paczkomat / Punkt)';
+                    }
                 } else {
                     dhlContainer.style.display = 'none';
                     var dhlChk = document.getElementById('dhlOption');
@@ -3039,6 +3051,28 @@
             var selectedThemeVal = selectedThemeEl ? selectedThemeEl.value : "Light Mode";
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
 
+            var isShippingChecked = document.getElementById('dhlOption')?.checked || false;
+            var isPickupChecked = document.getElementById('pickupOption')?.checked || false;
+            var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
+            var paczkomatVal = (document.getElementById('paczkomatInput')?.value || '').trim();
+
+            if (isShippingChecked && !paczkomatVal) {
+                alert("⚠️ Wybierz Paczkomat na mapie lub wpisz kod i adres punktu odbioru!");
+                var pInp = document.getElementById('paczkomatInput');
+                if (pInp) {
+                    pInp.style.borderColor = '#ef4444';
+                    pInp.focus();
+                }
+                return;
+            }
+
+            var dostawaTekst = "Wersja elektroniczna (E-mail / SMS / WhatsApp)";
+            if (isPickupChecked) {
+                dostawaTekst = "Odbiór osobisty";
+            } else if (isShippingChecked) {
+                dostawaTekst = "Wysyłka wydruku (" + selectedCarrier + "): " + paczkomatVal;
+            }
+
             var MOJ_NUMER_TEL = "48600812820";
             var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
             var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
@@ -3053,6 +3087,7 @@
                 "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
                 "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
                 "Format: " + selectedThemeVal + "\n" +
+                "Dostawa: " + dostawaTekst + "\n" +
                 "Płatność: " + platnoscTekst;
 
             function obsluzSukcesWysylki() {
@@ -3116,7 +3151,10 @@
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
                 loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : (regularProof || ""),
-                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ")"
+                deliveryMethod: dostawaTekst,
+                carrier: isShippingChecked ? selectedCarrier : "",
+                paczkomat: isShippingChecked ? paczkomatVal : "",
+                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ") | Dostawa: " + dostawaTekst
             };
 
             fetch(apiURL, {
