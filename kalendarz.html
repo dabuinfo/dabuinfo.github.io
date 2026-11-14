@@ -180,65 +180,117 @@
     }
 
     #calendar-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
-        gap: 14px; 
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .four-weeks-card {
+        width: 100%;
+        background: #202020;
+        border: 1px solid #2f3640;
+        border-radius: 10px;
+        padding: 12px;
+        box-sizing: border-box;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .four-weeks-topbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: linear-gradient(90deg, #16243b 0%, #1d2939 100%);
+        border: 1px solid rgba(59, 130, 246, 0.35);
+        border-radius: 7px;
+        padding: 10px 14px;
+        margin-bottom: 10px;
+    }
+
+    .four-weeks-range-title {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
+
+    .four-weeks-switch-badge {
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #6aeb95;
+        background: rgba(46, 204, 113, 0.14);
+        border: 1px solid rgba(46, 204, 113, 0.4);
+        padding: 3px 9px;
+        border-radius: 5px;
     }
 
     .month-table { 
         width: 100%; 
         border-collapse: separate; 
-        border-spacing: 3px; 
-        font-size: 0.8125rem;
-        background: #202020; 
+        border-spacing: 4px; 
+        font-size: 0.85rem;
+        background: #181818; 
         border-radius: 8px; 
         padding: 6px; 
     }
 
     .current-month { outline: 2px solid #007bff; box-shadow: 0 0 15px rgba(0, 123, 255, 0.25); }
     .month-title { 
-        background-color: #2c2c2c; 
-        color: #3b82f6; 
+        background-color: #252b36; 
+        color: #60a5fa; 
         text-align: center; 
-        padding: 8px 4px; 
+        padding: 8px 6px; 
         font-weight: 700; 
         text-transform: uppercase; 
-        border-radius: 4px; 
-        font-size: 0.875rem; 
+        border-radius: 5px; 
+        font-size: 0.86rem; 
     }
-    .current-month .month-title { background-color: #007bff; color: #fff; }
 
-    .month-table th { color: #9ca3af; padding: 6px 0; font-weight: 600; font-size: 0.75rem; }
+    .month-table th { color: #9ca3af; padding: 7px 0; font-weight: 700; font-size: 0.78rem; }
     .month-table td { 
-        background: #2a2a2a; 
+        background: #262930; 
         text-align: center; 
-        padding: 4px 0; 
-        border-radius: 4px; 
+        padding: 6px 2px; 
+        border-radius: 6px; 
         position: relative; 
         cursor: default; 
-        height: 32px; 
-        font-size: 0.875rem;
-        font-weight: 500;
+        height: 44px; 
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: transform 0.12s ease, background-color 0.15s ease, outline 0.15s ease;
+    }
+
+    .day-month-sub {
+        display: block;
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #93c5fd;
+        line-height: 1;
+        margin-top: 2px;
+        letter-spacing: 0.3px;
     }
     
-    .week-header { color: #6b7280 !important; font-size: 0.6875rem !important; }
+    .week-header { color: #6b7280 !important; font-size: 0.72rem !important; width: 54px; }
     .week-number { 
-        background: #1a1a1a !important; 
-        color: #71717a !important; 
-        font-size: 0.75rem !important;
-        font-weight: 700; 
-        border-right: 1px solid #333; 
+        background: #15181e !important; 
+        color: #93c5fd !important; 
+        font-size: 0.78rem !important;
+        font-weight: 800; 
+        border-right: 1px solid #334155; 
         cursor: not-allowed; 
+        font-family: var(--font-mono);
     }
 
     .month-table td:nth-child(8) { color: #f87171; } 
     .month-table td:nth-child(7) { color: #fca5a5; } 
     .holiday-national { background-color: #8B0000 !important; color: #fff !important; font-weight: 700; cursor: help; }
     .holiday-regional { background-color: #4A2323 !important; color: #fecaca !important; cursor: help; }
-    .today { background-color: #007bff !important; color: #fff !important; font-weight: 700; }
+    .today { background-color: #007bff !important; color: #fff !important; font-weight: 800; box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); }
     
-    /* Dni aktywne do kliknięcia (od jutra) */
-    .clickable-day:hover { background-color: #3b3b3b !important; outline: 1px solid #007bff; cursor: pointer; }
+    /* Dni aktywne do kliknięcia (od jutra w obrębie 4 tygodni) */
+    .clickable-day:hover { background-color: #323a48 !important; outline: 2px solid #2ecc71; cursor: pointer; transform: translateY(-1px); }
 
     /* Dni zablokowane (od dziś wstecz) */
     .past-day {
@@ -247,9 +299,46 @@
         color: #666 !important;
     }
     .past-day:hover {
-        background-color: #2a2a2a !important;
+        background-color: #262930 !important;
         outline: none !important;
+        transform: none !important;
         cursor: not-allowed !important;
+    }
+
+    .other-weeks-inquiry-strip {
+        margin-top: 10px;
+        padding: 10px 14px;
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px dashed rgba(148, 163, 184, 0.35);
+        border-radius: 7px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 0.83rem;
+        color: #cbd5e1;
+    }
+
+    .other-weeks-strip-btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-inquiry-mini {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 11px;
+        border-radius: 5px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: filter 0.15s ease;
+    }
+    .btn-inquiry-mini:hover {
+        filter: brightness(1.12);
     }
 
     .calendar-legend { 
@@ -767,18 +856,25 @@
                         <path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#007bff" stroke-width="1.6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M15.6947 13.7H15.7037M15.6947 16.7H15.7037M11.9955 13.7H12.0045M11.9955 16.7H12.0045M8.29431 13.7H8.30329M8.29431 16.7H8.30329" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <h2 id="cal-title">Kalendarz Wystawek</h2>
-                    <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026/2027</span>
+                    <h2 id="cal-title">Kalendarz Wystawek (4 najbliższe tygodnie)</h2>
+                    <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026</span>
                     <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień (PL) | 10 € / dzień (UE)</span>
                 </div>
                 
                 <div style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.14) 0%, rgba(56, 189, 248, 0.14) 100%); border: 1px solid rgba(46, 204, 113, 0.45); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; text-align: center; font-size: 0.85rem; color: #f0f6fc;">
-                    📢 <strong style="color: #2ecc71;">Aktualizacja cennika:</strong> Jednolita stawka <strong style="color: #fbbf24;">40 zł / dzień</strong> (w PL) lub <strong style="color: #fbbf24;">10 € / dzień</strong> (poza PL).
+                    📢 <strong style="color: #2ecc71;">Cennik i rabaty ilościowe (od 6. dnia / 2. tygodnia, max 20%):</strong>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 7px; font-size: 0.8rem;">
+                        <span style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); padding: 2px 8px; border-radius: 5px; color: #cbd5e1;">1–5 dni: <b>0%</b></span>
+                        <span style="background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.4); padding: 2px 8px; border-radius: 5px; color: #2ecc71;">6–10 dni: <b>-5%</b></span>
+                        <span style="background: rgba(46, 204, 113, 0.16); border: 1px solid rgba(46, 204, 113, 0.45); padding: 2px 8px; border-radius: 5px; color: #2ecc71;">11–15 dni: <b>-10%</b></span>
+                        <span style="background: rgba(46, 204, 113, 0.2); border: 1px solid rgba(46, 204, 113, 0.5); padding: 2px 8px; border-radius: 5px; color: #2ecc71;">16–19 dni: <b>-15%</b></span>
+                        <span style="background: rgba(46, 204, 113, 0.28); border: 1px solid #2ecc71; padding: 2px 8px; border-radius: 5px; color: #ffffff;">20+ dni: <b style="color:#2ecc71;">-20% (MAX)</b></span>
+                    </div>
                 </div>
                 <div class="hero-features-grid" id="cal-hint">
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">📅</span>
-                        <div class="hero-feature-text"><strong>Wybierz dzień wywozu</strong> w kalendarzu, aby sprawdzić rejony oficjalnej zbiórki odpadów.</div>
+                        <div class="hero-feature-text"><strong>4 najbliższe tygodnie:</strong> kalendarz pokazuje bieżący horyzont 4 tygodni i automatycznie przesuwa się w każdy <strong>piątek o 18:00</strong>.</div>
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">➕</span>
@@ -786,7 +882,7 @@
                     </div>
                     <div class="hero-feature-item">
                         <span class="hero-feature-icon">🛒</span>
-                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">40 PLN / dzień w PL lub 10 € / dzień poza PL</span>):</strong> zaznaczaj rejony i korzystaj z automatycznych rabatów ilościowych.</div>
+                        <div class="hero-feature-text"><strong>Wspólny koszyk (<span id="dynamic-cal-rate-inline">40 PLN / dzień w PL lub 10 € / dzień poza PL</span>):</strong> sąsiednie rejony tworzą korytarz wspólny z rabatem od 6. dnia.</div>
                     </div>
                 </div>
             </div>
@@ -797,7 +893,7 @@
             <div class="calendar-legend">
                 <div><span class="legend-box holiday-national"></span> <span id="leg-nat">Święta Narodowe</span></div>
                 <div><span class="legend-box holiday-regional"></span> <span id="leg-reg">Święta Regionalne</span></div>
-                <div><span class="legend-box current-month-indicator"></span> <span id="leg-curr">Bieżący miesiąc</span></div>
+                <div><span class="legend-box today"></span> <span id="leg-curr">Dzisiaj</span></div>
             </div>
 
             <!-- WYNIKI WYSZUKIWANIA ZBIÓREK -->
@@ -1330,102 +1426,148 @@
             if (!grid) return;
             grid.innerHTML = '';
 
-            const startYear = now.getFullYear();
-            const startMonth = now.getMonth();
-            const monthsCount = 2;
-            const holidayCache = {};
+            const day = now.getDay(); // 0 = Niedziela, 5 = Piątek, 6 = Sobota
+            const hour = now.getHours();
+            // Zmiana tygodni zawsze w piątek od godziny 18:00
+            const isAfterFridaySwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
 
-            const endMonthDate = new Date(startYear, startMonth + monthsCount - 1, 1);
-            const yearsBadge = document.getElementById('header-years-badge');
-            if (yearsBadge) {
-                if (startYear === endMonthDate.getFullYear()) {
-                    yearsBadge.textContent = `DE ${startYear}`;
-                } else {
-                    yearsBadge.textContent = `DE ${startYear}/${endMonthDate.getFullYear()}`;
-                }
+            const diffToMonday = (day === 0 ? -6 : 1 - day);
+            const baseMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+            baseMonday.setHours(0, 0, 0, 0);
+
+            if (isAfterFridaySwitch) {
+                baseMonday.setDate(baseMonday.getDate() + 7);
             }
 
-            for (let i = 0; i < monthsCount; i++) {
-                let targetDate = new Date(startYear, startMonth + i, 1);
-                let curY = targetDate.getFullYear();
-                let curM = targetDate.getMonth();
+            const horizonEndSunday = new Date(baseMonday);
+            horizonEndSunday.setDate(baseMonday.getDate() + 27);
+            horizonEndSunday.setHours(23, 59, 59, 999);
 
-                if (!holidayCache[curY]) {
-                    holidayCache[curY] = getGermanHolidaysForYear(curY);
-                }
+            const holidayCache = {};
+            const startYear = baseMonday.getFullYear();
+            const endYear = horizonEndSunday.getFullYear();
 
-                let isCurrentMonthNow = (now.getFullYear() === curY && now.getMonth() === curM);
+            const yearsBadge = document.getElementById('header-years-badge');
+            if (yearsBadge) {
+                yearsBadge.textContent = (startYear === endYear) ? `DE ${startYear}` : `DE ${startYear}/${endYear}`;
+            }
 
-                let table = document.createElement('table');
-                table.className = 'month-table notranslate' + (isCurrentMonthNow ? ' current-month' : '');
-                table.setAttribute('translate', 'no');
-                
-                let monthTitleDisplay = `${calData.m[curM]} <span style="font-size:0.75rem; color:#aaa; font-weight:normal;">${curY}</span>`;
+            const startWeekISO = getISOWeekNumber(baseMonday);
+            const endWeekISO = getISOWeekNumber(horizonEndSunday);
 
-                let header = `<thead class="notranslate" translate="no">
-                    <tr><th colspan="8" class="month-title notranslate" translate="no">${monthTitleDisplay}</th></tr>
-                    <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
-                </thead>`;
-                
-                let firstDay = new Date(curY, curM, 1).getDay();
-                let daysInMonth = new Date(curY, curM + 1, 0).getDate();
-                let startingDay = firstDay === 0 ? 6 : firstDay - 1; 
-                
-                let body = '<tbody class="notranslate" translate="no"><tr class="notranslate" translate="no">';
-                let firstDateForWeek = new Date(curY, curM, 1);
-                
-                let wNum = getISOWeekNumber(firstDateForWeek);
-                body += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
-                
-                let dayCount = 0;
-                for (let j = 0; j < startingDay; j++) { 
-                    body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; 
-                    dayCount++; 
-                }
-                
-                for (let d = 1; d <= daysInMonth; d++) {
-                    if (dayCount % 7 === 0 && dayCount !== 0) {
-                        body += '</tr><tr class="notranslate" translate="no">';
-                        let currentDayForWeek = new Date(curY, curM, d);
-                        let wNumRow = getISOWeekNumber(currentDayForWeek);
-                        body += `<td class="week-number notranslate" translate="no" data-week="${wNumRow}">${wNumRow}</td>`;
+            const fmtRangeStart = `${String(baseMonday.getDate()).padStart(2, '0')}.${String(baseMonday.getMonth() + 1).padStart(2, '0')}`;
+            const fmtRangeEnd = `${String(horizonEndSunday.getDate()).padStart(2, '0')}.${String(horizonEndSunday.getMonth() + 1).padStart(2, '0')}.${endYear}`;
+
+            const startMonthName = calData.m[baseMonday.getMonth()];
+            const endMonthName = calData.m[horizonEndSunday.getMonth()];
+            const monthsHeaderLabel = (startMonthName === endMonthName)
+                ? `${startMonthName} ${startYear}`
+                : `${startMonthName} / ${endMonthName} ${endYear}`;
+
+            const cardWrapper = document.createElement('div');
+            cardWrapper.className = 'four-weeks-card notranslate';
+            cardWrapper.setAttribute('translate', 'no');
+
+            const switchInfoText = isPolish
+                ? (isAfterFridaySwitch ? '🔄 Przełączono po piątku 18:00' : '⏰ Zmiana w piątek o 18:00')
+                : (isAfterFridaySwitch ? '🔄 Aktualisiert nach Fr. 18:00' : '⏰ Wechsel am Freitag 18:00');
+
+            const rangeTitleText = isPolish
+                ? `📅 4 najbliższe tygodnie: ${fmtRangeStart} – ${fmtRangeEnd} (Ty ${startWeekISO}–${endWeekISO})`
+                : `📅 Nächste 4 Wochen: ${fmtRangeStart} – ${fmtRangeEnd} (KW ${startWeekISO}–${endWeekISO})`;
+
+            cardWrapper.innerHTML = `
+                <div class="four-weeks-topbar notranslate" translate="no">
+                    <span class="four-weeks-range-title notranslate" translate="no">${rangeTitleText}</span>
+                    <span class="four-weeks-switch-badge notranslate" translate="no">${switchInfoText}</span>
+                </div>
+            `;
+
+            const table = document.createElement('table');
+            table.className = 'month-table notranslate';
+            table.setAttribute('translate', 'no');
+
+            let bodyHtml = `<thead class="notranslate" translate="no">
+                <tr><th colspan="8" class="month-title notranslate" translate="no">${monthsHeaderLabel}</th></tr>
+                <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
+            </thead><tbody class="notranslate" translate="no">`;
+
+            for (let wIdx = 0; wIdx < 4; wIdx++) {
+                const weekMonday = new Date(baseMonday);
+                weekMonday.setDate(baseMonday.getDate() + (wIdx * 7));
+                const wNum = getISOWeekNumber(weekMonday);
+
+                bodyHtml += `<tr class="notranslate" translate="no">`;
+                bodyHtml += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
+
+                for (let dIdx = 0; dIdx < 7; dIdx++) {
+                    const cellDate = new Date(weekMonday);
+                    cellDate.setDate(weekMonday.getDate() + dIdx);
+                    cellDate.setHours(0, 0, 0, 0);
+
+                    const curY = cellDate.getFullYear();
+                    const curM = cellDate.getMonth();
+                    const d = cellDate.getDate();
+
+                    if (!holidayCache[curY]) {
+                        holidayCache[curY] = getGermanHolidaysForYear(curY);
                     }
-                    
-                    let mStr = String(curM + 1).padStart(2, '0');
-                    let dStr = String(d).padStart(2, '0');
-                    let dateKey = `${curY}-${mStr}-${dStr}`;
 
-                    let holidayObj = holidayCache[curY][dateKey];
-                    let hName = holidayObj ? holidayObj.name : "";
+                    const mStr = String(curM + 1).padStart(2, '0');
+                    const dStr = String(d).padStart(2, '0');
+                    const dateKey = `${curY}-${mStr}-${dStr}`;
+
+                    const holidayObj = holidayCache[curY][dateKey];
+                    const hName = holidayObj ? holidayObj.name : "";
                     let hClass = "";
                     if (holidayObj) {
                         if (holidayObj.type === "national") hClass = "holiday-national has-holiday";
                         else if (holidayObj.type === "regional") hClass = "holiday-regional has-holiday";
                     }
-                    
-                    let isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
 
-                    const cellDate = new Date(curY, curM, d);
-                    cellDate.setHours(0, 0, 0, 0);
+                    const isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
                     const isPastOrToday = cellDate < tomorrowMidnight;
 
-                    const dayClasses = isPastOrToday 
-                        ? `${hClass} ${isToday} past-day notranslate` 
+                    const dayClasses = isPastOrToday
+                        ? `${hClass} ${isToday} past-day notranslate`
                         : `${hClass} ${isToday} clickable-day notranslate`;
 
-                    body += `<td class="${dayClasses}" translate="no" data-holiday="${hName}" data-date="${dateKey}">${d}</td>`;
-                    dayCount++;
+                    const shortMonth = calData.m[curM].substring(0, 3);
+                    const showMonthBadge = (wIdx === 0 && dIdx === 0) || (d === 1);
+                    const subLabel = showMonthBadge ? `<span class="day-month-sub notranslate" translate="no">${shortMonth}</span>` : '';
+
+                    bodyHtml += `<td class="${dayClasses}" translate="no" data-holiday="${hName}" data-date="${dateKey}" title="${hName ? hName + ' (' + dStr + '.' + mStr + ')' : dStr + '.' + mStr + '.' + curY}">${d}${subLabel}</td>`;
                 }
-                while (dayCount % 7 !== 0) { 
-                    body += '<td class="notranslate" translate="no" style="background:transparent;"></td>'; 
-                    dayCount++; 
-                }
-                body += '</tr></tbody>';
-                table.innerHTML = header + body;
-                grid.appendChild(table);
+
+                bodyHtml += `</tr>`;
             }
 
-            const wrapper = document.getElementById('calendar-wrapper');
+            bodyHtml += `</tbody>`;
+            table.innerHTML = bodyHtml;
+            cardWrapper.appendChild(table);
+
+            const inquiryText = encodeURIComponent(
+                isPolish
+                    ? "Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 4 tygodniami)."
+                    : "Hallo, ich möchte nach Terminen für andere Wochen (außerhalb der nächsten 4 Wochen) fragen."
+            );
+            const stripHtml = `
+                <div class="other-weeks-inquiry-strip">
+                    <span>${isPolish ? '🗓️ Szukasz terminu w <b>dalszych tygodniach</b>?' : '🗓️ Termine für <b>weitere Wochen</b> anfragen?'}</span>
+                    <div class="other-weeks-strip-btns">
+                        <a href="sms:${phoneOrder}${smsSeparator}body=${inquiryText}" class="btn-inquiry-mini" style="background: rgba(46, 204, 113, 0.16); border: 1px solid rgba(46, 204, 113, 0.45); color: #2ecc71;">
+                            📱 ${isPolish ? 'Zapytaj przez SMS' : 'Per SMS fragen'}
+                        </a>
+                        <a href="https://wa.me/48600812820?text=${inquiryText}" target="_blank" class="btn-inquiry-mini" style="background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8;">
+                            💬 WhatsApp
+                        </a>
+                    </div>
+                </div>
+            `;
+            cardWrapper.insertAdjacentHTML('beforeend', stripHtml);
+            grid.appendChild(cardWrapper);
+
+                        const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper) {
                 let existingInfo = document.querySelector('.calendar-info');
                 if (existingInfo) existingInfo.remove();
@@ -1601,102 +1743,27 @@
                 const isSingleCluster = (clusters.length === 1 && selectedRegionsCount > 1);
                 const czyKorytarzWspolny = (selectedRegionsCount > 1);
 
-                let regularPrice = 0;
-                let totalNetto = 0;
-                let ratePerDay = 0;
+                // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
+                const baseRateStandard = isEuro ? 10.00 : 40.00;
 
-                if (isEuro) {
-                    if (czyKorytarzWspolny) {
-                        const basePkg = 10.00;
-                        if (totalDays >= 250)      ratePerDay = 2.00;
-                        else if (totalDays >= 181) ratePerDay = 2.80;
-                        else if (totalDays >= 121) ratePerDay = 3.60;
-                        else if (totalDays >= 81)  ratePerDay = 4.70;
-                        else if (totalDays >= 51)  ratePerDay = 6.00;
-                        else if (totalDays >= 31)  ratePerDay = 7.30;
-                        else if (totalDays >= 16)  ratePerDay = 8.20;
-                        else if (totalDays >= 6)   ratePerDay = 9.20;
-                        else                       ratePerDay = 10.00;
+                // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO (pierwszy rabat od 6 dnia / 2. tygodnia, max 20%)
+                let discountPercent = 0;
+                if (totalDays >= 20)      discountPercent = 20;
+                else if (totalDays >= 16) discountPercent = 15;
+                else if (totalDays >= 11) discountPercent = 10;
+                else if (totalDays >= 6)  discountPercent = 5;
+                else                      discountPercent = 0;
 
-                        regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
-                        totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-                    } else {
-                        const firstDayBase = 10.00;
-                        const nextDayBase = 10.00;
-                        regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
-
-                        if (totalDays === 1) {
-                            ratePerDay = 10.00;
-                            totalNetto = 10.00;
-                        } else if (totalDays <= 5) {
-                            totalNetto = regularPrice;
-                            ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
-                        } else {
-                            let discFactor = 1.0;
-                            if (totalDays >= 250)      discFactor = 0.20;
-                            else if (totalDays >= 181) discFactor = 0.28;
-                            else if (totalDays >= 121) discFactor = 0.36;
-                            else if (totalDays >= 81)  discFactor = 0.47;
-                            else if (totalDays >= 51)  discFactor = 0.60;
-                            else if (totalDays >= 31)  discFactor = 0.73;
-                            else if (totalDays >= 16)  discFactor = 0.82;
-                            else if (totalDays >= 6)   discFactor = 0.92;
-
-                            totalNetto = Math.round((regularPrice * discFactor) * 100) / 100;
-                            ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
-                        }
-                    }
-                } else {
-                    if (czyKorytarzWspolny) {
-                        const basePkg = 40.00;
-                        if (totalDays >= 250)      ratePerDay = 8.00;
-                        else if (totalDays >= 181) ratePerDay = 11.20;
-                        else if (totalDays >= 121) ratePerDay = 14.40;
-                        else if (totalDays >= 81)  ratePerDay = 18.80;
-                        else if (totalDays >= 51)  ratePerDay = 24.00;
-                        else if (totalDays >= 31)  ratePerDay = 29.20;
-                        else if (totalDays >= 16)  ratePerDay = 32.80;
-                        else if (totalDays >= 6)   ratePerDay = 36.80;
-                        else                       ratePerDay = 40.00;
-
-                        regularPrice = Math.round((totalDays * basePkg) * 100) / 100;
-                        totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-                    } else {
-                        const firstDayBase = 40.00;
-                        const nextDayBase = 40.00;
-                        regularPrice = Math.round((firstDayBase + Math.max(0, totalDays - 1) * nextDayBase) * 100) / 100;
-
-                        if (totalDays === 1) {
-                            ratePerDay = 40.00;
-                            totalNetto = 40.00;
-                        } else if (totalDays <= 5) {
-                            totalNetto = regularPrice;
-                            ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
-                        } else {
-                            let discFactor = 1.0;
-                            if (totalDays >= 250)      discFactor = 0.20;
-                            else if (totalDays >= 181) discFactor = 0.28;
-                            else if (totalDays >= 121) discFactor = 0.36;
-                            else if (totalDays >= 81)  discFactor = 0.47;
-                            else if (totalDays >= 51)  discFactor = 0.60;
-                            else if (totalDays >= 31)  discFactor = 0.73;
-                            else if (totalDays >= 16)  discFactor = 0.82;
-                            else if (totalDays >= 6)   discFactor = 0.92;
-
-                            totalNetto = Math.round((regularPrice * discFactor) * 100) / 100;
-                            ratePerDay = Math.round((totalNetto / totalDays) * 100) / 100;
-                        }
-                    }
-                }
+                const reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
 
                 // Doliczenie +100% wartości zamówienia za przygotowanie mapy z naniesionymi adresami
                 const mapMultiplier = isMapSelected ? 2.0 : 1.0;
-                regularPrice = Math.round((regularPrice * mapMultiplier) * 100) / 100;
-                totalNetto = Math.round((totalNetto * mapMultiplier) * 100) / 100;
-                ratePerDay = Math.round((ratePerDay * mapMultiplier) * 100) / 100;
+                const ratePerDay = Math.round((reportRateNoMap * mapMultiplier) * 100) / 100;
+                const regularBaseReference = Math.round((baseRateStandard * mapMultiplier) * 100) / 100;
 
-                const savings = Math.round((regularPrice - totalNetto) * 100) / 100;
-                const discountPercent = regularPrice === 0 ? 0 : Math.round((savings / regularPrice) * 100);
+                const regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
+                const totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+                const savings = Math.max(0, Math.round((regularPrice - totalNetto) * 100) / 100);
 
                 const defaultMethod = isPolish ? "BLIK (+48 733 035 301)" : "PAYPAL (ewabu74@gmail.com)";
                 const selectedPayment = document.querySelector('input[name="cartPaymentMethod"]:checked')?.value || defaultMethod;
@@ -1706,10 +1773,10 @@
                 let paypalFee = 0;
 
                 if (isPaypal && totalNetto > 0) {
-                    const paypalFixed = isPolish ? 1.35 : 0.35;
-                    const paypalPercent = 0.029;
-                    finalAmount = Math.round(((totalNetto + paypalFixed) / (1 - paypalPercent)) * 100) / 100;
-                    paypalFee = Math.round((finalAmount - totalNetto) * 100) / 100;
+                    const paypalFixed = isEuro ? 0.35 : 1.35;
+                    const paypalPercent = 0.034; // standard 3.4%
+                    paypalFee = Math.round(((totalNetto * paypalPercent) + paypalFixed) * 100) / 100;
+                    finalAmount = Math.round((totalNetto + paypalFee) * 100) / 100;
                 }
 
                 return {
@@ -1732,7 +1799,7 @@
                 };
             }
 
-            // Aktualizacja okienek "+X dni dodano od dnia wybranego" we wszystkich wierszach
+                        // Aktualizacja okienek "+X dni dodano od dnia wybranego" we wszystkich wierszach
             function updateRowAddedDaysWindows() {
                 const rows = resultsContent.querySelectorAll('.zebra-row');
                 rows.forEach(row => {
@@ -2347,6 +2414,9 @@
 
                                         const nextAvailable = availableDates.find(d => {
                                             if (d <= curDate) return false;
+                                            const dp = d.split('-');
+                                            const dObj = new Date(dp[0], dp[1] - 1, dp[2]);
+                                            if (dObj > horizonEndSunday) return false;
                                             const dDisp = formatDateDisplay(d);
                                             return !globalCart.has(`${dDisp}_${rName}`);
                                         });
@@ -2409,7 +2479,7 @@
                                         const validDates = availableDates.filter(dStr => {
                                             const dParts = dStr.split('-');
                                             const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
-                                            return d >= earliestOrderDate && d <= sunday;
+                                            return d >= tomorrowMidnight && d <= sunday && d <= horizonEndSunday;
                                         });
 
                                         if (validDates.length === 0) {
