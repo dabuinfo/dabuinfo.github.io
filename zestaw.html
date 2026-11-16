@@ -231,7 +231,7 @@
             width: 100%; 
         }
 
-        /* Kompaktowa siatka 2x2 dla 4 najbliższych tygodni pod rejonami */
+        /* Kompaktowa siatka dla 2 najbliższych tygodni pod rejonami */
         .weeks-compact-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -752,17 +752,8 @@
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
-                        <li>Wybierz interesujące Cię <b>rejony</b> oraz <b>tygodnie z najbliższych 4 tygodni</b> (harmonogram przesuwa się automatycznie w każdy piątek o 18:00; o dalsze terminy zapytasz jednym kliknięciem przez SMS lub WhatsApp).</li>
+                        <li>Wybierz interesujące Cię <b>rejony</b> oraz <b>tygodnie z najbliższych 2 tygodni</b> (harmonogram przesuwa się automatycznie w każdy piątek o 18:00; o dalsze terminy zapytasz jednym kliknięciem przez SMS lub WhatsApp).</li>
                         <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">40 PLN / dzień (w Polsce) lub 10 € / dzień (poza Polską)</span></b>.</li>
-                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>rabaty ilościowe do 20%</b> (pierwszy rabat już od <b>6. dnia</b>, czyli od 2. tygodnia):
-                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: 0.84rem;">
-                                <span style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(148, 163, 184, 0.25); padding: 3px 8px; border-radius: 5px; color: #cbd5e1;">1–5 dni: <b>0%</b></span>
-                                <span style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.35); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">6–10 dni: <b>-5%</b></span>
-                                <span style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">11–15 dni: <b>-10%</b></span>
-                                <span style="background: rgba(46, 204, 113, 0.18); border: 1px solid rgba(46, 204, 113, 0.45); padding: 3px 8px; border-radius: 5px; color: #2ecc71;">16–19 dni: <b>-15%</b></span>
-                                <span style="background: rgba(46, 204, 113, 0.24); border: 1px solid #2ecc71; padding: 3px 8px; border-radius: 5px; color: #ffffff;">20+ dni: <b style="color:#2ecc71;">-20% (MAX)</b></span>
-                            </div>
-                        </li>
                         <li>Sąsiadujące rejony łączymy w <b>korytarz wspólny</b> – płacisz tylko raz za dany dzień wyjazdu.</li>
                         <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. O rejony aktualnie niedostępne lub spoza bazy możesz zapytać bezpośrednio przez SMS!</li>
                     </ul>
@@ -834,9 +825,9 @@
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE (TYLKO 4 NAJBLIŻSZE, POD REJONAMI) -->
+                    <!-- 2. WYBIERZ TYGODNIE (TYLKO 2 NAJBLIŻSZE, POD REJONAMI) -->
                     <div class="selection-col-right" id="step2Wrapper">
-                        <div class="form-header">📅 2. Wybierz Tygodnie (dostępne 4 najbliższe):</div>
+                        <div class="form-header">📅 2. Wybierz Tygodnie (dostępne 2 najbliższe):</div>
                         
                         <div id="weeksContainer" class="notranslate" translate="no">
                             <div id="weeksCheckboxes" class="weeks-compact-grid notranslate" translate="no"></div>
@@ -1721,7 +1712,7 @@
             }
 
             var weeksList = [];
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < 2; i++) {
                 var monday = new Date(baseMonday);
                 monday.setDate(baseMonday.getDate() + (i * 7));
 
@@ -1827,7 +1818,7 @@
                 ? ` dla rejonów: ${selectedRegions.join(', ')}`
                 : '';
 
-            var msgText = `Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 4 tygodniami)${regionsPart}.`;
+            var msgText = `Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 2 tygodniami)${regionsPart}.`;
             var encodedMsg = encodeURIComponent(msgText);
 
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2294,7 +2285,7 @@
 
         // ========================================================
         // KALKULACJA - STAWKA BAZOWA (40 PLN / 10 EUR)
-        // DYNAMICZNE RABATY ILOŚCIOWE Z WARIANTEM MAPY (+100%)
+        // Z WARIANTEM MAPY (+100%)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2407,15 +2398,10 @@
             // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
             let baseRateStandard = isEuro ? 10.00 : 40.00;
 
-            // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO (pierwszy rabat od 6 dnia / 2. tygodnia, max 20%)
+            // Brak rabatów ilościowych
             let discountPercent = 0;
-            if (totalDays >= 20)      discountPercent = 20;
-            else if (totalDays >= 16) discountPercent = 15;
-            else if (totalDays >= 11) discountPercent = 10;
-            else if (totalDays >= 6)  discountPercent = 5;
-            else                      discountPercent = 0;
 
-            // Stawka bazowa za dzień po rabacie ilościowym (baza 40 PLN / 10 EUR)
+            // Stawka bazowa za dzień (baza 40 PLN / 10 EUR)
             let reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
 
             // Dopłata +100% dla pakietu z Mapą (mnożnik 2.0)
@@ -2706,7 +2692,7 @@
                     if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
+                    if (configSubtitle) configSubtitle.innerHTML = `Wartość zamówienia: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
                 } else {
                     if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
