@@ -931,6 +931,7 @@
         let daneTygodni = {};
         let rokDlaTygodnia = {};
         let aktualnyTydzien = null;
+        let ostatniRawMatrix = null;
 
         let trasaKlienta = [];
 
@@ -1005,19 +1006,39 @@
             return { week: weekNo, year: d.getUTCFullYear() };
         }
 
-        function pobierz4NajblizszeTygodnie() {
+        function czyTydzienMaSobote(rawMatrix, weekNum) {
+            if (!rawMatrix || !rawMatrix[weekNum] || !Array.isArray(rawMatrix[weekNum])) return false;
+            return rawMatrix[weekNum].some(item => {
+                const datyStr = (typeof item === 'object' && (item.daty || item["DATA (PN-SOB)"])) ? (item.daty || item["DATA (PN-SOB)"]) : "";
+                if (!datyStr || datyStr === "-") return false;
+                const matches = datyStr.match(/\d{4}-\d{2}-\d{2}/g);
+                if (!matches) return false;
+                return matches.some(dStr => {
+                    const parts = dStr.split('-');
+                    const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                    return dObj.getDay() === 6; // 6 = Sobota
+                });
+            });
+        }
+
+        function pobierz4NajblizszeTygodnie(rawMatrix = ostatniRawMatrix) {
             const now = new Date();
-            const day = now.getDay(); // 0 = Niedziela, 5 = Piątek, 6 = Sobota
+            const day = now.getDay(); // 0 = Niedziela, 4 = Czwartek, 5 = Piątek, 6 = Sobota
             const hour = now.getHours();
 
-            // Zmiana tygodni zawsze w piątek od godziny 18:00
-            const isAfterFridaySwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
+            const biezacyISO = getISOWeekInfo(now);
+            const maSobote = czyTydzienMaSobote(rawMatrix, biezacyISO.week);
+
+            // Domyślnie zmiana w czwartek o 18:00; jeśli w bieżącym tygodniu jest termin w sobotę -> zmiana w piątek o 18:00
+            const isAfterWeekSwitch = maSobote
+                ? (day === 6 || day === 0 || (day === 5 && hour >= 18))
+                : (day === 5 || day === 6 || day === 0 || (day === 4 && hour >= 18));
 
             const diffToMonday = (day === 0 ? -6 : 1 - day);
             const baseMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
             baseMonday.setHours(0, 0, 0, 0);
 
-            if (isAfterFridaySwitch) {
+            if (isAfterWeekSwitch) {
                 baseMonday.setDate(baseMonday.getDate() + 7);
             }
 
@@ -1034,7 +1055,7 @@
                 const info = getISOWeekInfo(monday);
                 let badgeText = "";
                 if (i === 0) {
-                    badgeText = isAfterFridaySwitch ? badges[1] : badges[0];
+                    badgeText = isAfterWeekSwitch ? badges[1] : badges[0];
                 } else if (i === 1) {
                     badgeText = badges[2];
                 } else if (i === 2) {
@@ -1049,7 +1070,7 @@
                     monday: monday,
                     saturday: saturday,
                     badge: badgeText,
-                    isAfterFridaySwitch: isAfterFridaySwitch
+                    isAfterWeekSwitch: isAfterWeekSwitch
                 });
             }
             return lista;
@@ -1132,10 +1153,11 @@
         }
 
         function przetworzOdpowiedz(rawMatrix) {
+            ostatniRawMatrix = rawMatrix;
             daneTygodni = {};
             rokDlaTygodnia = {};
 
-            const czteryTygodnie = pobierz4NajblizszeTygodnie();
+            const czteryTygodnie = pobierz4NajblizszeTygodnie(rawMatrix);
             const dozwoloneTygodnieMap = new Map();
             czteryTygodnie.forEach(t => {
                 dozwoloneTygodnieMap.set(t.week, t.year);
@@ -1432,7 +1454,7 @@
             btnSob.style.display = maSobote ? 'block' : 'none';
         }
 
-        /* DEDYKOWANA LISTA 2 NAJBLIŻSZYCH TYGODNI (ZMIANA W PIĄTEK O 18:00) */
+        /* DEDYKOWANA LISTA 2 NAJBLIŻSZYCH TYGODNI (ZMIANA W CZWARTEK O 18:00, LUB W PIĄTEK O 18:00 GDY JEST SOBOTA) */
         function generujOpcjeTygodni() {
             const czteryTygodnie = pobierz4NajblizszeTygodnie();
             const listContainer = document.getElementById('customWeekList');
