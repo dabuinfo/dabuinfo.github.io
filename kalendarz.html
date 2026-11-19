@@ -1401,8 +1401,8 @@
             const saturdayYMD = `${currentWeekSaturday.getFullYear()}-${String(currentWeekSaturday.getMonth() + 1).padStart(2, '0')}-${String(currentWeekSaturday.getDate()).padStart(2, '0')}`;
 
             const holidayCache = {};
-            let horizonEndSunday = new Date(currentWeekMonday);
-            let currentHasSaturdayTerm = true;
+        let horizonEndSunday = new Date(currentWeekMonday);
+        let currentHasSaturdayTerm = false; // domyślnie tryb czwartek 18:00
 
             function updateSwitchDescription(hasSaturdayTerm) {
                 const descEl = document.getElementById('switch-rule-info');
@@ -1569,23 +1569,23 @@
                 updateSwitchDescription(hasSaturdayTerm);
             }
 
-            // 1. Natychmiastowe wyświetlenie kalendarza (domyślnie tryb piątek 18:00)
-            renderCalendarGrid(true);
+            // 1. Natychmiastowe wyświetlenie kalendarza (domyślnie tryb czwartek 18:00)
+        renderCalendarGrid(false);
 
-            // 2. Sprawdzenie w tle, czy w sobotę bieżącego tygodnia są jakiekolwiek zbiórki
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: saturdayYMD, jezyk: 'pl' })
-            })
-            .then(resp => resp.json())
-            .then(data => {
-                const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
-                if (!hasSaturdayTerm) {
-                    renderCalendarGrid(false);
-                }
-            })
-            .catch(err => console.warn('Nie udało się sprawdzić terminu sobotniego:', err));
+        // 2. Sprawdzenie w tle, czy w sobotę bieżącego tygodnia są jakiekolwiek zbiórki
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: saturdayYMD, jezyk: 'pl' })
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
+            if (hasSaturdayTerm) {
+                renderCalendarGrid(true);
+            }
+        })
+        .catch(err => console.warn('Nie udało się sprawdzić terminu sobotniego:', err));
 
             const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper) {
