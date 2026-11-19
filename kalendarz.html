@@ -788,6 +788,8 @@
         text-align: left; 
     }
     .calendar-info h3 { margin-top: 0; color: #fff; font-size: 1rem; margin-bottom: 12px; }
+    .calendar-info ul { margin-top: 0; margin-bottom: 10px; padding-left: 20px; }
+    .calendar-info li { margin-bottom: 6px; }
 
     .seo-tags-container { 
         margin-top: 30px; 
@@ -1393,20 +1395,37 @@
             const currentWeekMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
             currentWeekMonday.setHours(0, 0, 0, 0);
 
-            // Wyznaczenie daty piątku bieżącego tygodnia (YYYY-MM-DD)
-            const currentWeekFriday = new Date(currentWeekMonday);
-            currentWeekFriday.setDate(currentWeekMonday.getDate() + 4);
-            const fridayYMD = `${currentWeekFriday.getFullYear()}-${String(currentWeekFriday.getMonth() + 1).padStart(2, '0')}-${String(currentWeekFriday.getDate()).padStart(2, '0')}`;
+            // Wyznaczenie daty soboty bieżącego tygodnia (YYYY-MM-DD)
+            const currentWeekSaturday = new Date(currentWeekMonday);
+            currentWeekSaturday.setDate(currentWeekMonday.getDate() + 5);
+            const saturdayYMD = `${currentWeekSaturday.getFullYear()}-${String(currentWeekSaturday.getMonth() + 1).padStart(2, '0')}-${String(currentWeekSaturday.getDate()).padStart(2, '0')}`;
 
             const holidayCache = {};
             let horizonEndSunday = new Date(currentWeekMonday);
+            let currentHasSaturdayTerm = true;
 
-            function renderCalendarGrid(hasFridayTerm) {
+            function updateSwitchDescription(hasSaturdayTerm) {
+                const descEl = document.getElementById('switch-rule-info');
+                if (!descEl) return;
+
+                if (isPolish) {
+                    descEl.innerHTML = hasSaturdayTerm
+                        ? `<strong>Zmiana widoku tygodni:</strong> W tym tygodniu jest termin na sobotę – przełączenie na kolejny tydzień następuje <strong>w piątek o 18:00</strong>.`
+                        : `<strong>Zmiana widoku tygodni:</strong> W tym tygodniu brak terminu na sobotę – przełączenie na kolejny tydzień następuje <strong>w czwartek o 18:00</strong>.`;
+                } else {
+                    descEl.innerHTML = hasSaturdayTerm
+                        ? `<strong>Wochenwechsel:</strong> Diese Woche gibt es einen Samstagstermin – Wechsel am <strong>Freitag um 18:00 Uhr</strong>.`
+                        : `<strong>Wochenwechsel:</strong> Diese Woche kein Samstagstermin – Wechsel am <strong>Donnerstag um 18:00 Uhr</strong>.`;
+                }
+            }
+
+            function renderCalendarGrid(hasSaturdayTerm) {
+                currentHasSaturdayTerm = hasSaturdayTerm;
                 grid.innerHTML = '';
 
-                // Jeśli jest termin piątkowy -> zmiana w piątek o 18:00
-                // Jeśli brak terminu piątkowego -> zmiana już w czwartek o 18:00
-                const isAfterSwitch = hasFridayTerm
+                // Jeśli jest termin na sobotę -> zmiana w piątek o 18:00
+                // Jeśli brak terminu na sobotę -> zmiana już w czwartek o 18:00
+                const isAfterSwitch = hasSaturdayTerm
                     ? (day === 6 || day === 0 || (day === 5 && hour >= 18))
                     : (day === 6 || day === 0 || day === 5 || (day === 4 && hour >= 18));
 
@@ -1443,13 +1462,14 @@
                 cardWrapper.className = 'four-weeks-card notranslate';
                 cardWrapper.setAttribute('translate', 'no');
 
+                // Tylko jedna informacja w plakietce w zależności od obecności terminu sobotniego
                 const switchInfoText = isPolish
                     ? (isAfterSwitch
-                        ? (hasFridayTerm ? '🔄 Przełączono po piątku 18:00' : '🔄 Przełączono po czwartku 18:00 (brak terminu w pt)')
-                        : (hasFridayTerm ? '⏰ Zmiana w piątek o 18:00' : '⏰ Zmiana w czwartek o 18:00 (brak terminu w pt)'))
+                        ? (hasSaturdayTerm ? '🔄 Przełączono po piątku 18:00' : '🔄 Przełączono po czwartku 18:00')
+                        : (hasSaturdayTerm ? '⏰ Zmiana w piątek o 18:00' : '⏰ Zmiana w czwartek o 18:00'))
                     : (isAfterSwitch
-                        ? (hasFridayTerm ? '🔄 Aktualisiert nach Fr. 18:00' : '🔄 Aktualisiert nach Do. 18:00 (kein Fr.-Termin)')
-                        : (hasFridayTerm ? '⏰ Wechsel am Freitag 18:00' : '⏰ Wechsel am Donnerstag 18:00 (kein Fr.-Termin)'));
+                        ? (hasSaturdayTerm ? '🔄 Aktualisiert nach Fr. 18:00' : '🔄 Aktualisiert nach Do. 18:00')
+                        : (hasSaturdayTerm ? '⏰ Wechsel am Freitag 18:00' : '⏰ Wechsel am Donnerstag 18:00'));
 
                 const rangeTitleText = isPolish
                     ? `📅 2 najbliższe tygodnie: ${fmtRangeStart} – ${fmtRangeEnd} (Ty ${startWeekISO}–${endWeekISO})`
@@ -1545,25 +1565,27 @@
                 `;
                 cardWrapper.insertAdjacentHTML('beforeend', stripHtml);
                 grid.appendChild(cardWrapper);
+
+                updateSwitchDescription(hasSaturdayTerm);
             }
 
             // 1. Natychmiastowe wyświetlenie kalendarza (domyślnie tryb piątek 18:00)
             renderCalendarGrid(true);
 
-            // 2. Sprawdzenie w tle, czy w piątek bieżącego tygodnia są jakiekolwiek zbiórki
+            // 2. Sprawdzenie w tle, czy w sobotę bieżącego tygodnia są jakiekolwiek zbiórki
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: fridayYMD, jezyk: 'pl' })
+                body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: saturdayYMD, jezyk: 'pl' })
             })
             .then(resp => resp.json())
             .then(data => {
-                const hasFridayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
-                if (!hasFridayTerm) {
+                const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
+                if (!hasSaturdayTerm) {
                     renderCalendarGrid(false);
                 }
             })
-            .catch(err => console.warn('Nie udało się sprawdzić terminu piątkowego:', err));
+            .catch(err => console.warn('Nie udało się sprawdzić terminu sobotniego:', err));
 
             const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper) {
@@ -1592,13 +1614,16 @@
 
                 const calInfoHTML = `
                     <div class="calendar-info">
-                        <h3>ℹ️ Informacje o zasięgu najbliższych świąt</h3>
-                        <p><strong>Święta Narodowe</strong> są dniami wolnymi w <strong>całych Niemczech</strong>.</p>
-                        <p><strong>Święta Regionalne</strong> obowiązują tylko w określonych landach. Sprawdź status najbliższego święta:</p>
-                        <ul><li>${closestRegionalDesc}</li></ul>
+                        <h3>ℹ️ Informacje o kalendarzu i zasięgu świąt</h3>
+                        <ul>
+                            <li id="switch-rule-info"></li>
+                            <li>${closestRegionalDesc}</li>
+                        </ul>
+                        <p><strong>Święta Narodowe</strong> są dniami wolnymi w <strong>całych Niemczech</strong>, natomiast <strong>Święta Regionalne</strong> obowiązują tylko w określonych landach.</p>
                     </div>
                 `;
                 wrapper.insertAdjacentHTML('beforeend', calInfoHTML);
+                updateSwitchDescription(currentHasSaturdayTerm);
             }
 
             const resultsBox = document.getElementById('calendar-results');
@@ -1960,7 +1985,7 @@
                             return;
                         } else {
                             if (phoneError) phoneError.style.display = 'none';
-                            if (phoneInput) phoneInput.style.borderColor = '#334155';
+                            if (phoneInput) phoneInput.borderColor = '#334155';
                         }
 
                         // Walidacja adresu e-mail dla kanału E-mail
