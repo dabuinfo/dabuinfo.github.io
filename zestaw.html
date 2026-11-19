@@ -231,7 +231,7 @@
             width: 100%; 
         }
 
-        /* Kompaktowa siatka dla 2 najbliższych tygodni pod rejonami */
+        /* Kompaktowa siatka 2x2 dla 4 najbliższych tygodni pod rejonami */
         .weeks-compact-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -347,7 +347,6 @@
             color: #64748b;
         }
         
-        /* --- CZYSTA NAKŁADKA CLI --- */
         .pro-loader-overlay { 
             position: absolute; 
             top: 0; left: 0; width: 100%; height: 100%; 
@@ -355,66 +354,19 @@
             backdrop-filter: blur(4px); 
             z-index: 10; 
             display: flex; 
-            align-items: center; 
-            justify-content: center;
-            padding: 16px;
-            box-sizing: border-box;
+            flex-direction: column; 
             border-radius: var(--radius-sm); 
             transition: opacity 0.3s ease; 
         }
+        .loader-video-section { flex: 2; display: flex; align-items: center; justify-content: center; background: #000; padding: 6px; }
+        .loader-video-wrapper { aspect-ratio: 16/9; height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; }
+        .loader-video-wrapper img, .loader-video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
+        .loader-text-section { flex: 1; background: rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(46, 204, 113, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 10px; }
+        .loader-title-inline { color: var(--primary-accent); font-size: clamp(0.9rem, 1.8vw, 1.05rem); font-weight: 800; text-transform: uppercase; }
+        .loader-desc-inline { color: var(--text-muted); font-size: clamp(0.78rem, 1.4vw, 0.85rem); }
+        .pro-spinner { width: 26px; height: 26px; min-width: 26px; border: 3px solid rgba(46, 204, 113, 0.2); border-left-color: var(--primary-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
-        .terminal-loader {
-            width: 100%;
-            max-width: 420px;
-            background: #090d11;
-            border: 1px solid rgba(46, 204, 113, 0.45);
-            border-radius: var(--radius-sm);
-            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-            color: #2ecc71;
-            padding: 14px 18px;
-            text-align: left;
-            box-shadow: 0 10px 28px rgba(0,0,0,0.65);
-            box-sizing: border-box;
-        }
-        .terminal-header {
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            font-size: 0.76rem;
-            color: #8b949e;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .terminal-dots {
-            display: inline-flex;
-            gap: 5px;
-        }
-        .terminal-dots i {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .terminal-line {
-            font-size: 0.82rem;
-            white-space: normal;
-            word-wrap: break-word;
-            margin: 6px 0;
-            line-height: 1.45;
-        }
-        .cli-cursor {
-            display: inline-block;
-            animation: blink 0.8s step-end infinite;
-            color: #2ecc71;
-            font-weight: bold;
-        }
-        @keyframes blink {
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .land-group-header {
             background: linear-gradient(90deg, #162235 0%, #0f172a 100%);
@@ -752,10 +704,11 @@
                     <span class="price-subtitle-small" id="configSubtitle">Zaznacz opcje poniżej i wyślij zamówienie</span>
                     
                     <ul class="strategy-list" style="margin-bottom: 20px;">
-                        <li>Wybierz interesujące Cię <b>rejony</b> oraz <b>tygodnie z najbliższych 2 tygodni</b> (harmonogram przesuwa się automatycznie w każdy piątek o 18:00; o dalsze terminy zapytasz jednym kliknięciem przez SMS lub WhatsApp).</li>
+                        <li>Wybierz interesujące Cię <b>rejony</b> oraz <b>tygodnie z najbliższych 2 tygodni</b> (harmonogram przesuwa się automatycznie w piątek o 18:00 lub już w czwartek o 18:00, gdy w piątek nie ma zbiórek).</li>
                         <li>Stawka bazowa: <b><span id="dynamicBaseRateInfo">40 PLN / dzień (w Polsce) lub 10 € / dzień (poza Polską)</span></b>.</li>
-                        <li>Sąsiadujące rejony łączymy w <b>korytarz wspólny</b> – płacisz tylko raz za dany dzień wyjazdu.</li>
-                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. O rejony aktualnie niedostępne lub spoza bazy możesz zapytać bezpośrednio przez SMS!</li>
+                        <li>Dla obu wariantów (<b>Raport Interaktywny ☀️/🌙</b> oraz pakiet <b>Raport + Mapa Online +100%</b>) obowiązują <b>dynamiczne rabaty ilościowe</b> (im więcej dni wyjazdu, tym niższa stawka).</li>
+                        <li>Gwarantujemy elastyczne podejście do każdego zlecenia.</li>
+                        <li>Baza zawiera obecnie <b><span id="dynamicRegionCount">...</span> rejonów</b> do wyboru. Rejony specjalne oraz poza bazą możesz dodać do wyceny indywidualnej lub wysłać zapytanie!</li>
                     </ul>
 
                     <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0 0 16px 0;">
@@ -825,7 +778,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. WYBIERZ TYGODNIE (TYLKO 2 NAJBLIŻSZE, POD REJONAMI) -->
+                    <!-- 2. WYBIERZ TYGODNIE (TYLKO 4 NAJBLIŻSZE, POD REJONAMI) -->
                     <div class="selection-col-right" id="step2Wrapper">
                         <div class="form-header">📅 2. Wybierz Tygodnie (dostępne 2 najbliższe):</div>
                         
@@ -862,7 +815,7 @@
 
                     <div class="report-format-options-grid">
 
-                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMUMENCIE) -->
+                        <!-- OPCJA 1: JEDYNY RAPORT PRO (Z PRZEŁĄCZNIKIEM W DOKUMENCIE) -->
                         <div class="format-card-radio active" onclick="wybierzFormat('Raport Interaktywny (Jasny/Ciemny)', this)">
                             <div class="format-card-header">
                                 <input type="radio" name="reportTheme" value="Raport Interaktywny (Jasny/Ciemny)" checked style="accent-color: #2ecc71; margin: 0; width: 18px; height: 18px;">
@@ -906,9 +859,9 @@
                             <span>🧲 Złom / E-Złom</span>
                         </label>
                         
-                        <label class="order-channel-label" id="dhlBox">
+                        <label class="order-channel-label" id="dhlBox" style="display: none;">
                             <input id="dhlOption" type="checkbox" />
-                            <span id="dhlLabelText">📦 Wysyłka wydruku (Paczkomat / Punkt)</span>
+                            <span>📦 Darmowa wysyłka wydruku</span>
                         </label>
                     </div>
 
@@ -938,7 +891,7 @@
                         </div>
                         <div id="externalMapTriggerBox" style="display: none; margin-bottom: 8px;">
                             <a id="externalMapLink" href="https://www.dpd.com/pl/pl/dpd-pickup/znajdz-punkt-dpd-pickup/" target="_blank" style="background: #1e293b; color: #38bdf8; font-weight: bold; border: 1px solid #38bdf8; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.84rem; display: inline-block;">
-                                🔍 Otwórz wyszukiwarkę punktów »
+                                🔍 Otwórz wyszukiwarkę punktów &raquo;
                             </a>
                         </div>
                         <input type="text" id="paczkomatInput" class="client-input" placeholder="Wpisz kod i adres punktu..." style="margin-bottom: 4px;">
@@ -1078,7 +1031,7 @@
         <div class="inpost-modal-content">
             <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155;">
                 <span style="font-weight: bold; color: #f8fafc; font-size: 1.05em;">📍 Wybierz swój Paczkomat na mapie</span>
-                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">×</button>
+                <button type="button" id="btnCloseInPostModal" style="background: none; border: none; color: #94a3b8; font-size: 1.8em; cursor: pointer; line-height: 1;">&times;</button>
             </div>
             <div style="flex: 1; width: 100%; height: 100%; position: relative;">
                 <inpost-geowidget id="inpostGeowidget" onpointselect="onPaczkomatSelect" token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIxMDQzMzU0OTcsImlhdCI6MTc4ODk3NTQ5NywianRpIjoiOTE3ZTZlNTAtMzM1NC00Yzg1LThlZjAtNjcyYzVkNzg1YzU2IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpZQXRHZkFJR2llTzA1b055TWtsdWxxeU1UZFF1Mnk1VXFjZHpJaGo2QTVBIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiMTE0MmY1MzUtZWJhZS00MTNjLWIzZGEtN2RmMzFmNjc1OTkzIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjExNDJmNTM1LWViYWUtNDEzYy1iM2RhLTdkZjMxZjY3NTk5MyIsImFsbG93ZWRfcmVmZXJyZXJzIjoiZGFidS1pbmZvLmNvbSIsInV1aWQiOiI0YjJkZjdmMi00MzYxLTRiODItODA1MC02ZDdhNTM3NTI3ZTYifQ.ggwtWyuokYjZ_HKl54jOADkIZ5i6cUxbY6CBDs3JwpC2OTIRYxxfVloLt6urXBgzHikNEg2stOXwYeUb6dIEYVpQuRC8GB-WhcAYzLr9c7bpQcj1175j9Gz1QHsdIijgrnR--dcsJv1nU_GrqGDCosrhMBHN94vfa6aHbYtCC0OvlPj7jZlqkGipT_ps8EWlCaMCWA3aelloZroy7yXNhrA_CIPGcoi-CZZVp7bqTuU1-yjJsXb6MOC1LqMdQlS9vySSQYvDouyGEIsYEPEl3pba47wVFvcBmHWOvncrprPkIMnugnRwE4U0kdd8nBFemXqwu3timNpEFpuJ_nj4Bw" language="pl" config="parcelCollect"></inpost-geowidget>
@@ -1298,7 +1251,12 @@
             });
         }
  
-        const GLOBAL_SPECIAL_REGIONS = [];
+        const GLOBAL_SPECIAL_REGIONS = [
+    'Eppstein', 'Flörsbachtal', 'Giessen Stadt', 'Gräfelfing', 'Gründau', 
+    'Hattersheim am Main', 'Hofheim am Taunus', 'Kamp-Lintfort', 
+    'Kelkheim am Taunus', 'Kirchheim', 'Königstein am Taunus', 
+    'Kronberg am Taunus', 'Trier-Stadt'
+];
 
         const SPECIAL_REGIONS_LAND_MAP = {
             'Calw': 'Baden-Württemberg', 'Freudenstadt': 'Baden-Württemberg', 'Heidelberg': 'Baden-Württemberg',
@@ -1312,15 +1270,15 @@
             'Spree-Neiße': 'Brandenburg', 'Bad Homburg': 'Hessen', 'Bad Orb': 'Hessen', 'Bad Soden-Salmünster': 'Hessen',
             'Biebergemünd': 'Hessen', 'Eppstein': 'Hessen', 'Eschwege': 'Hessen', 'Flörsbachtal': 'Hessen',
             'Flörsheim am Main': 'Hessen', 'Frankfurt': 'Hessen', 'Main-Kinzig-Kreis': 'Hessen', 'Main-Taunus-Kreis': 'Hessen', 'Freigericht': 'Hessen', 'Friedrichsdorf': 'Hessen',
-            'Fulda': 'Hessen', 'Gelnhausen': 'Hessen', 'Giessen': 'Hessen', 'Giessen Stadt': 'Hessen',
-            'Gross-Gerau': 'Hessen', 'Gründau': 'Hessen', 'Hasselroth': 'Hessen',
+            'Fulda': 'Hessen', 'Gelnhausen': 'Hessen', 'Giessen': 'Hessen', 'Giessen Stadt': 'Hessen', 'Glashütten': 'Hessen',
+            'Grävenwiesbach': 'Hessen', 'Gross-Gerau': 'Hessen', 'Gründau': 'Hessen', 'Hasselroth': 'Hessen',
             'Hattersheim am Main': 'Hessen', 'Hersfeld-Rotenburg': 'Hessen', 'Hofheim am Taunus': 'Hessen',
             'Jossgrund': 'Hessen', 'Kelkheim am Taunus': 'Hessen', 'Königstein am Taunus': 'Hessen', 'Kronberg am taunus': 'Hessen',
             'Kronberg am Taunus': 'Hessen', 'Liederbach': 'Hessen', 'Limburg-Weilburg': 'Hessen', 'Linsengericht': 'Hessen',
-            'Nidderau': 'Hessen', 'Oberursel am Taunus': 'Hessen', 'Rheingau-Taunus': 'Hessen',
-            'Rodenbach': 'Hessen', 'Ronneburg': 'Hessen', 'Schlüchtern': 'Hessen',
-            'Sinntal': 'Hessen',
-            'Walldorf-Mörfelden': 'Hessen',
+            'Neu-Anspach': 'Hessen', 'Nidderau': 'Hessen', 'Oberursel am Taunus': 'Hessen', 'Rheingau-Taunus': 'Hessen',
+            'Rodenbach': 'Hessen', 'Ronneburg': 'Hessen', 'Schlüchtern': 'Hessen', 'Schmitten': 'Hessen',
+            'Schmitten am Taunus': 'Hessen', 'Schwalbach': 'Hessen', 'Sinntal': 'Hessen', 'Steinbach': 'Hessen',
+            'Usingen': 'Hessen', 'Walldorf-Mörfelden': 'Hessen', 'Wehrheim': 'Hessen', 'Weilrod': 'Hessen',
             'Werra-Meissner': 'Hessen', 'Wiesbaden-Naurod': 'Hessen', 'Braunschweig': 'Niedersachsen',
             'Diepholz': 'Niedersachsen', 'Emsland': 'Niedersachsen', 'Gifhorn': 'Niedersachsen', 'Göttingen': 'Niedersachsen',
             'Hannover': 'Niedersachsen', 'Harburg': 'Niedersachsen', 'Heidekreis': 'Niedersachsen',
@@ -1355,8 +1313,7 @@
             'Uedem': 'Nordrhein-Westfalen', 'Viersen Kreis': 'Nordrhein-Westfalen', 'Voerde': 'Nordrhein-Westfalen',
             'Weeze': 'Nordrhein-Westfalen', 'Weilerswist': 'Nordrhein-Westfalen', 'Werdohl': 'Nordrhein-Westfalen',
             'Wesel Kreis': 'Nordrhein-Westfalen', 'Wesseling': 'Nordrhein-Westfalen', 'Wülfrath': 'Nordrhein-Westfalen', 'Wuppertal': 'Nordrhein-Westfalen',
-            'Xanten': 'Nordrhein-Westfalen', 'Zülpich': 'Nordrhein-Westfalen',
-'Märkischer': 'Nordrhein-Westfalen', 'Alzey-Worms': 'Rheinland-Pfalz',
+            'Xanten': 'Nordrhein-Westfalen', 'Zülpich': 'Nordrhein-Westfalen', 'Alzey-Worms': 'Rheinland-Pfalz',
             'Altenkirchen (Westerwald)': 'Rheinland-Pfalz', 'Bad-Kreuznach': 'Rheinland-Pfalz',
             'Bernkastel-Wittlich': 'Rheinland-Pfalz', 'Cochem-Zell': 'Rheinland-Pfalz',
             'Eifelkreis Bitburg-Prüm': 'Rheinland-Pfalz', 'Mayen-Koblenz': 'Rheinland-Pfalz',
@@ -1367,11 +1324,6 @@
         };
 
         const REGION_SUB_AREAS_MAP = {
-'märkischer': [
-    'altena', 'balve', 'halver', 'hemer', 'iserlohn', 'kierspe', 
-    'lüdenscheid', 'meinerzhagen', 'menden', 'nachrodt-wiblingwerde', 
-    'neuenrade', 'plettenberg', 'schalksmühle', 'werdohl'
-],
             'main-taunus-kreis': [
     'eppstein', 'flörsheim am main', 'hattersheim am main',
     'hofheim am taunus', 'kelkheim am taunus',
@@ -1447,8 +1399,6 @@
         }
 
         const NEIGHBOR_CLUSTERS_MAP = {
-            'märkischer kreis': ['olpe', 'oberberg', 'iserlohn', 'hagen', 'ennepetal', 'dortmund', 'plettenberg'],
-'märkischer': ['olpe', 'oberberg', 'iserlohn', 'hagen', 'ennepetal', 'dortmund', 'plettenberg'],
             'calw': ['freudenstadt', 'karlsruhe kreis', 'zollernalb'],
             'freudenstadt': ['calw', 'ortenau', 'zollernalb', 'tuttlingen'],
             'heidelberg': ['rhein-neckar-kreis', 'karlsruhe kreis', 'heilbronn'],
@@ -1696,18 +1646,60 @@
             return { week: weekNo, year: d.getUTCFullYear() };
         }
 
+        function hasFridayCollectionsInCurrentWeek(currentMonday) {
+            var matrix = (typeof availabilityMatrix !== 'undefined' && Object.keys(availabilityMatrix).length > 0)
+                ? availabilityMatrix
+                : ((typeof availabilityMatrixAll !== 'undefined') ? availabilityMatrixAll : {});
+
+            // Dopóki baza się nie załaduje, domyślnie traktujemy piątek jako aktywny (przełączenie w piątek 18:00)
+            if (!matrix || Object.keys(matrix).length === 0) {
+                return true;
+            }
+
+            var friday = new Date(currentMonday.getFullYear(), currentMonday.getMonth(), currentMonday.getDate() + 4);
+            var fridayIso = friday.getFullYear() + "-" +
+                String(friday.getMonth() + 1).padStart(2, '0') + "-" +
+                String(friday.getDate()).padStart(2, '0');
+
+            var weekKey = String(getISOWeekInfo(currentMonday).week);
+            var listToCheck = matrix[weekKey] || [];
+
+            // Awaryjnie przeszukaj całą macierz, gdyby klucz tygodnia różnił się formatem
+            if (listToCheck.length === 0) {
+                for (var k in matrix) {
+                    if (Array.isArray(matrix[k])) {
+                        listToCheck = listToCheck.concat(matrix[k]);
+                    }
+                }
+            }
+
+            return listToCheck.some(function(item) {
+                if (!item || typeof item === 'string') return false;
+                var dStr = String(item.daty || item["DATA (PN-SOB)"] || "");
+                return dStr.indexOf(fridayIso) !== -1;
+            });
+        }
+
         function getFourNearestWeeks() {
             var now = new Date();
-            var day = now.getDay(); // 0 = Niedziela, 5 = Piątek, 6 = Sobota
+            var day = now.getDay(); // 0 = Niedziela, 4 = Czwartek, 5 = Piątek, 6 = Sobota
             var hour = now.getHours();
-
-            // Zmiana tygodni zawsze w piątek od godziny 18:00
-            var isAfterFridaySwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
 
             var diffToMonday = (day === 0 ? -6 : 1 - day);
             var baseMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
 
-            if (isAfterFridaySwitch) {
+            var hasFridayPickup = hasFridayCollectionsInCurrentWeek(baseMonday);
+
+            // Gdy są zbiórki w piątek -> przełączenie w piątek od 18:00.
+            // Gdy brak zbiórek w piątek -> przełączenie już w czwartek od 18:00.
+            var isAfterSwitch;
+            if (hasFridayPickup) {
+                isAfterSwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
+            } else {
+                isAfterSwitch = (day === 5 || day === 6 || day === 0 || (day === 4 && hour >= 18));
+            }
+
+            if (isAfterSwitch) {
                 baseMonday.setDate(baseMonday.getDate() + 7);
             }
 
@@ -1722,7 +1714,7 @@
                 var info = getISOWeekInfo(monday);
                 var badgeLabel = '';
                 if (i === 0) {
-                    badgeLabel = isAfterFridaySwitch ? 'Najbliższy tydzień' : 'Bieżący tydzień';
+                    badgeLabel = isAfterSwitch ? 'Najbliższy tydzień' : 'Bieżący tydzień';
                 } else if (i === 1) {
                     badgeLabel = 'Następny tydzień';
                 } else {
@@ -2188,6 +2180,7 @@
                         availabilityMatrix = isScrapChecked ? availabilityMatrixScrap : availabilityMatrixAll;
 
                         rebuildRegionsCheckboxesWithLands(availabilityMatrixAll);
+                        renderFourNearestWeeks();
                         updateMutualFiltering();
                     }
                 })
@@ -2227,12 +2220,6 @@
         var paczSection = document.getElementById('paczkomatSection');
         if (dhlOpt) {
             dhlOpt.addEventListener('change', function() {
-                if (this.checked) {
-                    var pickupChk = document.getElementById('pickupOption');
-                    if (pickupChk && pickupChk.checked) {
-                        pickupChk.checked = false;
-                    }
-                }
                 if (paczSection) {
                     paczSection.style.display = this.checked ? 'block' : 'none';
                 }
@@ -2260,7 +2247,7 @@
                     inpostBtnBox.style.display = 'none';
                     extBox.style.display = 'block';
                     extLink.href = carrierUrls[selectedCarrier] || '#';
-                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie »";
+                    extLink.innerHTML = "🔍 Znajdź punkt " + selectedCarrier + " na mapie &raquo;";
                     paczInput.placeholder = "Wklej kod/adres punktu " + selectedCarrier + " (np. z mapy operatora)";
                 }
                 paczInput.value = '';
@@ -2285,7 +2272,7 @@
 
         // ========================================================
         // KALKULACJA - STAWKA BAZOWA (40 PLN / 10 EUR)
-        // Z WARIANTEM MAPY (+100%)
+        // DYNAMICZNE RABATY ILOŚCIOWE Z WARIANTEM MAPY (+100%)
         // ========================================================
         function calculateActiveDaysAndPrice() {
             let selectedRegionNodes = document.querySelectorAll('.region-chk:checked');
@@ -2398,11 +2385,41 @@
             // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
             let baseRateStandard = isEuro ? 10.00 : 40.00;
 
-            // Brak rabatów ilościowych
+            // GWARANTOWANY PROCENT RABATU ILOŚCIOWEGO
             let discountPercent = 0;
+            if (totalDays >= 250)      discountPercent = 80;
+            else if (totalDays >= 181) discountPercent = 72;
+            else if (totalDays >= 121) discountPercent = 64;
+            else if (totalDays >= 81)  discountPercent = 53;
+            else if (totalDays >= 51)  discountPercent = 40;
+            else if (totalDays >= 31)  discountPercent = 27;
+            else if (totalDays >= 16)  discountPercent = 18;
+            else if (totalDays >= 6)   discountPercent = 8;
+            else                       discountPercent = 0;
 
-            // Stawka bazowa za dzień (baza 40 PLN / 10 EUR)
-            let reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
+            // Stawka bazowa za dzień po rabacie ilościowym (baza 40 PLN / 10 EUR)
+            let reportRateNoMap;
+            if (isEuro) {
+                if (totalDays >= 250)      reportRateNoMap = 2.00;
+                else if (totalDays >= 181) reportRateNoMap = 2.80;
+                else if (totalDays >= 121) reportRateNoMap = 3.60;
+                else if (totalDays >= 81)  reportRateNoMap = 4.70;
+                else if (totalDays >= 51)  reportRateNoMap = 6.00;
+                else if (totalDays >= 31)  reportRateNoMap = 7.30;
+                else if (totalDays >= 16)  reportRateNoMap = 8.20;
+                else if (totalDays >= 6)   reportRateNoMap = 9.20;
+                else                       reportRateNoMap = 10.00;
+            } else {
+                if (totalDays >= 250)      reportRateNoMap = 8.00;
+                else if (totalDays >= 181) reportRateNoMap = 11.20;
+                else if (totalDays >= 121) reportRateNoMap = 14.40;
+                else if (totalDays >= 81)  reportRateNoMap = 18.80;
+                else if (totalDays >= 51)  reportRateNoMap = 24.00;
+                else if (totalDays >= 31)  reportRateNoMap = 29.20;
+                else if (totalDays >= 16)  reportRateNoMap = 32.80;
+                else if (totalDays >= 6)   reportRateNoMap = 36.80;
+                else                       reportRateNoMap = 40.00;
+            }
 
             // Dopłata +100% dla pakietu z Mapą (mnożnik 2.0)
             let multiplier = isMapSelected ? 2.0 : 1.0;
@@ -2628,15 +2645,9 @@
             }
 
             var dhlContainer = document.getElementById('dhlBox');
-            var dhlLabelText = document.getElementById('dhlLabelText');
             if (dhlContainer) {
-                if (!calc.isPickup) {
-                    dhlContainer.style.display = 'flex';
-                    if (dhlLabelText) {
-                        dhlLabelText.textContent = (calc.totalDays >= 5)
-                            ? '📦 Darmowa wysyłka wydruku (Paczkomat / Punkt)'
-                            : '📦 Wysyłka wydruku (Paczkomat / Punkt)';
-                    }
+                if (calc.totalDays >= 5 && !calc.isPickup) {
+                    dhlContainer.style.display = 'block';
                 } else {
                     dhlContainer.style.display = 'none';
                     var dhlChk = document.getElementById('dhlOption');
@@ -2692,7 +2703,7 @@
                     if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.finalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
                     if (configPrice) configPrice.textContent = `${calc.finalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
-                    if (configSubtitle) configSubtitle.innerHTML = `Wartość zamówienia: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
+                    if (configSubtitle) configSubtitle.innerHTML = `Wartość po rabacie: ${calc.totalPrice.toFixed(2)} ${calc.currency} + opłata PayPal: <b style="color:#fbbf24;">+${calc.paypalFee.toFixed(2)} ${calc.currency}</b> (Oszczędzasz: ${calc.savings.toFixed(2)} ${calc.currency})${loyaltyNotice}`;
                 } else {
                     if (btn) btn.innerHTML = `🛒 ZAMÓW PAKIET – ${calc.totalPrice.toFixed(2)} ${calc.currency}${discountBadge}${clusterInfoText}`;
                     if (svgPriceSub) svgPriceSub.textContent = `${calc.totalPrice.toFixed(2)} ${calc.currency}${extraNotice}`;
@@ -2976,7 +2987,8 @@
                     }
                 }
                 if(e.target.id === 'schrottOption') { 
-                    availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll; 
+                    availabilityMatrix = e.target.checked ? availabilityMatrixScrap : availabilityMatrixAll;
+                    renderFourNearestWeeks(); 
                 }
                 updateMutualFiltering();
                 updatePriceDisplay();
@@ -3037,28 +3049,6 @@
             var selectedThemeVal = selectedThemeEl ? selectedThemeEl.value : "Light Mode";
             var selectedPaymentMethod = document.querySelector('input[name="payment"]:checked');
 
-            var isShippingChecked = document.getElementById('dhlOption')?.checked || false;
-            var isPickupChecked = document.getElementById('pickupOption')?.checked || false;
-            var selectedCarrier = document.querySelector('input[name="carrierOption"]:checked')?.value || 'InPost';
-            var paczkomatVal = (document.getElementById('paczkomatInput')?.value || '').trim();
-
-            if (isShippingChecked && !paczkomatVal) {
-                alert("⚠️ Wybierz Paczkomat na mapie lub wpisz kod i adres punktu odbioru!");
-                var pInp = document.getElementById('paczkomatInput');
-                if (pInp) {
-                    pInp.style.borderColor = '#ef4444';
-                    pInp.focus();
-                }
-                return;
-            }
-
-            var dostawaTekst = "Wersja elektroniczna (E-mail / SMS / WhatsApp)";
-            if (isPickupChecked) {
-                dostawaTekst = "Odbiór osobisty";
-            } else if (isShippingChecked) {
-                dostawaTekst = "Wysyłka wydruku (" + selectedCarrier + "): " + paczkomatVal;
-            }
-
             var MOJ_NUMER_TEL = "48600812820";
             var kwotaTekst = (!hasOnlySpecial && calc.totalDays > 0) ? ((calc.finalPrice || calc.totalPrice).toFixed(2) + " " + calc.currency) : "Wycena indywidualna";
             var rejonyListaTekst = Array.from(wR).map(cb => cb.value.trim()).join(", ");
@@ -3073,7 +3063,6 @@
                 "Rejony (" + wR.length + "): " + rejonyListaTekst + "\n" +
                 "Tygodnie: " + (tygodnieListaTekst || "Zastrzeżone/Brak") + "\n" +
                 "Format: " + selectedThemeVal + "\n" +
-                "Dostawa: " + dostawaTekst + "\n" +
                 "Płatność: " + platnoscTekst;
 
             function obsluzSukcesWysylki() {
@@ -3137,10 +3126,7 @@
                 weeks: Array.from(wT).map(cb => cb.value.trim()),
                 isRegularCustomer: isRegular || false,
                 loyaltyClientId: activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : (regularProof || ""),
-                deliveryMethod: dostawaTekst,
-                carrier: isShippingChecked ? selectedCarrier : "",
-                paczkomat: isShippingChecked ? paczkomatVal : "",
-                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ") | Dostawa: " + dostawaTekst
+                rawSummary: "Automatyczny zapis ze strony www (" + selectedOrderChannel.toUpperCase() + ")"
             };
 
             fetch(apiURL, {
