@@ -1385,150 +1385,187 @@
 
             const grid = document.getElementById('calendar-grid');
             if (!grid) return;
-            grid.innerHTML = '';
 
-            const day = now.getDay(); // 0 = Niedziela, 5 = Piątek, 6 = Sobota
+            const day = now.getDay(); // 0 = Niedziela, 4 = Czwartek, 5 = Piątek, 6 = Sobota
             const hour = now.getHours();
-            // Zmiana tygodni zawsze w piątek od godziny 18:00
-            const isAfterFridaySwitch = (day === 6 || day === 0 || (day === 5 && hour >= 18));
 
             const diffToMonday = (day === 0 ? -6 : 1 - day);
-            const baseMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
-            baseMonday.setHours(0, 0, 0, 0);
+            const currentWeekMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+            currentWeekMonday.setHours(0, 0, 0, 0);
 
-            if (isAfterFridaySwitch) {
-                baseMonday.setDate(baseMonday.getDate() + 7);
-            }
-
-            const horizonEndSunday = new Date(baseMonday);
-            horizonEndSunday.setDate(baseMonday.getDate() + 13);
-            horizonEndSunday.setHours(23, 59, 59, 999);
+            // Wyznaczenie daty piątku bieżącego tygodnia (YYYY-MM-DD)
+            const currentWeekFriday = new Date(currentWeekMonday);
+            currentWeekFriday.setDate(currentWeekMonday.getDate() + 4);
+            const fridayYMD = `${currentWeekFriday.getFullYear()}-${String(currentWeekFriday.getMonth() + 1).padStart(2, '0')}-${String(currentWeekFriday.getDate()).padStart(2, '0')}`;
 
             const holidayCache = {};
-            const startYear = baseMonday.getFullYear();
-            const endYear = horizonEndSunday.getFullYear();
+            let horizonEndSunday = new Date(currentWeekMonday);
 
-            const yearsBadge = document.getElementById('header-years-badge');
-            if (yearsBadge) {
-                yearsBadge.textContent = (startYear === endYear) ? `DE ${startYear}` : `DE ${startYear}/${endYear}`;
-            }
+            function renderCalendarGrid(hasFridayTerm) {
+                grid.innerHTML = '';
 
-            const startWeekISO = getISOWeekNumber(baseMonday);
-            const endWeekISO = getISOWeekNumber(horizonEndSunday);
+                // Jeśli jest termin piątkowy -> zmiana w piątek o 18:00
+                // Jeśli brak terminu piątkowego -> zmiana już w czwartek o 18:00
+                const isAfterSwitch = hasFridayTerm
+                    ? (day === 6 || day === 0 || (day === 5 && hour >= 18))
+                    : (day === 6 || day === 0 || day === 5 || (day === 4 && hour >= 18));
 
-            const fmtRangeStart = `${String(baseMonday.getDate()).padStart(2, '0')}.${String(baseMonday.getMonth() + 1).padStart(2, '0')}`;
-            const fmtRangeEnd = `${String(horizonEndSunday.getDate()).padStart(2, '0')}.${String(horizonEndSunday.getMonth() + 1).padStart(2, '0')}.${endYear}`;
-
-            const startMonthName = calData.m[baseMonday.getMonth()];
-            const endMonthName = calData.m[horizonEndSunday.getMonth()];
-            const monthsHeaderLabel = (startMonthName === endMonthName)
-                ? `${startMonthName} ${startYear}`
-                : `${startMonthName} / ${endMonthName} ${endYear}`;
-
-            const cardWrapper = document.createElement('div');
-            cardWrapper.className = 'four-weeks-card notranslate';
-            cardWrapper.setAttribute('translate', 'no');
-
-            const switchInfoText = isPolish
-                ? (isAfterFridaySwitch ? '🔄 Przełączono po piątku 18:00' : '⏰ Zmiana w piątek o 18:00')
-                : (isAfterFridaySwitch ? '🔄 Aktualisiert nach Fr. 18:00' : '⏰ Wechsel am Freitag 18:00');
-
-            const rangeTitleText = isPolish
-                ? `📅 2 najbliższe tygodnie: ${fmtRangeStart} – ${fmtRangeEnd} (Ty ${startWeekISO}–${endWeekISO})`
-                : `📅 Nächste 2 Wochen: ${fmtRangeStart} – ${fmtRangeEnd} (KW ${startWeekISO}–${endWeekISO})`;
-
-            cardWrapper.innerHTML = `
-                <div class="four-weeks-topbar notranslate" translate="no">
-                    <span class="four-weeks-range-title notranslate" translate="no">${rangeTitleText}</span>
-                    <span class="four-weeks-switch-badge notranslate" translate="no">${switchInfoText}</span>
-                </div>
-            `;
-
-            const table = document.createElement('table');
-            table.className = 'month-table notranslate';
-            table.setAttribute('translate', 'no');
-
-            let bodyHtml = `<thead class="notranslate" translate="no">
-                <tr><th colspan="8" class="month-title notranslate" translate="no">${monthsHeaderLabel}</th></tr>
-                <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
-            </thead><tbody class="notranslate" translate="no">`;
-
-            for (let wIdx = 0; wIdx < 2; wIdx++) {
-                const weekMonday = new Date(baseMonday);
-                weekMonday.setDate(baseMonday.getDate() + (wIdx * 7));
-                const wNum = getISOWeekNumber(weekMonday);
-
-                bodyHtml += `<tr class="notranslate" translate="no">`;
-                bodyHtml += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
-
-                for (let dIdx = 0; dIdx < 7; dIdx++) {
-                    const cellDate = new Date(weekMonday);
-                    cellDate.setDate(weekMonday.getDate() + dIdx);
-                    cellDate.setHours(0, 0, 0, 0);
-
-                    const curY = cellDate.getFullYear();
-                    const curM = cellDate.getMonth();
-                    const d = cellDate.getDate();
-
-                    if (!holidayCache[curY]) {
-                        holidayCache[curY] = getGermanHolidaysForYear(curY);
-                    }
-
-                    const mStr = String(curM + 1).padStart(2, '0');
-                    const dStr = String(d).padStart(2, '0');
-                    const dateKey = `${curY}-${mStr}-${dStr}`;
-
-                    const holidayObj = holidayCache[curY][dateKey];
-                    const hName = holidayObj ? holidayObj.name : "";
-                    let hClass = "";
-                    if (holidayObj) {
-                        if (holidayObj.type === "national") hClass = "holiday-national has-holiday";
-                        else if (holidayObj.type === "regional") hClass = "holiday-regional has-holiday";
-                    }
-
-                    const isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
-                    const isPastOrToday = cellDate < tomorrowMidnight;
-
-                    const dayClasses = isPastOrToday
-                        ? `${hClass} ${isToday} past-day notranslate`
-                        : `${hClass} ${isToday} clickable-day notranslate`;
-
-                    const shortMonth = calData.m[curM].substring(0, 3);
-                    const showMonthBadge = (wIdx === 0 && dIdx === 0) || (d === 1);
-                    const subLabel = showMonthBadge ? `<span class="day-month-sub notranslate" translate="no">${shortMonth}</span>` : '';
-
-                    bodyHtml += `<td class="${dayClasses}" translate="no" data-holiday="${hName}" data-date="${dateKey}" title="${hName ? hName + ' (' + dStr + '.' + mStr + ')' : dStr + '.' + mStr + '.' + curY}">${d}${subLabel}</td>`;
+                const baseMonday = new Date(currentWeekMonday);
+                if (isAfterSwitch) {
+                    baseMonday.setDate(baseMonday.getDate() + 7);
                 }
 
-                bodyHtml += `</tr>`;
+                horizonEndSunday = new Date(baseMonday);
+                horizonEndSunday.setDate(baseMonday.getDate() + 13);
+                horizonEndSunday.setHours(23, 59, 59, 999);
+
+                const startYear = baseMonday.getFullYear();
+                const endYear = horizonEndSunday.getFullYear();
+
+                const yearsBadge = document.getElementById('header-years-badge');
+                if (yearsBadge) {
+                    yearsBadge.textContent = (startYear === endYear) ? `DE ${startYear}` : `DE ${startYear}/${endYear}`;
+                }
+
+                const startWeekISO = getISOWeekNumber(baseMonday);
+                const endWeekISO = getISOWeekNumber(horizonEndSunday);
+
+                const fmtRangeStart = `${String(baseMonday.getDate()).padStart(2, '0')}.${String(baseMonday.getMonth() + 1).padStart(2, '0')}`;
+                const fmtRangeEnd = `${String(horizonEndSunday.getDate()).padStart(2, '0')}.${String(horizonEndSunday.getMonth() + 1).padStart(2, '0')}.${endYear}`;
+
+                const startMonthName = calData.m[baseMonday.getMonth()];
+                const endMonthName = calData.m[horizonEndSunday.getMonth()];
+                const monthsHeaderLabel = (startMonthName === endMonthName)
+                    ? `${startMonthName} ${startYear}`
+                    : `${startMonthName} / ${endMonthName} ${endYear}`;
+
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = 'four-weeks-card notranslate';
+                cardWrapper.setAttribute('translate', 'no');
+
+                const switchInfoText = isPolish
+                    ? (isAfterSwitch
+                        ? (hasFridayTerm ? '🔄 Przełączono po piątku 18:00' : '🔄 Przełączono po czwartku 18:00 (brak terminu w pt)')
+                        : (hasFridayTerm ? '⏰ Zmiana w piątek o 18:00' : '⏰ Zmiana w czwartek o 18:00 (brak terminu w pt)'))
+                    : (isAfterSwitch
+                        ? (hasFridayTerm ? '🔄 Aktualisiert nach Fr. 18:00' : '🔄 Aktualisiert nach Do. 18:00 (kein Fr.-Termin)')
+                        : (hasFridayTerm ? '⏰ Wechsel am Freitag 18:00' : '⏰ Wechsel am Donnerstag 18:00 (kein Fr.-Termin)'));
+
+                const rangeTitleText = isPolish
+                    ? `📅 2 najbliższe tygodnie: ${fmtRangeStart} – ${fmtRangeEnd} (Ty ${startWeekISO}–${endWeekISO})`
+                    : `📅 Nächste 2 Wochen: ${fmtRangeStart} – ${fmtRangeEnd} (KW ${startWeekISO}–${endWeekISO})`;
+
+                cardWrapper.innerHTML = `
+                    <div class="four-weeks-topbar notranslate" translate="no">
+                        <span class="four-weeks-range-title notranslate" translate="no">${rangeTitleText}</span>
+                        <span class="four-weeks-switch-badge notranslate" translate="no">${switchInfoText}</span>
+                    </div>
+                `;
+
+                const table = document.createElement('table');
+                table.className = 'month-table notranslate';
+                table.setAttribute('translate', 'no');
+
+                let bodyHtml = `<thead class="notranslate" translate="no">
+                    <tr><th colspan="8" class="month-title notranslate" translate="no">${monthsHeaderLabel}</th></tr>
+                    <tr class="notranslate" translate="no"><th class="week-header notranslate" translate="no">${calData.wk}</th>${calData.d.map(d => `<th class="notranslate" translate="no">${d}</th>`).join('')}</tr>
+                </thead><tbody class="notranslate" translate="no">`;
+
+                for (let wIdx = 0; wIdx < 2; wIdx++) {
+                    const weekMonday = new Date(baseMonday);
+                    weekMonday.setDate(baseMonday.getDate() + (wIdx * 7));
+                    const wNum = getISOWeekNumber(weekMonday);
+
+                    bodyHtml += `<tr class="notranslate" translate="no">`;
+                    bodyHtml += `<td class="week-number notranslate" translate="no" data-week="${wNum}">${wNum}</td>`;
+
+                    for (let dIdx = 0; dIdx < 7; dIdx++) {
+                        const cellDate = new Date(weekMonday);
+                        cellDate.setDate(weekMonday.getDate() + dIdx);
+                        cellDate.setHours(0, 0, 0, 0);
+
+                        const curY = cellDate.getFullYear();
+                        const curM = cellDate.getMonth();
+                        const d = cellDate.getDate();
+
+                        if (!holidayCache[curY]) {
+                            holidayCache[curY] = getGermanHolidaysForYear(curY);
+                        }
+
+                        const mStr = String(curM + 1).padStart(2, '0');
+                        const dStr = String(d).padStart(2, '0');
+                        const dateKey = `${curY}-${mStr}-${dStr}`;
+
+                        const holidayObj = holidayCache[curY][dateKey];
+                        const hName = holidayObj ? holidayObj.name : "";
+                        let hClass = "";
+                        if (holidayObj) {
+                            if (holidayObj.type === "national") hClass = "holiday-national has-holiday";
+                            else if (holidayObj.type === "regional") hClass = "holiday-regional has-holiday";
+                        }
+
+                        const isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
+                        const isPastOrToday = cellDate < tomorrowMidnight;
+
+                        const dayClasses = isPastOrToday
+                            ? `${hClass} ${isToday} past-day notranslate`
+                            : `${hClass} ${isToday} clickable-day notranslate`;
+
+                        const shortMonth = calData.m[curM].substring(0, 3);
+                        const showMonthBadge = (wIdx === 0 && dIdx === 0) || (d === 1);
+                        const subLabel = showMonthBadge ? `<span class="day-month-sub notranslate" translate="no">${shortMonth}</span>` : '';
+
+                        bodyHtml += `<td class="${dayClasses}" translate="no" data-holiday="${hName}" data-date="${dateKey}" title="${hName ? hName + ' (' + dStr + '.' + mStr + ')' : dStr + '.' + mStr + '.' + curY}">${d}${subLabel}</td>`;
+                    }
+
+                    bodyHtml += `</tr>`;
+                }
+
+                bodyHtml += `</tbody>`;
+                table.innerHTML = bodyHtml;
+                cardWrapper.appendChild(table);
+
+                const inquiryText = encodeURIComponent(
+                    isPolish
+                        ? "Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 2 tygodniami)."
+                        : "Hallo, ich möchte nach Terminen für andere Wochen (außerhalb der nächsten 2 Wochen) fragen."
+                );
+                const stripHtml = `
+                    <div class="other-weeks-inquiry-strip">
+                        <span>${isPolish ? '🗓️ Szukasz terminu w <b>dalszych tygodniach</b>?' : '🗓️ Termine für <b>weitere Wochen</b> anfragen?'}</span>
+                        <div class="other-weeks-strip-btns">
+                            <a href="sms:${phoneOrder}${smsSeparator}body=${inquiryText}" class="btn-inquiry-mini" style="background: rgba(46, 204, 113, 0.16); border: 1px solid rgba(46, 204, 113, 0.45); color: #2ecc71;">
+                                📱 ${isPolish ? 'Zapytaj przez SMS' : 'Per SMS fragen'}
+                            </a>
+                            <a href="https://wa.me/48600812820?text=${inquiryText}" target="_blank" class="btn-inquiry-mini" style="background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8;">
+                                💬 WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                `;
+                cardWrapper.insertAdjacentHTML('beforeend', stripHtml);
+                grid.appendChild(cardWrapper);
             }
 
-            bodyHtml += `</tbody>`;
-            table.innerHTML = bodyHtml;
-            cardWrapper.appendChild(table);
+            // 1. Natychmiastowe wyświetlenie kalendarza (domyślnie tryb piątek 18:00)
+            renderCalendarGrid(true);
 
-            const inquiryText = encodeURIComponent(
-                isPolish
-                    ? "Dzień dobry, chciałbym zapytać o dostępność terminów zbiórek w innych tygodniach (poza najbliższymi 2 tygodniami)."
-                    : "Hallo, ich möchte nach Terminen für andere Wochen (außerhalb der nächsten 2 Wochen) fragen."
-            );
-            const stripHtml = `
-                <div class="other-weeks-inquiry-strip">
-                    <span>${isPolish ? '🗓️ Szukasz terminu w <b>dalszych tygodniach</b>?' : '🗓️ Termine für <b>weitere Wochen</b> anfragen?'}</span>
-                    <div class="other-weeks-strip-btns">
-                        <a href="sms:${phoneOrder}${smsSeparator}body=${inquiryText}" class="btn-inquiry-mini" style="background: rgba(46, 204, 113, 0.16); border: 1px solid rgba(46, 204, 113, 0.45); color: #2ecc71;">
-                            📱 ${isPolish ? 'Zapytaj przez SMS' : 'Per SMS fragen'}
-                        </a>
-                        <a href="https://wa.me/48600812820?text=${inquiryText}" target="_blank" class="btn-inquiry-mini" style="background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8;">
-                            💬 WhatsApp
-                        </a>
-                    </div>
-                </div>
-            `;
-            cardWrapper.insertAdjacentHTML('beforeend', stripHtml);
-            grid.appendChild(cardWrapper);
+            // 2. Sprawdzenie w tle, czy w piątek bieżącego tygodnia są jakiekolwiek zbiórki
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: fridayYMD, jezyk: 'pl' })
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                const hasFridayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
+                if (!hasFridayTerm) {
+                    renderCalendarGrid(false);
+                }
+            })
+            .catch(err => console.warn('Nie udało się sprawdzić terminu piątkowego:', err));
 
-                        const wrapper = document.getElementById('calendar-wrapper');
+            const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper) {
                 let existingInfo = document.querySelector('.calendar-info');
                 if (existingInfo) existingInfo.remove();
@@ -1755,7 +1792,7 @@
                 };
             }
 
-                        // Aktualizacja okienek "+X dni dodano od dnia wybranego" we wszystkich wierszach
+            // Aktualizacja okienek "+X dni dodano od dnia wybranego" we wszystkich wierszach
             function updateRowAddedDaysWindows() {
                 const rows = resultsContent.querySelectorAll('.zebra-row');
                 rows.forEach(row => {
