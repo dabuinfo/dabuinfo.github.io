@@ -26,6 +26,7 @@
             --accent-blue: #3498db;
             --accent-gold: #f1c40f;
             --accent-orange: #e67e22;
+            --accent-red: #e74c3c;
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
             --border-color: #333333;
@@ -47,15 +48,28 @@
             padding-bottom: 50px; 
         }
 
-        /* BANER BLOKADY PO ZAKOŃCZENIU AKCJI (OD 1 LUTEGO 2027) */
-        #salesClosedBanner {
+        /* BANER BLOKADY PO ZAKOŃCZENIU AKCJI LUB WYCZERPANIU LIMITU KWARTALNEGO */
+        #salesClosedBanner, #quarterLimitBanner {
             display: none;
             background: rgba(231, 76, 60, 0.12);
-            border: 2px solid #e74c3c;
+            border: 2px solid var(--accent-red);
             border-radius: 10px;
             padding: 22px;
             margin-bottom: 25px;
             text-align: center;
+        }
+
+        /* PASEK INFORMACYJNY O PULI KWARTALNEJ */
+        #quarterQuotaInfo {
+            display: none;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.45);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.4;
         }
 
         /* WYBÓR FORMATU PRODUKTU: RAPORT VS RAPORT + MAPA */
@@ -277,6 +291,19 @@
             margin-top: 8px;
         }
 
+        /* KOMUNIKAT O PRZEKROCZENIU LIMITU ZAMÓWIENIA */
+        .limit-alert-box {
+            display: none;
+            background: rgba(231, 76, 60, 0.14);
+            border: 1.5px solid var(--accent-red);
+            color: #ff9f95;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
+
         .field-label { display: block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 5px; font-weight: bold; }
         .email-field-input { 
             width: 100%; 
@@ -333,7 +360,7 @@
         }
         .btn-order:hover:not(:disabled) { background-color: #2980b9; }
         .btn-order:active { transform: scale(0.99); }
-        .btn-order:disabled { background-color: #555; cursor: not-allowed; }
+        .btn-order:disabled { background-color: #555; cursor: not-allowed; opacity: 0.75; }
 
         @media (max-width: 650px) {
             .order-module { padding: 12px; }
@@ -360,7 +387,18 @@
         </a>
     </div>
 
+    <!-- BLOKADA PO WYCZERPANIU KWARTALNEGO LIMITU SPRZEDAŻY -->
+    <div id="quarterLimitBanner">
+        <h3 style="color: #e74c3c; margin: 0 0 10px 0; font-size: 1.3rem;">🛑 Pula zamówień na bieżący kwartał została wyczerpana</h3>
+        <p id="quarterLimitBannerText" style="color: #ddd; font-size: 0.95rem; margin: 0; line-height: 1.5;">
+            Osiągnięto maksymalny limit sprzedaży online na bieżący okres rozliczeniowy. Przyjmowanie nowych zamówień zostanie wznowione z początkiem kolejnego kwartału.
+        </p>
+    </div>
+
     <div id="orderMainContainer">
+        <!-- INFORMACJA O DOSTĘPNEJ PULI KWARTALNEJ -->
+        <div id="quarterQuotaInfo"></div>
+
         <!-- LINK DO ZESTAWU TYGODNIOWEGO -->
         <div style="background: #181818; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
             <span>Chcesz wybrać konkretne tygodnie?</span>
@@ -416,7 +454,7 @@
             <!-- KLAUZULA REGULAMINOWA -->
             <div style="font-size: 0.83rem; color: #bbb; border-top: 1px dashed rgba(46, 204, 113, 0.4); padding-top: 10px; margin-top: 8px; line-height: 1.5;">
                 📌 <b>Zasada rozliczenia (Pełna Licencja Roczna):</b><br>
-                Abonament stanowi jednorazową opłatę licencyjną za kompletny rocznik bazy 2027 (wycena obejmuje wszystkie zaplanowane dni w roku z gwarancją bezpłatnych aktualizacji i korekt urzędowych). Cena nie podlega podziałowi na miesiące ani odliczeniom za miniony okres. Mniejsze pakiety tygodniowe z możliwością wyboru dowolnych terminów i progresywnym rabatem ilościowym zamawiane są w <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">Konfiguratorze Zestawu Tygodniowego</a>.
+                Abonament stanowi jednorazową opłatę licencyjną za kompletny rocznik bazy 2027 (wycena obejmuje wszystkie zaplanowane dni w roku z gwarancją bezpłatnych aktualizacji i korekt urzędowych). Cena nie podlega podziałowi na miesiące ani odliczeniom za miniony okres. Maksymalna wartość pojedynczego zamówienia online wynosi <b>3 000,00 zł (700,00 €)</b>. Mniejsze pakiety tygodniowe zamawiane są w <a href="https://dabu-info.com/zestaw.html" target="_blank" style="color: var(--accent-green); font-weight: bold; text-decoration: underline;">Konfiguratorze Zestawu Tygodniowego</a>.
             </div>
         </div>
 
@@ -424,10 +462,6 @@
         <div style="background: #1e1e1e; padding: 12px 16px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px;">
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <span style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">Opcje profilu:</span>
-                <!---- <label style="cursor: pointer; font-weight: bold; color: var(--accent-orange); display: flex; align-items: center; gap: 8px;">
-                    <input type="checkbox" id="scrappersFilter" value="Opcja dla złomiarzy" style="accent-color: var(--accent-orange);"> 
-                    🧲 Interesuje mnie opcja dla złomiarzy (Schrott)
-                </label> ---->
                 <span id="scrappersNote" style="font-size: 0.85rem; color: #e74c3c; font-style: italic; display: none;"></span>
             </div>
         </div>
@@ -465,6 +499,7 @@
                     <span>ŁĄCZNA KWOTA:</span>
                     <span id="calcTotalPrice">0 zł</span>
                 </div>
+                <div id="orderLimitAlertBox" class="limit-alert-box"></div>
             </div>
 
             <!-- WYBÓR METODY PŁATNOŚCI -->
@@ -545,6 +580,20 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
+        // --- WARSTWA A: LIMITY BEZPIECZEŃSTWA (DZIAŁALNOŚĆ NIEREJESTROWANA) ---
+        const MAX_SINGLE_ORDER_PLN = 3000.00;
+        const MAX_SINGLE_ORDER_EUR = 700.00;
+        const MAX_SINGLE_ORDER = isPolish ? MAX_SINGLE_ORDER_PLN : MAX_SINGLE_ORDER_EUR;
+        const MAX_REGIONS_PER_ORDER = 3;
+        const EUR_TO_PLN_SAFE_RATE = 4.40; // konserwatywny kurs kontrolny
+
+        // Stan puli kwartalnej z backendu (domyślnie bezpieczne wartości przed odczytem API)
+        let quarterLimitPln = 9500.00;
+        let quarterUsedPln = 0.00;
+        let quarterRemainingPln = 9500.00;
+        let quarterSalesClosed = false;
+        let nextQuarterStartText = "";
+
         function formatMoney(val) {
             return Number(val).toLocaleString('pl-PL', {
                 minimumFractionDigits: 2,
@@ -574,7 +623,7 @@
         }
 
         const BASE_RATE_DAY = getRateForDayIndex(clampedDayIndex);
-        const MAP_SURCHARGE_DAY = BASE_RATE_DAY; // dopłata za mapę online = 100% stawki bazowej
+        const MAP_SURCHARGE_DAY = BASE_RATE_DAY;
         const TOMORROW_BASE_RATE = getRateForDayIndex(nextDayIndex);
         const isLastDay = clampedDayIndex >= totalRampDays;
 
@@ -617,7 +666,7 @@
             }
         }
         if (regionsGroupDesc) {
-            regionsGroupDesc.textContent = `Zaznacz interesujące Cię rejony poniżej (dzisiejsza stawka: ${todayStr} ${currencySymbol}/dzień, sufit: ${capReportStr} ${currencySymbol}/rejon):`;
+            regionsGroupDesc.textContent = `Zaznacz interesujące Cię rejony poniżej (maks. ${MAX_REGIONS_PER_ORDER} rejony / ${formatMoney(MAX_SINGLE_ORDER)} ${currencySymbol} w jednym zamówieniu):`;
         }
 
         // Ukrycie BLIK dla klientów spoza Polski
@@ -675,6 +724,7 @@
 
         let calculatedTotal = 0;
         let calculatedDays = 0;
+        let isOrderBlockedByLimit = false;
 
         // Elementy DOM
         const regionsGrid = document.getElementById('regionsGrid');
@@ -687,6 +737,8 @@
         const capStatusRow = document.getElementById('capStatusRow');
         const calcCapSavings = document.getElementById('calcCapSavings');
         const specialPromoInfoRow = document.getElementById('specialPromoInfoRow');
+        const orderLimitAlertBox = document.getElementById('orderLimitAlertBox');
+        const quarterQuotaInfo = document.getElementById('quarterQuotaInfo');
         const cardFormatReport = document.getElementById('cardFormatReport');
         const cardFormatMap = document.getElementById('cardFormatMap');
         const emailInput = document.getElementById('clientEmailInput');
@@ -718,6 +770,82 @@
             return 0;
         }
 
+        function getRegionCost(regName) {
+            const dni = getDaysForRegion(regName);
+            const activeRate = getActiveRatePerDay();
+            const activeCap = getActiveRegionCap();
+            return Math.min(dni * activeRate, activeCap);
+        }
+
+        function updateQuarterQuotaDisplay() {
+            if (!quarterQuotaInfo) return;
+            const remainingDisplay = isPolish 
+                ? `${formatMoney(quarterRemainingPln)} zł`
+                : `${formatMoney(Math.floor((quarterRemainingPln / EUR_TO_PLN_SAFE_RATE) * 100) / 100)} €`;
+            const singleLimitDisplay = `${formatMoney(MAX_SINGLE_ORDER)} ${currencySymbol}`;
+            quarterQuotaInfo.style.display = 'block';
+            quarterQuotaInfo.innerHTML = `🛡️ <b>Limity zamówień online:</b> maks. <b>${singleLimitDisplay}</b> (lub maks. <b>${MAX_REGIONS_PER_ORDER} rejony</b>) na jedno zamówienie • dostępna pula w bieżącym kwartale: <b>${remainingDisplay}</b>.`;
+        }
+
+        function closeQuarterSalesUI(nextStartText) {
+            quarterSalesClosed = true;
+            const banner = document.getElementById('quarterLimitBanner');
+            const bannerText = document.getElementById('quarterLimitBannerText');
+            const mainContainer = document.getElementById('orderMainContainer');
+            if (bannerText && nextStartText) {
+                bannerText.innerHTML = `Osiągnięto maksymalny limit sprzedaży online na bieżący kwartał. Przyjmowanie nowych zamówień zostanie wznowione <b>${nextStartText}</b>.`;
+            }
+            if (banner) banner.style.display = 'block';
+            if (mainContainer) mainContainer.style.display = 'none';
+        }
+
+        // Dynamiczne blokowanie niezaznaczonych kafelków, gdy dodanie kolejnego rejonu przekroczyłoby limit koszyka lub pulę kwartalną
+        function refreshRegionCheckboxesAvailability() {
+            const currentCount = selectedRegions.size;
+            let currentSum = 0;
+            selectedRegions.forEach(r => { currentSum += getRegionCost(r); });
+
+            const maxAllowedInQuarterDisplay = isPolish 
+                ? quarterRemainingPln 
+                : (quarterRemainingPln / EUR_TO_PLN_SAFE_RATE);
+
+            const effectiveMaxOrder = Math.min(MAX_SINGLE_ORDER, maxAllowedInQuarterDisplay);
+
+            document.querySelectorAll('.region-checkbox-label').forEach(labelEl => {
+                const regName = labelEl.getAttribute('data-region');
+                const inputEl = labelEl.querySelector('input');
+                const dni = getDaysForRegion(regName);
+
+                if (dni <= 0) {
+                    inputEl.disabled = true;
+                    labelEl.classList.add('disabled');
+                    return;
+                }
+
+                if (selectedRegions.has(regName)) {
+                    inputEl.disabled = false;
+                    labelEl.classList.remove('disabled');
+                    return;
+                }
+
+                const candidateCost = getRegionCost(regName);
+                const wouldExceedCount = (currentCount + 1) > MAX_REGIONS_PER_ORDER;
+                const wouldExceedLimit = (currentSum + candidateCost) > (effectiveMaxOrder + 0.001);
+
+                if (wouldExceedCount || wouldExceedLimit) {
+                    inputEl.disabled = true;
+                    labelEl.classList.add('disabled');
+                    labelEl.title = wouldExceedCount
+                        ? `Maksymalna liczba rejonów w jednym zamówieniu to ${MAX_REGIONS_PER_ORDER}.`
+                        : `Dodanie tego rejonu przekroczyłoby limit zamówienia (${formatMoney(effectiveMaxOrder)} ${currencySymbol}).`;
+                } else {
+                    inputEl.disabled = false;
+                    labelEl.classList.remove('disabled');
+                    labelEl.title = '';
+                }
+            });
+        }
+
         // Obsługa wyboru płatności
         document.querySelectorAll('.payment-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -742,6 +870,10 @@
 
             input.addEventListener('change', () => {
                 if (input.checked) {
+                    if (selectedRegions.size >= MAX_REGIONS_PER_ORDER) {
+                        input.checked = false;
+                        return;
+                    }
                     selectedRegions.add(name);
                     label.classList.add('checked');
                 } else {
@@ -766,12 +898,26 @@
             regionsGrid.appendChild(label);
         });
 
-        // Automatyczne pobranie liczby dni z arkusza Linki
+        // Automatyczne pobranie liczby dni oraz limitu kwartalnego z arkusza
         async function wczytajDniZApi(rok) {
             try {
                 const url = `${GOOGLE_SCRIPT_URL}?action=pobierz_wycene_roczna&rok=${rok}`;
                 const resp = await fetch(url);
                 const data = await resp.json();
+
+                if (data && data.limitKwartalny) {
+                    quarterLimitPln = Number(data.limitKwartalny.limitPln || 9500);
+                    quarterUsedPln = Number(data.limitKwartalny.wykorzystanoPln || 0);
+                    quarterRemainingPln = Math.max(0, Number(data.limitKwartalny.pozostaloPln ?? (quarterLimitPln - quarterUsedPln)));
+                    nextQuarterStartText = data.limitKwartalny.nastepnyKwartalStart || "";
+
+                    if (data.limitKwartalny.zablokowane || quarterRemainingPln < (MIN_RATE * 10)) {
+                        closeQuarterSalesUI(nextQuarterStartText);
+                        return;
+                    }
+                }
+
+                updateQuarterQuotaDisplay();
 
                 if (data && data.status === "OK" && data.dni) {
                     regionDaysMap = data.dni;
@@ -808,6 +954,7 @@
                 }
             } catch (err) {
                 console.error("Błąd automatycznego pobierania dni:", err);
+                updateQuarterQuotaDisplay();
             }
         }
 
@@ -842,7 +989,9 @@
 
         function updateCalculation() {
             const count = selectedRegions.size;
-            calcCount.textContent = count;
+            calcCount.textContent = `${count} / ${MAX_REGIONS_PER_ORDER}`;
+
+            refreshRegionCheckboxesAvailability();
 
             if (count === 0) {
                 orderSection.style.display = 'none';
@@ -859,16 +1008,11 @@
             let sumaDniWszystkichRejonow = 0;
             let sumaBezSufitu = 0;
             let sumaZSufitem = 0;
-            let ileRejonowZSufitem = 0;
 
             selectedRegions.forEach(regName => {
                 const dni = getDaysForRegion(regName);
                 const kosztSurowy = dni * activeRate;
                 const kosztPoSuficie = Math.min(kosztSurowy, activeCap);
-
-                if (kosztSurowy > activeCap) {
-                    ileRejonowZSufitem++;
-                }
 
                 sumaDniWszystkichRejonow += dni;
                 sumaBezSufitu += kosztSurowy;
@@ -879,6 +1023,34 @@
             const totalFormatted = formatMoney(calculatedTotal);
             const oszczednoscSufit = Math.round((sumaBezSufitu - sumaZSufitem) * 100) / 100;
             calculatedDays = sumaDniWszystkichRejonow;
+
+            // Przeliczenie kwoty koszyka na PLN dla kontroli limitu kwartalnego
+            const totalInPln = isPolish ? calculatedTotal : (calculatedTotal * EUR_TO_PLN_SAFE_RATE);
+
+            // Walidacja limitu pojedynczego zamówienia oraz limitu kwartalnego
+            let limitErrorMsg = "";
+            if (count > MAX_REGIONS_PER_ORDER) {
+                limitErrorMsg = `⚠️ Przekroczono maksymalną liczbę rejonów w jednym zamówieniu (maks. <b>${MAX_REGIONS_PER_ORDER}</b>). Odznacz jeden rejon, aby kontynuować.`;
+            } else if (calculatedTotal > MAX_SINGLE_ORDER + 0.001) {
+                limitErrorMsg = `⚠️ Maksymalna wartość pojedynczego zamówienia online wynosi <b>${formatMoney(MAX_SINGLE_ORDER)} ${currencySymbol}</b> (obecnie w koszyku: <b>${totalFormatted} ${currencySymbol}</b>). Odznacz część rejonów lub wybierz sam Raport cyfrowy.`;
+            } else if (totalInPln > quarterRemainingPln + 0.01) {
+                const maxAllowedLocal = isPolish 
+                    ? `${formatMoney(quarterRemainingPln)} zł`
+                    : `${formatMoney(Math.floor((quarterRemainingPln / EUR_TO_PLN_SAFE_RATE) * 100) / 100)} €`;
+                limitErrorMsg = `⚠️ Kwota zamówienia przekracza pozostałą pulę sprzedaży na bieżący kwartał (maks. <b>${maxAllowedLocal}</b>). Zmniejsz liczbę rejonów w koszyku.`;
+            }
+
+            isOrderBlockedByLimit = Boolean(limitErrorMsg);
+
+            if (orderLimitAlertBox) {
+                if (isOrderBlockedByLimit) {
+                    orderLimitAlertBox.innerHTML = limitErrorMsg;
+                    orderLimitAlertBox.style.display = 'block';
+                } else {
+                    orderLimitAlertBox.style.display = 'none';
+                    orderLimitAlertBox.innerHTML = '';
+                }
+            }
 
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
             if (currentFormat === 'Raport + Mapa') {
@@ -908,10 +1080,16 @@
 
             calcTotalPrice.textContent = `${totalFormatted} ${currencySymbol}`;
 
-            if (currentStep === 'need_pin') {
-                submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${totalFormatted} ${currencySymbol})`;
+            if (isOrderBlockedByLimit) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = `🚫 Przekroczono limit zamówienia (maks. ${formatMoney(MAX_SINGLE_ORDER)} ${currencySymbol})`;
             } else {
-                submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${totalFormatted} ${currencySymbol})`;
+                submitBtn.disabled = false;
+                if (currentStep === 'need_pin') {
+                    submitBtn.textContent = `📩 1. Pobierz kod PIN na e-mail (${count} rej., ${totalFormatted} ${currencySymbol})`;
+                } else {
+                    submitBtn.textContent = `✉️ 2. Potwierdź PIN i zamawiam (${count} rej., ${totalFormatted} ${currencySymbol})`;
+                }
             }
 
             if (scrappersFilter && scrappersNote) {
@@ -945,6 +1123,11 @@
         });
 
         submitBtn.addEventListener('click', async () => {
+            if (isOrderBlockedByLimit || quarterSalesClosed) {
+                alert("Zamówienie przekracza dopuszczalny limit sprzedaży online.");
+                return;
+            }
+
             const count = selectedRegions.size;
             if (count === 0) return;
 
@@ -1043,6 +1226,13 @@
                         return;
                     }
 
+                    if (res.status === 'limit_exceeded') {
+                        alert(`⚠️ ${res.message || 'Przekroczono dopuszczalny limit sprzedaży online.'}`);
+                        submitBtn.disabled = false;
+                        wczytajDniZApi(selectedYear);
+                        return;
+                    }
+
                     alert(`✅ Dziękujemy! Zamówienie (${orderId}) zostało pomyślnie zarejestrowane.\n\nSzczegóły wraz z danymi do płatności (${currentPayment}) zostały przesłane na adres: ${clientEmail}.`);
 
                     selectedRegions.clear();
@@ -1057,6 +1247,7 @@
                     currentStep = 'need_pin';
 
                     submitBtn.disabled = false;
+                    wczytajDniZApi(selectedYear);
                     updateCalculation();
 
                 } catch (err) {
