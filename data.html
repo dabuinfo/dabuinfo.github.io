@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zapytanie o Wycenę Mapy Serwisów i Baz Danych | dabu-info</title>
+    <title>Cennik i Zamówienie Mapy Serwisów i Baz Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -205,7 +205,7 @@
         .dot-bauma { background: #e84118; }
 
         /* =========================================================
-           KONFIGURATOR WYJAZDU: WYBRANY OKRES (1 PAŃSTWO + NAKŁADKI)
+           KONFIGURATOR WYJAZDU: STAŁY CENNIK 40 PLN / 10 EUR ZA DZIEŃ
            ========================================================= */
         .single-trip-promo {
             background: var(--box-bg);
@@ -214,7 +214,7 @@
             padding: 22px 20px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .single-trip-header {
@@ -242,7 +242,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             white-space: nowrap;
         }
 
@@ -316,13 +316,13 @@
         .trip-params-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 14px;
+            gap: 16px;
             margin-top: 4px;
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 820px) {
             .trip-params-grid {
-                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-columns: 1fr 1.3fr 1fr;
             }
         }
 
@@ -331,6 +331,83 @@
             margin-bottom: 6px;
             color: var(--accent-color);
             font-weight: 700;
+        }
+
+        /* Kontrolki wyboru dni od dziś */
+        .days-stepper-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .days-stepper-row input[type="number"] {
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 12px 8px;
+        }
+
+        .day-step-btn {
+            width: auto;
+            min-width: 44px;
+            margin-top: 0;
+            padding: 12px 14px;
+            font-size: 1rem;
+            background: var(--info-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .day-step-btn:hover {
+            border-color: var(--srv-bike);
+        }
+
+        .quick-days-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .quick-day-chip {
+            width: auto;
+            margin-top: 0;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 6px;
+            background: rgba(0, 119, 182, 0.1);
+            color: var(--srv-bike);
+            border: 1px solid rgba(0, 119, 182, 0.35);
+        }
+
+        .quick-day-chip:hover {
+            background: var(--srv-bike);
+            color: #ffffff;
+        }
+
+        .date-range-preview {
+            font-size: 0.82rem;
+            color: var(--muted-text);
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .over-30-alert {
+            display: none;
+            background: rgba(217, 119, 6, 0.12);
+            border: 1px solid #d97706;
+            color: #b45309;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .over-30-alert {
+                color: #fbbf24;
+            }
         }
 
         .single-trip-bottom-bar {
@@ -342,24 +419,28 @@
             padding: 16px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
-            margin-top: 6px;
+            margin-top: 2px;
         }
 
         @media (min-width: 820px) {
             .single-trip-bottom-bar {
-                grid-template-columns: 1.2fr auto;
+                grid-template-columns: 1.3fr auto;
             }
         }
 
         .trip-summary-box {
             font-size: 0.92rem;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
         .trip-summary-total {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 900;
             color: var(--srv-bike);
+        }
+
+        .trip-summary-total.quote-mode {
+            color: #d97706;
         }
 
         .single-trip-btn {
@@ -369,6 +450,11 @@
             white-space: nowrap;
             padding: 15px 24px;
             width: 100%;
+        }
+
+        .single-trip-btn.quote-mode-btn {
+            background: #d97706;
+            color: #ffffff;
         }
 
         .overlay-checkbox-card.locked-card {
@@ -533,16 +619,16 @@
             </div>
 
             <!-- =========================================================
-                 SEKCJA GŁÓWNA: KONFIGURATOR NA WYJAZD (1 PAŃSTWO + DOWOLNY OKRES)
+                 SEKCJA GŁÓWNA: KONFIGURATOR NA WYJAZD (40 PLN / 10 EUR ZA DZIEŃ)
                  ========================================================= -->
             <div class="importer-hero">
                 <div class="hero-top-bar">
                     <div class="hero-title-wrap">
                         <h3>🎯 Mapa Serwisowa na Trasę (Konfigurator Wyjazdu)</h3>
-                        <p>Wybierz <strong>państwo docelowe</strong>, <strong>interesujące Cię nakładki serwisowe</strong> oraz <strong>planowany okres wyjazdu</strong> – przygotujemy indywidualną wycenę i pełny dostęp do mapy pod Twoją trasę.</p>
+                        <p>Stały cennik: <strong>40 PLN lub 10 € za dzień</strong> dla <strong>1 państwa i 1 nakładki serwisowej</strong> (do 30 dni). Powyżej 30 dni przygotowujemy indywidualną wycenę.</p>
                     </div>
                     <div>
-                        <span class="quote-badge-top">📋 Wycena indywidualna</span>
+                        <span class="quote-badge-top">💳 40 PLN / 10 € za dzień</span>
                     </div>
                 </div>
 
@@ -562,22 +648,22 @@
                     <span class="pill"><span class="dot dot-bauma"></span> 🏗️ Wypożyczalnie Bauma DE</span>
                 </div>
 
-                <!-- KONFIGURATOR WYJAZDU: DOWOLNY OKRES DLA 1 KRAJU -->
+                <!-- KONFIGURATOR WYJAZDU -->
                 <div class="single-trip-promo">
                     <div class="single-trip-header">
                         <div>
-                            <div class="single-trip-title">🎯 Konfigurator trasy: wybierz nakładki, kraj i okres dostępu</div>
+                            <div class="single-trip-title">🎯 Konfigurator trasy: wybierz nakładki, kraj i liczbę dni od dziś</div>
                             <div style="font-size: 0.9rem; color: var(--muted-text); margin-top: 3px;">
-                                Zaznacz branże, które chcesz mieć aktywne na wspólnej mapie oraz wskaż planowany czas trwania wyjazdu.
+                                Stawka: <strong>40 PLN (10 €) / dzień</strong> za każdy wybrany serwis w 1 państwie. Zamówienia powyżej 30 dni kierowane są do wyceny.
                             </div>
                         </div>
                         <div class="single-trip-price-badge">
-                            Wycena pod wyjazd
+                            40 PLN / 10 € / dzień (1 kraj + 1 serwis)
                         </div>
                     </div>
 
                     <div>
-                        <label style="margin-bottom: 10px; font-size: 0.92rem;">1. Zaznacz nakładki serwisowe pod Twoją trasę (możesz zaznaczyć kilka):</label>
+                        <label style="margin-bottom: 10px; font-size: 0.92rem;">1. Zaznacz nakładki serwisowe pod Twoją trasę (40 PLN / 10 € za dzień każda):</label>
                         <div class="overlays-grid" id="overlaysGrid">
                             <label class="overlay-checkbox-card">
                                 <input type="checkbox" name="tripOverlay" value="Rowery Bosch eBike" data-countries="Niemcy,Włochy,Francja,Szwajcaria,Holandia,Austria,Belgia,Polska,Czechy,Dania,Norwegia,Szwecja,Islandia,Luksemburg,Wielka Brytania,Hiszpania,Finlandia" onchange="przeliczNakladkiWyjazd(this)">
@@ -639,10 +725,10 @@
                         </div>
                     </div>
 
-                    <!-- Parametry wyjazdu: Kraj + Okres + Termin -->
+                    <!-- Parametry wyjazdu: Kraj + Liczba dni od dziś + Data startu -->
                     <div class="trip-params-grid">
                         <div class="param-field-wrap">
-                            <label for="singleTripCountry">2. Państwo docelowe:</label>
+                            <label for="singleTripCountry">2. Państwo docelowe (1 kraj):</label>
                             <select id="singleTripCountry" onchange="zmianaKrajuKonfiguratora()">
                                 <option value="">Wybierz państwo...</option>
                                 <option value="Austria">🇦🇹 Austria</option>
@@ -666,35 +752,42 @@
                         </div>
 
                         <div class="param-field-wrap">
-                            <label for="singleTripPeriod">3. Czas trwania / okres:</label>
-                            <select id="singleTripPeriod" onchange="przeliczNakladkiWyjazd()">
-                                <option value="">Wybierz okres dostępu...</option>
-                                <option value="Weekend (3-4 dni)">Weekend (3–4 dni)</option>
-                                <option value="1 tydzień (7 dni)">1 tydzień (7 dni)</option>
-                                <option value="10 dni">10 dni</option>
-                                <option value="2 tygodnie (14 dni)">2 tygodnie (14 dni)</option>
-                                <option value="1 miesiąc (30 dni)">1 miesiąc (30 dni)</option>
-                                <option value="Dłuższy / Sezonowy">Dłuższy okres / Sezon</option>
-                                <option value="Inny okres">Inny okres (wg dat poniżej)</option>
-                            </select>
+                            <label for="tripDays">3. Ilość dni dostępu (od dziś):</label>
+                            <div class="days-stepper-row">
+                                <button type="button" class="day-step-btn" onclick="dodajDni(-1)" aria-label="Odejmij 1 dzień">−1</button>
+                                <input type="number" id="tripDays" min="1" max="365" value="1" oninput="przeliczNakladkiWyjazd()">
+                                <button type="button" class="day-step-btn" onclick="dodajDni(1)" aria-label="Dodaj 1 dzień">+1</button>
+                            </div>
+                            <div class="quick-days-bar">
+                                <button type="button" class="quick-day-chip" onclick="dodajDni(1)">+1 dzień</button>
+                                <button type="button" class="quick-day-chip" onclick="dodajDni(3)">+3 dni</button>
+                                <button type="button" class="quick-day-chip" onclick="dodajDni(7)">+7 dni</button>
+                                <button type="button" class="quick-day-chip" onclick="dodajDni(14)">+14 dni</button>
+                                <button type="button" class="quick-day-chip" onclick="dodajDni(30)">+30 dni</button>
+                            </div>
+                            <div id="dateRangePreview" class="date-range-preview"></div>
                         </div>
 
                         <div class="param-field-wrap">
-                            <label for="singleTripDates">4. Przybliżony termin (opcjonalnie):</label>
-                            <input type="text" id="singleTripDates" placeholder="np. od 15 maja, od zaraz...">
+                            <label for="singleTripStartDate">4. Start dostępu (domyślnie od dziś):</label>
+                            <input type="date" id="singleTripStartDate" onchange="przeliczNakladkiWyjazd()">
                         </div>
+                    </div>
+
+                    <div id="over30Alert" class="over-30-alert">
+                        ℹ️ Wybrano okres dłuższy niż 30 dni — obowiązuje wycena indywidualna. Kliknij przycisk poniżej, aby wysłać zapytanie do wyceny.
                     </div>
 
                     <div class="single-trip-bottom-bar">
                         <div class="trip-summary-box" id="tripSummaryBox">
-                            Wybrane nakładki: <strong id="tripCount">0</strong> | 
-                            Okres: <strong id="tripPeriodLabel">nie wybrano</strong><br>
-                            Wycena: <span class="trip-summary-total" id="tripTotalAmount">Indywidualna (do wyceny)</span>
+                            Wybrane serwisy: <strong id="tripCount">0</strong> | 
+                            Okres: <strong id="tripPeriodLabel">1 dzień (od dziś)</strong><br>
+                            Koszt dostępu: <span class="trip-summary-total" id="tripTotalAmount">0 PLN / 0 € (40 PLN lub 10 € / dzień za 1 serwis)</span>
                         </div>
 
                         <div>
                             <button type="button" class="single-trip-btn" id="btnOrderSingleTrip" onclick="zamowJedenSerwisKraj()">
-                                Wyślij zapytanie o wycenę mapy
+                                Zamów dostęp do mapy
                             </button>
                         </div>
                     </div>
@@ -736,8 +829,8 @@
             <!-- PODSUMOWANIE / WYSYŁKA SMS -->
             <div id="wynik">
                 <p style="margin-top:0;"><strong>Wiadomość gotowa do wysłania!</strong></p>
-                <p>Twój numer zapytania: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Szczegółowa wycena oraz warunki dostępu zostaną przekazane w odpowiedzi na zgłoszenie SMS.</p>
+                <p>Twój numer zgłoszenia: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
+                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do mapy.</p>
                 <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
             </div>
         </div>
@@ -746,6 +839,70 @@
     <div id="google_translate_element" style="display:none;"></div>
 
     <script>
+        const STAWKA_PLN_DZIEN = 40;
+        const STAWKA_EUR_DZIEN = 10;
+        const MAX_DNI_CENNIK_STALY = 30;
+
+        function pobierzDzisiejszaDateISO() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatujDatePL(dateObj) {
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const y = dateObj.getFullYear();
+            return `${d}.${m}.${y}`;
+        }
+
+        function parsujDateLokalna(isoStr) {
+            if (!isoStr) return new Date();
+            const parts = isoStr.split('-').map(Number);
+            if (parts.length !== 3) return new Date();
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
+        function obliczZakresDatTekst(dni) {
+            const startInput = document.getElementById('singleTripStartDate');
+            const dzisISO = pobierzDzisiejszaDateISO();
+            if (!startInput.value) {
+                startInput.value = dzisISO;
+            }
+            const startDate = parsujDateLokalna(startInput.value);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + Math.max(0, dni - 1));
+
+            const czyOdDzis = startInput.value === dzisISO;
+            const startTekst = czyOdDzis ? `od dziś (${formatujDatePL(startDate)})` : `od ${formatujDatePL(startDate)}`;
+            const koniecTekst = formatujDatePL(endDate);
+
+            if (dni === 1) {
+                return `${startTekst}`;
+            }
+            return `${startTekst} do ${koniecTekst}`;
+        }
+
+        function dodajDni(delta) {
+            const daysInput = document.getElementById('tripDays');
+            let aktualne = parseInt(daysInput.value, 10);
+            if (isNaN(aktualne) || aktualne < 1) aktualne = 1;
+            const nowe = Math.max(1, aktualne + delta);
+            daysInput.value = nowe;
+            przeliczNakladkiWyjazd();
+        }
+
+        function pobierzLiczbeDni() {
+            const daysInput = document.getElementById('tripDays');
+            let dni = parseInt(daysInput.value, 10);
+            if (isNaN(dni) || dni < 1) {
+                dni = 1;
+            }
+            return dni;
+        }
+
         function pobierzDozwoloneKrajeDlaZaznaczonych() {
             const zaznaczone = Array.from(document.querySelectorAll('input[name="tripOverlay"]:checked'));
             if (zaznaczone.length === 0) return null;
@@ -863,25 +1020,48 @@
             aktualizujBlokadyKrajowINakladek(ostatnioKliknietyCb);
 
             const wybrane = pobierzWybraneNakladki();
-            const ilosc = wybrane.length;
-            const okresVal = document.getElementById('singleTripPeriod').value;
+            const iloscSerwisow = wybrane.length;
+            const dni = pobierzLiczbeDni();
+            const zakresDat = obliczZakresDatTekst(dni);
+            const czyPowyzej30 = dni > MAX_DNI_CENNIK_STALY;
 
-            document.getElementById('tripCount').innerText = ilosc;
-            document.getElementById('tripPeriodLabel').innerText = okresVal ? okresVal : 'do ustalenia';
+            const dniEtykieta = `${dni} ${dni === 1 ? 'dzień' : 'dni'}`;
+            document.getElementById('tripCount').innerText = iloscSerwisow;
+            document.getElementById('tripPeriodLabel').innerText = `${dniEtykieta} (${zakresDat})`;
+            document.getElementById('dateRangePreview').innerText = `📅 Zakres dostępu: ${zakresDat}`;
 
+            const totalEl = document.getElementById('tripTotalAmount');
             const btn = document.getElementById('btnOrderSingleTrip');
-            if (ilosc > 0) {
-                btn.innerText = `Wyślij zapytanie o wycenę (${ilosc} ${ilosc === 1 ? 'nakładka' : (ilosc < 5 ? 'nakładki' : 'nakładek')})`;
+            const over30Box = document.getElementById('over30Alert');
+
+            if (czyPowyzej30) {
+                over30Box.style.display = 'block';
+                totalEl.classList.add('quote-mode');
+                totalEl.innerText = `Powyżej 30 dni (${dniEtykieta}) — wycena indywidualna`;
+                btn.classList.add('quote-mode-btn');
+                btn.innerText = `Wyślij do wyceny (powyżej 30 dni)`;
             } else {
-                btn.innerText = `Wyślij zapytanie o wycenę mapy`;
+                over30Box.style.display = 'none';
+                totalEl.classList.remove('quote-mode');
+                btn.classList.remove('quote-mode-btn');
+
+                if (iloscSerwisow === 0) {
+                    totalEl.innerText = `0 PLN / 0 € (40 PLN lub 10 € / dzień za 1 serwis)`;
+                    btn.innerText = `Zamów dostęp do mapy`;
+                } else {
+                    const sumaPln = dni * iloscSerwisow * STAWKA_PLN_DZIEN;
+                    const sumaEur = dni * iloscSerwisow * STAWKA_EUR_DZIEN;
+                    totalEl.innerText = `${sumaPln} PLN / ${sumaEur} € (${iloscSerwisow} × ${dniEtykieta} × 40 PLN / 10 €)`;
+                    btn.innerText = `Zamów dostęp (${sumaPln} PLN / ${sumaEur} €)`;
+                }
             }
         }
 
         function zamowJedenSerwisKraj() {
             const wybrane = pobierzWybraneNakladki();
             const kraj = document.getElementById('singleTripCountry').value;
-            const okres = document.getElementById('singleTripPeriod').value;
-            const termin = document.getElementById('singleTripDates').value.trim();
+            const dni = pobierzLiczbeDni();
+            const zakresDat = obliczZakresDatTekst(dni);
 
             if (wybrane.length === 0) {
                 alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową!');
@@ -897,20 +1077,31 @@
                 return;
             }
 
-            const ilosc = wybrane.length;
-            const nr = `WYCENA-${pobierzKluczCzasu()}`;
+            const iloscSerwisow = wybrane.length;
             const listaNakladek = wybrane.join(' + ');
-            const okresTekst = okres ? okres : 'do ustalenia';
-            const terminLinia = termin ? `
-Termin: ${termin}` : '';
+            const dniEtykieta = `${dni} ${dni === 1 ? 'dzień' : 'dni'}`;
 
-            const trescSms = `Zapytanie o wycenę mapy na trasę.
+            if (dni > MAX_DNI_CENNIK_STALY) {
+                const nr = `WYCENA-${pobierzKluczCzasu()}`;
+                const trescSms = `Zapytanie o wycenę mapy (powyżej 30 dni).
 Nr: ${nr}
 Państwo: ${kraj}
-Okres: ${okresTekst}${terminLinia}
-Nakładki (${ilosc}): ${listaNakladek}
-(Proszę o przygotowanie wyceny)`;
-            przygotujSMS(nr, trescSms, false);
+Okres: ${dniEtykieta} (${zakresDat})
+Serwisy (${iloscSerwisow}): ${listaNakladek}
+(Zamówienie powyżej 30 dni – proszę o wycenę indywidualną)`;
+                przygotujSMS(nr, trescSms, false);
+            } else {
+                const sumaPln = dni * iloscSerwisow * STAWKA_PLN_DZIEN;
+                const sumaEur = dni * iloscSerwisow * STAWKA_EUR_DZIEN;
+                const nr = `MAPA-${pobierzKluczCzasu()}`;
+                const trescSms = `Zamówienie dostępu do mapy serwisów.
+Nr: ${nr}
+Państwo: ${kraj}
+Okres: ${dniEtykieta} (${zakresDat})
+Serwisy (${iloscSerwisow}): ${listaNakladek}
+Kwota (40 PLN / 10 € za dzień/serwis): ${sumaPln} PLN / ${sumaEur} €`;
+                przygotujSMS(nr, trescSms, true);
+            }
         }
 
         function przygotujSMS(nr, trescSms, czyZnamyCene = false) {
@@ -924,7 +1115,7 @@ Nakładki (${ilosc}): ${listaNakladek}
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('infoCenaSms').innerText = czyZnamyCene 
                 ? "Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do mapy."
-                : "Szczegółowa wycena oraz warunki dostępu zostaną przekazane w odpowiedzi na zgłoszenie SMS.";
+                : "Zamówienie przekracza 30 dni — szczegółowa wycena indywidualna zostanie przekazana w odpowiedzi na zgłoszenie SMS.";
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
@@ -953,6 +1144,14 @@ Obszar: ${obszar}
 (Wycena po przygotowaniu)`;
             przygotujSMS(nr, trescSms, false);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const startInput = document.getElementById('singleTripStartDate');
+            if (startInput && !startInput.value) {
+                startInput.value = pobierzDzisiejszaDateISO();
+            }
+            przeliczNakladkiWyjazd();
+        });
     </script>
 
     <!-- SKRYPT TŁUMACZENIA -->
