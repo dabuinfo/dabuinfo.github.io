@@ -1214,11 +1214,11 @@
         async function wyslijDoArkuszaZamowien(payload) {
             const badgeEl = document.getElementById('sheetSyncStatus');
             if (!GAS_WEBAPP_URL || GAS_WEBAPP_URL.includes("WKLEJ_TUTAJ")) {
-                badgeEl.innerText = "⚠️ Skonfiguruj GAS_WEBAPP_URL w kodzie HTML, aby zapisać automatycznie w zakładce Zamowienia.";
+                badgeEl.innerText = "⚠️ System zamówień wymaga konfiguracji — użyj przycisku SMS poniżej.";
                 return;
             }
 
-            badgeEl.innerText = "⏳ Wysyłanie zamówienia do zakładki Zamowienia...";
+            badgeEl.innerText = "⏳ Przesyłanie zgłoszenia...";
             try {
                 const response = await fetch(GAS_WEBAPP_URL, {
                     method: "POST",
@@ -1227,13 +1227,13 @@
                 });
                 const resJson = await response.json();
                 if (resJson && resJson.status === "OK") {
-                    badgeEl.innerText = "✅ Zapisano w arkuszu Google (zakładka: Zamowienia)";
+                    badgeEl.innerText = "✅ Zgłoszenie przyjęte do realizacji";
                 } else {
-                    badgeEl.innerText = "⚠️ Odpowiedź arkusza: " + (resJson.message || "Sprawdź wdrożenie skryptu");
+                    badgeEl.innerText = "⚠️ Nie udało się potwierdzić online — wyślij zgłoszenie przez SMS poniżej.";
                 }
             } catch (err) {
-                badgeEl.innerText = "⚠️ Nie udało się połączyć z arkuszem online — użyj przycisku SMS poniżej.";
-                console.error("Błąd zapisu do Google Sheets:", err);
+                badgeEl.innerText = "⚠️ Brak połączenia online — wyślij zgłoszenie przez SMS poniżej.";
+                console.error("Błąd wysyłki:", err);
             }
         }
 
