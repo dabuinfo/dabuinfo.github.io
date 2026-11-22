@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cennik i Zamówienie Mapy Serwisów i Baz Danych | dabu-info</title>
+    <title>Cennik i Zamówienie Mapy Serwisów, POI i Baz Danych | dabu-info</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -312,6 +312,63 @@
             margin-top: 2px;
         }
 
+        /* Opcja dodatkowa: Punkty POI pod nawigację (wycena indywidualna) */
+        .poi-addon-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid #d97706;
+            border-radius: 10px;
+            background: rgba(217, 119, 6, 0.08);
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 0;
+            transition: all 0.18s ease;
+        }
+
+        .poi-addon-card.checked {
+            background: rgba(217, 119, 6, 0.18);
+            box-shadow: 0 2px 10px rgba(217, 119, 6, 0.2);
+        }
+
+        .poi-addon-card input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            accent-color: #d97706;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .poi-addon-title {
+            font-weight: 800;
+            font-size: 0.96rem;
+            color: var(--accent-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .poi-quote-pill {
+            background: #d97706;
+            color: #fff;
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .poi-addon-desc {
+            font-size: 0.84rem;
+            color: var(--muted-text);
+            margin-top: 4px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
         /* Pola wyboru parametrów trasy */
         .trip-params-grid {
             display: grid;
@@ -323,6 +380,22 @@
         @media (min-width: 820px) {
             .trip-params-grid {
                 grid-template-columns: 1fr 1.3fr 1fr;
+            }
+        }
+
+        .client-contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            background: var(--info-bg);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            .client-contact-grid {
+                grid-template-columns: 1fr 1fr 0.7fr;
             }
         }
 
@@ -393,7 +466,7 @@
             font-weight: 600;
         }
 
-        .over-30-alert {
+        .quote-reason-alert {
             display: none;
             background: rgba(217, 119, 6, 0.12);
             border: 1px solid #d97706;
@@ -405,7 +478,7 @@
         }
 
         @media (prefers-color-scheme: dark) {
-            .over-30-alert {
+            .quote-reason-alert {
                 color: #fbbf24;
             }
         }
@@ -434,7 +507,7 @@
         }
 
         .trip-summary-total {
-            font-size: 1.2rem;
+            font-size: 1.18rem;
             font-weight: 900;
             color: var(--srv-bike);
         }
@@ -512,7 +585,7 @@
 
         .info-box {
             background-color: var(--info-bg);
-            border-left: 4px solid var(--accent-color);
+            border-left: 4px solid #d97706;
             padding: 20px;
             border-radius: 0 8px 8px 0;
             font-size: 0.95em;
@@ -522,12 +595,12 @@
         .info-box ul { margin: 0; padding-left: 20px; }
         .info-box li { margin-bottom: 6px; }
 
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95em; }
 
         input, select { 
             width: 100%; 
-            padding: 14px; 
+            padding: 13px 14px; 
             border: 1px solid var(--border-color); 
             border-radius: 8px; 
             background-color: var(--box-bg);
@@ -555,6 +628,7 @@
         }
 
         button:active { opacity: 0.85; transform: scale(0.98); }
+        button:disabled { opacity: 0.6; cursor: wait; }
 
         #wynik { 
             margin-top: 25px; 
@@ -566,16 +640,26 @@
             text-align: center;
         }
 
+        .sheet-sync-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.18);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.88em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
         .sms-btn {
             display: inline-block;
             background-color: #ffffff;
             color: #2e7d32;
-            padding: 15px 26px;
-            margin-top: 15px;
+            padding: 14px 24px;
+            margin-top: 14px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 800;
-            font-size: 1.1em;
+            font-size: 1.05em;
             box-shadow: 0 4px 8px rgba(0,0,0,0.25);
         }
 
@@ -614,8 +698,8 @@
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2C6.48 2 2 4.24 2 7V17C2 19.76 6.48 22 12 22C17.52 22 22 19.76 22 17V7C22 4.24 17.52 2 12 2ZM12 6C16.42 6 19.5 7.61 20 8C19.5 8.39 16.42 10 12 10C7.58 10 4.5 8.39 4 8C4.5 7.61 7.58 6 12 6ZM4 17V14.22C5.64 15.34 8.5 16 12 16C15.5 16 18.36 15.34 20 14.22V17C20 17.5 16.92 19.11 12 19.11C7.08 19.11 4 17.5 4 17Z"/>
                 </svg>
-                <h2>Mapa Serwisów & Bazy B2B</h2>
-                <div class="subtitle">Interaktywna mapa serwisów pod trasy handlowe (Rowery Bosch eBike, Kosiarki Husqvarna, STIHL, Myjki Kärcher, Quady/ATV, Wacker Neuson, Złomowiska DE, Wypożyczalnie maszyn Bauma DE, Kringloop Benelux).</div>
+                <h2>Mapa Serwisów, Punkty POI & Bazy B2B</h2>
+                <div class="subtitle">Interaktywna mapa serwisów pod trasy handlowe (Rowery Bosch eBike, Kosiarki Husqvarna, STIHL, Myjki Kärcher, Quady/ATV, Wacker Neuson, Złomowiska DE, Wypożyczalnie maszyn Bauma DE, Kringloop Benelux) oraz punkty POI do nawigacji.</div>
             </div>
 
             <!-- =========================================================
@@ -625,7 +709,7 @@
                 <div class="hero-top-bar">
                     <div class="hero-title-wrap">
                         <h3>🎯 Mapa Serwisowa na Trasę (Konfigurator Wyjazdu)</h3>
-                        <p>Stały cennik: <strong>40 PLN lub 10 € za dzień</strong> dla <strong>1 państwa i 1 nakładki serwisowej</strong> (do 30 dni). Powyżej 30 dni przygotowujemy indywidualną wycenę.</p>
+                        <p>Stały cennik: <strong>40 PLN lub 10 € za dzień</strong> dla <strong>1 państwa i 1 nakładki serwisowej</strong> (do 30 dni). Powyżej 30 dni lub z eksportem punktów POI pod nawigację przygotowujemy indywidualną wycenę.</p>
                     </div>
                     <div>
                         <span class="quote-badge-top">💳 40 PLN / 10 € za dzień</span>
@@ -654,7 +738,7 @@
                         <div>
                             <div class="single-trip-title">🎯 Konfigurator trasy: wybierz nakładki, kraj i liczbę dni od dziś</div>
                             <div style="font-size: 0.9rem; color: var(--muted-text); margin-top: 3px;">
-                                Stawka: <strong>40 PLN (10 €) / dzień</strong> za każdy wybrany serwis w 1 państwie. Zamówienia powyżej 30 dni kierowane są do wyceny.
+                                Stawka: <strong>40 PLN (10 €) / dzień</strong> za każdy wybrany serwis w 1 państwie. Zamówienia powyżej 30 dni lub z pakietem POI pod nawigację kierowane są do wyceny.
                             </div>
                         </div>
                         <div class="single-trip-price-badge">
@@ -725,6 +809,20 @@
                         </div>
                     </div>
 
+                    <!-- Opcja dodatkowa: Punkty POI pod nawigację do indywidualnej wyceny -->
+                    <label class="poi-addon-card" id="poiAddonCard">
+                        <input type="checkbox" id="poiNavAddon" onchange="przeliczNakladkiWyjazd()">
+                        <div>
+                            <div class="poi-addon-title">
+                                <span>📍 Zamówienie punktów POI pod nawigację (GPX / KML / CSV / Google Maps)</span>
+                                <span class="poi-quote-pill">Wycena indywidualna</span>
+                            </div>
+                            <div class="poi-addon-desc">
+                                Zaznacz, jeśli chcesz otrzymać gotową paczkę współrzędnych GPS (POI) do wgrania bezpośrednio do swojej nawigacji lub telefonu — wycenimy zamówienie indywidualnie.
+                            </div>
+                        </div>
+                    </label>
+
                     <!-- Parametry wyjazdu: Kraj + Liczba dni od dziś + Data startu -->
                     <div class="trip-params-grid">
                         <div class="param-field-wrap">
@@ -774,9 +872,26 @@
                         </div>
                     </div>
 
-                    <div id="over30Alert" class="over-30-alert">
-                        ℹ️ Wybrano okres dłuższy niż 30 dni — obowiązuje wycena indywidualna. Kliknij przycisk poniżej, aby wysłać zapytanie do wyceny.
+                    <!-- Dane kontaktowe do arkusza Zamówienia -->
+                    <div class="client-contact-grid">
+                        <div class="param-field-wrap">
+                            <label for="clientPhone">5. Twój Telefon / WhatsApp (do zamówienia):</label>
+                            <input type="tel" id="clientPhone" placeholder="np. +48 600 000 000">
+                        </div>
+                        <div class="param-field-wrap">
+                            <label for="clientEmail">6. Twój E-mail (wysyłka dostępu / wyceny):</label>
+                            <input type="email" id="clientEmail" placeholder="np. jan@firma.pl">
+                        </div>
+                        <div class="param-field-wrap">
+                            <label for="clientCurrency">7. Waluta:</label>
+                            <select id="clientCurrency" onchange="przeliczNakladkiWyjazd()">
+                                <option value="PLN" selected>PLN (zł)</option>
+                                <option value="EUR">EUR (€)</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div id="quoteReasonAlert" class="quote-reason-alert"></div>
 
                     <div class="single-trip-bottom-bar">
                         <div class="trip-summary-box" id="tripSummaryBox">
@@ -795,43 +910,66 @@
 
             </div>
 
-            <!-- SEKCJA: ZAMÓW WŁASNĄ BAZĘ NIESTANDARDOWĄ -->
-            <div class="divider">LUB ZAMÓW WŁASNĄ BAZĘ NA ZAMÓWIENIE</div>
+            <!-- SEKCJA: ZAMÓW PUNKTY POI POD NAWIGACJĘ / WŁASNĄ BAZĘ (WYCENA INDYWIDUALNA) -->
+            <div class="divider">LUB ZAMÓW PUNKTY POI POD NAWIGACJĘ / WŁASNĄ BAZĘ (WYCENA INDYWIDUALNA)</div>
             
             <div class="custom-order-layout">
                 <div class="info-box">
-                    <strong>Baza firm z wyszukiwarek branżowych:</strong>
+                    <strong>📍 Punkty POI pod nawigację i dedykowane bazy B2B:</strong>
                     <ul>
-                        <li>Nazwa firmy i kategoria (branża)</li>
-                        <li>Dokładny adres i lokalizacja GPS pod nawigację</li>
-                        <li>Dane Publiczne i Rejestrowe B2B</li>
+                        <li>Gotowe pliki POI do wgrania w nawigację (GPX, KML, CSV, Google Maps, Garmin, TomTom)</li>
+                        <li>Nazwa firmy, kategoria, dokładny adres i współrzędne GPS</li>
+                        <li>Dowolna branża oraz obszar (kraj, land, miasto lub promień km)</li>
+                        <li>Każde zamówienie punktów POI pod nawigację wyceniamy indywidualnie</li>
                     </ul>
                     <p style="margin: 15px 0 0 0; font-size: 0.9em; color: var(--muted-text);">
-                        Przygotowujemy dedykowane bazy dla dowolnej branży i regionu na indywidualne zlecenie.
+                        Zgłoszenie trafia bezpośrednio do zakładki <strong>Zamówienia</strong> w naszym systemie — wycenę odeślemy e-mailem lub SMS-em.
                     </p>
                 </div>
                 
                 <div>
                     <div class="form-group">
-                        <label>Czego szukasz (branża):</label>
-                        <input type="text" id="branza" placeholder="np. meble vintage, szkło artystyczne, motoryzacja..." required>
+                        <label>Czego szukasz (branża / kategoria punktów POI):</label>
+                        <input type="text" id="branza" placeholder="np. serwisy rowerowe, meble vintage, złomowiska, myjki..." required>
                     </div>
                     
                     <div class="form-group">
                         <label>Obszar wyszukiwania (kraj, miasto, kod lub promień):</label>
-                        <input type="text" id="obszar" placeholder="np. Antwerpia + 50 km / Belgia / Zagłębie Ruhry" required>
+                        <input type="text" id="obszar" placeholder="np. Niemcy NRW / Antwerpia + 50 km / Holandia" required>
                     </div>
 
-                    <button id="submitBtn" onclick="generujZamowienieNiestandardowe()">Wyślij zapytanie o bazę</button>
+                    <div class="form-group">
+                        <label>Format punktów POI pod nawigację:</label>
+                        <select id="poiFormat">
+                            <option value="Google Maps / Linki + KML">Google Maps / KML</option>
+                            <option value="GPX (Garmin / OsmAnd / Nawigacje GPS)">GPX (Garmin / OsmAnd / Nawigacje GPS)</option>
+                            <option value="CSV / Excel z współrzędnymi GPS">CSV / Excel z współrzędnymi GPS</option>
+                            <option value="TomTom (OV2) / Inny format">TomTom (OV2) / Inny format</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label>Telefon / WhatsApp:</label>
+                            <input type="tel" id="customPhone" placeholder="np. +48 600 000 000">
+                        </div>
+                        <div>
+                            <label>E-mail do wyceny:</label>
+                            <input type="email" id="customEmail" placeholder="np. jan@firma.pl">
+                        </div>
+                    </div>
+
+                    <button id="submitBtn" style="background:#d97706; color:#ffffff;" onclick="generujZamowienieNiestandardowe()">📍 Wyślij punkty POI / bazę do wyceny</button>
                 </div>
             </div>
 
-            <!-- PODSUMOWANIE / WYSYŁKA SMS -->
+            <!-- PODSUMOWANIE / STATUS ZAPISU DO ARKUSZA + WYSYŁKA SMS -->
             <div id="wynik">
-                <p style="margin-top:0;"><strong>Wiadomość gotowa do wysłania!</strong></p>
+                <p style="margin-top:0;"><strong>✅ Zgłoszenie zostało zarejestrowane!</strong></p>
+                <div id="sheetSyncStatus" class="sheet-sync-badge">⏳ Zapisywanie w arkuszu Zamówienia...</div>
                 <p>Twój numer zgłoszenia: <br><b id="nrZamowienia" style="font-size: 1.5em; letter-spacing: 1px;"></b></p>
-                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do mapy.</p>
-                <a href="#" id="linkSms" class="sms-btn">Otwórz SMS i wyślij</a>
+                <p id="infoCenaSms" style="font-size: 0.95em; margin-bottom:0;">Szczegóły zostały przesłane do naszego arkusza zamówień.</p>
+                <a href="#" id="linkSms" class="sms-btn">📲 Otwórz SMS (opcjonalnie)</a>
             </div>
         </div>
     </div>
@@ -839,6 +977,13 @@
     <div id="google_translate_element" style="display:none;"></div>
 
     <script>
+        // =========================================================================
+        // POŁĄCZENIE Z ARKUSZEM GOOGLE: 1AZGWBSAXcD49ElURi9Kq_R6PuX-jFV4Msuugtuitk_8
+        // Wklej poniżej swój adres URL wdrożenia Web App z Google Apps Script (gsagregator.txt)
+        // =========================================================================
+        const GAS_WEBAPP_URL = "WKLEJ_TUTAJ_URL_WEB_APP_GOOGLE_APPS_SCRIPT";
+        const TARGET_SPREADSHEET_ID = "1AZGWBSAXcD49ElURi9Kq_R6PuX-jFV4Msuugtuitk_8";
+
         const STAWKA_PLN_DZIEN = 40;
         const STAWKA_EUR_DZIEN = 10;
         const MAX_DNI_CENNIK_STALY = 30;
@@ -1024,24 +1169,33 @@
             const dni = pobierzLiczbeDni();
             const zakresDat = obliczZakresDatTekst(dni);
             const czyPowyzej30 = dni > MAX_DNI_CENNIK_STALY;
+            const czyPoiNav = document.getElementById('poiNavAddon').checked;
+
+            document.getElementById('poiAddonCard').classList.toggle('checked', czyPoiNav);
 
             const dniEtykieta = `${dni} ${dni === 1 ? 'dzień' : 'dni'}`;
-            document.getElementById('tripCount').innerText = iloscSerwisow;
+            document.getElementById('tripCount').innerText = iloscSerwisow + (czyPoiNav ? ' + POI nawigacja' : '');
             document.getElementById('tripPeriodLabel').innerText = `${dniEtykieta} (${zakresDat})`;
             document.getElementById('dateRangePreview').innerText = `📅 Zakres dostępu: ${zakresDat}`;
 
             const totalEl = document.getElementById('tripTotalAmount');
             const btn = document.getElementById('btnOrderSingleTrip');
-            const over30Box = document.getElementById('over30Alert');
+            const alertBox = document.getElementById('quoteReasonAlert');
+            const czyWycenaIndywidualna = czyPowyzej30 || czyPoiNav;
 
-            if (czyPowyzej30) {
-                over30Box.style.display = 'block';
+            if (czyWycenaIndywidualna) {
+                alertBox.style.display = 'block';
+                const powody = [];
+                if (czyPoiNav) powody.push('zamówienie punktów POI pod nawigację');
+                if (czyPowyzej30) powody.push('okres dłuższy niż 30 dni');
+                alertBox.innerText = `ℹ️ Tryb wyceny indywidualnej (${powody.join(' oraz ')}). Kliknij przycisk poniżej, aby wysłać zapytanie do zakładki Zamówienia.`;
+
                 totalEl.classList.add('quote-mode');
-                totalEl.innerText = `Powyżej 30 dni (${dniEtykieta}) — wycena indywidualna`;
+                totalEl.innerText = `Wycena indywidualna (${powody.join(' + ')})`;
                 btn.classList.add('quote-mode-btn');
-                btn.innerText = `Wyślij do wyceny (powyżej 30 dni)`;
+                btn.innerText = `Wyślij do wyceny indywidualnej`;
             } else {
-                over30Box.style.display = 'none';
+                alertBox.style.display = 'none';
                 totalEl.classList.remove('quote-mode');
                 btn.classList.remove('quote-mode-btn');
 
@@ -1057,18 +1211,52 @@
             }
         }
 
-        function zamowJedenSerwisKraj() {
+        async function wyslijDoArkuszaZamowien(payload) {
+            const badgeEl = document.getElementById('sheetSyncStatus');
+            if (!GAS_WEBAPP_URL || GAS_WEBAPP_URL.includes("WKLEJ_TUTAJ")) {
+                badgeEl.innerText = "⚠️ Skonfiguruj GAS_WEBAPP_URL w kodzie HTML, aby zapisać automatycznie w zakładce Zamowienia.";
+                return;
+            }
+
+            badgeEl.innerText = "⏳ Wysyłanie zamówienia do zakładki Zamowienia...";
+            try {
+                const response = await fetch(GAS_WEBAPP_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+                const resJson = await response.json();
+                if (resJson && resJson.status === "OK") {
+                    badgeEl.innerText = "✅ Zapisano w arkuszu Google (zakładka: Zamowienia)";
+                } else {
+                    badgeEl.innerText = "⚠️ Odpowiedź arkusza: " + (resJson.message || "Sprawdź wdrożenie skryptu");
+                }
+            } catch (err) {
+                badgeEl.innerText = "⚠️ Nie udało się połączyć z arkuszem online — użyj przycisku SMS poniżej.";
+                console.error("Błąd zapisu do Google Sheets:", err);
+            }
+        }
+
+        async function zamowJedenSerwisKraj() {
             const wybrane = pobierzWybraneNakladki();
+            const czyPoiNav = document.getElementById('poiNavAddon').checked;
             const kraj = document.getElementById('singleTripCountry').value;
             const dni = pobierzLiczbeDni();
             const zakresDat = obliczZakresDatTekst(dni);
+            const telefon = document.getElementById('clientPhone').value.trim();
+            const email = document.getElementById('clientEmail').value.trim();
+            const waluta = document.getElementById('clientCurrency').value;
 
-            if (wybrane.length === 0) {
-                alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową!');
+            if (wybrane.length === 0 && !czyPoiNav) {
+                alert('Proszę zaznaczyć przynajmniej jedną nakładkę serwisową lub pakiet punktów POI pod nawigację!');
                 return;
             }
             if (!kraj) {
                 alert('Proszę wybrać państwo docelowe wyjazdu z listy!');
+                return;
+            }
+            if (!telefon && !email) {
+                alert('Podaj numer telefonu/WhatsApp lub adres e-mail, abyśmy mogli przekazać dostęp lub wycenę!');
                 return;
             }
             const dozwolone = pobierzDozwoloneKrajeDlaZaznaczonych();
@@ -1078,33 +1266,91 @@
             }
 
             const iloscSerwisow = wybrane.length;
-            const listaNakladek = wybrane.join(' + ');
+            const listaNakladek = wybrane.length > 0 ? wybrane.join(' + ') : 'Tylko punkty POI pod nawigację';
             const dniEtykieta = `${dni} ${dni === 1 ? 'dzień' : 'dni'}`;
+            const czyWycenaIndywidualna = (dni > MAX_DNI_CENNIK_STALY) || czyPoiNav;
 
-            if (dni > MAX_DNI_CENNIK_STALY) {
-                const nr = `WYCENA-${pobierzKluczCzasu()}`;
-                const trescSms = `Zapytanie o wycenę mapy (powyżej 30 dni).
-Nr: ${nr}
-Państwo: ${kraj}
-Okres: ${dniEtykieta} (${zakresDat})
-Serwisy (${iloscSerwisow}): ${listaNakladek}
-(Zamówienie powyżej 30 dni – proszę o wycenę indywidualną)`;
-                przygotujSMS(nr, trescSms, false);
-            } else {
-                const sumaPln = dni * iloscSerwisow * STAWKA_PLN_DZIEN;
-                const sumaEur = dni * iloscSerwisow * STAWKA_EUR_DZIEN;
-                const nr = `MAPA-${pobierzKluczCzasu()}`;
-                const trescSms = `Zamówienie dostępu do mapy serwisów.
-Nr: ${nr}
-Państwo: ${kraj}
-Okres: ${dniEtykieta} (${zakresDat})
-Serwisy (${iloscSerwisow}): ${listaNakladek}
-Kwota (40 PLN / 10 € za dzień/serwis): ${sumaPln} PLN / ${sumaEur} €`;
-                przygotujSMS(nr, trescSms, true);
-            }
+            const sumaPln = czyWycenaIndywidualna ? 0 : (dni * iloscSerwisow * STAWKA_PLN_DZIEN);
+            const sumaEur = czyWycenaIndywidualna ? 0 : (dni * iloscSerwisow * STAWKA_EUR_DZIEN);
+            const kwotaWybrana = (waluta === 'EUR') ? sumaEur : sumaPln;
+
+            const nr = czyWycenaIndywidualna ? `WYCENA-${pobierzKluczCzasu()}` : `MAPA-${pobierzKluczCzasu()}`;
+            const opisPoi = czyPoiNav ? " + PUNKTY POI POD NAWIGACJĘ (Wycena indywidualna)" : "";
+            const podsumowanieTekst = `Państwo: ${kraj} | Serwisy: ${listaNakladek}${opisPoi} | Okres: ${dniEtykieta} (${zakresDat})`;
+
+            const trescSms = czyWycenaIndywidualna
+                ? `Zapytanie o wycenę indywidualną.\nNr: ${nr}\nPaństwo: ${kraj}\nOkres: ${dniEtykieta} (${zakresDat})\nZakres: ${listaNakladek}${opisPoi}\nKontakt: ${telefon || email}`
+                : `Zamówienie dostępu do mapy serwisów.\nNr: ${nr}\nPaństwo: ${kraj}\nOkres: ${dniEtykieta} (${zakresDat})\nSerwisy (${iloscSerwisow}): ${listaNakladek}\nKwota: ${sumaPln} PLN / ${sumaEur} €`;
+
+            pokazPanelPotwierdzenia(nr, trescSms, !czyWycenaIndywidualna);
+
+            await wyslijDoArkuszaZamowien({
+                akcja: "zapisz_zamowienie",
+                spreadsheetId: TARGET_SPREADSHEET_ID,
+                orderId: nr,
+                clientId: telefon || "Brak",
+                clientEmail: email || "",
+                totalPrice: czyWycenaIndywidualna ? "Do wyceny" : kwotaWybrana,
+                finalPrice: czyWycenaIndywidualna ? "Do wyceny" : kwotaWybrana,
+                currency: waluta,
+                totalDays: dni,
+                paymentMethod: czyWycenaIndywidualna ? "Wycena indywidualna" : "Przelew / BLIK / PayPal",
+                reportTheme: "Mapa Online",
+                mapAddon: true,
+                regions: `${kraj} — ${listaNakladek}${opisPoi}`,
+                weeks: `${dniEtykieta} (${zakresDat})`,
+                isRegularCustomer: false,
+                loyaltyClientId: "",
+                isQuoteOnly: czyWycenaIndywidualna,
+                rawSummary: podsumowanieTekst
+            });
         }
 
-        function przygotujSMS(nr, trescSms, czyZnamyCene = false) {
+        async function generujZamowienieNiestandardowe() {
+            const branza = document.getElementById('branza').value.trim();
+            const obszar = document.getElementById('obszar').value.trim();
+            const formatPoi = document.getElementById('poiFormat').value;
+            const telefon = document.getElementById('customPhone').value.trim();
+            const email = document.getElementById('customEmail').value.trim();
+
+            if (!branza || !obszar) {
+                alert('Proszę wypełnić branżę oraz obszar wyszukiwania punktów POI!');
+                return;
+            }
+            if (!telefon && !email) {
+                alert('Podaj numer telefonu/WhatsApp lub adres e-mail do wysyłki wyceny!');
+                return;
+            }
+
+            const nr = `POI-${pobierzKluczCzasu()}`;
+            const podsumowanie = `Punkty POI pod nawigację [${formatPoi}] | Branża: ${branza} | Obszar: ${obszar}`;
+            const trescSms = `Zapytanie o punkty POI pod nawigację (wycena indywidualna).\nNr: ${nr}\nBranża: ${branza}\nObszar: ${obszar}\nFormat: ${formatPoi}\nKontakt: ${telefon || email}`;
+
+            pokazPanelPotwierdzenia(nr, trescSms, false);
+
+            await wyslijDoArkuszaZamowien({
+                akcja: "zapisz_zamowienie",
+                spreadsheetId: TARGET_SPREADSHEET_ID,
+                orderId: nr,
+                clientId: telefon || "Brak",
+                clientEmail: email || "",
+                totalPrice: "Do wyceny",
+                finalPrice: "Do wyceny",
+                currency: "PLN",
+                totalDays: 0,
+                paymentMethod: "Wycena indywidualna (POI)",
+                reportTheme: formatPoi,
+                mapAddon: true,
+                regions: `POI Nawigacja: ${branza} (${obszar})`,
+                weeks: `Format: ${formatPoi}`,
+                isRegularCustomer: false,
+                loyaltyClientId: "",
+                isQuoteOnly: true,
+                rawSummary: podsumowanie
+            });
+        }
+
+        function pokazPanelPotwierdzenia(nr, trescSms, czyZnamyCene = false) {
             const numerTelefonu = "+48600812820";
             const encodedTresc = encodeURIComponent(trescSms);
             
@@ -1114,13 +1360,12 @@ Kwota (40 PLN / 10 € za dzień/serwis): ${sumaPln} PLN / ${sumaEur} €`;
 
             document.getElementById('nrZamowienia').innerText = nr;
             document.getElementById('infoCenaSms').innerText = czyZnamyCene 
-                ? "Wyślij wygenerowanego SMS-a, a w odpowiedzi otrzymasz dane do płatności i pełny dostęp do mapy."
-                : "Zamówienie przekracza 30 dni — szczegółowa wycena indywidualna zostanie przekazana w odpowiedzi na zgłoszenie SMS.";
+                ? "Zamówienie zostało przekazane do realizacji. W odpowiedzi otrzymasz dane do płatności oraz aktywację mapy."
+                : "Zapytanie o wycenę indywidualną zostało przekazane — wrócimy z dokładną kalkulacją e-mailem lub SMS-em.";
             document.getElementById('wynik').style.display = 'block';
             document.getElementById('linkSms').href = smsLink;
             
             document.getElementById('wynik').scrollIntoView({ behavior: 'smooth' });
-            window.location.href = smsLink;
         }
 
         function pobierzKluczCzasu() {
@@ -1130,19 +1375,6 @@ Kwota (40 PLN / 10 € za dzień/serwis): ${sumaPln} PLN / ${sumaEur} €`;
             const dzien = now.getDate().toString().padStart(2, '0');
             const losowy = Math.floor(1000 + Math.random() * 9000);
             return `${rok}${miesiac}${dzien}-${losowy}`;
-        }
-
-        function generujZamowienieNiestandardowe() {
-            const branza = document.getElementById('branza').value.trim();
-            const obszar = document.getElementById('obszar').value.trim();
-            if(!branza || !obszar) { alert('Proszę wypełnić wszystkie pola!'); return; }
-            const nr = `CUST-${pobierzKluczCzasu()}`;
-            const trescSms = `Zapytanie o Bazę Niestandardową.
-Nr: ${nr}
-Branża: ${branza}
-Obszar: ${obszar}
-(Wycena po przygotowaniu)`;
-            przygotujSMS(nr, trescSms, false);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
