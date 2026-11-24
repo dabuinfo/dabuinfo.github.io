@@ -529,30 +529,31 @@
         color: #6aeb95;
     }
 
-    /* Panel sugestii okolicznych rejonów, gdy brak kolejnych dni w danym rejonie */
+    /* Panel sugestii (kolejny widoczny tydzień na stronie + okolica) */
     .nearby-suggestion-box {
         display: none;
         margin-top: 6px;
-        padding: 11px 14px;
-        background: rgba(30, 41, 59, 0.85);
+        padding: 12px 14px;
+        background: rgba(30, 41, 59, 0.88);
         border: 1px solid rgba(56, 189, 248, 0.45);
         border-left: 4px solid #38bdf8;
         border-radius: 8px;
         font-size: 0.82rem;
         color: #e2e8f0;
         flex-direction: column;
-        gap: 8px;
+        gap: 9px;
     }
     .nearby-suggestion-box.is-visible {
         display: flex;
     }
     .nearby-suggestion-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         gap: 8px;
         font-weight: 700;
         color: #7dd3fc;
+        line-height: 1.4;
     }
     .nearby-suggestion-close {
         background: transparent;
@@ -561,9 +562,22 @@
         cursor: pointer;
         font-size: 0.9rem;
         padding: 0 4px;
+        flex-shrink: 0;
     }
     .nearby-suggestion-close:hover {
         color: #fff;
+    }
+    .suggestion-section-block {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .suggestion-section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
     .nearby-chips-wrap {
         display: flex;
@@ -590,8 +604,18 @@
         color: #050a07;
         border-color: #2ecc71;
     }
+    .btn-nearby-chip.is-next-week {
+        border-color: rgba(168, 85, 247, 0.55);
+        background: rgba(168, 85, 247, 0.16);
+        color: #d8b4fe;
+    }
+    .btn-nearby-chip.is-next-week:hover {
+        background: #a855f7;
+        color: #ffffff;
+        border-color: #a855f7;
+    }
     .btn-nearby-chip.is-added {
-        background: rgba(59, 130, 246, 0.2);
+        background: rgba(59, 130, 246, 0.22);
         border-color: #60a5fa;
         color: #93c5fd;
     }
@@ -1022,12 +1046,12 @@
                     </div>
                 </div>
 
-                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI + PODPOWIEDŹ OKOLICZNYCH REJONÓW -->
+                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI + PODPOWIEDZI Z KOLEJNEGO TYGODNIA / OKOLICY -->
                 <div class="min-order-warning-box" id="minOrderWarningBox">
                     <div class="min-order-warning-top">
                         <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
                         <div id="minOrderWarningText">
-                            <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub kolejne dni w tym samym rejonie.
+                            <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub z kolejnego tygodnia wyświetlanego na stronie.
                         </div>
                     </div>
                     <div class="cart-nearby-suggestions" id="cartNearbySuggestions" style="display:none;"></div>
@@ -1446,8 +1470,11 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec';
 
         const globalCart = new Map();
-        // Przechowuje aktualnie załadowane rejony dla wybranego dnia (key -> { region, land, dateDisplay, dates })
         let currentDayRegionsList = [];
+        // Lista wszystkich widocznych i klikalnych dni w 2-tygodniowej siatce kalendarza (YYYY-MM-DD)
+        let visibleClickableDatesYMD = [];
+        // Pamięć podręczna terminów pobranych z API dla kolejnych widocznych dni (dateYMD -> [{region, land, dateDisplay, dateYMD}])
+        const fetchedDayCache = new Map();
 
         const sessionNow = new Date();
         const tY = sessionNow.getFullYear();
@@ -1474,6 +1501,11 @@
             return `${p[2]}-${p[1]}-${p[0]}`;
         }
 
+        function ymdToDateObj(ymd) {
+            const p = ymd.split('-');
+            return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+        }
+
         function odmienSlowo(liczba, pojedyncza, kilka, wiele) {
             const abs = Math.abs(liczba);
             if (abs === 1) return `${liczba} ${pojedyncza}`;
@@ -1483,6 +1515,61 @@
                 return `${liczba} ${kilka}`;
             }
             return `${liczba} ${wiele}`;
+        }
+
+        function parseRegionsFromApiResponse(rawOdpowiedz, dateYMD) {
+            const list = [];
+            if (!rawOdpowiedz) return list;
+            const parsedText = rawOdpowiedz.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            if (!parsedText.includes('📍')) return list;
+
+            const items = parsedText.split(/(?=📍)/g);
+            const displayDate = formatDateDisplay(dateYMD);
+            let currentLand = "";
+
+            items.filter(i => i.trim() !== '' && i.includes('📍')).forEach(item => {
+                const cleanItem = item.trim();
+                let regionName = "Wybrany rejon";
+                const matchPin = cleanItem.match(/📍\s*<strong>(.*?)<\/strong>/i) || cleanItem.match(/📍\s*([^\n\r<–-]+)/i);
+                if (matchPin && matchPin[1]) {
+                    regionName = matchPin[1].replace(/<[^>]*>?/gm, '').trim();
+                }
+                const matchLand = cleanItem.match(/data-land=['"]([^'"]+)['"]/i);
+                if (matchLand && matchLand[1]) {
+                    currentLand = matchLand[1].trim();
+                }
+                const matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
+                const allAvailableDates = matchDates ? matchDates[1] : dateYMD;
+
+                list.push({
+                    region: regionName,
+                    land: currentLand,
+                    dateDisplay: displayDate,
+                    dateYMD: dateYMD,
+                    dates: allAvailableDates
+                });
+            });
+            return list;
+        }
+
+        async function fetchRegionsForDateCached(dateYMD) {
+            if (fetchedDayCache.has(dateYMD)) {
+                return fetchedDayCache.get(dateYMD);
+            }
+            try {
+                const resp = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: dateYMD, jezyk: 'pl' })
+                });
+                const data = await resp.json();
+                const parsed = parseRegionsFromApiResponse(data && data.odpowiedz, dateYMD);
+                fetchedDayCache.set(dateYMD, parsed);
+                return parsed;
+            } catch (e) {
+                console.warn('Błąd pobierania terminów dla daty:', dateYMD, e);
+                return [];
+            }
         }
 
         function initApp() {
@@ -1586,6 +1673,7 @@
             function renderCalendarGrid(hasSaturdayTerm) {
                 currentHasSaturdayTerm = hasSaturdayTerm;
                 grid.innerHTML = '';
+                visibleClickableDatesYMD = [];
 
                 // Jeśli jest termin na sobotę -> zmiana w piątek o 18:00
                 // Jeśli brak terminu na sobotę -> zmiana już w czwartek o 18:00
@@ -1690,6 +1778,10 @@
                         const isToday = (curY === now.getFullYear() && curM === now.getMonth() && d === now.getDate()) ? 'today' : '';
                         const isPastOrToday = cellDate < tomorrowMidnight;
 
+                        if (!isPastOrToday) {
+                            visibleClickableDatesYMD.push(dateKey);
+                        }
+
                         const dayClasses = isPastOrToday
                             ? `${hClass} ${isToday} past-day notranslate`
                             : `${hClass} ${isToday} clickable-day notranslate`;
@@ -1743,7 +1835,9 @@
             })
             .then(resp => resp.json())
             .then(data => {
-                const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
+                const parsedSat = parseRegionsFromApiResponse(data && data.odpowiedz, saturdayYMD);
+                fetchedDayCache.set(saturdayYMD, parsedSat);
+                const hasSaturdayTerm = parsedSat.length > 0;
                 if (hasSaturdayTerm) {
                     renderCalendarGrid(true);
                 }
@@ -1779,7 +1873,7 @@
                     <div class="calendar-info">
                         <h3>ℹ️ Informacje o kalendarzu i zasadach zamówień</h3>
                         <ul>
-                            <li><strong>Minimalne zamówienie:</strong> Minimum <strong>3 dni</strong> (mogą pochodzić z różnych rejonów lub stanowić kolejne dni w jednym rejonie).</li>
+                            <li><strong>Minimalne zamówienie:</strong> Minimum <strong>3 dni</strong> (mogą pochodzić z różnych rejonów lub z kolejnego tygodnia wyświetlanego w kalendarzu).</li>
                             <li id="switch-rule-info"></li>
                             <li>${closestRegionalDesc}</li>
                         </ul>
@@ -1805,15 +1899,86 @@
             const cartNearbySuggestions = document.getElementById('cartNearbySuggestions');
 
             // =========================================================================
-            // WYSZUKIWANIE PROPOZYCJI W OKOLICY DLA DANEGO REJONU
+            // POBIERANIE TERMINÓW Z KOLEJNEGO TYGODNIA WIDOCZNEGO W KALENDARZU
             // =========================================================================
-            function buildNearbyProposalsForRegion(targetRegionName, targetLandName) {
+            async function findNextVisibleWeekProposals(baseDateYMD, targetRegionName, targetLandName) {
+                const baseDate = ymdToDateObj(baseDateYMD);
+                const baseWeekNum = getISOWeekNumber(baseDate);
+                const baseYear = baseDate.getFullYear();
+
+                // Filtruj wyłącznie daty z widocznego w kalendarzu kolejnego tygodnia (po dniu bazowym i w granicach visibleClickableDatesYMD)
+                const nextWeekDatesYMD = visibleClickableDatesYMD.filter(dYmd => {
+                    if (dYmd <= baseDateYMD) return false;
+                    const dObj = ymdToDateObj(dYmd);
+                    if (dObj > horizonEndSunday) return false;
+                    const wNum = getISOWeekNumber(dObj);
+                    return (wNum !== baseWeekNum || dObj.getFullYear() !== baseYear);
+                });
+
+                if (nextWeekDatesYMD.length === 0) {
+                    return [];
+                }
+
+                // Pobierz równolegle terminy dla widocznych dni kolejnego tygodnia (z cache)
+                const resultsPerDay = await Promise.all(
+                    nextWeekDatesYMD.map(dYmd => fetchRegionsForDateCached(dYmd))
+                );
+
+                const allNextWeekEntries = resultsPerDay.flat();
+                const targetKey = cleanNameForCompare(targetRegionName);
+                const neighborKeys = getNeighborKeysForRegion(targetRegionName);
+
+                const sameRegionMatches = [];
+                const neighborMatches = [];
+                const sameLandMatches = [];
+
+                allNextWeekEntries.forEach(entry => {
+                    const rKey = cleanNameForCompare(entry.region);
+                    if (rKey === targetKey) {
+                        sameRegionMatches.push({
+                            ...entry,
+                            matchType: 'same_region'
+                        });
+                    } else if (neighborKeys.includes(rKey)) {
+                        neighborMatches.push({
+                            ...entry,
+                            matchType: 'neighbor'
+                        });
+                    } else if (targetLandName && entry.land && cleanNameForCompare(entry.land) === cleanNameForCompare(targetLandName)) {
+                        sameLandMatches.push({
+                            ...entry,
+                            matchType: 'same_land'
+                        });
+                    }
+                });
+
+                // Najpierw ten sam rejon w kolejnym widocznym tygodniu, potem sąsiedzi w kolejnym tygodniu, potem ten sam land
+                const combined = [
+                    ...sameRegionMatches,
+                    ...neighborMatches,
+                    ...sameLandMatches
+                ];
+
+                // Usuń duplikaty (region + data)
+                const seen = new Set();
+                return combined.filter(item => {
+                    const k = `${item.dateDisplay}_${item.region}`;
+                    if (seen.has(k)) return false;
+                    seen.add(k);
+                    return true;
+                }).slice(0, 6);
+            }
+
+            // =========================================================================
+            // WYSZUKIWANIE PROPOZYCJI W OKOLICY (BIEŻĄCY DZIEŃ + KOLEJNY WIDOCZNY TYDZIEŃ)
+            // =========================================================================
+            function buildSameDayNearbyProposals(targetRegionName, targetLandName) {
                 const targetKey = cleanNameForCompare(targetRegionName);
                 const neighborKeys = getNeighborKeysForRegion(targetRegionName);
                 const proposals = [];
                 const addedKeys = new Set([targetKey]);
 
-                // 1. Sąsiedzi z NEIGHBOR_CLUSTERS_MAP dostępni w aktualnie przeglądanym dniu
+                // 1. Bezpośredni sąsiedzi dostępni w aktualnie przeglądanym dniu
                 neighborKeys.forEach(nKey => {
                     if (addedKeys.has(nKey)) return;
                     const foundToday = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === nKey);
@@ -1822,13 +1987,13 @@
                         proposals.push({
                             region: foundToday.region,
                             dateDisplay: foundToday.dateDisplay,
-                            availableToday: true,
+                            dateYMD: foundToday.dateYMD,
                             isDirectNeighbor: true
                         });
                     }
                 });
 
-                // 2. Jeśli mało propozycji z dzisiejszego dnia, dodaj inne rejony z tego samego landu w tym dniu
+                // 2. Inne rejony z tego samego landu w bieżącym dniu
                 if (proposals.length < 3 && targetLandName) {
                     currentDayRegionsList.forEach(r => {
                         const rKey = cleanNameForCompare(r.region);
@@ -1837,69 +2002,46 @@
                             proposals.push({
                                 region: r.region,
                                 dateDisplay: r.dateDisplay,
-                                availableToday: true,
+                                dateYMD: r.dateYMD,
                                 isDirectNeighbor: false
                             });
                         }
                     });
                 }
 
-                // 3. Sąsiedzi z NEIGHBOR_CLUSTERS_MAP z innych dni (do wyszukania w kalendarzu)
-                neighborKeys.forEach(nKey => {
-                    if (addedKeys.has(nKey) || proposals.length >= 6) return;
-                    addedKeys.add(nKey);
-                    proposals.push({
-                        region: formatRegionLabel(nKey),
-                        dateDisplay: null,
-                        availableToday: false,
-                        isDirectNeighbor: true
-                    });
-                });
-
-                return proposals.slice(0, 6);
+                return proposals.slice(0, 5);
             }
 
-            function renderNearbySuggestionPanel(rowEl, regionName, landName) {
+            async function renderNearbyAndNextWeekPanel(rowEl, baseDateYMD, regionName, landName) {
                 const box = rowEl.querySelector('.nearby-suggestion-box');
                 if (!box) return;
 
-                const proposals = buildNearbyProposalsForRegion(regionName, landName);
+                const sameDayNearby = buildSameDayNearbyProposals(regionName, landName);
 
-                const headerText = isPolish
-                    ? `✅ Zaakceptowano termin dla <strong>${regionName}</strong> (brak kolejnych dni w tym rejonie). Propozycje w okolicy:`
-                    : `✅ Termin für <strong>${regionName}</strong> übernommen (keine weiteren Tage im Gebiet). Vorschläge in der Nähe:`;
-
-                let chipsHtml = '';
-                if (proposals.length > 0) {
-                    chipsHtml = proposals.map(p => {
-                        const cartKey = p.dateDisplay ? `${p.dateDisplay}_${p.region}` : '';
-                        const alreadyInCart = cartKey && globalCart.has(cartKey);
-
-                        if (p.availableToday) {
-                            const label = alreadyInCart
-                                ? (isPolish ? `✓ ${p.region} (${p.dateDisplay})` : `✓ ${p.region} (${p.dateDisplay})`)
-                                : (isPolish ? `➕ ${p.region} (${p.dateDisplay})` : `➕ ${p.region} (${p.dateDisplay})`);
-                            const titleAttr = p.isDirectNeighbor
-                                ? (isPolish ? 'Sąsiedni rejon – kliknij, aby dodać do zamówienia' : 'Nachbargebiet – klicken zum Hinzufügen')
-                                : (isPolish ? 'Rejon w tym samym landzie – kliknij, aby dodać' : 'Gebiet im selben Bundesland – klicken zum Hinzufügen');
-                            return `<button type="button" class="btn-nearby-chip ${alreadyInCart ? 'is-added' : ''}" data-add-region="${encodeURIComponent(p.region)}" data-add-date="${p.dateDisplay}" title="${titleAttr}">${label}</button>`;
-                        } else {
-                            const label = isPolish
-                                ? `📅 ${p.region} (sprawdź inne dni)`
-                                : `📅 ${p.region} (andere Tage prüfen)`;
-                            return `<button type="button" class="btn-nearby-chip is-calendar-hint" data-scroll-calendar="1" data-hint-region="${encodeURIComponent(p.region)}">${label}</button>`;
-                        }
-                    }).join('');
-                } else {
-                    chipsHtml = `<span style="color:#94a3b8; font-size:0.79rem;">${isPolish ? 'Wybierz dowolny inny rejon z listy lub kliknij inny dzień w kalendarzu powyżej.' : 'Wählen Sie ein anderes Gebiet aus der Liste oder klicken Sie auf einen anderen Tag im Kalender.'}</span>`;
-                }
-
+                // Wyświetl natychmiast propozycje z okolicy + ładowanie z kolejnego widocznego tygodnia
                 box.innerHTML = `
                     <div class="nearby-suggestion-header">
-                        <span>🧭 ${headerText}</span>
+                        <span>✅ ${isPolish
+                            ? `Zaakceptowano termin dla <strong>${regionName}</strong> (brak kolejnych dni w tym tygodniu).`
+                            : `Termin für <strong>${regionName}</strong> übernommen (keine weiteren Tage in dieser Woche).`
+                        }</span>
                         <button type="button" class="nearby-suggestion-close" title="Zamknij">✕</button>
                     </div>
-                    <div class="nearby-chips-wrap">${chipsHtml}</div>
+                    <div class="suggestion-section-block" id="next-week-proposals-slot">
+                        <span class="suggestion-section-label">⏳ ${isPolish ? 'Sprawdzam kolejny tydzień z kalendarza na stronie...' : 'Prüfe nächste Woche im Kalender...'}</span>
+                    </div>
+                    ${sameDayNearby.length > 0 ? `
+                        <div class="suggestion-section-block">
+                            <span class="suggestion-section-label">🧭 ${isPolish ? 'Lub dobierz z okolicy (ten sam dzień):' : 'Oder aus der Umgebung (gleicher Tag):'}</span>
+                            <div class="nearby-chips-wrap">
+                                ${sameDayNearby.map(p => {
+                                    const k = `${p.dateDisplay}_${p.region}`;
+                                    const inCart = globalCart.has(k);
+                                    return `<button type="button" class="btn-nearby-chip ${inCart ? 'is-added' : ''}" data-add-region="${encodeURIComponent(p.region)}" data-add-date="${p.dateDisplay}">${inCart ? '✓' : '➕'} ${p.region} (${p.dateDisplay})</button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
                 `;
                 box.classList.add('is-visible');
 
@@ -1908,29 +2050,77 @@
                     closeBtn.addEventListener('click', () => box.classList.remove('is-visible'));
                 }
 
-                box.querySelectorAll('.btn-nearby-chip[data-add-region]').forEach(chipBtn => {
-                    chipBtn.addEventListener('click', function() {
-                        const addReg = decodeURIComponent(this.getAttribute('data-add-region'));
-                        const addDate = this.getAttribute('data-add-date');
-                        const k = `${addDate}_${addReg}`;
-                        if (globalCart.has(k)) {
-                            globalCart.delete(k);
-                        } else {
-                            globalCart.set(k, { date: addDate, region: addReg });
-                        }
-                        refreshCartUI();
-                        renderNearbySuggestionPanel(rowEl, regionName, landName);
+                function bindChipClicks(container) {
+                    container.querySelectorAll('.btn-nearby-chip[data-add-region]').forEach(chipBtn => {
+                        chipBtn.addEventListener('click', function() {
+                            const addReg = decodeURIComponent(this.getAttribute('data-add-region'));
+                            const addDate = this.getAttribute('data-add-date');
+                            const k = `${addDate}_${addReg}`;
+                            if (globalCart.has(k)) {
+                                globalCart.delete(k);
+                            } else {
+                                globalCart.set(k, { date: addDate, region: addReg });
+                            }
+                            refreshCartUI();
+                            renderNearbyAndNextWeekPanel(rowEl, baseDateYMD, regionName, landName);
+                        });
                     });
-                });
+                }
 
-                box.querySelectorAll('.btn-nearby-chip[data-scroll-calendar]').forEach(hintBtn => {
-                    hintBtn.addEventListener('click', function() {
-                        const calGrid = document.getElementById('calendar-grid');
-                        if (calGrid) {
-                            calGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    });
-                });
+                bindChipClicks(box);
+
+                // Pobierz propozycje wyłącznie z kolejnego tygodnia widocznego na stronie
+                const nextWeekProposals = await findNextVisibleWeekProposals(baseDateYMD, regionName, landName);
+                const nextWeekSlot = box.querySelector('#next-week-proposals-slot');
+                if (!nextWeekSlot) return;
+
+                if (nextWeekProposals.length > 0) {
+                    const nextWeekNum = getISOWeekNumber(ymdToDateObj(nextWeekProposals[0].dateYMD));
+                    nextWeekSlot.innerHTML = `
+                        <span class="suggestion-section-label">📆 ${isPolish
+                            ? `Dostępne w kolejnym tygodniu z kalendarza (Ty ${nextWeekNum}):`
+                            : `Verfügbar in der nächsten Kalenderwoche (KW ${nextWeekNum}):`
+                        }</span>
+                        <div class="nearby-chips-wrap">
+                            ${nextWeekProposals.map(p => {
+                                const k = `${p.dateDisplay}_${p.region}`;
+                                const inCart = globalCart.has(k);
+                                const tagPrefix = p.matchType === 'same_region' ? '📍' : '🧭';
+                                return `<button type="button" class="btn-nearby-chip is-next-week ${inCart ? 'is-added' : ''}" data-add-region="${encodeURIComponent(p.region)}" data-add-date="${p.dateDisplay}">${inCart ? '✓' : '➕'} ${tagPrefix} ${p.region} (${p.dateDisplay})</button>`;
+                            }).join('')}
+                        </div>
+                    `;
+                    bindChipClicks(nextWeekSlot);
+                } else {
+                    // Pokaż klikalne dni z kolejnego tygodnia widocznego w kalendarzu
+                    const baseDate = ymdToDateObj(baseDateYMD);
+                    const baseW = getISOWeekNumber(baseDate);
+                    const nextWeekDays = visibleClickableDatesYMD.filter(dYmd => dYmd > baseDateYMD && getISOWeekNumber(ymdToDateObj(dYmd)) !== baseW);
+
+                    if (nextWeekDays.length > 0) {
+                        nextWeekSlot.innerHTML = `
+                            <span class="suggestion-section-label">📆 ${isPolish
+                                ? 'Brak w tym rejonie w kolejnym tygodniu — sprawdź inne rejony z kolejnego tygodnia na stronie:'
+                                : 'Kein Termin in diesem Gebiet nächste Woche — prüfen Sie andere Gebiete der nächsten Woche:'
+                            }</span>
+                            <div class="nearby-chips-wrap">
+                                ${nextWeekDays.slice(0, 5).map(dYmd => {
+                                    const disp = formatDateDisplay(dYmd);
+                                    return `<button type="button" class="btn-nearby-chip is-calendar-hint" data-open-cal-date="${dYmd}">📅 ${disp}</button>`;
+                                }).join('')}
+                            </div>
+                        `;
+                        nextWeekSlot.querySelectorAll('[data-open-cal-date]').forEach(btnDate => {
+                            btnDate.addEventListener('click', function() {
+                                const targetYmd = this.getAttribute('data-open-cal-date');
+                                const tdCell = grid.querySelector(`td.clickable-day[data-date="${targetYmd}"]`);
+                                if (tdCell) tdCell.click();
+                            });
+                        });
+                    } else {
+                        nextWeekSlot.remove();
+                    }
+                }
             }
 
             // =========================================================================
@@ -2173,6 +2363,69 @@
                 });
             }
 
+            async function updateCartMinOrderSuggestions(uniqueRegions, grouped) {
+                if (!cartNearbySuggestions) return;
+
+                // Wyznacz najpóźniejszą wybraną datę w koszyku, aby dobrać kolejne widoczne dni z następnego tygodnia
+                const sortedYmds = Object.keys(grouped).map(displayToYMD).sort();
+                const latestYmd = sortedYmds[sortedYmds.length - 1];
+                if (!latestYmd) {
+                    cartNearbySuggestions.style.display = 'none';
+                    return;
+                }
+
+                const suggestions = [];
+                const seenKeys = new Set();
+                globalCart.forEach((v, k) => seenKeys.add(k));
+
+                // 1. Zbierz propozycje z kolejnego tygodnia widocznego w kalendarzu dla wybranych rejonów i ich sąsiadów
+                for (const reg of uniqueRegions) {
+                    const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
+                    const nextWeekProps = await findNextVisibleWeekProposals(latestYmd, reg, infoObj ? infoObj.land : '');
+                    nextWeekProps.forEach(p => {
+                        const k = `${p.dateDisplay}_${p.region}`;
+                        if (!seenKeys.has(k) && suggestions.length < 4) {
+                            seenKeys.add(k);
+                            suggestions.push({ ...p, isNextWeek: true });
+                        }
+                    });
+                }
+
+                // 2. Uzupełnij sąsiadami z bieżącego dnia, jeśli nadal mniej niż 4
+                for (const reg of uniqueRegions) {
+                    if (suggestions.length >= 4) break;
+                    const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
+                    const sameDayProps = buildSameDayNearbyProposals(reg, infoObj ? infoObj.land : '');
+                    sameDayProps.forEach(p => {
+                        const k = `${p.dateDisplay}_${p.region}`;
+                        if (!seenKeys.has(k) && suggestions.length < 4) {
+                            seenKeys.add(k);
+                            suggestions.push({ ...p, isNextWeek: false });
+                        }
+                    });
+                }
+
+                if (suggestions.length > 0) {
+                    const prefixLbl = isPolish ? '🧭 Dobierz (kolejny tydzień / okolica):' : '🧭 Ergänzen (nächste Woche / Umgebung):';
+                    cartNearbySuggestions.innerHTML = `<strong style="color:#7dd3fc;">${prefixLbl}</strong> ` +
+                        suggestions.map(p =>
+                            `<button type="button" class="btn-nearby-chip ${p.isNextWeek ? 'is-next-week' : ''}" data-cart-add-reg="${encodeURIComponent(p.region)}" data-cart-add-date="${p.dateDisplay}">➕ ${p.region} (${p.dateDisplay})</button>`
+                        ).join('');
+                    cartNearbySuggestions.style.display = 'flex';
+
+                    cartNearbySuggestions.querySelectorAll('[data-cart-add-reg]').forEach(b => {
+                        b.addEventListener('click', function() {
+                            const r = decodeURIComponent(this.getAttribute('data-cart-add-reg'));
+                            const d = this.getAttribute('data-cart-add-date');
+                            globalCart.set(`${d}_${r}`, { date: d, region: r });
+                            refreshCartUI();
+                        });
+                    });
+                } else {
+                    cartNearbySuggestions.style.display = 'none';
+                }
+            }
+
             function refreshCartUI() {
                 const calc = calculateTotals();
                 const meetsMinOrder = (calc.billableDays >= MIN_BILLABLE_DAYS);
@@ -2224,51 +2477,16 @@
                     }
                 }
 
-                // Obsługa komunikatu o minimum 3 dni oraz propozycji okolicznych rejonów w koszyku
+                // Obsługa komunikatu o minimum 3 dni + podpowiedzi z kolejnego tygodnia na stronie i okolicy
                 if (minOrderWarningBox && minOrderWarningText) {
                     if (calc.termsCount > 0 && !meetsMinOrder) {
                         minOrderWarningBox.classList.add('is-visible');
                         const missingLabelPl = odmienSlowo(missingDays, "dzień", "dni", "dni");
                         minOrderWarningText.innerHTML = isPolish
-                            ? `<strong>Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni</strong> (wybrano obecnie: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — dodaj jeszcze <strong>${missingLabelPl}</strong> z tego samego lub innych rejonów).`
-                            : `<strong>Mindestbestellung: ${MIN_BILLABLE_DAYS} Tage</strong> (aktuell gewählt: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — bitte noch <strong>${missingDays} Tag(e)</strong> aus demselben oder anderen Gebieten hinzufügen).`;
+                            ? `<strong>Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni</strong> (wybrano obecnie: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — dodaj jeszcze <strong>${missingLabelPl}</strong> z okolicy lub z kolejnego tygodnia widocznego w kalendarzu).`
+                            : `<strong>Mindestbestellung: ${MIN_BILLABLE_DAYS} Tage</strong> (aktuell gewählt: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — bitte noch <strong>${missingDays} Tag(e)</strong> aus der Umgebung oder der nächsten Kalenderwoche hinzufügen).`;
 
-                        if (cartNearbySuggestions) {
-                            const nearbyFromCart = [];
-                            const seenKeys = new Set(Array.from(uniqueRegions).map(cleanNameForCompare));
-
-                            uniqueRegions.forEach(reg => {
-                                const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
-                                const props = buildNearbyProposalsForRegion(reg, infoObj ? infoObj.land : '');
-                                props.forEach(p => {
-                                    const pk = cleanNameForCompare(p.region);
-                                    if (!seenKeys.has(pk) && p.availableToday) {
-                                        seenKeys.add(pk);
-                                        nearbyFromCart.push(p);
-                                    }
-                                });
-                            });
-
-                            if (nearbyFromCart.length > 0) {
-                                const prefixLbl = isPolish ? '🧭 Dodaj z okolicy:' : '🧭 In der Nähe hinzufügen:';
-                                cartNearbySuggestions.innerHTML = `<strong style="color:#7dd3fc;">${prefixLbl}</strong> ` +
-                                    nearbyFromCart.slice(0, 4).map(p =>
-                                        `<button type="button" class="btn-nearby-chip" data-cart-add-reg="${encodeURIComponent(p.region)}" data-cart-add-date="${p.dateDisplay}">➕ ${p.region} (${p.dateDisplay})</button>`
-                                    ).join('');
-                                cartNearbySuggestions.style.display = 'flex';
-
-                                cartNearbySuggestions.querySelectorAll('[data-cart-add-reg]').forEach(b => {
-                                    b.addEventListener('click', function() {
-                                        const r = decodeURIComponent(this.getAttribute('data-cart-add-reg'));
-                                        const d = this.getAttribute('data-cart-add-date');
-                                        globalCart.set(`${d}_${r}`, { date: d, region: r });
-                                        refreshCartUI();
-                                    });
-                                });
-                            } else {
-                                cartNearbySuggestions.style.display = 'none';
-                            }
-                        }
+                        updateCartMinOrderSuggestions(uniqueRegions, grouped);
                     } else {
                         minOrderWarningBox.classList.remove('is-visible');
                         if (cartNearbySuggestions) cartNearbySuggestions.style.display = 'none';
@@ -2320,8 +2538,8 @@
                     submitBtn.onclick = function() {
                         if (calculateTotals().billableDays < MIN_BILLABLE_DAYS) {
                             alert(isPolish
-                                ? `Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni (mogą być z różnych rejonów).`
-                                : `Mindestbestellung beträgt ${MIN_BILLABLE_DAYS} Tage (auch aus verschiedenen Gebieten).`);
+                                ? `Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni (mogą być z różnych rejonów lub z kolejnego tygodnia).`
+                                : `Mindestbestellung beträgt ${MIN_BILLABLE_DAYS} Tage.`);
                             return;
                         }
 
@@ -2567,7 +2785,8 @@
                             
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/(?=📍)/g);
-                                currentDayRegionsList = [];
+                                currentDayRegionsList = parseRegionsFromApiResponse(rawText, targetDateFormatted);
+                                fetchedDayCache.set(targetDateFormatted, currentDayRegionsList);
 
                                 let logisticsBanner = isPolish ? `
                                     <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; color: #fde68a;">
@@ -2653,13 +2872,6 @@
 
                                     let matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
                                     let allAvailableDates = matchDates ? matchDates[1] : targetDateFormatted;
-
-                                    currentDayRegionsList.push({
-                                        region: regionName,
-                                        land: landName || currentLand || "",
-                                        dateDisplay: displayDate,
-                                        dates: allAvailableDates
-                                    });
 
                                     let isRegionSelected = false;
                                     for (let cartItem of globalCart.values()) {
@@ -2785,7 +2997,7 @@
                                     });
                                 });
 
-                                // Przycisk ➕ Kolejny dzień (akceptuje bieżący dzień; przy braku kolejnych dni proponuje okolicę)
+                                // Przycisk ➕ Kolejny dzień (akceptuje bieżący dzień; przy braku kolejnych dni proponuje z kolejnego tygodnia na stronie oraz z okolicy)
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -2804,9 +3016,7 @@
 
                                         const nextAvailable = availableDates.find(d => {
                                             if (d <= curDate) return false;
-                                            const dp = d.split('-');
-                                            const dObj = new Date(dp[0], dp[1] - 1, dp[2]);
-                                            if (dObj > horizonEndSunday) return false;
+                                            if (!visibleClickableDatesYMD.includes(d)) return false;
                                             const dDisp = formatDateDisplay(d);
                                             return !globalCart.has(`${dDisp}_${rName}`);
                                         });
@@ -2815,8 +3025,7 @@
                                             const nextDisp = formatDateDisplay(nextAvailable);
                                             globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
                                         } else if (rowEl) {
-                                            // Akceptuj obecny wybór w rejonie i zaproponuj sąsiednie rejony z okolicy
-                                            renderNearbySuggestionPanel(rowEl, rName, rLand);
+                                            renderNearbyAndNextWeekPanel(rowEl, curDate, rName, rLand);
                                         }
 
                                         refreshCartUI();
@@ -2845,7 +3054,7 @@
                                     });
                                 });
 
-                                // Przycisk 📅 Cały tydzień (akceptuje dostępne dni w tygodniu; jeśli brak kolejnych dni, proponuje okolicę)
+                                // Przycisk 📅 Cały tydzień (akceptuje dostępne dni w tym tygodniu; jeśli brak kolejnych dni w tym tygodniu, proponuje kolejny tydzień z kalendarza na stronie i okolicę)
                                 resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -2868,8 +3077,8 @@
                                         globalCart.set(`${baseDisp}_${rName}`, { date: baseDisp, region: rName });
 
                                         const validDates = availableDates.filter(dStr => {
-                                            const dParts = dStr.split('-');
-                                            const d = new Date(dParts[0], dParts[1] - 1, dParts[2]);
+                                            if (!visibleClickableDatesYMD.includes(dStr)) return false;
+                                            const d = ymdToDateObj(dStr);
                                             return d >= tomorrowMidnight && d <= sunday && d <= horizonEndSunday;
                                         });
 
@@ -2878,10 +3087,11 @@
                                             globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
                                         });
 
-                                        // Jeśli w tym tygodniu nie było innych dni poza wybranym dniem -> akceptuj i zaproponuj okolicę
+                                        // Jeśli w tym tygodniu nie było innych dni poza wybranym (np. czwartek/piątek końcówka tygodnia)
+                                        // -> akceptuj i zaproponuj kolejny tydzień z kalendarza na stronie oraz okolicę
                                         const hasExtraInWeek = validDates.some(dStr => dStr !== curDateStr);
                                         if (!hasExtraInWeek && rowEl) {
-                                            renderNearbySuggestionPanel(rowEl, rName, rLand);
+                                            renderNearbyAndNextWeekPanel(rowEl, curDateStr, rName, rLand);
                                         }
 
                                         refreshCartUI();
