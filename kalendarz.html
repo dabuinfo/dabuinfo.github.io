@@ -145,12 +145,12 @@
         border-radius: 20px;
     }
 
-    .min-order-hero-pill {
-        background: rgba(245, 158, 11, 0.15);
-        border: 1px solid rgba(245, 158, 11, 0.45);
-        color: #fbbf24;
-        font-size: 0.85rem;
-        font-weight: 800;
+    .prep-fee-hero-pill {
+        background: rgba(56, 189, 248, 0.14);
+        border: 1px solid rgba(56, 189, 248, 0.42);
+        color: #7dd3fc;
+        font-size: 0.83rem;
+        font-weight: 700;
         padding: 4px 12px;
         border-radius: 20px;
     }
@@ -647,24 +647,25 @@
         scroll-margin-top: 16px;
     }
 
-    .min-order-warning-box {
+    /* Informacja o opłacie za czas przygotowania przy pojedynczym terminie (1 dzień) */
+    .single-term-prep-box {
         display: none;
-        background: rgba(245, 158, 11, 0.13);
-        border: 1px solid rgba(245, 158, 11, 0.5);
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.45);
         border-radius: 8px;
         padding: 11px 14px;
-        color: #fde68a;
+        color: #e0f2fe;
         font-size: 0.85rem;
         line-height: 1.45;
         flex-direction: column;
         gap: 8px;
     }
-    .min-order-warning-box.is-visible {
+    .single-term-prep-box.is-visible {
         display: flex;
     }
-    .min-order-warning-top {
+    .single-term-prep-top {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
     }
     .cart-nearby-suggestions {
@@ -673,7 +674,7 @@
         align-items: center;
         gap: 6px;
         padding-top: 6px;
-        border-top: 1px dashed rgba(245, 158, 11, 0.35);
+        border-top: 1px dashed rgba(56, 189, 248, 0.35);
         font-size: 0.8rem;
         color: #e2e8f0;
     }
@@ -1007,7 +1008,7 @@
                     <h2 id="cal-title">Kalendarz Wystawek (2 najbliższe tygodnie)</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026</span>
                     <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień</span>
-                    <span class="min-order-hero-pill" id="dynamic-min-order-badge">📦 Min. zamówienie: 3 dni (różne lub te same rejony)</span>
+                    <span class="prep-fee-hero-pill" id="dynamic-prep-fee-badge">⏱️ 1 termin: +40 PLN opłaty przygotowawczej</span>
                 </div>
             </div>
             
@@ -1046,12 +1047,12 @@
                     </div>
                 </div>
 
-                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI + PODPOWIEDZI Z KOLEJNEGO TYGODNIA / OKOLICY -->
-                <div class="min-order-warning-box" id="minOrderWarningBox">
-                    <div class="min-order-warning-top">
-                        <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
-                        <div id="minOrderWarningText">
-                            <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub z kolejnego tygodnia wyświetlanego na stronie.
+                <!-- INFORMACJA O EKSTRA OPŁACIE PRZYGOTOWANIA PRZY 1 TERMINIE -->
+                <div class="single-term-prep-box" id="singleTermPrepBox">
+                    <div class="single-term-prep-top">
+                        <span style="font-size: 1.2rem; line-height: 1;">⏱️</span>
+                        <div id="singleTermPrepText">
+                            <strong>Zamówienie pojedynczego terminu:</strong> Doliczono jednorazową opłatę <strong>40 PLN</strong> za czas przygotowania. Dodaj drugi dzień, aby zamawiać bez opłaty przygotowawczej!
                         </div>
                     </div>
                     <div class="cart-nearby-suggestions" id="cartNearbySuggestions" style="display:none;"></div>
@@ -1100,7 +1101,7 @@
                 </div>
 
                 <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
-                    🛒 Wybierz min. 3 dni, aby zamówić
+                    🛒 Wybierz rejony, aby zamówić
                 </button>
 
                 <!-- POTWIERDZENIE ZAPISU W BAZIE -->
@@ -1130,8 +1131,6 @@
 
     <script>
     (function() {
-        const MIN_BILLABLE_DAYS = 3;
-
         const calLang = ((navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase());
         const calData = calLang === 'de' ? {
             wk: "KW",
@@ -1471,9 +1470,7 @@
 
         const globalCart = new Map();
         let currentDayRegionsList = [];
-        // Lista wszystkich widocznych i klikalnych dni w 2-tygodniowej siatce kalendarza (YYYY-MM-DD)
         let visibleClickableDatesYMD = [];
-        // Pamięć podręczna terminów pobranych z API dla kolejnych widocznych dni (dateYMD -> [{region, land, dateDisplay, dateYMD}])
         const fetchedDayCache = new Map();
 
         const sessionNow = new Date();
@@ -1583,19 +1580,19 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych i minimum w nagłówku w zależności od języka przeglądarki
+            // Podmiana tekstów cenowych i informacji o opłacie za czas przygotowania przy 1 terminie
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
-            const minOrderBadgeEl = document.getElementById('dynamic-min-order-badge');
+            const prepFeeBadgeEl = document.getElementById('dynamic-prep-fee-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
                 priceBadgeEl.textContent = isPolish 
                     ? '💰 Stawka: 40 PLN / dzień' 
                     : (userLang === 'de' ? '💰 Preis: 10 € / Tag' : '💰 Rate: 10 € / day');
             }
-            if (minOrderBadgeEl) {
-                minOrderBadgeEl.textContent = isPolish
-                    ? '📦 Min. zamówienie: 3 dni (różne lub te same rejony)'
-                    : (userLang === 'de' ? '📦 Mindestbestellung: 3 Tage (auch verschiedene Gebiete)' : '📦 Min. order: 3 days (same or different regions)');
+            if (prepFeeBadgeEl) {
+                prepFeeBadgeEl.textContent = isPolish
+                    ? '⏱️ 1 termin: +40 PLN za czas przygotowania'
+                    : (userLang === 'de' ? '⏱️ 1 Termin: +10 € Vorbereitungsgebühr' : '⏱️ 1 date: +10 € preparation fee');
             }
             if (rateInlineEl) {
                 rateInlineEl.textContent = isPolish 
@@ -1873,7 +1870,7 @@
                     <div class="calendar-info">
                         <h3>ℹ️ Informacje o kalendarzu i zasadach zamówień</h3>
                         <ul>
-                            <li><strong>Minimalne zamówienie:</strong> Minimum <strong>3 dni</strong> (mogą pochodzić z różnych rejonów lub z kolejnego tygodnia wyświetlanego w kalendarzu).</li>
+                            <li><strong>Zamówienie pojedynczego terminu (1 dzień):</strong> Możesz zamówić nawet 1 termin — doliczana jest wtedy jednorazowa opłata za czas przygotowania (<strong>40 PLN</strong> / <strong>10 €</strong>). Od 2 dni wzwyż obowiązuje wyłącznie standardowa stawka dzienna.</li>
                             <li id="switch-rule-info"></li>
                             <li>${closestRegionalDesc}</li>
                         </ul>
@@ -1894,8 +1891,8 @@
             const submitBtn = document.getElementById('cart-submit-btn');
             const mapAddonCheckbox = document.getElementById('calMapAddonCheckbox');
             const mapAddonBox = document.getElementById('calMapAddonBox');
-            const minOrderWarningBox = document.getElementById('minOrderWarningBox');
-            const minOrderWarningText = document.getElementById('minOrderWarningText');
+            const singleTermPrepBox = document.getElementById('singleTermPrepBox');
+            const singleTermPrepText = document.getElementById('singleTermPrepText');
             const cartNearbySuggestions = document.getElementById('cartNearbySuggestions');
 
             // =========================================================================
@@ -1906,7 +1903,6 @@
                 const baseWeekNum = getISOWeekNumber(baseDate);
                 const baseYear = baseDate.getFullYear();
 
-                // Filtruj wyłącznie daty z widocznego w kalendarzu kolejnego tygodnia (po dniu bazowym i w granicach visibleClickableDatesYMD)
                 const nextWeekDatesYMD = visibleClickableDatesYMD.filter(dYmd => {
                     if (dYmd <= baseDateYMD) return false;
                     const dObj = ymdToDateObj(dYmd);
@@ -1919,7 +1915,6 @@
                     return [];
                 }
 
-                // Pobierz równolegle terminy dla widocznych dni kolejnego tygodnia (z cache)
                 const resultsPerDay = await Promise.all(
                     nextWeekDatesYMD.map(dYmd => fetchRegionsForDateCached(dYmd))
                 );
@@ -1952,14 +1947,12 @@
                     }
                 });
 
-                // Najpierw ten sam rejon w kolejnym widocznym tygodniu, potem sąsiedzi w kolejnym tygodniu, potem ten sam land
                 const combined = [
                     ...sameRegionMatches,
                     ...neighborMatches,
                     ...sameLandMatches
                 ];
 
-                // Usuń duplikaty (region + data)
                 const seen = new Set();
                 return combined.filter(item => {
                     const k = `${item.dateDisplay}_${item.region}`;
@@ -1978,7 +1971,6 @@
                 const proposals = [];
                 const addedKeys = new Set([targetKey]);
 
-                // 1. Bezpośredni sąsiedzi dostępni w aktualnie przeglądanym dniu
                 neighborKeys.forEach(nKey => {
                     if (addedKeys.has(nKey)) return;
                     const foundToday = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === nKey);
@@ -1993,7 +1985,6 @@
                     }
                 });
 
-                // 2. Inne rejony z tego samego landu w bieżącym dniu
                 if (proposals.length < 3 && targetLandName) {
                     currentDayRegionsList.forEach(r => {
                         const rKey = cleanNameForCompare(r.region);
@@ -2018,7 +2009,6 @@
 
                 const sameDayNearby = buildSameDayNearbyProposals(regionName, landName);
 
-                // Wyświetl natychmiast propozycje z okolicy + ładowanie z kolejnego widocznego tygodnia
                 box.innerHTML = `
                     <div class="nearby-suggestion-header">
                         <span>✅ ${isPolish
@@ -2069,7 +2059,6 @@
 
                 bindChipClicks(box);
 
-                // Pobierz propozycje wyłącznie z kolejnego tygodnia widocznego na stronie
                 const nextWeekProposals = await findNextVisibleWeekProposals(baseDateYMD, regionName, landName);
                 const nextWeekSlot = box.querySelector('#next-week-proposals-slot');
                 if (!nextWeekSlot) return;
@@ -2092,7 +2081,6 @@
                     `;
                     bindChipClicks(nextWeekSlot);
                 } else {
-                    // Pokaż klikalne dni z kolejnego tygodnia widocznego w kalendarzu
                     const baseDate = ymdToDateObj(baseDateYMD);
                     const baseW = getISOWeekNumber(baseDate);
                     const nextWeekDays = visibleClickableDatesYMD.filter(dYmd => dYmd > baseDateYMD && getISOWeekNumber(ymdToDateObj(dYmd)) !== baseW);
@@ -2202,6 +2190,8 @@
                         czyKorytarzWspolny: false,
                         isMapSelected: isMapSelected,
                         ratePerDay: 0,
+                        prepFee: 0,
+                        baseNetto: 0,
                         regularPrice: 0,
                         savings: 0,
                         discountPercent: 0,
@@ -2254,19 +2244,22 @@
 
                 // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
                 const baseRateStandard = isEuro ? 10.00 : 40.00;
-
-                // Brak rabatów ilościowych
                 let discountPercent = 0;
 
                 const reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
 
-                // Doliczenie +100% wartości zamówienia za przygotowanie mapy z naniesionymi adresami
+                // Doliczenie +100% wartości stawki dziennej za przygotowanie mapy z naniesionymi adresami
                 const mapMultiplier = isMapSelected ? 2.0 : 1.0;
                 const ratePerDay = Math.round((reportRateNoMap * mapMultiplier) * 100) / 100;
                 const regularBaseReference = Math.round((baseRateStandard * mapMultiplier) * 100) / 100;
 
-                const regularPrice = Math.round((totalDays * regularBaseReference) * 100) / 100;
-                const totalNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+                const baseNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
+
+                // Ekstra opłata za czas przygotowania (40 PLN / 10 €) przy zamówieniu pojedynczego terminu (1 dzień rozliczeniowy)
+                const prepFee = (totalDays === 1) ? (isEuro ? 10.00 : 40.00) : 0;
+
+                const regularPrice = Math.round(((totalDays * regularBaseReference) + prepFee) * 100) / 100;
+                const totalNetto = Math.round((baseNetto + prepFee) * 100) / 100;
                 const savings = Math.max(0, Math.round((regularPrice - totalNetto) * 100) / 100);
 
                 const defaultMethod = isPolish ? "BLIK (+48 733 035 301)" : "PAYPAL (ewabu74@gmail.com)";
@@ -2292,6 +2285,8 @@
                     czyKorytarzWspolny: czyKorytarzWspolny,
                     isMapSelected: isMapSelected,
                     ratePerDay: ratePerDay,
+                    prepFee: prepFee,
+                    baseNetto: baseNetto,
                     regularPrice: regularPrice,
                     savings: savings,
                     discountPercent: discountPercent,
@@ -2363,10 +2358,9 @@
                 });
             }
 
-            async function updateCartMinOrderSuggestions(uniqueRegions, grouped) {
+            async function updateCartSingleTermSuggestions(uniqueRegions, grouped) {
                 if (!cartNearbySuggestions) return;
 
-                // Wyznacz najpóźniejszą wybraną datę w koszyku, aby dobrać kolejne widoczne dni z następnego tygodnia
                 const sortedYmds = Object.keys(grouped).map(displayToYMD).sort();
                 const latestYmd = sortedYmds[sortedYmds.length - 1];
                 if (!latestYmd) {
@@ -2378,7 +2372,6 @@
                 const seenKeys = new Set();
                 globalCart.forEach((v, k) => seenKeys.add(k));
 
-                // 1. Zbierz propozycje z kolejnego tygodnia widocznego w kalendarzu dla wybranych rejonów i ich sąsiadów
                 for (const reg of uniqueRegions) {
                     const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
                     const nextWeekProps = await findNextVisibleWeekProposals(latestYmd, reg, infoObj ? infoObj.land : '');
@@ -2391,7 +2384,6 @@
                     });
                 }
 
-                // 2. Uzupełnij sąsiadami z bieżącego dnia, jeśli nadal mniej niż 4
                 for (const reg of uniqueRegions) {
                     if (suggestions.length >= 4) break;
                     const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
@@ -2406,7 +2398,7 @@
                 }
 
                 if (suggestions.length > 0) {
-                    const prefixLbl = isPolish ? '🧭 Dobierz (kolejny tydzień / okolica):' : '🧭 Ergänzen (nächste Woche / Umgebung):';
+                    const prefixLbl = isPolish ? '🧭 Dobierz 2. dzień (bez opłaty przygotowawczej):' : '🧭 2. Tag ergänzen (ohne Vorbereitungsgebühr):';
                     cartNearbySuggestions.innerHTML = `<strong style="color:#7dd3fc;">${prefixLbl}</strong> ` +
                         suggestions.map(p =>
                             `<button type="button" class="btn-nearby-chip ${p.isNextWeek ? 'is-next-week' : ''}" data-cart-add-reg="${encodeURIComponent(p.region)}" data-cart-add-date="${p.dateDisplay}">➕ ${p.region} (${p.dateDisplay})</button>`
@@ -2428,8 +2420,7 @@
 
             function refreshCartUI() {
                 const calc = calculateTotals();
-                const meetsMinOrder = (calc.billableDays >= MIN_BILLABLE_DAYS);
-                const missingDays = Math.max(0, MIN_BILLABLE_DAYS - calc.billableDays);
+                const isSingleDayOrder = (calc.billableDays === 1);
 
                 const uniqueRegions = new Set();
                 const grouped = {};
@@ -2455,10 +2446,8 @@
                     cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniTrasyOdmiana}${modeTag})`;
 
                     if (floatingDockCount) {
-                        const minStatusDock = (calc.termsCount > 0 && !meetsMinOrder)
-                            ? ` • Min. ${calc.billableDays}/${MIN_BILLABLE_DAYS} dni`
-                            : '';
-                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}${minStatusDock}`;
+                        const prepDockNote = isSingleDayOrder ? ` • +${calc.prepFee.toFixed(0)} PLN przygotowanie` : '';
+                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}${prepDockNote}`;
                     }
                 } else {
                     let modeTagDe = '';
@@ -2470,43 +2459,47 @@
                     cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
 
                     if (floatingDockCount) {
-                        const minStatusDockDe = (calc.termsCount > 0 && !meetsMinOrder)
-                            ? ` • Min. ${calc.billableDays}/${MIN_BILLABLE_DAYS} Tage`
-                            : '';
-                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}${minStatusDockDe}`;
+                        const prepDockNoteDe = isSingleDayOrder ? ` • +${calc.prepFee.toFixed(0)} € Vorbereitung` : '';
+                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}${prepDockNoteDe}`;
                     }
                 }
 
-                // Obsługa komunikatu o minimum 3 dni + podpowiedzi z kolejnego tygodnia na stronie i okolicy
-                if (minOrderWarningBox && minOrderWarningText) {
-                    if (calc.termsCount > 0 && !meetsMinOrder) {
-                        minOrderWarningBox.classList.add('is-visible');
-                        const missingLabelPl = odmienSlowo(missingDays, "dzień", "dni", "dni");
-                        minOrderWarningText.innerHTML = isPolish
-                            ? `<strong>Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni</strong> (wybrano obecnie: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — dodaj jeszcze <strong>${missingLabelPl}</strong> z okolicy lub z kolejnego tygodnia widocznego w kalendarzu).`
-                            : `<strong>Mindestbestellung: ${MIN_BILLABLE_DAYS} Tage</strong> (aktuell gewählt: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — bitte noch <strong>${missingDays} Tag(e)</strong> aus der Umgebung oder der nächsten Kalenderwoche hinzufügen).`;
+                // Obsługa informacji o opłacie za czas przygotowania przy zamówieniu 1 terminu
+                if (singleTermPrepBox && singleTermPrepText) {
+                    if (calc.termsCount > 0 && isSingleDayOrder) {
+                        singleTermPrepBox.classList.add('is-visible');
+                        singleTermPrepText.innerHTML = isPolish
+                            ? `<strong>Zamówienie pojedynczego terminu (1 dzień):</strong> Doliczono jednorazową opłatę <strong>${calc.prepFee.toFixed(2)} PLN</strong> za czas przygotowania. Możesz zamówić od razu albo dobrać 2. dzień z okolicy / kolejnego tygodnia (wtedy opłata przygotowawcza znika).`
+                            : `<strong>Einzeltermin-Bestellung (1 Tag):</strong> Es fällt eine einmalige Vorbereitungsgebühr von <strong>${calc.prepFee.toFixed(2)} €</strong> an. Sie können direkt bestellen oder einen 2. Tag ergänzen (dann entfällt die Vorbereitungsgebühr).`;
 
-                        updateCartMinOrderSuggestions(uniqueRegions, grouped);
+                        updateCartSingleTermSuggestions(uniqueRegions, grouped);
                     } else {
-                        minOrderWarningBox.classList.remove('is-visible');
+                        singleTermPrepBox.classList.remove('is-visible');
                         if (cartNearbySuggestions) cartNearbySuggestions.style.display = 'none';
                     }
                 }
 
                 let discountTag = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let mapBadgeNote = calc.isMapSelected ? (isPolish ? ' | 🗺️ Z mapą adresów' : ' | 🗺️ Inkl. Adresskarte') : '';
+                let prepFeeNotePart = calc.prepFee > 0
+                    ? (isPolish ? ` + opłata za czas przygotowania: ${calc.prepFee.toFixed(2)} PLN` : ` + Vorbereitungsgebühr: ${calc.prepFee.toFixed(2)} €`)
+                    : '';
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
                     cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}${discountTag}`;
                     cartFeeNoteEl.style.display = "inline";
                     cartFeeNoteEl.textContent = isPolish
-                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${mapBadgeNote})`
-                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${mapBadgeNote})`;
+                        ? `(termin: ${calc.baseNetto.toFixed(2)} PLN${prepFeeNotePart} + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${mapBadgeNote})`
+                        : `(Termin: ${calc.baseNetto.toFixed(2)} €${prepFeeNotePart} + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${mapBadgeNote})`;
                 } else {
                     cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}${discountTag}`;
-                    if (calc.savings > 0 || calc.isMapSelected) {
+                    if (calc.prepFee > 0 || calc.savings > 0 || calc.isMapSelected) {
                         cartFeeNoteEl.style.display = "inline";
-                        if (calc.savings > 0) {
+                        if (calc.prepFee > 0) {
+                            cartFeeNoteEl.textContent = isPolish
+                                ? `(termin: ${calc.baseNetto.toFixed(2)} PLN${prepFeeNotePart}${mapBadgeNote})`
+                                : `(Termin: ${calc.baseNetto.toFixed(2)} €${prepFeeNotePart}${mapBadgeNote})`;
+                        } else if (calc.savings > 0) {
                             cartFeeNoteEl.textContent = isPolish
                                 ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN${mapBadgeNote})`
                                 : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €${mapBadgeNote})`;
@@ -2527,7 +2520,7 @@
 
                 syncFloatingDockVisibility();
 
-                if (calc.termsCount > 0 && meetsMinOrder) {
+                if (calc.termsCount > 0) {
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
@@ -2536,13 +2529,6 @@
                         : `🛒 BESTELLEN (${calc.finalAmount.toFixed(2)} €${discountTag})`;
 
                     submitBtn.onclick = function() {
-                        if (calculateTotals().billableDays < MIN_BILLABLE_DAYS) {
-                            alert(isPolish
-                                ? `Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni (mogą być z różnych rejonów lub z kolejnego tygodnia).`
-                                : `Mindestbestellung beträgt ${MIN_BILLABLE_DAYS} Tage.`);
-                            return;
-                        }
-
                         const selectedOrderChannel = document.querySelector('input[name="cartOrderChannel"]:checked')?.value || (isPolish ? 'sms' : 'whatsapp');
                         const phoneInput = document.getElementById('calClientIdInput');
                         const phoneVal = phoneInput ? phoneInput.value.trim() : '';
@@ -2609,14 +2595,20 @@
                             paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} ${currencyUnit})`;
                         }
 
+                        const prepFeeLine = calc.prepFee > 0
+                            ? (isPolish
+                                ? `\nOpłata za czas przygotowania (1 termin): ${calc.prepFee.toFixed(2)} PLN`
+                                : `\nVorbereitungsgebühr (1 Termin): ${calc.prepFee.toFixed(2)} €`)
+                            : '';
+
                         const wariantPakietuTekst = calc.isMapSelected 
                             ? (isPolish ? "Raport + Mapa z naniesionymi adresami" : "Bericht + Karte mit Adressen")
                             : (isPolish ? "Raport Interaktywny (Jasny/Ciemny)" : "Interaktiver Bericht");
 
                         const trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
                         const krotkaWiadomosc = isPolish
-                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
-                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).${prepFeeLine}\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
+                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)${prepFeeLine}\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
 
                         // Payload zgodny ze strukturą zapisu w zestaw.html
                         const orderPayload = {
@@ -2629,6 +2621,7 @@
                             finalPrice: calc.finalAmount,
                             currency: currencyCode,
                             totalDays: calc.billableDays,
+                            prepFee: calc.prepFee || 0,
                             paymentMethod: calc.paymentMethod,
                             reportTheme: calc.isMapSelected ? "Raport+Mapa" : "Raport Interaktywny (Jasny/Ciemny)",
                             mapAddon: calc.isMapSelected,
@@ -2637,7 +2630,7 @@
                             weeks: weeksAndDatesList,
                             isRegularCustomer: false,
                             loyaltyClientId: "",
-                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst} | Terminy:${detailsText.replace(/\n/g, ' ')}`
+                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst}${calc.prepFee > 0 ? ` | Opłata przygotowania: ${calc.prepFee.toFixed(2)} ${currencyCode}` : ''} | Terminy:${detailsText.replace(/\n/g, ' ')}`
                         };
 
                         const staryTekstBtn = submitBtn.innerHTML;
@@ -2703,19 +2696,12 @@
                             }, 2000);
                         });
                     };
-                } else if (calc.termsCount > 0 && !meetsMinOrder) {
-                    submitBtn.classList.add('disabled');
-                    submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish
-                        ? `🔒 Minimum ${MIN_BILLABLE_DAYS} dni (wybrano ${calc.billableDays}/${MIN_BILLABLE_DAYS} — dodaj jeszcze ${odmienSlowo(missingDays, "dzień", "dni", "dni")})`
-                        : `🔒 Minimum ${MIN_BILLABLE_DAYS} Tage (gewählt ${calc.billableDays}/${MIN_BILLABLE_DAYS})`;
-                    submitBtn.onclick = null;
                 } else {
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
                     submitBtn.innerHTML = isPolish
-                        ? `🛒 Wybierz min. ${MIN_BILLABLE_DAYS} dni, aby zamówić`
-                        : `🛒 Mindestens ${MIN_BILLABLE_DAYS} Tage auswählen`;
+                        ? '🛒 Wybierz rejony, aby zamówić'
+                        : '🛒 Gebiete auswählen';
                     submitBtn.onclick = null;
                 }
 
@@ -2824,8 +2810,8 @@
                                                 <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
                                                     💰 ${isPolish ? 'Stawka: 40 PLN / dzień' : 'Preis: 10 € / Tag'}
                                                 </div>
-                                                <div style="background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                    📦 ${isPolish ? 'Min. 3 dni' : 'Min. 3 Tage'}
+                                                <div style="background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                                    ⏱️ ${isPolish ? '1 termin: +40 PLN przygotowanie' : '1 Termin: +10 € Vorbereitung'}
                                                 </div>
                                             </div>
                                         </div>
@@ -3087,8 +3073,6 @@
                                             globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
                                         });
 
-                                        // Jeśli w tym tygodniu nie było innych dni poza wybranym (np. czwartek/piątek końcówka tygodnia)
-                                        // -> akceptuj i zaproponuj kolejny tydzień z kalendarza na stronie oraz okolicę
                                         const hasExtraInWeek = validDates.some(dStr => dStr !== curDateStr);
                                         if (!hasExtraInWeek && rowEl) {
                                             renderNearbyAndNextWeekPanel(rowEl, curDateStr, rName, rLand);
