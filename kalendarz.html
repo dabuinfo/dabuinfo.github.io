@@ -145,6 +145,16 @@
         border-radius: 20px;
     }
 
+    .min-order-hero-pill {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        color: #fbbf24;
+        font-size: 0.85rem;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
     .hero-features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -536,6 +546,22 @@
         scroll-margin-top: 16px;
     }
 
+    .min-order-warning-box {
+        display: none;
+        background: rgba(245, 158, 11, 0.13);
+        border: 1px solid rgba(245, 158, 11, 0.5);
+        border-radius: 8px;
+        padding: 11px 14px;
+        color: #fde68a;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        align-items: center;
+        gap: 10px;
+    }
+    .min-order-warning-box.is-visible {
+        display: flex;
+    }
+
     .cart-top-row {
         display: flex;
         flex-direction: column;
@@ -704,7 +730,7 @@
     .direct-contact-btn.disabled,
     .direct-contact-btn:disabled {
         background: #333;
-        color: #777 !important;
+        color: #9ca3af !important;
         cursor: not-allowed;
         transform: none;
     }
@@ -860,7 +886,8 @@
                     </svg>
                     <h2 id="cal-title">Kalendarz Wystawek (2 najbliższe tygodnie)</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026</span>
-                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień (PL) | 10 € / dzień (UE)</span>
+                    <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień</span>
+                    <span class="min-order-hero-pill" id="dynamic-min-order-badge">📦 Min. zamówienie: 3 dni (różne lub te same rejony)</span>
                 </div>
             </div>
             
@@ -896,6 +923,14 @@
                         <span id="payment-options-container" style="display:inline-flex; flex-wrap:wrap; gap: 10px; align-items:center;">
                             <!-- Generowane dynamicznie wg kraju -->
                         </span>
+                    </div>
+                </div>
+
+                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI -->
+                <div class="min-order-warning-box" id="minOrderWarningBox">
+                    <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
+                    <div id="minOrderWarningText">
+                        <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub kolejne dni w tym samym rejonie.
                     </div>
                 </div>
 
@@ -942,7 +977,7 @@
                 </div>
 
                 <button id="cart-submit-btn" class="direct-contact-btn disabled" disabled>
-                    🛒 Wybierz rejony, aby zamówić
+                    🛒 Wybierz min. 3 dni, aby zamówić
                 </button>
 
                 <!-- POTWIERDZENIE ZAPISU W BAZIE -->
@@ -972,6 +1007,8 @@
 
     <script>
     (function() {
+        const MIN_BILLABLE_DAYS = 3;
+
         const calLang = ((navigator.language || navigator.userLanguage || 'pl').substring(0, 2).toLowerCase());
         const calData = calLang === 'de' ? {
             wk: "KW",
@@ -1338,13 +1375,19 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki
+            // Podmiana tekstów cenowych i minimum w nagłówku w zależności od języka przeglądarki
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
+            const minOrderBadgeEl = document.getElementById('dynamic-min-order-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
                 priceBadgeEl.textContent = isPolish 
                     ? '💰 Stawka: 40 PLN / dzień' 
                     : (userLang === 'de' ? '💰 Preis: 10 € / Tag' : '💰 Rate: 10 € / day');
+            }
+            if (minOrderBadgeEl) {
+                minOrderBadgeEl.textContent = isPolish
+                    ? '📦 Min. zamówienie: 3 dni (różne lub te same rejony)'
+                    : (userLang === 'de' ? '📦 Mindestbestellung: 3 Tage (auch verschiedene Gebiete)' : '📦 Min. order: 3 days (same or different regions)');
             }
             if (rateInlineEl) {
                 rateInlineEl.textContent = isPolish 
@@ -1401,8 +1444,8 @@
             const saturdayYMD = `${currentWeekSaturday.getFullYear()}-${String(currentWeekSaturday.getMonth() + 1).padStart(2, '0')}-${String(currentWeekSaturday.getDate()).padStart(2, '0')}`;
 
             const holidayCache = {};
-        let horizonEndSunday = new Date(currentWeekMonday);
-        let currentHasSaturdayTerm = false; // domyślnie tryb czwartek 18:00
+            let horizonEndSunday = new Date(currentWeekMonday);
+            let currentHasSaturdayTerm = false; // domyślnie tryb czwartek 18:00
 
             function updateSwitchDescription(hasSaturdayTerm) {
                 const descEl = document.getElementById('switch-rule-info');
@@ -1570,22 +1613,22 @@
             }
 
             // 1. Natychmiastowe wyświetlenie kalendarza (domyślnie tryb czwartek 18:00)
-        renderCalendarGrid(false);
+            renderCalendarGrid(false);
 
-        // 2. Sprawdzenie w tle, czy w sobotę bieżącego tygodnia są jakiekolwiek zbiórki
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: saturdayYMD, jezyk: 'pl' })
-        })
-        .then(resp => resp.json())
-        .then(data => {
-            const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
-            if (hasSaturdayTerm) {
-                renderCalendarGrid(true);
-            }
-        })
-        .catch(err => console.warn('Nie udało się sprawdzić terminu sobotniego:', err));
+            // 2. Sprawdzenie w tle, czy w sobotę bieżącego tygodnia są jakiekolwiek zbiórki
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ akcja: 'szukaj_po_dacie', data_zbioru: saturdayYMD, jezyk: 'pl' })
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                const hasSaturdayTerm = !!(data && data.odpowiedz && data.odpowiedz.includes('📍'));
+                if (hasSaturdayTerm) {
+                    renderCalendarGrid(true);
+                }
+            })
+            .catch(err => console.warn('Nie udało się sprawdzić terminu sobotniego:', err));
 
             const wrapper = document.getElementById('calendar-wrapper');
             if (wrapper) {
@@ -1614,8 +1657,9 @@
 
                 const calInfoHTML = `
                     <div class="calendar-info">
-                        <h3>ℹ️ Informacje o kalendarzu i zasięgu świąt</h3>
+                        <h3>ℹ️ Informacje o kalendarzu i zasadach zamówień</h3>
                         <ul>
+                            <li><strong>Minimalne zamówienie:</strong> Minimum <strong>3 dni</strong> (mogą pochodzić z różnych rejonów lub stanowić kolejne dni w jednym rejonie).</li>
                             <li id="switch-rule-info"></li>
                             <li>${closestRegionalDesc}</li>
                         </ul>
@@ -1636,6 +1680,8 @@
             const submitBtn = document.getElementById('cart-submit-btn');
             const mapAddonCheckbox = document.getElementById('calMapAddonCheckbox');
             const mapAddonBox = document.getElementById('calMapAddonBox');
+            const minOrderWarningBox = document.getElementById('minOrderWarningBox');
+            const minOrderWarningText = document.getElementById('minOrderWarningText');
 
             // =========================================================================
             // OBSŁUGA PŁYWAJĄCEGO SKRÓTU DO KOSZYKA NA SMARTFONIE
@@ -1879,6 +1925,8 @@
 
             function refreshCartUI() {
                 const calc = calculateTotals();
+                const meetsMinOrder = (calc.billableDays >= MIN_BILLABLE_DAYS);
+                const missingDays = Math.max(0, MIN_BILLABLE_DAYS - calc.billableDays);
 
                 const uniqueRegions = new Set();
                 const grouped = {};
@@ -1904,7 +1952,10 @@
                     cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniTrasyOdmiana}${modeTag})`;
 
                     if (floatingDockCount) {
-                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}`;
+                        const minStatusDock = (calc.termsCount > 0 && !meetsMinOrder)
+                            ? ` • Min. ${calc.billableDays}/${MIN_BILLABLE_DAYS} dni`
+                            : '';
+                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}${minStatusDock}`;
                     }
                 } else {
                     let modeTagDe = '';
@@ -1916,7 +1967,23 @@
                     cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
 
                     if (floatingDockCount) {
-                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}`;
+                        const minStatusDockDe = (calc.termsCount > 0 && !meetsMinOrder)
+                            ? ` • Min. ${calc.billableDays}/${MIN_BILLABLE_DAYS} Tage`
+                            : '';
+                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}${minStatusDockDe}`;
+                    }
+                }
+
+                // Obsługa komunikatu o minimum 3 dni
+                if (minOrderWarningBox && minOrderWarningText) {
+                    if (calc.termsCount > 0 && !meetsMinOrder) {
+                        minOrderWarningBox.classList.add('is-visible');
+                        const missingLabelPl = odmienSlowo(missingDays, "dzień", "dni", "dni");
+                        minOrderWarningText.innerHTML = isPolish
+                            ? `<strong>Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni</strong> (wybrano obecnie: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — dodaj jeszcze <strong>${missingLabelPl}</strong> z tego samego lub innych rejonów).`
+                            : `<strong>Mindestbestellung: ${MIN_BILLABLE_DAYS} Tage</strong> (aktuell gewählt: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — bitte noch <strong>${missingDays} Tag(e)</strong> aus demselben oder anderen Gebieten hinzufügen).`;
+                    } else {
+                        minOrderWarningBox.classList.remove('is-visible');
                     }
                 }
 
@@ -1954,7 +2021,7 @@
 
                 syncFloatingDockVisibility();
 
-                if (calc.termsCount > 0) {
+                if (calc.termsCount > 0 && meetsMinOrder) {
                     submitBtn.classList.remove('disabled');
                     submitBtn.removeAttribute('disabled');
 
@@ -1963,6 +2030,13 @@
                         : `🛒 BESTELLEN (${calc.finalAmount.toFixed(2)} €${discountTag})`;
 
                     submitBtn.onclick = function() {
+                        if (calculateTotals().billableDays < MIN_BILLABLE_DAYS) {
+                            alert(isPolish
+                                ? `Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni (mogą być z różnych rejonów).`
+                                : `Mindestbestellung beträgt ${MIN_BILLABLE_DAYS} Tage (auch aus verschiedenen Gebieten).`);
+                            return;
+                        }
+
                         const selectedOrderChannel = document.querySelector('input[name="cartOrderChannel"]:checked')?.value || (isPolish ? 'sms' : 'whatsapp');
                         const phoneInput = document.getElementById('calClientIdInput');
                         const phoneVal = phoneInput ? phoneInput.value.trim() : '';
@@ -1985,7 +2059,7 @@
                             return;
                         } else {
                             if (phoneError) phoneError.style.display = 'none';
-                            if (phoneInput) phoneInput.borderColor = '#334155';
+                            if (phoneInput) phoneInput.style.borderColor = '#334155';
                         }
 
                         // Walidacja adresu e-mail dla kanału E-mail
@@ -2123,10 +2197,19 @@
                             }, 2000);
                         });
                     };
+                } else if (calc.termsCount > 0 && !meetsMinOrder) {
+                    submitBtn.classList.add('disabled');
+                    submitBtn.setAttribute('disabled', 'true');
+                    submitBtn.innerHTML = isPolish
+                        ? `🔒 Minimum ${MIN_BILLABLE_DAYS} dni (wybrano ${calc.billableDays}/${MIN_BILLABLE_DAYS} — dodaj jeszcze ${odmienSlowo(missingDays, "dzień", "dni", "dni")})`
+                        : `🔒 Minimum ${MIN_BILLABLE_DAYS} Tage (gewählt ${calc.billableDays}/${MIN_BILLABLE_DAYS})`;
+                    submitBtn.onclick = null;
                 } else {
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish ? '🛒 Wybierz rejony, aby zamówić' : '🛒 Gebiete auswählen';
+                    submitBtn.innerHTML = isPolish
+                        ? `🛒 Wybierz min. ${MIN_BILLABLE_DAYS} dni, aby zamówić`
+                        : `🛒 Mindestens ${MIN_BILLABLE_DAYS} Tage auswählen`;
                     submitBtn.onclick = null;
                 }
 
@@ -2229,8 +2312,13 @@
                                                 <span style="font-size: 1.15rem;">📋</span>
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
-                                            <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                💰 ${isPolish ? 'Stawka: 40 PLN / dzień' : 'Preis: 10 € / Tag'}
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                                                <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                                    💰 ${isPolish ? 'Stawka: 40 PLN / dzień' : 'Preis: 10 € / Tag'}
+                                                </div>
+                                                <div style="background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                                    📦 ${isPolish ? 'Min. 3 dni' : 'Min. 3 Tage'}
+                                                </div>
                                             </div>
                                         </div>
 
