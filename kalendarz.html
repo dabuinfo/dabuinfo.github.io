@@ -529,6 +529,83 @@
         color: #6aeb95;
     }
 
+    /* Panel sugestii okolicznych rejonów, gdy brak kolejnych dni w danym rejonie */
+    .nearby-suggestion-box {
+        display: none;
+        margin-top: 6px;
+        padding: 11px 14px;
+        background: rgba(30, 41, 59, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        border-left: 4px solid #38bdf8;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        color: #e2e8f0;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .nearby-suggestion-box.is-visible {
+        display: flex;
+    }
+    .nearby-suggestion-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-weight: 700;
+        color: #7dd3fc;
+    }
+    .nearby-suggestion-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 0 4px;
+    }
+    .nearby-suggestion-close:hover {
+        color: #fff;
+    }
+    .nearby-chips-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        align-items: center;
+    }
+    .btn-nearby-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 11px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        border: 1px solid rgba(46, 204, 113, 0.5);
+        background: rgba(46, 204, 113, 0.14);
+        color: #6aeb95;
+    }
+    .btn-nearby-chip:hover {
+        background: #2ecc71;
+        color: #050a07;
+        border-color: #2ecc71;
+    }
+    .btn-nearby-chip.is-added {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: #60a5fa;
+        color: #93c5fd;
+    }
+    .btn-nearby-chip.is-calendar-hint {
+        background: rgba(148, 163, 184, 0.12);
+        border-color: rgba(148, 163, 184, 0.35);
+        color: #cbd5e1;
+    }
+    .btn-nearby-chip.is-calendar-hint:hover {
+        background: rgba(56, 189, 248, 0.22);
+        border-color: #38bdf8;
+        color: #fff;
+    }
+
     /* Pasek koszyka i formularza zamówienia pod kalendarzem/wynikami */
     .summary-cart-bar {
         display: none;
@@ -555,11 +632,26 @@
         color: #fde68a;
         font-size: 0.85rem;
         line-height: 1.45;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        gap: 8px;
     }
     .min-order-warning-box.is-visible {
         display: flex;
+    }
+    .min-order-warning-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .cart-nearby-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        padding-top: 6px;
+        border-top: 1px dashed rgba(245, 158, 11, 0.35);
+        font-size: 0.8rem;
+        color: #e2e8f0;
     }
 
     .cart-top-row {
@@ -847,8 +939,12 @@
         .month-table td { height: 34px; font-size: 0.9375rem; }
         .month-table th { font-size: 0.8125rem; }
         
+        .quick-add-container,
+        .nearby-suggestion-box {
+            margin-left: 37px;
+        }
+
         .quick-add-container {
-            padding-left: 37px;
             gap: 10px;
         }
 
@@ -926,12 +1022,15 @@
                     </div>
                 </div>
 
-                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI -->
+                <!-- KOMUNIKAT O MINIMUM LOGISTYCZNYM 3 DNI + PODPOWIEDŹ OKOLICZNYCH REJONÓW -->
                 <div class="min-order-warning-box" id="minOrderWarningBox">
-                    <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
-                    <div id="minOrderWarningText">
-                        <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub kolejne dni w tym samym rejonie.
+                    <div class="min-order-warning-top">
+                        <span style="font-size: 1.2rem; line-height: 1;">⚠️</span>
+                        <div id="minOrderWarningText">
+                            <strong>Minimalne zamówienie to 3 dni rozliczeniowe.</strong> Możesz wybrać terminy z różnych rejonów lub kolejne dni w tym samym rejonie.
+                        </div>
                     </div>
+                    <div class="cart-nearby-suggestions" id="cartNearbySuggestions" style="display:none;"></div>
                 </div>
 
                 <!-- OPCJA DODATKOWA W KOSZYKU: MAPA Z NANIESIONYMI ADRESAMI -->
@@ -1235,6 +1334,26 @@
             return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
         }
 
+        function formatRegionLabel(str) {
+            return (str || "").replace(/(^|[\s\-\/\(])([a-zäöüß])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+        }
+
+        function getNeighborKeysForRegion(rName) {
+            const key = cleanNameForCompare(rName);
+            const result = new Set();
+            (NEIGHBOR_CLUSTERS_MAP[key] || []).forEach(n => {
+                const nk = cleanNameForCompare(n);
+                if (nk && nk !== key) result.add(nk);
+            });
+            for (const [k, list] of Object.entries(NEIGHBOR_CLUSTERS_MAP)) {
+                if (k === key) continue;
+                if ((list || []).some(n => cleanNameForCompare(n) === key)) {
+                    result.add(k);
+                }
+            }
+            return Array.from(result);
+        }
+
         function areRegionsNeighbors(rA, rB) {
             let keyA = cleanNameForCompare(rA);
             let keyB = cleanNameForCompare(rB);
@@ -1327,6 +1446,8 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPgIdADbokUR4ww2B6AytMt4B3JNQgmxamU5-VW5asuDk8TDMDWV5yzIT34XemPKf0HA/exec';
 
         const globalCart = new Map();
+        // Przechowuje aktualnie załadowane rejony dla wybranego dnia (key -> { region, land, dateDisplay, dates })
+        let currentDayRegionsList = [];
 
         const sessionNow = new Date();
         const tY = sessionNow.getFullYear();
@@ -1505,7 +1626,6 @@
                 cardWrapper.className = 'four-weeks-card notranslate';
                 cardWrapper.setAttribute('translate', 'no');
 
-                // Tylko jedna informacja w plakietce w zależności od obecności terminu sobotniego
                 const switchInfoText = isPolish
                     ? (isAfterSwitch
                         ? (hasSaturdayTerm ? '🔄 Przełączono po piątku 18:00' : '🔄 Przełączono po czwartku 18:00')
@@ -1682,6 +1802,136 @@
             const mapAddonBox = document.getElementById('calMapAddonBox');
             const minOrderWarningBox = document.getElementById('minOrderWarningBox');
             const minOrderWarningText = document.getElementById('minOrderWarningText');
+            const cartNearbySuggestions = document.getElementById('cartNearbySuggestions');
+
+            // =========================================================================
+            // WYSZUKIWANIE PROPOZYCJI W OKOLICY DLA DANEGO REJONU
+            // =========================================================================
+            function buildNearbyProposalsForRegion(targetRegionName, targetLandName) {
+                const targetKey = cleanNameForCompare(targetRegionName);
+                const neighborKeys = getNeighborKeysForRegion(targetRegionName);
+                const proposals = [];
+                const addedKeys = new Set([targetKey]);
+
+                // 1. Sąsiedzi z NEIGHBOR_CLUSTERS_MAP dostępni w aktualnie przeglądanym dniu
+                neighborKeys.forEach(nKey => {
+                    if (addedKeys.has(nKey)) return;
+                    const foundToday = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === nKey);
+                    if (foundToday) {
+                        addedKeys.add(nKey);
+                        proposals.push({
+                            region: foundToday.region,
+                            dateDisplay: foundToday.dateDisplay,
+                            availableToday: true,
+                            isDirectNeighbor: true
+                        });
+                    }
+                });
+
+                // 2. Jeśli mało propozycji z dzisiejszego dnia, dodaj inne rejony z tego samego landu w tym dniu
+                if (proposals.length < 3 && targetLandName) {
+                    currentDayRegionsList.forEach(r => {
+                        const rKey = cleanNameForCompare(r.region);
+                        if (!addedKeys.has(rKey) && r.land === targetLandName) {
+                            addedKeys.add(rKey);
+                            proposals.push({
+                                region: r.region,
+                                dateDisplay: r.dateDisplay,
+                                availableToday: true,
+                                isDirectNeighbor: false
+                            });
+                        }
+                    });
+                }
+
+                // 3. Sąsiedzi z NEIGHBOR_CLUSTERS_MAP z innych dni (do wyszukania w kalendarzu)
+                neighborKeys.forEach(nKey => {
+                    if (addedKeys.has(nKey) || proposals.length >= 6) return;
+                    addedKeys.add(nKey);
+                    proposals.push({
+                        region: formatRegionLabel(nKey),
+                        dateDisplay: null,
+                        availableToday: false,
+                        isDirectNeighbor: true
+                    });
+                });
+
+                return proposals.slice(0, 6);
+            }
+
+            function renderNearbySuggestionPanel(rowEl, regionName, landName) {
+                const box = rowEl.querySelector('.nearby-suggestion-box');
+                if (!box) return;
+
+                const proposals = buildNearbyProposalsForRegion(regionName, landName);
+
+                const headerText = isPolish
+                    ? `✅ Zaakceptowano termin dla <strong>${regionName}</strong> (brak kolejnych dni w tym rejonie). Propozycje w okolicy:`
+                    : `✅ Termin für <strong>${regionName}</strong> übernommen (keine weiteren Tage im Gebiet). Vorschläge in der Nähe:`;
+
+                let chipsHtml = '';
+                if (proposals.length > 0) {
+                    chipsHtml = proposals.map(p => {
+                        const cartKey = p.dateDisplay ? `${p.dateDisplay}_${p.region}` : '';
+                        const alreadyInCart = cartKey && globalCart.has(cartKey);
+
+                        if (p.availableToday) {
+                            const label = alreadyInCart
+                                ? (isPolish ? `✓ ${p.region} (${p.dateDisplay})` : `✓ ${p.region} (${p.dateDisplay})`)
+                                : (isPolish ? `➕ ${p.region} (${p.dateDisplay})` : `➕ ${p.region} (${p.dateDisplay})`);
+                            const titleAttr = p.isDirectNeighbor
+                                ? (isPolish ? 'Sąsiedni rejon – kliknij, aby dodać do zamówienia' : 'Nachbargebiet – klicken zum Hinzufügen')
+                                : (isPolish ? 'Rejon w tym samym landzie – kliknij, aby dodać' : 'Gebiet im selben Bundesland – klicken zum Hinzufügen');
+                            return `<button type="button" class="btn-nearby-chip ${alreadyInCart ? 'is-added' : ''}" data-add-region="${encodeURIComponent(p.region)}" data-add-date="${p.dateDisplay}" title="${titleAttr}">${label}</button>`;
+                        } else {
+                            const label = isPolish
+                                ? `📅 ${p.region} (sprawdź inne dni)`
+                                : `📅 ${p.region} (andere Tage prüfen)`;
+                            return `<button type="button" class="btn-nearby-chip is-calendar-hint" data-scroll-calendar="1" data-hint-region="${encodeURIComponent(p.region)}">${label}</button>`;
+                        }
+                    }).join('');
+                } else {
+                    chipsHtml = `<span style="color:#94a3b8; font-size:0.79rem;">${isPolish ? 'Wybierz dowolny inny rejon z listy lub kliknij inny dzień w kalendarzu powyżej.' : 'Wählen Sie ein anderes Gebiet aus der Liste oder klicken Sie auf einen anderen Tag im Kalender.'}</span>`;
+                }
+
+                box.innerHTML = `
+                    <div class="nearby-suggestion-header">
+                        <span>🧭 ${headerText}</span>
+                        <button type="button" class="nearby-suggestion-close" title="Zamknij">✕</button>
+                    </div>
+                    <div class="nearby-chips-wrap">${chipsHtml}</div>
+                `;
+                box.classList.add('is-visible');
+
+                const closeBtn = box.querySelector('.nearby-suggestion-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => box.classList.remove('is-visible'));
+                }
+
+                box.querySelectorAll('.btn-nearby-chip[data-add-region]').forEach(chipBtn => {
+                    chipBtn.addEventListener('click', function() {
+                        const addReg = decodeURIComponent(this.getAttribute('data-add-region'));
+                        const addDate = this.getAttribute('data-add-date');
+                        const k = `${addDate}_${addReg}`;
+                        if (globalCart.has(k)) {
+                            globalCart.delete(k);
+                        } else {
+                            globalCart.set(k, { date: addDate, region: addReg });
+                        }
+                        refreshCartUI();
+                        renderNearbySuggestionPanel(rowEl, regionName, landName);
+                    });
+                });
+
+                box.querySelectorAll('.btn-nearby-chip[data-scroll-calendar]').forEach(hintBtn => {
+                    hintBtn.addEventListener('click', function() {
+                        const calGrid = document.getElementById('calendar-grid');
+                        if (calGrid) {
+                            calGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                });
+            }
 
             // =========================================================================
             // OBSŁUGA PŁYWAJĄCEGO SKRÓTU DO KOSZYKA NA SMARTFONIE
@@ -1974,7 +2224,7 @@
                     }
                 }
 
-                // Obsługa komunikatu o minimum 3 dni
+                // Obsługa komunikatu o minimum 3 dni oraz propozycji okolicznych rejonów w koszyku
                 if (minOrderWarningBox && minOrderWarningText) {
                     if (calc.termsCount > 0 && !meetsMinOrder) {
                         minOrderWarningBox.classList.add('is-visible');
@@ -1982,8 +2232,46 @@
                         minOrderWarningText.innerHTML = isPolish
                             ? `<strong>Minimalne zamówienie to ${MIN_BILLABLE_DAYS} dni</strong> (wybrano obecnie: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — dodaj jeszcze <strong>${missingLabelPl}</strong> z tego samego lub innych rejonów).`
                             : `<strong>Mindestbestellung: ${MIN_BILLABLE_DAYS} Tage</strong> (aktuell gewählt: <strong>${calc.billableDays}/${MIN_BILLABLE_DAYS}</strong> — bitte noch <strong>${missingDays} Tag(e)</strong> aus demselben oder anderen Gebieten hinzufügen).`;
+
+                        if (cartNearbySuggestions) {
+                            const nearbyFromCart = [];
+                            const seenKeys = new Set(Array.from(uniqueRegions).map(cleanNameForCompare));
+
+                            uniqueRegions.forEach(reg => {
+                                const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
+                                const props = buildNearbyProposalsForRegion(reg, infoObj ? infoObj.land : '');
+                                props.forEach(p => {
+                                    const pk = cleanNameForCompare(p.region);
+                                    if (!seenKeys.has(pk) && p.availableToday) {
+                                        seenKeys.add(pk);
+                                        nearbyFromCart.push(p);
+                                    }
+                                });
+                            });
+
+                            if (nearbyFromCart.length > 0) {
+                                const prefixLbl = isPolish ? '🧭 Dodaj z okolicy:' : '🧭 In der Nähe hinzufügen:';
+                                cartNearbySuggestions.innerHTML = `<strong style="color:#7dd3fc;">${prefixLbl}</strong> ` +
+                                    nearbyFromCart.slice(0, 4).map(p =>
+                                        `<button type="button" class="btn-nearby-chip" data-cart-add-reg="${encodeURIComponent(p.region)}" data-cart-add-date="${p.dateDisplay}">➕ ${p.region} (${p.dateDisplay})</button>`
+                                    ).join('');
+                                cartNearbySuggestions.style.display = 'flex';
+
+                                cartNearbySuggestions.querySelectorAll('[data-cart-add-reg]').forEach(b => {
+                                    b.addEventListener('click', function() {
+                                        const r = decodeURIComponent(this.getAttribute('data-cart-add-reg'));
+                                        const d = this.getAttribute('data-cart-add-date');
+                                        globalCart.set(`${d}_${r}`, { date: d, region: r });
+                                        refreshCartUI();
+                                    });
+                                });
+                            } else {
+                                cartNearbySuggestions.style.display = 'none';
+                            }
+                        }
                     } else {
                         minOrderWarningBox.classList.remove('is-visible');
+                        if (cartNearbySuggestions) cartNearbySuggestions.style.display = 'none';
                     }
                 }
 
@@ -2279,6 +2567,7 @@
                             
                             if (parsedText.includes('📍')) {
                                 let items = parsedText.split(/(?=📍)/g);
+                                currentDayRegionsList = [];
 
                                 let logisticsBanner = isPolish ? `
                                     <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; color: #fde68a;">
@@ -2365,6 +2654,13 @@
                                     let matchDates = cleanItem.match(/data-dates=['"]([^'"]+)['"]/i);
                                     let allAvailableDates = matchDates ? matchDates[1] : targetDateFormatted;
 
+                                    currentDayRegionsList.push({
+                                        region: regionName,
+                                        land: landName || currentLand || "",
+                                        dateDisplay: displayDate,
+                                        dates: allAvailableDates
+                                    });
+
                                     let isRegionSelected = false;
                                     for (let cartItem of globalCart.values()) {
                                         if (cartItem.region === regionName) {
@@ -2442,7 +2738,7 @@
 
                                     return `
                                     ${landHeaderHtml}
-                                    <div class="zebra-row notranslate" translate="no" data-row-idx="${idx}">
+                                    <div class="zebra-row notranslate" translate="no" data-row-idx="${idx}" data-land="${encodeURIComponent(landName || currentLand || '')}">
                                         <label style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer; width: 100%;" for="reg-chk-${idx}">
                                             <input type="checkbox" class="region-checkbox" id="reg-chk-${idx}" data-idx="${idx}" data-date="${displayDate}" data-region="${encodeURIComponent(regionName)}" ${checkedAttr}>
                                             <div class="notranslate" translate="no" style="flex:1;">${infoPart}</div>
@@ -2462,6 +2758,7 @@
                                             </button>
                                         </div>
                                         <div class="added-dates-pills notranslate" translate="no"></div>
+                                        <div class="nearby-suggestion-box notranslate" translate="no"></div>
                                     </div>`;
                                 }).join('');
 
@@ -2488,7 +2785,7 @@
                                     });
                                 });
 
-                                // Przycisk ➕ Kolejny dzień
+                                // Przycisk ➕ Kolejny dzień (akceptuje bieżący dzień; przy braku kolejnych dni proponuje okolicę)
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -2499,6 +2796,8 @@
                                             .filter(Boolean)
                                             .sort();
                                         const rName = decodeURIComponent(this.getAttribute('data-region'));
+                                        const rowEl = this.closest('.zebra-row');
+                                        const rLand = rowEl ? decodeURIComponent(rowEl.getAttribute('data-land') || '') : '';
 
                                         const baseDisp = formatDateDisplay(curDate);
                                         globalCart.set(`${baseDisp}_${rName}`, { date: baseDisp, region: rName });
@@ -2515,10 +2814,9 @@
                                         if (nextAvailable) {
                                             const nextDisp = formatDateDisplay(nextAvailable);
                                             globalCart.set(`${nextDisp}_${rName}`, { date: nextDisp, region: rName });
-                                        } else {
-                                            alert(isPolish 
-                                                ? `ℹ️ Wszystkie dostępne kolejne terminy z tego okresu dla rejonu ${rName} zostały już dodane.` 
-                                                : `ℹ️ Alle weiteren verfügbaren Termine für ${rName} wurden bereits hinzugefügt.`);
+                                        } else if (rowEl) {
+                                            // Akceptuj obecny wybór w rejonie i zaproponuj sąsiednie rejony z okolicy
+                                            renderNearbySuggestionPanel(rowEl, rName, rLand);
                                         }
 
                                         refreshCartUI();
@@ -2547,13 +2845,15 @@
                                     });
                                 });
 
-                                // Przycisk 📅 Cały tydzień
+                                // Przycisk 📅 Cały tydzień (akceptuje dostępne dni w tygodniu; jeśli brak kolejnych dni, proponuje okolicę)
                                 resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
                                         const curDateStr = this.getAttribute('data-current');
                                         const availableDates = this.getAttribute('data-dates').split(',').map(s => s.trim()).filter(Boolean).sort();
                                         const rName = decodeURIComponent(this.getAttribute('data-region'));
+                                        const rowEl = this.closest('.zebra-row');
+                                        const rLand = rowEl ? decodeURIComponent(rowEl.getAttribute('data-land') || '') : '';
 
                                         const parts = curDateStr.split('-');
                                         const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -2564,8 +2864,8 @@
                                         sunday.setDate(baseDate.getDate() + diffToSunday);
                                         sunday.setHours(23, 59, 59, 999);
 
-                                        const earliestOrderDate = new Date();
-                                        earliestOrderDate.setHours(0, 0, 0, 0);
+                                        const baseDisp = formatDateDisplay(curDateStr);
+                                        globalCart.set(`${baseDisp}_${rName}`, { date: baseDisp, region: rName });
 
                                         const validDates = availableDates.filter(dStr => {
                                             const dParts = dStr.split('-');
@@ -2573,15 +2873,16 @@
                                             return d >= tomorrowMidnight && d <= sunday && d <= horizonEndSunday;
                                         });
 
-                                        if (validDates.length === 0) {
-                                            alert(`ℹ️ Brak aktualnych terminów do końca tygodnia dla rejonu: ${rName}`);
-                                            return;
-                                        }
-
                                         validDates.forEach(dStr => {
                                             const dDisp = formatDateDisplay(dStr);
                                             globalCart.set(`${dDisp}_${rName}`, { date: dDisp, region: rName });
                                         });
+
+                                        // Jeśli w tym tygodniu nie było innych dni poza wybranym dniem -> akceptuj i zaproponuj okolicę
+                                        const hasExtraInWeek = validDates.some(dStr => dStr !== curDateStr);
+                                        if (!hasExtraInWeek && rowEl) {
+                                            renderNearbySuggestionPanel(rowEl, rName, rLand);
+                                        }
 
                                         refreshCartUI();
                                     });
