@@ -1517,9 +1517,8 @@
             const isPolish = (userLang === 'pl');
 
             const now = new Date();
-            const is2027OrLater = (now.getFullYear() >= 2027);
-            const activeRatePln = is2027OrLater ? 60 : 40;
-            const activeRateEur = is2027OrLater ? 15 : 10;
+            const activeRatePln = 40;
+            const activeRateEur = 10;
 
             const currencyUnit = isPolish ? "PLN" : "€";
             const currencyCode = isPolish ? "PLN" : "EUR";
@@ -1527,7 +1526,7 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych w nagłówku w zależności od roku (od 1 stycznia 2027: 60 PLN / 15 €)
+            // Podmiana tekstów cenowych w nagłówku w zależności od języka przeglądarki
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
@@ -2090,14 +2089,8 @@
                 });
             }
 
-            // Stawka dzienna: 40 PLN / 10 € w 2026, a od 1 stycznia 2027: 60 PLN / 15 €
+            // Stała stawka dzienna: 40 PLN / 10 €
             function getRateForDateDisplay(dateDisp, isEuro) {
-                const ymd = displayToYMD(dateDisp);
-                const parsedYear = parseInt(ymd.split('-')[0], 10);
-                const effectiveYear = Math.max(now.getFullYear(), isNaN(parsedYear) ? now.getFullYear() : parsedYear);
-                if (effectiveYear >= 2027) {
-                    return isEuro ? 15.00 : 60.00;
-                }
                 return isEuro ? 10.00 : 40.00;
             }
 
@@ -2577,9 +2570,8 @@
                     const displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
                     const weekNumber = getISOWeekNumber(collectionDate);
 
-                    const isRow2027 = is2027OrLater || (Number(parts[0]) >= 2027);
-                    const rowRatePln = isRow2027 ? 60 : 40;
-                    const rowRateEur = isRow2027 ? 15 : 10;
+                    const rowRatePln = activeRatePln;
+                    const rowRateEur = activeRateEur;
 
                     const eveningBefore = new Date(collectionDate);
                     eveningBefore.setDate(eveningBefore.getDate() - 1);
