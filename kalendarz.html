@@ -145,16 +145,6 @@
         border-radius: 20px;
     }
 
-    .prep-fee-hero-pill {
-        background: rgba(56, 189, 248, 0.14);
-        border: 1px solid rgba(56, 189, 248, 0.42);
-        color: #7dd3fc;
-        font-size: 0.83rem;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
-    }
-
     .hero-features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -647,38 +637,6 @@
         scroll-margin-top: 16px;
     }
 
-    /* Informacja o opłacie za czas przygotowania przy pojedynczym terminie (1 dzień) */
-    .single-term-prep-box {
-        display: none;
-        background: rgba(56, 189, 248, 0.12);
-        border: 1px solid rgba(56, 189, 248, 0.45);
-        border-radius: 8px;
-        padding: 11px 14px;
-        color: #e0f2fe;
-        font-size: 0.85rem;
-        line-height: 1.45;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .single-term-prep-box.is-visible {
-        display: flex;
-    }
-    .single-term-prep-top {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .cart-nearby-suggestions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 6px;
-        padding-top: 6px;
-        border-top: 1px dashed rgba(56, 189, 248, 0.35);
-        font-size: 0.8rem;
-        color: #e2e8f0;
-    }
-
     .cart-top-row {
         display: flex;
         flex-direction: column;
@@ -1008,7 +966,6 @@
                     <h2 id="cal-title">Kalendarz Wystawek (2 najbliższe tygodnie)</h2>
                     <span class="year-badge notranslate" translate="no" id="header-years-badge">DE 2026</span>
                     <span class="price-hero-pill" id="dynamic-cal-price-badge">💰 Stawka: 40 PLN / dzień</span>
-                    <span class="prep-fee-hero-pill" id="dynamic-prep-fee-badge">⏱️ 1 termin: +40 PLN opłaty przygotowawczej</span>
                 </div>
             </div>
             
@@ -1045,17 +1002,6 @@
                             <!-- Generowane dynamicznie wg kraju -->
                         </span>
                     </div>
-                </div>
-
-                <!-- INFORMACJA O EKSTRA OPŁACIE PRZYGOTOWANIA PRZY 1 TERMINIE -->
-                <div class="single-term-prep-box" id="singleTermPrepBox">
-                    <div class="single-term-prep-top">
-                        <span style="font-size: 1.2rem; line-height: 1;">⏱️</span>
-                        <div id="singleTermPrepText">
-                            <strong>Zamówienie pojedynczego terminu:</strong> Doliczono jednorazową opłatę <strong>40 PLN</strong> za czas przygotowania. Dodaj drugi dzień, aby zamawiać bez opłaty przygotowawczej!
-                        </div>
-                    </div>
-                    <div class="cart-nearby-suggestions" id="cartNearbySuggestions" style="display:none;"></div>
                 </div>
 
                 <!-- OPCJA DODATKOWA W KOSZYKU: MAPA Z NANIESIONYMI ADRESAMI -->
@@ -1357,10 +1303,6 @@
             return (str || "").toLowerCase().replace(/[\u2010-\u2015\-]/g, '-').replace(/\s+/g, ' ').trim();
         }
 
-        function formatRegionLabel(str) {
-            return (str || "").replace(/(^|[\s\-\/\(])([a-zäöüß])/g, (m, p1, p2) => p1 + p2.toUpperCase());
-        }
-
         function getNeighborKeysForRegion(rName) {
             const key = cleanNameForCompare(rName);
             const result = new Set();
@@ -1574,30 +1516,29 @@
             var userLang = userLangRaw.substring(0, 2).toLowerCase();
             const isPolish = (userLang === 'pl');
 
+            const now = new Date();
+            const is2027OrLater = (now.getFullYear() >= 2027);
+            const activeRatePln = is2027OrLater ? 60 : 40;
+            const activeRateEur = is2027OrLater ? 15 : 10;
+
             const currencyUnit = isPolish ? "PLN" : "€";
             const currencyCode = isPolish ? "PLN" : "EUR";
             const phoneOrder = "+48600812820";
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const smsSeparator = isIOS ? "&" : "?";
 
-            // Podmiana tekstów cenowych i informacji o opłacie za czas przygotowania przy 1 terminie
+            // Podmiana tekstów cenowych w nagłówku w zależności od roku (od 1 stycznia 2027: 60 PLN / 15 €)
             const priceBadgeEl = document.getElementById('dynamic-cal-price-badge');
-            const prepFeeBadgeEl = document.getElementById('dynamic-prep-fee-badge');
             const rateInlineEl = document.getElementById('dynamic-cal-rate-inline');
             if (priceBadgeEl) {
                 priceBadgeEl.textContent = isPolish 
-                    ? '💰 Stawka: 40 PLN / dzień' 
-                    : (userLang === 'de' ? '💰 Preis: 10 € / Tag' : '💰 Rate: 10 € / day');
-            }
-            if (prepFeeBadgeEl) {
-                prepFeeBadgeEl.textContent = isPolish
-                    ? '⏱️ 1 termin: +40 PLN za czas przygotowania'
-                    : (userLang === 'de' ? '⏱️ 1 Termin: +10 € Vorbereitungsgebühr' : '⏱️ 1 date: +10 € preparation fee');
+                    ? `💰 Stawka: ${activeRatePln} PLN / dzień` 
+                    : (userLang === 'de' ? `💰 Preis: ${activeRateEur} € / Tag` : `💰 Rate: ${activeRateEur} € / day`);
             }
             if (rateInlineEl) {
                 rateInlineEl.textContent = isPolish 
-                    ? '40 PLN / dzień za raport' 
-                    : (userLang === 'de' ? '10 € / Tag' : '10 € / day for report');
+                    ? `${activeRatePln} PLN / dzień za raport` 
+                    : (userLang === 'de' ? `${activeRateEur} € / Tag` : `${activeRateEur} € / day for report`);
             }
 
             // Metody płatności z ograniczeniem dla PL / Zagranica
@@ -1629,7 +1570,6 @@
             const globalOrderBadge = document.getElementById('global-order-id');
             if (globalOrderBadge) globalOrderBadge.textContent = globalOrderId;
 
-            const now = new Date();
             const tomorrowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
             tomorrowMidnight.setHours(0, 0, 0, 0);
 
@@ -1650,7 +1590,7 @@
 
             const holidayCache = {};
             let horizonEndSunday = new Date(currentWeekMonday);
-            let currentHasSaturdayTerm = false; // domyślnie tryb czwartek 18:00
+            let currentHasSaturdayTerm = false;
 
             function updateSwitchDescription(hasSaturdayTerm) {
                 const descEl = document.getElementById('switch-rule-info');
@@ -1868,9 +1808,8 @@
 
                 const calInfoHTML = `
                     <div class="calendar-info">
-                        <h3>ℹ️ Informacje o kalendarzu i zasadach zamówień</h3>
+                        <h3>ℹ️ Informacje o kalendarzu i zasięgu świąt</h3>
                         <ul>
-                            <li><strong>Zamówienie pojedynczego terminu (1 dzień):</strong> Możesz zamówić nawet 1 termin — doliczana jest wtedy jednorazowa opłata za czas przygotowania (<strong>40 PLN</strong> / <strong>10 €</strong>). Od 2 dni wzwyż obowiązuje wyłącznie standardowa stawka dzienna.</li>
                             <li id="switch-rule-info"></li>
                             <li>${closestRegionalDesc}</li>
                         </ul>
@@ -1891,9 +1830,6 @@
             const submitBtn = document.getElementById('cart-submit-btn');
             const mapAddonCheckbox = document.getElementById('calMapAddonCheckbox');
             const mapAddonBox = document.getElementById('calMapAddonBox');
-            const singleTermPrepBox = document.getElementById('singleTermPrepBox');
-            const singleTermPrepText = document.getElementById('singleTermPrepText');
-            const cartNearbySuggestions = document.getElementById('cartNearbySuggestions');
 
             // =========================================================================
             // POBIERANIE TERMINÓW Z KOLEJNEGO TYGODNIA WIDOCZNEGO W KALENDARZU
@@ -2154,6 +2090,17 @@
                 });
             }
 
+            // Stawka dzienna: 40 PLN / 10 € w 2026, a od 1 stycznia 2027: 60 PLN / 15 €
+            function getRateForDateDisplay(dateDisp, isEuro) {
+                const ymd = displayToYMD(dateDisp);
+                const parsedYear = parseInt(ymd.split('-')[0], 10);
+                const effectiveYear = Math.max(now.getFullYear(), isNaN(parsedYear) ? now.getFullYear() : parsedYear);
+                if (effectiveYear >= 2027) {
+                    return isEuro ? 15.00 : 60.00;
+                }
+                return isEuro ? 10.00 : 40.00;
+            }
+
             function calculateTotals() {
                 const totalTermsCount = globalCart.size;
                 const isEuro = !isPolish;
@@ -2190,8 +2137,6 @@
                         czyKorytarzWspolny: false,
                         isMapSelected: isMapSelected,
                         ratePerDay: 0,
-                        prepFee: 0,
-                        baseNetto: 0,
                         regularPrice: 0,
                         savings: 0,
                         discountPercent: 0,
@@ -2230,36 +2175,30 @@
                 }
 
                 let billableDaysTotal = 0;
+                let baseNettoStandardTotal = 0;
+
                 clusters.forEach(clusterGroup => {
                     let clusterDatesUnion = new Set();
                     clusterGroup.forEach(rKey => {
                         (regionDatesMap[rKey] || []).forEach(d => clusterDatesUnion.add(d));
                     });
                     billableDaysTotal += clusterDatesUnion.size;
+                    clusterDatesUnion.forEach(d => {
+                        baseNettoStandardTotal += getRateForDateDisplay(d, isEuro);
+                    });
                 });
 
                 const totalDays = billableDaysTotal;
                 const isSingleCluster = (clusters.length === 1 && selectedRegionsCount > 1);
                 const czyKorytarzWspolny = (selectedRegionsCount > 1);
 
-                // BAZOWA CENA KATALOGOWA ZA 1 DZIEŃ (40 PLN w PL / 10 EUR poza PL)
-                const baseRateStandard = isEuro ? 10.00 : 40.00;
                 let discountPercent = 0;
 
-                const reportRateNoMap = Math.round((baseRateStandard * (1 - discountPercent / 100)) * 100) / 100;
-
-                // Doliczenie +100% wartości stawki dziennej za przygotowanie mapy z naniesionymi adresami
+                // Doliczenie +100% wartości zamówienia za przygotowanie mapy z naniesionymi adresami
                 const mapMultiplier = isMapSelected ? 2.0 : 1.0;
-                const ratePerDay = Math.round((reportRateNoMap * mapMultiplier) * 100) / 100;
-                const regularBaseReference = Math.round((baseRateStandard * mapMultiplier) * 100) / 100;
-
-                const baseNetto = Math.round((totalDays * ratePerDay) * 100) / 100;
-
-                // Ekstra opłata za czas przygotowania (40 PLN / 10 €) przy zamówieniu pojedynczego terminu (1 dzień rozliczeniowy)
-                const prepFee = (totalDays === 1) ? (isEuro ? 10.00 : 40.00) : 0;
-
-                const regularPrice = Math.round(((totalDays * regularBaseReference) + prepFee) * 100) / 100;
-                const totalNetto = Math.round((baseNetto + prepFee) * 100) / 100;
+                const totalNetto = Math.round((baseNettoStandardTotal * mapMultiplier) * 100) / 100;
+                const regularPrice = totalNetto;
+                const ratePerDay = totalDays > 0 ? Math.round((totalNetto / totalDays) * 100) / 100 : 0;
                 const savings = Math.max(0, Math.round((regularPrice - totalNetto) * 100) / 100);
 
                 const defaultMethod = isPolish ? "BLIK (+48 733 035 301)" : "PAYPAL (ewabu74@gmail.com)";
@@ -2285,8 +2224,6 @@
                     czyKorytarzWspolny: czyKorytarzWspolny,
                     isMapSelected: isMapSelected,
                     ratePerDay: ratePerDay,
-                    prepFee: prepFee,
-                    baseNetto: baseNetto,
                     regularPrice: regularPrice,
                     savings: savings,
                     discountPercent: discountPercent,
@@ -2358,69 +2295,8 @@
                 });
             }
 
-            async function updateCartSingleTermSuggestions(uniqueRegions, grouped) {
-                if (!cartNearbySuggestions) return;
-
-                const sortedYmds = Object.keys(grouped).map(displayToYMD).sort();
-                const latestYmd = sortedYmds[sortedYmds.length - 1];
-                if (!latestYmd) {
-                    cartNearbySuggestions.style.display = 'none';
-                    return;
-                }
-
-                const suggestions = [];
-                const seenKeys = new Set();
-                globalCart.forEach((v, k) => seenKeys.add(k));
-
-                for (const reg of uniqueRegions) {
-                    const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
-                    const nextWeekProps = await findNextVisibleWeekProposals(latestYmd, reg, infoObj ? infoObj.land : '');
-                    nextWeekProps.forEach(p => {
-                        const k = `${p.dateDisplay}_${p.region}`;
-                        if (!seenKeys.has(k) && suggestions.length < 4) {
-                            seenKeys.add(k);
-                            suggestions.push({ ...p, isNextWeek: true });
-                        }
-                    });
-                }
-
-                for (const reg of uniqueRegions) {
-                    if (suggestions.length >= 4) break;
-                    const infoObj = currentDayRegionsList.find(r => cleanNameForCompare(r.region) === cleanNameForCompare(reg));
-                    const sameDayProps = buildSameDayNearbyProposals(reg, infoObj ? infoObj.land : '');
-                    sameDayProps.forEach(p => {
-                        const k = `${p.dateDisplay}_${p.region}`;
-                        if (!seenKeys.has(k) && suggestions.length < 4) {
-                            seenKeys.add(k);
-                            suggestions.push({ ...p, isNextWeek: false });
-                        }
-                    });
-                }
-
-                if (suggestions.length > 0) {
-                    const prefixLbl = isPolish ? '🧭 Dobierz 2. dzień (bez opłaty przygotowawczej):' : '🧭 2. Tag ergänzen (ohne Vorbereitungsgebühr):';
-                    cartNearbySuggestions.innerHTML = `<strong style="color:#7dd3fc;">${prefixLbl}</strong> ` +
-                        suggestions.map(p =>
-                            `<button type="button" class="btn-nearby-chip ${p.isNextWeek ? 'is-next-week' : ''}" data-cart-add-reg="${encodeURIComponent(p.region)}" data-cart-add-date="${p.dateDisplay}">➕ ${p.region} (${p.dateDisplay})</button>`
-                        ).join('');
-                    cartNearbySuggestions.style.display = 'flex';
-
-                    cartNearbySuggestions.querySelectorAll('[data-cart-add-reg]').forEach(b => {
-                        b.addEventListener('click', function() {
-                            const r = decodeURIComponent(this.getAttribute('data-cart-add-reg'));
-                            const d = this.getAttribute('data-cart-add-date');
-                            globalCart.set(`${d}_${r}`, { date: d, region: r });
-                            refreshCartUI();
-                        });
-                    });
-                } else {
-                    cartNearbySuggestions.style.display = 'none';
-                }
-            }
-
             function refreshCartUI() {
                 const calc = calculateTotals();
-                const isSingleDayOrder = (calc.billableDays === 1);
 
                 const uniqueRegions = new Set();
                 const grouped = {};
@@ -2446,8 +2322,7 @@
                     cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniTrasyOdmiana}${modeTag})`;
 
                     if (floatingDockCount) {
-                        const prepDockNote = isSingleDayOrder ? ` • +${calc.prepFee.toFixed(0)} PLN przygotowanie` : '';
-                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}${prepDockNote}`;
+                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}`;
                     }
                 } else {
                     let modeTagDe = '';
@@ -2459,47 +2334,24 @@
                     cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
 
                     if (floatingDockCount) {
-                        const prepDockNoteDe = isSingleDayOrder ? ` • +${calc.prepFee.toFixed(0)} € Vorbereitung` : '';
-                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}${prepDockNoteDe}`;
-                    }
-                }
-
-                // Obsługa informacji o opłacie za czas przygotowania przy zamówieniu 1 terminu
-                if (singleTermPrepBox && singleTermPrepText) {
-                    if (calc.termsCount > 0 && isSingleDayOrder) {
-                        singleTermPrepBox.classList.add('is-visible');
-                        singleTermPrepText.innerHTML = isPolish
-                            ? `<strong>Zamówienie pojedynczego terminu (1 dzień):</strong> Doliczono jednorazową opłatę <strong>${calc.prepFee.toFixed(2)} PLN</strong> za czas przygotowania. Możesz zamówić od razu albo dobrać 2. dzień z okolicy / kolejnego tygodnia (wtedy opłata przygotowawcza znika).`
-                            : `<strong>Einzeltermin-Bestellung (1 Tag):</strong> Es fällt eine einmalige Vorbereitungsgebühr von <strong>${calc.prepFee.toFixed(2)} €</strong> an. Sie können direkt bestellen oder einen 2. Tag ergänzen (dann entfällt die Vorbereitungsgebühr).`;
-
-                        updateCartSingleTermSuggestions(uniqueRegions, grouped);
-                    } else {
-                        singleTermPrepBox.classList.remove('is-visible');
-                        if (cartNearbySuggestions) cartNearbySuggestions.style.display = 'none';
+                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}`;
                     }
                 }
 
                 let discountTag = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
                 let mapBadgeNote = calc.isMapSelected ? (isPolish ? ' | 🗺️ Z mapą adresów' : ' | 🗺️ Inkl. Adresskarte') : '';
-                let prepFeeNotePart = calc.prepFee > 0
-                    ? (isPolish ? ` + opłata za czas przygotowania: ${calc.prepFee.toFixed(2)} PLN` : ` + Vorbereitungsgebühr: ${calc.prepFee.toFixed(2)} €`)
-                    : '';
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
                     cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}${discountTag}`;
                     cartFeeNoteEl.style.display = "inline";
                     cartFeeNoteEl.textContent = isPolish
-                        ? `(termin: ${calc.baseNetto.toFixed(2)} PLN${prepFeeNotePart} + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${mapBadgeNote})`
-                        : `(Termin: ${calc.baseNetto.toFixed(2)} €${prepFeeNotePart} + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${mapBadgeNote})`;
+                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${mapBadgeNote})`
+                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${mapBadgeNote})`;
                 } else {
                     cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}${discountTag}`;
-                    if (calc.prepFee > 0 || calc.savings > 0 || calc.isMapSelected) {
+                    if (calc.savings > 0 || calc.isMapSelected) {
                         cartFeeNoteEl.style.display = "inline";
-                        if (calc.prepFee > 0) {
-                            cartFeeNoteEl.textContent = isPolish
-                                ? `(termin: ${calc.baseNetto.toFixed(2)} PLN${prepFeeNotePart}${mapBadgeNote})`
-                                : `(Termin: ${calc.baseNetto.toFixed(2)} €${prepFeeNotePart}${mapBadgeNote})`;
-                        } else if (calc.savings > 0) {
+                        if (calc.savings > 0) {
                             cartFeeNoteEl.textContent = isPolish
                                 ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN${mapBadgeNote})`
                                 : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €${mapBadgeNote})`;
@@ -2595,20 +2447,14 @@
                             paymentInfoText += ` (Kwota: ${calc.finalAmount.toFixed(2)} ${currencyUnit})`;
                         }
 
-                        const prepFeeLine = calc.prepFee > 0
-                            ? (isPolish
-                                ? `\nOpłata za czas przygotowania (1 termin): ${calc.prepFee.toFixed(2)} PLN`
-                                : `\nVorbereitungsgebühr (1 Termin): ${calc.prepFee.toFixed(2)} €`)
-                            : '';
-
                         const wariantPakietuTekst = calc.isMapSelected 
                             ? (isPolish ? "Raport + Mapa z naniesionymi adresami" : "Bericht + Karte mit Adressen")
                             : (isPolish ? "Raport Interaktywny (Jasny/Ciemny)" : "Interaktiver Bericht");
 
                         const trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
                         const krotkaWiadomosc = isPolish
-                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).${prepFeeLine}\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
-                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)${prepFeeLine}\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
+                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
 
                         // Payload zgodny ze strukturą zapisu w zestaw.html
                         const orderPayload = {
@@ -2621,7 +2467,6 @@
                             finalPrice: calc.finalAmount,
                             currency: currencyCode,
                             totalDays: calc.billableDays,
-                            prepFee: calc.prepFee || 0,
                             paymentMethod: calc.paymentMethod,
                             reportTheme: calc.isMapSelected ? "Raport+Mapa" : "Raport Interaktywny (Jasny/Ciemny)",
                             mapAddon: calc.isMapSelected,
@@ -2630,7 +2475,7 @@
                             weeks: weeksAndDatesList,
                             isRegularCustomer: false,
                             loyaltyClientId: "",
-                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst}${calc.prepFee > 0 ? ` | Opłata przygotowania: ${calc.prepFee.toFixed(2)} ${currencyCode}` : ''} | Terminy:${detailsText.replace(/\n/g, ' ')}`
+                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst} | Terminy:${detailsText.replace(/\n/g, ' ')}`
                         };
 
                         const staryTekstBtn = submitBtn.innerHTML;
@@ -2699,9 +2544,7 @@
                 } else {
                     submitBtn.classList.add('disabled');
                     submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.innerHTML = isPolish
-                        ? '🛒 Wybierz rejony, aby zamówić'
-                        : '🛒 Gebiete auswählen';
+                    submitBtn.innerHTML = isPolish ? '🛒 Wybierz rejony, aby zamówić' : '🛒 Gebiete auswählen';
                     submitBtn.onclick = null;
                 }
 
@@ -2733,6 +2576,10 @@
                     const targetDateFormatted = clickedDateStr;
                     const displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
                     const weekNumber = getISOWeekNumber(collectionDate);
+
+                    const isRow2027 = is2027OrLater || (Number(parts[0]) >= 2027);
+                    const rowRatePln = isRow2027 ? 60 : 40;
+                    const rowRateEur = isRow2027 ? 15 : 10;
 
                     const eveningBefore = new Date(collectionDate);
                     eveningBefore.setDate(eveningBefore.getDate() - 1);
@@ -2806,13 +2653,8 @@
                                                 <span style="font-size: 1.15rem;">📋</span>
                                                 <span style="color: #fff; font-size: 1.05rem; font-weight: 700;">${isPolish ? 'Oficjalny dzień wywozu:' : 'Offizieller Abholtermin:'} <span class="notranslate" translate="no" style="color: #2ecc71;">${displayDate}</span></span>
                                             </div>
-                                            <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
-                                                <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                    💰 ${isPolish ? 'Stawka: 40 PLN / dzień' : 'Preis: 10 € / Tag'}
-                                                </div>
-                                                <div style="background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                                                    ⏱️ ${isPolish ? '1 termin: +40 PLN przygotowanie' : '1 Termin: +10 € Vorbereitung'}
-                                                </div>
+                                            <div style="background: rgba(46, 204, 113, 0.14); border: 1px solid rgba(46, 204, 113, 0.4); color: #6aeb95; font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                                💰 ${isPolish ? `Stawka: ${rowRatePln} PLN / dzień` : `Preis: ${rowRateEur} € / Tag`}
                                             </div>
                                         </div>
 
@@ -2983,7 +2825,7 @@
                                     });
                                 });
 
-                                // Przycisk ➕ Kolejny dzień (akceptuje bieżący dzień; przy braku kolejnych dni proponuje z kolejnego tygodnia na stronie oraz z okolicy)
+                                // Przycisk ➕ Kolejny dzień
                                 resultsContent.querySelectorAll('.btn-add-next').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
@@ -3040,7 +2882,7 @@
                                     });
                                 });
 
-                                // Przycisk 📅 Cały tydzień (akceptuje dostępne dni w tym tygodniu; jeśli brak kolejnych dni w tym tygodniu, proponuje kolejny tydzień z kalendarza na stronie i okolicę)
+                                // Przycisk 📅 Cały tydzień
                                 resultsContent.querySelectorAll('.btn-add-week').forEach(btn => {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
