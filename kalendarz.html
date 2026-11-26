@@ -751,6 +751,72 @@
         line-height: 1.35;
     }
 
+    /* Strefa VIP / Kod rabatowy w koszyku */
+    .cart-vip-box {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        border-radius: 8px;
+        padding: 12px 14px;
+        transition: all 0.2s ease;
+    }
+    .cart-vip-box.is-active {
+        background: rgba(46, 204, 113, 0.1);
+        border-color: #2ecc71;
+    }
+    .cart-vip-toggle-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #fde68a;
+    }
+    .cart-vip-toggle-label input[type="checkbox"] {
+        width: 19px;
+        height: 19px;
+        accent-color: #2ecc71;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .cart-vip-details {
+        display: none;
+        margin-top: 10px;
+        padding-left: 29px;
+    }
+    .cart-vip-input-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .btn-vip-apply {
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        color: #050a07;
+        font-weight: 800;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.84rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: filter 0.15s ease;
+    }
+    .btn-vip-apply:hover:not(:disabled) {
+        filter: brightness(1.1);
+    }
+    .btn-vip-apply:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    .cart-vip-status {
+        font-size: 0.82rem;
+        margin-top: 6px;
+        font-weight: 600;
+        display: none;
+    }
+
     /* Wybór metody płatności i kanału w belce */
     .payment-select-group {
         display: flex;
@@ -1067,6 +1133,21 @@
                             <span class="cart-map-addon-desc" id="calMapAddonDesc">Interaktywna mapa online z naniesionymi punktami odbioru, podziałem na dni tygodnia oraz warstwami nawigacyjnymi.</span>
                         </div>
                     </label>
+                </div>
+
+                <!-- STREFA VIP / STAŁEGO KLIENTA / KOD RABATOWY -->
+                <div class="cart-vip-box" id="calVipBox">
+                    <label class="cart-vip-toggle-label" for="calRegularCustomerOption">
+                        <input type="checkbox" id="calRegularCustomerOption" />
+                        <span id="calVipToggleTitle">👑 Strefa VIP / Stały klient (Posiadam kod rabatowy)</span>
+                    </label>
+                    <div class="cart-vip-details" id="calRegularCustomerDetails">
+                        <div class="cart-vip-input-row">
+                            <input type="text" id="calRegularClientIdInput" class="cart-client-input" placeholder="Wpisz kod rabatowy VIP lub ID..." style="flex: 1; min-width: 180px; text-transform: uppercase;" />
+                            <button type="button" id="calBtnCheckLoyalty" class="btn-vip-apply">Zastosuj</button>
+                        </div>
+                        <div id="calLoyaltyStatusMessage" class="cart-vip-status"></div>
+                    </div>
                 </div>
 
                 <!-- WYBÓR KANAŁU PRZEKAZANIA ZAMÓWIENIA -->
@@ -1468,6 +1549,7 @@
         let currentDayRegionsList = [];
         let visibleClickableDatesYMD = [];
         const fetchedDayCache = new Map();
+        let activeLoyaltyDiscount = null;
 
         const sessionNow = new Date();
         const tY = sessionNow.getFullYear();
@@ -1648,6 +1730,24 @@
                         <label class="payment-label"><input type="radio" name="cartPaymentMethod" value="IBAN (PL33 1020 5297 0000 1702 0290 9323)"> Überweisung (IBAN)</label>
                     `;
                 }
+            }
+
+            // Tłumaczenia sekcji VIP
+            const vipToggleTitle = document.getElementById('calVipToggleTitle');
+            const vipInput = document.getElementById('calRegularClientIdInput');
+            const vipApplyBtn = document.getElementById('calBtnCheckLoyalty');
+            if (vipToggleTitle) {
+                vipToggleTitle.textContent = isPolish
+                    ? '👑 Strefa VIP / Stały klient (Posiadam kod rabatowy)'
+                    : (userLang === 'de' ? '👑 VIP-Bereich / Stammkunde (Rabattcode vorhanden)' : '👑 VIP Zone / Regular customer (I have a discount code)');
+            }
+            if (vipInput) {
+                vipInput.placeholder = isPolish
+                    ? 'Wpisz kod rabatowy VIP lub ID...'
+                    : (userLang === 'de' ? 'VIP-Rabattcode oder ID eingeben...' : 'Enter VIP discount code or ID...');
+            }
+            if (vipApplyBtn) {
+                vipApplyBtn.textContent = isPolish ? 'Zastosuj' : (userLang === 'de' ? 'Einlösen' : 'Apply');
             }
 
             // Domyślny kanał przekazania zamówienia
@@ -1925,6 +2025,118 @@
             const submitBtn = document.getElementById('cart-submit-btn');
             const mapAddonCheckbox = document.getElementById('calMapAddonCheckbox');
             const mapAddonBox = document.getElementById('calMapAddonBox');
+
+            // =========================================================================
+            // OBSŁUGA STREFY VIP / KODÓW RABATOWYCH STAŁEGO KLIENTA
+            // =========================================================================
+            const calVipBox = document.getElementById('calVipBox');
+            const calRegCustChk = document.getElementById('calRegularCustomerOption');
+            const calRegCustDetails = document.getElementById('calRegularCustomerDetails');
+            const calVipCodeInput = document.getElementById('calRegularClientIdInput');
+            const calBtnCheckLoyalty = document.getElementById('calBtnCheckLoyalty');
+            const calLoyaltyStatusMsg = document.getElementById('calLoyaltyStatusMessage');
+
+            if (calRegCustChk) {
+                calRegCustChk.addEventListener('change', function() {
+                    if (calRegCustDetails) {
+                        calRegCustDetails.style.display = this.checked ? 'block' : 'none';
+                    }
+                    if (!this.checked) {
+                        activeLoyaltyDiscount = null;
+                        if (calVipBox) calVipBox.classList.remove('is-active');
+                        if (calLoyaltyStatusMsg) calLoyaltyStatusMsg.style.display = 'none';
+                        if (calVipCodeInput) calVipCodeInput.value = '';
+                        refreshCartUI();
+                    }
+                });
+            }
+
+            if (calVipCodeInput) {
+                calVipCodeInput.addEventListener('input', function() {
+                    if (activeLoyaltyDiscount) {
+                        activeLoyaltyDiscount = null;
+                        if (calVipBox) calVipBox.classList.remove('is-active');
+                        if (calLoyaltyStatusMsg) calLoyaltyStatusMsg.style.display = 'none';
+                        refreshCartUI();
+                    }
+                });
+                calVipCodeInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (calBtnCheckLoyalty) calBtnCheckLoyalty.click();
+                    }
+                });
+            }
+
+            if (calBtnCheckLoyalty) {
+                calBtnCheckLoyalty.addEventListener('click', function() {
+                    const idVal = (calVipCodeInput ? calVipCodeInput.value : '').trim();
+                    if (!idVal) {
+                        if (calLoyaltyStatusMsg) {
+                            calLoyaltyStatusMsg.style.display = 'block';
+                            calLoyaltyStatusMsg.style.color = '#ef4444';
+                            calLoyaltyStatusMsg.textContent = isPolish
+                                ? '⚠️ Wpisz kod rabatowy VIP.'
+                                : (userLang === 'de' ? '⚠️ Bitte geben Sie einen VIP-Rabattcode ein.' : '⚠️ Please enter a VIP discount code.');
+                        }
+                        return;
+                    }
+
+                    const origBtnLabel = calBtnCheckLoyalty.textContent;
+                    calBtnCheckLoyalty.textContent = isPolish ? 'Sprawdzam...' : (userLang === 'de' ? 'Prüfe...' : 'Checking...');
+                    calBtnCheckLoyalty.disabled = true;
+
+                    fetch(SCRIPT_URL + "?action=checkDiscount&clientId=" + encodeURIComponent(idVal))
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!calLoyaltyStatusMsg) return;
+                            calLoyaltyStatusMsg.style.display = 'block';
+
+                            if (data && data.status === "OK" && data.found) {
+                                activeLoyaltyDiscount = {
+                                    type: String(data.discountType).toUpperCase(),
+                                    value: Number(data.discountValue),
+                                    clientName: data.clientName || "",
+                                    clientId: idVal.toUpperCase()
+                                };
+                                if (calVipBox) calVipBox.classList.add('is-active');
+                                calLoyaltyStatusMsg.style.color = '#2ecc71';
+                                const unit = activeLoyaltyDiscount.type === 'PROCENT' ? '%' : ` ${currencyUnit}`;
+                                calLoyaltyStatusMsg.innerHTML = isPolish
+                                    ? `👑 Zastosowano rabat VIP: <b>-${activeLoyaltyDiscount.value}${unit}</b>`
+                                    : (userLang === 'de'
+                                        ? `👑 VIP-Rabatt angewendet: <b>-${activeLoyaltyDiscount.value}${unit}</b>`
+                                        : `👑 VIP discount applied: <b>-${activeLoyaltyDiscount.value}${unit}</b>`);
+                            } else {
+                                activeLoyaltyDiscount = null;
+                                if (calVipBox) calVipBox.classList.remove('is-active');
+                                calLoyaltyStatusMsg.style.color = '#fbbf24';
+                                calLoyaltyStatusMsg.innerHTML = isPolish
+                                    ? `Kod oczekuje na weryfikację. Zostanie uwzględniony przy potwierdzeniu zamówienia.`
+                                    : (userLang === 'de'
+                                        ? `Code wartet auf Prüfung und wird bei der Bestellbestätigung berücksichtigt.`
+                                        : `Code pending verification. It will be applied upon order confirmation.`);
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Błąd weryfikacji rabatu VIP:", err);
+                            if (calLoyaltyStatusMsg) {
+                                calLoyaltyStatusMsg.style.display = 'block';
+                                calLoyaltyStatusMsg.style.color = '#ef4444';
+                                calLoyaltyStatusMsg.textContent = isPolish
+                                    ? '❌ Błąd połączenia. Spróbuj ponownie.'
+                                    : (userLang === 'de' ? '❌ Verbindungsfehler. Bitte erneut versuchen.' : '❌ Connection error. Please try again.');
+                            }
+                            activeLoyaltyDiscount = null;
+                            if (calVipBox) calVipBox.classList.remove('is-active');
+                        })
+                        .finally(() => {
+                            calBtnCheckLoyalty.textContent = origBtnLabel;
+                            calBtnCheckLoyalty.disabled = false;
+                            refreshCartUI();
+                        });
+                });
+            }
 
             // =========================================================================
             // POBIERANIE TERMINÓW Z KOLEJNEGO TYGODNIA WIDOCZNEGO W KALENDARZU
@@ -2229,6 +2441,7 @@
                         regularPrice: 0,
                         savings: 0,
                         discountPercent: 0,
+                        loyaltyDeduction: 0,
                         totalNetto: 0,
                         finalAmount: 0,
                         paypalFee: 0,
@@ -2285,8 +2498,21 @@
 
                 // Doliczenie +100% wartości zamówienia za przygotowanie mapy z naniesionymi adresami
                 const mapMultiplier = isMapSelected ? 2.0 : 1.0;
-                const totalNetto = Math.round((baseNettoStandardTotal * mapMultiplier) * 100) / 100;
-                const regularPrice = totalNetto;
+                const regularPrice = Math.round((baseNettoStandardTotal * mapMultiplier) * 100) / 100;
+                let totalNetto = regularPrice;
+
+                // Kod rabatowy VIP / stałego klienta (jeśli aktywny)
+                let loyaltyDeduction = 0;
+                if (activeLoyaltyDiscount && totalNetto > 0) {
+                    if (activeLoyaltyDiscount.type === 'PROCENT') {
+                        discountPercent = activeLoyaltyDiscount.value;
+                        loyaltyDeduction = Math.round((totalNetto * (activeLoyaltyDiscount.value / 100)) * 100) / 100;
+                    } else if (activeLoyaltyDiscount.type === 'KWOTA') {
+                        loyaltyDeduction = Math.min(totalNetto, activeLoyaltyDiscount.value);
+                    }
+                    totalNetto = Math.max(0, Math.round((totalNetto - loyaltyDeduction) * 100) / 100);
+                }
+
                 const ratePerDay = totalDays > 0 ? Math.round((totalNetto / totalDays) * 100) / 100 : 0;
                 const savings = Math.max(0, Math.round((regularPrice - totalNetto) * 100) / 100);
 
@@ -2316,6 +2542,7 @@
                     regularPrice: regularPrice,
                     savings: savings,
                     discountPercent: discountPercent,
+                    loyaltyDeduction: loyaltyDeduction,
                     totalNetto: totalNetto,
                     finalAmount: finalAmount,
                     paypalFee: paypalFee,
@@ -2411,7 +2638,7 @@
                     cartCountEl.innerHTML = `${rejonyOdmiana} (${terminyOdmiana} / ${dniTrasyOdmiana}${modeTag})`;
 
                     if (floatingDockCount) {
-                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}`;
+                        floatingDockCount.textContent = `${rejonyOdmiana} • ${terminyOdmiana}${calc.isMapSelected ? ' + Mapa' : ''}${calc.loyaltyDeduction > 0 ? ' 👑 VIP' : ''}`;
                     }
                 } else {
                     let modeTagDe = '';
@@ -2423,27 +2650,40 @@
                     cartCountEl.innerHTML = `${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage${modeTagDe})`;
 
                     if (floatingDockCount) {
-                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}`;
+                        floatingDockCount.textContent = `${uniqueRegionsCount} Gebiete • ${calc.termsCount} Termine${calc.isMapSelected ? ' + Karte' : ''}${calc.loyaltyDeduction > 0 ? ' 👑 VIP' : ''}`;
                     }
                 }
 
-                let discountTag = calc.discountPercent > 0 ? ` [-${calc.discountPercent}%]` : '';
+                let discountTag = '';
+                if (activeLoyaltyDiscount && calc.loyaltyDeduction > 0) {
+                    discountTag = activeLoyaltyDiscount.type === 'PROCENT'
+                        ? ` [-${activeLoyaltyDiscount.value}% VIP]`
+                        : ` [-${calc.loyaltyDeduction.toFixed(2)} ${currencyUnit} VIP]`;
+                } else if (calc.discountPercent > 0) {
+                    discountTag = ` [-${calc.discountPercent}%]`;
+                }
+
                 let mapBadgeNote = calc.isMapSelected ? (isPolish ? ' | 🗺️ Z mapą adresów' : ' | 🗺️ Inkl. Adresskarte') : '';
+                let vipNote = (activeLoyaltyDiscount && calc.loyaltyDeduction > 0)
+                    ? (isPolish
+                        ? ` | 👑 Rabat VIP: -${calc.loyaltyDeduction.toFixed(2)} PLN`
+                        : ` | 👑 VIP-Rabatt: -${calc.loyaltyDeduction.toFixed(2)} €`)
+                    : '';
 
                 if (calc.isPaypal && calc.paypalFee > 0) {
                     cartTotalEl.textContent = `${calc.finalAmount.toFixed(2)} ${currencyUnit}${discountTag}`;
                     cartFeeNoteEl.style.display = "inline";
                     cartFeeNoteEl.textContent = isPolish
-                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${mapBadgeNote})`
-                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${mapBadgeNote})`;
+                        ? `(netto: ${calc.totalNetto.toFixed(2)} PLN + opłata PayPal: ${calc.paypalFee.toFixed(2)} PLN${vipNote}${mapBadgeNote})`
+                        : `(Netto: ${calc.totalNetto.toFixed(2)} € + PayPal-Gebühr: ${calc.paypalFee.toFixed(2)} €${vipNote}${mapBadgeNote})`;
                 } else {
                     cartTotalEl.textContent = `${calc.totalNetto.toFixed(2)} ${currencyUnit}${discountTag}`;
                     if (calc.savings > 0 || calc.isMapSelected) {
                         cartFeeNoteEl.style.display = "inline";
                         if (calc.savings > 0) {
                             cartFeeNoteEl.textContent = isPolish
-                                ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN${mapBadgeNote})`
-                                : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €${mapBadgeNote})`;
+                                ? `(Stawka: ${calc.ratePerDay.toFixed(2)} PLN/dzień | Oszczędzasz: ${calc.savings.toFixed(2)} PLN${vipNote}${mapBadgeNote})`
+                                : `(Preis: ${calc.ratePerDay.toFixed(2)} €/Tag | Ersparnis: ${calc.savings.toFixed(2)} €${vipNote}${mapBadgeNote})`;
                         } else {
                             cartFeeNoteEl.textContent = isPolish
                                 ? `(Pakiet: Raport + Mapa z naniesionymi adresami)`
@@ -2478,6 +2718,10 @@
                         const emailInput = document.getElementById('calClientEmailInput');
                         const emailVal = emailInput ? emailInput.value.trim() : '';
                         const emailError = document.getElementById('calEmailErrorMsg');
+
+                        const isRegular = calRegCustChk ? calRegCustChk.checked : false;
+                        const rawVipInputVal = calVipCodeInput ? calVipCodeInput.value.trim().toUpperCase() : '';
+                        const appliedVipCode = activeLoyaltyDiscount ? activeLoyaltyDiscount.clientId : rawVipInputVal;
 
                         // Walidacja numeru telefonu dla WA / SMS
                         if ((selectedOrderChannel === 'whatsapp' || selectedOrderChannel === 'sms') && phoneVal === '') {
@@ -2540,10 +2784,17 @@
                             ? (isPolish ? "Raport + Mapa z naniesionymi adresami" : "Bericht + Karte mit Adressen")
                             : (isPolish ? "Raport Interaktywny (Jasny/Ciemny)" : "Interaktiver Bericht");
 
+                        const vipLinePl = (isRegular && appliedVipCode)
+                            ? `\nKod VIP / Stały klient: ${appliedVipCode}${calc.loyaltyDeduction > 0 ? ` (-${calc.loyaltyDeduction.toFixed(2)} PLN)` : ' (do weryfikacji)'}`
+                            : '';
+                        const vipLineDe = (isRegular && appliedVipCode)
+                            ? `\nVIP-Code / Stammkunde: ${appliedVipCode}${calc.loyaltyDeduction > 0 ? ` (-${calc.loyaltyDeduction.toFixed(2)} €)` : ' (zur Prüfung)'}`
+                            : '';
+
                         const trybPakietu = calc.czyKorytarzWspolny ? "Pakiet tras / Korytarz wspólny" : "Pojedynczy rejon";
                         const krotkaWiadomosc = isPolish
-                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
-                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
+                            ? `Dzień dobry, zamawiam dostęp do rejonów [ID: ${globalOrderId}].\nTwój ID/Telefon: ${phoneVal || "Brak"}\nE-mail: ${emailVal || "Brak"}${vipLinePl}\nWariant: ${wariantPakietuTekst}\nTryb: ${trybPakietu}\nŁącznie: ${uniqueRegionsCount} rejonów | ${calc.termsCount} terminów (${calc.billableDays} dni w trasie).\nDo zapłaty: ${calc.finalAmount.toFixed(2)} PLN${discountTag}\nWybrane terminy zbiórek:${detailsText}\n${paymentInfoText}\nPozdrawiam.`
+                            : `Hallo, ich möchte Zugang für folgende Gebiete bestellen [Bestell-Nr: ${globalOrderId}]:\nTelefon/ID: ${phoneVal || "-"}\nE-Mail: ${emailVal || "-"}${vipLineDe}\nVariante: ${wariantPakietuTekst}\nGesamt: ${uniqueRegionsCount} Gebiete (${calc.termsCount} Termine / ${calc.billableDays} Fahrtage)\nZu zahlen: ${calc.finalAmount.toFixed(2)} €${discountTag}\nTermine:${detailsText}\n${paymentInfoText}. Danke!`;
 
                         // Payload zgodny ze strukturą zapisu w zestaw.html
                         const orderPayload = {
@@ -2562,9 +2813,9 @@
                             paypalFee: calc.paypalFee || 0,
                             regions: Array.from(uniqueRegions),
                             weeks: weeksAndDatesList,
-                            isRegularCustomer: false,
-                            loyaltyClientId: "",
-                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst} | Terminy:${detailsText.replace(/\n/g, ' ')}`
+                            isRegularCustomer: isRegular || false,
+                            loyaltyClientId: isRegular ? appliedVipCode : "",
+                            rawSummary: `Zapis z kalendarz.html (${selectedOrderChannel.toUpperCase()}) | Wariant: ${wariantPakietuTekst}${isRegular && appliedVipCode ? ` | VIP: ${appliedVipCode} (-${calc.loyaltyDeduction.toFixed(2)} ${currencyCode})` : ''} | Terminy:${detailsText.replace(/\n/g, ' ')}`
                         };
 
                         const staryTekstBtn = submitBtn.innerHTML;
