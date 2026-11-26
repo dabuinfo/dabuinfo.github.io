@@ -486,10 +486,6 @@
                     <span>Dzisiejsza stawka jednostkowa:</span>
                     <span id="calcUnitPrice" style="color: var(--accent-green); text-align: right;">...</span>
                 </div>
-                <div class="price-line" id="capStatusRow" style="display: none;">
-                    <span>Ochrona maksymalnej ceny (sufit):</span>
-                    <span id="calcCapSavings" style="color: var(--accent-gold); font-weight: bold; text-align: right;"></span>
-                </div>
                 <div id="specialPromoInfoRow" style="display: block; font-size: 0.82rem; color: var(--accent-orange); background: rgba(230, 126, 34, 0.12); border: 1px solid rgba(230, 126, 34, 0.4); border-radius: 6px; padding: 8px 10px; margin-top: 8px; line-height: 1.4;"></div>
                 <div class="price-total-line">
                     <span>ŁĄCZNA KWOTA:</span>
@@ -576,7 +572,7 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
-        // --- CICHA KONTROLA LIMITÓW (BEZ EKSPONOWANIA KWOT LIMITU W INTERFEJSIE) ---
+        // --- CICHA KONTROLA LIMITÓW (MAKS. 3 000,00 ZŁ / 700,00 € NA ZAMÓWIENIE) ---
         const BASE_MAX_SINGLE_ORDER_PLN = 3000.00;
         const BASE_MAX_SINGLE_ORDER_EUR = 700.00;
         let MAX_SINGLE_ORDER = isPolish ? BASE_MAX_SINGLE_ORDER_PLN : BASE_MAX_SINGLE_ORDER_EUR;
@@ -605,7 +601,7 @@
             });
         }
 
-        // --- OPCJA A: WZROST 4 -> 16 ZŁ (1 -> 4 €) DO 31.01.2027 + SUFIT 1 490 ZŁ / 375 € ZA REJON ---
+        // --- WZROST STAWKI DZIENNEJ 4 -> 16 ZŁ (1 -> 4 €) DO 31.01.2027 (BEZ SUFITU 1490 ZŁ) ---
         const START_DATE = new Date(2026, 10, 14); // 14 listopada 2026
         const LAST_PROMO_DAY = new Date(2027, 0, 31); // 31 stycznia 2027
         const TODAY_MIDNIGHT = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -618,8 +614,6 @@
 
         const MIN_RATE = isPolish ? 4.00 : 1.00;
         const MAX_RATE = isPolish ? 16.00 : 4.00;
-        const REGION_CAP_REPORT = isPolish ? 1490.00 : 375.00;
-        const REGION_CAP_COMBO = REGION_CAP_REPORT * 2;
 
         function getRateForDayIndex(dayIdx) {
             const raw = MIN_RATE + ((MAX_RATE - MIN_RATE) * (dayIdx / totalRampDays));
@@ -635,8 +629,6 @@
         const todayComboStr = formatMoney(BASE_RATE_DAY + MAP_SURCHARGE_DAY);
         const tomorrowStr = formatMoney(TOMORROW_BASE_RATE);
         const maxStr = formatMoney(MAX_RATE);
-        const capReportStr = formatMoney(REGION_CAP_REPORT);
-        const capComboStr = formatMoney(REGION_CAP_COMBO);
 
         // Aktualizacja opisów i etykiet cenowych
         const badgeReportPrice = document.getElementById('badgeReportPrice');
@@ -647,25 +639,25 @@
         const annualBannerSubtitle = document.getElementById('annualBannerSubtitle');
 
         if (badgeReportPrice) {
-            badgeReportPrice.textContent = `Dziś: ${todayStr} ${currencySymbol} / dzień (maks. ${capReportStr} ${currencySymbol} / rejon)`;
+            badgeReportPrice.textContent = `Dziś: ${todayStr} ${currencySymbol} / dzień`;
         }
         if (badgeMapSurcharge) {
-            badgeMapSurcharge.textContent = `Dopłata za mapę: +${todayStr} ${currencySymbol} / dzień (łącznie ${todayComboStr} ${currencySymbol} / dzień, maks. ${capComboStr} ${currencySymbol} / rejon)`;
+            badgeMapSurcharge.textContent = `Dopłata za mapę: +${todayStr} ${currencySymbol} / dzień (łącznie ${todayComboStr} ${currencySymbol} / dzień)`;
         }
         if (descFormatReport) {
-            descFormatReport.innerHTML = `Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic bez możliwości druku. <b>Dziś: ${todayStr} ${currencySymbol}/dzień</b> (limit roczny za powiat: maks. <b>${capReportStr} ${currencySymbol}</b>).`;
+            descFormatReport.innerHTML = `Podział na tygodnie kalendarzowe (KW), czytelne filtrowanie miejscowości i ulic bez możliwości druku. <b>Dziś: ${todayStr} ${currencySymbol}/dzień</b>.`;
         }
         if (descFormatMap) {
-            descFormatMap.innerHTML = `Pełny raport cyfrowy rozszerzony o interaktywną mapę GPS dzień po dniu. <b>Dziś: ${todayComboStr} ${currencySymbol}/dzień</b> (limit roczny za powiat: maks. <b>${capComboStr} ${currencySymbol}</b>).`;
+            descFormatMap.innerHTML = `Pełny raport cyfrowy rozszerzony o interaktywną mapę GPS dzień po dniu. <b>Dziś: ${todayComboStr} ${currencySymbol}/dzień</b>.`;
         }
         if (labelPriceYear) {
             labelPriceYear.textContent = `Dziś: ${todayStr} ${currencySymbol} / dzień`;
         }
         if (annualBannerSubtitle) {
             if (!isLastDay) {
-                annualBannerSubtitle.innerHTML = `📈 <b>Cena rośnie codziennie aż do 31 stycznia 2027 r.!</b> Dzisiejsza stawka to <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę), <b>jutro wzrośnie do ${tomorrowStr} ${currencySymbol}</b>, a 31.01 osiągnie <b>${maxStr} ${currencySymbol}/dzień</b> (gwarantowany sufit: maks. <b>${capReportStr} ${currencySymbol}</b> za raport lub <b>${capComboStr} ${currencySymbol}</b> z mapą za 1 rejon). Od 1 lutego sprzedaż roczna zostanie zamknięta.`;
+                annualBannerSubtitle.innerHTML = `📈 <b>Cena rośnie codziennie aż do 31 stycznia 2027 r.!</b> Dzisiejsza stawka to <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę), <b>jutro wzrośnie do ${tomorrowStr} ${currencySymbol}</b>, a 31.01 osiągnie <b>${maxStr} ${currencySymbol}/dzień</b>. Od 1 lutego sprzedaż roczna zostanie zamknięta.`;
             } else {
-                annualBannerSubtitle.innerHTML = `⏰ <b>Ostatni dzień akcji sprzedażowej (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę, maks. <b>${capReportStr} ${currencySymbol}</b> / <b>${capComboStr} ${currencySymbol}</b> za 1 rejon). Od jutra abonamenty roczne nie będą już dostępne.`;
+                annualBannerSubtitle.innerHTML = `⏰ <b>Ostatni dzień akcji sprzedażowej (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${todayStr} ${currencySymbol}/dzień</b> (+${todayStr} ${currencySymbol} za mapę). Od jutra abonamenty roczne nie będą już dostępne.`;
             }
         }
 
@@ -733,8 +725,6 @@
         const calcPlanName = document.getElementById('calcPlanName');
         const calcUnitPrice = document.getElementById('calcUnitPrice');
         const calcTotalPrice = document.getElementById('calcTotalPrice');
-        const capStatusRow = document.getElementById('capStatusRow');
-        const calcCapSavings = document.getElementById('calcCapSavings');
         const specialPromoInfoRow = document.getElementById('specialPromoInfoRow');
         const orderLimitAlertBox = document.getElementById('orderLimitAlertBox');
         const cardFormatReport = document.getElementById('cardFormatReport');
@@ -754,12 +744,6 @@
                 : BASE_RATE_DAY;
         }
 
-        function getActiveRegionCap() {
-            return currentFormat === 'Raport + Mapa' 
-                ? REGION_CAP_COMBO 
-                : REGION_CAP_REPORT;
-        }
-
         function getDaysForRegion(regName) {
             if (regionDaysMap[regName] !== undefined) return regionDaysMap[regName];
             if (regName === "Eifelkreis Bitburg-Prüm" && regionDaysMap["Bitburg-Prüm"] !== undefined) {
@@ -771,8 +755,7 @@
         function getRegionCost(regName) {
             const dni = getDaysForRegion(regName);
             const activeRate = getActiveRatePerDay();
-            const activeCap = getActiveRegionCap();
-            return Math.min(dni * activeRate, activeCap);
+            return Math.round(dni * activeRate * 100) / 100;
         }
 
         function closeQuarterSalesUI(nextStartText) {
@@ -791,7 +774,7 @@
             if (mainContainer) mainContainer.style.display = 'none';
         }
 
-        // Ciche blokowanie niezaznaczonych kafelków, gdy dodanie kolejnego rejonu przekroczyłoby dostępny limit
+        // Ciche blokowanie niezaznaczonych kafelków, gdy dodanie kolejnego rejonu przekroczyłoby limit 3000 zł (700 €) lub pulę kwartalną
         function refreshRegionCheckboxesAvailability() {
             const currentCount = selectedRegions.size;
             let currentSum = 0;
@@ -909,7 +892,7 @@
                     regionsList.forEach(regName => {
                         const dni = getDaysForRegion(regName);
                         if (dni > 0) {
-                            const cost = Math.min(dni * BASE_RATE_DAY, REGION_CAP_REPORT);
+                            const cost = Math.round(dni * BASE_RATE_DAY * 100) / 100;
                             if (cost < minActiveRegionCost) minActiveRegionCost = cost;
                         }
                     });
@@ -934,7 +917,7 @@
                             if (contentWrap && !contentWrap.querySelector('.promo-badge-inline')) {
                                 const promoSpan = document.createElement('span');
                                 promoSpan.className = 'promo-badge-inline';
-                                const regionPriceToday = Math.min(dni * BASE_RATE_DAY, REGION_CAP_REPORT);
+                                const regionPriceToday = Math.round(dni * BASE_RATE_DAY * 100) / 100;
                                 const regionPriceTodayStr = formatMoney(regionPriceToday);
 
                                 if (!isLastDay) {
@@ -997,32 +980,26 @@
             orderSection.style.display = 'block';
 
             const activeRate = getActiveRatePerDay();
-            const activeCap = getActiveRegionCap();
             const activeRateStr = formatMoney(activeRate);
-            const activeCapStr = formatMoney(activeCap);
 
             let sumaDniWszystkichRejonow = 0;
-            let sumaBezSufitu = 0;
-            let sumaZSufitem = 0;
+            let sumaLaczna = 0;
 
             selectedRegions.forEach(regName => {
                 const dni = getDaysForRegion(regName);
-                const kosztSurowy = dni * activeRate;
-                const kosztPoSuficie = Math.min(kosztSurowy, activeCap);
+                const kosztRejonu = dni * activeRate;
 
                 sumaDniWszystkichRejonow += dni;
-                sumaBezSufitu += kosztSurowy;
-                sumaZSufitem += kosztPoSuficie;
+                sumaLaczna += kosztRejonu;
             });
 
-            calculatedTotal = Math.round(sumaZSufitem * 100) / 100;
+            calculatedTotal = Math.round(sumaLaczna * 100) / 100;
             const totalFormatted = formatMoney(calculatedTotal);
-            const oszczednoscSufit = Math.round((sumaBezSufitu - sumaZSufitem) * 100) / 100;
             calculatedDays = sumaDniWszystkichRejonow;
 
             const totalInPln = isPolish ? calculatedTotal : (calculatedTotal * EUR_TO_PLN_SAFE_RATE);
 
-            // Cicha walidacja limitu pojedynczego zamówienia oraz puli kwartalnej
+            // Cicha walidacja limitu 3000 zł (700 €) oraz puli kwartalnej
             let limitErrorMsg = "";
             if (count > MAX_REGIONS_PER_ORDER) {
                 limitErrorMsg = `ℹ️ W jednym zamówieniu możesz wybrać maksymalnie <b>${MAX_REGIONS_PER_ORDER} rejony</b>. Odznacz jeden rejon, aby kontynuować.`;
@@ -1045,27 +1022,18 @@
 
             calcPlanName.innerHTML = `Abonament roczny (${selectedYear}) – łącznie <b>${sumaDniWszystkichRejonow} dni wywozu</b>`;
             if (currentFormat === 'Raport + Mapa') {
-                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień (${todayStr} ${currencySymbol} raport + ${todayStr} ${currencySymbol} mapa) • sufit ${activeCapStr} ${currencySymbol}/rej.`;
+                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień (${todayStr} ${currencySymbol} raport + ${todayStr} ${currencySymbol} mapa)`;
             } else {
-                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień wywozu • sufit ${activeCapStr} ${currencySymbol}/rej.`;
-            }
-
-            if (capStatusRow && calcCapSavings) {
-                if (oszczednoscSufit > 0) {
-                    capStatusRow.style.display = 'flex';
-                    calcCapSavings.textContent = `Aktywny limit ${activeCapStr} ${currencySymbol}/rej. (-${formatMoney(oszczednoscSufit)} ${currencySymbol})`;
-                } else {
-                    capStatusRow.style.display = 'none';
-                }
+                calcUnitPrice.textContent = `${activeRateStr} ${currencySymbol} / dzień wywozu`;
             }
 
             if (specialPromoInfoRow) {
                 if (!isLastDay) {
                     const tomorrowActiveStr = formatMoney(currentFormat === 'Raport + Mapa' ? TOMORROW_BASE_RATE * 2 : TOMORROW_BASE_RATE);
                     const maxActiveStr = formatMoney(currentFormat === 'Raport + Mapa' ? MAX_RATE * 2 : MAX_RATE);
-                    specialPromoInfoRow.innerHTML = `📈 <b>Gwarancja dzisiejszej ceny (${activeRateStr} ${currencySymbol}/dzień):</b> Stawka rośnie codziennie — jutro wyniesie <b>${tomorrowActiveStr} ${currencySymbol}/dzień</b>, a 31 stycznia 2027 r. osiągnie <b>${maxActiveStr} ${currencySymbol}/dzień</b> (maks. <b>${activeCapStr} ${currencySymbol}</b> za 1 rejon na cały rok). Po 31 stycznia sprzedaż rocznych terminów zostanie zakończona.`;
+                    specialPromoInfoRow.innerHTML = `📈 <b>Gwarancja dzisiejszej ceny (${activeRateStr} ${currencySymbol}/dzień):</b> Stawka rośnie codziennie — jutro wyniesie <b>${tomorrowActiveStr} ${currencySymbol}/dzień</b>, a 31 stycznia 2027 r. osiągnie <b>${maxActiveStr} ${currencySymbol}/dzień</b>. Po 31 stycznia sprzedaż rocznych terminów zostanie zakończona.`;
                 } else {
-                    specialPromoInfoRow.innerHTML = `⏰ <b>Ostatni dzień sprzedaży abonamentów rocznych (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${activeRateStr} ${currencySymbol}/dzień</b> (sufit <b>${activeCapStr} ${currencySymbol}</b> za rejon).`;
+                    specialPromoInfoRow.innerHTML = `⏰ <b>Ostatni dzień sprzedaży abonamentów rocznych (31.01.2027)!</b> Obowiązuje finałowa stawka <b>${activeRateStr} ${currencySymbol}/dzień</b>.`;
                 }
             }
 
@@ -1198,7 +1166,7 @@
                     regions: regionsArr,
                     totalPrice: calculatedTotal,
                     currency: currencyCode,
-                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny (stawka: ${todayStr} ${currencySymbol}/dzień, sufit: ${formatMoney(getActiveRegionCap())} ${currencySymbol}/rej.). Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
+                    rawSummary: `Format: ${currentFormat}. Plan: Abonament roczny (stawka: ${todayStr} ${currencySymbol}/dzień). Płatność: ${currentPayment}. Okres: ${okresOpis}. Tel: ${clientPhone}. Rejony: ${regionsArr.join(', ')}`
                 };
 
                 try {
