@@ -572,11 +572,11 @@
         const currencyCode = isPolish ? 'PLN' : 'EUR';
         const currencySymbol = isPolish ? 'zł' : '€';
 
-        // --- CICHA KONTROLA LIMITÓW (MAKS. 3 000,00 ZŁ / 700,00 € NA ZAMÓWIENIE) ---
-        const BASE_MAX_SINGLE_ORDER_PLN = 3000.00;
-        const BASE_MAX_SINGLE_ORDER_EUR = 700.00;
+        // --- CICHA KONTROLA LIMITÓW (MAKS. 5 000,00 ZŁ / 1 150,00 € NA ZAMÓWIENIE, MAKS. 2 REJONY) ---
+        const BASE_MAX_SINGLE_ORDER_PLN = 5000.00;
+        const BASE_MAX_SINGLE_ORDER_EUR = 1150.00;
         let MAX_SINGLE_ORDER = isPolish ? BASE_MAX_SINGLE_ORDER_PLN : BASE_MAX_SINGLE_ORDER_EUR;
-        const MAX_REGIONS_PER_ORDER = 3;
+        const MAX_REGIONS_PER_ORDER = 2;
         const EUR_TO_PLN_SAFE_RATE = 4.40;
 
         let quarterLimitPln = 9500.00;
@@ -601,7 +601,7 @@
             });
         }
 
-        // --- WZROST STAWKI DZIENNEJ 4 -> 16 ZŁ (1 -> 4 €) DO 31.01.2027 (BEZ SUFITU 1490 ZŁ) ---
+        // --- WZROST STAWKI DZIENNEJ 4 -> 16 ZŁ (1 -> 4 €) DO 31.01.2027 (BEZ SUFITU NA REJON) ---
         const START_DATE = new Date(2026, 10, 14); // 14 listopada 2026
         const LAST_PROMO_DAY = new Date(2027, 0, 31); // 31 stycznia 2027
         const TODAY_MIDNIGHT = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -774,7 +774,7 @@
             if (mainContainer) mainContainer.style.display = 'none';
         }
 
-        // Ciche blokowanie niezaznaczonych kafelków, gdy dodanie kolejnego rejonu przekroczyłoby limit 3000 zł (700 €) lub pulę kwartalną
+        // Ciche blokowanie niezaznaczonych kafelków, gdy dodanie kolejnego rejonu przekroczyłoby limit 5000 zł (1150 €) lub pulę kwartalną
         function refreshRegionCheckboxesAvailability() {
             const currentCount = selectedRegions.size;
             let currentSum = 0;
@@ -999,7 +999,7 @@
 
             const totalInPln = isPolish ? calculatedTotal : (calculatedTotal * EUR_TO_PLN_SAFE_RATE);
 
-            // Cicha walidacja limitu 3000 zł (700 €) oraz puli kwartalnej
+            // Cicha walidacja limitu 5000 zł (1150 €) oraz puli kwartalnej
             let limitErrorMsg = "";
             if (count > MAX_REGIONS_PER_ORDER) {
                 limitErrorMsg = `ℹ️ W jednym zamówieniu możesz wybrać maksymalnie <b>${MAX_REGIONS_PER_ORDER} rejony</b>. Odznacz jeden rejon, aby kontynuować.`;
