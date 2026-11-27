@@ -16,6 +16,30 @@
         const IS_SINGLE_DAY = !VACATION_TO || VACATION_TO.trim() === '' || VACATION_FROM.trim() === VACATION_TO.trim();
         const VACATION_DATES = IS_SINGLE_DAY ? VACATION_FROM.trim() : `${VACATION_FROM.trim()} – ${VACATION_TO.trim()}`;
 
+        // ========================================================
+        // KONFIGURACJA GODZIN KONTAKTU TELEFONICZNEGO
+        // Połączenia tylko Pn–Pt w godz. 16:00–20:00, poza tym tylko SMS
+        // ========================================================
+        const PHONE_RAW = '+48600812820';
+        const PHONE_DISPLAY = '+48 600 812 820';
+        const CALL_START_HOUR = 16; // od 16:00
+        const CALL_END_HOUR = 20;   // do 20:00 (wyłącznie)
+
+        function isCallAllowedNow() {
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Europe/Warsaw',
+                weekday: 'short',
+                hour: 'numeric',
+                hourCycle: 'h23'
+            }).formatToParts(new Date());
+
+            const weekday = parts.find(p => p.type === 'weekday')?.value;
+            const hour = parseInt(parts.find(p => p.type === 'hour')?.value, 10);
+            const isWeekday = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(weekday);
+
+            return isWeekday && hour >= CALL_START_HOUR && hour < CALL_END_HOUR;
+        }
+
         // Wykrywanie języka przeglądarki
         const browserLang = (navigator.language || navigator.userLanguage || 'de').substring(0, 2).toLowerCase();
 
@@ -290,7 +314,10 @@
                     <div class="dabu-footer-col">
                         <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                         <ul class="dabu-footer-contact">
-                            <li>📞 Zamówienia: <a href="tel:+48600812820">+48 600 812 820</a></li>
+                            <li id="dabu-phone-contact"></li>
+                            <li style="font-size: 0.82em; color: #888; line-height: 1.4;">
+                                🕒 Tel: Pn–Pt 16:00–20:00 | Poza godz. i weekendy: tylko SMS
+                            </li>
                             <li>📧 E-mail: <a href="mailto:kontakt@dabu-info.com">kontakt@dabu-info.com</a></li>
                             <li><a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">📍 56-300 Milicz (umów spotkanie)</a></li>
                         </ul>
@@ -347,6 +374,21 @@
                 </div>
             `;
             document.body.appendChild(footerElement);
+
+            // Dynamiczne przełączanie linku tel: / sms: w zależności od dnia i godziny
+            function updatePhoneContact() {
+                const phoneEl = document.getElementById('dabu-phone-contact');
+                if (!phoneEl) return;
+
+                if (isCallAllowedNow()) {
+                    phoneEl.innerHTML = `📞 Zamówienia: <a href="tel:${PHONE_RAW}">${PHONE_DISPLAY}</a>`;
+                } else {
+                    phoneEl.innerHTML = `💬 Zamówienia (tylko SMS): <a href="sms:${PHONE_RAW}">${PHONE_DISPLAY}</a>`;
+                }
+            }
+
+            updatePhoneContact();
+            setInterval(updatePhoneContact, 60000);
 
             // Obsługa inteligentnego kopiowania (Polska bez PL, Zagranica z PL)
             const copyBtn = document.getElementById('copy-iban-trigger');
