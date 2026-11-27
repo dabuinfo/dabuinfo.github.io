@@ -27,6 +27,10 @@
         const CALL_START_HOUR = 16; // od 16:00
         const CALL_END_HOUR = 20;   // do 20:00 (wyłącznie)
 
+        // KONFIGURACJA BLIK NA TELEFON (ukryty do czasu kliknięcia)
+        const BLIK_PHONE_RAW = '733035301';
+        const BLIK_PHONE_DISPLAY = '733 035 301';
+
         const WA_ICON_SVG = `<svg class="wa-icon" viewBox="0 0 24 24" width="16" height="16" fill="#25D366" aria-hidden="true"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L0 24l6.31-1.65a11.86 11.86 0 0 0 5.75 1.47h.01c6.56 0 11.9-5.34 11.9-11.9 0-3.18-1.24-6.17-3.45-8.44zm-8.46 18.33h-.01a9.88 9.88 0 0 1-5.04-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.88 9.88 0 0 1-1.52-5.28c0-5.46 4.44-9.9 9.91-9.9 2.65 0 5.14 1.03 7.01 2.91a9.84 9.84 0 0 1 2.89 7c0 5.46-4.44 9.9-9.9 9.9zm5.43-7.41c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/></svg>`;
 
         function isCallAllowedNow() {
@@ -202,6 +206,56 @@
                 }
                 .dabu-secondary-link {
                     padding: 2px 0;
+                }
+
+                /* BLIK NA TELEFON - PRZYCISK I UKRYTY PANEL */
+                .blik-toggle-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    background: rgba(46, 204, 113, 0.12);
+                    border: 1px solid rgba(46, 204, 113, 0.45);
+                    color: #2ecc71;
+                    font-family: inherit;
+                    font-size: 0.9em;
+                    font-weight: 600;
+                    padding: 3px 10px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    line-height: 1.4;
+                    transition: all 0.2s ease;
+                }
+                .blik-toggle-btn:hover {
+                    background: rgba(46, 204, 113, 0.22);
+                    border-color: #2ecc71;
+                    color: #ffffff;
+                }
+                .blik-reveal-item {
+                    display: none !important;
+                    width: 100%;
+                }
+                .blik-reveal-item.is-open {
+                    display: flex !important;
+                }
+                .blik-reveal-box {
+                    display: inline-flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    background: #181818;
+                    border: 1px solid #2a2a2a;
+                    border-left: 3px solid #2ecc71;
+                    border-radius: 8px;
+                    padding: 8px 12px;
+                    font-size: 0.92em;
+                    box-sizing: border-box;
+                }
+                .blik-number-text {
+                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                    color: #f8fafc;
+                    cursor: pointer;
                 }
 
                 /* PRZYCISK KOPIOWANIA IBAN - OBOK NUMERU */
@@ -446,6 +500,17 @@
                         display: inline-block;
                         padding: 4px 0;
                     }
+                    .blik-toggle-btn {
+                        padding: 5px 12px;
+                    }
+                    .blik-reveal-box {
+                        display: flex;
+                        width: 100%;
+                        padding: 10px 12px;
+                    }
+                    .blik-reveal-box .copy-iban-btn {
+                        margin-left: auto;
+                    }
                     .iban-row {
                         display: flex !important;
                         flex-wrap: wrap !important;
@@ -550,7 +615,25 @@
                         <h4 class="dabu-footer-heading">Dane Firmy i Płatności</h4>
                         <ul class="dabu-footer-contact">
                             <li>👤 Właściciel: <strong>Ewa Buczkowska</strong></li>
-                            <li>💳 Płatności: BLIK, PayPal</li>
+                            <li>
+                                💳 Płatności:
+                                <button type="button" class="blik-toggle-btn" id="blik-toggle-trigger" aria-expanded="false" title="Pokaż numer do przelewu BLIK na telefon">
+                                    BLIK na telefon
+                                </button>, PayPal
+                            </li>
+                            <li class="blik-reveal-item" id="blik-reveal-row">
+                                <span class="blik-reveal-box">
+                                    <span>📱 BLIK:</span>
+                                    <span id="blik-number-display" class="blik-number-text" title="Kliknij, aby skopiować"></span>
+                                    <button type="button" class="copy-iban-btn" id="copy-blik-trigger" title="Skopiuj numer BLIK">
+                                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </button>
+                                    <span class="copy-tooltip" id="blik-copied-msg">Skopiowano!</span>
+                                </span>
+                            </li>
                             <li>
                                 <span class="iban-row">
                                     🏛️ IBAN: <span id="iban-number">PL33 1020 5297 0000 1702 0290 9323</span>
@@ -679,6 +762,55 @@
                         showSuccess();
                     }
                 };
+            }
+
+            // Obsługa odkrywania i kopiowania numeru BLIK na telefon
+            const blikToggleBtn = document.getElementById('blik-toggle-trigger');
+            const blikRevealRow = document.getElementById('blik-reveal-row');
+            const blikNumberDisplay = document.getElementById('blik-number-display');
+            const copyBlikBtn = document.getElementById('copy-blik-trigger');
+
+            if (blikToggleBtn && blikRevealRow && blikNumberDisplay) {
+                blikToggleBtn.onclick = function() {
+                    const isOpen = blikRevealRow.classList.toggle('is-open');
+                    blikToggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    if (isOpen && !blikNumberDisplay.textContent) {
+                        blikNumberDisplay.textContent = BLIK_PHONE_DISPLAY;
+                    }
+                };
+
+                function copyBlikNumber() {
+                    const isPoland = (browserLang === 'pl');
+                    const msgText = isPoland ? "Skopiowano!" : "Copied!";
+
+                    function showBlikSuccess() {
+                        const msg = document.getElementById('blik-copied-msg');
+                        if (msg) {
+                            msg.textContent = msgText;
+                            msg.style.display = 'inline';
+                            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+                        }
+                    }
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(BLIK_PHONE_RAW).then(showBlikSuccess).catch(fallbackBlikCopy);
+                    } else {
+                        fallbackBlikCopy();
+                    }
+
+                    function fallbackBlikCopy() {
+                        const tempInput = document.createElement("input");
+                        tempInput.value = BLIK_PHONE_RAW;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(tempInput);
+                        showBlikSuccess();
+                    }
+                }
+
+                if (copyBlikBtn) copyBlikBtn.onclick = copyBlikNumber;
+                blikNumberDisplay.onclick = copyBlikNumber;
             }
         }
 
