@@ -18,7 +18,7 @@
 
         // ========================================================
         // KONFIGURACJA GODZIN KONTAKTU TELEFONICZNEGO I WHATSAPP
-        // Połączenia tylko Pn–Pt w godz. 16:00–20:00, poza tym tylko wiadomości WhatsApp
+        // Połączenia tylko Pn–Pt w godz. 16:00–20:00, poza tym SMS lub WhatsApp
         // ========================================================
         const PHONE_RAW = '+48600812820';
         const PHONE_DISPLAY = '+48 600 812 820';
@@ -334,7 +334,7 @@
                         <ul class="dabu-footer-contact">
                             <li id="dabu-phone-contact"></li>
                             <li style="font-size: 0.82em; color: #888; line-height: 1.4;">
-                                🕒 Tel: Pn–Pt 16:00–20:00 | Poza godz. i weekendy: tylko WhatsApp
+                                🕒 Tel: Pn–Pt 16:00–20:00 | Poza godz. i weekendy: SMS lub WhatsApp
                             </li>
                             <li>📝 <a href="https://dabu-info.com/kontakt.html">Formularz kontaktowy</a></li>
                             <li>☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
@@ -393,7 +393,7 @@
             `;
             document.body.appendChild(footerElement);
 
-            // Dynamiczne przełączanie linku tel: / WhatsApp w zależności od dnia i godziny
+            // Dynamiczne przełączanie linku tel: / SMS lub WhatsApp w zależności od dnia i godziny
             function updatePhoneContact() {
                 const phoneEl = document.getElementById('dabu-phone-contact');
                 if (!phoneEl) return;
@@ -401,7 +401,7 @@
                 if (isCallAllowedNow()) {
                     phoneEl.innerHTML = `📞 Zamówienia: <a href="tel:${PHONE_RAW}">${PHONE_DISPLAY}</a> &nbsp;|&nbsp; <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-wa-link" title="Napisz wiadomość na WhatsApp">${WA_ICON_SVG} WhatsApp</a>`;
                 } else {
-                    phoneEl.innerHTML = `<a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-wa-link" title="Napisz wiadomość na WhatsApp">${WA_ICON_SVG} Zamówienia (tylko WhatsApp): ${PHONE_DISPLAY}</a>`;
+                    phoneEl.innerHTML = `💬 Zamówienia: <a href="sms:${PHONE_RAW}" title="Wyślij SMS">SMS (${PHONE_DISPLAY})</a> &nbsp;lub&nbsp; <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-wa-link" title="Napisz wiadomość na WhatsApp">${WA_ICON_SVG} WhatsApp</a>`;
                 }
             }
 
