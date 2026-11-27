@@ -613,7 +613,7 @@
                                         PayPal
                                     </button>
                                     <button type="button" class="payment-toggle-btn" data-payment="iban" aria-expanded="false" title="Pokaż numer rachunku bankowego">
-                                        Numer rachunku
+                                        IBAN
                                     </button>
                                 </div>
                             </li>
