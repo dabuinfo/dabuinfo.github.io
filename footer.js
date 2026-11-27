@@ -319,7 +319,7 @@
                                 🕒 Tel: Pn–Pt 16:00–20:00 | Poza godz. i weekendy: tylko SMS
                             </li>
                             <li>📝 <a href="https://dabu-info.com/kontakt.html">Formularz kontaktowy</a></li>
-                            <li><a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">📍 56-300 Milicz (umów spotkanie)</a></li>
+                            <li>☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
                         </ul>
                     </div>
 
