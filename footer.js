@@ -82,24 +82,126 @@
                     font-weight: 700;
                 }
                 .dabu-footer-text { font-size: 0.95em; line-height: 1.6; margin: 0; color: #aaa; }
-                .dabu-footer-contact { list-style: none; padding: 0; margin: 0; font-size: 0.9em; line-height: 1.9; }
-                .dabu-footer-contact li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-                .dabu-footer-contact li a { color: #3498db; text-decoration: none; transition: color 0.3s ease; }
-                .dabu-footer-contact li a:hover { color: #2ecc71; text-decoration: underline; }
-                .dabu-footer-contact strong { color: #e0e0e0; }
-                .dabu-wa-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    color: #25D366 !important;
-                    font-weight: 600;
+                .dabu-footer-contact {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    font-size: 0.92em;
+                    line-height: 1.6;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
                 }
-                .dabu-wa-link:hover {
+                .dabu-footer-contact li {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 6px;
+                }
+                .dabu-footer-contact li a {
+                    color: #38bdf8;
+                    text-decoration: none;
+                    transition: color 0.2s ease;
+                }
+                .dabu-footer-contact li a:hover {
+                    color: #2ecc71;
+                    text-decoration: underline;
+                }
+                .dabu-footer-contact strong { color: #e0e0e0; }
+
+                /* BLOK KONTAKTOWY (NUMER + PRZYCISKI AKCJI) */
+                .dabu-phone-block {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 100%;
+                }
+                .dabu-phone-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 0.96em;
+                    color: #e2e8f0;
+                }
+                .dabu-phone-number {
+                    font-weight: 700;
+                    letter-spacing: 0.3px;
+                    color: #f8fafc;
+                }
+                .dabu-action-buttons {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 10px;
+                    width: 100%;
+                    max-width: 340px;
+                }
+                .dabu-action-btn {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    gap: 7px !important;
+                    min-height: 40px;
+                    padding: 8px 14px;
+                    border-radius: 8px;
+                    font-size: 0.88em;
+                    font-weight: 600;
+                    text-decoration: none !important;
+                    box-sizing: border-box;
+                    transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+                    white-space: nowrap;
+                }
+                .dabu-action-btn:hover {
+                    transform: translateY(-1px);
+                    text-decoration: none !important;
+                }
+                .dabu-action-btn:active {
+                    transform: scale(0.98);
+                }
+                .dabu-btn-primary {
+                    background: rgba(56, 189, 248, 0.12);
+                    border: 1px solid rgba(56, 189, 248, 0.4);
+                    color: #7dd3fc !important;
+                }
+                .dabu-btn-primary:hover {
+                    background: rgba(56, 189, 248, 0.22);
+                    border-color: #38bdf8;
+                    color: #ffffff !important;
+                }
+                .dabu-btn-wa {
+                    background: rgba(37, 211, 102, 0.12);
+                    border: 1px solid rgba(37, 211, 102, 0.45);
                     color: #4ade80 !important;
+                }
+                .dabu-btn-wa:hover {
+                    background: rgba(37, 211, 102, 0.22);
+                    border-color: #25D366;
+                    color: #ffffff !important;
                 }
                 .wa-icon {
                     flex-shrink: 0;
                     vertical-align: middle;
+                }
+                .dabu-hours-note {
+                    display: flex !important;
+                    flex-direction: column;
+                    align-items: flex-start !important;
+                    gap: 2px !important;
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid #242424;
+                    border-radius: 8px;
+                    padding: 8px 12px;
+                    font-size: 0.82em;
+                    color: #94a3b8;
+                    line-height: 1.45;
+                    width: 100%;
+                    max-width: 340px;
+                    box-sizing: border-box;
+                }
+                .dabu-hours-note span {
+                    display: block;
+                }
+                .dabu-secondary-link {
+                    padding: 2px 0;
                 }
 
                 /* PRZYCISK KOPIOWANIA IBAN - OBOK NUMERU */
@@ -301,14 +403,116 @@
                 }
 
                 @media (max-width: 768px) {
-                    .dabu-footer { padding: 35px 15px 15px; }
-                    .dabu-footer-container { flex-direction: column; gap: 25px; text-align: center; }
-                    .dabu-footer-contact li { justify-content: center; }
-                    .dabu-footer-client-bar { flex-direction: column; align-items: stretch; text-align: center; }
-                    .dabu-footer-client-info { justify-content: center; }
-                    .dabu-btn-client-footer { justify-content: center; }
-                    .dabu-footer-boxes { gap: 8px; }
-                    .dabu-footer-boxes li a { font-size: 0.8em; padding: 7px 12px; }
+                    .dabu-footer { padding: 36px 18px 96px; }
+                    .dabu-footer-container {
+                        flex-direction: column;
+                        gap: 28px;
+                        text-align: left;
+                    }
+                    .dabu-footer-col {
+                        min-width: 0;
+                        padding-bottom: 24px;
+                        border-bottom: 1px solid #222;
+                    }
+                    .dabu-footer-col:last-child {
+                        padding-bottom: 0;
+                        border-bottom: none;
+                    }
+                    .dabu-footer-heading {
+                        font-size: 1.05em;
+                        margin-bottom: 14px;
+                        letter-spacing: 1px;
+                    }
+                    .dabu-footer-contact {
+                        gap: 12px;
+                    }
+                    .dabu-footer-contact li {
+                        justify-content: flex-start;
+                    }
+                    .dabu-action-buttons {
+                        max-width: 100%;
+                        gap: 10px;
+                    }
+                    .dabu-action-btn {
+                        min-height: 44px;
+                        font-size: 0.92em;
+                    }
+                    .dabu-hours-note {
+                        max-width: 100%;
+                        padding: 10px 12px;
+                        font-size: 0.84em;
+                    }
+                    .dabu-secondary-link a {
+                        display: inline-block;
+                        padding: 4px 0;
+                    }
+                    .iban-row {
+                        display: flex !important;
+                        flex-wrap: wrap !important;
+                        white-space: normal !important;
+                        align-items: center !important;
+                        gap: 8px !important;
+                        background: #181818;
+                        border: 1px solid #2a2a2a;
+                        border-radius: 8px;
+                        padding: 10px 12px;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+                    #iban-number {
+                        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                        font-size: 0.86em;
+                        letter-spacing: 0.2px;
+                        word-break: break-all;
+                        color: #f1f5f9;
+                    }
+                    .copy-iban-btn {
+                        padding: 6px 10px;
+                        margin-left: auto;
+                    }
+                    .dabu-footer-client-bar {
+                        flex-direction: column;
+                        align-items: stretch;
+                        text-align: left;
+                        margin-top: 28px;
+                        padding: 16px;
+                        gap: 14px;
+                    }
+                    .dabu-footer-client-info {
+                        justify-content: flex-start;
+                        align-items: flex-start;
+                        line-height: 1.5;
+                    }
+                    .dabu-btn-client-footer {
+                        justify-content: center;
+                        min-height: 44px;
+                        box-sizing: border-box;
+                    }
+                    .dabu-footer-nav {
+                        margin-top: 24px;
+                        padding-top: 24px;
+                    }
+                    .dabu-footer-boxes {
+                        display: grid;
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: 8px;
+                    }
+                    .dabu-footer-boxes li {
+                        display: flex;
+                    }
+                    .dabu-footer-boxes li a {
+                        width: 100%;
+                        text-align: center;
+                        font-size: 0.82em;
+                        padding: 11px 8px;
+                        box-sizing: border-box;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .dabu-footer-bottom {
+                        margin-top: 24px;
+                    }
                     #chat-main-window { bottom: 85px !important; left: 12px !important; right: 12px !important; width: auto !important; max-width: none !important; }
                     #vacation-bar { font-size: 13px !important; padding: 10px 14px !important; }
                 }
@@ -333,11 +537,12 @@
                         <h4 class="dabu-footer-heading">Kontakt i Zamówienia</h4>
                         <ul class="dabu-footer-contact">
                             <li id="dabu-phone-contact"></li>
-                            <li style="font-size: 0.82em; color: #888; line-height: 1.4;">
-                                🕒 Tel: Pn–Pt 16:00–20:00 | Poza godz. i weekendy: SMS lub WhatsApp
+                            <li class="dabu-hours-note">
+                                <span>🕒 <strong>Tel:</strong> Pn–Pt 16:00–20:00</span>
+                                <span>💬 <strong>Poza godz. i weekendy:</strong> SMS lub WhatsApp</span>
                             </li>
-                            <li>📝 <a href="https://dabu-info.com/kontakt.html">Formularz kontaktowy</a></li>
-                            <li>☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
+                            <li class="dabu-secondary-link">📝 <a href="https://dabu-info.com/kontakt.html">Formularz kontaktowy</a></li>
+                            <li class="dabu-secondary-link">☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
                         </ul>
                     </div>
 
@@ -399,9 +604,39 @@
                 if (!phoneEl) return;
 
                 if (isCallAllowedNow()) {
-                    phoneEl.innerHTML = `📞 Zamówienia: <a href="tel:${PHONE_RAW}">${PHONE_DISPLAY}</a> &nbsp;|&nbsp; <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-wa-link" title="Napisz wiadomość na WhatsApp">${WA_ICON_SVG} WhatsApp</a>`;
+                    phoneEl.innerHTML = `
+                        <div class="dabu-phone-block">
+                            <div class="dabu-phone-header">
+                                <span>📞 Zamówienia:</span>
+                                <span class="dabu-phone-number">${PHONE_DISPLAY}</span>
+                            </div>
+                            <div class="dabu-action-buttons">
+                                <a href="tel:${PHONE_RAW}" class="dabu-action-btn dabu-btn-primary" title="Zadzwoń">
+                                    📞 Zadzwoń
+                                </a>
+                                <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-action-btn dabu-btn-wa" title="Napisz wiadomość na WhatsApp">
+                                    ${WA_ICON_SVG} WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    phoneEl.innerHTML = `💬 Zamówienia: <a href="sms:${PHONE_RAW}" title="Wyślij SMS">SMS (${PHONE_DISPLAY})</a> &nbsp;lub&nbsp; <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-wa-link" title="Napisz wiadomość na WhatsApp">${WA_ICON_SVG} WhatsApp</a>`;
+                    phoneEl.innerHTML = `
+                        <div class="dabu-phone-block">
+                            <div class="dabu-phone-header">
+                                <span>💬 Zamówienia:</span>
+                                <span class="dabu-phone-number">${PHONE_DISPLAY}</span>
+                            </div>
+                            <div class="dabu-action-buttons">
+                                <a href="sms:${PHONE_RAW}" class="dabu-action-btn dabu-btn-primary" title="Wyślij SMS">
+                                    💬 Wyślij SMS
+                                </a>
+                                <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-action-btn dabu-btn-wa" title="Napisz wiadomość na WhatsApp">
+                                    ${WA_ICON_SVG} WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    `;
                 }
             }
 
