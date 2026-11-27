@@ -595,7 +595,6 @@
                                 <span>🕒 <strong>Tel:</strong> Pn–Pt 16:00–20:00</span>
                                 <span>💬 <strong>Poza godz. i weekendy:</strong> SMS lub WhatsApp</span>
                             </li>
-                            <li class="dabu-secondary-link">📝 <a href="https://dabu-info.com/kontakt.html">Formularz kontaktowy</a></li>
                             <li class="dabu-secondary-link">☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
                         </ul>
                     </div>
@@ -652,7 +651,7 @@
                         <li><a href="https://dabu-info.com/kalendarz.html">Kalendarz Wystawek</a></li>
                         <li><a href="https://dabu-info.com/data.html">Bazy Danych</a></li>
                         <li><a href="https://dabu-info.com/gieldy.html">Adresy Giełd</a></li>
-                        <li><a href="https://dabu-info.blogspot.com/" target="_blank">Blog dabu-info</a></li>
+                        <li><a href="https://dabu-info.com/kontakt.html">Kontakt</a></li>
                         <li><a href="https://dabu-info.com/politykaprywatnosci.html">Polityka Prywatności</a></li>
                     </ul>
                 </div>
