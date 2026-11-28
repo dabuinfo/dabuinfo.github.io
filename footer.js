@@ -120,24 +120,12 @@
                 }
                 .dabu-footer-contact strong { color: #e0e0e0; }
 
-                /* BLOK KONTAKTOWY (NUMER + PRZYCISKI AKCJI) */
+                /* BLOK KONTAKTOWY (PRZYCISKI AKCJI) */
                 .dabu-phone-block {
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
                     width: 100%;
-                }
-                .dabu-phone-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 0.96em;
-                    color: #e2e8f0;
-                }
-                .dabu-phone-number {
-                    font-weight: 700;
-                    letter-spacing: 0.3px;
-                    color: #f8fafc;
                 }
                 .dabu-action-buttons {
                     display: grid;
@@ -221,9 +209,6 @@
                 }
                 .dabu-hours-note span {
                     display: block;
-                }
-                .dabu-secondary-link {
-                    padding: 2px 0;
                 }
 
                 /* PŁATNOŚCI - PRZYCISKI ODKRYWANIA I UKRYTY PANEL */
@@ -517,10 +502,6 @@
                         padding: 10px 12px;
                         font-size: 0.84em;
                     }
-                    .dabu-secondary-link a {
-                        display: inline-block;
-                        padding: 4px 0;
-                    }
                     .payment-toggle-btn {
                         padding: 6px 12px;
                         min-height: 38px;
@@ -605,7 +586,6 @@
                                 <span>🕒 <strong>Tel:</strong> Pn–Pt 16:00–20:00</span>
                                 <span>💬 <strong>Poza godz. i weekendy:</strong> SMS lub WhatsApp</span>
                             </li>
-                            <li class="dabu-secondary-link">☕ <a href="https://calendar.app.google/BY6HkVsjGmfvYkQ76" target="_blank" rel="noopener noreferrer">Spotkajmy się w Miliczu (zarezerwuj termin)</a></li>
                         </ul>
                     </div>
 
@@ -616,14 +596,14 @@
                             <li>
                                 <div class="payment-buttons-wrap">
                                     <span>💳 Płatności:</span>
-                                    <button type="button" class="payment-toggle-btn" data-payment="blik" aria-expanded="false" title="Pokaż numer telefonu do przelewu BLIK">
-                                        BLIK
+                                    <button type="button" class="payment-toggle-btn" data-payment="blik" aria-expanded="false" title="Pokaż numer do przelewu BLIK na telefon">
+                                        BLIK na telefon
                                     </button>
                                     <button type="button" class="payment-toggle-btn" data-payment="paypal" aria-expanded="false" title="Pokaż adres PayPal">
                                         PayPal
                                     </button>
-                                    <button type="button" class="payment-toggle-btn" data-payment="iban" aria-expanded="false" title="Pokaż numer rachunku bankowego">
-                                        KONTO/IBAN
+                                    <button type="button" class="payment-toggle-btn" data-payment="iban" aria-expanded="false" title="Pokaż numer IBAN">
+                                        IBAN
                                     </button>
                                 </div>
                             </li>
@@ -712,7 +692,7 @@
             updatePhoneContact();
             setInterval(updatePhoneContact, 60000);
 
-            // Obsługa odkrywania i kopiowania danych do płatności (BLIK, PayPal, Numer rachunku)
+            // Obsługa odkrywania i kopiowania danych do płatności (BLIK, PayPal, IBAN)
             const isPoland = (browserLang === 'pl');
             const paymentMethods = {
                 blik: {
