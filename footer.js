@@ -606,7 +606,7 @@
                             <li>
                                 <div class="payment-buttons-wrap">
                                     <span>💳 Płatności:</span>
-                                    <button type="button" class="payment-toggle-btn" data-payment="blik" aria-expanded="false" title="Pokaż numer telegonu do przelewu BLIK">
+                                    <button type="button" class="payment-toggle-btn" data-payment="blik" aria-expanded="false" title="Pokaż numer telefonu do przelewu BLIK">
                                         BLIK
                                     </button>
                                     <button type="button" class="payment-toggle-btn" data-payment="paypal" aria-expanded="false" title="Pokaż adres PayPal">
