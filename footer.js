@@ -21,7 +21,6 @@
         // Połączenia tylko Pn–Pt w godz. 16:00–20:00, poza tym SMS lub WhatsApp
         // ========================================================
         const PHONE_RAW = '+48600812820';
-        const PHONE_DISPLAY = '+48 600 812 820';
         const WA_NUMBER = PHONE_RAW.replace(/\D/g, '');
         const WA_URL = `https://wa.me/${WA_NUMBER}`;
         const CALL_START_HOUR = 16; // od 16:00
@@ -177,6 +176,17 @@
                 .dabu-btn-primary:hover {
                     background: rgba(56, 189, 248, 0.22);
                     border-color: #38bdf8;
+                    color: #ffffff !important;
+                }
+                .dabu-btn-call {
+                    grid-column: 1 / -1;
+                    background: rgba(46, 204, 113, 0.14);
+                    border: 1px solid rgba(46, 204, 113, 0.5);
+                    color: #4ade80 !important;
+                }
+                .dabu-btn-call:hover {
+                    background: rgba(46, 204, 113, 0.26);
+                    border-color: #2ecc71;
                     color: #ffffff !important;
                 }
                 .dabu-btn-wa {
@@ -662,7 +672,7 @@
             `;
             document.body.appendChild(footerElement);
 
-            // Dynamiczne przełączanie linku tel: / SMS lub WhatsApp w zależności od dnia i godziny
+            // Dynamiczne przełączanie przycisków kontaktu w zależności od dnia i godziny (bez wyświetlania numeru)
             function updatePhoneContact() {
                 const phoneEl = document.getElementById('dabu-phone-contact');
                 if (!phoneEl) return;
@@ -670,13 +680,12 @@
                 if (isCallAllowedNow()) {
                     phoneEl.innerHTML = `
                         <div class="dabu-phone-block">
-                            <div class="dabu-phone-header">
-                                <span>📞 Zamówienia:</span>
-                                <span class="dabu-phone-number">${PHONE_DISPLAY}</span>
-                            </div>
                             <div class="dabu-action-buttons">
-                                <a href="tel:${PHONE_RAW}" class="dabu-action-btn dabu-btn-primary" title="Zadzwoń">
+                                <a href="tel:${PHONE_RAW}" class="dabu-action-btn dabu-btn-call" title="Zadzwoń">
                                     📞 Zadzwoń
+                                </a>
+                                <a href="sms:${PHONE_RAW}" class="dabu-action-btn dabu-btn-primary" title="Wyślij SMS">
+                                    💬 Wyślij SMS
                                 </a>
                                 <a href="${WA_URL}" target="_blank" rel="noopener noreferrer" class="dabu-action-btn dabu-btn-wa" title="Napisz wiadomość na WhatsApp">
                                     ${WA_ICON_SVG} WhatsApp
@@ -687,10 +696,6 @@
                 } else {
                     phoneEl.innerHTML = `
                         <div class="dabu-phone-block">
-                            <div class="dabu-phone-header">
-                                <span>💬 Zamówienia:</span>
-                                <span class="dabu-phone-number">${PHONE_DISPLAY}</span>
-                            </div>
                             <div class="dabu-action-buttons">
                                 <a href="sms:${PHONE_RAW}" class="dabu-action-btn dabu-btn-primary" title="Wyślij SMS">
                                     💬 Wyślij SMS
